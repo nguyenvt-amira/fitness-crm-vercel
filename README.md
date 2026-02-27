@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Fitness CRM
 
-## Getting Started
+fitnessのCRM(会員管理) WEBアプリ
 
-First, run the development server:
+# 技術スタック
+
+| カテゴリ       | 採用技術                 | 備考                                                       |
+| :------------- | :----------------------- | :--------------------------------------------------------- |
+| 実行環境       | Node.js                  | v24以上を推奨                                              |
+| 言語           | TypeScript               | 全域での型安全性の担保                                     |
+| フレームワーク | Next.js                  | App Router採用                                             |
+| UIライブラリ   | shadcn/ui                | Tailwind CSSベースのコンポーネント                         |
+| 構文チェック   | ESLint                   | コード品質の自動チェック                                   |
+| 自動整形       | Prettier                 | チーム間でのコードスタイルの統一 <br> import順の自動ソート |
+| コミット制御   | husky <br /> lint-staged | コミット時のLint/Formatterの自動実行                       |
+
+# Getting Started
+
+## インストール
+
+```bash
+npm install
+```
+
+`npm install` 時にhusky(Git hooks)も自動でセットアップされます。
+
+## 開発サーバの起動
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+起動後、 [http://localhost:3000](http://localhost:3000) にアクセスしてください。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# Linter / Formatter
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+LinterとFormatterはcommit時に自動実行されます。
+プロジェクト全体に適用したい場合は手動で実行してください。
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- ESLint
+  - 設定ファイル: [eslint.config.mjs](./eslint.config.mjs)
+  - 手動実行: `npm run lint`
+- Prettier
+  - 設定ファイル: [prettier.config.mjs](./prettier.config.mjs)
+  - 手動実行: `npm run format`
