@@ -11,7 +11,10 @@
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write ./src",
-    "prepare": "husky"
+    "prepare": "husky",
+    "openapi-ts": "openapi-ts",
+    "generate-api": "dotenv -e .env -- openapi-ts --output src/lib/api",
+    "generate-client": "openapi-ts --input http://backend:8000/api/v1/openapi.json --output src/lib/api"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -25,6 +28,7 @@
   "dependencies": {
     "@base-ui/react": "^1.2.0",
     "@hookform/resolvers": "^5.2.2",
+    "@tanstack/react-query": "^5.90.21",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -43,16 +47,21 @@
     "recharts": "^2.15.4",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
+    "universal-cookie": "^8.0.1",
     "vaul": "^1.1.2",
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@hey-api/openapi-ts": "0.93.1",
+    "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "^4",
+    "@tanstack/eslint-plugin-query": "^5.91.4",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "dotenv-cli": "^10.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "eslint-config-prettier": "^10.1.8",
