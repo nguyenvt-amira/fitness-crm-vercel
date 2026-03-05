@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import Cookies from 'universal-cookie';
 
 import { navigate } from '@/lib/routes/routes.util';
@@ -59,8 +60,7 @@ export async function copyToClipboard(
   if (!text) return;
   try {
     await navigator.clipboard.writeText(text);
-    // const { toastSuccess } = await import('./toast.util');
-    // toastSuccess(successMessage);
+    toast.success(successMessage);
   } catch (error) {
     console.error('Failed to copy to clipboard:', error);
   }

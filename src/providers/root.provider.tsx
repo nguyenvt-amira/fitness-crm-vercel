@@ -2,7 +2,9 @@
 
 import { ReactNode } from 'react';
 
-import '@/styles/globals.css';
+import '@/app/globals.css';
+
+import { Toaster } from '@/components/ui/sonner';
 
 import ReactQueryProvider from './react-query.provider';
 
@@ -11,5 +13,10 @@ interface RootProviderProps {
 }
 
 export const RootProvider = ({ children }: RootProviderProps) => {
-  return <ReactQueryProvider>{children}</ReactQueryProvider>;
+  return (
+    <ReactQueryProvider>
+      <Toaster />
+      {children}
+    </ReactQueryProvider>
+  );
 };

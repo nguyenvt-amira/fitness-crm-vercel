@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import useClientRequest from '@/hooks/useClientRequest';
 
@@ -23,8 +24,9 @@ export default function ReactQueryProvider({ children }: ReactQueryProviderProps
         },
         mutationCache: new MutationCache({
           onError: (error: any) => {
-            const errorMsg = error?.detail?.message;
-            console.error(errorMsg); //TODO: toast error
+            const errorMsg =
+              error?.detail?.message || 'エラーが発生しました。後で再試行してください。';
+            toast.error(errorMsg);
           },
         }),
         queryCache: new QueryCache({
