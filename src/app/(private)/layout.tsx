@@ -8,7 +8,7 @@ export default function Layout({ children }: Readonly<{ children: React.ReactNod
       <AppHeader />
       <SidebarProvider>
         <AppSidebar />
-        <main className="overflow-auto">{children}</main>
+        <main className="mt-16 w-full overflow-auto">{children}</main>
       </SidebarProvider>
     </div>
   );

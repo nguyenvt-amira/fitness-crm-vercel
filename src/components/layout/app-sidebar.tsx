@@ -13,7 +13,7 @@ import {
   Image,
   Package,
   Settings,
-  Users,
+  User,
 } from 'lucide-react';
 
 import {
@@ -39,7 +39,7 @@ const menuItems = [
   },
   {
     label: '会員管理',
-    icon: Users,
+    icon: User,
     href: '/members',
     subItems: [
       {
