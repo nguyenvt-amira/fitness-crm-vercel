@@ -8,12 +8,12 @@ import { Card } from '@/components/ui/card';
 import { DataTable } from '@/components/ui/data-table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-export type ContractsTabItem = {
+export type MemberDetailsTabItem = {
   value: string;
   label: string;
 };
 
-const MOCK_TABS: ContractsTabItem[] = [
+const MOCK_MEMBER_DETAILS_TABS: MemberDetailsTabItem[] = [
   { value: 'info', label: '会員情報' },
   { value: 'contract', label: '契約' },
   { value: 'payment', label: '支払い' },
@@ -203,7 +203,7 @@ export function MemberContracts() {
     <div className="flex flex-col gap-4 p-4">
       <Tabs defaultValue="contract" className="w-full">
         <TabsList className="bg-muted inline-flex h-9 w-fit rounded-lg p-[3px]">
-          {MOCK_TABS.map((tab) => (
+          {MOCK_MEMBER_DETAILS_TABS.map((tab) => (
             <TabsTrigger
               key={tab.value}
               value={tab.value}
@@ -278,7 +278,7 @@ export function MemberContracts() {
           </Card>
         </TabsContent>
 
-        {/* {MOCK_TABS.filter((tab) => tab.value !== 'pending').map((tab) => (
+        {/* {MOCK_MEMBER_DETAILS_TABS.filter((tab) => tab.value !== 'pending').map((tab) => (
           <TabsContent key={tab.value} value={tab.value}>
             <Card className="rounded-lg border p-4 shadow-sm">
               <p className="text-muted-foreground text-sm">

@@ -2,42 +2,14 @@
 
 import { useParams } from 'next/navigation';
 
-import { Edit, Mail, User } from 'lucide-react';
+import { User } from 'lucide-react';
 
 import { BreadcrumbItemType, BreadcrumbNav } from '@/components/common/breadcrumb-nav';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { ContractsAlert, ContractsOverview } from '../../contracts/_components/contracts-overview';
 import { MemberContracts } from './_components/member-contracts-section';
-
-// Mock: application processing (入会処理) dashboard data
-const MOCK_SUMMARY = {
-  totalApplications: 1234,
-  autoApprovalRate: 82.5,
-  autoApprovalCount: 678,
-  avgProcessingTime: '1h23m',
-};
-
-const MOCK_ALERTS: ContractsAlert[] = [
-  {
-    title: '要確認の入会申し込みが12件あります。',
-    description: '承認もしくは却下の操作を行なってください。',
-  },
-  {
-    title: '決済エラーの入会申し込みが3件あります。',
-    description: '再決済手続きを進めてください。',
-  },
-];
 
 const BREADCRUMB_ITEMS: BreadcrumbItemType[] = [
   { url: '/', label: '会員管理' },
@@ -138,8 +110,6 @@ export default function ContractsPage() {
           </CardContent>
         </Card>
       </div>
-
-      {/* <ContractsOverview summary={MOCK_SUMMARY} alerts={MOCK_ALERTS} /> */}
 
       <MemberContracts />
     </div>
