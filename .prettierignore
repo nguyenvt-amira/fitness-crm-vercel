@@ -1,2 +1,4 @@
 # shadcn/ui
 src/components/ui
+
+src/lib/api
