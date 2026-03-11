@@ -19,28 +19,32 @@ import React from "react"
 import { FetchNextPageOptions, FetchPreviousPageOptions, RefetchOptions } from "@tanstack/react-query"
 import { Button } from "./button"
 import { LoaderCircle } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[],
+    variant?: 'default' | 'simple'; // 'default' = infinite scroll, 'simple' = standard table
     isFetching?: boolean;
     isLoading?: boolean;
     hasNextPage?: boolean;
-    fetchNextPage: (
+    fetchNextPage?: (
         options?: FetchNextPageOptions | undefined,
     ) => Promise<unknown>;
     fetchPreviousPage?: (
         options?: FetchPreviousPageOptions | undefined,
     ) => Promise<unknown>;
-    refetch: (options?: RefetchOptions | undefined) => void;
+    refetch?: (options?: RefetchOptions | undefined) => void;
     totalRows?: number;
     filterRows?: number;
     totalRowsFetched?: number;
+    className?: string;
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
+    variant = 'default',
     isFetching,
     isLoading,
     fetchNextPage,
@@ -50,7 +54,8 @@ export function DataTable<TData, TValue>({
     totalRows = 0,
     filterRows = 0,
     totalRowsFetched = 0,
-}: DataTableProps<TData, TValue>) {
+    className,  
+}: Readonly<DataTableProps<TData, TValue>>) {
     const table = useReactTable({
         data,
         columns,
@@ -64,13 +69,65 @@ export function DataTable<TData, TValue>({
                 e.currentTarget.scrollHeight;
 
             if (onPageBottom && !isFetching && totalRowsFetched < filterRows) {
-                fetchNextPage();
+                fetchNextPage?.();
             }
         },
         [fetchNextPage, isFetching, filterRows, totalRowsFetched],
     );
+    
+    // Simple table mode (no pagination)
+    if (variant === 'simple') {
+        return (
+            <div className={cn("overflow-hidden rounded-md border", className)}>
+                <Table>
+                    <TableHeader>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => {
+                                    return (
+                                        <TableHead key={header.id}>
+                                            {header.isPlaceholder
+                                                ? null
+                                                : flexRender(
+                                                    header.column.columnDef.header,
+                                                    header.getContext()
+                                                )}
+                                        </TableHead>
+                                    )
+                                })}
+                            </TableRow>
+                        ))}
+                    </TableHeader>
+                    <TableBody>
+                        {table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map((row) => (
+                                <TableRow
+                                    key={row.id}
+                                    data-state={row.getIsSelected() && "selected"}
+                                >
+                                    {row.getVisibleCells().map((cell) => (
+                                        <TableCell key={cell.id}>
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                    No results.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
+        )
+    }
+    
+    // Default mode (infinite scroll)
     return (
-        <div className="overflow-hidden rounded-md border">
+        <div className={cn("overflow-hidden rounded-md border", className)}>
             <Table
                 ref={tableRef}
                 onScroll={onScroll}>
@@ -118,7 +175,7 @@ export function DataTable<TData, TValue>({
                             {hasNextPage || isFetching || isLoading ? (
                                 <Button
                                     disabled={isFetching || isLoading}
-                                    onClick={() => fetchNextPage()}
+                                    onClick={() => fetchNextPage?.()}
                                     size="sm"
                                     variant="outline"
                                 >
@@ -129,15 +186,11 @@ export function DataTable<TData, TValue>({
                                 </Button>
                             ) : (
                                 <p className="text-sm text-muted-foreground">
-                                    No more data to load (
-                                    <span className="font-mono font-medium">
-                                        {filterRows}
-                                    </span>{" "}
-                                    of{" "}
-                                    <span className="font-mono font-medium">
-                                        {totalRows}
-                                    </span>{" "}
-                                    rows)
+                                    No more data to load ({" "}
+                                    <span className="font-mono font-medium">{filterRows}</span>
+                                    {" "}of{" "}
+                                    <span className="font-mono font-medium">{totalRows}</span>
+                                    {" "}rows)
                                 </p>
                             )}
                         </TableCell>

@@ -29,6 +29,8 @@ import {
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 
+import { getRoute, getRoutePattern, navigate } from '@/lib/routes/routes.util';
+
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
 
 const menuItems = [
@@ -55,12 +57,12 @@ const menuItems = [
   {
     label: '入会処理',
     icon: FileText,
-    href: '/enrollment',
+    href: getRoutePattern('/membership-applications'),
   },
   {
     label: '入退館',
     icon: DoorOpen,
-    href: '/entry-exit',
+    href: getRoutePattern('/checkin'),
   },
   {
     label: 'レッスン',
@@ -132,7 +134,7 @@ const menuItems = [
   {
     label: 'システム設定',
     icon: Settings,
-    href: '/content',
+    href: '/settings',
     subItems: [
       {
         label: 'スタッフ・権限',
