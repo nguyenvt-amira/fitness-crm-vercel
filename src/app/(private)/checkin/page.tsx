@@ -8,7 +8,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { cn } from '@/lib/utils';
 
-import { CheckinKpiCards, MemberTable, NotificationPanel, PageControls } from './_components';
+import {
+  CheckinKpiCards,
+  CurrentMembersGrid,
+  MemberTable,
+  NotificationPanel,
+  PageControls,
+} from './_components';
 
 interface Member {
   id: string;
@@ -163,6 +169,192 @@ const currentMembers: Member[] = [
     checkInTime: '13:15',
     gate: 'ゲートA',
     visits: 89,
+  },
+];
+
+// Mock data for currently in gym members based on Figma design
+const currentInGymMembers = [
+  {
+    id: '1',
+    name: 'やばい奴',
+    kana: 'ヤバイ ヤツ',
+    gender: 'M' as const,
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
+    membershipType: 'フィットネスクレジット会員2(相互利用なし)',
+    stayDuration: '滞在1時間30分',
+    badge: '要対応',
+    hasAlert: true,
+  },
+  {
+    id: '2',
+    name: '田中太郎',
+    kana: 'タナカ タロウ',
+    gender: 'M' as const,
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2',
+    membershipType: 'フィットネスクレジット会員(相互利用あり)',
+    stayDuration: '滞在2時間15分',
+  },
+  {
+    id: '3',
+    name: '中村さくら',
+    kana: 'ナカムラ サクラ',
+    gender: 'F' as const,
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=3',
+    membershipType: 'プレミアムクレジット会員(相互利用あり)',
+    stayDuration: '滞在1時間45分',
+  },
+  {
+    id: '4',
+    name: '高橋美咲',
+    kana: 'タカハシ ミサキ',
+    gender: 'F' as const,
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=6',
+    membershipType: 'フィットネスクレジット会員(相互利用あり)',
+    stayDuration: '滞在58分',
+  },
+  {
+    id: '5',
+    name: '山本大輔',
+    kana: 'ヤマモト ダイスケ',
+    gender: 'M' as const,
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=4',
+    membershipType: 'ナイトクレジット会員(相互利用なし)',
+    stayDuration: '滞在45分',
+  },
+  {
+    id: '6',
+    name: '渡辺愛美',
+    kana: 'ワタナベ マナミ',
+    gender: 'F' as const,
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=11',
+    membershipType: 'フィットネスクレジット会員(相互利用あり)',
+    stayDuration: '滞在1時間10分',
+  },
+  {
+    id: '7',
+    name: '伊藤健太',
+    kana: 'イトウ ケンタ',
+    gender: 'M' as const,
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=5',
+    membershipType: 'プレミアムクレジット会員(相互利用あり)',
+    stayDuration: '滞在30分',
+  },
+  {
+    id: '8',
+    name: '小林裕子',
+    kana: 'コバヤシ ユウコ',
+    gender: 'F' as const,
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=12',
+    membershipType: 'フィットネスクレジット会員(相互利用なし)',
+    stayDuration: '滞在2時間',
+  },
+  {
+    id: '9',
+    name: '加藤誠',
+    kana: 'カトウ マコト',
+    gender: 'M' as const,
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=13',
+    membershipType: 'フィットネスクレジット会員(相互利用あり)',
+    stayDuration: '滞在1時間20分',
+  },
+  {
+    id: '10',
+    name: '吉田恵',
+    kana: 'ヨシダ メグミ',
+    gender: 'F' as const,
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=14',
+    membershipType: 'ナイトクレジット会員(相互利用なし)',
+    stayDuration: '滞在55分',
+  },
+  {
+    id: '11',
+    name: '松本翔',
+    kana: 'マツモト ショウ',
+    gender: 'M' as const,
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=15',
+    membershipType: 'フィットネスクレジット会員(相互利用あり)',
+    stayDuration: '滞在40分',
+  },
+  {
+    id: '12',
+    name: '井上真理',
+    kana: 'イノウエ マリ',
+    gender: 'F' as const,
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=16',
+    membershipType: 'プレミアムクレジット会員(相互利用あり)',
+    stayDuration: '滞在1時間5分',
+  },
+  {
+    id: '13',
+    name: '木村拓也',
+    kana: 'キムラ タクヤ',
+    gender: 'M' as const,
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=17',
+    membershipType: 'フィットネスクレジット会員(相互利用なし)',
+    stayDuration: '滞在25分',
+  },
+  {
+    id: '14',
+    name: '清水彩香',
+    kana: 'シミズ アヤカ',
+    gender: 'F' as const,
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=18',
+    membershipType: 'フィットネスクレジット会員(相互利用あり)',
+    stayDuration: '滞在1時間50分',
+  },
+  {
+    id: '15',
+    name: '森田健一',
+    kana: 'モリタ ケンイチ',
+    gender: 'M' as const,
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=19',
+    membershipType: 'ナイトクレジット会員(相互利用なし)',
+    stayDuration: '滞在35分',
+  },
+  {
+    id: '16',
+    name: '藤井優',
+    kana: 'フジイ ユウ',
+    gender: 'M' as const,
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=20',
+    membershipType: 'フィットネスクレジット会員(相互利用あり)',
+    stayDuration: '滞在1時間15分',
+  },
+  {
+    id: '17',
+    name: '岡田直樹',
+    kana: 'オカダ ナオキ',
+    gender: 'M' as const,
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=21',
+    membershipType: 'プレミアムクレジット会員(相互利用あり)',
+    stayDuration: '滞在50分',
+  },
+  {
+    id: '18',
+    name: '三浦美穂',
+    kana: 'ミウラ ミホ',
+    gender: 'F' as const,
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=22',
+    membershipType: 'フィットネスクレジット会員(相互利用なし)',
+    stayDuration: '滞在20分',
+  },
+  {
+    id: '19',
+    name: '石川大地',
+    kana: 'イシカワ ダイチ',
+    gender: 'M' as const,
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=23',
+    membershipType: 'フィットネスクレジット会員(相互利用あり)',
+    stayDuration: '滞在15分',
+  },
+  {
+    id: '20',
+    name: '前田香織',
+    kana: 'マエダ カオリ',
+    gender: 'F' as const,
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=24',
+    membershipType: 'ナイトクレジット会員(相互利用なし)',
+    stayDuration: '滞在10分',
   },
 ];
 
@@ -322,12 +514,12 @@ export default function CheckinPage() {
 
             <TabsContent value="entry" className="space-y-4">
               <div className="flex justify-between gap-3">
-                {/* <MemberTable
+                <MemberTable
                   title="入館"
                   icon={<ArrowLeft className="h-4 w-4 text-green-600" />}
                   members={entryMembers}
                   variant="entry"
-                /> */}
+                />
                 <MemberTable
                   title="在館者"
                   icon={<ArrowRight className="h-4 w-4 text-green-600" />}
@@ -338,27 +530,14 @@ export default function CheckinPage() {
             </TabsContent>
 
             <TabsContent value="current" className="space-y-4">
-              <div className="flex justify-between gap-3">
-                <MemberTable
-                  title="入館"
-                  icon={<ArrowLeft className="h-4 w-4 text-green-600" />}
-                  members={entryMembers}
-                  variant="entry"
-                />
-                <MemberTable
-                  title="在館者"
-                  icon={<ArrowRight className="h-4 w-4 text-green-600" />}
-                  members={currentMembers}
-                  variant="current"
-                />
-              </div>
+              <CurrentMembersGrid members={currentInGymMembers} />
             </TabsContent>
           </Tabs>
         </div>
 
         {/* Notification Panel */}
         {open && (
-          <div className="flex-1 bg-amber-300">
+          <div className="flex-1">
             <NotificationPanel
               alerts={alertNotifications}
               warnings={warningNotifications}

@@ -147,7 +147,7 @@ export function NotificationPanel({
       </div>
 
       {/* Scrollable Content */}
-      <div className="h-[calc(100vh-var(--header-height))] flex-1 space-y-3 overflow-hidden bg-green-400 px-3 sm:space-y-4">
+      <div className="h-[calc(100vh-var(--header-height))] flex-1 space-y-3 overflow-hidden px-3 sm:space-y-4">
         {/* Alerts Section */}
         {alerts.length > 0 && (
           <div>

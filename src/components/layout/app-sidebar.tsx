@@ -63,6 +63,12 @@ const menuItems = [
     label: '入退館',
     icon: DoorOpen,
     href: getRoutePattern('/checkin'),
+    subItems: [
+      {
+        label: '入退館履歴',
+        href: getRoutePattern('/checkin/histories'),
+      },
+    ],
   },
   {
     label: 'レッスン',
