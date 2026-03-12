@@ -14,6 +14,12 @@ export const routes = {
     pattern: '/checkin',
     private: true,
   },
+  '/checkin/histories': {
+    router: '/checkin/histories',
+    filePath: '(private)/checkin/histories',
+    pattern: '/checkin/histories',
+    private: true,
+  },
   '/members': {
     router: '/members',
     filePath: '(private)/members',
@@ -56,6 +62,7 @@ export const routes = {
 export const routeKeys = [
   '/',
   '/checkin',
+  '/checkin/histories',
   '/members',
   '/members/[id]',
   '/membership-applications',
@@ -68,6 +75,7 @@ export const routeKeys = [
 export const routePatterns = [
   '/',
   '/checkin',
+  '/checkin/histories',
   '/members',
   '/members/:id',
   '/membership-applications',

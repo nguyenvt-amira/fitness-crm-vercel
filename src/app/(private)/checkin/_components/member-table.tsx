@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 import { ColumnDef } from '@tanstack/react-table';
 import { ChevronRight, Mars, Venus } from 'lucide-react';
 
@@ -8,6 +10,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { DataTable } from '@/components/ui/data-table';
+
+import { navigate } from '@/lib/routes/routes.util';
 
 interface Member {
   id: string;
@@ -158,10 +162,12 @@ export function MemberTable({
 
         {/* Button - Below Table */}
         <div className="border-t border-gray-200 px-4 py-3">
-          <Button variant="outline" className="w-full justify-center gap-2 rounded-lg text-sm">
-            入退館履歴ですべて表示
-            <ChevronRight className="h-4 w-4" />
-          </Button>
+          <Link href={navigate('/checkin/histories')}>
+            <Button variant="outline" className="w-full justify-center gap-2 rounded-lg text-sm">
+              入退館履歴ですべて表示
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </Link>
         </div>
       </div>
     </Card>
