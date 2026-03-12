@@ -1,16 +1,23 @@
-import { GetMembersData, MemberListItem, Members } from '@/lib/api';
+import { GetCrmMembersData, MemberListItem, Members } from '@/lib/api';
 
 export const getMembers = async (
-  filter: NonNullable<GetMembersData['query']>,
+  filter: NonNullable<GetCrmMembersData['query']>,
 ): Promise<MemberListItem[]> => {
   try {
-    const { data, error } = await Members.getMembers({
+    const { data, error } = await Members.getCrmMembers({
       query: {
-        keyword: filter.keyword || undefined,
-        storeId: filter.storeId !== 'all' ? filter.storeId : undefined,
-        memberType: filter.memberType !== 'all' ? filter.memberType : undefined,
-        status: filter.status !== 'all' ? filter.status : undefined,
-        lastVisitDate: filter.lastVisitDate !== 'all' ? filter.lastVisitDate : undefined,
+        search: filter.search || undefined,
+        storeId: filter.storeId,
+        memberType: filter.memberType,
+        status: filter.status,
+        lastVisitDays: filter.lastVisitDays,
+        brand: filter.brand,
+        contractPlanId: filter.contractPlanId,
+        hasUnpaid: filter.hasUnpaid,
+        sortBy: filter.sortBy,
+        sortOrder: filter.sortOrder,
+        page: filter.page,
+        limit: filter.limit,
       },
     });
 
@@ -19,26 +26,18 @@ export const getMembers = async (
       return [];
     }
 
-    return data?.data || [];
+    return data?.members || [];
   } catch (err) {
-    console.error('Error calling getMembers:', err);
-    return Array(15).fill({
-      id: '001',
-      memberNo: '001',
-      name: '山田太郎',
-      nameKana: 'ヤマダタロウ',
-      type: '通常会員',
-      status: '退会済み',
-    });
-    // return [];
+    console.error('Error calling getCrmMembers:', err);
+    return [];
   }
 };
 
 export const searchMembers = async (keySearch: string): Promise<MemberListItem[]> => {
   try {
-    const { data, error } = await Members.searchMembers({
+    const { data, error } = await Members.getCrmMembers({
       query: {
-        q: keySearch,
+        search: keySearch,
       },
     });
 
@@ -47,9 +46,9 @@ export const searchMembers = async (keySearch: string): Promise<MemberListItem[]
       return [];
     }
 
-    return data || [];
+    return data?.members || [];
   } catch (err) {
-    console.error('Error calling searchMembers:', err);
+    console.error('Error calling getCrmMembers for search:', err);
     return [];
   }
 };

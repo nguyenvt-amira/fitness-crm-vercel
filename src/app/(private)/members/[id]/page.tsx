@@ -1,37 +1,149 @@
 'use client';
 
+import { useState } from 'react';
+
 import { useParams } from 'next/navigation';
 
-import { User } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import {
+  AlertOctagon,
+  ArrowLeft,
+  Building2,
+  Edit,
+  MessageSquare,
+  Printer,
+  User,
+} from 'lucide-react';
 
-import { BreadcrumbItemType, BreadcrumbNav } from '@/components/common/breadcrumb-nav';
+import { BreadcrumbNav } from '@/components/common/breadcrumb-nav';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import { MemberContracts } from './_components/member-contracts-section';
+import { getCrmMembersByIdOptions } from '@/lib/api/@tanstack/react-query.gen';
+import { navigate } from '@/lib/routes/routes.util';
 
-const BREADCRUMB_ITEMS: BreadcrumbItemType[] = [
-  { url: '/', label: '会員管理' },
-  { label: '会員詳細' },
-];
+import type { GetMemberDetailResponse } from '@/types/member.type';
+import { Brand, MemberStatus } from '@/types/member.type';
 
-export default function ContractsPage() {
-  useParams(); // [id] - use when wiring real API
+import { BasicInfoTab } from './_components/basic-info-tab';
+import { ChangeHistoryTab } from './_components/change-history-tab';
+import { CommunicationsTab } from './_components/communications-tab';
+import { ContractsTab } from './_components/contracts-tab';
+import { EditMemberModal } from './_components/edit-member-modal';
+import { MemoModal } from './_components/memo-modal';
+import { PointsTab } from './_components/points-tab';
+import { PrintModal } from './_components/print-modal';
+import { RelationshipsTab } from './_components/relationships-tab';
+import { ServiceUsageTab } from './_components/service-usage-tab';
+import { TrainingRecordsTab } from './_components/training-records-tab';
+import { UsageHistoryTab } from './_components/usage-history-tab';
 
-  const MOCK_MEMBER = {
-    id: 'M-00001',
-    name: '佐藤 花子',
-    kana: 'サトウ ハナコ',
-    email: 'hanako.sato@example.com',
-    phone: '090-1234-5678',
-    status: 'アクティブ',
-    joinedAt: '2024/01/15',
-    membership: 'Fit365八潮店',
-    contracts: '通常会員',
-    online: '0回',
-    gender: '女性',
-    birthday: '1990/01/01',
+const BREADCRUMB_ITEMS = [{ url: '/members', label: '会員一覧' }, { label: '会員詳細' }];
+
+export default function MemberDetailPage() {
+  const params = useParams();
+  const memberId = params.id as string;
+  const [activeTab, setActiveTab] = useState('basic');
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showMemoModal, setShowMemoModal] = useState(false);
+  const [showPrintModal, setShowPrintModal] = useState(false);
+
+  const { data, isLoading } = useQuery(
+    getCrmMembersByIdOptions({
+      path: {
+        id: memberId,
+      },
+    }),
+  );
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        <div className="text-muted-foreground">読み込み中...</div>
+      </div>
+    );
+  }
+
+  if (!data?.member) {
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        <div className="text-destructive">会員情報が見つかりません</div>
+      </div>
+    );
+  }
+
+  // Type assertion to use the proper type from member.type.ts
+  const typedData = data as unknown as GetMemberDetailResponse;
+  const { member } = typedData;
+  const statusLabels: Record<MemberStatus, string> = {
+    [MemberStatus.ACTIVE]: '利用中',
+    [MemberStatus.SUSPENDED]: '休会中',
+    [MemberStatus.WITHDRAWN]: '退会済み',
+    [MemberStatus.FORCE_WITHDRAWN]: '強制退会済み',
+  };
+
+  const STATUS_VARIANTS: Record<MemberStatus, 'default' | 'secondary' | 'destructive' | 'outline'> =
+    {
+      [MemberStatus.ACTIVE]: 'default',
+      [MemberStatus.SUSPENDED]: 'secondary',
+      [MemberStatus.WITHDRAWN]: 'outline',
+      [MemberStatus.FORCE_WITHDRAWN]: 'destructive',
+    };
+
+  // Mock alerts - in real app, these would come from API
+  const hasUnpaid = false; // TODO: Get from member data
+  const contractRenewalSoon = false; // TODO: Calculate from contract end date
+
+  const handleEdit = () => {
+    setShowEditModal(true);
+  };
+
+  const handleAddMemo = () => {
+    setShowMemoModal(true);
+  };
+
+  const handlePrint = () => {
+    setShowPrintModal(true);
+  };
+
+  const handleChangeMainContract = () => {
+    // TODO: Navigate to main contract change page (B-01)
+    console.log('Change main contract');
+  };
+
+  const handleSuspend = () => {
+    // TODO: Navigate to suspend page (A-02-06)
+    console.log('Suspend membership');
+  };
+
+  const handleWithdraw = () => {
+    // TODO: Navigate to withdraw page (A-02-05)
+    console.log('Withdraw membership');
+  };
+
+  const handleSaveMember = async (data: Partial<typeof member>) => {
+    // TODO: Implement API call to update member
+    console.log('Saving member:', data);
+    // Mock API call
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  };
+
+  const handleSaveMemo = async (data: { type: any; content: string }) => {
+    // TODO: Implement API call to save memo
+    console.log('Saving memo:', data);
+    // Mock API call
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  };
+
+  const handleDeleteMemo = async (memoId: string) => {
+    // TODO: Implement API call to delete memo
+    console.log('Deleting memo:', memoId);
+    // Mock API call
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   };
 
   return (
@@ -42,76 +154,162 @@ export default function ContractsPage() {
         </div>
         <BreadcrumbNav items={BREADCRUMB_ITEMS} variant="section" />
       </div>
-      <div className="p-4">
-        <Card className="overflow-hidden rounded-lg border shadow-sm">
-          <CardHeader className="flex items-start gap-4">
-            <div className="flex items-center gap-4">
-              <Avatar size="lg">
-                {/* If you have a real avatar URL, pass it to AvatarImage */}
-                <AvatarImage src="/file.svg" alt={MOCK_MEMBER.name} />
-                <AvatarFallback>
-                  {MOCK_MEMBER.name
-                    .split(' ')
-                    .map((s) => s[0])
-                    .join('')}
-                </AvatarFallback>
-              </Avatar>
 
-              <div className="min-w-0">
-                <CardTitle className="text-lg">
-                  {MOCK_MEMBER.name} <span className="text-base font-normal">ヤマダタロウ</span>
-                </CardTitle>
-                <CardDescription className="text-foreground flex items-center gap-2">
-                  <span className="text-sm">性別：{MOCK_MEMBER.gender}</span>
-                  <span className="text-sm">生年月日：{MOCK_MEMBER.birthday}</span>
-                </CardDescription>
-                <div className="text-muted-foreground text-sm">{MOCK_MEMBER.id}</div>
-
-                {/* <div className="mt-3 flex flex-wrap items-center gap-2">
-                  <Badge>{MOCK_MEMBER.membership}</Badge>
-                  <Badge variant="outline">{MOCK_MEMBER.status}</Badge>
-                </div> */}
+      {/* Header */}
+      <div className="bg-card border-b p-4">
+        <Card>
+          <CardHeader>
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-4">
+                <Avatar className="size-16">
+                  <AvatarImage src={member.ekyc?.photoUrl} alt={member.basicInfo.nameKanji} />
+                  <AvatarFallback>
+                    {member.basicInfo.nameKanji
+                      .split(' ')
+                      .map((s) => s[0])
+                      .join('')}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <CardTitle className="text-xl">{member.basicInfo.nameKanji}</CardTitle>
+                    <span className="text-muted-foreground text-base font-normal">
+                      {member.basicInfo.nameKana}
+                    </span>
+                  </div>
+                  <div className="mt-2 flex items-center gap-2">
+                    <Badge variant={STATUS_VARIANTS[member.profile.status]}>
+                      {statusLabels[member.profile.status]}
+                    </Badge>
+                    <Badge variant="outline" className="flex items-center gap-1">
+                      <Building2 className="size-3" />
+                      {member.profile.brand === Brand.FIT365 ? 'FIT365' : 'JOYFIT'}
+                    </Badge>
+                    <span className="text-muted-foreground text-sm">
+                      {member.profile.storeName}
+                    </span>
+                  </div>
+                  <div className="text-muted-foreground mt-1 text-sm">
+                    会員番号: {member.basicInfo.memberNumber}
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={() => navigate('/members')}>
+                  <ArrowLeft className="mr-2 size-4" />
+                  一覧に戻る
+                </Button>
+                <Button variant="outline" size="sm" onClick={handlePrint}>
+                  <Printer className="mr-2 size-4" />
+                  印刷
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleAddMemo}>
+                  <MessageSquare className="mr-2 size-4" />
+                  メモ追加
+                </Button>
+                <Button size="sm" onClick={handleEdit}>
+                  <Edit className="mr-2 size-4" />
+                  編集
+                </Button>
               </div>
             </div>
-
-            {/* <CardAction>
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm">
-                  <Edit className="size-4" /> 編集
-                </Button>
-                <Button size="sm">
-                  <Mail className="size-4" /> メッセージ
-                </Button>
-              </div>
-            </CardAction> */}
           </CardHeader>
+          <CardContent className="space-y-4">
+            {/* Alert Area */}
+            {(hasUnpaid || contractRenewalSoon) && (
+              <Alert variant={hasUnpaid ? 'destructive' : 'default'}>
+                <AlertOctagon className="size-4" />
+                <AlertTitle>アラート</AlertTitle>
+                <AlertDescription>
+                  {hasUnpaid && '未納金があります。'}
+                  {contractRenewalSoon && '契約更新が間近です。'}
+                </AlertDescription>
+              </Alert>
+            )}
 
-          <CardContent>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
-              <div className="space-y-2">
-                <p className="text-base font-medium">会員ステータス</p>
-                <p className="break-all">
-                  <Badge variant="secondary">{MOCK_MEMBER.status}</Badge>
-                </p>
-              </div>
-              <div className="space-y-2">
-                <p className="text-base font-medium">所属店舗</p>
-                <p>{MOCK_MEMBER.membership}</p>
-              </div>
-              <div className="space-y-2">
-                <p className="text-base font-medium">主契約</p>
-                <p>{MOCK_MEMBER.contracts}</p>
-              </div>
-              <div className="space-y-2">
-                <p className="text-base font-medium">当月の入館回数</p>
-                <p>{MOCK_MEMBER.online}</p>
-              </div>
+            {/* Quick Action Buttons */}
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" size="sm" onClick={handleChangeMainContract}>
+                主契約変更
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleSuspend}>
+                休会処理
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleWithdraw}>
+                退会処理
+              </Button>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <MemberContracts />
+      {/* Tabs */}
+      <div className="flex-1 overflow-auto p-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-9">
+            <TabsTrigger value="basic">基本情報</TabsTrigger>
+            <TabsTrigger value="contracts">契約情報</TabsTrigger>
+            <TabsTrigger value="points">ポイント</TabsTrigger>
+            <TabsTrigger value="usage">利用履歴</TabsTrigger>
+            <TabsTrigger value="training">トレーニング記録</TabsTrigger>
+            <TabsTrigger value="service">サービス利用</TabsTrigger>
+            <TabsTrigger value="communications">コミュニケーション</TabsTrigger>
+            <TabsTrigger value="history">変更履歴</TabsTrigger>
+            <TabsTrigger value="relationships">関係性</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="basic" className="mt-4">
+            <BasicInfoTab memberId={memberId} />
+          </TabsContent>
+
+          <TabsContent value="contracts" className="mt-4">
+            <ContractsTab memberId={memberId} />
+          </TabsContent>
+
+          <TabsContent value="points" className="mt-4">
+            <PointsTab memberId={memberId} />
+          </TabsContent>
+
+          <TabsContent value="usage" className="mt-4">
+            <UsageHistoryTab memberId={memberId} />
+          </TabsContent>
+
+          <TabsContent value="training" className="mt-4">
+            <TrainingRecordsTab memberId={memberId} />
+          </TabsContent>
+
+          <TabsContent value="service" className="mt-4">
+            <ServiceUsageTab memberId={memberId} />
+          </TabsContent>
+
+          <TabsContent value="communications" className="mt-4">
+            <CommunicationsTab memberId={memberId} />
+          </TabsContent>
+
+          <TabsContent value="history" className="mt-4">
+            <ChangeHistoryTab memberId={memberId} />
+          </TabsContent>
+
+          <TabsContent value="relationships" className="mt-4">
+            <RelationshipsTab memberId={memberId} />
+          </TabsContent>
+        </Tabs>
+      </div>
+
+      {/* Modals */}
+      <EditMemberModal
+        open={showEditModal}
+        onOpenChange={setShowEditModal}
+        member={member}
+        onSave={handleSaveMember}
+      />
+      <MemoModal
+        open={showMemoModal}
+        onOpenChange={setShowMemoModal}
+        onSave={handleSaveMemo}
+        onDelete={handleDeleteMemo}
+      />
+      <PrintModal open={showPrintModal} onOpenChange={setShowPrintModal} member={member} />
     </div>
   );
 }

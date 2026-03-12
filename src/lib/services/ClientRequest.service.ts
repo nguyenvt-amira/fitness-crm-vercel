@@ -85,7 +85,7 @@ export default class ClientRequestService {
         reject = rej;
       });
       const cookies = new Cookies();
-      const sessionResponse = (await Auth.authControllerRefresh({
+      const sessionResponse = (await Auth.postAuthRefresh({
         headers: {
           Authorization: request.headers.get('Authorization') as string,
         },

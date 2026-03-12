@@ -1,4 +1,4 @@
-import { GetMembersData } from '@/lib/api';
+import { GetCrmMembersData } from '@/lib/api';
 
 export const MEMBER_COLUMNS = [
   { id: 'id', label: '利用者ID', sortable: true },
@@ -36,10 +36,10 @@ export const VISIT_HISTORY_OPTIONS = [
   { label: '3ヶ月以上なし', value: 'over_3_months' },
 ];
 
-export const INITIAL_FILTERS: NonNullable<GetMembersData['query']> = {
-  keyword: '',
-  storeId: 'all',
-  memberType: 'all',
-  status: 'all',
-  lastVisitDate: 'all',
+export const INITIAL_FILTERS: Partial<NonNullable<GetCrmMembersData['query']>> = {
+  search: undefined,
+  storeId: undefined,
+  memberType: undefined,
+  status: undefined,
+  lastVisitDays: undefined,
 };

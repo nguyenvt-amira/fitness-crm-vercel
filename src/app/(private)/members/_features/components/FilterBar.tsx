@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { GetMembersData } from '@/lib/api';
+import { GetCrmMembersData } from '@/lib/api';
 
 import {
   MEMBER_TYPE_OPTIONS,
@@ -23,7 +23,7 @@ import {
 } from '../constants';
 import { INITIAL_FILTERS } from '../constants';
 
-type MemberFilters = NonNullable<GetMembersData['query']>;
+type MemberFilters = NonNullable<GetCrmMembersData['query']>;
 
 interface FilterBarProps {
   filters: MemberFilters;
@@ -34,8 +34,8 @@ export function FilterBar({ filters, setFilters }: FilterBarProps) {
   const [searchKey, setSearchKey] = useState<string>('');
 
   const handleFilterChange = useCallback(
-    (key: keyof MemberFilters, value: string) => {
-      setFilters((prev) => ({ ...prev, [key]: value }));
+    (key: keyof MemberFilters, value: string | number | string[] | undefined) => {
+      setFilters((prev) => ({ ...prev, [key]: value as any }));
     },
     [setFilters],
   );
@@ -46,7 +46,7 @@ export function FilterBar({ filters, setFilters }: FilterBarProps) {
   };
 
   const handleSearch = useCallback(() => {
-    handleFilterChange('keyword', searchKey);
+    handleFilterChange('search', searchKey);
   }, [searchKey, handleFilterChange]);
 
   return (
@@ -72,29 +72,29 @@ export function FilterBar({ filters, setFilters }: FilterBarProps) {
       <div className="flex items-center gap-2">
         <FilterSelect
           label="店舗"
-          value={filters.storeId || 'all'}
-          onValueChange={(val: string) => handleFilterChange('storeId', val)}
+          value={Array.isArray(filters.storeId) && filters.storeId.length > 0 ? filters.storeId[0] : 'all'}
+          onValueChange={(val: string) => handleFilterChange('storeId', val === 'all' ? undefined : [val])}
           options={STORE_OPTIONS}
         />
 
         <FilterSelect
           label="会員種別"
-          value={filters.memberType}
-          onValueChange={(val: string) => handleFilterChange('memberType', val)}
+          value={Array.isArray(filters.memberType) && filters.memberType.length > 0 ? filters.memberType[0] : 'all'}
+          onValueChange={(val: string) => handleFilterChange('memberType', val === 'all' ? undefined : [val as any])}
           options={MEMBER_TYPE_OPTIONS}
         />
 
         <FilterSelect
           label="ステータス"
-          value={filters.status || 'all'}
-          onValueChange={(val: string) => handleFilterChange('status', val)}
+          value={Array.isArray(filters.status) && filters.status.length > 0 ? filters.status[0] : 'all'}
+          onValueChange={(val: string) => handleFilterChange('status', val === 'all' ? undefined : [val as any])}
           options={STATUS_OPTIONS}
         />
 
         <FilterSelect
           label="入館履歴"
-          value={filters.lastVisitDate || 'all'}
-          onValueChange={(val: string) => handleFilterChange('lastVisitDate', val)}
+          value={filters.lastVisitDays?.toString() || 'all'}
+          onValueChange={(val: string) => handleFilterChange('lastVisitDays', val === 'all' ? undefined : parseInt(val, 10))}
           options={VISIT_HISTORY_OPTIONS}
         />
 

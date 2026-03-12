@@ -39,6 +39,7 @@ interface DataTableProps<TData, TValue> {
     filterRows?: number;
     totalRowsFetched?: number;
     className?: string;
+    onRowClick?: (row: TData) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -54,7 +55,8 @@ export function DataTable<TData, TValue>({
     totalRows = 0,
     filterRows = 0,
     totalRowsFetched = 0,
-    className,  
+    className,
+    onRowClick,
 }: Readonly<DataTableProps<TData, TValue>>) {
     const table = useReactTable({
         data,
@@ -104,6 +106,8 @@ export function DataTable<TData, TValue>({
                                 <TableRow
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
+                                    onClick={() => onRowClick?.(row.original)}
+                                    className={onRowClick ? "cursor-pointer" : ""}
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
@@ -127,13 +131,19 @@ export function DataTable<TData, TValue>({
     
     // Default mode (infinite scroll)
     return (
-        <div className={cn("overflow-hidden rounded-md border", className)}>
+        <div className={cn("overflow-hidden ", className)}>
             <Table
                 ref={tableRef}
-                onScroll={onScroll}>
-                <TableHeader>
+                onScroll={onScroll}
+                containerClassName="max-h-[calc(100vh-361px)] rounded-md border">
+                <TableHeader className={cn("sticky top-0 z-20 bg-background")}>
                     {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
+                        <TableRow key={headerGroup.id}
+                        className={cn(
+                            "bg-neutral-100 hover:bg-neutral-200",
+                            "[&>*]:border-b",
+                          )}
+                        >
                             {headerGroup.headers.map((header) => {
                                 return (
                                     <TableHead key={header.id}>
@@ -155,6 +165,8 @@ export function DataTable<TData, TValue>({
                             <TableRow
                                 key={row.id}
                                 data-state={row.getIsSelected() && "selected"}
+                                onClick={() => onRowClick?.(row.original)}
+                                className={onRowClick ? "cursor-pointer" : ""}
                             >
                                 {row.getVisibleCells().map((cell) => (
                                     <TableCell key={cell.id}>
