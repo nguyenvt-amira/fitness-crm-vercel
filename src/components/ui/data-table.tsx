@@ -5,6 +5,8 @@ import {
     flexRender,
     getCoreRowModel,
     useReactTable,
+    VisibilityState,
+    Table as TableInstance,
 } from "@tanstack/react-table"
 
 import {
@@ -40,6 +42,7 @@ interface DataTableProps<TData, TValue> {
     totalRowsFetched?: number;
     className?: string;
     onRowClick?: (row: TData) => void;
+    onTableReady?: (table: TableInstance<TData>) => void
 }
 
 export function DataTable<TData, TValue>({
@@ -57,11 +60,18 @@ export function DataTable<TData, TValue>({
     totalRowsFetched = 0,
     className,
     onRowClick,
+    onTableReady
 }: Readonly<DataTableProps<TData, TValue>>) {
+    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+    
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
+        onColumnVisibilityChange: setColumnVisibility, 
+        state: {
+            columnVisibility,
+        },
     })
     const tableRef = React.useRef<HTMLTableElement>(null);
     const onScroll = React.useCallback(
@@ -77,6 +87,13 @@ export function DataTable<TData, TValue>({
         [fetchNextPage, isFetching, filterRows, totalRowsFetched],
     );
     
+
+    React.useEffect(() => {
+        if (onTableReady) {
+            onTableReady(table)
+        }
+    }, [table, onTableReady])
+
     // Simple table mode (no pagination)
     if (variant === 'simple') {
         return (
