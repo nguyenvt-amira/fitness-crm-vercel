@@ -3,6 +3,7 @@
 import { ReactNode } from 'react';
 
 import '@/app/globals.css';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 import { Toaster } from '@/components/ui/sonner';
 
@@ -14,9 +15,11 @@ interface RootProviderProps {
 
 export const RootProvider = ({ children }: RootProviderProps) => {
   return (
-    <ReactQueryProvider>
-      <Toaster />
-      {children}
-    </ReactQueryProvider>
+    <NuqsAdapter>
+      <ReactQueryProvider>
+        <Toaster />
+        {children}
+      </ReactQueryProvider>
+    </NuqsAdapter>
   );
 };

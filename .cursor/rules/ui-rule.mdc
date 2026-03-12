@@ -1,0 +1,12 @@
+---
+alwaysApply: true
+---
+
+## UI Component Rules
+
+- Use shadcn components for building UI interfaces
+- Use lucide-react for all icon implementations
+- Use the navigate function from '@/lib/routes/routes.util' for all navigation links
+- Prefer colors defined in /src/app/globals.css or /src/styles/tailwind.theme.css for consistency
+- Maintain consistent spacing using TailwindCSS utility classes
+- Ensure components are responsive: min-768px
