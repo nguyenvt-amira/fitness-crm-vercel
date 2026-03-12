@@ -73,28 +73,10 @@ export function MembersFilters({
   onExport,
   onBulkEmail,
 }: MembersFiltersProps) {
-  const {
-    filters,
-    searchInput,
-    setSearchInput,
-    updateFilter,
-    handleSortChange,
-    handleSearchExecute,
-    hasActiveFilters,
-    clearFilters,
-  } = useMembersFiltersContext();
+  const { filters, searchInput, setSearchInput, updateFilter, hasActiveFilters, clearFilters } =
+    useMembersFiltersContext();
 
-  const {
-    memberType,
-    status,
-    brand,
-    storeId,
-    contractPlanId,
-    lastVisitDays,
-    hasUnpaid,
-    sortBy,
-    sortOrder,
-  } = filters;
+  const { memberType, status, brand, storeId, contractPlanId, lastVisitDays, hasUnpaid } = filters;
   return (
     <div className="space-y-2">
       {/* Search Bar and Filters */}
@@ -108,19 +90,11 @@ export function MembersFilters({
                 placeholder="会員番号、氏名、電話番号、メールで検索"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleSearchExecute();
-                  }
-                }}
                 className="h-9 rounded-lg pl-9"
               />
             </div>
             <Button variant="outline" size="icon" onClick={onQRScan} title="QRコード読み取り">
               <QrCode className="size-4" />
-            </Button>
-            <Button variant="outline" onClick={handleSearchExecute}>
-              検索実行
             </Button>
           </div>
 
@@ -129,14 +103,14 @@ export function MembersFilters({
             {/* 会員種別 */}
             <Select
               value={memberType.length > 0 ? memberType[0] : undefined}
-              onValueChange={(value) => {
-                const newTypes = memberType.includes(value as MemberType)
-                  ? memberType.filter((t) => t !== value)
-                  : [...memberType, value as MemberType];
-                updateFilter('memberType', newTypes);
+              onValueChange={(value: MemberType) => {
+                // const newTypes = memberType.includes(value as MemberType)
+                //   ? memberType.filter((t) => t !== value)
+                //   : [...memberType, value as MemberType];
+                updateFilter('memberType', [value]);
               }}
             >
-              <SelectTrigger className="h-9 w-[178px] rounded-lg">
+              <SelectTrigger className="h-9 w-fit rounded-lg">
                 <div className="flex items-center gap-1.5">
                   <span className="text-muted-foreground text-sm">会員種別:</span>
                   <SelectValue placeholder="すべて">
@@ -156,14 +130,14 @@ export function MembersFilters({
             {/* 会員ステータス */}
             <Select
               value={status.length > 0 ? status[0] : undefined}
-              onValueChange={(value) => {
-                const newStatus = status.includes(value as MemberStatus)
-                  ? status.filter((s) => s !== value)
-                  : [...status, value as MemberStatus];
-                updateFilter('status', newStatus);
+              onValueChange={(value: MemberStatus) => {
+                // const newStatus = status.includes(value as MemberStatus)
+                //   ? status.filter((s) => s !== value)
+                //   : [...status, value as MemberStatus];
+                updateFilter('status', [value]);
               }}
             >
-              <SelectTrigger className="h-9 w-[178px] rounded-lg">
+              <SelectTrigger className="h-9 w-fit rounded-lg">
                 <div className="flex items-center gap-1.5">
                   <span className="text-muted-foreground text-sm">ステータス:</span>
                   <SelectValue placeholder="すべて">
@@ -184,16 +158,16 @@ export function MembersFilters({
             <Select
               value={storeId.length > 0 ? storeId[0] : undefined}
               onValueChange={(value) => {
-                const newStores = storeId.includes(value)
-                  ? storeId.filter((s) => s !== value)
-                  : [...storeId, value];
-                updateFilter('storeId', newStores);
+                // const newStores = storeId.includes(value)
+                //   ? storeId.filter((s) => s !== value)
+                //   : [...storeId, value];
+                updateFilter('storeId', [value]);
               }}
             >
-              <SelectTrigger className="h-9 w-[178px] rounded-lg">
+              <SelectTrigger className="h-9 w-fit rounded-lg">
                 <div className="flex items-center gap-1.5">
                   <span className="text-muted-foreground text-sm">店舗:</span>
-                  <SelectValue placeholder="Fit365八潮店">
+                  <SelectValue placeholder="すべて">
                     {storeId.length > 0 ? MOCK_STORES.find((s) => s.id === storeId[0])?.name : null}
                   </SelectValue>
                 </div>
@@ -210,14 +184,14 @@ export function MembersFilters({
             {/* ブランド */}
             <Select
               value={brand.length > 0 ? brand[0] : undefined}
-              onValueChange={(value) => {
-                const newBrand = brand.includes(value as Brand)
-                  ? brand.filter((b) => b !== value)
-                  : [...brand, value as Brand];
-                updateFilter('brand', newBrand);
+              onValueChange={(value: Brand) => {
+                // const newBrand = brand.includes(value as Brand)
+                //   ? brand.filter((b) => b !== value)
+                //   : [...brand, value as Brand];
+                updateFilter('brand', [value]);
               }}
             >
-              <SelectTrigger className="h-9 w-[178px] rounded-lg">
+              <SelectTrigger className="h-9 w-fit rounded-lg">
                 <div className="flex items-center gap-1.5">
                   <span className="text-muted-foreground text-sm">ブランド:</span>
                   <SelectValue placeholder="すべて">
@@ -238,13 +212,13 @@ export function MembersFilters({
             <Select
               value={contractPlanId.length > 0 ? contractPlanId[0] : undefined}
               onValueChange={(value) => {
-                const newPlans = contractPlanId.includes(value)
-                  ? contractPlanId.filter((p) => p !== value)
-                  : [...contractPlanId, value];
-                updateFilter('contractPlanId', newPlans);
+                // const newPlans = contractPlanId.includes(value)
+                //   ? contractPlanId.filter((p) => p !== value)
+                //   : [...contractPlanId, value];
+                updateFilter('contractPlanId', [value]);
               }}
             >
-              <SelectTrigger className="h-9 w-[178px] rounded-lg">
+              <SelectTrigger className="h-9 w-fit rounded-lg">
                 <div className="flex items-center gap-1.5">
                   <span className="text-muted-foreground text-sm">契約プラン:</span>
                   <SelectValue placeholder="すべて">
@@ -270,7 +244,7 @@ export function MembersFilters({
                 updateFilter('lastVisitDays', value ? Number(value) : null);
               }}
             >
-              <SelectTrigger className="h-9 w-[178px] rounded-lg">
+              <SelectTrigger className="h-9 w-fit rounded-lg">
                 <div className="flex items-center gap-1.5">
                   <span className="text-muted-foreground text-sm">最終来館日:</span>
                   <SelectValue placeholder="すべて">
@@ -302,7 +276,7 @@ export function MembersFilters({
                 }
               }}
             >
-              <SelectTrigger className="h-9 w-[178px] rounded-lg">
+              <SelectTrigger className="h-9 w-fit rounded-lg">
                 <div className="flex items-center gap-1.5">
                   <span className="text-muted-foreground text-sm">未納有無:</span>
                   <SelectValue placeholder="すべて">
@@ -313,28 +287,6 @@ export function MembersFilters({
               <SelectContent>
                 <SelectItem value="yes">あり</SelectItem>
                 <SelectItem value="no">なし</SelectItem>
-              </SelectContent>
-            </Select>
-
-            {/* ソート選択 */}
-            <Select
-              value={`${sortBy}_${sortOrder}`}
-              onValueChange={(value) => {
-                const [field, order] = value.split('_') as [string, 'asc' | 'desc'];
-                handleSortChange(field, order);
-              }}
-            >
-              <SelectTrigger className="h-9 w-[180px] rounded-lg">
-                <SelectValue placeholder="ソート" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="member_number_asc">会員番号（昇順）</SelectItem>
-                <SelectItem value="member_number_desc">会員番号（降順）</SelectItem>
-                <SelectItem value="joined_at_desc">入会日（新しい順）</SelectItem>
-                <SelectItem value="joined_at_asc">入会日（古い順）</SelectItem>
-                <SelectItem value="last_visit_desc">最終来館日（新しい順）</SelectItem>
-                <SelectItem value="last_visit_asc">最終来館日（古い順）</SelectItem>
-                <SelectItem value="name_asc">氏名（五十音順）</SelectItem>
               </SelectContent>
             </Select>
 

@@ -1,7 +1,15 @@
 'use client';
 
 import type { ColumnDef } from '@tanstack/react-table';
-import { AlertOctagon, Edit, MessageSquare, MoreHorizontal } from 'lucide-react';
+import {
+  AlertOctagon,
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
+  Edit,
+  MessageSquare,
+  MoreHorizontal,
+} from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -16,6 +24,49 @@ import {
 import type { GetCrmMembersResponse } from '@/lib/api/types.gen';
 
 import { Brand, MemberStatus, MemberType } from '@/types/member.type';
+
+/** API sort field names */
+const SORT_FIELD_MEMBER_NUMBER = 'member_number';
+const SORT_FIELD_JOINED_AT = 'joined_at';
+const SORT_FIELD_LAST_VISIT = 'last_visit';
+const SORT_FIELD_NAME = 'name';
+
+interface SortableHeaderProps {
+  label: string;
+  sortKey: string;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc';
+  onSort: (field: string, order: 'asc' | 'desc') => void;
+}
+
+function SortableHeader({ label, sortKey, sortBy, sortOrder, onSort }: SortableHeaderProps) {
+  const isActive = sortBy === sortKey;
+  const handleClick = () => {
+    if (isActive) {
+      onSort(sortKey, sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      onSort(sortKey, 'asc');
+    }
+  };
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      className="hover:text-foreground inline-flex items-center gap-1.5"
+    >
+      <span>{label}</span>
+      {isActive ? (
+        sortOrder === 'asc' ? (
+          <ArrowUp className="text-muted-foreground size-4" />
+        ) : (
+          <ArrowDown className="text-muted-foreground size-4" />
+        )
+      ) : (
+        <ArrowUpDown className="text-muted-foreground size-4 opacity-50" />
+      )}
+    </button>
+  );
+}
 
 const MEMBER_TYPE_LABELS: Record<MemberType, string> = {
   [MemberType.REGULAR]: '通常',
@@ -42,12 +93,18 @@ interface MembersTableColumnsProps {
   onMemberClick: (memberId: string) => void;
   selectedMembers: string[];
   onSelectionChange: (ids: string[]) => void;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc';
+  onSortChange: (field: string, order: 'asc' | 'desc') => void;
 }
 
 export function MembersTableColumns({
   onMemberClick,
   selectedMembers,
   onSelectionChange,
+  sortBy,
+  sortOrder,
+  onSortChange,
 }: MembersTableColumnsProps): ColumnDef<NonNullable<GetCrmMembersResponse['members']>[0]>[] {
   return [
     {
@@ -88,10 +145,19 @@ export function MembersTableColumns({
         );
       },
       enableSorting: false,
+      enableHiding: false,
     },
     {
       accessorKey: 'memberNumber',
-      header: '会員番号',
+      header: () => (
+        <SortableHeader
+          label="会員番号"
+          sortKey={SORT_FIELD_MEMBER_NUMBER}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSort={onSortChange}
+        />
+      ),
       cell: ({ row }) => (
         <button
           onClick={() => row.original.id && onMemberClick(row.original.id)}
@@ -103,7 +169,15 @@ export function MembersTableColumns({
     },
     {
       accessorKey: 'nameKanji',
-      header: '氏名',
+      header: () => (
+        <SortableHeader
+          label="氏名"
+          sortKey={SORT_FIELD_NAME}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSort={onSortChange}
+        />
+      ),
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           {row.original.hasUnpaid && <AlertOctagon className="text-destructive size-4" />}
@@ -162,7 +236,15 @@ export function MembersTableColumns({
     },
     {
       accessorKey: 'joinedAt',
-      header: '入会日',
+      header: () => (
+        <SortableHeader
+          label="入会日"
+          sortKey={SORT_FIELD_JOINED_AT}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSort={onSortChange}
+        />
+      ),
       cell: ({ row }) => {
         if (!row.original.joinedAt) return '-';
         const date = new Date(row.original.joinedAt);
@@ -171,7 +253,15 @@ export function MembersTableColumns({
     },
     {
       accessorKey: 'lastVisitDate',
-      header: '最終来館日',
+      header: () => (
+        <SortableHeader
+          label="最終来館日"
+          sortKey={SORT_FIELD_LAST_VISIT}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSort={onSortChange}
+        />
+      ),
       cell: ({ row }) => {
         if (!row.original.lastVisitDate) return '-';
         const date = new Date(row.original.lastVisitDate);
@@ -215,6 +305,7 @@ export function MembersTableColumns({
           </DropdownMenu>
         );
       },
+      enableHiding: false,
     },
   ];
 }

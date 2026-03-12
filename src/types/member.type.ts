@@ -506,6 +506,10 @@ export interface GetMembersResponse {
     joinedAt: string;
     lastVisitDate?: string;
     hasUnpaid: boolean;
+    phone?: string;
+    email?: string;
+    storeId: string;
+    contractPlanId: string;
   }>;
   pagination: {
     page: number;

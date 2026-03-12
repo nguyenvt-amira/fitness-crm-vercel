@@ -24,19 +24,6 @@ export type MembersFilters = {
   sortOrder: 'asc' | 'desc';
 };
 
-const DEFAULT_FILTERS: MembersFilters = {
-  search: '',
-  memberType: [],
-  status: [],
-  brand: [],
-  storeId: [],
-  contractPlanId: [],
-  lastVisitDays: null,
-  hasUnpaid: null,
-  sortBy: 'member_number',
-  sortOrder: 'asc',
-};
-
 export function useMembersFilters() {
   const [searchInput, setSearchInput] = useState('');
 

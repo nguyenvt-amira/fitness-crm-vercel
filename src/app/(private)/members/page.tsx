@@ -3,12 +3,19 @@
 import { Suspense, useMemo, useState } from 'react';
 
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { Table as TableInstance } from '@tanstack/react-table';
 import type { ColumnDef } from '@tanstack/react-table';
 import { Download, User } from 'lucide-react';
 
 import { BreadcrumbNav } from '@/components/common/breadcrumb-nav';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 import { getCrmMembersInfiniteOptions } from '@/lib/api/@tanstack/react-query.gen';
 import type { GetCrmMembersResponse } from '@/lib/api/types.gen';
@@ -23,10 +30,12 @@ const BREADCRUMB_ITEMS = [{ url: '/', label: '会員管理' }, { label: '会員�
 function MembersPageContent() {
   const [limit] = useState(50);
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+  const [table, setTable] = useState<TableInstance<any> | null>(null);
 
   // Use custom hook for filters/sort management
   const filtersHook = useMembersFilters();
-  const { queryParams } = filtersHook;
+  const { queryParams, filters, handleSortChange } = filtersHook;
+  const { sortBy, sortOrder } = filters;
 
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage } = useInfiniteQuery({
     ...getCrmMembersInfiniteOptions({
@@ -62,6 +71,9 @@ function MembersPageContent() {
       },
       selectedMembers,
       onSelectionChange: setSelectedMembers,
+      sortBy,
+      sortOrder,
+      onSortChange: handleSortChange,
     });
 
   const handleExport = () => {
@@ -105,8 +117,33 @@ function MembersPageContent() {
         </MembersFiltersProvider>
 
         {/* Total Count */}
-        <div className="border-t px-4 py-4">
+        <div className="flex justify-between border-t px-4 py-4">
           <p className="text-lg font-medium">総件数: {total}人</p>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Columns
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                ?.getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         <div className="flex-1">
@@ -126,6 +163,7 @@ function MembersPageContent() {
                 window.location.href = `/members/${row.id}`;
               }
             }}
+            onTableReady={setTable}
           />
         </div>
       </div>
