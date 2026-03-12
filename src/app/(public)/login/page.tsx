@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { useSearchParams } from 'next/navigation';
@@ -15,15 +15,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 
-import { authControllerLoginMutation } from '@/lib/api/@tanstack/react-query.gen';
+import { postAuthLoginMutation } from '@/lib/api/@tanstack/react-query.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
 import { CookieNames } from '@/types/global.enum';
 
 import { type LoginSchema, loginSchema } from './_schema/login.schema';
 
-export default function Page() {
-  const [loading, setLoading] = useState(false);
+function LoginForm() {
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get('redirect');
 
@@ -37,17 +36,18 @@ export default function Page() {
     mode: 'onChange',
   });
 
-  const baseMutationOptions = authControllerLoginMutation();
   const mutation = useMutation({
-    ...baseMutationOptions,
-    onMutate: () => setLoading(true),
+    ...postAuthLoginMutation(),
     onSuccess: (data) => {
       // Save response to cookies
       const cookies = new Cookies();
-      const token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30';
+      const token = data.token?.access_token;
+      if (!token || !data.token) {
+        toast.error('ログインに失敗しました: トークンが取得できませんでした');
+        return;
+      }
       const expiration = getTokenExpiration(token);
-      cookies.set(CookieNames.Session, JSON.stringify({ token: token }), {
+      cookies.set(CookieNames.Session, JSON.stringify({ token: data.token }), {
         path: '/',
         ...(expiration ? { expires: expiration } : {}),
       });
@@ -67,39 +67,18 @@ export default function Page() {
       window.location.href = destination;
     },
     onError: (err: any) => {
-      //TODO: / --- REMOVE ---
-      const cookies = new Cookies();
-      const token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30';
-      const expiration = getTokenExpiration(token);
-      cookies.set(CookieNames.Session, JSON.stringify({ token: token }), {
-        path: '/',
-        ...(expiration ? { expires: expiration } : {}),
-      });
-
-      // Show success toast
-      toast.success('ログインに成功しました！');
-
-      // Extract path only from redirect URL (remove query params)
-      let destination = navigate('/');
-
-      if (redirectUrl) {
-        const url = new URL(redirectUrl, window.location.origin);
-        destination = url.pathname;
-      }
-
-      // Redirect to the original page or home
-      window.location.href = destination;
-      return;
-      setLoading(false);
       const msg = err?.message || 'ログインに失敗しました';
       toast.error(msg);
     },
   });
 
   async function onSubmit(data: LoginSchema) {
-    // API's login mutation expects only email (passwordless flow).
-    mutation.mutate({ body: { email: data.email } });
+    mutation.mutate({
+      body: {
+        email: data.email,
+        password: data.password,
+      },
+    });
   }
 
   return (
@@ -138,13 +117,34 @@ export default function Page() {
             </div>
 
             <div className="pt-2">
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? '送信中...' : 'ログイン'}
+              <Button type="submit" className="w-full" disabled={mutation.isPending}>
+                {mutation.isPending ? '送信中...' : 'ログイン'}
               </Button>
             </div>
           </form>
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-[calc(100vh-80px)] items-center justify-center p-4">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle className="text-center">ログイン</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-muted-foreground text-center">読み込み中...</div>
+            </CardContent>
+          </Card>
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }

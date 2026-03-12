@@ -1,9 +1,9 @@
 import { getMembers } from '@/repositories/members/member-repository';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
-import { GetMembersData } from '@/lib/api';
+import { GetCrmMembersData } from '@/lib/api';
 
-export const useGetListMembers = (param: { filters: NonNullable<GetMembersData['query']> }) => {
+export const useGetListMembers = (param: { filters: NonNullable<GetCrmMembersData['query']> }) => {
   const { filters } = param;
 
   return useQuery({

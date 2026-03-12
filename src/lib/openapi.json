@@ -1,0 +1,1310 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Fitness CRM API",
+    "version": "1.0.0",
+    "description": "API documentation for Fitness CRM system"
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User login",
+        "description": "Authenticate user and get access token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Refresh access token",
+        "description": "Refresh access token using refresh token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token refreshed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshTokenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or expired refresh token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members": {
+      "get": {
+        "tags": ["Members"],
+        "summary": "Get members list",
+        "description": "Retrieve paginated list of members with filters and sorting",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 50
+            },
+            "description": "Items per page"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search by member number, name, phone, or email"
+          },
+          {
+            "name": "memberType",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["regular", "family", "corporate", "company_discount"]
+              }
+            },
+            "description": "Filter by member type"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["active", "suspended", "withdrawn", "force_withdrawn"]
+              }
+            },
+            "description": "Filter by status"
+          },
+          {
+            "name": "brand",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["joyfit", "fit365"]
+              }
+            },
+            "description": "Filter by brand"
+          },
+          {
+            "name": "storeId",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filter by store ID"
+          },
+          {
+            "name": "contractPlanId",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filter by contract plan ID"
+          },
+          {
+            "name": "lastVisitDays",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "description": "Filter by last visit days (7=1週間以内, 30=1ヶ月以内, 90=3ヶ月以内, -1=3ヶ月以上)"
+            },
+            "description": "Filter by last visit date range"
+          },
+          {
+            "name": "hasUnpaid",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filter by unpaid status"
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["member_number", "joined_at", "last_visit", "name"],
+              "default": "member_number"
+            },
+            "description": "Sort field"
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            },
+            "description": "Sort order"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMembersResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}": {
+      "get": {
+        "tags": ["Members"],
+        "summary": "Get member detail",
+        "description": "Retrieve detailed information about a specific member",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Member ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMemberDetailResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/basic-info": {
+      "get": {
+        "tags": ["Members"],
+        "summary": "Get member basic info",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Members"],
+        "summary": "Update member basic info",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBasicInfoRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/contracts": {
+      "get": {
+        "tags": ["Members"],
+        "summary": "Get member contracts",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/points": {
+      "get": {
+        "tags": ["Members"],
+        "summary": "Get member points",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Crm"],
+        "summary": "POST /crm/members/{id}/points",
+        "description": "Auto-generated from src/app/api/crm/members/[id]/points/route.ts",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "id parameter"
+          }
+        ]
+      }
+    },
+    "/crm/members/{id}/points/adjust": {
+      "post": {
+        "tags": ["Members"],
+        "summary": "Adjust member points",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PointAdjustmentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/memos": {
+      "post": {
+        "tags": ["Members"],
+        "summary": "Create member memo",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMemoRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/crm/members/export": {
+      "post": {
+        "tags": ["Members"],
+        "summary": "Export members",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExportMembersRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/change-history": {
+      "get": {
+        "tags": ["Crm"],
+        "summary": "GET /crm/members/{id}/change-history",
+        "description": "Auto-generated from src/app/api/crm/members/[id]/change-history/route.ts",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "id parameter"
+          }
+        ]
+      }
+    },
+    "/crm/members/{id}/communications": {
+      "get": {
+        "tags": ["Crm"],
+        "summary": "GET /crm/members/{id}/communications",
+        "description": "Auto-generated from src/app/api/crm/members/[id]/communications/route.ts",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "id parameter"
+          }
+        ]
+      }
+    },
+    "/crm/members/{id}/health-info": {
+      "put": {
+        "tags": ["Crm"],
+        "summary": "PUT /crm/members/{id}/health-info",
+        "description": "Auto-generated from src/app/api/crm/members/[id]/health-info/route.ts",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "id parameter"
+          }
+        ]
+      }
+    },
+    "/crm/members/{id}/marketing-consent": {
+      "put": {
+        "tags": ["Crm"],
+        "summary": "PUT /crm/members/{id}/marketing-consent",
+        "description": "Auto-generated from src/app/api/crm/members/[id]/marketing-consent/route.ts",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "id parameter"
+          }
+        ]
+      }
+    },
+    "/crm/members/{id}/memos/{memoId}": {
+      "put": {
+        "tags": ["Crm"],
+        "summary": "PUT /crm/members/{id}/memos/{memoId}",
+        "description": "Auto-generated from src/app/api/crm/members/[id]/memos/[memoId]/route.ts",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "id parameter"
+          },
+          {
+            "name": "memoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "memoId parameter"
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Crm"],
+        "summary": "DELETE /crm/members/{id}/memos/{memoId}",
+        "description": "Auto-generated from src/app/api/crm/members/[id]/memos/[memoId]/route.ts",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "id parameter"
+          },
+          {
+            "name": "memoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "memoId parameter"
+          }
+        ]
+      }
+    },
+    "/crm/members/{id}/relationships": {
+      "get": {
+        "tags": ["Crm"],
+        "summary": "GET /crm/members/{id}/relationships",
+        "description": "Auto-generated from src/app/api/crm/members/[id]/relationships/route.ts",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "id parameter"
+          }
+        ]
+      }
+    },
+    "/crm/members/{id}/service-usage": {
+      "get": {
+        "tags": ["Crm"],
+        "summary": "GET /crm/members/{id}/service-usage",
+        "description": "Auto-generated from src/app/api/crm/members/[id]/service-usage/route.ts",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "id parameter"
+          }
+        ]
+      }
+    },
+    "/crm/members/{id}/training-records": {
+      "get": {
+        "tags": ["Crm"],
+        "summary": "GET /crm/members/{id}/training-records",
+        "description": "Auto-generated from src/app/api/crm/members/[id]/training-records/route.ts",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "id parameter"
+          }
+        ]
+      }
+    },
+    "/crm/members/{id}/usage-history": {
+      "get": {
+        "tags": ["Crm"],
+        "summary": "GET /crm/members/{id}/usage-history",
+        "description": "Auto-generated from src/app/api/crm/members/[id]/usage-history/route.ts",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "id parameter"
+          }
+        ]
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "tags": ["Openapi.json"],
+        "summary": "GET /openapi.json",
+        "description": "Auto-generated from src/app/api/openapi.json/route.ts",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "POST /auth/register",
+        "description": "Auto-generated from src/app/api/auth/register/route.ts",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "admin@example.com"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6,
+            "example": "password123"
+          }
+        }
+      },
+      "Token": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "Access Token"
+          },
+          "refresh_token": {
+            "type": "string",
+            "description": "Refresh Token"
+          },
+          "token_type": {
+            "type": "string",
+            "description": "Token Type",
+            "example": "Bearer"
+          },
+          "company_id": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Company Id"
+          }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "$ref": "#/components/schemas/Token"
+          }
+        }
+      },
+      "RefreshTokenRequest": {
+        "type": "object",
+        "required": ["refresh_token"],
+        "properties": {
+          "refresh_token": {
+            "type": "string",
+            "description": "Refresh token to get new access token"
+          }
+        }
+      },
+      "RefreshTokenResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "New access token"
+          },
+          "refresh_token": {
+            "type": "string",
+            "description": "New refresh token"
+          },
+          "token_type": {
+            "type": "string",
+            "description": "Token type (usually 'Bearer')"
+          },
+          "company_id": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Company ID"
+          }
+        }
+      },
+      "GetMembersResponse": {
+        "type": "object",
+        "properties": {
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemberListItem"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "MemberListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "memberNumber": {
+            "type": "string"
+          },
+          "nameKanji": {
+            "type": "string"
+          },
+          "nameKana": {
+            "type": "string"
+          },
+          "memberType": {
+            "type": "string",
+            "enum": ["regular", "family", "corporate", "company_discount"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "suspended", "withdrawn", "force_withdrawn"]
+          },
+          "storeName": {
+            "type": "string"
+          },
+          "brand": {
+            "type": "string",
+            "enum": ["joyfit", "fit365"]
+          },
+          "contractPlanName": {
+            "type": "string"
+          },
+          "joinedAt": {
+            "type": "string",
+            "format": "date"
+          },
+          "lastVisitDate": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "hasUnpaid": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer"
+          }
+        }
+      },
+      "GetMemberDetailResponse": {
+        "type": "object",
+        "properties": {
+          "member": {
+            "type": "object"
+          }
+        }
+      },
+      "UpdateBasicInfoRequest": {
+        "type": "object",
+        "properties": {
+          "nameKanji": {
+            "type": "string"
+          },
+          "nameKana": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      },
+      "PointAdjustmentRequest": {
+        "type": "object",
+        "required": ["type", "points", "reason"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["add", "subtract"]
+          },
+          "points": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 500
+          }
+        }
+      },
+      "CreateMemoRequest": {
+        "type": "object",
+        "required": ["type", "content"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["caution", "vip", "other"]
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        }
+      },
+      "ExportMembersRequest": {
+        "type": "object",
+        "required": ["format", "target", "fields"],
+        "properties": {
+          "format": {
+            "type": "string",
+            "enum": ["csv", "excel"]
+          },
+          "target": {
+            "type": "string",
+            "enum": ["selected", "filtered"]
+          },
+          "memberIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ]
+}

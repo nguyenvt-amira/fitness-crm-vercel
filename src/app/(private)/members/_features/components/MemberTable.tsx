@@ -76,7 +76,7 @@ function renderCellContent(member: MemberListItem, key: string) {
       return (
         <div className="flex items-center justify-center gap-1">
           {member.hasUnpaid && <AlertCircle className="h-4 w-4 text-red-500" />}
-          {member.name}
+          {member.nameKanji || '-'}
         </div>
       );
     case 'status':

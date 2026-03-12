@@ -1,7 +1,7 @@
 import { defaultPlugins, defineConfig } from '@hey-api/openapi-ts';
 
 export default defineConfig({
-  input: process.env.NEXT_PUBLIC_OPENAPI_GENERATOR_URL ?? './openapi.json',
+  input: './src/lib/openapi.json',
   output: {
     lint: 'eslint',
     format: 'prettier',

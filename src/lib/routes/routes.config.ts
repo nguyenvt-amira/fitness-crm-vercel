@@ -14,6 +14,12 @@ export const routes = {
     pattern: '/checkin',
     private: true,
   },
+  '/members': {
+    router: '/members',
+    filePath: '(private)/members',
+    pattern: '/members',
+    private: true,
+  },
   '/members/[id]': {
     router: (id: string | number) => `/members/${id}`,
     filePath: '(private)/members/[id]',
@@ -32,6 +38,12 @@ export const routes = {
     pattern: '/403',
     private: false,
   },
+  '/api-docs': {
+    router: '/api-docs',
+    filePath: '(public)/api-docs',
+    pattern: '/api-docs',
+    private: false,
+  },
   '/login': {
     router: '/login',
     filePath: '(public)/login',
@@ -44,9 +56,11 @@ export const routes = {
 export const routeKeys = [
   '/',
   '/checkin',
+  '/members',
   '/members/[id]',
   '/membership-applications',
   '/403',
+  '/api-docs',
   '/login',
 ] as const;
 
@@ -54,8 +68,10 @@ export const routeKeys = [
 export const routePatterns = [
   '/',
   '/checkin',
+  '/members',
   '/members/:id',
   '/membership-applications',
   '/403',
+  '/api-docs',
   '/login',
 ] as const;

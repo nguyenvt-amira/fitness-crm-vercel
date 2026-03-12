@@ -13,9 +13,10 @@
     "format": "prettier --write ./src",
     "prepare": "husky",
     "generate-routes": "tsx src/lib/routes/scripts/generate-routes.ts",
+    "generate-openapi": "tsx src/lib/openapi/scripts/generate-openapi.ts",
     "openapi-ts": "openapi-ts",
     "generate-api": "dotenv -e .env -- openapi-ts --output src/lib/api",
-    "generate-client": "openapi-ts --input http://backend:8000/api/v1/openapi.json --output src/lib/api"
+    "generate-client": "openapi-ts --input ./src/lib/openapi.json --output src/lib/api"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -48,6 +49,7 @@
     "react-resizable-panels": "^4.6.5",
     "recharts": "^2.15.4",
     "sonner": "^2.0.7",
+    "swagger-ui-react": "^5.32.0",
     "tailwind-merge": "^3.5.0",
     "universal-cookie": "^8.0.1",
     "vaul": "^1.1.2",
@@ -62,12 +64,14 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/swagger-ui-react": "^5.18.0",
     "babel-plugin-react-compiler": "1.0.0",
     "concurrently": "^9.2.1",
     "dotenv-cli": "^10.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "eslint-config-prettier": "^10.1.8",
+    "glob": "^13.0.6",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "prettier": "^3.8.1",
