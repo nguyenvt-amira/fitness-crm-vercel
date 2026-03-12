@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronDown, QrCode, Search } from 'lucide-react';
+import { QrCode, Search } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -15,34 +15,14 @@ import {
 
 import { Brand, MemberStatus, MemberType } from '@/types/member.type';
 
+import { useMembersFiltersContext } from '../_contexts/members-filters-context';
+
 interface MembersFiltersProps {
-  search: string;
-  onSearchChange: (value: string) => void;
-  onSearchExecute: () => void;
   onQRScan: () => void;
-  memberType: MemberType[];
-  onMemberTypeChange: (value: MemberType[]) => void;
-  status: MemberStatus[];
-  onStatusChange: (value: MemberStatus[]) => void;
-  brand: Brand[];
-  onBrandChange: (value: Brand[]) => void;
-  storeId: string[];
-  onStoreIdChange: (value: string[]) => void;
-  contractPlanId: string[];
-  onContractPlanIdChange: (value: string[]) => void;
-  lastVisitDays?: number;
-  onLastVisitDaysChange: (value: number | undefined) => void;
-  hasUnpaid?: boolean;
-  onHasUnpaidChange: (value: boolean | undefined) => void;
-  sortBy: string;
-  sortOrder: 'asc' | 'desc';
-  onSortChange: (field: string, order: 'asc' | 'desc') => void;
   selectedCount: number;
   totalCount: number;
   onExport: () => void;
   onBulkEmail: () => void;
-  hasActiveFilters: boolean;
-  onClearFilters: () => void;
 }
 
 const MEMBER_TYPE_LABELS: Record<MemberType, string> = {
@@ -87,34 +67,34 @@ const LAST_VISIT_OPTIONS = [
 ];
 
 export function MembersFilters({
-  search,
-  onSearchChange,
-  onSearchExecute,
   onQRScan,
-  memberType,
-  onMemberTypeChange,
-  status,
-  onStatusChange,
-  brand,
-  onBrandChange,
-  storeId,
-  onStoreIdChange,
-  contractPlanId,
-  onContractPlanIdChange,
-  lastVisitDays,
-  onLastVisitDaysChange,
-  hasUnpaid,
-  onHasUnpaidChange,
-  sortBy,
-  sortOrder,
-  onSortChange,
   selectedCount,
   totalCount,
   onExport,
   onBulkEmail,
-  hasActiveFilters,
-  onClearFilters,
 }: MembersFiltersProps) {
+  const {
+    filters,
+    searchInput,
+    setSearchInput,
+    updateFilter,
+    handleSortChange,
+    handleSearchExecute,
+    hasActiveFilters,
+    clearFilters,
+  } = useMembersFiltersContext();
+
+  const {
+    memberType,
+    status,
+    brand,
+    storeId,
+    contractPlanId,
+    lastVisitDays,
+    hasUnpaid,
+    sortBy,
+    sortOrder,
+  } = filters;
   return (
     <div className="space-y-2">
       {/* Search Bar and Filters */}
@@ -126,11 +106,11 @@ export function MembersFilters({
               <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
               <Input
                 placeholder="会員番号、氏名、電話番号、メールで検索"
-                value={search}
-                onChange={(e) => onSearchChange(e.target.value)}
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
-                    onSearchExecute();
+                    handleSearchExecute();
                   }
                 }}
                 className="h-9 rounded-lg pl-9"
@@ -139,7 +119,7 @@ export function MembersFilters({
             <Button variant="outline" size="icon" onClick={onQRScan} title="QRコード読み取り">
               <QrCode className="size-4" />
             </Button>
-            <Button variant="outline" onClick={onSearchExecute}>
+            <Button variant="outline" onClick={handleSearchExecute}>
               検索実行
             </Button>
           </div>
@@ -153,7 +133,7 @@ export function MembersFilters({
                 const newTypes = memberType.includes(value as MemberType)
                   ? memberType.filter((t) => t !== value)
                   : [...memberType, value as MemberType];
-                onMemberTypeChange(newTypes);
+                updateFilter('memberType', newTypes);
               }}
             >
               <SelectTrigger className="h-9 w-[178px] rounded-lg">
@@ -180,7 +160,7 @@ export function MembersFilters({
                 const newStatus = status.includes(value as MemberStatus)
                   ? status.filter((s) => s !== value)
                   : [...status, value as MemberStatus];
-                onStatusChange(newStatus);
+                updateFilter('status', newStatus);
               }}
             >
               <SelectTrigger className="h-9 w-[178px] rounded-lg">
@@ -207,7 +187,7 @@ export function MembersFilters({
                 const newStores = storeId.includes(value)
                   ? storeId.filter((s) => s !== value)
                   : [...storeId, value];
-                onStoreIdChange(newStores);
+                updateFilter('storeId', newStores);
               }}
             >
               <SelectTrigger className="h-9 w-[178px] rounded-lg">
@@ -234,7 +214,7 @@ export function MembersFilters({
                 const newBrand = brand.includes(value as Brand)
                   ? brand.filter((b) => b !== value)
                   : [...brand, value as Brand];
-                onBrandChange(newBrand);
+                updateFilter('brand', newBrand);
               }}
             >
               <SelectTrigger className="h-9 w-[178px] rounded-lg">
@@ -261,7 +241,7 @@ export function MembersFilters({
                 const newPlans = contractPlanId.includes(value)
                   ? contractPlanId.filter((p) => p !== value)
                   : [...contractPlanId, value];
-                onContractPlanIdChange(newPlans);
+                updateFilter('contractPlanId', newPlans);
               }}
             >
               <SelectTrigger className="h-9 w-[178px] rounded-lg">
@@ -285,16 +265,16 @@ export function MembersFilters({
 
             {/* 最終来館日 */}
             <Select
-              value={lastVisitDays !== undefined ? lastVisitDays.toString() : undefined}
+              value={lastVisitDays !== null ? lastVisitDays.toString() : undefined}
               onValueChange={(value) => {
-                onLastVisitDaysChange(Number(value));
+                updateFilter('lastVisitDays', value ? Number(value) : null);
               }}
             >
               <SelectTrigger className="h-9 w-[178px] rounded-lg">
                 <div className="flex items-center gap-1.5">
                   <span className="text-muted-foreground text-sm">最終来館日:</span>
                   <SelectValue placeholder="すべて">
-                    {lastVisitDays !== undefined
+                    {lastVisitDays !== null
                       ? LAST_VISIT_OPTIONS.find((opt) => opt.value === lastVisitDays)?.label
                       : null}
                   </SelectValue>
@@ -311,14 +291,14 @@ export function MembersFilters({
 
             {/* 未納有無 */}
             <Select
-              value={hasUnpaid !== undefined ? (hasUnpaid === true ? 'yes' : 'no') : undefined}
+              value={hasUnpaid !== null ? (hasUnpaid === true ? 'yes' : 'no') : undefined}
               onValueChange={(value) => {
                 if (value === 'yes') {
-                  onHasUnpaidChange(true);
+                  updateFilter('hasUnpaid', true);
                 } else if (value === 'no') {
-                  onHasUnpaidChange(false);
+                  updateFilter('hasUnpaid', false);
                 } else {
-                  onHasUnpaidChange(undefined);
+                  updateFilter('hasUnpaid', null);
                 }
               }}
             >
@@ -341,7 +321,7 @@ export function MembersFilters({
               value={`${sortBy}_${sortOrder}`}
               onValueChange={(value) => {
                 const [field, order] = value.split('_') as [string, 'asc' | 'desc'];
-                onSortChange(field, order);
+                handleSortChange(field, order);
               }}
             >
               <SelectTrigger className="h-9 w-[180px] rounded-lg">
@@ -360,7 +340,7 @@ export function MembersFilters({
 
             {/* フィルタクリア */}
             {hasActiveFilters && (
-              <Button variant="ghost" size="sm" onClick={onClearFilters} className="h-9">
+              <Button variant="ghost" size="sm" onClick={clearFilters} className="h-9">
                 すべてクリア
               </Button>
             )}

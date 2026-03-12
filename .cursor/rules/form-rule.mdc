@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+
+## Form Rules
+
+- Use react-hook-form for form state management and validation
+- Use zod for schema validation and type inference
+- Implement proper error handling and user feedback
+- Use controlled components for complex form interactions
