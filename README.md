@@ -24,6 +24,14 @@ npm install
 
 husky (Git hooks) will also be automatically set up during `npm install`.
 
+## Environment Variables Setup
+
+Copy the example environment file and update the values as needed:
+
+```bash
+cp .env.example .env
+```
+
 ## Starting the Development Server
 
 ```bash
