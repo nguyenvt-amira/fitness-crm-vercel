@@ -262,13 +262,70 @@ const userUrl = navigate('/users/[id]', '123'); // '/users/123'
 
 # Git Flow
 
+```mermaid
+%%{init: { 'theme': 'dark', 'themeVariables': {
+    'git0': '#f8f9fa',
+    'git1': '#00d4ff',
+    'git2': '#ccff00',
+    'git3': '#ffcc00',
+    'git4': '#ff0055',
+    'git5': '#ff0000',
+    'gitBranchLabel0': '#000000',
+    'gitBranchLabel1': '#000000',
+    'gitBranchLabel2': '#000000',
+    'gitBranchLabel3': '#000000',
+    'gitBranchLabel4': '#ffffff',
+    'gitBranchLabel5': '#ffffff',
+    'commitLabelColor': '#ffffff'
+} } }%%
+gitGraph
+    commit id: "Init project"
+
+    branch dev
+    checkout dev
+    commit id: "Init base"
+
+    checkout dev
+    branch feat/xxx
+    checkout feat/xxx
+    commit id: "Add feature"
+
+    checkout dev
+    merge feat/xxx tag: "v0.1-dev"
+
+    branch stg
+    checkout stg
+    commit id: "Merge dev to stg"
+
+    branch prod
+    checkout prod
+    commit id: "Merge stg to prod" tag: "v1.0.0"
+
+    checkout prod
+    %% Nhánh hotfix sẽ nhận màu git5 (Đỏ rực)
+    branch hotfix/xxx
+    checkout hotfix/xxx
+    commit id: "CRITICAL FIX" type: REVERSE
+
+    checkout prod
+    merge hotfix/xxx tag: "v1.0.1"
+
+    checkout stg
+    merge prod
+
+    checkout dev
+    merge prod
+```
+
+---
+
 ### Environment Branches
 
-| Branch    | Purpose                               |
-| --------- | ------------------------------------- |
-| `dev`     | Development environment               |
-| `staging` | Testing environment before production |
-| `prod`    | Production environment                |
+| Branch | Purpose                               |
+| ------ | ------------------------------------- |
+| `dev`  | Development environment               |
+| `stg`  | Testing environment before production |
+| `prod` | Production environment                |
 
 ---
 
@@ -277,20 +334,20 @@ const userUrl = navigate('/users/[id]', '123'); // '/users/123'
 Code is promoted through environments using Merge Requests.
 
 ```
-dev → staging → prod
+dev → stg → prod
 ```
 
 - devに反映
   - ローカルで動作確認
   - devに対するMR作成
-- stagingに反映
+- stgに反映
   - devで動作確認
   - 承認プロセス
-  - dev→stagingのMR作成
+  - dev→stgのMR作成
 - prodに反映
-  - stagingで動作確認
+  - stgで動作確認
   - 承認プロセス
-  - staging→prodのMR作成
+  - stg→prodのMR作成
 
 ---
 
@@ -314,13 +371,11 @@ feat/* → dev
 
 ### Branch Naming Convention
 
-| Type       | Description           |
-| ---------- | --------------------- |
-| `feat`     | New feature           |
-| `fix`      | Bug fix               |
-| `hotfix`   | Urgent production fix |
-| `refactor` | Code refactoring      |
-| `docs`     | Documentation updates |
+| Type     | Description           |
+| -------- | --------------------- |
+| `feat`   | New feature           |
+| `fix`    | Bug fix               |
+| `hotfix` | Urgent production fix |
 
 Examples:
 
@@ -333,17 +388,164 @@ fix/login-error
 
 ### Commit Message Convention
 
-| Type       | Description          |
-| ---------- | -------------------- |
-| `feat`     | New feature          |
-| `fix`      | Bug fix              |
-| `refactor` | Code improvement     |
-| `docs`     | Documentation update |
-| `test`     | Add or update tests  |
-| `chore`    | Maintenance tasks    |
+| Type    | Description         |
+| ------- | ------------------- |
+| `feat`  | New feature         |
+| `fix`   | Bug fix             |
+| `test`  | Add or update tests |
+| `chore` | Maintenance tasks   |
 
 Examples:
 
 ```
 feat: add member search feature
 ```
+
+---
+
+# CI/CD
+
+CI pipeline runs automatically when a Merge Request is created or updated.
+
+### Pipeline Overview
+
+```mermaid
+flowchart LR
+    %% Phase 1: Development
+    subgraph Phase1 [Development & Branching]
+        A1((Start)) --> A2[Create new branch]
+        A2 --> A3[Push code changes]
+    end
+
+    %% Phase 2: CI (Automated build)
+    subgraph CI [Automated build]
+        direction TB
+        B1[Install Dependencies] --> B2[Code Quality Check]
+        B2 --> B3[Build]
+    end
+
+    %% Phase 3: Review & App
+    subgraph ReviewPhase [Review & Feedback]
+        C1[Push code fixes]
+        C2[Deploy Review App]
+        C3{Review and approve}
+    end
+
+    %% Phase 4: CD (Automated build)
+    subgraph CD [Automated build]
+        direction TB
+        D1[Merge to Main] --> D2[Install Dependencies]
+        D2 --> D3[Code Quality Check]
+        D3 --> D4[Build]
+        D4 --> D5[Deploy to Production]
+    end
+
+    %% Connections
+    A3 --> B1
+    B3 --> C2
+    C2 --> C3
+
+    %% Loop back if failed review
+    C3 -- "Fix needed" --> C1
+    C1 --> B1
+
+    %% Success Flow
+    C3 -- "Approved" --> D1
+    D5 --> End((Done))
+
+    %% Styling
+    style CI fill:#f9f,stroke:#333,stroke-width:2px
+    style CD fill:#bbf,stroke:#333,stroke-width:2px
+    style ReviewPhase fill:#dfd,stroke:#333
+```
+
+### Stages
+
+| #   | Stage     | Step         | Command                      | Description                                          |
+| --- | --------- | ------------ | ---------------------------- | ---------------------------------------------------- |
+| 1   | **Build** | —            | `npm ci`                     | Install exact versions from `package-lock.json`      |
+| 2   |           | Type Check   | `npx tsc --noEmit`           | Validate TypeScript types across the entire codebase |
+| 2   |           | Lint         | `npm run lint`               | Run ESLint to check code quality                     |
+| 2   |           | Format Check | `npx prettier --check ./src` | Verify code formatting with Prettier                 |
+| 3   |           | —            | `npm run build`              | Generate routes and run Next.js production build     |
+
+> All stages must pass before a Merge Request can be approved and merged.
+
+---
+
+## 6. Release Flow
+
+### 6.1. Overview
+
+Release flow describes the process of promoting code changes from development to production through controlled environments.
+
+The system uses a **multi-environment promotion model**:
+
+```
+Development → Staging → Production
+```
+
+Code changes are gradually promoted through each environment to ensure stability and quality before reaching production.
+
+---
+
+### 6.2. Release Flow Diagram
+
+```mermaid
+flowchart LR
+    A([feat branch]) -->|merge| B([dev])
+    B -->|merge| C([stg])
+    C -->|merge| D([prod])
+
+    B --> B1[Deploy to Dev]
+    C --> C1[Deploy to Staging (Integration test / UAT)]
+    D --> D1[Deploy to Production]
+```
+
+---
+
+### 6.3. Release Versioning
+
+Each production release should be tagged using semantic versioning:
+
+```
+MAJOR.MINOR.PATCH
+```
+
+Example:
+
+```
+v1.0.0
+v1.1.0
+v1.1.1
+```
+
+Tag example:
+
+```bash
+git tag v1.2.0
+git push origin v1.2.0
+```
+
+---
+
+### 6.4. Release Checklist
+
+Before releasing to production:
+
+- [ ] Code review approved
+- [ ] CI pipeline passed
+- [ ] QA testing completed
+- [ ] No critical issues remaining
+- [ ] Rollback plan prepared
+
+---
+
+### 6.5. Rollback Strategy
+
+If issues occur after deployment:
+
+1. Identify the last stable version
+2. Roll back the deployment to the previous version
+3. Investigate the root cause
+4. Create a hotfix if necessary
