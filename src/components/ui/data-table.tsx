@@ -42,8 +42,9 @@ interface DataTableProps<TData, TValue> {
     totalRowsFetched?: number;
     className?: string;
     onRowClick?: (row: TData) => void;
-    onTableReady?: (table: TableInstance<TData>) => void
-}
+    onTableReady?: (table: TableInstance<TData>) => void;
+    columnVisibility?: VisibilityState;
+    setColumnVisibility?: React.Dispatch<React.SetStateAction<VisibilityState>>}
 
 export function DataTable<TData, TValue>({
     columns,
@@ -60,19 +61,20 @@ export function DataTable<TData, TValue>({
     totalRowsFetched = 0,
     className,
     onRowClick,
-    onTableReady
+    onTableReady,
+    columnVisibility,
+    setColumnVisibility,
 }: Readonly<DataTableProps<TData, TValue>>) {
-    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-    
+
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
-        onColumnVisibilityChange: setColumnVisibility, 
+        onColumnVisibilityChange: setColumnVisibility,
         state: {
             columnVisibility,
         },
-    })
+    });
     const tableRef = React.useRef<HTMLTableElement>(null);
     const onScroll = React.useCallback(
         (e: React.UIEvent<HTMLElement>) => {

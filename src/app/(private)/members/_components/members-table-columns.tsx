@@ -49,22 +49,24 @@ function SortableHeader({ label, sortKey, sort_by, sort_order, onSort }: Sortabl
     }
   };
   return (
-    <button
-      type="button"
-      onClick={handleClick}
-      className="hover:text-foreground inline-flex items-center gap-1.5"
-    >
+    <div className="inline-flex items-center gap-1.5">
       <span>{label}</span>
       {isActive ? (
         sort_order === 'asc' ? (
-          <ArrowUp className="text-muted-foreground size-4" />
+          <ArrowUp className="text-muted-foreground size-4 cursor-pointer" onClick={handleClick} />
         ) : (
-          <ArrowDown className="text-muted-foreground size-4" />
+          <ArrowDown
+            className="text-muted-foreground size-4 cursor-pointer"
+            onClick={handleClick}
+          />
         )
       ) : (
-        <ArrowUpDown className="text-muted-foreground size-4 opacity-50" />
+        <ArrowUpDown
+          className="text-muted-foreground size-4 cursor-pointer opacity-50"
+          onClick={handleClick}
+        />
       )}
-    </button>
+    </div>
   );
 }
 
@@ -91,6 +93,8 @@ const STATUS_VARIANTS: Record<MemberStatus, 'default' | 'secondary' | 'destructi
 
 interface MembersTableColumnsProps {
   onMemberClick: (memberId: string) => void;
+  /** Navigate to member detail with コミュニケーション tab and memo modal open */
+  onMemoClick: (memberId: string) => void;
   selectedMembers: string[];
   onSelectionChange: (ids: string[]) => void;
   sort_by: string;
@@ -100,6 +104,7 @@ interface MembersTableColumnsProps {
 
 export function MembersTableColumns({
   onMemberClick,
+  onMemoClick,
   selectedMembers,
   onSelectionChange,
   sort_by,
@@ -166,6 +171,9 @@ export function MembersTableColumns({
           {row.original.member_number || '-'}
         </button>
       ),
+      meta: {
+        label: '会員番号',
+      },
     },
     {
       accessorKey: 'name_kanji',
@@ -184,6 +192,9 @@ export function MembersTableColumns({
           <span>{row.original.name_kanji || '-'}</span>
         </div>
       ),
+      meta: {
+        label: '氏名',
+      },
     },
     {
       accessorKey: 'member_type',
@@ -250,6 +261,9 @@ export function MembersTableColumns({
         const date = new Date(row.original.joined_at);
         return date.toLocaleDateString('ja-JP');
       },
+      meta: {
+        label: '入会日',
+      },
     },
     {
       accessorKey: 'last_visit_date',
@@ -266,6 +280,9 @@ export function MembersTableColumns({
         if (!row.original.last_visit_date) return '-';
         const date = new Date(row.original.last_visit_date);
         return date.toLocaleDateString('ja-JP');
+      },
+      meta: {
+        label: '最終来館日',
       },
     },
     {
@@ -291,13 +308,29 @@ export function MembersTableColumns({
                 <MoreHorizontal className="size-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onMemberClick(memberId)}>詳細</DropdownMenuItem>
-              <DropdownMenuItem>
+            <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onMemberClick(memberId);
+                }}
+              >
+                詳細
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
                 <Edit className="mr-2 size-4" />
                 編集
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onMemoClick?.(memberId);
+                }}
+              >
                 <MessageSquare className="mr-2 size-4" />
                 メモ
               </DropdownMenuItem>

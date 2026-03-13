@@ -474,6 +474,7 @@
       "post": {
         "tags": ["Members"],
         "summary": "Create member memo",
+        "description": "スタッフメモを追加。保存後コミュニケーションタブに反映。",
         "parameters": [
           {
             "name": "id",
@@ -481,7 +482,8 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "会員ID"
           }
         ],
         "requestBody": {
@@ -496,7 +498,34 @@
         },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateMemoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -564,16 +593,16 @@
     },
     "/crm/members/{id}/communications": {
       "get": {
-        "tags": ["Crm"],
-        "summary": "GET /crm/members/{id}/communications",
-        "description": "Auto-generated from src/app/api/crm/members/[id]/communications/route.ts",
+        "tags": ["Members", "Crm"],
+        "summary": "Get member communications",
+        "description": "コミュニケーションタブ用：スタッフメモ・問い合わせ・通知履歴・電話記録を取得",
         "responses": {
           "200": {
             "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/GetCommunicationsResponse"
                 }
               }
             }
@@ -704,73 +733,56 @@
     },
     "/crm/members/{id}/memos/{memoId}": {
       "put": {
-        "tags": ["Crm"],
-        "summary": "PUT /crm/members/{id}/memos/{memoId}",
-        "description": "Auto-generated from src/app/api/crm/members/[id]/memos/[memoId]/route.ts",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
+        "tags": ["Members", "Crm"],
+        "summary": "Update member memo",
+        "description": "スタッフメモを編集。",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "会員ID"
           },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+          {
+            "name": "memoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "メモID"
           }
-        },
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "object"
+                "$ref": "#/components/schemas/UpdateMemoRequest"
               }
             }
           }
         },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "id parameter"
-          },
-          {
-            "name": "memoId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "memoId parameter"
-          }
-        ]
-      },
-      "delete": {
-        "tags": ["Crm"],
-        "summary": "DELETE /crm/members/{id}/memos/{memoId}",
-        "description": "Auto-generated from src/app/api/crm/members/[id]/memos/[memoId]/route.ts",
         "responses": {
           "200": {
             "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/UpdateMemoResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Memo not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
@@ -785,7 +797,12 @@
               }
             }
           }
-        },
+        }
+      },
+      "delete": {
+        "tags": ["Members", "Crm"],
+        "summary": "Delete member memo",
+        "description": "スタッフメモを削除。削除確認後に実行。",
         "parameters": [
           {
             "name": "id",
@@ -794,7 +811,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "id parameter"
+            "description": "会員ID"
           },
           {
             "name": "memoId",
@@ -803,9 +820,46 @@
             "schema": {
               "type": "string"
             },
-            "description": "memoId parameter"
+            "description": "メモID"
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Memo not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/crm/members/{id}/relationships": {
@@ -1250,12 +1304,82 @@
         "properties": {
           "type": {
             "type": "string",
+            "enum": ["caution", "vip", "other"],
+            "description": "メモ種別（要注意/VIP/その他）"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "description": "メモ内容（1000文字まで）"
+          },
+          "created_by": {
+            "type": "string",
+            "description": "記録スタッフ（未指定時はAPIでデフォルト設定）"
+          }
+        }
+      },
+      "UpdateMemoRequest": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
             "enum": ["caution", "vip", "other"]
           },
           "content": {
             "type": "string",
             "minLength": 1,
             "maxLength": 1000
+          }
+        }
+      },
+      "StaffMemo": {
+        "type": "object",
+        "required": ["id", "date", "type", "content", "created_by"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "メモID"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "記録日時"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["caution", "vip", "other"],
+            "description": "メモ種別"
+          },
+          "content": {
+            "type": "string",
+            "description": "メモ内容"
+          },
+          "created_by": {
+            "type": "string",
+            "description": "記録スタッフ"
+          }
+        }
+      },
+      "CreateMemoResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "memo": {
+            "$ref": "#/components/schemas/StaffMemo"
+          }
+        }
+      },
+      "UpdateMemoResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "memo": {
+            "$ref": "#/components/schemas/StaffMemo"
           }
         }
       },
@@ -1282,6 +1406,53 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "GetCommunicationsResponse": {
+        "type": "object",
+        "description": "コミュニケーションタブ取得レスポンス",
+        "properties": {
+          "memos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StaffMemo"
+            },
+            "description": "スタッフメモ一覧"
+          },
+          "inquiries": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "date": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "content": {
+                  "type": "string"
+                },
+                "staff_name": {
+                  "type": "string"
+                },
+                "result": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["in_progress", "completed"]
+                }
+              }
+            }
+          },
+          "notifications": {
+            "type": "object"
+          },
+          "phoneRecords": {
+            "type": "array"
           }
         }
       },

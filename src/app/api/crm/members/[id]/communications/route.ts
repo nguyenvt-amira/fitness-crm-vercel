@@ -1,16 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import type {
-  InquiryRecord,
-  NotificationHistory,
-  PhoneRecord,
-  StaffMemo,
-} from '@/types/api/member.type';
-import { MemoType } from '@/types/api/member.type';
+import type { InquiryRecord, NotificationHistory, PhoneRecord } from '@/types/api/member.type';
+
+import { getMemos } from '../memos/route';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
+    const memos = getMemos(id);
 
     const mockData = {
       inquiries: [
@@ -23,15 +20,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           status: 'completed' as const,
         },
       ] as InquiryRecord[],
-      memos: [
-        {
-          id: 'memo-001',
-          date: '2024-11-15T10:00:00Z',
-          type: MemoType.VIP,
-          content: 'VIP会員として特別対応が必要',
-          created_by: '山田 花子',
-        },
-      ] as StaffMemo[],
+      memos,
       notifications: {
         emails: [
           {

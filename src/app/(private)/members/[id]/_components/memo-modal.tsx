@@ -1,17 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import {
   Select,
   SelectContent,
@@ -21,15 +31,15 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
+import type { StaffMemo } from '@/types/api/member.type';
 import { MemoType } from '@/types/api/member.type';
 
-interface MemoModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  memoId?: string; // If provided, it's edit mode
-  onSave: (data: { type: MemoType; content: string }) => Promise<void>;
-  onDelete?: (memoId: string) => Promise<void>;
-}
+const memoFormSchema = z.object({
+  type: z.enum(['caution', 'vip', 'other']),
+  content: z.string().min(1, 'メモ内容を入力してください').max(1000, '1000文字まで'),
+});
+
+type MemoFormValues = z.infer<typeof memoFormSchema>;
 
 const MEMO_TYPE_LABELS: Record<MemoType, string> = {
   [MemoType.CAUTION]: '要注意',
@@ -37,41 +47,58 @@ const MEMO_TYPE_LABELS: Record<MemoType, string> = {
   [MemoType.OTHER]: 'その他',
 };
 
-export function MemoModal({ open, onOpenChange, memoId, onSave, onDelete }: MemoModalProps) {
-  const [isSaving, setIsSaving] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [type, setType] = useState<MemoType>(MemoType.OTHER);
-  const [content, setContent] = useState('');
+interface MemoModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  /** When provided, edit mode (title スタッフメモ編集, 記録スタッフ/記録日時 from memo, 削除 button) */
+  memo?: StaffMemo | null;
+  onSave: (data: { type: MemoType; content: string }) => Promise<void>;
+  onDelete?: (memoId: string) => Promise<void>;
+}
 
-  const handleSave = async () => {
-    if (!content.trim()) {
-      return;
+export function MemoModal({ open, onOpenChange, memo, onSave, onDelete }: MemoModalProps) {
+  const isEdit = Boolean(memo?.id);
+
+  const form = useForm<MemoFormValues>({
+    resolver: zodResolver(memoFormSchema),
+    defaultValues: {
+      type: MemoType.OTHER,
+      content: '',
+    },
+  });
+
+  useEffect(() => {
+    if (!open) return;
+    if (memo) {
+      form.reset({
+        type: memo.type as MemoFormValues['type'],
+        content: memo.content,
+      });
+    } else {
+      form.reset({
+        type: MemoType.OTHER,
+        content: '',
+      });
     }
-    setIsSaving(true);
+  }, [open, memo, form]);
+
+  const handleSave = form.handleSubmit(async (values) => {
     try {
-      await onSave({ type, content });
-      setContent('');
-      setType(MemoType.OTHER);
+      await onSave({ type: values.type as MemoType, content: values.content.trim() });
       onOpenChange(false);
     } catch (error) {
       console.error('Failed to save memo:', error);
-    } finally {
-      setIsSaving(false);
     }
-  };
+  });
 
   const handleDelete = async () => {
-    if (!memoId || !onDelete) return;
+    if (!memo?.id || !onDelete) return;
     if (!confirm('このメモを削除しますか？')) return;
-
-    setIsDeleting(true);
     try {
-      await onDelete(memoId);
+      await onDelete(memo.id);
       onOpenChange(false);
     } catch (error) {
       console.error('Failed to delete memo:', error);
-    } finally {
-      setIsDeleting(false);
     }
   };
 
@@ -79,68 +106,88 @@ export function MemoModal({ open, onOpenChange, memoId, onSave, onDelete }: Memo
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{memoId ? 'スタッフメモ編集' : 'スタッフメモ追加'}</DialogTitle>
-          <DialogDescription>
-            {memoId ? 'スタッフメモを編集します。' : '新しいスタッフメモを追加します。'}
-          </DialogDescription>
+          <DialogTitle>{isEdit ? 'スタッフメモ編集' : 'スタッフメモ追加'}</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
-          <div>
-            <Label htmlFor="memoType">メモ種別</Label>
-            <Select value={type} onValueChange={(value) => setType(value as MemoType)}>
-              <SelectTrigger id="memoType">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(MEMO_TYPE_LABELS).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <Label htmlFor="memoContent">メモ内容（1000文字まで）</Label>
-            <Textarea
-              id="memoContent"
-              value={content}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (value.length <= 1000) {
-                  setContent(value);
-                }
-              }}
-              rows={6}
-              maxLength={1000}
+        <Form {...form}>
+          <form onSubmit={handleSave} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>メモ種別</FormLabel>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.entries(MEMO_TYPE_LABELS).map(([value, label]) => (
+                        <SelectItem key={value} value={value}>
+                          {label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            <p className="text-muted-foreground mt-1 text-right text-sm">{content.length}/1000</p>
-          </div>
 
-          <div className="bg-muted rounded-lg p-3">
-            <p className="text-muted-foreground text-sm">
-              <strong>記録スタッフ:</strong> システムユーザー
-              <br />
-              <strong>記録日時:</strong> {new Date().toLocaleString('ja-JP')}
-            </p>
-          </div>
-        </div>
+            <FormField
+              control={form.control}
+              name="content"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>メモ内容（1000文字まで）</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      rows={6}
+                      maxLength={1000}
+                      className="max-h-40 overflow-y-auto"
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        if (v.length <= 1000) field.onChange(v);
+                      }}
+                    />
+                  </FormControl>
+                  <p className="text-muted-foreground text-right text-sm">
+                    {field.value.length}/1000
+                  </p>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            キャンセル
-          </Button>
-          {memoId && onDelete && (
-            <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
-              {isDeleting ? '削除中...' : '削除'}
-            </Button>
-          )}
-          <Button onClick={handleSave} disabled={isSaving || !content.trim()}>
-            {isSaving ? '保存中...' : '保存'}
-          </Button>
-        </DialogFooter>
+            <div className="bg-muted rounded-lg p-3">
+              <p className="text-muted-foreground text-sm">
+                <strong>記録スタッフ:</strong> {isEdit ? (memo?.created_by ?? '—') : '（自動入力）'}
+                <br />
+                <strong>記録日時:</strong>{' '}
+                {isEdit && memo?.date
+                  ? new Date(memo.date).toLocaleString('ja-JP')
+                  : new Date().toLocaleString('ja-JP')}
+              </p>
+            </div>
+
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                キャンセル
+              </Button>
+              {isEdit && onDelete && memo?.id && (
+                <Button type="button" variant="destructive" onClick={handleDelete}>
+                  削除
+                </Button>
+              )}
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? '保存中...' : '保存'}
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
