@@ -498,7 +498,7 @@ flowchart LR
     C -->|merge| D([prod])
 
     B --> B1[Deploy to Dev]
-    C --> C1[Deploy to Staging (Integration test / UAT)]
+    C --> C1[Deploy to Staging - Integration test / UAT]
     D --> D1[Deploy to Production]
 ```
 
