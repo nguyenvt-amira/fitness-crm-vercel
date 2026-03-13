@@ -28,11 +28,11 @@ export function HistoriesFilterCard() {
   } = useCheckinHistoriesFiltersContext();
 
   // Parse date strings to Date objects (format: YYYY-MM-DD)
-  const startDate = filters.startDate
-    ? new Date(filters.startDate + 'T00:00:00')
+  const start_date = filters.start_date
+    ? new Date(filters.start_date + 'T00:00:00')
     : new Date(2026, 10, 1); // Default: 2026年11月1日
-  const endDate = filters.endDate
-    ? new Date(filters.endDate + 'T00:00:00')
+  const end_date = filters.end_date
+    ? new Date(filters.end_date + 'T00:00:00')
     : new Date(2026, 10, 30); // Default: 2026年11月30日
 
   const handleStartDateChange = (date: Date | undefined) => {
@@ -40,9 +40,9 @@ export function HistoriesFilterCard() {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
-      updateFilter('startDate', `${year}-${month}-${day}`);
+      updateFilter('start_date', `${year}-${month}-${day}`);
     } else {
-      updateFilter('startDate', null);
+      updateFilter('start_date', null);
     }
   };
 
@@ -51,9 +51,9 @@ export function HistoriesFilterCard() {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
-      updateFilter('endDate', `${year}-${month}-${day}`);
+      updateFilter('end_date', `${year}-${month}-${day}`);
     } else {
-      updateFilter('endDate', null);
+      updateFilter('end_date', null);
     }
   };
 
@@ -64,9 +64,9 @@ export function HistoriesFilterCard() {
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-medium">期間</label>
           <div className="flex items-center gap-2">
-            <DatePicker date={startDate} onDateChange={handleStartDateChange} />
+            <DatePicker date={start_date} onDateChange={handleStartDateChange} />
             <span className="text-xs text-gray-500">〜</span>
-            <DatePicker date={endDate} onDateChange={handleEndDateChange} />
+            <DatePicker date={end_date} onDateChange={handleEndDateChange} />
           </div>
         </div>
 
@@ -109,8 +109,8 @@ export function HistoriesFilterCard() {
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-medium">会員種別</label>
           <Select
-            value={filters.memberType}
-            onValueChange={(value) => updateFilter('memberType', value)}
+            value={filters.member_type}
+            onValueChange={(value) => updateFilter('member_type', value)}
           >
             <SelectTrigger className="h-8 w-[130px] rounded-lg">
               <SelectValue placeholder="all" />

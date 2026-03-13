@@ -17,7 +17,7 @@ export function HistoriesPagination({
   itemsPerPage,
   onPageChange,
 }: HistoriesPaginationProps) {
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const total_pages = Math.ceil(totalItems / itemsPerPage);
   const startItem = 1 + (currentPage - 1) * itemsPerPage;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
@@ -37,7 +37,7 @@ export function HistoriesPagination({
           <ArrowUpDown className="h-3.5 w-3.5 rotate-90" />
           前へ
         </Button>
-        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+        {Array.from({ length: Math.min(5, total_pages) }, (_, i) => {
           const page = i + 1;
           return (
             <Button
@@ -51,24 +51,24 @@ export function HistoriesPagination({
             </Button>
           );
         })}
-        {totalPages > 5 && (
+        {total_pages > 5 && (
           <>
             <span className="px-2 text-xs text-gray-600">...</span>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => onPageChange(totalPages)}
+              onClick={() => onPageChange(total_pages)}
               className="h-7 w-7"
             >
-              {totalPages}
+              {total_pages}
             </Button>
           </>
         )}
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
-          disabled={currentPage === totalPages}
+          onClick={() => onPageChange(Math.min(total_pages, currentPage + 1))}
+          disabled={currentPage === total_pages}
           className="h-7 gap-1"
         >
           次へ

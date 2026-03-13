@@ -33,20 +33,20 @@ export enum PointAdjustmentType {
 // Basic Member Info
 export interface MemberBasicInfo {
   id: string;
-  memberNumber: string;
-  nameKanji: string;
-  nameKana: string;
+  member_number: string;
+  name_kanji: string;
+  name_kana: string;
   birthday: string;
   age: number;
   gender: 'male' | 'female' | 'other';
-  postalCode?: string;
+  postal_code?: string;
   prefecture?: string;
   city?: string;
   address?: string;
   building?: string;
   phone: string;
   email: string;
-  emergencyContact?: {
+  emergency_contact?: {
     name: string;
     relationship: string;
     phone: string;
@@ -55,39 +55,39 @@ export interface MemberBasicInfo {
 
 // Member Profile
 export interface MemberProfile {
-  memberType: MemberType;
+  member_type: MemberType;
   status: MemberStatus;
-  storeId: string;
-  storeName: string;
+  store_id: string;
+  store_name: string;
   brand: Brand;
-  joinedAt: string;
-  withdrawnAt?: string;
-  isBlacklisted: boolean;
+  joined_at: string;
+  withdrawn_at?: string;
+  is_black_listed: boolean;
 }
 
 // eKYC Info
 export interface MemberEKYC {
   verified: boolean;
-  verifiedAt?: string;
-  documentType?: string;
+  verified_at?: string;
+  document_type?: string;
   photoUrl?: string;
 }
 
 // Consent Info
 export interface MemberConsent {
-  memberAgreement: {
+  member_agreement: {
     version: string;
-    agreedAt: string;
+    agreed_at: string;
   };
-  privacyPolicy: {
+  privacy_policy: {
     version: string;
-    agreedAt: string;
+    agreed_at: string;
   };
-  optionalAgreement?: {
+  optional_agreement?: {
     version: string;
-    agreedAt: string;
+    agreed_at: string;
   };
-  marketingConsent: {
+  marketing_consent: {
     email: boolean;
     sms: boolean;
     push: boolean;
@@ -96,47 +96,47 @@ export interface MemberConsent {
 
 // Health Info
 export interface MemberHealthInfo {
-  healthStatus?: string;
-  medicalHistory?: string;
+  health_status?: string;
+  medical_history?: string;
   allergies?: string;
-  exerciseRestrictions?: string;
-  otherNotes?: string;
+  exercise_restrictions?: string;
+  other_notes?: string;
 }
 
 // Contract Info
 export interface MainContract {
-  planName: string;
-  monthlyFee: number;
-  startDate: string;
-  penaltyPeriodEnd?: string;
-  changeHistory: ContractChange[];
+  plan_name: string;
+  monthly_fee: number;
+  start_date: string;
+  penalty_period_end?: string;
+  change_history: ContractChange[];
 }
 
 export interface ContractChange {
-  changedAt: string;
-  previousPlan: string;
-  newPlan: string;
+  changed_at: string;
+  previous_plan: string;
+  new_plan: string;
   reason?: string;
 }
 
 export interface OptionContract {
   id: string;
   name: string;
-  monthlyFee: number;
-  startDate: string;
-  nextBillingDate: string;
+  monthly_fee: number;
+  start_date: string;
+  next_billing_date: string;
 }
 
 export interface PaymentInfo {
   method: 'credit_card' | 'bank_transfer';
-  cardNumber?: string; // masked, last 4 digits only
-  cardholderName?: string;
-  expiryDate?: string;
-  billingDay: number;
-  lastPaymentDate?: string;
-  lastPaymentAmount?: number;
+  card_number?: string; // masked, last 4 digits only
+  cardholder_name?: string;
+  expiry_date?: string;
+  billing_day: number;
+  last_payment_date?: string;
+  last_payment_amount?: number;
   status: 'normal' | 'error';
-  paymentHistory: PaymentRecord[];
+  payment_history: PaymentRecord[];
 }
 
 export interface PaymentRecord {
@@ -149,14 +149,14 @@ export interface PaymentRecord {
 
 // Points Info
 export interface MemberPoints {
-  currentBalance: number;
-  totalEarned: number;
-  totalSpent: number;
+  current_balance: number;
+  total_earned: number;
+  total_spent: number;
   rank?: {
     current: string;
     benefits: string;
-    nextRank?: {
-      requiredPoints: number;
+    next_rank?: {
+      required_points: number;
       progress: number;
     };
   };
@@ -169,48 +169,48 @@ export interface PointHistory {
   reason: string;
   points: number;
   notes?: string;
-  adjustedBy?: string; // for manual adjustments
+  adjusted_by?: string; // for manual adjustments
 }
 
 // Usage History
 export interface UsageSummary {
-  totalVisits: number; // last 3 months
-  averageStayTime: number; // minutes
-  lastVisitDate?: string;
-  frequentTimeSlot?: string;
-  frequentDayOfWeek?: string;
+  total_visits: number; // last 3 months
+  average_stay_time: number; // minutes
+  last_visit_date?: string;
+  frequent_time_slot?: string;
+  frequent_day_of_week?: string;
 }
 
 export interface StoreUsage {
-  storeId: string;
-  storeName: string;
-  visitCount: number;
-  usageRate: number; // percentage
-  averageStayTime: number;
+  store_id: string;
+  store_name: string;
+  visit_count: number;
+  usage_rate: number; // percentage
+  average_stay_time: number;
 }
 
 export interface VisitRecord {
   id: string;
-  entryTime: string;
-  exitTime?: string;
-  stayTime?: number; // minutes
-  storeId: string;
-  storeName: string;
-  entryMethod: 'qr_code' | 'face_recognition' | 'member_number';
+  entry_time: string;
+  exit_time?: string;
+  stay_time?: number; // minutes
+  store_id: string;
+  store_name: string;
+  entry_method: 'qr_code' | 'face_recognition' | 'member_number';
 }
 
 // Training Records
 export interface TrainingSummary {
-  recordedDays: number; // last month
-  totalTrainingTime: number; // minutes
-  averageTrainingTime: number;
-  frequentExercises: string[];
+  recorded_days: number; // last month
+  total_training_time: number; // minutes
+  average_training_time: number;
+  frequent_exercises: string[];
 }
 
 export interface StrengthTrainingRecord {
   id: string;
   date: string;
-  exerciseName: string;
+  exercise_name: string;
   weight?: number;
   reps?: number;
   sets?: number;
@@ -220,7 +220,7 @@ export interface StrengthTrainingRecord {
 export interface CardioRecord {
   id: string;
   date: string;
-  exerciseType: string;
+  exercise_type: string;
   duration: number; // minutes
   distance?: number; // km
   calories?: number;
@@ -230,8 +230,8 @@ export interface BodyRecord {
   id: string;
   date: string;
   weight?: number;
-  bodyFat?: number; // percentage
-  muscleMass?: number; // kg
+  body_fat?: number; // percentage
+  muscle_mass?: number; // kg
   bmi?: number;
   notes?: string;
 }
@@ -245,7 +245,7 @@ export interface PersonalTraining {
 export interface PTReservation {
   id: string;
   date: string;
-  trainerName: string;
+  trainer_name: string;
   status: 'reserved' | 'completed' | 'cancelled';
   menu?: string;
 }
@@ -253,22 +253,22 @@ export interface PTReservation {
 export interface PTHistory {
   id: string;
   date: string;
-  trainerName: string;
+  trainer_name: string;
   menu?: string;
   feedback?: string;
   rating?: number; // 1-5
 }
 
 export interface StudioProgram {
-  participationHistory: ProgramParticipation[];
-  reservationHistory: ProgramReservation[];
+  participation_history: ProgramParticipation[];
+  reservation_history: ProgramReservation[];
 }
 
 export interface ProgramParticipation {
   id: string;
   date: string;
-  programName: string;
-  instructorName: string;
+  program_name: string;
+  instructor_name: string;
   participants: number;
   rating?: number;
 }
@@ -276,7 +276,7 @@ export interface ProgramParticipation {
 export interface ProgramReservation {
   id: string;
   date: string;
-  programName: string;
+  program_name: string;
   action: 'reserve' | 'cancel';
 }
 
@@ -290,23 +290,23 @@ export interface TanningUsage {
   id: string;
   date: string;
   duration: number; // minutes
-  storeId: string;
-  storeName: string;
+  store_id: string;
+  store_name: string;
 }
 
 export interface LockerUsage {
-  lockerNumber: string;
-  startDate: string;
+  locker_number: string;
+  start_date: string;
   status: 'active' | 'inactive';
 }
 
 export interface PurchaseRecord {
   id: string;
   date: string;
-  productName: string;
+  product_name: string;
   quantity: number;
   amount: number;
-  paymentMethod: string;
+  payment_method: string;
 }
 
 // Communication
@@ -314,7 +314,7 @@ export interface InquiryRecord {
   id: string;
   date: string;
   content: string;
-  staffName: string;
+  staff_name: string;
   result?: string;
   status: 'in_progress' | 'completed';
 }
@@ -324,7 +324,7 @@ export interface StaffMemo {
   date: string;
   type: MemoType;
   content: string;
-  createdBy: string;
+  created_by: string;
 }
 
 export interface NotificationHistory {
@@ -335,7 +335,7 @@ export interface NotificationHistory {
 
 export interface EmailHistory {
   id: string;
-  sentAt: string;
+  sent_at: string;
   subject: string;
   opened: boolean;
   status: 'success' | 'failed';
@@ -343,14 +343,14 @@ export interface EmailHistory {
 
 export interface SMSHistory {
   id: string;
-  sentAt: string;
+  sent_at: string;
   content: string;
   status: 'success' | 'failed';
 }
 
 export interface PushHistory {
   id: string;
-  sentAt: string;
+  sent_at: string;
   title: string;
   opened: boolean;
 }
@@ -359,7 +359,7 @@ export interface PhoneRecord {
   id: string;
   date: string;
   content: string;
-  staffName: string;
+  staff_name: string;
   result?: string;
 }
 
@@ -367,33 +367,33 @@ export interface PhoneRecord {
 export interface ChangeHistoryItem {
   id: string;
   date: string;
-  eventType: string;
+  event_type: string;
   content: string;
   details?: Record<string, any>;
 }
 
 export interface MembershipHistory {
-  joinedAt: string;
-  joinRoute: 'web' | 'store' | 'referral';
-  joinStore: string;
+  joined_at: string;
+  join_route: 'web' | 'store' | 'referral';
+  join_store: string;
   campaign?: string;
   referrer?: string;
 }
 
 export interface TransferHistory {
   date: string;
-  fromStore: string;
-  toStore: string;
+  from_store: string;
+  to_store: string;
   type: 'auto' | 'member_request' | 'admin_selected';
   reason?: string;
-  riskScore?: number;
+  risk_score?: number;
 }
 
 export interface SuspensionHistory {
-  startDate: string;
-  endDate?: string;
+  start_date: string;
+  end_date?: string;
   reason?: string;
-  appliedAt: string;
+  applied_at: string;
 }
 
 export interface WithdrawalHistory {
@@ -405,63 +405,63 @@ export interface WithdrawalHistory {
 export interface EditHistory {
   date: string;
   field: string;
-  oldValue: string;
-  newValue: string;
-  editedBy: string;
+  old_value: string;
+  new_value: string;
+  edited_by: string;
 }
 
 // Relationships
 export interface FamilyRelationship {
-  parentMember?: {
+  parent_member?: {
     id: string;
-    memberNumber: string;
+    member_number: string;
     name: string;
     relationship: string;
     status: MemberStatus;
   };
   children: Array<{
     id: string;
-    memberNumber: string;
+    member_number: string;
     name: string;
     relationship: string;
     status: MemberStatus;
   }>;
-  currentCount: number;
-  maxCount: number;
+  current_count: number;
+  max_count: number;
 }
 
 export interface CorporateRelationship {
-  companyName: string;
-  companyNumber?: string;
-  contractType: string;
-  discountRate?: number;
-  contactPerson?: {
+  company_name: string;
+  company_number?: string;
+  contract_type: string;
+  discount_rate?: number;
+  contact_person?: {
     department: string;
     name: string;
   };
 }
 
 export interface ReferralRelationship {
-  asReferrer: {
+  as_referrer: {
     referrals: Array<{
       id: string;
-      memberNumber: string;
+      member_number: string;
       name: string;
-      referredAt: string;
+      referred_at: string;
       joined: boolean;
-      pointsEarned?: number;
+      points_earned?: number;
     }>;
     summary: {
-      totalReferrals: number;
-      totalPoints: number;
+      total_referrals: number;
+      total_points: number;
     };
   };
-  asReferee?: {
+  as_referee?: {
     referrer: {
       id: string;
-      memberNumber: string;
+      member_number: string;
       name: string;
-      referredAt: string;
+      referred_at: string;
     };
     benefits?: string;
   };
@@ -469,11 +469,11 @@ export interface ReferralRelationship {
 
 // Full Member
 export interface Member {
-  basicInfo: MemberBasicInfo;
+  basic_info: MemberBasicInfo;
   profile: MemberProfile;
   ekyc?: MemberEKYC;
   consent?: MemberConsent;
-  healthInfo?: MemberHealthInfo;
+  health_info?: MemberHealthInfo;
 }
 
 // API Request/Response Types
@@ -481,41 +481,37 @@ export interface GetMembersRequest {
   page?: number;
   limit?: number;
   search?: string;
-  memberType?: MemberType[];
+  member_type?: MemberType[];
   status?: MemberStatus[];
   brand?: Brand[];
-  storeId?: string[];
-  contractPlanId?: string[];
-  lastVisitDays?: number; // 1 week = 7, 1 month = 30, etc.
-  hasUnpaid?: boolean;
-  sortBy?: 'member_number' | 'joined_at' | 'last_visit' | 'name';
-  sortOrder?: 'asc' | 'desc';
+  store_id?: string[];
+  contract_plan_id?: string[];
+  last_visit_days?: number; // 1 week = 7, 1 month = 30, etc.
+  has_unpaid?: boolean;
+  sort_by?: 'member_number' | 'joined_at' | 'last_visit' | 'name';
+  sort_order?: 'asc' | 'desc';
 }
 
 export interface GetMembersResponse {
   members: Array<{
     id: string;
-    memberNumber: string;
-    nameKanji: string;
-    nameKana: string;
-    memberType: MemberType;
+    member_number: string;
+    name_kanji: string;
+    name_kana: string;
+    member_type: MemberType;
     status: MemberStatus;
-    storeName: string;
+    store_name: string;
     brand: Brand;
-    contractPlanName?: string;
-    joinedAt: string;
-    lastVisitDate?: string;
-    hasUnpaid: boolean;
-    phone?: string;
-    email?: string;
-    storeId: string;
-    contractPlanId: string;
+    contract_plan_name?: string;
+    joined_at: string;
+    last_visit_date?: string;
+    has_unpaid: boolean;
   }>;
   pagination: {
     page: number;
     limit: number;
     total: number;
-    totalPages: number;
+    total_pages: number;
   };
 }
 
@@ -524,16 +520,16 @@ export interface GetMemberDetailResponse {
 }
 
 export interface UpdateBasicInfoRequest {
-  nameKanji?: string;
-  nameKana?: string;
-  postalCode?: string;
+  name_kanji?: string;
+  name_kana?: string;
+  postal_code?: string;
   prefecture?: string;
   city?: string;
   address?: string;
   building?: string;
   phone?: string;
   email?: string;
-  emergencyContact?: {
+  emergency_contact?: {
     name: string;
     relationship: string;
     phone: string;
@@ -541,11 +537,11 @@ export interface UpdateBasicInfoRequest {
 }
 
 export interface UpdateHealthInfoRequest {
-  healthStatus?: string;
-  medicalHistory?: string;
+  health_status?: string;
+  medical_history?: string;
   allergies?: string;
-  exerciseRestrictions?: string;
-  otherNotes?: string;
+  exercise_restrictions?: string;
+  other_notes?: string;
 }
 
 export interface UpdateMarketingConsentRequest {
@@ -573,6 +569,6 @@ export interface UpdateMemoRequest {
 export interface ExportMembersRequest {
   format: 'csv' | 'excel';
   target: 'selected' | 'filtered';
-  memberIds?: string[];
+  member_ids?: string[];
   fields: string[];
 }

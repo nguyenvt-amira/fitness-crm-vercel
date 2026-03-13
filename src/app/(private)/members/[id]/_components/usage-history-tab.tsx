@@ -29,27 +29,27 @@ export function UsageHistoryTab({ memberId }: { memberId: string }) {
           <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
             <div>
               <p className="text-muted-foreground text-sm">総来館回数</p>
-              <p className="mt-1 text-xl font-bold">{data.summary.totalVisits}回</p>
+              <p className="mt-1 text-xl font-bold">{data.summary.total_visits}回</p>
             </div>
             <div>
               <p className="text-muted-foreground text-sm">平均滞在時間</p>
-              <p className="mt-1 text-xl font-bold">{data.summary.averageStayTime}分</p>
+              <p className="mt-1 text-xl font-bold">{data.summary.average_stay_time}分</p>
             </div>
             <div>
               <p className="text-muted-foreground text-sm">最終来館日</p>
               <p className="mt-1">
-                {data.summary.lastVisitDate
-                  ? new Date(data.summary.lastVisitDate).toLocaleDateString('ja-JP')
+                {data.summary.last_visit_date
+                  ? new Date(data.summary.last_visit_date).toLocaleDateString('ja-JP')
                   : '-'}
               </p>
             </div>
             <div>
               <p className="text-muted-foreground text-sm">よく利用する時間帯</p>
-              <p className="mt-1">{data.summary.frequentTimeSlot || '-'}</p>
+              <p className="mt-1">{data.summary.frequent_time_slot || '-'}</p>
             </div>
             <div>
               <p className="text-muted-foreground text-sm">よく利用する曜日</p>
-              <p className="mt-1">{data.summary.frequentDayOfWeek || '-'}</p>
+              <p className="mt-1">{data.summary.frequent_day_of_week || '-'}</p>
             </div>
           </CardContent>
         </Card>
@@ -67,23 +67,23 @@ export function UsageHistoryTab({ memberId }: { memberId: string }) {
                   <div className="grid grid-cols-1 gap-2 md:grid-cols-4">
                     <div>
                       <p className="text-muted-foreground text-sm">来館日時</p>
-                      <p className="mt-1">{new Date(record.entryTime).toLocaleString('ja-JP')}</p>
+                      <p className="mt-1">{new Date(record.entry_time).toLocaleString('ja-JP')}</p>
                     </div>
-                    {record.exitTime && (
+                    {record.exit_time && (
                       <div>
                         <p className="text-muted-foreground text-sm">退館日時</p>
-                        <p className="mt-1">{new Date(record.exitTime).toLocaleString('ja-JP')}</p>
+                        <p className="mt-1">{new Date(record.exit_time).toLocaleString('ja-JP')}</p>
                       </div>
                     )}
-                    {record.stayTime && (
+                    {record.stay_time && (
                       <div>
                         <p className="text-muted-foreground text-sm">滞在時間</p>
-                        <p className="mt-1">{record.stayTime}分</p>
+                        <p className="mt-1">{record.stay_time}分</p>
                       </div>
                     )}
                     <div>
                       <p className="text-muted-foreground text-sm">利用店舗</p>
-                      <p className="mt-1">{record.storeName}</p>
+                      <p className="mt-1">{record.store_name}</p>
                     </div>
                   </div>
                 </div>

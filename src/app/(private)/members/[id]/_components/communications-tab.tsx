@@ -34,7 +34,7 @@ export function CommunicationsTab({ memberId }: { memberId: string }) {
                     <div>
                       <p className="font-medium">{memo.content}</p>
                       <p className="text-muted-foreground text-sm">
-                        {new Date(memo.date).toLocaleString('ja-JP')} - {memo.createdBy}
+                        {new Date(memo.date).toLocaleString('ja-JP')} - {memo.created_by}
                       </p>
                     </div>
                     <span className="text-muted-foreground text-sm">{memo.type}</span>
@@ -57,7 +57,7 @@ export function CommunicationsTab({ memberId }: { memberId: string }) {
                 <div key={inq.id} className="border-b pb-2">
                   <p className="font-medium">{inq.content}</p>
                   <p className="text-muted-foreground text-sm">
-                    {new Date(inq.date).toLocaleString('ja-JP')} - {inq.staffName}
+                    {new Date(inq.date).toLocaleString('ja-JP')} - {inq.staff_name}
                   </p>
                 </div>
               ))}

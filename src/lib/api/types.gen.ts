@@ -65,24 +65,24 @@ export type GetMembersResponse = {
 
 export type MemberListItem = {
     id?: string;
-    memberNumber?: string;
-    nameKanji?: string;
-    nameKana?: string;
-    memberType?: 'regular' | 'family' | 'corporate' | 'company_discount';
+    member_number?: string;
+    name_kanji?: string;
+    name_kana?: string;
+    member_type?: 'regular' | 'family' | 'corporate' | 'company_discount';
     status?: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
-    storeName?: string;
+    store_name?: string;
     brand?: 'joyfit' | 'fit365';
-    contractPlanName?: string;
-    joinedAt?: string;
-    lastVisitDate?: string | null;
-    hasUnpaid?: boolean;
+    contract_plan_name?: string;
+    joined_at?: string;
+    last_visit_date?: string | null;
+    has_unpaid?: boolean;
 };
 
 export type Pagination = {
     page?: number;
     limit?: number;
     total?: number;
-    totalPages?: number;
+    total_pages?: number;
 };
 
 export type GetMemberDetailResponse = {
@@ -92,9 +92,9 @@ export type GetMemberDetailResponse = {
 };
 
 export type UpdateBasicInfoRequest = {
-    nameKanji?: string;
-    nameKana?: string;
-    postalCode?: string;
+    name_kanji?: string;
+    name_kana?: string;
+    postal_code?: string;
     phone?: string;
     email?: string;
 };
@@ -113,7 +113,7 @@ export type CreateMemoRequest = {
 export type ExportMembersRequest = {
     format: 'csv' | 'excel';
     target: 'selected' | 'filtered';
-    memberIds?: Array<string>;
+    member_ids?: Array<string>;
     fields: Array<string>;
 };
 
@@ -198,7 +198,7 @@ export type GetCrmMembersData = {
         /**
          * Filter by member type
          */
-        memberType?: Array<'regular' | 'family' | 'corporate' | 'company_discount'>;
+        member_type?: Array<'regular' | 'family' | 'corporate' | 'company_discount'>;
         /**
          * Filter by status
          */
@@ -210,27 +210,27 @@ export type GetCrmMembersData = {
         /**
          * Filter by store ID
          */
-        storeId?: Array<string>;
+        store_id?: Array<string>;
         /**
          * Filter by contract plan ID
          */
-        contractPlanId?: Array<string>;
+        contract_plan_id?: Array<string>;
         /**
          * Filter by last visit days (7=1週間以内, 30=1ヶ月以内, 90=3ヶ月以内, -1=3ヶ月以上)
          */
-        lastVisitDays?: number;
+        last_visit_days?: number;
         /**
          * Filter by unpaid status
          */
-        hasUnpaid?: boolean;
+        has_unpaid?: boolean;
         /**
          * Sort field
          */
-        sortBy?: 'member_number' | 'joined_at' | 'last_visit' | 'name';
+        sort_by?: 'member_number' | 'joined_at' | 'last_visit' | 'name';
         /**
          * Sort order
          */
-        sortOrder?: 'asc' | 'desc';
+        sort_order?: 'asc' | 'desc';
     };
     url: '/crm/members';
 };

@@ -5,8 +5,8 @@ import type {
   NotificationHistory,
   PhoneRecord,
   StaffMemo,
-} from '@/types/member.type';
-import { MemoType } from '@/types/member.type';
+} from '@/types/api/member.type';
+import { MemoType } from '@/types/api/member.type';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           id: 'inq-001',
           date: '2024-11-20T10:00:00Z',
           content: '契約プランについて問い合わせ',
-          staffName: '田中 太郎',
+          staff_name: '田中 太郎',
           result: 'プラン変更を案内',
           status: 'completed' as const,
         },
@@ -29,14 +29,14 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           date: '2024-11-15T10:00:00Z',
           type: MemoType.VIP,
           content: 'VIP会員として特別対応が必要',
-          createdBy: '山田 花子',
+          created_by: '山田 花子',
         },
       ] as StaffMemo[],
       notifications: {
         emails: [
           {
             id: 'email-001',
-            sentAt: '2024-11-20T10:00:00Z',
+            sent_at: '2024-11-20T10:00:00Z',
             subject: '会員情報更新のお知らせ',
             opened: true,
             status: 'success' as const,
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         sms: [
           {
             id: 'sms-001',
-            sentAt: '2024-11-15T14:00:00Z',
+            sent_at: '2024-11-15T14:00:00Z',
             content: '来館ありがとうございます',
             status: 'success' as const,
           },
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         push: [
           {
             id: 'push-001',
-            sentAt: '2024-11-25T18:00:00Z',
+            sent_at: '2024-11-25T18:00:00Z',
             title: '新しいプログラムのお知らせ',
             opened: false,
           },
@@ -64,7 +64,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           id: 'phone-001',
           date: '2024-11-10T15:00:00Z',
           content: '休会手続きについて',
-          staffName: '佐藤 健太',
+          staff_name: '佐藤 健太',
           result: '手続き完了',
         },
       ] as PhoneRecord[],

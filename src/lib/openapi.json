@@ -143,7 +143,7 @@
             "description": "Search by member number, name, phone, or email"
           },
           {
-            "name": "memberType",
+            "name": "member_type",
             "in": "query",
             "schema": {
               "type": "array",
@@ -179,7 +179,7 @@
             "description": "Filter by brand"
           },
           {
-            "name": "storeId",
+            "name": "store_id",
             "in": "query",
             "schema": {
               "type": "array",
@@ -190,7 +190,7 @@
             "description": "Filter by store ID"
           },
           {
-            "name": "contractPlanId",
+            "name": "contract_plan_id",
             "in": "query",
             "schema": {
               "type": "array",
@@ -201,7 +201,7 @@
             "description": "Filter by contract plan ID"
           },
           {
-            "name": "lastVisitDays",
+            "name": "last_visit_days",
             "in": "query",
             "schema": {
               "type": "integer",
@@ -210,7 +210,7 @@
             "description": "Filter by last visit date range"
           },
           {
-            "name": "hasUnpaid",
+            "name": "has_unpaid",
             "in": "query",
             "schema": {
               "type": "boolean"
@@ -218,7 +218,7 @@
             "description": "Filter by unpaid status"
           },
           {
-            "name": "sortBy",
+            "name": "sort_by",
             "in": "query",
             "schema": {
               "type": "string",
@@ -228,7 +228,7 @@
             "description": "Sort field"
           },
           {
-            "name": "sortOrder",
+            "name": "sort_order",
             "in": "query",
             "schema": {
               "type": "string",
@@ -1138,16 +1138,16 @@
           "id": {
             "type": "string"
           },
-          "memberNumber": {
+          "member_number": {
             "type": "string"
           },
-          "nameKanji": {
+          "name_kanji": {
             "type": "string"
           },
-          "nameKana": {
+          "name_kana": {
             "type": "string"
           },
-          "memberType": {
+          "member_type": {
             "type": "string",
             "enum": ["regular", "family", "corporate", "company_discount"]
           },
@@ -1155,26 +1155,26 @@
             "type": "string",
             "enum": ["active", "suspended", "withdrawn", "force_withdrawn"]
           },
-          "storeName": {
+          "store_name": {
             "type": "string"
           },
           "brand": {
             "type": "string",
             "enum": ["joyfit", "fit365"]
           },
-          "contractPlanName": {
+          "contract_plan_name": {
             "type": "string"
           },
-          "joinedAt": {
+          "joined_at": {
             "type": "string",
             "format": "date"
           },
-          "lastVisitDate": {
+          "last_visit_date": {
             "type": "string",
             "format": "date",
             "nullable": true
           },
-          "hasUnpaid": {
+          "has_unpaid": {
             "type": "boolean"
           }
         }
@@ -1191,7 +1191,7 @@
           "total": {
             "type": "integer"
           },
-          "totalPages": {
+          "total_pages": {
             "type": "integer"
           }
         }
@@ -1207,13 +1207,13 @@
       "UpdateBasicInfoRequest": {
         "type": "object",
         "properties": {
-          "nameKanji": {
+          "name_kanji": {
             "type": "string"
           },
-          "nameKana": {
+          "name_kana": {
             "type": "string"
           },
-          "postalCode": {
+          "postal_code": {
             "type": "string"
           },
           "phone": {
@@ -1271,7 +1271,7 @@
             "type": "string",
             "enum": ["selected", "filtered"]
           },
-          "memberIds": {
+          "member_ids": {
             "type": "array",
             "items": {
               "type": "string"

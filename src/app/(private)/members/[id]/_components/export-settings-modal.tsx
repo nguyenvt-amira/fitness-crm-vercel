@@ -34,7 +34,7 @@ interface ExportSettingsModalProps {
 }
 
 const EXPORT_FIELDS = [
-  { id: 'basicInfo', label: '基本情報' },
+  { id: 'basic_info', label: '基本情報' },
   { id: 'contractInfo', label: '契約情報' },
   { id: 'pointsInfo', label: 'ポイント情報' },
   { id: 'usageSummary', label: '利用履歴サマリ' },
@@ -51,7 +51,7 @@ export function ExportSettingsModal({
   const [isExporting, setIsExporting] = useState(false);
   const [format, setFormat] = useState<'csv' | 'excel'>('csv');
   const [target, setTarget] = useState<'selected' | 'filtered'>('selected');
-  const [selectedFields, setSelectedFields] = useState<string[]>(['basicInfo']);
+  const [selectedFields, setSelectedFields] = useState<string[]>(['basic_info']);
 
   const handleExport = async () => {
     if (selectedFields.length === 0) {
@@ -59,8 +59,8 @@ export function ExportSettingsModal({
       return;
     }
 
-    const maxCount = target === 'selected' ? selectedCount : filteredCount;
-    if (maxCount > 10000) {
+    const max_count = target === 'selected' ? selectedCount : filteredCount;
+    if (max_count > 10000) {
       alert('エクスポート対象は最大10,000件までです。');
       return;
     }

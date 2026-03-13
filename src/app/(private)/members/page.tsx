@@ -35,7 +35,7 @@ function MembersPageContent() {
   // Use custom hook for filters/sort management
   const filtersHook = useMembersFilters();
   const { queryParams, filters, handleSortChange } = filtersHook;
-  const { sortBy, sortOrder } = filters;
+  const { sort_by, sort_order } = filters;
 
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage } = useInfiniteQuery({
     ...getCrmMembersInfiniteOptions({
@@ -47,8 +47,8 @@ function MembersPageContent() {
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       const currentPage = allPages.length;
-      const totalPages = lastPage.pagination?.totalPages || 0;
-      if (currentPage < totalPages) {
+      const total_pages = lastPage.pagination?.total_pages || 0;
+      if (currentPage < total_pages) {
         return currentPage + 1;
       }
       return undefined;
@@ -71,8 +71,8 @@ function MembersPageContent() {
       },
       selectedMembers,
       onSelectionChange: setSelectedMembers,
-      sortBy,
-      sortOrder,
+      sort_by,
+      sort_order,
       onSortChange: handleSortChange,
     });
 

@@ -5,7 +5,7 @@ import type {
   CardioRecord,
   StrengthTrainingRecord,
   TrainingSummary,
-} from '@/types/member.type';
+} from '@/types/api/member.type';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -13,16 +13,16 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     const mockData = {
       summary: {
-        recordedDays: 15,
-        totalTrainingTime: 1200,
-        averageTrainingTime: 80,
-        frequentExercises: ['ベンチプレス', 'スクワット', 'デッドリフト'],
+        recorded_days: 15,
+        total_training_time: 1200,
+        average_training_time: 80,
+        frequent_exercises: ['ベンチプレス', 'スクワット', 'デッドリフト'],
       } as TrainingSummary,
       strengthRecords: [
         {
           id: 'str-001',
           date: '2024-11-25T10:00:00Z',
-          exerciseName: 'ベンチプレス',
+          exercise_name: 'ベンチプレス',
           weight: 60,
           reps: 10,
           sets: 3,
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         {
           id: 'card-001',
           date: '2024-11-25T11:00:00Z',
-          exerciseType: 'ランニング',
+          exercise_type: 'ランニング',
           duration: 30,
           distance: 5,
           calories: 300,
@@ -44,8 +44,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           id: 'body-001',
           date: '2024-11-01',
           weight: 55,
-          bodyFat: 20,
-          muscleMass: 44,
+          body_fat: 20,
+          muscle_mass: 44,
           bmi: 21.5,
         },
       ] as BodyRecord[],

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import type { LoginRequest, LoginResponse, Token } from '@/types/auth.type';
+import type { LoginRequest, LoginResponse, Token } from '@/types/api/auth.type';
 
 // Mock user database
 const MOCK_USERS = [

@@ -9,19 +9,19 @@ import {
   useQueryStates,
 } from 'nuqs';
 
-import { Brand, MemberStatus, MemberType } from '@/types/member.type';
+import { Brand, MemberStatus, MemberType } from '@/types/api/member.type';
 
 export type MembersFilters = {
   search: string;
-  memberType: MemberType[];
+  member_type: MemberType[];
   status: MemberStatus[];
   brand: Brand[];
-  storeId: string[];
-  contractPlanId: string[];
-  lastVisitDays: number | null;
-  hasUnpaid: boolean | null;
-  sortBy: string;
-  sortOrder: 'asc' | 'desc';
+  store_id: string[];
+  contract_plan_id: string[];
+  last_visit_days: number | null;
+  has_unpaid: boolean | null;
+  sort_by: string;
+  sort_order: 'asc' | 'desc';
 };
 
 export function useMembersFilters() {
@@ -31,19 +31,19 @@ export function useMembersFilters() {
   const [filters, setFilters] = useQueryStates(
     {
       search: parseAsString.withDefault(''),
-      memberType: parseAsArrayOf(
+      member_type: parseAsArrayOf(
         parseAsStringEnum<MemberType>(Object.values(MemberType)),
       ).withDefault([]),
       status: parseAsArrayOf(
         parseAsStringEnum<MemberStatus>(Object.values(MemberStatus)),
       ).withDefault([]),
       brand: parseAsArrayOf(parseAsStringEnum<Brand>(Object.values(Brand))).withDefault([]),
-      storeId: parseAsArrayOf(parseAsString).withDefault([]),
-      contractPlanId: parseAsArrayOf(parseAsString).withDefault([]),
-      lastVisitDays: parseAsInteger,
-      hasUnpaid: parseAsBoolean,
-      sortBy: parseAsString.withDefault('member_number'),
-      sortOrder: parseAsStringEnum<'asc' | 'desc'>(['asc', 'desc']).withDefault('asc'),
+      store_id: parseAsArrayOf(parseAsString).withDefault([]),
+      contract_plan_id: parseAsArrayOf(parseAsString).withDefault([]),
+      last_visit_days: parseAsInteger,
+      has_unpaid: parseAsBoolean,
+      sort_by: parseAsString.withDefault('member_number'),
+      sort_order: parseAsStringEnum<'asc' | 'desc'>(['asc', 'desc']).withDefault('asc'),
     },
     {
       history: 'push',
@@ -72,15 +72,15 @@ export function useMembersFilters() {
 
   const updateFilter = <K extends keyof MembersFilters>(key: K, value: MembersFilters[K]) => {
     if (
-      key === 'memberType' ||
+      key === 'member_type' ||
       key === 'status' ||
       key === 'brand' ||
-      key === 'storeId' ||
-      key === 'contractPlanId'
+      key === 'store_id' ||
+      key === 'contract_plan_id'
     ) {
       const arrValue = value as string[];
       setFilters({ [key]: arrValue.length > 0 ? arrValue : null } as any);
-    } else if (key === 'lastVisitDays' || key === 'hasUnpaid') {
+    } else if (key === 'last_visit_days' || key === 'has_unpaid') {
       setFilters({ [key]: value ?? null } as any);
     } else {
       setFilters({ [key]: value } as any);
@@ -91,40 +91,40 @@ export function useMembersFilters() {
     setSearchInput('');
     setFilters({
       search: null,
-      memberType: null,
+      member_type: null,
       status: null,
       brand: null,
-      storeId: null,
-      contractPlanId: null,
-      lastVisitDays: null,
-      hasUnpaid: null,
-      sortBy: 'member_number',
-      sortOrder: 'asc',
+      store_id: null,
+      contract_plan_id: null,
+      last_visit_days: null,
+      has_unpaid: null,
+      sort_by: 'member_number',
+      sort_order: 'asc',
     });
   };
 
   const hasActiveFilters: boolean =
-    filters.memberType.length > 0 ||
+    filters.member_type.length > 0 ||
     filters.status.length > 0 ||
     filters.brand.length > 0 ||
-    filters.storeId.length > 0 ||
-    filters.contractPlanId.length > 0 ||
-    filters.lastVisitDays !== null ||
-    filters.hasUnpaid !== null ||
+    filters.store_id.length > 0 ||
+    filters.contract_plan_id.length > 0 ||
+    filters.last_visit_days !== null ||
+    filters.has_unpaid !== null ||
     filters.search.length > 0;
 
   // Prepare query params for API
   const queryParams = {
     search: filters.search || undefined,
-    memberType: filters.memberType.length > 0 ? filters.memberType : undefined,
+    member_type: filters.member_type.length > 0 ? filters.member_type : undefined,
     status: filters.status.length > 0 ? filters.status : undefined,
     brand: filters.brand.length > 0 ? filters.brand : undefined,
-    storeId: filters.storeId.length > 0 ? filters.storeId : undefined,
-    contractPlanId: filters.contractPlanId.length > 0 ? filters.contractPlanId : undefined,
-    lastVisitDays: filters.lastVisitDays ?? undefined,
-    hasUnpaid: filters.hasUnpaid ?? undefined,
-    sortBy: filters.sortBy as 'member_number' | 'joined_at' | 'last_visit' | 'name',
-    sortOrder: filters.sortOrder,
+    store_id: filters.store_id.length > 0 ? filters.store_id : undefined,
+    contract_plan_id: filters.contract_plan_id.length > 0 ? filters.contract_plan_id : undefined,
+    last_visit_days: filters.last_visit_days ?? undefined,
+    has_unpaid: filters.has_unpaid ?? undefined,
+    sort_by: filters.sort_by as 'member_number' | 'joined_at' | 'last_visit' | 'name',
+    sort_order: filters.sort_order,
   };
 
   return {
@@ -142,7 +142,7 @@ export function useMembersFilters() {
     queryParams,
     // Sort helpers
     handleSortChange: (field: string, order: 'asc' | 'desc') => {
-      setFilters({ sortBy: field, sortOrder: order });
+      setFilters({ sort_by: field, sort_order: order });
     },
     handleSearchExecute: () => {
       setFilters({ search: searchInput || null });

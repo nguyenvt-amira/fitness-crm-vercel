@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
-import { MemoType } from '@/types/member.type';
+import { MemoType } from '@/types/api/member.type';
 
 interface MemoModalProps {
   open: boolean;

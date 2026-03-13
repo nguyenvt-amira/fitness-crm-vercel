@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import type { OtherServiceUsage, PersonalTraining, StudioProgram } from '@/types/member.type';
+import type { OtherServiceUsage, PersonalTraining, StudioProgram } from '@/types/api/member.type';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           {
             id: 'pt-res-001',
             date: '2024-12-01T10:00:00Z',
-            trainerName: '山田 太郎',
+            trainer_name: '山田 太郎',
             status: 'reserved' as const,
             menu: '上半身強化',
           },
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           {
             id: 'pt-hist-001',
             date: '2024-11-20T10:00:00Z',
-            trainerName: '山田 太郎',
+            trainer_name: '山田 太郎',
             menu: '下半身強化',
             feedback: '良いセッションでした',
             rating: 5,
@@ -29,21 +29,21 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         ],
       } as PersonalTraining,
       studioProgram: {
-        participationHistory: [
+        participation_history: [
           {
             id: 'prog-001',
             date: '2024-11-25T19:00:00Z',
-            programName: 'ヨガ',
-            instructorName: '鈴木 花子',
+            program_name: 'ヨガ',
+            instructor_name: '鈴木 花子',
             participants: 15,
             rating: 4,
           },
         ],
-        reservationHistory: [
+        reservation_history: [
           {
             id: 'prog-res-001',
             date: '2024-12-02T19:00:00Z',
-            programName: 'ピラティス',
+            program_name: 'ピラティス',
             action: 'reserve' as const,
           },
         ],
@@ -54,14 +54,14 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             id: 'tan-001',
             date: '2024-11-20T14:00:00Z',
             duration: 20,
-            storeId: 'store-001',
-            storeName: 'Fit365八潮店',
+            store_id: 'store-001',
+            store_name: 'Fit365八潮店',
           },
         ],
         locker: [
           {
-            lockerNumber: 'L-101',
-            startDate: '2024-01-15',
+            locker_number: 'L-101',
+            start_date: '2024-01-15',
             status: 'active' as const,
           },
         ],
@@ -69,10 +69,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           {
             id: 'purchase-001',
             date: '2024-11-15',
-            productName: 'プロテイン',
+            product_name: 'プロテイン',
             quantity: 2,
             amount: 5000,
-            paymentMethod: 'クレジットカード',
+            payment_method: 'クレジットカード',
           },
         ],
       } as OtherServiceUsage,

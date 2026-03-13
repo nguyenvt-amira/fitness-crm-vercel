@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import type { CreateMemoRequest, StaffMemo } from '@/types/member.type';
-import { MemoType } from '@/types/member.type';
+import type { CreateMemoRequest, StaffMemo } from '@/types/api/member.type';
+import { MemoType } from '@/types/api/member.type';
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -13,7 +13,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       date: new Date().toISOString(),
       type: body.type,
       content: body.content,
-      createdBy: 'Current User', // In real app, get from auth
+      created_by: 'Current User', // In real app, get from auth
     };
 
     return NextResponse.json({ success: true, memo: newMemo });

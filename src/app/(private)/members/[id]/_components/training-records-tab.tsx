@@ -29,19 +29,19 @@ export function TrainingRecordsTab({ memberId }: { memberId: string }) {
           <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-4">
             <div>
               <p className="text-muted-foreground text-sm">記録日数</p>
-              <p className="mt-1 text-xl font-bold">{data.summary.recordedDays}日</p>
+              <p className="mt-1 text-xl font-bold">{data.summary.recorded_days}日</p>
             </div>
             <div>
               <p className="text-muted-foreground text-sm">総トレーニング時間</p>
-              <p className="mt-1 text-xl font-bold">{data.summary.totalTrainingTime}分</p>
+              <p className="mt-1 text-xl font-bold">{data.summary.total_training_time}分</p>
             </div>
             <div>
               <p className="text-muted-foreground text-sm">平均トレーニング時間</p>
-              <p className="mt-1 text-xl font-bold">{data.summary.averageTrainingTime}分</p>
+              <p className="mt-1 text-xl font-bold">{data.summary.average_training_time}分</p>
             </div>
             <div>
               <p className="text-muted-foreground text-sm">よく行う種目</p>
-              <p className="mt-1">{data.summary.frequentExercises.join(', ')}</p>
+              <p className="mt-1">{data.summary.frequent_exercises.join(', ')}</p>
             </div>
           </CardContent>
         </Card>
@@ -63,7 +63,7 @@ export function TrainingRecordsTab({ memberId }: { memberId: string }) {
                     </div>
                     <div>
                       <p className="text-muted-foreground text-sm">種目名</p>
-                      <p className="mt-1">{record.exerciseName}</p>
+                      <p className="mt-1">{record.exercise_name}</p>
                     </div>
                     <div>
                       <p className="text-muted-foreground text-sm">重量・回数</p>

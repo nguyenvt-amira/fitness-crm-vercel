@@ -24,11 +24,11 @@ const MOCK_MEMBER_DETAILS_TABS: MemberDetailsTabItem[] = [
 type ApplicationRow = {
   id: string;
   applicantName: string;
-  appliedAt: string;
-  appliedAtSub: string;
-  riskScore: number;
+  applied_at: string;
+  applied_atSub: string;
+  risk_score: number;
   riskReason: string;
-  planName: string;
+  plan_name: string;
   scheduledStart: string;
 };
 
@@ -53,8 +53,8 @@ const APPLICATION_COLUMNS: ColumnDef<ApplicationRow>[] = [
     ),
     cell: ({ row }) => (
       <div className="flex flex-col">
-        <span className="text-sm">{row.original.appliedAt}</span>
-        <span className="text-muted-foreground text-xs">{row.original.appliedAtSub}</span>
+        <span className="text-sm">{row.original.applied_at}</span>
+        <span className="text-muted-foreground text-xs">{row.original.applied_atSub}</span>
       </div>
     ),
   },
@@ -68,7 +68,7 @@ const APPLICATION_COLUMNS: ColumnDef<ApplicationRow>[] = [
     ),
     cell: ({ row }) => (
       <div className="flex flex-col">
-        <span className="text-destructive text-sm">{row.original.riskScore}</span>
+        <span className="text-destructive text-sm">{row.original.risk_score}</span>
         <span className="text-muted-foreground text-xs">{row.original.riskReason}</span>
       </div>
     ),
@@ -76,7 +76,7 @@ const APPLICATION_COLUMNS: ColumnDef<ApplicationRow>[] = [
   {
     accessorKey: 'store',
     header: () => <span className="font-medium">店舗</span>,
-    cell: ({ row }) => <span>{row.original.planName}</span>,
+    cell: ({ row }) => <span>{row.original.plan_name}</span>,
   },
   {
     accessorKey: 'start_date',
@@ -120,8 +120,8 @@ const APPLICATION_COLUMNS2: ColumnDef<ApplicationRow>[] = [
     ),
     cell: ({ row }) => (
       <div className="flex flex-col">
-        <span className="text-sm">{row.original.appliedAt}</span>
-        <span className="text-muted-foreground text-xs">{row.original.appliedAtSub}</span>
+        <span className="text-sm">{row.original.applied_at}</span>
+        <span className="text-muted-foreground text-xs">{row.original.applied_atSub}</span>
       </div>
     ),
   },
@@ -135,7 +135,7 @@ const APPLICATION_COLUMNS2: ColumnDef<ApplicationRow>[] = [
     ),
     cell: ({ row }) => (
       <div className="flex flex-col">
-        <span className="text-destructive text-sm">{row.original.riskScore}</span>
+        <span className="text-destructive text-sm">{row.original.risk_score}</span>
         <span className="text-muted-foreground text-xs">{row.original.riskReason}</span>
       </div>
     ),
@@ -143,7 +143,7 @@ const APPLICATION_COLUMNS2: ColumnDef<ApplicationRow>[] = [
   {
     accessorKey: 'store',
     header: () => <span className="font-medium">店舗</span>,
-    cell: ({ row }) => <span>{row.original.planName}</span>,
+    cell: ({ row }) => <span>{row.original.plan_name}</span>,
   },
   {
     accessorKey: 'start_date',
@@ -170,31 +170,31 @@ const MOCK_APPLICATIONS: ApplicationRow[] = [
   {
     id: '1',
     applicantName: '山田太郎',
-    appliedAt: '2026/02 12:00:00',
-    appliedAtSub: '3日9時間経過',
-    riskScore: 61,
+    applied_at: '2026/02 12:00:00',
+    applied_atSub: '3日9時間経過',
+    risk_score: 61,
     riskReason: '主要理由',
-    planName: '通常会員',
+    plan_name: '通常会員',
     scheduledStart: '2026/02',
   },
   {
     id: '2',
     applicantName: '山田太郎',
-    appliedAt: '2026/02 12:00:00',
-    appliedAtSub: '3日9時間経過',
-    riskScore: 61,
+    applied_at: '2026/02 12:00:00',
+    applied_atSub: '3日9時間経過',
+    risk_score: 61,
     riskReason: '主要理由',
-    planName: '通常会員',
+    plan_name: '通常会員',
     scheduledStart: '2026/02',
   },
   {
     id: '3',
     applicantName: '山田太郎',
-    appliedAt: '2026/02 12:00:00',
-    appliedAtSub: '3日9時間経過',
-    riskScore: 61,
+    applied_at: '2026/02 12:00:00',
+    applied_atSub: '3日9時間経過',
+    risk_score: 61,
     riskReason: '主要理由',
-    planName: '通常会員',
+    plan_name: '通常会員',
     scheduledStart: '2026/02',
   },
 ];

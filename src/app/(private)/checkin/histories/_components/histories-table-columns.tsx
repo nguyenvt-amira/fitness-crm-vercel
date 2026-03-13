@@ -10,9 +10,9 @@ export interface HistoryRecord {
   kana: string;
   avatar: string;
   date: string; // Format: "11/30"
-  entryTime: string; // Format: "18:05"
-  exitTime: string; // Format: "19:32"
-  memberType: 'FC会員' | '正会員';
+  entry_time: string; // Format: "18:05"
+  exit_time: string; // Format: "19:32"
+  member_type: 'FC会員' | '正会員';
   gender: '男性' | '女性';
   store: string;
   entryStore: string;
@@ -46,7 +46,7 @@ export function HistoriesTableColumns(): ColumnDef<HistoryRecord>[] {
       },
     },
     {
-      accessorKey: 'entryTime',
+      accessorKey: 'entry_time',
       header: () => (
         <div className="flex items-center gap-1">
           <span>入館時刻</span>
@@ -54,11 +54,11 @@ export function HistoriesTableColumns(): ColumnDef<HistoryRecord>[] {
         </div>
       ),
       cell: ({ row }) => {
-        return <span className="text-xs">{row.original.entryTime}</span>;
+        return <span className="text-xs">{row.original.entry_time}</span>;
       },
     },
     {
-      accessorKey: 'exitTime',
+      accessorKey: 'exit_time',
       header: () => (
         <div className="flex items-center gap-1">
           <span>退館時刻</span>
@@ -66,16 +66,16 @@ export function HistoriesTableColumns(): ColumnDef<HistoryRecord>[] {
         </div>
       ),
       cell: ({ row }) => {
-        return <span className="text-xs">{row.original.exitTime}</span>;
+        return <span className="text-xs">{row.original.exit_time}</span>;
       },
     },
     {
-      accessorKey: 'memberType',
+      accessorKey: 'member_type',
       header: '会員種別',
       cell: ({ row }) => {
         return (
           <Badge variant="outline" className="bg-gray-50 text-[10px] font-normal text-gray-800">
-            {row.original.memberType}
+            {row.original.member_type}
           </Badge>
         );
       },

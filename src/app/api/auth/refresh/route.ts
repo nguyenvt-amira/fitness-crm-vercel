@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import type { Token } from '@/types/auth.type';
+import type { Token } from '@/types/api/auth.type';
 
 // Simple JWT-like token generator (mock)
 function generateToken(payload: Record<string, any>): string {

@@ -26,19 +26,19 @@ import { getCrmMembersByIdContractsOptions } from '@/lib/api/@tanstack/react-que
 interface ContractData {
   mainContracts?: Array<{
     contractId: string;
-    planName: string;
+    plan_name: string;
     status: 'active' | 'terminated';
-    storeName: string;
-    startDate: string;
-    endDate: string | null;
+    store_name: string;
+    start_date: string;
+    end_date: string | null;
   }>;
   optionContracts?: Array<{
     contractId: string;
     name: string;
     status: 'active' | 'terminated';
-    storeName: string;
-    startDate: string;
-    endDate: string | null;
+    store_name: string;
+    start_date: string;
+    end_date: string | null;
   }>;
   oneDayPasses?: any[];
   optionSets?: any[];
@@ -137,7 +137,7 @@ export function ContractsTab({ memberId }: { memberId: string }) {
                       {contract.contractId}
                     </TableCell>
                     <TableCell className="h-11 px-2 py-2 text-sm font-normal">
-                      {contract.planName}
+                      {contract.plan_name}
                     </TableCell>
                     <TableCell className="h-11 px-2 py-2">
                       <Badge
@@ -152,16 +152,16 @@ export function ContractsTab({ memberId }: { memberId: string }) {
                       </Badge>
                     </TableCell>
                     <TableCell className="h-11 px-2 py-2 text-sm font-normal">
-                      {contract.storeName}
+                      {contract.store_name}
                     </TableCell>
                     <TableCell className="h-11 px-2 py-2 text-sm font-normal">
-                      {contract.startDate
-                        ? new Date(contract.startDate).toLocaleDateString('ja-JP')
+                      {contract.start_date
+                        ? new Date(contract.start_date).toLocaleDateString('ja-JP')
                         : '-'}
                     </TableCell>
                     <TableCell className="h-11 px-2 py-2 text-sm font-normal">
-                      {contract.endDate
-                        ? new Date(contract.endDate).toLocaleDateString('ja-JP')
+                      {contract.end_date
+                        ? new Date(contract.end_date).toLocaleDateString('ja-JP')
                         : '---'}
                     </TableCell>
                   </TableRow>
@@ -242,16 +242,16 @@ export function ContractsTab({ memberId }: { memberId: string }) {
                       </Badge>
                     </TableCell>
                     <TableCell className="h-11 px-2 py-2 text-sm font-normal">
-                      {contract.storeName}
+                      {contract.store_name}
                     </TableCell>
                     <TableCell className="h-11 px-2 py-2 text-sm font-normal">
-                      {contract.startDate
-                        ? new Date(contract.startDate).toLocaleDateString('ja-JP')
+                      {contract.start_date
+                        ? new Date(contract.start_date).toLocaleDateString('ja-JP')
                         : '-'}
                     </TableCell>
                     <TableCell className="h-11 px-2 py-2 text-sm font-normal">
-                      {contract.endDate
-                        ? new Date(contract.endDate).toLocaleDateString('ja-JP')
+                      {contract.end_date
+                        ? new Date(contract.end_date).toLocaleDateString('ja-JP')
                         : '---'}
                     </TableCell>
                     <TableCell className="h-11 px-2 py-2">

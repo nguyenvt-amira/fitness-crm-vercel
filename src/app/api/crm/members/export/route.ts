@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import type { ExportMembersRequest } from '@/types/member.type';
+import type { ExportMembersRequest } from '@/types/api/member.type';
 
 export async function POST(request: NextRequest) {
   try {
     const body: ExportMembersRequest = await request.json();
 
     // Validate export count (max 10,000)
-    if (body.target === 'filtered' && body.memberIds && body.memberIds.length > 10000) {
+    if (body.target === 'filtered' && body.member_ids && body.member_ids.length > 10000) {
       return NextResponse.json({ error: 'Export limit is 10,000 members' }, { status: 400 });
     }
 
