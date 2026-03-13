@@ -1,7 +1,7 @@
 import { defaultPlugins, defineConfig } from '@hey-api/openapi-ts';
 
 export default defineConfig({
-  input: process.env.NEXT_PUBLIC_OPENAPI_GENERATOR_URL ?? './src/lib/api/openapi.json',
+  input: process.env.NEXT_PUBLIC_OPENAPI_GENERATOR_URL ?? './src/lib/openapi.json',
   output: {
     lint: 'eslint',
     format: 'prettier',
@@ -19,7 +19,7 @@ export default defineConfig({
     },
     {
       name: '@hey-api/client-fetch',
-      runtimeConfigPath: './src/lib/client.config.ts',
+      runtimeConfigPath: '../client.config',
     },
     '@tanstack/react-query',
   ],
