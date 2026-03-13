@@ -259,3 +259,91 @@ const userUrl = navigate('/users/[id]', '123'); // '/users/123'
 ```
 
 > **Note**: Routes are automatically regenerated when you start the dev server or run `npm run generate-routes`. No manual configuration needed!
+
+# Git Flow
+
+### Environment Branches
+
+| Branch    | Purpose                               |
+| --------- | ------------------------------------- |
+| `dev`     | Development environment               |
+| `staging` | Testing environment before production |
+| `prod`    | Production environment                |
+
+---
+
+### Environment Promotion Flow
+
+Code is promoted through environments using Merge Requests.
+
+```
+dev → staging → prod
+```
+
+- devに反映
+  - ローカルで動作確認
+  - devに対するMR作成
+- stagingに反映
+  - devで動作確認
+  - 承認プロセス
+  - dev→stagingのMR作成
+- prodに反映
+  - stagingで動作確認
+  - 承認プロセス
+  - staging→prodのMR作成
+
+---
+
+### Development Flow
+
+Feature development follows the steps below:
+
+1. Create a new branch from `dev`
+2. Implement the feature
+3. Create a Merge Request (MR) to `dev`
+4. CI pipeline runs automatically when the MR is created
+5. After code review, merge into `dev`
+
+Flow:
+
+```
+feat/* → dev
+```
+
+---
+
+### Branch Naming Convention
+
+| Type       | Description           |
+| ---------- | --------------------- |
+| `feat`     | New feature           |
+| `fix`      | Bug fix               |
+| `hotfix`   | Urgent production fix |
+| `refactor` | Code refactoring      |
+| `docs`     | Documentation updates |
+
+Examples:
+
+```
+feat/member-search
+fix/login-error
+```
+
+---
+
+### Commit Message Convention
+
+| Type       | Description          |
+| ---------- | -------------------- |
+| `feat`     | New feature          |
+| `fix`      | Bug fix              |
+| `refactor` | Code improvement     |
+| `docs`     | Documentation update |
+| `test`     | Add or update tests  |
+| `chore`    | Maintenance tasks    |
+
+Examples:
+
+```
+feat: add member search feature
+```
