@@ -40,7 +40,7 @@ npm run dev
 
 After starting, access [http://localhost:3000](http://localhost:3000).
 
-# Linter / Formatter
+## Linter / Formatter
 
 The Linter and Formatter run automatically on commit.
 To apply them to the entire project manually, run them as needed.
@@ -319,7 +319,7 @@ gitGraph
 
 ---
 
-### Environment Branches
+### 1. Environment Branches
 
 | Branch | Purpose                               |
 | ------ | ------------------------------------- |
@@ -329,7 +329,7 @@ gitGraph
 
 ---
 
-### Environment Promotion Flow
+### 2. Environment Promotion Flow
 
 Code is promoted through environments using Merge Requests.
 
@@ -351,7 +351,7 @@ dev → stg → prod
 
 ---
 
-### Development Flow
+### 3. Development Flow
 
 Feature development follows the steps below:
 
@@ -369,7 +369,7 @@ feat/* → dev
 
 ---
 
-### Branch Naming Convention
+### 4. Branch Naming Convention
 
 | Type     | Description           |
 | -------- | --------------------- |
@@ -386,7 +386,7 @@ fix/login-error
 
 ---
 
-### Commit Message Convention
+### 5. Commit Message Convention
 
 | Type    | Description         |
 | ------- | ------------------- |
@@ -407,7 +407,7 @@ feat: add member search feature
 
 CI pipeline runs automatically when a Merge Request is created or updated.
 
-### Pipeline Overview
+### 1. Pipeline Overview
 
 ```mermaid
 flowchart LR
@@ -427,17 +427,16 @@ flowchart LR
     %% Phase 3: Review & App
     subgraph ReviewPhase [Review & Feedback]
         C1[Push code fixes]
-        C2[Deploy Review App]
-        C3{Review and approve}
+        C2{Review and approve}
     end
 
     %% Phase 4: CD (Automated build)
     subgraph CD [Automated build]
         direction TB
-        D1[Merge to Main] --> D2[Install Dependencies]
+        D1[Merge] --> D2[Install Dependencies]
         D2 --> D3[Code Quality Check]
         D3 --> D4[Build]
-        D4 --> D5[Deploy to Production]
+        D4 --> D5[Deploy]
     end
 
     %% Connections
@@ -459,7 +458,7 @@ flowchart LR
     style ReviewPhase fill:#dfd,stroke:#333
 ```
 
-### Stages
+### 2. Stages
 
 | #   | Stage     | Step         | Command                      | Description                                          |
 | --- | --------- | ------------ | ---------------------------- | ---------------------------------------------------- |
@@ -473,9 +472,9 @@ flowchart LR
 
 ---
 
-## 6. Release Flow
+# Release Flow
 
-### 6.1. Overview
+### 1. Overview
 
 Release flow describes the process of promoting code changes from development to production through controlled environments.
 
@@ -489,7 +488,7 @@ Code changes are gradually promoted through each environment to ensure stability
 
 ---
 
-### 6.2. Release Flow Diagram
+### 2. Release Flow Diagram
 
 ```mermaid
 flowchart LR
@@ -504,7 +503,7 @@ flowchart LR
 
 ---
 
-### 6.3. Release Versioning
+### 3. Release Versioning
 
 Each production release should be tagged using semantic versioning:
 
@@ -529,7 +528,7 @@ git push origin v1.2.0
 
 ---
 
-### 6.4. Release Checklist
+### 4. Release Checklist
 
 Before releasing to production:
 
@@ -541,7 +540,7 @@ Before releasing to production:
 
 ---
 
-### 6.5. Rollback Strategy
+### 5. Rollback Strategy
 
 If issues occur after deployment:
 
