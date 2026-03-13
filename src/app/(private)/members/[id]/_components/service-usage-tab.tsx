@@ -35,7 +35,7 @@ export function ServiceUsageTab({ memberId }: { memberId: string }) {
                     {data.personalTraining.reservations.map((res: any) => (
                       <div key={res.id} className="border-b pb-2">
                         <p>
-                          {new Date(res.date).toLocaleString('ja-JP')} - {res.trainerName} -{' '}
+                          {new Date(res.date).toLocaleString('ja-JP')} - {res.trainer_name} -{' '}
                           {res.menu}
                         </p>
                       </div>
@@ -50,7 +50,7 @@ export function ServiceUsageTab({ memberId }: { memberId: string }) {
                   {data.personalTraining.history.map((hist: any) => (
                     <div key={hist.id} className="border-b pb-2">
                       <p>
-                        {new Date(hist.date).toLocaleString('ja-JP')} - {hist.trainerName} -{' '}
+                        {new Date(hist.date).toLocaleString('ja-JP')} - {hist.trainer_name} -{' '}
                         {hist.rating ? `評価: ${hist.rating}/5` : ''}
                       </p>
                     </div>
@@ -68,14 +68,14 @@ export function ServiceUsageTab({ memberId }: { memberId: string }) {
             <CardTitle>スタジオプログラム</CardTitle>
           </CardHeader>
           <CardContent>
-            {data.studioProgram.participationHistory &&
-              data.studioProgram.participationHistory.length > 0 && (
+            {data.studioProgram.participation_history &&
+              data.studioProgram.participation_history.length > 0 && (
                 <div className="space-y-2">
-                  {data.studioProgram.participationHistory.map((part: any) => (
+                  {data.studioProgram.participation_history.map((part: any) => (
                     <div key={part.id} className="border-b pb-2">
                       <p>
-                        {new Date(part.date).toLocaleString('ja-JP')} - {part.programName} -{' '}
-                        {part.instructorName}
+                        {new Date(part.date).toLocaleString('ja-JP')} - {part.program_name} -{' '}
+                        {part.instructor_name}
                       </p>
                     </div>
                   ))}

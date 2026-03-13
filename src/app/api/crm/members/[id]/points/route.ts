@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import type { MemberPoints, PointHistory } from '@/types/member.type';
+import type { MemberPoints, PointHistory } from '@/types/api/member.type';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -8,14 +8,14 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     const mockData = {
       points: {
-        currentBalance: 1500,
-        totalEarned: 5000,
-        totalSpent: 3500,
+        current_balance: 1500,
+        total_earned: 5000,
+        total_spent: 3500,
         rank: {
           current: 'ゴールド',
           benefits: 'ポイント2倍キャンペーン',
-          nextRank: {
-            requiredPoints: 2000,
+          next_rank: {
+            required_points: 2000,
             progress: 75,
           },
         },

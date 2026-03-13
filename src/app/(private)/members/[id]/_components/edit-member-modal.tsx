@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
-import type { Member } from '@/types/member.type';
+import type { Member } from '@/types/api/member.type';
 
 interface EditMemberModalProps {
   open: boolean;
@@ -35,60 +35,60 @@ interface EditMemberModalProps {
 export function EditMemberModal({ open, onOpenChange, member, onSave }: EditMemberModalProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({
-    nameKanji: member.basicInfo.nameKanji,
-    nameKana: member.basicInfo.nameKana,
-    postalCode: member.basicInfo.postalCode || '',
-    prefecture: member.basicInfo.prefecture || '',
-    city: member.basicInfo.city || '',
-    address: member.basicInfo.address || '',
-    building: member.basicInfo.building || '',
-    phone: member.basicInfo.phone,
-    email: member.basicInfo.email,
-    emergencyContactName: member.basicInfo.emergencyContact?.name || '',
-    emergencyContactRelationship: member.basicInfo.emergencyContact?.relationship || '',
-    emergencyContactPhone: member.basicInfo.emergencyContact?.phone || '',
-    healthStatus: member.healthInfo?.healthStatus || '',
-    medicalHistory: member.healthInfo?.medicalHistory || '',
-    allergies: member.healthInfo?.allergies || '',
-    exerciseRestrictions: member.healthInfo?.exerciseRestrictions || '',
-    marketingEmail: member.consent?.marketingConsent.email || false,
-    marketingSms: member.consent?.marketingConsent.sms || false,
-    marketingPush: member.consent?.marketingConsent.push || false,
+    name_kanji: member.basic_info.name_kanji,
+    name_kana: member.basic_info.name_kana,
+    postal_code: member.basic_info.postal_code || '',
+    prefecture: member.basic_info.prefecture || '',
+    city: member.basic_info.city || '',
+    address: member.basic_info.address || '',
+    building: member.basic_info.building || '',
+    phone: member.basic_info.phone,
+    email: member.basic_info.email,
+    emergency_contactName: member.basic_info.emergency_contact?.name || '',
+    emergency_contactRelationship: member.basic_info.emergency_contact?.relationship || '',
+    emergency_contactPhone: member.basic_info.emergency_contact?.phone || '',
+    health_status: member.health_info?.health_status || '',
+    medical_history: member.health_info?.medical_history || '',
+    allergies: member.health_info?.allergies || '',
+    exercise_restrictions: member.health_info?.exercise_restrictions || '',
+    marketingEmail: member.consent?.marketing_consent.email || false,
+    marketingSms: member.consent?.marketing_consent.sms || false,
+    marketingPush: member.consent?.marketing_consent.push || false,
   });
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
       await onSave({
-        basicInfo: {
-          ...member.basicInfo,
-          nameKanji: formData.nameKanji,
-          nameKana: formData.nameKana,
-          postalCode: formData.postalCode,
+        basic_info: {
+          ...member.basic_info,
+          name_kanji: formData.name_kanji,
+          name_kana: formData.name_kana,
+          postal_code: formData.postal_code,
           prefecture: formData.prefecture,
           city: formData.city,
           address: formData.address,
           building: formData.building,
           phone: formData.phone,
           email: formData.email,
-          emergencyContact: formData.emergencyContactName
+          emergency_contact: formData.emergency_contactName
             ? {
-                name: formData.emergencyContactName,
-                relationship: formData.emergencyContactRelationship,
-                phone: formData.emergencyContactPhone,
+                name: formData.emergency_contactName,
+                relationship: formData.emergency_contactRelationship,
+                phone: formData.emergency_contactPhone,
               }
             : undefined,
         },
-        healthInfo: {
-          healthStatus: formData.healthStatus,
-          medicalHistory: formData.medicalHistory,
+        health_info: {
+          health_status: formData.health_status,
+          medical_history: formData.medical_history,
           allergies: formData.allergies,
-          exerciseRestrictions: formData.exerciseRestrictions,
+          exercise_restrictions: formData.exercise_restrictions,
         },
         consent: member.consent
           ? {
               ...member.consent,
-              marketingConsent: {
+              marketing_consent: {
                 email: formData.marketingEmail,
                 sms: formData.marketingSms,
                 push: formData.marketingPush,
@@ -118,27 +118,27 @@ export function EditMemberModal({ open, onOpenChange, member, onSave }: EditMemb
             <h3 className="text-base font-semibold">個人情報</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="nameKanji">氏名（漢字）</Label>
+                <Label htmlFor="name_kanji">氏名（漢字）</Label>
                 <Input
-                  id="nameKanji"
-                  value={formData.nameKanji}
-                  onChange={(e) => setFormData({ ...formData, nameKanji: e.target.value })}
+                  id="name_kanji"
+                  value={formData.name_kanji}
+                  onChange={(e) => setFormData({ ...formData, name_kanji: e.target.value })}
                 />
               </div>
               <div>
-                <Label htmlFor="nameKana">氏名（カナ）</Label>
+                <Label htmlFor="name_kana">氏名（カナ）</Label>
                 <Input
-                  id="nameKana"
-                  value={formData.nameKana}
-                  onChange={(e) => setFormData({ ...formData, nameKana: e.target.value })}
+                  id="name_kana"
+                  value={formData.name_kana}
+                  onChange={(e) => setFormData({ ...formData, name_kana: e.target.value })}
                 />
               </div>
               <div>
-                <Label htmlFor="postalCode">郵便番号</Label>
+                <Label htmlFor="postal_code">郵便番号</Label>
                 <Input
-                  id="postalCode"
-                  value={formData.postalCode}
-                  onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
+                  id="postal_code"
+                  value={formData.postal_code}
+                  onChange={(e) => setFormData({ ...formData, postal_code: e.target.value })}
                 />
               </div>
               <div>
@@ -211,9 +211,9 @@ export function EditMemberModal({ open, onOpenChange, member, onSave }: EditMemb
                 <Label htmlFor="emergencyName">氏名</Label>
                 <Input
                   id="emergencyName"
-                  value={formData.emergencyContactName}
+                  value={formData.emergency_contactName}
                   onChange={(e) =>
-                    setFormData({ ...formData, emergencyContactName: e.target.value })
+                    setFormData({ ...formData, emergency_contactName: e.target.value })
                   }
                 />
               </div>
@@ -221,9 +221,9 @@ export function EditMemberModal({ open, onOpenChange, member, onSave }: EditMemb
                 <Label htmlFor="emergencyRelationship">続柄</Label>
                 <Input
                   id="emergencyRelationship"
-                  value={formData.emergencyContactRelationship}
+                  value={formData.emergency_contactRelationship}
                   onChange={(e) =>
-                    setFormData({ ...formData, emergencyContactRelationship: e.target.value })
+                    setFormData({ ...formData, emergency_contactRelationship: e.target.value })
                   }
                 />
               </div>
@@ -231,9 +231,9 @@ export function EditMemberModal({ open, onOpenChange, member, onSave }: EditMemb
                 <Label htmlFor="emergencyPhone">電話番号</Label>
                 <Input
                   id="emergencyPhone"
-                  value={formData.emergencyContactPhone}
+                  value={formData.emergency_contactPhone}
                   onChange={(e) =>
-                    setFormData({ ...formData, emergencyContactPhone: e.target.value })
+                    setFormData({ ...formData, emergency_contactPhone: e.target.value })
                   }
                 />
               </div>
@@ -245,20 +245,20 @@ export function EditMemberModal({ open, onOpenChange, member, onSave }: EditMemb
             <h3 className="text-base font-semibold">健康情報</h3>
             <div className="space-y-4">
               <div>
-                <Label htmlFor="healthStatus">健康状態申告</Label>
+                <Label htmlFor="health_status">健康状態申告</Label>
                 <Textarea
-                  id="healthStatus"
-                  value={formData.healthStatus}
-                  onChange={(e) => setFormData({ ...formData, healthStatus: e.target.value })}
+                  id="health_status"
+                  value={formData.health_status}
+                  onChange={(e) => setFormData({ ...formData, health_status: e.target.value })}
                   rows={3}
                 />
               </div>
               <div>
-                <Label htmlFor="medicalHistory">既往歴・持病</Label>
+                <Label htmlFor="medical_history">既往歴・持病</Label>
                 <Textarea
-                  id="medicalHistory"
-                  value={formData.medicalHistory}
-                  onChange={(e) => setFormData({ ...formData, medicalHistory: e.target.value })}
+                  id="medical_history"
+                  value={formData.medical_history}
+                  onChange={(e) => setFormData({ ...formData, medical_history: e.target.value })}
                   rows={3}
                 />
               </div>
@@ -272,12 +272,12 @@ export function EditMemberModal({ open, onOpenChange, member, onSave }: EditMemb
                 />
               </div>
               <div>
-                <Label htmlFor="exerciseRestrictions">運動制限事項</Label>
+                <Label htmlFor="exercise_restrictions">運動制限事項</Label>
                 <Textarea
-                  id="exerciseRestrictions"
-                  value={formData.exerciseRestrictions}
+                  id="exercise_restrictions"
+                  value={formData.exercise_restrictions}
                   onChange={(e) =>
-                    setFormData({ ...formData, exerciseRestrictions: e.target.value })
+                    setFormData({ ...formData, exercise_restrictions: e.target.value })
                   }
                   rows={3}
                 />

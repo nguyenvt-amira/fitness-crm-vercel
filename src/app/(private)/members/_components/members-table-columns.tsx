@@ -23,7 +23,7 @@ import {
 
 import type { GetCrmMembersResponse } from '@/lib/api/types.gen';
 
-import { Brand, MemberStatus, MemberType } from '@/types/member.type';
+import { Brand, MemberStatus, MemberType } from '@/types/api/member.type';
 
 /** API sort field names */
 const SORT_FIELD_MEMBER_NUMBER = 'member_number';
@@ -34,16 +34,16 @@ const SORT_FIELD_NAME = 'name';
 interface SortableHeaderProps {
   label: string;
   sortKey: string;
-  sortBy: string;
-  sortOrder: 'asc' | 'desc';
+  sort_by: string;
+  sort_order: 'asc' | 'desc';
   onSort: (field: string, order: 'asc' | 'desc') => void;
 }
 
-function SortableHeader({ label, sortKey, sortBy, sortOrder, onSort }: SortableHeaderProps) {
-  const isActive = sortBy === sortKey;
+function SortableHeader({ label, sortKey, sort_by, sort_order, onSort }: SortableHeaderProps) {
+  const isActive = sort_by === sortKey;
   const handleClick = () => {
     if (isActive) {
-      onSort(sortKey, sortOrder === 'asc' ? 'desc' : 'asc');
+      onSort(sortKey, sort_order === 'asc' ? 'desc' : 'asc');
     } else {
       onSort(sortKey, 'asc');
     }
@@ -56,7 +56,7 @@ function SortableHeader({ label, sortKey, sortBy, sortOrder, onSort }: SortableH
     >
       <span>{label}</span>
       {isActive ? (
-        sortOrder === 'asc' ? (
+        sort_order === 'asc' ? (
           <ArrowUp className="text-muted-foreground size-4" />
         ) : (
           <ArrowDown className="text-muted-foreground size-4" />
@@ -93,8 +93,8 @@ interface MembersTableColumnsProps {
   onMemberClick: (memberId: string) => void;
   selectedMembers: string[];
   onSelectionChange: (ids: string[]) => void;
-  sortBy: string;
-  sortOrder: 'asc' | 'desc';
+  sort_by: string;
+  sort_order: 'asc' | 'desc';
   onSortChange: (field: string, order: 'asc' | 'desc') => void;
 }
 
@@ -102,8 +102,8 @@ export function MembersTableColumns({
   onMemberClick,
   selectedMembers,
   onSelectionChange,
-  sortBy,
-  sortOrder,
+  sort_by,
+  sort_order,
   onSortChange,
 }: MembersTableColumnsProps): ColumnDef<NonNullable<GetCrmMembersResponse['members']>[0]>[] {
   return [
@@ -148,13 +148,13 @@ export function MembersTableColumns({
       enableHiding: false,
     },
     {
-      accessorKey: 'memberNumber',
+      accessorKey: 'member_number',
       header: () => (
         <SortableHeader
           label="会員番号"
           sortKey={SORT_FIELD_MEMBER_NUMBER}
-          sortBy={sortBy}
-          sortOrder={sortOrder}
+          sort_by={sort_by}
+          sort_order={sort_order}
           onSort={onSortChange}
         />
       ),
@@ -163,37 +163,37 @@ export function MembersTableColumns({
           onClick={() => row.original.id && onMemberClick(row.original.id)}
           className="text-left text-blue-600 hover:underline"
         >
-          {row.original.memberNumber || '-'}
+          {row.original.member_number || '-'}
         </button>
       ),
     },
     {
-      accessorKey: 'nameKanji',
+      accessorKey: 'name_kanji',
       header: () => (
         <SortableHeader
           label="氏名"
           sortKey={SORT_FIELD_NAME}
-          sortBy={sortBy}
-          sortOrder={sortOrder}
+          sort_by={sort_by}
+          sort_order={sort_order}
           onSort={onSortChange}
         />
       ),
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          {row.original.hasUnpaid && <AlertOctagon className="text-destructive size-4" />}
-          <span>{row.original.nameKanji || '-'}</span>
+          {row.original.has_unpaid && <AlertOctagon className="text-destructive size-4" />}
+          <span>{row.original.name_kanji || '-'}</span>
         </div>
       ),
     },
     {
-      accessorKey: 'memberType',
+      accessorKey: 'member_type',
       header: '会員種別',
       cell: ({ row }) => (
         <div className="flex items-center gap-1">
           {/* TODO: Add member type icon */}
           <span>
-            {row.original.memberType
-              ? MEMBER_TYPE_LABELS[row.original.memberType as MemberType]
+            {row.original.member_type
+              ? MEMBER_TYPE_LABELS[row.original.member_type as MemberType]
               : '-'}
           </span>
         </div>
@@ -209,9 +209,9 @@ export function MembersTableColumns({
       ),
     },
     {
-      accessorKey: 'storeName',
+      accessorKey: 'store_name',
       header: '所属店舗',
-      cell: ({ row }) => row.original.storeName || '-',
+      cell: ({ row }) => row.original.store_name || '-',
     },
     {
       accessorKey: 'brand',
@@ -230,41 +230,41 @@ export function MembersTableColumns({
       ),
     },
     {
-      accessorKey: 'contractPlanName',
+      accessorKey: 'contract_plan_name',
       header: '主契約プラン',
-      cell: ({ row }) => row.original.contractPlanName || '-',
+      cell: ({ row }) => row.original.contract_plan_name || '-',
     },
     {
-      accessorKey: 'joinedAt',
+      accessorKey: 'joined_at',
       header: () => (
         <SortableHeader
           label="入会日"
           sortKey={SORT_FIELD_JOINED_AT}
-          sortBy={sortBy}
-          sortOrder={sortOrder}
+          sort_by={sort_by}
+          sort_order={sort_order}
           onSort={onSortChange}
         />
       ),
       cell: ({ row }) => {
-        if (!row.original.joinedAt) return '-';
-        const date = new Date(row.original.joinedAt);
+        if (!row.original.joined_at) return '-';
+        const date = new Date(row.original.joined_at);
         return date.toLocaleDateString('ja-JP');
       },
     },
     {
-      accessorKey: 'lastVisitDate',
+      accessorKey: 'last_visit_date',
       header: () => (
         <SortableHeader
           label="最終来館日"
           sortKey={SORT_FIELD_LAST_VISIT}
-          sortBy={sortBy}
-          sortOrder={sortOrder}
+          sort_by={sort_by}
+          sort_order={sort_order}
           onSort={onSortChange}
         />
       ),
       cell: ({ row }) => {
-        if (!row.original.lastVisitDate) return '-';
-        const date = new Date(row.original.lastVisitDate);
+        if (!row.original.last_visit_date) return '-';
+        const date = new Date(row.original.last_visit_date);
         return date.toLocaleDateString('ja-JP');
       },
     },
@@ -272,7 +272,7 @@ export function MembersTableColumns({
       id: 'unpaid',
       header: '未納',
       cell: ({ row }) =>
-        row.original.hasUnpaid ? (
+        row.original.has_unpaid ? (
           <AlertOctagon className="text-destructive size-4" />
         ) : (
           <span className="text-muted-foreground">-</span>

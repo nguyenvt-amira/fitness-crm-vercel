@@ -32,7 +32,7 @@ export function ChangeHistoryTab({ memberId }: { memberId: string }) {
                 <div key={item.id} className="border-b pb-2">
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="font-medium">{item.eventType}</p>
+                      <p className="font-medium">{item.event_type}</p>
                       <p className="text-muted-foreground text-sm">{item.content}</p>
                     </div>
                     <p className="text-muted-foreground text-sm">
@@ -56,16 +56,16 @@ export function ChangeHistoryTab({ memberId }: { memberId: string }) {
               <div>
                 <p className="text-muted-foreground text-sm">入会日</p>
                 <p className="mt-1">
-                  {new Date(data.membershipHistory.joinedAt).toLocaleDateString('ja-JP')}
+                  {new Date(data.membershipHistory.joined_at).toLocaleDateString('ja-JP')}
                 </p>
               </div>
               <div>
                 <p className="text-muted-foreground text-sm">入会ルート</p>
-                <p className="mt-1">{data.membershipHistory.joinRoute}</p>
+                <p className="mt-1">{data.membershipHistory.join_route}</p>
               </div>
               <div>
                 <p className="text-muted-foreground text-sm">入会店舗</p>
-                <p className="mt-1">{data.membershipHistory.joinStore}</p>
+                <p className="mt-1">{data.membershipHistory.join_store}</p>
               </div>
             </div>
           </CardContent>

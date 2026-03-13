@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import type { PointAdjustmentRequest } from '@/types/member.type';
+import type { PointAdjustmentRequest } from '@/types/api/member.type';
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {

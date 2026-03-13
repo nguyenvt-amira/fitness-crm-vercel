@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-import type { Member } from '@/types/member.type';
+import type { Member } from '@/types/api/member.type';
 
 interface PrintModalProps {
   open: boolean;
@@ -36,7 +36,7 @@ export function PrintModal({ open, onOpenChange, member }: PrintModalProps) {
           <div className="border-b pb-4">
             <div className="flex justify-between">
               <div>
-                <p className="text-muted-foreground text-sm">店舗名: {member.profile.storeName}</p>
+                <p className="text-muted-foreground text-sm">店舗名: {member.profile.store_name}</p>
               </div>
               <div>
                 <p className="text-muted-foreground text-sm">
@@ -52,45 +52,45 @@ export function PrintModal({ open, onOpenChange, member }: PrintModalProps) {
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <span className="text-muted-foreground">会員番号:</span>{' '}
-                {member.basicInfo.memberNumber}
+                {member.basic_info.member_number}
               </div>
               <div>
-                <span className="text-muted-foreground">氏名:</span> {member.basicInfo.nameKanji} (
-                {member.basicInfo.nameKana})
+                <span className="text-muted-foreground">氏名:</span> {member.basic_info.name_kanji}{' '}
+                ({member.basic_info.name_kana})
               </div>
               <div>
                 <span className="text-muted-foreground">生年月日:</span>{' '}
-                {member.basicInfo.birthday
-                  ? new Date(member.basicInfo.birthday).toLocaleDateString('ja-JP')
+                {member.basic_info.birthday
+                  ? new Date(member.basic_info.birthday).toLocaleDateString('ja-JP')
                   : '-'}{' '}
-                ({member.basicInfo.age || '-'}歳)
+                ({member.basic_info.age || '-'}歳)
               </div>
               <div>
                 <span className="text-muted-foreground">性別:</span>{' '}
-                {member.basicInfo.gender === 'male'
+                {member.basic_info.gender === 'male'
                   ? '男性'
-                  : member.basicInfo.gender === 'female'
+                  : member.basic_info.gender === 'female'
                     ? '女性'
                     : 'その他'}
               </div>
               <div className="col-span-2">
                 <span className="text-muted-foreground">住所:</span>{' '}
                 {[
-                  member.basicInfo.postalCode,
-                  member.basicInfo.prefecture,
-                  member.basicInfo.city,
-                  member.basicInfo.address,
-                  member.basicInfo.building,
+                  member.basic_info.postal_code,
+                  member.basic_info.prefecture,
+                  member.basic_info.city,
+                  member.basic_info.address,
+                  member.basic_info.building,
                 ]
                   .filter(Boolean)
                   .join(' ')}
               </div>
               <div>
-                <span className="text-muted-foreground">電話番号:</span> {member.basicInfo.phone}
+                <span className="text-muted-foreground">電話番号:</span> {member.basic_info.phone}
               </div>
               <div>
                 <span className="text-muted-foreground">メールアドレス:</span>{' '}
-                {member.basicInfo.email}
+                {member.basic_info.email}
               </div>
             </div>
           </div>

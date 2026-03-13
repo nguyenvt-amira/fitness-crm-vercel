@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import type { GetMemberDetailResponse, Member } from '@/types/member.type';
-import { Brand, MemberStatus, MemberType } from '@/types/member.type';
+import type { GetMemberDetailResponse, Member } from '@/types/api/member.type';
+import { Brand, MemberStatus, MemberType } from '@/types/api/member.type';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -9,58 +9,58 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     // Mock member data
     const mockMember: Member = {
-      basicInfo: {
+      basic_info: {
         id,
-        memberNumber: id,
-        nameKanji: '佐藤 花子',
-        nameKana: 'サトウ ハナコ',
+        member_number: id,
+        name_kanji: '佐藤 花子',
+        name_kana: 'サトウ ハナコ',
         birthday: '1990-01-01',
         age: 34,
         gender: 'female',
-        postalCode: '1234567',
+        postal_code: '1234567',
         prefecture: '東京都',
         city: '渋谷区',
         address: '1-2-3',
         building: 'サンプルマンション 101',
         phone: '090-1234-5678',
         email: 'hanako.sato@example.com',
-        emergencyContact: {
+        emergency_contact: {
           name: '佐藤 太郎',
           relationship: '夫',
           phone: '090-8765-4321',
         },
       },
       profile: {
-        memberType: MemberType.REGULAR,
+        member_type: MemberType.REGULAR,
         status: MemberStatus.ACTIVE,
-        storeId: 'store-001',
-        storeName: 'Fit365八潮店',
+        store_id: 'store-001',
+        store_name: 'Fit365八潮店',
         brand: Brand.FIT365,
-        joinedAt: '2024-01-15',
-        isBlacklisted: false,
+        joined_at: '2024-01-15',
+        is_black_listed: false,
       },
       ekyc: {
         verified: true,
-        verifiedAt: '2024-01-15T10:00:00Z',
-        documentType: '運転免許証',
+        verified_at: '2024-01-15T10:00:00Z',
+        document_type: '運転免許証',
       },
       consent: {
-        memberAgreement: {
+        member_agreement: {
           version: '1.0',
-          agreedAt: '2024-01-15T10:00:00Z',
+          agreed_at: '2024-01-15T10:00:00Z',
         },
-        privacyPolicy: {
+        privacy_policy: {
           version: '1.0',
-          agreedAt: '2024-01-15T10:00:00Z',
+          agreed_at: '2024-01-15T10:00:00Z',
         },
-        marketingConsent: {
+        marketing_consent: {
           email: true,
           sms: false,
           push: true,
         },
       },
-      healthInfo: {
-        healthStatus: '良好',
+      health_info: {
+        health_status: '良好',
         allergies: 'なし',
       },
     };

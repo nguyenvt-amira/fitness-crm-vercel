@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { Brand, MemberStatus, MemberType } from '@/types/member.type';
+import { Brand, MemberStatus, MemberType } from '@/types/api/member.type';
 
 import { useMembersFiltersContext } from '../_contexts/members-filters-context';
 
@@ -76,7 +76,17 @@ export function MembersFilters({
   const { filters, searchInput, setSearchInput, updateFilter, hasActiveFilters, clearFilters } =
     useMembersFiltersContext();
 
-  const { memberType, status, brand, storeId, contractPlanId, lastVisitDays, hasUnpaid } = filters;
+  const {
+    member_type,
+    status,
+    brand,
+    store_id,
+    contract_plan_id,
+    last_visit_days,
+    has_unpaid,
+    sort_by,
+    sort_order,
+  } = filters;
   return (
     <div className="space-y-2">
       {/* Search Bar and Filters */}
@@ -102,19 +112,21 @@ export function MembersFilters({
           <div className="flex flex-wrap items-center gap-2">
             {/* 会員種別 */}
             <Select
-              value={memberType.length > 0 ? memberType[0] : undefined}
+              value={member_type.length > 0 ? member_type[0] : undefined}
               onValueChange={(value: MemberType) => {
                 // const newTypes = memberType.includes(value as MemberType)
                 //   ? memberType.filter((t) => t !== value)
                 //   : [...memberType, value as MemberType];
-                updateFilter('memberType', [value]);
+                updateFilter('member_type', [value]);
               }}
             >
               <SelectTrigger className="h-9 w-fit rounded-lg">
                 <div className="flex items-center gap-1.5">
                   <span className="text-muted-foreground text-sm">会員種別:</span>
                   <SelectValue placeholder="すべて">
-                    {memberType.length > 0 ? MEMBER_TYPE_LABELS[memberType[0] as MemberType] : null}
+                    {member_type.length > 0
+                      ? MEMBER_TYPE_LABELS[member_type[0] as MemberType]
+                      : null}
                   </SelectValue>
                 </div>
               </SelectTrigger>
@@ -156,19 +168,21 @@ export function MembersFilters({
 
             {/* 所属店舗 */}
             <Select
-              value={storeId.length > 0 ? storeId[0] : undefined}
+              value={store_id.length > 0 ? store_id[0] : undefined}
               onValueChange={(value) => {
                 // const newStores = storeId.includes(value)
                 //   ? storeId.filter((s) => s !== value)
                 //   : [...storeId, value];
-                updateFilter('storeId', [value]);
+                updateFilter('store_id', [value]);
               }}
             >
               <SelectTrigger className="h-9 w-fit rounded-lg">
                 <div className="flex items-center gap-1.5">
                   <span className="text-muted-foreground text-sm">店舗:</span>
                   <SelectValue placeholder="すべて">
-                    {storeId.length > 0 ? MOCK_STORES.find((s) => s.id === storeId[0])?.name : null}
+                    {store_id.length > 0
+                      ? MOCK_STORES.find((s) => s.id === store_id[0])?.name
+                      : null}
                   </SelectValue>
                 </div>
               </SelectTrigger>
@@ -210,20 +224,20 @@ export function MembersFilters({
 
             {/* 契約プラン */}
             <Select
-              value={contractPlanId.length > 0 ? contractPlanId[0] : undefined}
+              value={contract_plan_id.length > 0 ? contract_plan_id[0] : undefined}
               onValueChange={(value) => {
                 // const newPlans = contractPlanId.includes(value)
                 //   ? contractPlanId.filter((p) => p !== value)
                 //   : [...contractPlanId, value];
-                updateFilter('contractPlanId', [value]);
+                updateFilter('contract_plan_id', [value]);
               }}
             >
               <SelectTrigger className="h-9 w-fit rounded-lg">
                 <div className="flex items-center gap-1.5">
                   <span className="text-muted-foreground text-sm">契約プラン:</span>
                   <SelectValue placeholder="すべて">
-                    {contractPlanId.length > 0
-                      ? MOCK_CONTRACT_PLANS.find((p) => p.id === contractPlanId[0])?.name
+                    {contract_plan_id.length > 0
+                      ? MOCK_CONTRACT_PLANS.find((p) => p.id === contract_plan_id[0])?.name
                       : null}
                   </SelectValue>
                 </div>
@@ -239,17 +253,17 @@ export function MembersFilters({
 
             {/* 最終来館日 */}
             <Select
-              value={lastVisitDays !== null ? lastVisitDays.toString() : undefined}
+              value={last_visit_days !== null ? last_visit_days.toString() : undefined}
               onValueChange={(value) => {
-                updateFilter('lastVisitDays', value ? Number(value) : null);
+                updateFilter('last_visit_days', value ? Number(value) : null);
               }}
             >
               <SelectTrigger className="h-9 w-fit rounded-lg">
                 <div className="flex items-center gap-1.5">
                   <span className="text-muted-foreground text-sm">最終来館日:</span>
                   <SelectValue placeholder="すべて">
-                    {lastVisitDays !== null
-                      ? LAST_VISIT_OPTIONS.find((opt) => opt.value === lastVisitDays)?.label
+                    {last_visit_days !== null
+                      ? LAST_VISIT_OPTIONS.find((opt) => opt.value === last_visit_days)?.label
                       : null}
                   </SelectValue>
                 </div>
@@ -265,14 +279,14 @@ export function MembersFilters({
 
             {/* 未納有無 */}
             <Select
-              value={hasUnpaid !== null ? (hasUnpaid === true ? 'yes' : 'no') : undefined}
+              value={has_unpaid !== null ? (has_unpaid === true ? 'yes' : 'no') : undefined}
               onValueChange={(value) => {
                 if (value === 'yes') {
-                  updateFilter('hasUnpaid', true);
+                  updateFilter('has_unpaid', true);
                 } else if (value === 'no') {
-                  updateFilter('hasUnpaid', false);
+                  updateFilter('has_unpaid', false);
                 } else {
-                  updateFilter('hasUnpaid', null);
+                  updateFilter('has_unpaid', null);
                 }
               }}
             >
@@ -280,7 +294,7 @@ export function MembersFilters({
                 <div className="flex items-center gap-1.5">
                   <span className="text-muted-foreground text-sm">未納有無:</span>
                   <SelectValue placeholder="すべて">
-                    {hasUnpaid === true ? 'あり' : hasUnpaid === false ? 'なし' : null}
+                    {has_unpaid === true ? 'あり' : has_unpaid === false ? 'なし' : null}
                   </SelectValue>
                 </div>
               </SelectTrigger>

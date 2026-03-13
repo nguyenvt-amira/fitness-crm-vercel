@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import type { UpdateMemoRequest } from '@/types/member.type';
+import type { UpdateMemoRequest } from '@/types/api/member.type';
 
 export async function PUT(
   request: NextRequest,

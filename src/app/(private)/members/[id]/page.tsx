@@ -26,8 +26,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getCrmMembersByIdOptions } from '@/lib/api/@tanstack/react-query.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
-import type { GetMemberDetailResponse } from '@/types/member.type';
-import { Brand, MemberStatus } from '@/types/member.type';
+import type { GetMemberDetailResponse } from '@/types/api/member.type';
+import { Brand, MemberStatus } from '@/types/api/member.type';
 
 import { BasicInfoTab } from './_components/basic-info-tab';
 import { ChangeHistoryTab } from './_components/change-history-tab';
@@ -95,7 +95,7 @@ export default function MemberDetailPage() {
     };
 
   // Mock alerts - in real app, these would come from API
-  const hasUnpaid = false; // TODO: Get from member data
+  const has_unpaid = false; // TODO: Get from member data
   const contractRenewalSoon = false; // TODO: Calculate from contract end date
 
   const handleEdit = () => {
@@ -162,9 +162,9 @@ export default function MemberDetailPage() {
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-4">
                 <Avatar className="size-16">
-                  <AvatarImage src={member.ekyc?.photoUrl} alt={member.basicInfo.nameKanji} />
+                  <AvatarImage src={member.ekyc?.photoUrl} alt={member.basic_info.name_kanji} />
                   <AvatarFallback>
-                    {member.basicInfo.nameKanji
+                    {member.basic_info.name_kanji
                       .split(' ')
                       .map((s) => s[0])
                       .join('')}
@@ -172,9 +172,9 @@ export default function MemberDetailPage() {
                 </Avatar>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <CardTitle className="text-xl">{member.basicInfo.nameKanji}</CardTitle>
+                    <CardTitle className="text-xl">{member.basic_info.name_kanji}</CardTitle>
                     <span className="text-muted-foreground text-base font-normal">
-                      {member.basicInfo.nameKana}
+                      {member.basic_info.name_kana}
                     </span>
                   </div>
                   <div className="mt-2 flex items-center gap-2">
@@ -186,11 +186,11 @@ export default function MemberDetailPage() {
                       {member.profile.brand === Brand.FIT365 ? 'FIT365' : 'JOYFIT'}
                     </Badge>
                     <span className="text-muted-foreground text-sm">
-                      {member.profile.storeName}
+                      {member.profile.store_name}
                     </span>
                   </div>
                   <div className="text-muted-foreground mt-1 text-sm">
-                    会員番号: {member.basicInfo.memberNumber}
+                    会員番号: {member.basic_info.member_number}
                   </div>
                 </div>
               </div>
@@ -216,12 +216,12 @@ export default function MemberDetailPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             {/* Alert Area */}
-            {(hasUnpaid || contractRenewalSoon) && (
-              <Alert variant={hasUnpaid ? 'destructive' : 'default'}>
+            {(has_unpaid || contractRenewalSoon) && (
+              <Alert variant={has_unpaid ? 'destructive' : 'default'}>
                 <AlertOctagon className="size-4" />
                 <AlertTitle>アラート</AlertTitle>
                 <AlertDescription>
-                  {hasUnpaid && '未納金があります。'}
+                  {has_unpaid && '未納金があります。'}
                   {contractRenewalSoon && '契約更新が間近です。'}
                 </AlertDescription>
               </Alert>

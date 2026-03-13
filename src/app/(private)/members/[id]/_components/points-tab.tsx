@@ -30,16 +30,18 @@ export function PointsTab({ memberId }: { memberId: string }) {
           <div>
             <p className="text-muted-foreground text-sm">現在の保有ポイント</p>
             <p className="mt-1 text-2xl font-bold">
-              {pointsData.points?.currentBalance?.toLocaleString() || 0}P
+              {pointsData.points?.current_balance?.toLocaleString() || 0}P
             </p>
           </div>
           <div>
             <p className="text-muted-foreground text-sm">累計獲得ポイント</p>
-            <p className="mt-1 text-xl">{pointsData.points?.totalEarned?.toLocaleString() || 0}P</p>
+            <p className="mt-1 text-xl">
+              {pointsData.points?.total_earned?.toLocaleString() || 0}P
+            </p>
           </div>
           <div>
             <p className="text-muted-foreground text-sm">累計消費ポイント</p>
-            <p className="mt-1 text-xl">{pointsData.points?.totalSpent?.toLocaleString() || 0}P</p>
+            <p className="mt-1 text-xl">{pointsData.points?.total_spent?.toLocaleString() || 0}P</p>
           </div>
           {pointsData.points?.rank && (
             <>
@@ -47,12 +49,12 @@ export function PointsTab({ memberId }: { memberId: string }) {
                 <p className="text-muted-foreground text-sm">現在のランク</p>
                 <p className="mt-1">{pointsData.points.rank.current}</p>
               </div>
-              {pointsData.points.rank.nextRank && (
+              {pointsData.points.rank.next_rank && (
                 <div className="md:col-span-2">
                   <p className="text-muted-foreground text-sm">次回ランクアップ</p>
                   <p className="mt-1">
-                    必要ポイント: {pointsData.points.rank.nextRank.requiredPoints}P / 進捗率:{' '}
-                    {pointsData.points.rank.nextRank.progress}%
+                    必要ポイント: {pointsData.points.rank.next_rank.required_points}P / 進捗率:{' '}
+                    {pointsData.points.rank.next_rank.progress}%
                   </p>
                 </div>
               )}

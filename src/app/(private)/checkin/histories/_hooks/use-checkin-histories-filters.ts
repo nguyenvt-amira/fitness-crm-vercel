@@ -3,21 +3,21 @@ import { useEffect, useState } from 'react';
 import { parseAsInteger, parseAsString, parseAsStringEnum, useQueryStates } from 'nuqs';
 
 export type CheckinHistoriesFilters = {
-  startDate: string | null;
-  endDate: string | null;
+  start_date: string | null;
+  end_date: string | null;
   searchName: string;
   store: string;
-  memberType: string;
+  member_type: string;
   gender: string;
   page: number;
 };
 
 const DEFAULT_FILTERS: CheckinHistoriesFilters = {
-  startDate: null,
-  endDate: null,
+  start_date: null,
+  end_date: null,
   searchName: '',
   store: 'all',
-  memberType: 'all',
+  member_type: 'all',
   gender: 'all',
   page: 1,
 };
@@ -28,11 +28,11 @@ export function useCheckinHistoriesFilters() {
   // Use nuqs for URL query parameters
   const [filters, setFilters] = useQueryStates(
     {
-      startDate: parseAsString,
-      endDate: parseAsString,
+      start_date: parseAsString,
+      end_date: parseAsString,
       searchName: parseAsString.withDefault(''),
       store: parseAsString.withDefault('all'),
-      memberType: parseAsString.withDefault('all'),
+      member_type: parseAsString.withDefault('all'),
       gender: parseAsStringEnum<'all' | 'male' | 'female'>(['all', 'male', 'female']).withDefault(
         'all',
       ),
@@ -73,31 +73,31 @@ export function useCheckinHistoriesFilters() {
   const clearFilters = () => {
     setSearchInput('');
     setFilters({
-      startDate: null,
-      endDate: null,
+      start_date: null,
+      end_date: null,
       searchName: null,
       store: 'all',
-      memberType: 'all',
+      member_type: 'all',
       gender: 'all',
       page: 1,
     });
   };
 
   const hasActiveFilters: boolean =
-    filters.startDate !== null ||
-    filters.endDate !== null ||
+    filters.start_date !== null ||
+    filters.end_date !== null ||
     filters.searchName.length > 0 ||
     filters.store !== 'all' ||
-    filters.memberType !== 'all' ||
+    filters.member_type !== 'all' ||
     filters.gender !== 'all';
 
   // Prepare query params for API
   const queryParams = {
-    startDate: filters.startDate || undefined,
-    endDate: filters.endDate || undefined,
+    start_date: filters.start_date || undefined,
+    end_date: filters.end_date || undefined,
     searchName: filters.searchName || undefined,
     store: filters.store !== 'all' ? filters.store : undefined,
-    memberType: filters.memberType !== 'all' ? filters.memberType : undefined,
+    member_type: filters.member_type !== 'all' ? filters.member_type : undefined,
     gender: filters.gender !== 'all' ? filters.gender : undefined,
     page: filters.page,
   };

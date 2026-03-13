@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import type { UpdateMarketingConsentRequest } from '@/types/member.type';
+import type { UpdateMarketingConsentRequest } from '@/types/api/member.type';
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
