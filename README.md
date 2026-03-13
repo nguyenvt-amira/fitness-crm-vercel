@@ -1,48 +1,48 @@
 # Fitness CRM
 
-fitnessのCRM(会員管理) WEBアプリ
+A fitness CRM (Member Management) web application.
 
-# 技術スタック
+# Tech Stack
 
-| カテゴリ       | 採用技術                 | 備考                                                       |
-| :------------- | :----------------------- | :--------------------------------------------------------- |
-| 実行環境       | Node.js                  | v24以上を推奨                                              |
-| 言語           | TypeScript               | 全域での型安全性の担保                                     |
-| フレームワーク | Next.js                  | App Router採用                                             |
-| UIライブラリ   | shadcn/ui                | Tailwind CSSベースのコンポーネント                         |
-| 構文チェック   | ESLint                   | コード品質の自動チェック                                   |
-| 自動整形       | Prettier                 | チーム間でのコードスタイルの統一 <br> import順の自動ソート |
-| コミット制御   | husky <br /> lint-staged | コミット時のLint/Formatterの自動実行                       |
+| Category       | Technology               | Notes                                                            |
+| :------------- | :----------------------- | :--------------------------------------------------------------- |
+| Runtime        | Node.js                  | v24 or higher recommended                                        |
+| Language       | TypeScript               | Ensuring type safety throughout                                  |
+| Framework      | Next.js                  | Using App Router                                                 |
+| UI Library     | shadcn/ui                | Tailwind CSS-based components                                    |
+| Linter         | ESLint                   | Automated code quality checks                                    |
+| Formatter      | Prettier                 | Unified code style across the team <br> Automatic import sorting |
+| Commit Control | husky <br /> lint-staged | Automatic Lint/Formatter execution on commit                     |
 
 # Getting Started
 
-## インストール
+## Installation
 
 ```bash
 npm install
 ```
 
-`npm install` 時にhusky(Git hooks)も自動でセットアップされます。
+husky (Git hooks) will also be automatically set up during `npm install`.
 
-## 開発サーバの起動
+## Starting the Development Server
 
 ```bash
 npm run dev
 ```
 
-起動後、 [http://localhost:3000](http://localhost:3000) にアクセスしてください。
+After starting, access [http://localhost:3000](http://localhost:3000).
 
 # Linter / Formatter
 
-LinterとFormatterはcommit時に自動実行されます。
-プロジェクト全体に適用したい場合は手動で実行してください。
+The Linter and Formatter run automatically on commit.
+To apply them to the entire project manually, run them as needed.
 
 - ESLint
-  - 設定ファイル: [eslint.config.mjs](./eslint.config.mjs)
-  - 手動実行: `npm run lint`
+  - Config file: [eslint.config.mjs](./eslint.config.mjs)
+  - Manual run: `npm run lint`
 - Prettier
-  - 設定ファイル: [prettier.config.mjs](./prettier.config.mjs)
-  - 手動実行: `npm run format`
+  - Config file: [prettier.config.mjs](./prettier.config.mjs)
+  - Manual run: `npm run format`
 
 # Codebase Overview
 
