@@ -21,7 +21,7 @@ interface CommunicationsTabProps {
   memberId: string;
   onAddMemo?: () => void;
   onEditMemo?: (memo: StaffMemo) => void;
-  onDeleteMemo?: (memoId: string) => Promise<void>;
+  onDeleteMemo?: (memoId: string) => void;
 }
 
 export function CommunicationsTab({
@@ -36,10 +36,10 @@ export function CommunicationsTab({
     }),
   );
 
-  const handleDelete = async (memoId: string) => {
+  const handleDelete = (memoId: string) => {
     if (!onDeleteMemo) return;
     if (!confirm('このメモを削除しますか？')) return;
-    await onDeleteMemo(memoId);
+    onDeleteMemo(memoId);
   };
 
   if (isLoading) return <div className="text-muted-foreground">読み込み中...</div>;

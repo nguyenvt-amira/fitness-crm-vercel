@@ -52,11 +52,21 @@ interface MemoModalProps {
   onOpenChange: (open: boolean) => void;
   /** When provided, edit mode (title スタッフメモ編集, 記録スタッフ/記録日時 from memo, 削除 button) */
   memo?: StaffMemo | null;
-  onSave: (data: { type: MemoType; content: string }) => Promise<void>;
-  onDelete?: (memoId: string) => Promise<void>;
+  onSave: (data: { type: MemoType; content: string }) => void;
+  onDelete?: (memoId: string) => void;
+  isSaving?: boolean;
+  isDeleting?: boolean;
 }
 
-export function MemoModal({ open, onOpenChange, memo, onSave, onDelete }: MemoModalProps) {
+export function MemoModal({
+  open,
+  onOpenChange,
+  memo,
+  onSave,
+  onDelete,
+  isSaving = false,
+  isDeleting = false,
+}: MemoModalProps) {
   const isEdit = Boolean(memo?.id);
 
   const form = useForm<MemoFormValues>({
@@ -82,24 +92,14 @@ export function MemoModal({ open, onOpenChange, memo, onSave, onDelete }: MemoMo
     }
   }, [open, memo, form]);
 
-  const handleSave = form.handleSubmit(async (values) => {
-    try {
-      await onSave({ type: values.type as MemoType, content: values.content.trim() });
-      onOpenChange(false);
-    } catch (error) {
-      console.error('Failed to save memo:', error);
-    }
+  const handleSave = form.handleSubmit((values) => {
+    onSave({ type: values.type as MemoType, content: values.content.trim() });
   });
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (!memo?.id || !onDelete) return;
     if (!confirm('このメモを削除しますか？')) return;
-    try {
-      await onDelete(memo.id);
-      onOpenChange(false);
-    } catch (error) {
-      console.error('Failed to delete memo:', error);
-    }
+    onDelete(memo.id);
   };
 
   return (
@@ -178,12 +178,17 @@ export function MemoModal({ open, onOpenChange, memo, onSave, onDelete }: MemoMo
                 キャンセル
               </Button>
               {isEdit && onDelete && memo?.id && (
-                <Button type="button" variant="destructive" onClick={handleDelete}>
-                  削除
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? '削除中...' : '削除'}
                 </Button>
               )}
-              <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? '保存中...' : '保存'}
+              <Button type="submit" disabled={isSaving}>
+                {isSaving ? '保存中...' : '保存'}
               </Button>
             </DialogFooter>
           </form>

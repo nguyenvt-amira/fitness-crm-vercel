@@ -66,9 +66,24 @@ export default function MemberDetailPage() {
   const [editingMemo, setEditingMemo] = useState<StaffMemo | null>(null);
   const [showPrintModal, setShowPrintModal] = useState(false);
 
-  const postMemo = useMutation(postCrmMembersByIdMemosMutation());
-  const putMemo = useMutation(putCrmMembersByIdMemosByMemoIdMutation());
-  const deleteMemo = useMutation(deleteCrmMembersByIdMemosByMemoIdMutation());
+  const invalidateCommunications = () => {
+    queryClient.invalidateQueries({
+      queryKey: getCrmMembersByIdCommunicationsQueryKey({ path: { id: memberId } }),
+    });
+  };
+
+  const postMemo = useMutation({
+    ...postCrmMembersByIdMemosMutation(),
+    onSuccess: invalidateCommunications,
+  });
+  const putMemo = useMutation({
+    ...putCrmMembersByIdMemosByMemoIdMutation(),
+    onSuccess: invalidateCommunications,
+  });
+  const deleteMemo = useMutation({
+    ...deleteCrmMembersByIdMemosByMemoIdMutation(),
+    onSuccess: invalidateCommunications,
+  });
 
   const { data, isLoading } = useQuery(
     getCrmMembersByIdOptions({
@@ -161,30 +176,40 @@ export default function MemberDetailPage() {
     await new Promise((resolve) => setTimeout(resolve, 1000));
   };
 
-  const handleSaveMemo = async (data: { type: 'caution' | 'vip' | 'other'; content: string }) => {
+  const handleSaveMemo = (data: { type: 'caution' | 'vip' | 'other'; content: string }) => {
+    const onSuccess = () => {
+      setShowMemoModal(false);
+      setEditingMemo(null);
+    };
     if (editingMemo) {
-      await putMemo.mutateAsync({
-        path: { id: memberId, memoId: editingMemo.id },
-        body: { type: data.type, content: data.content.trim() },
-      });
+      putMemo.mutate(
+        {
+          path: { id: memberId, memoId: editingMemo.id },
+          body: { type: data.type, content: data.content.trim() },
+        },
+        { onSuccess },
+      );
     } else {
-      await postMemo.mutateAsync({
-        path: { id: memberId },
-        body: { type: data.type, content: data.content.trim() },
-      });
+      postMemo.mutate(
+        {
+          path: { id: memberId },
+          body: { type: data.type, content: data.content.trim() },
+        },
+        { onSuccess },
+      );
     }
-    queryClient.invalidateQueries({
-      queryKey: getCrmMembersByIdCommunicationsQueryKey({ path: { id: memberId } }),
-    });
   };
 
-  const handleDeleteMemo = async (memoId: string) => {
-    await deleteMemo.mutateAsync({
-      path: { id: memberId, memoId },
-    });
-    queryClient.invalidateQueries({
-      queryKey: getCrmMembersByIdCommunicationsQueryKey({ path: { id: memberId } }),
-    });
+  const handleDeleteMemo = (memoId: string) => {
+    deleteMemo.mutate(
+      { path: { id: memberId, memoId } },
+      {
+        onSuccess: () => {
+          setShowMemoModal(false);
+          setEditingMemo(null);
+        },
+      },
+    );
   };
 
   return (
@@ -355,6 +380,8 @@ export default function MemberDetailPage() {
         memo={editingMemo}
         onSave={handleSaveMemo}
         onDelete={handleDeleteMemo}
+        isSaving={postMemo.isPending || putMemo.isPending}
+        isDeleting={deleteMemo.isPending}
       />
       <PrintModal open={showPrintModal} onOpenChange={setShowPrintModal} member={member} />
     </div>
