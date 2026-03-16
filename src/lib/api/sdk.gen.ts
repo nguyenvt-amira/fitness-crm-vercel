@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdErrors, DeleteCrmMembersByIdMemosByMemoIdResponses, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoResponses, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryErrors, GetCrmMembersByIdChangeHistoryResponses, GetCrmMembersByIdCommunicationsData, GetCrmMembersByIdCommunicationsErrors, GetCrmMembersByIdCommunicationsResponses, GetCrmMembersByIdContractsData, GetCrmMembersByIdContractsResponses, GetCrmMembersByIdData, GetCrmMembersByIdErrors, GetCrmMembersByIdPointsData, GetCrmMembersByIdPointsResponses, GetCrmMembersByIdRelationshipsData, GetCrmMembersByIdRelationshipsErrors, GetCrmMembersByIdRelationshipsResponses, GetCrmMembersByIdResponses, GetCrmMembersByIdServiceUsageData, GetCrmMembersByIdServiceUsageErrors, GetCrmMembersByIdServiceUsageResponses, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsErrors, GetCrmMembersByIdTrainingRecordsResponses, GetCrmMembersByIdUsageHistoryData, GetCrmMembersByIdUsageHistoryErrors, GetCrmMembersByIdUsageHistoryResponses, GetCrmMembersData, GetCrmMembersResponses, GetOpenapiJsonData, GetOpenapiJsonErrors, GetOpenapiJsonResponses, PostAuthLoginData, PostAuthLoginErrors, PostAuthLoginResponses, PostAuthRefreshData, PostAuthRefreshErrors, PostAuthRefreshResponses, PostAuthRegisterData, PostAuthRegisterErrors, PostAuthRegisterResponses, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosErrors, PostCrmMembersByIdMemosResponses, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsAdjustResponses, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsErrors, PostCrmMembersByIdPointsResponses, PostCrmMembersExportData, PostCrmMembersExportResponses, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdBasicInfoResponses, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoErrors, PutCrmMembersByIdHealthInfoResponses, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentErrors, PutCrmMembersByIdMarketingConsentResponses, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdErrors, PutCrmMembersByIdMemosByMemoIdResponses } from './types.gen';
+import type { DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdErrors, DeleteCrmMembersByIdMemosByMemoIdResponses, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoErrors, GetCrmMembersByIdBasicInfoResponses, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryErrors, GetCrmMembersByIdChangeHistoryResponses, GetCrmMembersByIdCommunicationsData, GetCrmMembersByIdCommunicationsErrors, GetCrmMembersByIdCommunicationsResponses, GetCrmMembersByIdContractsData, GetCrmMembersByIdContractsErrors, GetCrmMembersByIdContractsResponses, GetCrmMembersByIdData, GetCrmMembersByIdErrors, GetCrmMembersByIdPointsData, GetCrmMembersByIdPointsErrors, GetCrmMembersByIdPointsResponses, GetCrmMembersByIdRelationshipsData, GetCrmMembersByIdRelationshipsErrors, GetCrmMembersByIdRelationshipsResponses, GetCrmMembersByIdResponses, GetCrmMembersByIdServiceUsageData, GetCrmMembersByIdServiceUsageErrors, GetCrmMembersByIdServiceUsageResponses, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsErrors, GetCrmMembersByIdTrainingRecordsResponses, GetCrmMembersByIdUsageHistoryData, GetCrmMembersByIdUsageHistoryErrors, GetCrmMembersByIdUsageHistoryResponses, GetCrmMembersData, GetCrmMembersResponses, GetOpenapiJsonData, GetOpenapiJsonErrors, GetOpenapiJsonResponses, PostAuthLoginData, PostAuthLoginErrors, PostAuthLoginResponses, PostAuthRefreshData, PostAuthRefreshErrors, PostAuthRefreshResponses, PostAuthRegisterData, PostAuthRegisterErrors, PostAuthRegisterResponses, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosErrors, PostCrmMembersByIdMemosResponses, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsAdjustErrors, PostCrmMembersByIdPointsAdjustResponses, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsErrors, PostCrmMembersByIdPointsResponses, PostCrmMembersExportData, PostCrmMembersExportErrors, PostCrmMembersExportResponses, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdBasicInfoErrors, PutCrmMembersByIdBasicInfoResponses, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoErrors, PutCrmMembersByIdHealthInfoResponses, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentErrors, PutCrmMembersByIdMarketingConsentResponses, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdErrors, PutCrmMembersByIdMemosByMemoIdResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -54,9 +54,9 @@ export class Auth {
     }
     
     /**
-     * POST /auth/register
+     * User registration
      *
-     * Auto-generated from src/app/api/auth/register/route.ts
+     * 新規ユーザー登録。
      */
     public static postAuthRegister<ThrowOnError extends boolean = false>(options: Options<PostAuthRegisterData, ThrowOnError>) {
         return (options.client ?? client).post<PostAuthRegisterResponses, PostAuthRegisterErrors, ThrowOnError>({
@@ -100,9 +100,11 @@ export class Members {
     
     /**
      * Get member basic info
+     *
+     * 基本情報タブ用。個人情報・会員基本情報・eKYC・同意状況・健康情報を返す。
      */
     public static getCrmMembersByIdBasicInfo<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdBasicInfoData, ThrowOnError>) {
-        return (options.client ?? client).get<GetCrmMembersByIdBasicInfoResponses, unknown, ThrowOnError>({
+        return (options.client ?? client).get<GetCrmMembersByIdBasicInfoResponses, GetCrmMembersByIdBasicInfoErrors, ThrowOnError>({
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/crm/members/{id}/basic-info',
             ...options
@@ -111,9 +113,11 @@ export class Members {
     
     /**
      * Update member basic info
+     *
+     * 個人情報（氏名・住所・電話・メール・緊急連絡先）を更新する。
      */
     public static putCrmMembersByIdBasicInfo<ThrowOnError extends boolean = false>(options: Options<PutCrmMembersByIdBasicInfoData, ThrowOnError>) {
-        return (options.client ?? client).put<PutCrmMembersByIdBasicInfoResponses, unknown, ThrowOnError>({
+        return (options.client ?? client).put<PutCrmMembersByIdBasicInfoResponses, PutCrmMembersByIdBasicInfoErrors, ThrowOnError>({
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/crm/members/{id}/basic-info',
             ...options,
@@ -126,9 +130,11 @@ export class Members {
     
     /**
      * Get member contracts
+     *
+     * 契約情報タブ用。主契約・オプション契約を返す。
      */
     public static getCrmMembersByIdContracts<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdContractsData, ThrowOnError>) {
-        return (options.client ?? client).get<GetCrmMembersByIdContractsResponses, unknown, ThrowOnError>({
+        return (options.client ?? client).get<GetCrmMembersByIdContractsResponses, GetCrmMembersByIdContractsErrors, ThrowOnError>({
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/crm/members/{id}/contracts',
             ...options
@@ -137,9 +143,11 @@ export class Members {
     
     /**
      * Get member points
+     *
+     * ポイントタブ用。現在残高・累計付与・累計使用を返す。
      */
     public static getCrmMembersByIdPoints<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdPointsData, ThrowOnError>) {
-        return (options.client ?? client).get<GetCrmMembersByIdPointsResponses, unknown, ThrowOnError>({
+        return (options.client ?? client).get<GetCrmMembersByIdPointsResponses, GetCrmMembersByIdPointsErrors, ThrowOnError>({
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/crm/members/{id}/points',
             ...options
@@ -147,10 +155,29 @@ export class Members {
     }
     
     /**
+     * Create or update member points
+     *
+     * ポイント付与・使用などの操作。
+     */
+    public static postCrmMembersByIdPoints<ThrowOnError extends boolean = false>(options: Options<PostCrmMembersByIdPointsData, ThrowOnError>) {
+        return (options.client ?? client).post<PostCrmMembersByIdPointsResponses, PostCrmMembersByIdPointsErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/crm/members/{id}/points',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
      * Adjust member points
+     *
+     * ポイントを手動で付与または減算する。
      */
     public static postCrmMembersByIdPointsAdjust<ThrowOnError extends boolean = false>(options: Options<PostCrmMembersByIdPointsAdjustData, ThrowOnError>) {
-        return (options.client ?? client).post<PostCrmMembersByIdPointsAdjustResponses, unknown, ThrowOnError>({
+        return (options.client ?? client).post<PostCrmMembersByIdPointsAdjustResponses, PostCrmMembersByIdPointsAdjustErrors, ThrowOnError>({
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/crm/members/{id}/points/adjust',
             ...options,
@@ -180,9 +207,11 @@ export class Members {
     
     /**
      * Export members
+     *
+     * 会員一覧をCSV/Excelでエクスポート。選択会員またはフィルタ結果を指定可能。
      */
     public static postCrmMembersExport<ThrowOnError extends boolean = false>(options: Options<PostCrmMembersExportData, ThrowOnError>) {
-        return (options.client ?? client).post<PostCrmMembersExportResponses, unknown, ThrowOnError>({
+        return (options.client ?? client).post<PostCrmMembersExportResponses, PostCrmMembersExportErrors, ThrowOnError>({
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/crm/members/export',
             ...options,
@@ -194,71 +223,9 @@ export class Members {
     }
     
     /**
-     * Get member communications
+     * Get member change history
      *
-     * コミュニケーションタブ用：スタッフメモ・問い合わせ・通知履歴・電話記録を取得
-     */
-    public static getCrmMembersByIdCommunications<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdCommunicationsData, ThrowOnError>) {
-        return (options.client ?? client).get<GetCrmMembersByIdCommunicationsResponses, GetCrmMembersByIdCommunicationsErrors, ThrowOnError>({
-            security: [{ scheme: 'bearer', type: 'http' }],
-            url: '/crm/members/{id}/communications',
-            ...options
-        });
-    }
-    
-    /**
-     * Delete member memo
-     *
-     * スタッフメモを削除。削除確認後に実行。
-     */
-    public static deleteCrmMembersByIdMemosByMemoId<ThrowOnError extends boolean = false>(options: Options<DeleteCrmMembersByIdMemosByMemoIdData, ThrowOnError>) {
-        return (options.client ?? client).delete<DeleteCrmMembersByIdMemosByMemoIdResponses, DeleteCrmMembersByIdMemosByMemoIdErrors, ThrowOnError>({
-            security: [{ scheme: 'bearer', type: 'http' }],
-            url: '/crm/members/{id}/memos/{memoId}',
-            ...options
-        });
-    }
-    
-    /**
-     * Update member memo
-     *
-     * スタッフメモを編集。
-     */
-    public static putCrmMembersByIdMemosByMemoId<ThrowOnError extends boolean = false>(options: Options<PutCrmMembersByIdMemosByMemoIdData, ThrowOnError>) {
-        return (options.client ?? client).put<PutCrmMembersByIdMemosByMemoIdResponses, PutCrmMembersByIdMemosByMemoIdErrors, ThrowOnError>({
-            security: [{ scheme: 'bearer', type: 'http' }],
-            url: '/crm/members/{id}/memos/{memoId}',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            }
-        });
-    }
-}
-
-export class Crm {
-    /**
-     * POST /crm/members/{id}/points
-     *
-     * Auto-generated from src/app/api/crm/members/[id]/points/route.ts
-     */
-    public static postCrmMembersByIdPoints<ThrowOnError extends boolean = false>(options: Options<PostCrmMembersByIdPointsData, ThrowOnError>) {
-        return (options.client ?? client).post<PostCrmMembersByIdPointsResponses, PostCrmMembersByIdPointsErrors, ThrowOnError>({
-            security: [{ scheme: 'bearer', type: 'http' }],
-            url: '/crm/members/{id}/points',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            }
-        });
-    }
-    
-    /**
-     * GET /crm/members/{id}/change-history
-     *
-     * Auto-generated from src/app/api/crm/members/[id]/change-history/route.ts
+     * 変更履歴タブ用。入会・転店・休会・退会・編集履歴を返す。
      */
     public static getCrmMembersByIdChangeHistory<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdChangeHistoryData, ThrowOnError>) {
         return (options.client ?? client).get<GetCrmMembersByIdChangeHistoryResponses, GetCrmMembersByIdChangeHistoryErrors, ThrowOnError>({
@@ -282,9 +249,9 @@ export class Crm {
     }
     
     /**
-     * PUT /crm/members/{id}/health-info
+     * Update member health info
      *
-     * Auto-generated from src/app/api/crm/members/[id]/health-info/route.ts
+     * 健康情報（健康状態申告・既往歴・アレルギー・運動制限・特記事項）を更新する。
      */
     public static putCrmMembersByIdHealthInfo<ThrowOnError extends boolean = false>(options: Options<PutCrmMembersByIdHealthInfoData, ThrowOnError>) {
         return (options.client ?? client).put<PutCrmMembersByIdHealthInfoResponses, PutCrmMembersByIdHealthInfoErrors, ThrowOnError>({
@@ -299,9 +266,9 @@ export class Crm {
     }
     
     /**
-     * PUT /crm/members/{id}/marketing-consent
+     * Update marketing consent
      *
-     * Auto-generated from src/app/api/crm/members/[id]/marketing-consent/route.ts
+     * マーケティング配信同意（メール・SMS・プッシュ通知）を更新する。
      */
     public static putCrmMembersByIdMarketingConsent<ThrowOnError extends boolean = false>(options: Options<PutCrmMembersByIdMarketingConsentData, ThrowOnError>) {
         return (options.client ?? client).put<PutCrmMembersByIdMarketingConsentResponses, PutCrmMembersByIdMarketingConsentErrors, ThrowOnError>({
@@ -346,9 +313,9 @@ export class Crm {
     }
     
     /**
-     * GET /crm/members/{id}/relationships
+     * Get member relationships
      *
-     * Auto-generated from src/app/api/crm/members/[id]/relationships/route.ts
+     * 関係性タブ用。家族・法人・紹介関係を返す。
      */
     public static getCrmMembersByIdRelationships<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdRelationshipsData, ThrowOnError>) {
         return (options.client ?? client).get<GetCrmMembersByIdRelationshipsResponses, GetCrmMembersByIdRelationshipsErrors, ThrowOnError>({
@@ -359,9 +326,9 @@ export class Crm {
     }
     
     /**
-     * GET /crm/members/{id}/service-usage
+     * Get member service usage
      *
-     * Auto-generated from src/app/api/crm/members/[id]/service-usage/route.ts
+     * サービス利用タブ用。パーソナルトレーニング・スタジオプログラム・その他サービス利用を返す。
      */
     public static getCrmMembersByIdServiceUsage<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdServiceUsageData, ThrowOnError>) {
         return (options.client ?? client).get<GetCrmMembersByIdServiceUsageResponses, GetCrmMembersByIdServiceUsageErrors, ThrowOnError>({
@@ -372,9 +339,9 @@ export class Crm {
     }
     
     /**
-     * GET /crm/members/{id}/training-records
+     * Get member training records
      *
-     * Auto-generated from src/app/api/crm/members/[id]/training-records/route.ts
+     * トレーニング記録タブ用。筋トレ・有酸素・体組成記録を返す。
      */
     public static getCrmMembersByIdTrainingRecords<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdTrainingRecordsData, ThrowOnError>) {
         return (options.client ?? client).get<GetCrmMembersByIdTrainingRecordsResponses, GetCrmMembersByIdTrainingRecordsErrors, ThrowOnError>({
@@ -385,9 +352,9 @@ export class Crm {
     }
     
     /**
-     * GET /crm/members/{id}/usage-history
+     * Get member usage history
      *
-     * Auto-generated from src/app/api/crm/members/[id]/usage-history/route.ts
+     * 利用履歴タブ用。来店履歴・店舗別利用を返す。
      */
     public static getCrmMembersByIdUsageHistory<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdUsageHistoryData, ThrowOnError>) {
         return (options.client ?? client).get<GetCrmMembersByIdUsageHistoryResponses, GetCrmMembersByIdUsageHistoryErrors, ThrowOnError>({

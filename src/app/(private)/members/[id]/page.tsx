@@ -333,7 +333,7 @@ export default function MemberDetailPage() {
           </TabsContent>
 
           <TabsContent value="points" className="mt-4">
-            <PointsTab memberId={memberId} />
+            <PointsTab memberId={memberId} brand={member.profile.brand} />
           </TabsContent>
 
           <TabsContent value="usage" className="mt-4">
