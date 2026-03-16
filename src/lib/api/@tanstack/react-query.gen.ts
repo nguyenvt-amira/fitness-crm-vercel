@@ -4,7 +4,7 @@ import { type DefaultError, type InfiniteData, infiniteQueryOptions, queryOption
 
 import { client } from '../client.gen';
 import { Auth, Crm, Members, OpenapiJson, type Options } from '../sdk.gen';
-import type { DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdError, DeleteCrmMembersByIdMemosByMemoIdResponse, GetCrmAutoApprovalDashboardData, GetCrmAutoApprovalDashboardError, GetCrmAutoApprovalDashboardResponse, GetCrmAutoApprovalSettingsData, GetCrmAutoApprovalSettingsError, GetCrmAutoApprovalSettingsResponse, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoResponse, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryError, GetCrmMembersByIdChangeHistoryResponse, GetCrmMembersByIdCommunicationsData, GetCrmMembersByIdCommunicationsError, GetCrmMembersByIdCommunicationsResponse, GetCrmMembersByIdContractsData, GetCrmMembersByIdData, GetCrmMembersByIdError, GetCrmMembersByIdPointsData, GetCrmMembersByIdRelationshipsData, GetCrmMembersByIdRelationshipsError, GetCrmMembersByIdRelationshipsResponse, GetCrmMembersByIdResponse, GetCrmMembersByIdServiceUsageData, GetCrmMembersByIdServiceUsageError, GetCrmMembersByIdServiceUsageResponse, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsError, GetCrmMembersByIdTrainingRecordsResponse, GetCrmMembersByIdUsageHistoryData, GetCrmMembersByIdUsageHistoryError, GetCrmMembersByIdUsageHistoryResponse, GetCrmMembersData, GetCrmMembershipApplicationsByIdData, GetCrmMembershipApplicationsByIdError, GetCrmMembershipApplicationsByIdResponse, GetCrmMembershipApplicationsData, GetCrmMembershipApplicationsError, GetCrmMembershipApplicationsResponse, GetCrmMembershipApplicationsSummaryData, GetCrmMembershipApplicationsSummaryError, GetCrmMembershipApplicationsSummaryResponse, GetCrmMembersResponse, GetOpenapiJsonData, GetOpenapiJsonError, GetOpenapiJsonResponse, PostAuthLoginData, PostAuthLoginError, PostAuthLoginResponse, PostAuthRefreshData, PostAuthRefreshError, PostAuthRefreshResponse, PostAuthRegisterData, PostAuthRegisterError, PostAuthRegisterResponse, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosError, PostCrmMembersByIdMemosResponse, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsError, PostCrmMembersByIdPointsResponse, PostCrmMembersExportData, PostCrmMembershipApplicationsBulkApproveData, PostCrmMembershipApplicationsBulkApproveError, PostCrmMembershipApplicationsBulkApproveResponse, PostCrmMembershipApplicationsByIdApproveData, PostCrmMembershipApplicationsByIdApproveError, PostCrmMembershipApplicationsByIdApproveResponse, PostCrmMembershipApplicationsByIdCancelData, PostCrmMembershipApplicationsByIdCancelError, PostCrmMembershipApplicationsByIdCancelResponse, PostCrmMembershipApplicationsByIdRejectData, PostCrmMembershipApplicationsByIdRejectError, PostCrmMembershipApplicationsByIdRejectResponse, PostCrmMembershipApplicationsData, PostCrmMembershipApplicationsError, PostCrmMembershipApplicationsResponse, PutCrmAutoApprovalSettingsData, PutCrmAutoApprovalSettingsError, PutCrmAutoApprovalSettingsResponse, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoError, PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentError, PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdError, PutCrmMembersByIdMemosByMemoIdResponse } from '../types.gen';
+import type { DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdError, DeleteCrmMembersByIdMemosByMemoIdResponse, GetCrmAutoApprovalDashboardData, GetCrmAutoApprovalDashboardError, GetCrmAutoApprovalDashboardResponse, GetCrmAutoApprovalSettingsData, GetCrmAutoApprovalSettingsError, GetCrmAutoApprovalSettingsResponse, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoError, GetCrmMembersByIdBasicInfoResponse, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryError, GetCrmMembersByIdChangeHistoryResponse, GetCrmMembersByIdCommunicationsData, GetCrmMembersByIdCommunicationsError, GetCrmMembersByIdCommunicationsResponse, GetCrmMembersByIdContractsData, GetCrmMembersByIdContractsError, GetCrmMembersByIdContractsResponse, GetCrmMembersByIdData, GetCrmMembersByIdError, GetCrmMembersByIdPointsData, GetCrmMembersByIdPointsError, GetCrmMembersByIdPointsResponse, GetCrmMembersByIdRelationshipsData, GetCrmMembersByIdRelationshipsError, GetCrmMembersByIdRelationshipsResponse, GetCrmMembersByIdResponse, GetCrmMembersByIdServiceUsageData, GetCrmMembersByIdServiceUsageError, GetCrmMembersByIdServiceUsageResponse, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsError, GetCrmMembersByIdTrainingRecordsResponse, GetCrmMembersByIdUsageHistoryData, GetCrmMembersByIdUsageHistoryError, GetCrmMembersByIdUsageHistoryResponse, GetCrmMembersData, GetCrmMembershipApplicationsByIdData, GetCrmMembershipApplicationsByIdError, GetCrmMembershipApplicationsByIdResponse, GetCrmMembershipApplicationsData, GetCrmMembershipApplicationsError, GetCrmMembershipApplicationsResponse, GetCrmMembershipApplicationsSummaryData, GetCrmMembershipApplicationsSummaryError, GetCrmMembershipApplicationsSummaryResponse, GetCrmMembersResponse, GetOpenapiJsonData, GetOpenapiJsonError, GetOpenapiJsonResponse, PostAuthLoginData, PostAuthLoginError, PostAuthLoginResponse, PostAuthRefreshData, PostAuthRefreshError, PostAuthRefreshResponse, PostAuthRegisterData, PostAuthRegisterError, PostAuthRegisterResponse, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosError, PostCrmMembersByIdMemosResponse, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsAdjustError, PostCrmMembersByIdPointsAdjustResponse, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsError, PostCrmMembersByIdPointsResponse, PostCrmMembersExportData, PostCrmMembersExportError, PostCrmMembersExportResponse, PostCrmMembershipApplicationsBulkApproveData, PostCrmMembershipApplicationsBulkApproveError, PostCrmMembershipApplicationsBulkApproveResponse, PostCrmMembershipApplicationsByIdApproveData, PostCrmMembershipApplicationsByIdApproveError, PostCrmMembershipApplicationsByIdApproveResponse, PostCrmMembershipApplicationsByIdCancelData, PostCrmMembershipApplicationsByIdCancelError, PostCrmMembershipApplicationsByIdCancelResponse, PostCrmMembershipApplicationsByIdRejectData, PostCrmMembershipApplicationsByIdRejectError, PostCrmMembershipApplicationsByIdRejectResponse, PostCrmMembershipApplicationsData, PostCrmMembershipApplicationsError, PostCrmMembershipApplicationsResponse, PutCrmAutoApprovalSettingsData, PutCrmAutoApprovalSettingsError, PutCrmAutoApprovalSettingsResponse, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdBasicInfoError, PutCrmMembersByIdBasicInfoResponse, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoError, PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentError, PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdError, PutCrmMembersByIdMemosByMemoIdResponse } from '../types.gen';
 
 /**
  * User login
@@ -179,8 +179,10 @@ export const getCrmMembersByIdBasicInfoQueryKey = (options: Options<GetCrmMember
 
 /**
  * Get member basic info
+ *
+ * 基本情報タブ用。個人情報・会員基本情報・eKYC・同意状況・健康情報を返す。
  */
-export const getCrmMembersByIdBasicInfoOptions = (options: Options<GetCrmMembersByIdBasicInfoData>) => queryOptions<GetCrmMembersByIdBasicInfoResponse, DefaultError, GetCrmMembersByIdBasicInfoResponse, ReturnType<typeof getCrmMembersByIdBasicInfoQueryKey>>({
+export const getCrmMembersByIdBasicInfoOptions = (options: Options<GetCrmMembersByIdBasicInfoData>) => queryOptions<GetCrmMembersByIdBasicInfoResponse, GetCrmMembersByIdBasicInfoError, GetCrmMembersByIdBasicInfoResponse, ReturnType<typeof getCrmMembersByIdBasicInfoQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
         const { data } = await Members.getCrmMembersByIdBasicInfo({
             ...options,
@@ -195,9 +197,11 @@ export const getCrmMembersByIdBasicInfoOptions = (options: Options<GetCrmMembers
 
 /**
  * Update member basic info
+ *
+ * 個人情報（氏名・住所・電話・メール・緊急連絡先）を更新する。
  */
-export const putCrmMembersByIdBasicInfoMutation = (options?: Partial<Options<PutCrmMembersByIdBasicInfoData>>): UseMutationOptions<unknown, DefaultError, Options<PutCrmMembersByIdBasicInfoData>> => {
-    const mutationOptions: UseMutationOptions<unknown, DefaultError, Options<PutCrmMembersByIdBasicInfoData>> = {
+export const putCrmMembersByIdBasicInfoMutation = (options?: Partial<Options<PutCrmMembersByIdBasicInfoData>>): UseMutationOptions<PutCrmMembersByIdBasicInfoResponse, PutCrmMembersByIdBasicInfoError, Options<PutCrmMembersByIdBasicInfoData>> => {
+    const mutationOptions: UseMutationOptions<PutCrmMembersByIdBasicInfoResponse, PutCrmMembersByIdBasicInfoError, Options<PutCrmMembersByIdBasicInfoData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await Members.putCrmMembersByIdBasicInfo({
                 ...options,
@@ -214,8 +218,10 @@ export const getCrmMembersByIdContractsQueryKey = (options: Options<GetCrmMember
 
 /**
  * Get member contracts
+ *
+ * 契約情報タブ用。主契約・オプション契約を返す。
  */
-export const getCrmMembersByIdContractsOptions = (options: Options<GetCrmMembersByIdContractsData>) => queryOptions<unknown, DefaultError, unknown, ReturnType<typeof getCrmMembersByIdContractsQueryKey>>({
+export const getCrmMembersByIdContractsOptions = (options: Options<GetCrmMembersByIdContractsData>) => queryOptions<GetCrmMembersByIdContractsResponse, GetCrmMembersByIdContractsError, GetCrmMembersByIdContractsResponse, ReturnType<typeof getCrmMembersByIdContractsQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
         const { data } = await Members.getCrmMembersByIdContracts({
             ...options,
@@ -232,8 +238,10 @@ export const getCrmMembersByIdPointsQueryKey = (options: Options<GetCrmMembersBy
 
 /**
  * Get member points
+ *
+ * ポイントタブ用。現在残高・累計付与・累計使用を返す。
  */
-export const getCrmMembersByIdPointsOptions = (options: Options<GetCrmMembersByIdPointsData>) => queryOptions<unknown, DefaultError, unknown, ReturnType<typeof getCrmMembersByIdPointsQueryKey>>({
+export const getCrmMembersByIdPointsOptions = (options: Options<GetCrmMembersByIdPointsData>) => queryOptions<GetCrmMembersByIdPointsResponse, GetCrmMembersByIdPointsError, GetCrmMembersByIdPointsResponse, ReturnType<typeof getCrmMembersByIdPointsQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
         const { data } = await Members.getCrmMembersByIdPoints({
             ...options,
@@ -247,14 +255,14 @@ export const getCrmMembersByIdPointsOptions = (options: Options<GetCrmMembersByI
 });
 
 /**
- * POST /crm/members/{id}/points
+ * Create or update member points
  *
- * Auto-generated from src/app/api/crm/members/[id]/points/route.ts
+ * ポイント付与・使用などの操作。
  */
 export const postCrmMembersByIdPointsMutation = (options?: Partial<Options<PostCrmMembersByIdPointsData>>): UseMutationOptions<PostCrmMembersByIdPointsResponse, PostCrmMembersByIdPointsError, Options<PostCrmMembersByIdPointsData>> => {
     const mutationOptions: UseMutationOptions<PostCrmMembersByIdPointsResponse, PostCrmMembersByIdPointsError, Options<PostCrmMembersByIdPointsData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await Crm.postCrmMembersByIdPoints({
+            const { data } = await Members.postCrmMembersByIdPoints({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -267,9 +275,11 @@ export const postCrmMembersByIdPointsMutation = (options?: Partial<Options<PostC
 
 /**
  * Adjust member points
+ *
+ * ポイントを手動で付与または減算する。
  */
-export const postCrmMembersByIdPointsAdjustMutation = (options?: Partial<Options<PostCrmMembersByIdPointsAdjustData>>): UseMutationOptions<unknown, DefaultError, Options<PostCrmMembersByIdPointsAdjustData>> => {
-    const mutationOptions: UseMutationOptions<unknown, DefaultError, Options<PostCrmMembersByIdPointsAdjustData>> = {
+export const postCrmMembersByIdPointsAdjustMutation = (options?: Partial<Options<PostCrmMembersByIdPointsAdjustData>>): UseMutationOptions<PostCrmMembersByIdPointsAdjustResponse, PostCrmMembersByIdPointsAdjustError, Options<PostCrmMembersByIdPointsAdjustData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembersByIdPointsAdjustResponse, PostCrmMembersByIdPointsAdjustError, Options<PostCrmMembersByIdPointsAdjustData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await Members.postCrmMembersByIdPointsAdjust({
                 ...options,
@@ -303,9 +313,11 @@ export const postCrmMembersByIdMemosMutation = (options?: Partial<Options<PostCr
 
 /**
  * Export members
+ *
+ * 会員一覧をCSV/Excelでエクスポート。選択会員またはフィルタ結果を指定可能。
  */
-export const postCrmMembersExportMutation = (options?: Partial<Options<PostCrmMembersExportData>>): UseMutationOptions<unknown, DefaultError, Options<PostCrmMembersExportData>> => {
-    const mutationOptions: UseMutationOptions<unknown, DefaultError, Options<PostCrmMembersExportData>> = {
+export const postCrmMembersExportMutation = (options?: Partial<Options<PostCrmMembersExportData>>): UseMutationOptions<PostCrmMembersExportResponse, PostCrmMembersExportError, Options<PostCrmMembersExportData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembersExportResponse, PostCrmMembersExportError, Options<PostCrmMembersExportData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await Members.postCrmMembersExport({
                 ...options,
@@ -321,13 +333,13 @@ export const postCrmMembersExportMutation = (options?: Partial<Options<PostCrmMe
 export const getCrmMembersByIdChangeHistoryQueryKey = (options: Options<GetCrmMembersByIdChangeHistoryData>) => createQueryKey('getCrmMembersByIdChangeHistory', options);
 
 /**
- * GET /crm/members/{id}/change-history
+ * Get member change history
  *
- * Auto-generated from src/app/api/crm/members/[id]/change-history/route.ts
+ * 変更履歴タブ用。入会・転店・休会・退会・編集履歴を返す。
  */
 export const getCrmMembersByIdChangeHistoryOptions = (options: Options<GetCrmMembersByIdChangeHistoryData>) => queryOptions<GetCrmMembersByIdChangeHistoryResponse, GetCrmMembersByIdChangeHistoryError, GetCrmMembersByIdChangeHistoryResponse, ReturnType<typeof getCrmMembersByIdChangeHistoryQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Crm.getCrmMembersByIdChangeHistory({
+        const { data } = await Members.getCrmMembersByIdChangeHistory({
             ...options,
             ...queryKey[0],
             signal,
@@ -359,14 +371,14 @@ export const getCrmMembersByIdCommunicationsOptions = (options: Options<GetCrmMe
 });
 
 /**
- * PUT /crm/members/{id}/health-info
+ * Update member health info
  *
- * Auto-generated from src/app/api/crm/members/[id]/health-info/route.ts
+ * 健康情報（健康状態申告・既往歴・アレルギー・運動制限・特記事項）を更新する。
  */
 export const putCrmMembersByIdHealthInfoMutation = (options?: Partial<Options<PutCrmMembersByIdHealthInfoData>>): UseMutationOptions<PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdHealthInfoError, Options<PutCrmMembersByIdHealthInfoData>> => {
     const mutationOptions: UseMutationOptions<PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdHealthInfoError, Options<PutCrmMembersByIdHealthInfoData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await Crm.putCrmMembersByIdHealthInfo({
+            const { data } = await Members.putCrmMembersByIdHealthInfo({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -378,14 +390,14 @@ export const putCrmMembersByIdHealthInfoMutation = (options?: Partial<Options<Pu
 };
 
 /**
- * PUT /crm/members/{id}/marketing-consent
+ * Update marketing consent
  *
- * Auto-generated from src/app/api/crm/members/[id]/marketing-consent/route.ts
+ * マーケティング配信同意（メール・SMS・プッシュ通知）を更新する。
  */
 export const putCrmMembersByIdMarketingConsentMutation = (options?: Partial<Options<PutCrmMembersByIdMarketingConsentData>>): UseMutationOptions<PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMarketingConsentError, Options<PutCrmMembersByIdMarketingConsentData>> => {
     const mutationOptions: UseMutationOptions<PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMarketingConsentError, Options<PutCrmMembersByIdMarketingConsentData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await Crm.putCrmMembersByIdMarketingConsent({
+            const { data } = await Members.putCrmMembersByIdMarketingConsent({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -437,13 +449,13 @@ export const putCrmMembersByIdMemosByMemoIdMutation = (options?: Partial<Options
 export const getCrmMembersByIdRelationshipsQueryKey = (options: Options<GetCrmMembersByIdRelationshipsData>) => createQueryKey('getCrmMembersByIdRelationships', options);
 
 /**
- * GET /crm/members/{id}/relationships
+ * Get member relationships
  *
- * Auto-generated from src/app/api/crm/members/[id]/relationships/route.ts
+ * 関係性タブ用。家族・法人・紹介関係を返す。
  */
 export const getCrmMembersByIdRelationshipsOptions = (options: Options<GetCrmMembersByIdRelationshipsData>) => queryOptions<GetCrmMembersByIdRelationshipsResponse, GetCrmMembersByIdRelationshipsError, GetCrmMembersByIdRelationshipsResponse, ReturnType<typeof getCrmMembersByIdRelationshipsQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Crm.getCrmMembersByIdRelationships({
+        const { data } = await Members.getCrmMembersByIdRelationships({
             ...options,
             ...queryKey[0],
             signal,
@@ -457,13 +469,13 @@ export const getCrmMembersByIdRelationshipsOptions = (options: Options<GetCrmMem
 export const getCrmMembersByIdServiceUsageQueryKey = (options: Options<GetCrmMembersByIdServiceUsageData>) => createQueryKey('getCrmMembersByIdServiceUsage', options);
 
 /**
- * GET /crm/members/{id}/service-usage
+ * Get member service usage
  *
- * Auto-generated from src/app/api/crm/members/[id]/service-usage/route.ts
+ * サービス利用タブ用。パーソナルトレーニング・スタジオプログラム・その他サービス利用を返す。
  */
 export const getCrmMembersByIdServiceUsageOptions = (options: Options<GetCrmMembersByIdServiceUsageData>) => queryOptions<GetCrmMembersByIdServiceUsageResponse, GetCrmMembersByIdServiceUsageError, GetCrmMembersByIdServiceUsageResponse, ReturnType<typeof getCrmMembersByIdServiceUsageQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Crm.getCrmMembersByIdServiceUsage({
+        const { data } = await Members.getCrmMembersByIdServiceUsage({
             ...options,
             ...queryKey[0],
             signal,
@@ -477,13 +489,13 @@ export const getCrmMembersByIdServiceUsageOptions = (options: Options<GetCrmMemb
 export const getCrmMembersByIdTrainingRecordsQueryKey = (options: Options<GetCrmMembersByIdTrainingRecordsData>) => createQueryKey('getCrmMembersByIdTrainingRecords', options);
 
 /**
- * GET /crm/members/{id}/training-records
+ * Get member training records
  *
- * Auto-generated from src/app/api/crm/members/[id]/training-records/route.ts
+ * トレーニング記録タブ用。筋トレ・有酸素・体組成記録を返す。
  */
 export const getCrmMembersByIdTrainingRecordsOptions = (options: Options<GetCrmMembersByIdTrainingRecordsData>) => queryOptions<GetCrmMembersByIdTrainingRecordsResponse, GetCrmMembersByIdTrainingRecordsError, GetCrmMembersByIdTrainingRecordsResponse, ReturnType<typeof getCrmMembersByIdTrainingRecordsQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Crm.getCrmMembersByIdTrainingRecords({
+        const { data } = await Members.getCrmMembersByIdTrainingRecords({
             ...options,
             ...queryKey[0],
             signal,
@@ -497,13 +509,13 @@ export const getCrmMembersByIdTrainingRecordsOptions = (options: Options<GetCrmM
 export const getCrmMembersByIdUsageHistoryQueryKey = (options: Options<GetCrmMembersByIdUsageHistoryData>) => createQueryKey('getCrmMembersByIdUsageHistory', options);
 
 /**
- * GET /crm/members/{id}/usage-history
+ * Get member usage history
  *
- * Auto-generated from src/app/api/crm/members/[id]/usage-history/route.ts
+ * 利用履歴タブ用。来店履歴・店舗別利用を返す。
  */
 export const getCrmMembersByIdUsageHistoryOptions = (options: Options<GetCrmMembersByIdUsageHistoryData>) => queryOptions<GetCrmMembersByIdUsageHistoryResponse, GetCrmMembersByIdUsageHistoryError, GetCrmMembersByIdUsageHistoryResponse, ReturnType<typeof getCrmMembersByIdUsageHistoryQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Crm.getCrmMembersByIdUsageHistory({
+        const { data } = await Members.getCrmMembersByIdUsageHistory({
             ...options,
             ...queryKey[0],
             signal,
@@ -535,9 +547,9 @@ export const getOpenapiJsonOptions = (options?: Options<GetOpenapiJsonData>) => 
 });
 
 /**
- * POST /auth/register
+ * User registration
  *
- * Auto-generated from src/app/api/auth/register/route.ts
+ * 新規ユーザー登録。
  */
 export const postAuthRegisterMutation = (options?: Partial<Options<PostAuthRegisterData>>): UseMutationOptions<PostAuthRegisterResponse, PostAuthRegisterError, Options<PostAuthRegisterData>> => {
     const mutationOptions: UseMutationOptions<PostAuthRegisterResponse, PostAuthRegisterError, Options<PostAuthRegisterData>> = {
