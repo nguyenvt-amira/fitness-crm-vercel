@@ -4,7 +4,7 @@ import { type DefaultError, type InfiniteData, infiniteQueryOptions, queryOption
 
 import { client } from '../client.gen';
 import { Auth, Crm, Members, OpenapiJson, type Options } from '../sdk.gen';
-import type { DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdError, DeleteCrmMembersByIdMemosByMemoIdResponse, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoResponse, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryError, GetCrmMembersByIdChangeHistoryResponse, GetCrmMembersByIdCommunicationsData, GetCrmMembersByIdCommunicationsError, GetCrmMembersByIdCommunicationsResponse, GetCrmMembersByIdContractsData, GetCrmMembersByIdData, GetCrmMembersByIdError, GetCrmMembersByIdPointsData, GetCrmMembersByIdRelationshipsData, GetCrmMembersByIdRelationshipsError, GetCrmMembersByIdRelationshipsResponse, GetCrmMembersByIdResponse, GetCrmMembersByIdServiceUsageData, GetCrmMembersByIdServiceUsageError, GetCrmMembersByIdServiceUsageResponse, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsError, GetCrmMembersByIdTrainingRecordsResponse, GetCrmMembersByIdUsageHistoryData, GetCrmMembersByIdUsageHistoryError, GetCrmMembersByIdUsageHistoryResponse, GetCrmMembersData, GetCrmMembersResponse, GetOpenapiJsonData, GetOpenapiJsonError, GetOpenapiJsonResponse, PostAuthLoginData, PostAuthLoginError, PostAuthLoginResponse, PostAuthRefreshData, PostAuthRefreshError, PostAuthRefreshResponse, PostAuthRegisterData, PostAuthRegisterError, PostAuthRegisterResponse, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosError, PostCrmMembersByIdMemosResponse, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsError, PostCrmMembersByIdPointsResponse, PostCrmMembersExportData, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoError, PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentError, PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdError, PutCrmMembersByIdMemosByMemoIdResponse } from '../types.gen';
+import type { DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdError, DeleteCrmMembersByIdMemosByMemoIdResponse, GetCrmAutoApprovalDashboardData, GetCrmAutoApprovalDashboardError, GetCrmAutoApprovalDashboardResponse, GetCrmAutoApprovalSettingsData, GetCrmAutoApprovalSettingsError, GetCrmAutoApprovalSettingsResponse, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoResponse, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryError, GetCrmMembersByIdChangeHistoryResponse, GetCrmMembersByIdCommunicationsData, GetCrmMembersByIdCommunicationsError, GetCrmMembersByIdCommunicationsResponse, GetCrmMembersByIdContractsData, GetCrmMembersByIdData, GetCrmMembersByIdError, GetCrmMembersByIdPointsData, GetCrmMembersByIdRelationshipsData, GetCrmMembersByIdRelationshipsError, GetCrmMembersByIdRelationshipsResponse, GetCrmMembersByIdResponse, GetCrmMembersByIdServiceUsageData, GetCrmMembersByIdServiceUsageError, GetCrmMembersByIdServiceUsageResponse, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsError, GetCrmMembersByIdTrainingRecordsResponse, GetCrmMembersByIdUsageHistoryData, GetCrmMembersByIdUsageHistoryError, GetCrmMembersByIdUsageHistoryResponse, GetCrmMembersData, GetCrmMembershipApplicationsByIdData, GetCrmMembershipApplicationsByIdError, GetCrmMembershipApplicationsByIdResponse, GetCrmMembershipApplicationsData, GetCrmMembershipApplicationsError, GetCrmMembershipApplicationsResponse, GetCrmMembershipApplicationsSummaryData, GetCrmMembershipApplicationsSummaryError, GetCrmMembershipApplicationsSummaryResponse, GetCrmMembersResponse, GetOpenapiJsonData, GetOpenapiJsonError, GetOpenapiJsonResponse, PostAuthLoginData, PostAuthLoginError, PostAuthLoginResponse, PostAuthRefreshData, PostAuthRefreshError, PostAuthRefreshResponse, PostAuthRegisterData, PostAuthRegisterError, PostAuthRegisterResponse, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosError, PostCrmMembersByIdMemosResponse, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsError, PostCrmMembersByIdPointsResponse, PostCrmMembersExportData, PostCrmMembershipApplicationsBulkApproveData, PostCrmMembershipApplicationsBulkApproveError, PostCrmMembershipApplicationsBulkApproveResponse, PostCrmMembershipApplicationsByIdApproveData, PostCrmMembershipApplicationsByIdApproveError, PostCrmMembershipApplicationsByIdApproveResponse, PostCrmMembershipApplicationsByIdCancelData, PostCrmMembershipApplicationsByIdCancelError, PostCrmMembershipApplicationsByIdCancelResponse, PostCrmMembershipApplicationsByIdRejectData, PostCrmMembershipApplicationsByIdRejectError, PostCrmMembershipApplicationsByIdRejectResponse, PostCrmMembershipApplicationsData, PostCrmMembershipApplicationsError, PostCrmMembershipApplicationsResponse, PutCrmAutoApprovalSettingsData, PutCrmAutoApprovalSettingsError, PutCrmAutoApprovalSettingsResponse, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoError, PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentError, PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdError, PutCrmMembersByIdMemosByMemoIdResponse } from '../types.gen';
 
 /**
  * User login
@@ -552,3 +552,217 @@ export const postAuthRegisterMutation = (options?: Partial<Options<PostAuthRegis
     };
     return mutationOptions;
 };
+
+export const getCrmAutoApprovalDashboardQueryKey = (options?: Options<GetCrmAutoApprovalDashboardData>) => createQueryKey('getCrmAutoApprovalDashboard', options);
+
+/**
+ * GET /crm/auto-approval/dashboard
+ *
+ * Auto-generated from src/app/api/crm/auto-approval/dashboard/route.ts
+ */
+export const getCrmAutoApprovalDashboardOptions = (options?: Options<GetCrmAutoApprovalDashboardData>) => queryOptions<GetCrmAutoApprovalDashboardResponse, GetCrmAutoApprovalDashboardError, GetCrmAutoApprovalDashboardResponse, ReturnType<typeof getCrmAutoApprovalDashboardQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Crm.getCrmAutoApprovalDashboard({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmAutoApprovalDashboardQueryKey(options)
+});
+
+export const getCrmAutoApprovalSettingsQueryKey = (options?: Options<GetCrmAutoApprovalSettingsData>) => createQueryKey('getCrmAutoApprovalSettings', options);
+
+/**
+ * GET /crm/auto-approval/settings
+ *
+ * Auto-generated from src/app/api/crm/auto-approval/settings/route.ts
+ */
+export const getCrmAutoApprovalSettingsOptions = (options?: Options<GetCrmAutoApprovalSettingsData>) => queryOptions<GetCrmAutoApprovalSettingsResponse, GetCrmAutoApprovalSettingsError, GetCrmAutoApprovalSettingsResponse, ReturnType<typeof getCrmAutoApprovalSettingsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Crm.getCrmAutoApprovalSettings({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmAutoApprovalSettingsQueryKey(options)
+});
+
+/**
+ * PUT /crm/auto-approval/settings
+ *
+ * Auto-generated from src/app/api/crm/auto-approval/settings/route.ts
+ */
+export const putCrmAutoApprovalSettingsMutation = (options?: Partial<Options<PutCrmAutoApprovalSettingsData>>): UseMutationOptions<PutCrmAutoApprovalSettingsResponse, PutCrmAutoApprovalSettingsError, Options<PutCrmAutoApprovalSettingsData>> => {
+    const mutationOptions: UseMutationOptions<PutCrmAutoApprovalSettingsResponse, PutCrmAutoApprovalSettingsError, Options<PutCrmAutoApprovalSettingsData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Crm.putCrmAutoApprovalSettings({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * POST /crm/membership-applications/{id}/approve
+ *
+ * Auto-generated from src/app/api/crm/membership-applications/[id]/approve/route.ts
+ */
+export const postCrmMembershipApplicationsByIdApproveMutation = (options?: Partial<Options<PostCrmMembershipApplicationsByIdApproveData>>): UseMutationOptions<PostCrmMembershipApplicationsByIdApproveResponse, PostCrmMembershipApplicationsByIdApproveError, Options<PostCrmMembershipApplicationsByIdApproveData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembershipApplicationsByIdApproveResponse, PostCrmMembershipApplicationsByIdApproveError, Options<PostCrmMembershipApplicationsByIdApproveData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Crm.postCrmMembershipApplicationsByIdApprove({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * POST /crm/membership-applications/{id}/cancel
+ *
+ * Auto-generated from src/app/api/crm/membership-applications/[id]/cancel/route.ts
+ */
+export const postCrmMembershipApplicationsByIdCancelMutation = (options?: Partial<Options<PostCrmMembershipApplicationsByIdCancelData>>): UseMutationOptions<PostCrmMembershipApplicationsByIdCancelResponse, PostCrmMembershipApplicationsByIdCancelError, Options<PostCrmMembershipApplicationsByIdCancelData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembershipApplicationsByIdCancelResponse, PostCrmMembershipApplicationsByIdCancelError, Options<PostCrmMembershipApplicationsByIdCancelData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Crm.postCrmMembershipApplicationsByIdCancel({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * POST /crm/membership-applications/{id}/reject
+ *
+ * Auto-generated from src/app/api/crm/membership-applications/[id]/reject/route.ts
+ */
+export const postCrmMembershipApplicationsByIdRejectMutation = (options?: Partial<Options<PostCrmMembershipApplicationsByIdRejectData>>): UseMutationOptions<PostCrmMembershipApplicationsByIdRejectResponse, PostCrmMembershipApplicationsByIdRejectError, Options<PostCrmMembershipApplicationsByIdRejectData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembershipApplicationsByIdRejectResponse, PostCrmMembershipApplicationsByIdRejectError, Options<PostCrmMembershipApplicationsByIdRejectData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Crm.postCrmMembershipApplicationsByIdReject({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmMembershipApplicationsByIdQueryKey = (options: Options<GetCrmMembershipApplicationsByIdData>) => createQueryKey('getCrmMembershipApplicationsById', options);
+
+/**
+ * GET /crm/membership-applications/{id}
+ *
+ * Auto-generated from src/app/api/crm/membership-applications/[id]/route.ts
+ */
+export const getCrmMembershipApplicationsByIdOptions = (options: Options<GetCrmMembershipApplicationsByIdData>) => queryOptions<GetCrmMembershipApplicationsByIdResponse, GetCrmMembershipApplicationsByIdError, GetCrmMembershipApplicationsByIdResponse, ReturnType<typeof getCrmMembershipApplicationsByIdQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Crm.getCrmMembershipApplicationsById({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembershipApplicationsByIdQueryKey(options)
+});
+
+/**
+ * POST /crm/membership-applications/bulk-approve
+ *
+ * Auto-generated from src/app/api/crm/membership-applications/bulk-approve/route.ts
+ */
+export const postCrmMembershipApplicationsBulkApproveMutation = (options?: Partial<Options<PostCrmMembershipApplicationsBulkApproveData>>): UseMutationOptions<PostCrmMembershipApplicationsBulkApproveResponse, PostCrmMembershipApplicationsBulkApproveError, Options<PostCrmMembershipApplicationsBulkApproveData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembershipApplicationsBulkApproveResponse, PostCrmMembershipApplicationsBulkApproveError, Options<PostCrmMembershipApplicationsBulkApproveData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Crm.postCrmMembershipApplicationsBulkApprove({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmMembershipApplicationsQueryKey = (options?: Options<GetCrmMembershipApplicationsData>) => createQueryKey('getCrmMembershipApplications', options);
+
+/**
+ * GET /crm/membership-applications
+ *
+ * Auto-generated from src/app/api/crm/membership-applications/route.ts
+ */
+export const getCrmMembershipApplicationsOptions = (options?: Options<GetCrmMembershipApplicationsData>) => queryOptions<GetCrmMembershipApplicationsResponse, GetCrmMembershipApplicationsError, GetCrmMembershipApplicationsResponse, ReturnType<typeof getCrmMembershipApplicationsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Crm.getCrmMembershipApplications({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembershipApplicationsQueryKey(options)
+});
+
+/**
+ * POST /crm/membership-applications
+ *
+ * Auto-generated from src/app/api/crm/membership-applications/route.ts
+ */
+export const postCrmMembershipApplicationsMutation = (options?: Partial<Options<PostCrmMembershipApplicationsData>>): UseMutationOptions<PostCrmMembershipApplicationsResponse, PostCrmMembershipApplicationsError, Options<PostCrmMembershipApplicationsData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembershipApplicationsResponse, PostCrmMembershipApplicationsError, Options<PostCrmMembershipApplicationsData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Crm.postCrmMembershipApplications({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmMembershipApplicationsSummaryQueryKey = (options?: Options<GetCrmMembershipApplicationsSummaryData>) => createQueryKey('getCrmMembershipApplicationsSummary', options);
+
+/**
+ * GET /crm/membership-applications/summary
+ *
+ * Auto-generated from src/app/api/crm/membership-applications/summary/route.ts
+ */
+export const getCrmMembershipApplicationsSummaryOptions = (options?: Options<GetCrmMembershipApplicationsSummaryData>) => queryOptions<GetCrmMembershipApplicationsSummaryResponse, GetCrmMembershipApplicationsSummaryError, GetCrmMembershipApplicationsSummaryResponse, ReturnType<typeof getCrmMembershipApplicationsSummaryQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Crm.getCrmMembershipApplicationsSummary({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembershipApplicationsSummaryQueryKey(options)
+});

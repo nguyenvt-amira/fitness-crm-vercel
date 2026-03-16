@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdErrors, DeleteCrmMembersByIdMemosByMemoIdResponses, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoResponses, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryErrors, GetCrmMembersByIdChangeHistoryResponses, GetCrmMembersByIdCommunicationsData, GetCrmMembersByIdCommunicationsErrors, GetCrmMembersByIdCommunicationsResponses, GetCrmMembersByIdContractsData, GetCrmMembersByIdContractsResponses, GetCrmMembersByIdData, GetCrmMembersByIdErrors, GetCrmMembersByIdPointsData, GetCrmMembersByIdPointsResponses, GetCrmMembersByIdRelationshipsData, GetCrmMembersByIdRelationshipsErrors, GetCrmMembersByIdRelationshipsResponses, GetCrmMembersByIdResponses, GetCrmMembersByIdServiceUsageData, GetCrmMembersByIdServiceUsageErrors, GetCrmMembersByIdServiceUsageResponses, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsErrors, GetCrmMembersByIdTrainingRecordsResponses, GetCrmMembersByIdUsageHistoryData, GetCrmMembersByIdUsageHistoryErrors, GetCrmMembersByIdUsageHistoryResponses, GetCrmMembersData, GetCrmMembersResponses, GetOpenapiJsonData, GetOpenapiJsonErrors, GetOpenapiJsonResponses, PostAuthLoginData, PostAuthLoginErrors, PostAuthLoginResponses, PostAuthRefreshData, PostAuthRefreshErrors, PostAuthRefreshResponses, PostAuthRegisterData, PostAuthRegisterErrors, PostAuthRegisterResponses, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosErrors, PostCrmMembersByIdMemosResponses, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsAdjustResponses, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsErrors, PostCrmMembersByIdPointsResponses, PostCrmMembersExportData, PostCrmMembersExportResponses, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdBasicInfoResponses, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoErrors, PutCrmMembersByIdHealthInfoResponses, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentErrors, PutCrmMembersByIdMarketingConsentResponses, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdErrors, PutCrmMembersByIdMemosByMemoIdResponses } from './types.gen';
+import type { DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdErrors, DeleteCrmMembersByIdMemosByMemoIdResponses, GetCrmAutoApprovalDashboardData, GetCrmAutoApprovalDashboardErrors, GetCrmAutoApprovalDashboardResponses, GetCrmAutoApprovalSettingsData, GetCrmAutoApprovalSettingsErrors, GetCrmAutoApprovalSettingsResponses, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoResponses, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryErrors, GetCrmMembersByIdChangeHistoryResponses, GetCrmMembersByIdCommunicationsData, GetCrmMembersByIdCommunicationsErrors, GetCrmMembersByIdCommunicationsResponses, GetCrmMembersByIdContractsData, GetCrmMembersByIdContractsResponses, GetCrmMembersByIdData, GetCrmMembersByIdErrors, GetCrmMembersByIdPointsData, GetCrmMembersByIdPointsResponses, GetCrmMembersByIdRelationshipsData, GetCrmMembersByIdRelationshipsErrors, GetCrmMembersByIdRelationshipsResponses, GetCrmMembersByIdResponses, GetCrmMembersByIdServiceUsageData, GetCrmMembersByIdServiceUsageErrors, GetCrmMembersByIdServiceUsageResponses, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsErrors, GetCrmMembersByIdTrainingRecordsResponses, GetCrmMembersByIdUsageHistoryData, GetCrmMembersByIdUsageHistoryErrors, GetCrmMembersByIdUsageHistoryResponses, GetCrmMembersData, GetCrmMembershipApplicationsByIdData, GetCrmMembershipApplicationsByIdErrors, GetCrmMembershipApplicationsByIdResponses, GetCrmMembershipApplicationsData, GetCrmMembershipApplicationsErrors, GetCrmMembershipApplicationsResponses, GetCrmMembershipApplicationsSummaryData, GetCrmMembershipApplicationsSummaryErrors, GetCrmMembershipApplicationsSummaryResponses, GetCrmMembersResponses, GetOpenapiJsonData, GetOpenapiJsonErrors, GetOpenapiJsonResponses, PostAuthLoginData, PostAuthLoginErrors, PostAuthLoginResponses, PostAuthRefreshData, PostAuthRefreshErrors, PostAuthRefreshResponses, PostAuthRegisterData, PostAuthRegisterErrors, PostAuthRegisterResponses, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosErrors, PostCrmMembersByIdMemosResponses, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsAdjustResponses, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsErrors, PostCrmMembersByIdPointsResponses, PostCrmMembersExportData, PostCrmMembersExportResponses, PostCrmMembershipApplicationsBulkApproveData, PostCrmMembershipApplicationsBulkApproveErrors, PostCrmMembershipApplicationsBulkApproveResponses, PostCrmMembershipApplicationsByIdApproveData, PostCrmMembershipApplicationsByIdApproveErrors, PostCrmMembershipApplicationsByIdApproveResponses, PostCrmMembershipApplicationsByIdCancelData, PostCrmMembershipApplicationsByIdCancelErrors, PostCrmMembershipApplicationsByIdCancelResponses, PostCrmMembershipApplicationsByIdRejectData, PostCrmMembershipApplicationsByIdRejectErrors, PostCrmMembershipApplicationsByIdRejectResponses, PostCrmMembershipApplicationsData, PostCrmMembershipApplicationsErrors, PostCrmMembershipApplicationsResponses, PutCrmAutoApprovalSettingsData, PutCrmAutoApprovalSettingsErrors, PutCrmAutoApprovalSettingsResponses, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdBasicInfoResponses, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoErrors, PutCrmMembersByIdHealthInfoResponses, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentErrors, PutCrmMembersByIdMarketingConsentResponses, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdErrors, PutCrmMembersByIdMemosByMemoIdResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -393,6 +393,173 @@ export class Crm {
         return (options.client ?? client).get<GetCrmMembersByIdUsageHistoryResponses, GetCrmMembersByIdUsageHistoryErrors, ThrowOnError>({
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/crm/members/{id}/usage-history',
+            ...options
+        });
+    }
+    
+    /**
+     * GET /crm/auto-approval/dashboard
+     *
+     * Auto-generated from src/app/api/crm/auto-approval/dashboard/route.ts
+     */
+    public static getCrmAutoApprovalDashboard<ThrowOnError extends boolean = false>(options?: Options<GetCrmAutoApprovalDashboardData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmAutoApprovalDashboardResponses, GetCrmAutoApprovalDashboardErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/crm/auto-approval/dashboard',
+            ...options
+        });
+    }
+    
+    /**
+     * GET /crm/auto-approval/settings
+     *
+     * Auto-generated from src/app/api/crm/auto-approval/settings/route.ts
+     */
+    public static getCrmAutoApprovalSettings<ThrowOnError extends boolean = false>(options?: Options<GetCrmAutoApprovalSettingsData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmAutoApprovalSettingsResponses, GetCrmAutoApprovalSettingsErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/crm/auto-approval/settings',
+            ...options
+        });
+    }
+    
+    /**
+     * PUT /crm/auto-approval/settings
+     *
+     * Auto-generated from src/app/api/crm/auto-approval/settings/route.ts
+     */
+    public static putCrmAutoApprovalSettings<ThrowOnError extends boolean = false>(options: Options<PutCrmAutoApprovalSettingsData, ThrowOnError>) {
+        return (options.client ?? client).put<PutCrmAutoApprovalSettingsResponses, PutCrmAutoApprovalSettingsErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/crm/auto-approval/settings',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * POST /crm/membership-applications/{id}/approve
+     *
+     * Auto-generated from src/app/api/crm/membership-applications/[id]/approve/route.ts
+     */
+    public static postCrmMembershipApplicationsByIdApprove<ThrowOnError extends boolean = false>(options: Options<PostCrmMembershipApplicationsByIdApproveData, ThrowOnError>) {
+        return (options.client ?? client).post<PostCrmMembershipApplicationsByIdApproveResponses, PostCrmMembershipApplicationsByIdApproveErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/crm/membership-applications/{id}/approve',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * POST /crm/membership-applications/{id}/cancel
+     *
+     * Auto-generated from src/app/api/crm/membership-applications/[id]/cancel/route.ts
+     */
+    public static postCrmMembershipApplicationsByIdCancel<ThrowOnError extends boolean = false>(options: Options<PostCrmMembershipApplicationsByIdCancelData, ThrowOnError>) {
+        return (options.client ?? client).post<PostCrmMembershipApplicationsByIdCancelResponses, PostCrmMembershipApplicationsByIdCancelErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/crm/membership-applications/{id}/cancel',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * POST /crm/membership-applications/{id}/reject
+     *
+     * Auto-generated from src/app/api/crm/membership-applications/[id]/reject/route.ts
+     */
+    public static postCrmMembershipApplicationsByIdReject<ThrowOnError extends boolean = false>(options: Options<PostCrmMembershipApplicationsByIdRejectData, ThrowOnError>) {
+        return (options.client ?? client).post<PostCrmMembershipApplicationsByIdRejectResponses, PostCrmMembershipApplicationsByIdRejectErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/crm/membership-applications/{id}/reject',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * GET /crm/membership-applications/{id}
+     *
+     * Auto-generated from src/app/api/crm/membership-applications/[id]/route.ts
+     */
+    public static getCrmMembershipApplicationsById<ThrowOnError extends boolean = false>(options: Options<GetCrmMembershipApplicationsByIdData, ThrowOnError>) {
+        return (options.client ?? client).get<GetCrmMembershipApplicationsByIdResponses, GetCrmMembershipApplicationsByIdErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/crm/membership-applications/{id}',
+            ...options
+        });
+    }
+    
+    /**
+     * POST /crm/membership-applications/bulk-approve
+     *
+     * Auto-generated from src/app/api/crm/membership-applications/bulk-approve/route.ts
+     */
+    public static postCrmMembershipApplicationsBulkApprove<ThrowOnError extends boolean = false>(options: Options<PostCrmMembershipApplicationsBulkApproveData, ThrowOnError>) {
+        return (options.client ?? client).post<PostCrmMembershipApplicationsBulkApproveResponses, PostCrmMembershipApplicationsBulkApproveErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/crm/membership-applications/bulk-approve',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * GET /crm/membership-applications
+     *
+     * Auto-generated from src/app/api/crm/membership-applications/route.ts
+     */
+    public static getCrmMembershipApplications<ThrowOnError extends boolean = false>(options?: Options<GetCrmMembershipApplicationsData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmMembershipApplicationsResponses, GetCrmMembershipApplicationsErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/crm/membership-applications',
+            ...options
+        });
+    }
+    
+    /**
+     * POST /crm/membership-applications
+     *
+     * Auto-generated from src/app/api/crm/membership-applications/route.ts
+     */
+    public static postCrmMembershipApplications<ThrowOnError extends boolean = false>(options: Options<PostCrmMembershipApplicationsData, ThrowOnError>) {
+        return (options.client ?? client).post<PostCrmMembershipApplicationsResponses, PostCrmMembershipApplicationsErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/crm/membership-applications',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * GET /crm/membership-applications/summary
+     *
+     * Auto-generated from src/app/api/crm/membership-applications/summary/route.ts
+     */
+    public static getCrmMembershipApplicationsSummary<ThrowOnError extends boolean = false>(options?: Options<GetCrmMembershipApplicationsSummaryData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmMembershipApplicationsSummaryResponses, GetCrmMembershipApplicationsSummaryErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/crm/membership-applications/summary',
             ...options
         });
     }
