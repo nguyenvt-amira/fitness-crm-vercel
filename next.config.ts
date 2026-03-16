@@ -32,7 +32,14 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
-    domains: IMAGE_DOMAINS?.split(',').map((item) => item.trim()) ?? [],
+    remotePatterns:
+      IMAGE_DOMAINS?.split(',')
+        .map((item) => item.trim())
+        .filter(Boolean)
+        .map((domain) => ({
+          protocol: 'https' as const,
+          hostname: domain,
+        })) ?? [],
   },
 };
 
