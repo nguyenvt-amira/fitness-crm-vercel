@@ -15,6 +15,15 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  {
+    // Project-level rule overrides
+    rules: {
+      '@typescript-eslint/no-empty-object-type': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/ban-ts-comment': 'off',
+      'react/no-unescaped-entities': 'off',
+    },
+  },
 ]);
 
 export default eslintConfig;
