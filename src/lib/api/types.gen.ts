@@ -106,8 +106,56 @@ export type PointAdjustmentRequest = {
 };
 
 export type CreateMemoRequest = {
+    /**
+     * メモ種別（要注意/VIP/その他）
+     */
     type: 'caution' | 'vip' | 'other';
+    /**
+     * メモ内容（1000文字まで）
+     */
     content: string;
+    /**
+     * 記録スタッフ（未指定時はAPIでデフォルト設定）
+     */
+    created_by?: string;
+};
+
+export type UpdateMemoRequest = {
+    type?: 'caution' | 'vip' | 'other';
+    content?: string;
+};
+
+export type StaffMemo = {
+    /**
+     * メモID
+     */
+    id: string;
+    /**
+     * 記録日時
+     */
+    date: string;
+    /**
+     * メモ種別
+     */
+    type: 'caution' | 'vip' | 'other';
+    /**
+     * メモ内容
+     */
+    content: string;
+    /**
+     * 記録スタッフ
+     */
+    created_by: string;
+};
+
+export type CreateMemoResponse = {
+    success?: boolean;
+    memo?: StaffMemo;
+};
+
+export type UpdateMemoResponse = {
+    success?: boolean;
+    memo?: StaffMemo;
 };
 
 export type ExportMembersRequest = {
@@ -115,6 +163,28 @@ export type ExportMembersRequest = {
     target: 'selected' | 'filtered';
     member_ids?: Array<string>;
     fields: Array<string>;
+};
+
+/**
+ * コミュニケーションタブ取得レスポンス
+ */
+export type GetCommunicationsResponse = {
+    /**
+     * スタッフメモ一覧
+     */
+    memos?: Array<StaffMemo>;
+    inquiries?: Array<{
+        id?: string;
+        date?: string;
+        content?: string;
+        staff_name?: string;
+        result?: string;
+        status?: 'in_progress' | 'completed';
+    }>;
+    notifications?: {
+        [key: string]: unknown;
+    };
+    phoneRecords?: Array<unknown>;
 };
 
 export type Error = {
@@ -395,18 +465,36 @@ export type PostCrmMembersByIdPointsAdjustResponses = {
 export type PostCrmMembersByIdMemosData = {
     body: CreateMemoRequest;
     path: {
+        /**
+         * 会員ID
+         */
         id: string;
     };
     query?: never;
     url: '/crm/members/{id}/memos';
 };
 
+export type PostCrmMembersByIdMemosErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type PostCrmMembersByIdMemosError = PostCrmMembersByIdMemosErrors[keyof PostCrmMembersByIdMemosErrors];
+
 export type PostCrmMembersByIdMemosResponses = {
     /**
      * Success
      */
-    200: unknown;
+    200: CreateMemoResponse;
 };
+
+export type PostCrmMembersByIdMemosResponse = PostCrmMembersByIdMemosResponses[keyof PostCrmMembersByIdMemosResponses];
 
 export type PostCrmMembersExportData = {
     body: ExportMembersRequest;
@@ -479,9 +567,7 @@ export type GetCrmMembersByIdCommunicationsResponses = {
     /**
      * Success
      */
-    200: {
-        [key: string]: unknown;
-    };
+    200: GetCommunicationsResponse;
 };
 
 export type GetCrmMembersByIdCommunicationsResponse = GetCrmMembersByIdCommunicationsResponses[keyof GetCrmMembersByIdCommunicationsResponses];
@@ -558,11 +644,11 @@ export type DeleteCrmMembersByIdMemosByMemoIdData = {
     body?: never;
     path: {
         /**
-         * id parameter
+         * 会員ID
          */
         id: string;
         /**
-         * memoId parameter
+         * メモID
          */
         memoId: string;
     };
@@ -571,6 +657,10 @@ export type DeleteCrmMembersByIdMemosByMemoIdData = {
 };
 
 export type DeleteCrmMembersByIdMemosByMemoIdErrors = {
+    /**
+     * Memo not found
+     */
+    404: Error;
     /**
      * Internal server error
      */
@@ -584,23 +674,21 @@ export type DeleteCrmMembersByIdMemosByMemoIdResponses = {
      * Success
      */
     200: {
-        [key: string]: unknown;
+        success?: boolean;
     };
 };
 
 export type DeleteCrmMembersByIdMemosByMemoIdResponse = DeleteCrmMembersByIdMemosByMemoIdResponses[keyof DeleteCrmMembersByIdMemosByMemoIdResponses];
 
 export type PutCrmMembersByIdMemosByMemoIdData = {
-    body: {
-        [key: string]: unknown;
-    };
+    body: UpdateMemoRequest;
     path: {
         /**
-         * id parameter
+         * 会員ID
          */
         id: string;
         /**
-         * memoId parameter
+         * メモID
          */
         memoId: string;
     };
@@ -609,6 +697,10 @@ export type PutCrmMembersByIdMemosByMemoIdData = {
 };
 
 export type PutCrmMembersByIdMemosByMemoIdErrors = {
+    /**
+     * Memo not found
+     */
+    404: Error;
     /**
      * Internal server error
      */
@@ -621,9 +713,7 @@ export type PutCrmMembersByIdMemosByMemoIdResponses = {
     /**
      * Success
      */
-    200: {
-        [key: string]: unknown;
-    };
+    200: UpdateMemoResponse;
 };
 
 export type PutCrmMembersByIdMemosByMemoIdResponse = PutCrmMembersByIdMemosByMemoIdResponses[keyof PutCrmMembersByIdMemosByMemoIdResponses];

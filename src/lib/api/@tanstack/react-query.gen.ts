@@ -4,7 +4,7 @@ import { type DefaultError, type InfiniteData, infiniteQueryOptions, queryOption
 
 import { client } from '../client.gen';
 import { Auth, Crm, Members, OpenapiJson, type Options } from '../sdk.gen';
-import type { DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdError, DeleteCrmMembersByIdMemosByMemoIdResponse, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoResponse, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryError, GetCrmMembersByIdChangeHistoryResponse, GetCrmMembersByIdCommunicationsData, GetCrmMembersByIdCommunicationsError, GetCrmMembersByIdCommunicationsResponse, GetCrmMembersByIdContractsData, GetCrmMembersByIdData, GetCrmMembersByIdError, GetCrmMembersByIdPointsData, GetCrmMembersByIdRelationshipsData, GetCrmMembersByIdRelationshipsError, GetCrmMembersByIdRelationshipsResponse, GetCrmMembersByIdResponse, GetCrmMembersByIdServiceUsageData, GetCrmMembersByIdServiceUsageError, GetCrmMembersByIdServiceUsageResponse, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsError, GetCrmMembersByIdTrainingRecordsResponse, GetCrmMembersByIdUsageHistoryData, GetCrmMembersByIdUsageHistoryError, GetCrmMembersByIdUsageHistoryResponse, GetCrmMembersData, GetCrmMembersResponse, GetOpenapiJsonData, GetOpenapiJsonError, GetOpenapiJsonResponse, PostAuthLoginData, PostAuthLoginError, PostAuthLoginResponse, PostAuthRefreshData, PostAuthRefreshError, PostAuthRefreshResponse, PostAuthRegisterData, PostAuthRegisterError, PostAuthRegisterResponse, PostCrmMembersByIdMemosData, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsError, PostCrmMembersByIdPointsResponse, PostCrmMembersExportData, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoError, PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentError, PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdError, PutCrmMembersByIdMemosByMemoIdResponse } from '../types.gen';
+import type { DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdError, DeleteCrmMembersByIdMemosByMemoIdResponse, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoResponse, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryError, GetCrmMembersByIdChangeHistoryResponse, GetCrmMembersByIdCommunicationsData, GetCrmMembersByIdCommunicationsError, GetCrmMembersByIdCommunicationsResponse, GetCrmMembersByIdContractsData, GetCrmMembersByIdData, GetCrmMembersByIdError, GetCrmMembersByIdPointsData, GetCrmMembersByIdRelationshipsData, GetCrmMembersByIdRelationshipsError, GetCrmMembersByIdRelationshipsResponse, GetCrmMembersByIdResponse, GetCrmMembersByIdServiceUsageData, GetCrmMembersByIdServiceUsageError, GetCrmMembersByIdServiceUsageResponse, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsError, GetCrmMembersByIdTrainingRecordsResponse, GetCrmMembersByIdUsageHistoryData, GetCrmMembersByIdUsageHistoryError, GetCrmMembersByIdUsageHistoryResponse, GetCrmMembersData, GetCrmMembersResponse, GetOpenapiJsonData, GetOpenapiJsonError, GetOpenapiJsonResponse, PostAuthLoginData, PostAuthLoginError, PostAuthLoginResponse, PostAuthRefreshData, PostAuthRefreshError, PostAuthRefreshResponse, PostAuthRegisterData, PostAuthRegisterError, PostAuthRegisterResponse, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosError, PostCrmMembersByIdMemosResponse, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsError, PostCrmMembersByIdPointsResponse, PostCrmMembersExportData, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoError, PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentError, PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdError, PutCrmMembersByIdMemosByMemoIdResponse } from '../types.gen';
 
 /**
  * User login
@@ -284,9 +284,11 @@ export const postCrmMembersByIdPointsAdjustMutation = (options?: Partial<Options
 
 /**
  * Create member memo
+ *
+ * スタッフメモを追加。保存後コミュニケーションタブに反映。
  */
-export const postCrmMembersByIdMemosMutation = (options?: Partial<Options<PostCrmMembersByIdMemosData>>): UseMutationOptions<unknown, DefaultError, Options<PostCrmMembersByIdMemosData>> => {
-    const mutationOptions: UseMutationOptions<unknown, DefaultError, Options<PostCrmMembersByIdMemosData>> = {
+export const postCrmMembersByIdMemosMutation = (options?: Partial<Options<PostCrmMembersByIdMemosData>>): UseMutationOptions<PostCrmMembersByIdMemosResponse, PostCrmMembersByIdMemosError, Options<PostCrmMembersByIdMemosData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembersByIdMemosResponse, PostCrmMembersByIdMemosError, Options<PostCrmMembersByIdMemosData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await Members.postCrmMembersByIdMemos({
                 ...options,
@@ -339,13 +341,13 @@ export const getCrmMembersByIdChangeHistoryOptions = (options: Options<GetCrmMem
 export const getCrmMembersByIdCommunicationsQueryKey = (options: Options<GetCrmMembersByIdCommunicationsData>) => createQueryKey('getCrmMembersByIdCommunications', options);
 
 /**
- * GET /crm/members/{id}/communications
+ * Get member communications
  *
- * Auto-generated from src/app/api/crm/members/[id]/communications/route.ts
+ * コミュニケーションタブ用：スタッフメモ・問い合わせ・通知履歴・電話記録を取得
  */
 export const getCrmMembersByIdCommunicationsOptions = (options: Options<GetCrmMembersByIdCommunicationsData>) => queryOptions<GetCrmMembersByIdCommunicationsResponse, GetCrmMembersByIdCommunicationsError, GetCrmMembersByIdCommunicationsResponse, ReturnType<typeof getCrmMembersByIdCommunicationsQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Crm.getCrmMembersByIdCommunications({
+        const { data } = await Members.getCrmMembersByIdCommunications({
             ...options,
             ...queryKey[0],
             signal,
@@ -395,14 +397,14 @@ export const putCrmMembersByIdMarketingConsentMutation = (options?: Partial<Opti
 };
 
 /**
- * DELETE /crm/members/{id}/memos/{memoId}
+ * Delete member memo
  *
- * Auto-generated from src/app/api/crm/members/[id]/memos/[memoId]/route.ts
+ * スタッフメモを削除。削除確認後に実行。
  */
 export const deleteCrmMembersByIdMemosByMemoIdMutation = (options?: Partial<Options<DeleteCrmMembersByIdMemosByMemoIdData>>): UseMutationOptions<DeleteCrmMembersByIdMemosByMemoIdResponse, DeleteCrmMembersByIdMemosByMemoIdError, Options<DeleteCrmMembersByIdMemosByMemoIdData>> => {
     const mutationOptions: UseMutationOptions<DeleteCrmMembersByIdMemosByMemoIdResponse, DeleteCrmMembersByIdMemosByMemoIdError, Options<DeleteCrmMembersByIdMemosByMemoIdData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await Crm.deleteCrmMembersByIdMemosByMemoId({
+            const { data } = await Members.deleteCrmMembersByIdMemosByMemoId({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -414,14 +416,14 @@ export const deleteCrmMembersByIdMemosByMemoIdMutation = (options?: Partial<Opti
 };
 
 /**
- * PUT /crm/members/{id}/memos/{memoId}
+ * Update member memo
  *
- * Auto-generated from src/app/api/crm/members/[id]/memos/[memoId]/route.ts
+ * スタッフメモを編集。
  */
 export const putCrmMembersByIdMemosByMemoIdMutation = (options?: Partial<Options<PutCrmMembersByIdMemosByMemoIdData>>): UseMutationOptions<PutCrmMembersByIdMemosByMemoIdResponse, PutCrmMembersByIdMemosByMemoIdError, Options<PutCrmMembersByIdMemosByMemoIdData>> => {
     const mutationOptions: UseMutationOptions<PutCrmMembersByIdMemosByMemoIdResponse, PutCrmMembersByIdMemosByMemoIdError, Options<PutCrmMembersByIdMemosByMemoIdData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await Crm.putCrmMembersByIdMemosByMemoId({
+            const { data } = await Members.putCrmMembersByIdMemosByMemoId({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

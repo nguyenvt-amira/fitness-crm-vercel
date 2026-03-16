@@ -43,12 +43,16 @@ function generateMockMembers(count: number): GetMembersResponse['members'] {
       name_kana: name.kana,
       member_type: (['regular', 'family', 'corporate'] as MemberType[])[i % 3],
       status: (['active', 'suspended', 'withdrawn'] as MemberStatus[])[i % 3],
-      store_name: `Fit365${store}`,
+      store_name: store.name,
+      store_id: store.id,
       brand: i % 2 === 0 ? Brand.FIT365 : Brand.JOYFIT,
       contract_plan_name: plans[i % plans.length],
       joined_at: `2024-${String((i % 12) + 1).padStart(2, '0')}-${String((i % 28) + 1).padStart(2, '0')}`,
       last_visit_date: i % 5 === 0 ? undefined : `2024-12-${String((i % 28) + 1).padStart(2, '0')}`,
       has_unpaid: i % 7 === 0,
+      phone,
+      email,
+      contract_plan_id: plan.id,
     });
   }
   return members;
@@ -87,7 +91,11 @@ export async function GET(request: NextRequest) {
         (m) =>
           m.member_number.toLowerCase().includes(searchLower) ||
           m.name_kanji.includes(search) ||
-          m.name_kana.includes(search),
+          m.name_kana.includes(search) ||
+          m.name_kanji.includes(searchNorm) ||
+          m.name_kana.includes(searchNorm) ||
+          (m.phone && m.phone.replace(/-/g, '').includes(search.replace(/-/g, ''))) ||
+          (m.email && m.email.toLowerCase().includes(searchLower)),
       );
     }
 
@@ -105,13 +113,13 @@ export async function GET(request: NextRequest) {
 
     if (store_id && store_id.length > 0) {
       // Mock filter by store - in real app, filter by store_id
-      filtered = filtered.filter((m) => store_id.some((id) => m.store_name?.includes(id)));
+      filtered = filtered.filter((m) => store_id.some((id) => m.store_id?.includes(id)));
     }
 
     if (contract_plan_id && contract_plan_id.length > 0) {
       // Mock filter by contract plan
       filtered = filtered.filter((m) =>
-        contract_plan_id.some((id) => m.contract_plan_name?.includes(id)),
+        contract_plan_id.some((id) => m.contract_plan_id?.includes(id)),
       );
     }
 

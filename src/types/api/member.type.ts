@@ -506,6 +506,10 @@ export interface GetMembersResponse {
     joined_at: string;
     last_visit_date?: string;
     has_unpaid: boolean;
+    store_id: string;
+    phone: string;
+    email: string;
+    contract_plan_id: string;
   }>;
   pagination: {
     page: number;
@@ -559,6 +563,7 @@ export interface PointAdjustmentRequest {
 export interface CreateMemoRequest {
   type: MemoType;
   content: string; // 1-1000 characters
+  created_by?: string;
 }
 
 export interface UpdateMemoRequest {

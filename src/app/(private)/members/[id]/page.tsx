@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   AlertOctagon,
   ArrowLeft,
@@ -23,10 +23,16 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import { getCrmMembersByIdOptions } from '@/lib/api/@tanstack/react-query.gen';
+import {
+  deleteCrmMembersByIdMemosByMemoIdMutation,
+  getCrmMembersByIdCommunicationsQueryKey,
+  getCrmMembersByIdOptions,
+  postCrmMembersByIdMemosMutation,
+  putCrmMembersByIdMemosByMemoIdMutation,
+} from '@/lib/api/@tanstack/react-query.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
-import type { GetMemberDetailResponse } from '@/types/api/member.type';
+import type { GetMemberDetailResponse, StaffMemo } from '@/types/api/member.type';
 import { Brand, MemberStatus } from '@/types/api/member.type';
 
 import { BasicInfoTab } from './_components/basic-info-tab';
@@ -46,11 +52,38 @@ const BREADCRUMB_ITEMS = [{ url: '/members', label: '会員一覧' }, { label: '
 
 export default function MemberDetailPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
+  const tab = searchParams.get('tab');
+  const memo = searchParams.get('memo');
+
   const memberId = params.id as string;
-  const [activeTab, setActiveTab] = useState('basic');
+  const [activeTab, setActiveTab] = useState(() =>
+    tab === 'communications' ? 'communications' : 'basic',
+  );
+  const queryClient = useQueryClient();
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showMemoModal, setShowMemoModal] = useState(false);
+  const [showMemoModal, setShowMemoModal] = useState(() => memo === 'add');
+  const [editingMemo, setEditingMemo] = useState<StaffMemo | null>(null);
   const [showPrintModal, setShowPrintModal] = useState(false);
+
+  const invalidateCommunications = () => {
+    queryClient.invalidateQueries({
+      queryKey: getCrmMembersByIdCommunicationsQueryKey({ path: { id: memberId } }),
+    });
+  };
+
+  const postMemo = useMutation({
+    ...postCrmMembersByIdMemosMutation(),
+    onSuccess: invalidateCommunications,
+  });
+  const putMemo = useMutation({
+    ...putCrmMembersByIdMemosByMemoIdMutation(),
+    onSuccess: invalidateCommunications,
+  });
+  const deleteMemo = useMutation({
+    ...deleteCrmMembersByIdMemosByMemoIdMutation(),
+    onSuccess: invalidateCommunications,
+  });
 
   const { data, isLoading } = useQuery(
     getCrmMembersByIdOptions({
@@ -103,7 +136,18 @@ export default function MemberDetailPage() {
   };
 
   const handleAddMemo = () => {
+    setEditingMemo(null);
     setShowMemoModal(true);
+  };
+
+  const handleEditMemo = (memo: StaffMemo) => {
+    setEditingMemo(memo);
+    setShowMemoModal(true);
+  };
+
+  const handleMemoModalOpenChange = (open: boolean) => {
+    setShowMemoModal(open);
+    if (!open) setEditingMemo(null);
   };
 
   const handlePrint = () => {
@@ -132,18 +176,40 @@ export default function MemberDetailPage() {
     await new Promise((resolve) => setTimeout(resolve, 1000));
   };
 
-  const handleSaveMemo = async (data: { type: any; content: string }) => {
-    // TODO: Implement API call to save memo
-    console.log('Saving memo:', data);
-    // Mock API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  const handleSaveMemo = (data: { type: 'caution' | 'vip' | 'other'; content: string }) => {
+    const onSuccess = () => {
+      setShowMemoModal(false);
+      setEditingMemo(null);
+    };
+    if (editingMemo) {
+      putMemo.mutate(
+        {
+          path: { id: memberId, memoId: editingMemo.id },
+          body: { type: data.type, content: data.content.trim() },
+        },
+        { onSuccess },
+      );
+    } else {
+      postMemo.mutate(
+        {
+          path: { id: memberId },
+          body: { type: data.type, content: data.content.trim() },
+        },
+        { onSuccess },
+      );
+    }
   };
 
-  const handleDeleteMemo = async (memoId: string) => {
-    // TODO: Implement API call to delete memo
-    console.log('Deleting memo:', memoId);
-    // Mock API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  const handleDeleteMemo = (memoId: string) => {
+    deleteMemo.mutate(
+      { path: { id: memberId, memoId } },
+      {
+        onSuccess: () => {
+          setShowMemoModal(false);
+          setEditingMemo(null);
+        },
+      },
+    );
   };
 
   return (
@@ -283,7 +349,12 @@ export default function MemberDetailPage() {
           </TabsContent>
 
           <TabsContent value="communications" className="mt-4">
-            <CommunicationsTab memberId={memberId} />
+            <CommunicationsTab
+              memberId={memberId}
+              onAddMemo={handleAddMemo}
+              onEditMemo={handleEditMemo}
+              onDeleteMemo={handleDeleteMemo}
+            />
           </TabsContent>
 
           <TabsContent value="history" className="mt-4">
@@ -305,9 +376,12 @@ export default function MemberDetailPage() {
       />
       <MemoModal
         open={showMemoModal}
-        onOpenChange={setShowMemoModal}
+        onOpenChange={handleMemoModalOpenChange}
+        memo={editingMemo}
         onSave={handleSaveMemo}
         onDelete={handleDeleteMemo}
+        isSaving={postMemo.isPending || putMemo.isPending}
+        isDeleting={deleteMemo.isPending}
       />
       <PrintModal open={showPrintModal} onOpenChange={setShowPrintModal} member={member} />
     </div>

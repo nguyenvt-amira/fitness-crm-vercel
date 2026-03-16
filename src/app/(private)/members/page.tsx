@@ -2,9 +2,12 @@
 
 import { Suspense, useMemo, useState } from 'react';
 
+import { useRouter } from 'next/navigation';
+
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Table as TableInstance } from '@tanstack/react-table';
 import type { ColumnDef } from '@tanstack/react-table';
+import type { VisibilityState } from '@tanstack/react-table';
 import { Download, User } from 'lucide-react';
 
 import { BreadcrumbNav } from '@/components/common/breadcrumb-nav';
@@ -28,9 +31,11 @@ import { useMembersFilters } from './_hooks/use-members-filters';
 const BREADCRUMB_ITEMS = [{ url: '/', label: '会員管理' }, { label: '会員一覧' }];
 
 function MembersPageContent() {
+  const router = useRouter();
   const [limit] = useState(50);
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
   const [table, setTable] = useState<TableInstance<any> | null>(null);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   // Use custom hook for filters/sort management
   const filtersHook = useMembersFilters();
@@ -67,7 +72,10 @@ function MembersPageContent() {
   const columns: ColumnDef<NonNullable<GetCrmMembersResponse['members']>[0]>[] =
     MembersTableColumns({
       onMemberClick: (memberId) => {
-        window.location.href = `/members/${memberId}`;
+        router.push(`/members/${memberId}`);
+      },
+      onMemoClick: (memberId) => {
+        router.push(`/members/${memberId}?tab=communications&memo=add`);
       },
       selectedMembers,
       onSelectionChange: setSelectedMembers,
@@ -130,18 +138,20 @@ function MembersPageContent() {
               {table
                 ?.getAllColumns()
                 .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
+                .map((column) => (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    checked={columnVisibility[column.id] !== false}
+                    onCheckedChange={(value) => {
+                      setColumnVisibility((prev) => ({
+                        ...prev,
+                        [column.id]: !!value,
+                      }));
+                    }}
+                  >
+                    {(column.columnDef.meta as any)?.label || column.columnDef.header}
+                  </DropdownMenuCheckboxItem>
+                ))}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -158,6 +168,8 @@ function MembersPageContent() {
             totalRowsFetched={totalFetched}
             fetchNextPage={fetchNextPage}
             hasNextPage={hasNextPage}
+            columnVisibility={columnVisibility}
+            setColumnVisibility={setColumnVisibility}
             onRowClick={(row) => {
               if (row.id) {
                 window.location.href = `/members/${row.id}`;
