@@ -1,5 +1,9 @@
 'use client';
 
+import { useMemo, useState } from 'react';
+
+import { useInfiniteQuery } from '@tanstack/react-query';
+import type { FetchNextPageOptions } from '@tanstack/react-query';
 import { type ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, Search } from 'lucide-react';
 
@@ -19,6 +23,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { cn } from '@/lib/utils';
 
+import type {
+  GetMembershipApplicationsQueryParams,
+  GetMembershipApplicationsResponse,
+  MembershipApplication,
+  MembershipApplicationStatus,
+} from '@/types/api/membership-application.type';
+
 type MembershipApplicationsTabItem = {
   value: string;
   label: string;
@@ -36,10 +47,42 @@ type MembershipApplicationRow = {
   scheduledStart: string;
 };
 
-type MembershipApplicationsSectionProps = {
+export type MembershipApplicationsSectionProps = {
   tabs?: readonly MembershipApplicationsTabItem[];
   columns?: ColumnDef<MembershipApplicationRow, unknown>[];
-  data?: MembershipApplicationRow[];
+};
+
+// API hook for list
+const useMembershipApplicationsList = (params: GetMembershipApplicationsQueryParams) => {
+  return useInfiniteQuery<GetMembershipApplicationsResponse>({
+    queryKey: ['membership-applications', 'list', params],
+    queryFn: async ({ pageParam = 1 }) => {
+      const searchParams = new URLSearchParams({
+        ...(params.status && { status: params.status }),
+        ...(params.risk_reason && { risk_reason: params.risk_reason }),
+        ...(params.sort_by && { sort_by: params.sort_by }),
+        ...(params.sort_order && { sort_order: params.sort_order }),
+        ...(params.search && { search: params.search }),
+        page: String(pageParam),
+        limit: String(params.limit || 50),
+      });
+
+      const response = await fetch(`/api/crm/membership-applications?${searchParams.toString()}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch applications');
+      }
+      return response.json();
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+      const currentPage = allPages.length;
+      const total_pages = lastPage.pagination?.total_pages || 0;
+      if (currentPage < total_pages) {
+        return currentPage + 1;
+      }
+      return undefined;
+    },
+  });
 };
 
 const MOCK_STATUS_TABS: MembershipApplicationsTabItem[] = [
@@ -177,11 +220,77 @@ const APPLICATION_COLUMNS: ColumnDef<MembershipApplicationRow>[] = [
 export function MembershipApplicationsListSection({
   tabs = MOCK_STATUS_TABS,
   columns = APPLICATION_COLUMNS,
-  data = MOCK_APPLICATIONS,
 }: Readonly<MembershipApplicationsSectionProps> = {}) {
+  // State management
+  const [selectedStatus, setSelectedStatus] = useState<MembershipApplicationStatus | 'all'>(
+    'pending',
+  );
+  const [searchQuery, setSearchQuery] = useState('');
+  const [riskReason, setRiskReason] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<'applied_at' | 'risk_score' | 'deadline'>('applied_at');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+
+  // API params
+  const listParams: GetMembershipApplicationsQueryParams = useMemo(
+    () => ({
+      status:
+        selectedStatus === 'all'
+          ? undefined
+          : (selectedStatus as MembershipApplicationStatus | undefined),
+      risk_reason: riskReason === 'all' ? undefined : (riskReason as any),
+      sort_by: sortBy,
+      sort_order: sortOrder,
+      limit: 50,
+      search: searchQuery || undefined,
+    }),
+    [selectedStatus, riskReason, sortBy, sortOrder, searchQuery],
+  );
+
+  // API call
+  const {
+    data: listData,
+    isLoading,
+    isFetching,
+    fetchNextPage,
+    hasNextPage,
+  } = useMembershipApplicationsList(listParams);
+
+  // Transform applications list for table
+  const applications = useMemo(() => {
+    return (listData?.pages.flatMap((page) => page.applications || []) || []).map(
+      (app: MembershipApplication) => ({
+        id: app.id,
+        applicantName: app.applicant_name,
+        applied_at: new Date(app.applied_at).toLocaleString('ja-JP', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        }),
+        applied_atSub: app.elapsed_time || '',
+        risk_score: app.risk_score,
+        riskReason: app.risk_reason,
+        plan_name: app.plan_name,
+        scheduledStart: new Date(app.scheduled_start_date).toLocaleDateString('ja-JP', {
+          year: 'numeric',
+          month: '2-digit',
+        }),
+      }),
+    );
+  }, [listData]);
+
+  const totalRows = listData?.pages[0]?.pagination?.total || 0;
+  const totalRowsFetched = applications.length;
   return (
     <div className="flex flex-col gap-4 p-4">
-      <Tabs defaultValue="pending" className="w-full">
+      <Tabs
+        value={selectedStatus}
+        onValueChange={(status) => setSelectedStatus(status as MembershipApplicationStatus | 'all')}
+        defaultValue="pending"
+        className="w-full"
+      >
         <TabsList className="bg-muted inline-flex h-9 w-fit rounded-lg p-[3px]">
           {tabs.map((tab) => (
             <TabsTrigger
@@ -209,15 +318,26 @@ export function MembershipApplicationsListSection({
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="relative w-full max-w-[320px]">
                   <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-                  <Input placeholder="Search by name" className="h-9 pl-9" />
+                  <Input
+                    placeholder="Search by name"
+                    className="h-9 pl-9"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
                 </div>
-                <Select defaultValue="all">
+                <Select value={riskReason} onValueChange={setRiskReason}>
                   <SelectTrigger className="h-9 w-[178px]">
                     <span className="text-muted-foreground">リスク理由:</span>
                     <SelectValue placeholder="All" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="blacklist_match">ブラックリスト一致</SelectItem>
+                    <SelectItem value="duplicate_application">重複申込</SelectItem>
+                    <SelectItem value="payment_failure">決済失敗</SelectItem>
+                    <SelectItem value="high_risk_score">高リスクスコア</SelectItem>
+                    <SelectItem value="document_issue">書類問題</SelectItem>
+                    <SelectItem value="other">その他</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -226,15 +346,15 @@ export function MembershipApplicationsListSection({
               <div className="[&_tbody_tr:last-child]:hidden">
                 <DataTable<MembershipApplicationRow, unknown>
                   columns={columns}
-                  data={data}
-                  isFetching={false}
-                  isLoading={false}
-                  hasNextPage={false}
-                  fetchNextPage={async () => {}}
+                  data={applications}
+                  isFetching={isFetching}
+                  isLoading={isLoading}
+                  hasNextPage={hasNextPage || false}
+                  fetchNextPage={fetchNextPage}
                   refetch={() => {}}
-                  totalRows={data.length}
-                  filterRows={data.length}
-                  totalRowsFetched={data.length}
+                  totalRows={totalRows}
+                  filterRows={applications.length}
+                  totalRowsFetched={totalRowsFetched}
                 />
               </div>
             </div>

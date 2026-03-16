@@ -901,3 +901,332 @@ export type PostAuthRegisterResponses = {
 };
 
 export type PostAuthRegisterResponse = PostAuthRegisterResponses[keyof PostAuthRegisterResponses];
+
+export type GetCrmAutoApprovalDashboardData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/auto-approval/dashboard';
+};
+
+export type GetCrmAutoApprovalDashboardErrors = {
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type GetCrmAutoApprovalDashboardError = GetCrmAutoApprovalDashboardErrors[keyof GetCrmAutoApprovalDashboardErrors];
+
+export type GetCrmAutoApprovalDashboardResponses = {
+    /**
+     * Success
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type GetCrmAutoApprovalDashboardResponse = GetCrmAutoApprovalDashboardResponses[keyof GetCrmAutoApprovalDashboardResponses];
+
+export type GetCrmAutoApprovalSettingsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/auto-approval/settings';
+};
+
+export type GetCrmAutoApprovalSettingsErrors = {
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type GetCrmAutoApprovalSettingsError = GetCrmAutoApprovalSettingsErrors[keyof GetCrmAutoApprovalSettingsErrors];
+
+export type GetCrmAutoApprovalSettingsResponses = {
+    /**
+     * Success
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type GetCrmAutoApprovalSettingsResponse = GetCrmAutoApprovalSettingsResponses[keyof GetCrmAutoApprovalSettingsResponses];
+
+export type PutCrmAutoApprovalSettingsData = {
+    body: {
+        [key: string]: unknown;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/auto-approval/settings';
+};
+
+export type PutCrmAutoApprovalSettingsErrors = {
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type PutCrmAutoApprovalSettingsError = PutCrmAutoApprovalSettingsErrors[keyof PutCrmAutoApprovalSettingsErrors];
+
+export type PutCrmAutoApprovalSettingsResponses = {
+    /**
+     * Success
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type PutCrmAutoApprovalSettingsResponse = PutCrmAutoApprovalSettingsResponses[keyof PutCrmAutoApprovalSettingsResponses];
+
+export type PostCrmMembershipApplicationsByIdApproveData = {
+    body: {
+        [key: string]: unknown;
+    };
+    path: {
+        /**
+         * id parameter
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/membership-applications/{id}/approve';
+};
+
+export type PostCrmMembershipApplicationsByIdApproveErrors = {
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type PostCrmMembershipApplicationsByIdApproveError = PostCrmMembershipApplicationsByIdApproveErrors[keyof PostCrmMembershipApplicationsByIdApproveErrors];
+
+export type PostCrmMembershipApplicationsByIdApproveResponses = {
+    /**
+     * Success
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type PostCrmMembershipApplicationsByIdApproveResponse = PostCrmMembershipApplicationsByIdApproveResponses[keyof PostCrmMembershipApplicationsByIdApproveResponses];
+
+export type PostCrmMembershipApplicationsByIdCancelData = {
+    body: {
+        [key: string]: unknown;
+    };
+    path: {
+        /**
+         * id parameter
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/membership-applications/{id}/cancel';
+};
+
+export type PostCrmMembershipApplicationsByIdCancelErrors = {
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type PostCrmMembershipApplicationsByIdCancelError = PostCrmMembershipApplicationsByIdCancelErrors[keyof PostCrmMembershipApplicationsByIdCancelErrors];
+
+export type PostCrmMembershipApplicationsByIdCancelResponses = {
+    /**
+     * Success
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type PostCrmMembershipApplicationsByIdCancelResponse = PostCrmMembershipApplicationsByIdCancelResponses[keyof PostCrmMembershipApplicationsByIdCancelResponses];
+
+export type PostCrmMembershipApplicationsByIdRejectData = {
+    body: {
+        [key: string]: unknown;
+    };
+    path: {
+        /**
+         * id parameter
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/membership-applications/{id}/reject';
+};
+
+export type PostCrmMembershipApplicationsByIdRejectErrors = {
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type PostCrmMembershipApplicationsByIdRejectError = PostCrmMembershipApplicationsByIdRejectErrors[keyof PostCrmMembershipApplicationsByIdRejectErrors];
+
+export type PostCrmMembershipApplicationsByIdRejectResponses = {
+    /**
+     * Success
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type PostCrmMembershipApplicationsByIdRejectResponse = PostCrmMembershipApplicationsByIdRejectResponses[keyof PostCrmMembershipApplicationsByIdRejectResponses];
+
+export type GetCrmMembershipApplicationsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * id parameter
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/membership-applications/{id}';
+};
+
+export type GetCrmMembershipApplicationsByIdErrors = {
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type GetCrmMembershipApplicationsByIdError = GetCrmMembershipApplicationsByIdErrors[keyof GetCrmMembershipApplicationsByIdErrors];
+
+export type GetCrmMembershipApplicationsByIdResponses = {
+    /**
+     * Success
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type GetCrmMembershipApplicationsByIdResponse = GetCrmMembershipApplicationsByIdResponses[keyof GetCrmMembershipApplicationsByIdResponses];
+
+export type PostCrmMembershipApplicationsBulkApproveData = {
+    body: {
+        [key: string]: unknown;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/membership-applications/bulk-approve';
+};
+
+export type PostCrmMembershipApplicationsBulkApproveErrors = {
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type PostCrmMembershipApplicationsBulkApproveError = PostCrmMembershipApplicationsBulkApproveErrors[keyof PostCrmMembershipApplicationsBulkApproveErrors];
+
+export type PostCrmMembershipApplicationsBulkApproveResponses = {
+    /**
+     * Success
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type PostCrmMembershipApplicationsBulkApproveResponse = PostCrmMembershipApplicationsBulkApproveResponses[keyof PostCrmMembershipApplicationsBulkApproveResponses];
+
+export type GetCrmMembershipApplicationsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/membership-applications';
+};
+
+export type GetCrmMembershipApplicationsErrors = {
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type GetCrmMembershipApplicationsError = GetCrmMembershipApplicationsErrors[keyof GetCrmMembershipApplicationsErrors];
+
+export type GetCrmMembershipApplicationsResponses = {
+    /**
+     * Success
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type GetCrmMembershipApplicationsResponse = GetCrmMembershipApplicationsResponses[keyof GetCrmMembershipApplicationsResponses];
+
+export type PostCrmMembershipApplicationsData = {
+    body: {
+        [key: string]: unknown;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/membership-applications';
+};
+
+export type PostCrmMembershipApplicationsErrors = {
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type PostCrmMembershipApplicationsError = PostCrmMembershipApplicationsErrors[keyof PostCrmMembershipApplicationsErrors];
+
+export type PostCrmMembershipApplicationsResponses = {
+    /**
+     * Success
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type PostCrmMembershipApplicationsResponse = PostCrmMembershipApplicationsResponses[keyof PostCrmMembershipApplicationsResponses];
+
+export type GetCrmMembershipApplicationsSummaryData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/membership-applications/summary';
+};
+
+export type GetCrmMembershipApplicationsSummaryErrors = {
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type GetCrmMembershipApplicationsSummaryError = GetCrmMembershipApplicationsSummaryErrors[keyof GetCrmMembershipApplicationsSummaryErrors];
+
+export type GetCrmMembershipApplicationsSummaryResponses = {
+    /**
+     * Success
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type GetCrmMembershipApplicationsSummaryResponse = GetCrmMembershipApplicationsSummaryResponses[keyof GetCrmMembershipApplicationsSummaryResponses];
