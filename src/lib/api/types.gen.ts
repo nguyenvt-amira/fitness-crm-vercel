@@ -4,767 +4,3382 @@ export type ClientOptions = {
     baseUrl: `${string}://${string}/api` | (string & {});
 };
 
+/**
+ * LoginRequest
+ *
+ * Login request payload
+ */
 export type LoginRequest = {
+    /**
+     * User email address
+     */
     email: string;
+    /**
+     * User password
+     */
     password: string;
 };
 
+/**
+ * LoginResponse
+ *
+ * Login response with authentication tokens
+ */
+export type LoginResponse = {
+    /**
+     * Token
+     *
+     * Authentication token response
+     */
+    token: {
+        /**
+         * JWT access token
+         */
+        access_token: string;
+        /**
+         * JWT refresh token
+         */
+        refresh_token: string;
+        /**
+         * Token type
+         */
+        token_type: string;
+        /**
+         * Company ID associated with the user
+         */
+        company_id?: number | null;
+    };
+};
+
+/**
+ * Token
+ *
+ * Authentication token response
+ */
 export type Token = {
     /**
-     * Access Token
+     * JWT access token
      */
-    access_token?: string;
+    access_token: string;
     /**
-     * Refresh Token
+     * JWT refresh token
      */
-    refresh_token?: string;
+    refresh_token: string;
     /**
-     * Token Type
+     * Token type
      */
-    token_type?: string;
+    token_type: string;
     /**
-     * Company Id
+     * Company ID associated with the user
      */
     company_id?: number | null;
 };
 
-export type LoginResponse = {
-    token?: Token;
-};
-
-export type RefreshTokenRequest = {
+/**
+ * RefreshRequest
+ *
+ * Refresh token request payload
+ */
+export type RefreshRequest = {
     /**
-     * Refresh token to get new access token
+     * JWT refresh token
      */
     refresh_token: string;
 };
 
-export type RefreshTokenResponse = {
+/**
+ * RefreshResponse
+ *
+ * Refresh token response with new authentication tokens
+ */
+export type RefreshResponse = {
     /**
-     * New access token
+     * New JWT access token
      */
-    accessToken?: string;
+    accessToken: string;
     /**
-     * New refresh token
+     * New JWT refresh token
      */
-    refresh_token?: string;
+    refresh_token: string;
     /**
-     * Token type (usually 'Bearer')
+     * Token type
      */
-    token_type?: string;
+    token_type: string;
     /**
-     * Company ID
+     * Company ID associated with the user
      */
     company_id?: number | null;
 };
 
-export type GetMembersResponse = {
-    members?: Array<MemberListItem>;
-    pagination?: Pagination;
-};
-
-export type MemberListItem = {
-    id?: string;
-    member_number?: string;
-    name_kanji?: string;
-    name_kana?: string;
-    member_type?: 'regular' | 'family' | 'corporate' | 'company_discount';
-    status?: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
-    store_name?: string;
-    brand?: 'joyfit' | 'fit365';
-    contract_plan_name?: string;
-    joined_at?: string;
-    last_visit_date?: string | null;
-    has_unpaid?: boolean;
-};
-
-export type Pagination = {
-    page?: number;
-    limit?: number;
-    total?: number;
-    total_pages?: number;
-};
-
-export type EmergencyContact = {
+/**
+ * ErrorResponse
+ *
+ * Error response
+ */
+export type ErrorResponse = {
     /**
-     * 緊急連絡先氏名
+     * Error message
      */
-    name: string;
-    /**
-     * 続柄
-     */
-    relationship: string;
-    /**
-     * 電話番号
-     */
-    phone: string;
-};
-
-export type MemberBasicInfo = {
-    id: string;
-    /**
-     * 会員番号
-     */
-    member_number: string;
-    /**
-     * 氏名（漢字）
-     */
-    name_kanji: string;
-    /**
-     * 氏名（カナ）
-     */
-    name_kana: string;
-    /**
-     * 生年月日
-     */
-    birthday: string;
-    /**
-     * 年齢
-     */
-    age: number;
-    /**
-     * 性別
-     */
-    gender: 'male' | 'female' | 'other';
-    /**
-     * 郵便番号
-     */
-    postal_code?: string;
-    /**
-     * 都道府県
-     */
-    prefecture?: string;
-    /**
-     * 市区町村
-     */
-    city?: string;
-    /**
-     * 番地
-     */
-    address?: string;
-    /**
-     * 建物名
-     */
-    building?: string;
-    /**
-     * 電話番号
-     */
-    phone: string;
-    /**
-     * メールアドレス
-     */
-    email: string;
-    emergency_contact?: EmergencyContact;
-};
-
-export type MemberProfile = {
-    /**
-     * 会員種別
-     */
-    member_type: 'regular' | 'family' | 'corporate' | 'company_discount';
-    /**
-     * 会員ステータス
-     */
-    status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
-    /**
-     * 店舗ID
-     */
-    store_id: string;
-    /**
-     * 所属店舗
-     */
-    store_name: string;
-    /**
-     * 所属ブランド
-     */
-    brand: 'joyfit' | 'fit365';
-    /**
-     * 入会日
-     */
-    joined_at: string;
-    /**
-     * 退会日
-     */
-    withdrawn_at?: string | null;
-    /**
-     * ブラックリスト登録状況
-     */
-    is_black_listed: boolean;
-};
-
-export type MemberEkyc = {
-    /**
-     * eKYC検証結果
-     */
-    verified: boolean;
-    /**
-     * 検証日時
-     */
-    verified_at?: string;
-    /**
-     * 本人確認書類の種類
-     */
-    document_type?: string;
-    /**
-     * 顔写真URL
-     */
-    photoUrl?: string;
-};
-
-export type MemberConsent = {
-    member_agreement: {
-        version: string;
-        agreed_at: string;
-    };
-    privacy_policy: {
-        version: string;
-        agreed_at: string;
-    };
-    optional_agreement?: {
-        version?: string;
-        agreed_at?: string;
-    };
-    marketing_consent: {
-        email: boolean;
-        sms: boolean;
-        push: boolean;
-    };
-};
-
-export type MemberHealthInfo = {
-    /**
-     * 健康状態申告
-     */
-    health_status?: string;
-    /**
-     * 既往歴・持病
-     */
-    medical_history?: string;
-    /**
-     * アレルギー情報
-     */
-    allergies?: string;
-    /**
-     * 運動制限事項
-     */
-    exercise_restrictions?: string;
-    /**
-     * その他特記事項
-     */
-    other_notes?: string;
-};
-
-export type Member = {
-    basic_info: MemberBasicInfo;
-    profile: MemberProfile;
-    ekyc?: MemberEkyc;
-    consent?: MemberConsent;
-    health_info?: MemberHealthInfo;
-};
-
-export type GetMemberDetailResponse = {
-    member: Member;
+    error: string;
 };
 
 /**
- * GET /crm/members/{id}/basic-info レスポンス（基本情報タブ用）
+ * AutoApprovalSettings
+ *
+ * Auto-approval settings configuration
  */
-export type GetBasicInfoResponse = {
-    member: Member;
-};
-
-/**
- * PUT /crm/members/{id}/basic-info レスポンス
- */
-export type PutBasicInfoResponse = {
-    success?: boolean;
-    id?: string;
+export type AutoApprovalSettings = {
     /**
-     * 更新されたフィールド
+     * Whether auto-approval is enabled
      */
-    updated?: {
-        [key: string]: unknown;
-    };
-};
-
-/**
- * PUT /crm/members/{id}/basic-info リクエスト（個人情報の更新）
- */
-export type UpdateBasicInfoRequest = {
-    name_kanji?: string;
-    name_kana?: string;
-    postal_code?: string;
-    prefecture?: string;
-    city?: string;
-    address?: string;
-    building?: string;
-    phone?: string;
-    email?: string;
-    emergency_contact?: EmergencyContact;
-};
-
-/**
- * PUT /crm/members/{id}/health-info リクエスト
- */
-export type UpdateHealthInfoRequest = {
-    health_status?: string;
-    medical_history?: string;
-    allergies?: string;
-    exercise_restrictions?: string;
-    other_notes?: string;
-};
-
-export type PutHealthInfoResponse = {
-    success?: boolean;
-    health_info?: MemberHealthInfo;
-};
-
-/**
- * PUT /crm/members/{id}/marketing-consent リクエスト
- */
-export type UpdateMarketingConsentRequest = {
-    email?: boolean;
-    sms?: boolean;
-    push?: boolean;
-};
-
-export type PutMarketingConsentResponse = {
-    success?: boolean;
-};
-
-export type PointAdjustmentResponse = {
-    success?: boolean;
-    new_balance?: number;
-};
-
-export type ContractChange = {
-    changed_at?: string;
-    previous_plan?: string;
-    new_plan?: string;
-    reason?: string;
-};
-
-export type MainContract = {
+    enabled: boolean;
     /**
-     * 現在の主契約プラン名
+     * Risk score threshold (0-100)
      */
-    plan_name?: string;
+    risk_score_threshold: number;
     /**
-     * 月会費（税込）
+     * Auto approve applications below threshold
      */
-    monthly_fee?: number;
-    start_date?: string;
+    auto_approve_below_threshold: boolean;
     /**
-     * 違約金発生期間終了日
+     * Require manual review for applications above threshold
      */
-    penalty_period_end?: string;
-    change_history?: Array<ContractChange>;
-};
-
-export type OptionContract = {
-    id?: string;
+    require_manual_review_above_threshold: boolean;
     /**
-     * オプション名
+     * Enable blacklist check
      */
-    name?: string;
+    blacklist_check_enabled: boolean;
     /**
-     * 月額料金
+     * Enable duplicate check
      */
-    monthly_fee?: number;
-    start_date?: string;
+    duplicate_check_enabled: boolean;
     /**
-     * 次回請求日
+     * Require payment verification
      */
-    next_billing_date?: string;
-};
-
-export type OptionChangeHistoryItem = {
-    changed_at?: string;
-    option_name?: string;
-    action_type?: 'add' | 'remove' | 'change';
-    notes?: string;
-};
-
-export type SpecialContractItem = {
-    enrolled?: boolean;
-    start_date?: string;
+    payment_verification_required: boolean;
     /**
-     * 請求月
+     * Require document verification
      */
-    applied_month?: string;
-};
-
-export type SpecialContracts = {
-    anshin_support?: SpecialContractItem;
-    mutual_use?: SpecialContractItem;
-    security_fee?: SpecialContractItem;
-    maintenance_fee?: SpecialContractItem;
-};
-
-export type PaymentRecord = {
-    date?: string;
-    amount?: number;
-    breakdown?: string;
-    status?: 'success' | 'failed';
-    notes?: string;
-};
-
-export type PaymentInfo = {
-    method?: 'credit_card' | 'bank_transfer';
+    document_verification_required: boolean;
     /**
-     * マスク済み、下4桁
+     * NotificationSettings
+     *
+     * Notification settings
      */
-    card_number?: string;
-    cardholder_name?: string;
-    expiry_date?: string;
-    billing_day?: number;
-    last_payment_date?: string;
-    last_payment_amount?: number;
-    status?: 'normal' | 'error';
-    payment_history?: Array<PaymentRecord>;
-};
-
-export type UnpaidItem = {
-    month?: string;
-    amount?: number;
-    reason?: string;
-    reminder_status?: string;
-};
-
-export type CampaignActiveItem = {
-    campaign_name?: string;
-    period_start?: string;
-    period_end?: string;
-    discount_content?: string;
-    remaining_days?: number;
-};
-
-export type CampaignHistoryItem = {
-    applied_at?: string;
-    campaign_name?: string;
-    content?: string;
-    status?: 'active' | 'expired' | 'cancelled';
-};
-
-/**
- * 契約情報タブ用レスポンス
- */
-export type GetContractsResponse = {
-    main_contract?: MainContract;
-    option_contracts?: Array<OptionContract>;
-    option_change_history?: Array<OptionChangeHistoryItem>;
-    special_contracts?: SpecialContracts;
-    payment_info?: PaymentInfo;
-    unpaid_info?: {
-        items?: Array<UnpaidItem>;
-    };
-    campaigns?: {
-        active?: Array<CampaignActiveItem>;
-        history?: Array<CampaignHistoryItem>;
-    };
-};
-
-/**
- * ブランド別ポイント保有（member_points に紐づく想定）。FIT365=ベアレージ、JOYFIT=エンジョイ
- */
-export type BrandPointBalance = {
-    /**
-     * 現在の保有ポイント
-     */
-    current_balance?: number;
-    /**
-     * 累計獲得ポイント
-     */
-    total_earned?: number;
-    /**
-     * 累計消費ポイント
-     */
-    total_spent?: number;
-    /**
-     * 有効期限（none=無期限）
-     */
-    expiry?: string;
-    /**
-     * 利用先
-     */
-    usage_destination?: string;
-};
-
-/**
- * 会員ランク情報
- */
-export type MemberRankInfo = {
-    /**
-     * 現在のランク（ブロンズ/シルバー/ゴールド/プラチナなど）
-     */
-    current?: string;
-    /**
-     * ランク特典内容
-     */
-    benefits?: string;
-    next_rank?: {
+    notification_settings: {
         /**
-         * 次回ランクアップ必要ポイント
+         * Notify on high risk applications
          */
-        required_points?: number;
+        notify_on_high_risk: boolean;
         /**
-         * 進捗率%
+         * Notify on blacklist match
          */
-        progress?: number;
+        notify_on_blacklist_match: boolean;
+        /**
+         * Notify on duplicate applications
+         */
+        notify_on_duplicate: boolean;
+        /**
+         * Email recipients for notifications
+         */
+        email_recipients: Array<string>;
+    };
+    /**
+     * Last update timestamp
+     */
+    updated_at: string;
+    /**
+     * User who last updated the settings
+     */
+    updated_by: string;
+};
+
+/**
+ * GetSettingsResponse
+ *
+ * Response for getting auto-approval settings
+ */
+export type GetSettingsResponse = {
+    /**
+     * AutoApprovalSettings
+     *
+     * Auto-approval settings
+     */
+    settings: {
+        /**
+         * Whether auto-approval is enabled
+         */
+        enabled: boolean;
+        /**
+         * Risk score threshold (0-100)
+         */
+        risk_score_threshold: number;
+        /**
+         * Auto approve applications below threshold
+         */
+        auto_approve_below_threshold: boolean;
+        /**
+         * Require manual review for applications above threshold
+         */
+        require_manual_review_above_threshold: boolean;
+        /**
+         * Enable blacklist check
+         */
+        blacklist_check_enabled: boolean;
+        /**
+         * Enable duplicate check
+         */
+        duplicate_check_enabled: boolean;
+        /**
+         * Require payment verification
+         */
+        payment_verification_required: boolean;
+        /**
+         * Require document verification
+         */
+        document_verification_required: boolean;
+        /**
+         * NotificationSettings
+         *
+         * Notification settings
+         */
+        notification_settings: {
+            /**
+             * Notify on high risk applications
+             */
+            notify_on_high_risk: boolean;
+            /**
+             * Notify on blacklist match
+             */
+            notify_on_blacklist_match: boolean;
+            /**
+             * Notify on duplicate applications
+             */
+            notify_on_duplicate: boolean;
+            /**
+             * Email recipients for notifications
+             */
+            email_recipients: Array<string>;
+        };
+        /**
+         * Last update timestamp
+         */
+        updated_at: string;
+        /**
+         * User who last updated the settings
+         */
+        updated_by: string;
     };
 };
 
 /**
- * ポイント獲得履歴（member_point_histories type=earn）
+ * UpdateSettingsRequest
+ *
+ * Request payload for updating auto-approval settings
  */
-export type PointEarnRecord = {
-    id?: string;
+export type UpdateSettingsRequest = {
     /**
-     * 獲得日時
+     * Whether auto-approval is enabled
      */
-    date?: string;
+    enabled: boolean;
     /**
-     * 獲得理由（来館/友達紹介/キャンペーン/誕生日ボーナスなど）
+     * Risk score threshold (0-100)
      */
-    reason?: string;
-    points?: number;
+    risk_score_threshold?: number;
     /**
-     * 詳細・備考
+     * Auto approve applications below threshold
      */
-    notes?: string;
+    auto_approve_below_threshold?: boolean;
+    /**
+     * Require manual review for applications above threshold
+     */
+    require_manual_review_above_threshold?: boolean;
+    /**
+     * Enable blacklist check
+     */
+    blacklist_check_enabled?: boolean;
+    /**
+     * Enable duplicate check
+     */
+    duplicate_check_enabled?: boolean;
+    /**
+     * Require payment verification
+     */
+    payment_verification_required?: boolean;
+    /**
+     * Require document verification
+     */
+    document_verification_required?: boolean;
+    /**
+     * NotificationSettings
+     *
+     * Notification settings
+     */
+    notification_settings?: {
+        /**
+         * Notify on high risk applications
+         */
+        notify_on_high_risk: boolean;
+        /**
+         * Notify on blacklist match
+         */
+        notify_on_blacklist_match: boolean;
+        /**
+         * Notify on duplicate applications
+         */
+        notify_on_duplicate: boolean;
+        /**
+         * Email recipients for notifications
+         */
+        email_recipients: Array<string>;
+    };
+    /**
+     * Last update timestamp
+     */
+    updated_at?: string;
+    /**
+     * User who last updated the settings
+     */
+    updated_by?: string;
 };
 
 /**
- * ポイント消費履歴（member_point_histories type=spend）
+ * UpdateSettingsResponse
+ *
+ * Response for updating auto-approval settings
  */
-export type PointSpendRecord = {
-    id?: string;
+export type UpdateSettingsResponse = {
     /**
-     * 消費日時
+     * Whether the update was successful
      */
-    date?: string;
+    success: boolean;
     /**
-     * 消費内容（月会費充当/EC決済/商品交換/ギフトカード交換など）
+     * AutoApprovalSettings
+     *
+     * Updated settings
      */
-    content?: string;
-    points?: number;
-    /**
-     * 詳細・備考
-     */
-    notes?: string;
+    settings: {
+        /**
+         * Whether auto-approval is enabled
+         */
+        enabled: boolean;
+        /**
+         * Risk score threshold (0-100)
+         */
+        risk_score_threshold: number;
+        /**
+         * Auto approve applications below threshold
+         */
+        auto_approve_below_threshold: boolean;
+        /**
+         * Require manual review for applications above threshold
+         */
+        require_manual_review_above_threshold: boolean;
+        /**
+         * Enable blacklist check
+         */
+        blacklist_check_enabled: boolean;
+        /**
+         * Enable duplicate check
+         */
+        duplicate_check_enabled: boolean;
+        /**
+         * Require payment verification
+         */
+        payment_verification_required: boolean;
+        /**
+         * Require document verification
+         */
+        document_verification_required: boolean;
+        /**
+         * NotificationSettings
+         *
+         * Notification settings
+         */
+        notification_settings: {
+            /**
+             * Notify on high risk applications
+             */
+            notify_on_high_risk: boolean;
+            /**
+             * Notify on blacklist match
+             */
+            notify_on_blacklist_match: boolean;
+            /**
+             * Notify on duplicate applications
+             */
+            notify_on_duplicate: boolean;
+            /**
+             * Email recipients for notifications
+             */
+            email_recipients: Array<string>;
+        };
+        /**
+         * Last update timestamp
+         */
+        updated_at: string;
+        /**
+         * User who last updated the settings
+         */
+        updated_by: string;
+    };
 };
 
 /**
- * ポイント調整履歴（member_point_histories type=adjust）
+ * GetDashboardQuery
+ *
+ * Query parameters for getting dashboard
  */
-export type PointAdjustmentRecord = {
-    id?: string;
+export type GetDashboardQuery = {
     /**
-     * 調整日時
+     * Time period
      */
-    date?: string;
-    /**
-     * 手動付与/手動減算
-     */
-    adjustment_type?: 'add' | 'subtract';
-    points?: number;
-    /**
-     * 調整理由
-     */
-    reason?: string;
-    /**
-     * 実施スタッフ
-     */
-    adjusted_by?: string;
+    period?: 'day' | 'week' | 'month';
 };
 
 /**
- * GET /crm/members/{id}/points レスポンス（ポイントタブ用）。member_points / member_point_histories に相当
+ * GetDashboardResponse
+ *
+ * Response for getting dashboard
  */
-export type GetPointsResponse = {
-    fit365?: BrandPointBalance;
-    joyfit?: BrandPointBalance;
-    rank?: MemberRankInfo;
+export type GetDashboardResponse = {
     /**
-     * ポイント獲得履歴（最近20件・全件表示可）
+     * Dashboard
+     *
+     * Dashboard data
      */
-    earn_history?: Array<PointEarnRecord>;
-    /**
-     * ポイント消費履歴（最近20件・全件表示可）
-     */
-    spend_history?: Array<PointSpendRecord>;
-    /**
-     * ポイント調整履歴（該当する場合）
-     */
-    adjustment_history?: Array<PointAdjustmentRecord>;
+    dashboard: {
+        /**
+         * Time period
+         */
+        period: string;
+        /**
+         * DateRange
+         *
+         * Date range
+         */
+        date_range: {
+            /**
+             * Start date
+             */
+            start: string;
+            /**
+             * End date
+             */
+            end: string;
+        };
+        /**
+         * DashboardStatistics
+         *
+         * Statistics
+         */
+        statistics: {
+            /**
+             * Total number of applications
+             */
+            total_applications: number;
+            /**
+             * Number of auto-approved applications
+             */
+            auto_approved: number;
+            /**
+             * Number of manually approved applications
+             */
+            manual_approved: number;
+            /**
+             * Number of rejected applications
+             */
+            rejected: number;
+            /**
+             * Auto approval rate (%)
+             */
+            auto_approval_rate: number;
+            /**
+             * Average processing time in minutes
+             */
+            average_processing_time_minutes: number;
+            /**
+             * Average risk score
+             */
+            average_risk_score: number;
+        };
+        /**
+         * RiskDistribution
+         *
+         * Risk distribution
+         */
+        risk_distribution: {
+            /**
+             * Number of low risk applications (risk_score < 30)
+             */
+            low_risk: number;
+            /**
+             * Number of medium risk applications (30 <= risk_score < 70)
+             */
+            medium_risk: number;
+            /**
+             * Number of high risk applications (risk_score >= 70)
+             */
+            high_risk: number;
+        };
+        /**
+         * RejectionReasons
+         *
+         * Rejection reasons
+         */
+        rejection_reasons: {
+            /**
+             * Blacklist match count
+             */
+            blacklist_match: number;
+            /**
+             * Duplicate application count
+             */
+            duplicate_application: number;
+            /**
+             * Payment failure count
+             */
+            payment_failure: number;
+            /**
+             * High risk score count
+             */
+            high_risk_score: number;
+            /**
+             * Document issue count
+             */
+            document_issue: number;
+            /**
+             * Other reasons count
+             */
+            other: number;
+        };
+        /**
+         * Daily trends
+         */
+        daily_trends: Array<{
+            /**
+             * Date
+             */
+            date: string;
+            /**
+             * Total applications
+             */
+            total: number;
+            /**
+             * Auto-approved applications
+             */
+            auto_approved: number;
+            /**
+             * Manually approved applications
+             */
+            manual_approved: number;
+            /**
+             * Rejected applications
+             */
+            rejected: number;
+        }>;
+        /**
+         * Recent activities
+         */
+        recent_activities: Array<{
+            /**
+             * Activity ID
+             */
+            id: string;
+            /**
+             * Activity type
+             */
+            type: 'auto_approved' | 'manual_approved' | 'rejected';
+            /**
+             * Application ID
+             */
+            application_id: string;
+            /**
+             * Applicant name
+             */
+            applicant_name: string;
+            /**
+             * Risk score
+             */
+            risk_score: number;
+            /**
+             * Activity timestamp
+             */
+            timestamp: string;
+            /**
+             * Staff ID who approved (for manual approval)
+             */
+            approved_by?: string;
+            /**
+             * Staff ID who rejected (for rejection)
+             */
+            rejected_by?: string;
+            /**
+             * Rejection reason (for rejection)
+             */
+            rejection_reason?: string;
+        }>;
+    };
 };
 
-export type PostPointsAdjustResponse = {
-    success?: boolean;
-    new_balance?: number;
-};
-
-export type GetChangeHistoryResponse = {
-    items?: Array<{
-        id?: string;
-        date?: string;
-        event_type?: string;
-        content?: string;
+/**
+ * Dashboard
+ *
+ * Auto-approval dashboard data
+ */
+export type Dashboard = {
+    /**
+     * Time period
+     */
+    period: string;
+    /**
+     * DateRange
+     *
+     * Date range
+     */
+    date_range: {
+        /**
+         * Start date
+         */
+        start: string;
+        /**
+         * End date
+         */
+        end: string;
+    };
+    /**
+     * DashboardStatistics
+     *
+     * Statistics
+     */
+    statistics: {
+        /**
+         * Total number of applications
+         */
+        total_applications: number;
+        /**
+         * Number of auto-approved applications
+         */
+        auto_approved: number;
+        /**
+         * Number of manually approved applications
+         */
+        manual_approved: number;
+        /**
+         * Number of rejected applications
+         */
+        rejected: number;
+        /**
+         * Auto approval rate (%)
+         */
+        auto_approval_rate: number;
+        /**
+         * Average processing time in minutes
+         */
+        average_processing_time_minutes: number;
+        /**
+         * Average risk score
+         */
+        average_risk_score: number;
+    };
+    /**
+     * RiskDistribution
+     *
+     * Risk distribution
+     */
+    risk_distribution: {
+        /**
+         * Number of low risk applications (risk_score < 30)
+         */
+        low_risk: number;
+        /**
+         * Number of medium risk applications (30 <= risk_score < 70)
+         */
+        medium_risk: number;
+        /**
+         * Number of high risk applications (risk_score >= 70)
+         */
+        high_risk: number;
+    };
+    /**
+     * RejectionReasons
+     *
+     * Rejection reasons
+     */
+    rejection_reasons: {
+        /**
+         * Blacklist match count
+         */
+        blacklist_match: number;
+        /**
+         * Duplicate application count
+         */
+        duplicate_application: number;
+        /**
+         * Payment failure count
+         */
+        payment_failure: number;
+        /**
+         * High risk score count
+         */
+        high_risk_score: number;
+        /**
+         * Document issue count
+         */
+        document_issue: number;
+        /**
+         * Other reasons count
+         */
+        other: number;
+    };
+    /**
+     * Daily trends
+     */
+    daily_trends: Array<{
+        /**
+         * Date
+         */
+        date: string;
+        /**
+         * Total applications
+         */
+        total: number;
+        /**
+         * Auto-approved applications
+         */
+        auto_approved: number;
+        /**
+         * Manually approved applications
+         */
+        manual_approved: number;
+        /**
+         * Rejected applications
+         */
+        rejected: number;
+    }>;
+    /**
+     * Recent activities
+     */
+    recent_activities: Array<{
+        /**
+         * Activity ID
+         */
+        id: string;
+        /**
+         * Activity type
+         */
+        type: 'auto_approved' | 'manual_approved' | 'rejected';
+        /**
+         * Application ID
+         */
+        application_id: string;
+        /**
+         * Applicant name
+         */
+        applicant_name: string;
+        /**
+         * Risk score
+         */
+        risk_score: number;
+        /**
+         * Activity timestamp
+         */
+        timestamp: string;
+        /**
+         * Staff ID who approved (for manual approval)
+         */
+        approved_by?: string;
+        /**
+         * Staff ID who rejected (for rejection)
+         */
+        rejected_by?: string;
+        /**
+         * Rejection reason (for rejection)
+         */
+        rejection_reason?: string;
     }>;
 };
 
-export type GetRelationshipsResponse = {
-    family?: {
-        [key: string]: unknown;
-    };
-    corporate?: {
-        [key: string]: unknown;
-    };
-    referral?: {
-        [key: string]: unknown;
+/**
+ * NotificationSettings
+ *
+ * Notification settings for auto-approval
+ */
+export type NotificationSettings = {
+    /**
+     * Notify on high risk applications
+     */
+    notify_on_high_risk: boolean;
+    /**
+     * Notify on blacklist match
+     */
+    notify_on_blacklist_match: boolean;
+    /**
+     * Notify on duplicate applications
+     */
+    notify_on_duplicate: boolean;
+    /**
+     * Email recipients for notifications
+     */
+    email_recipients: Array<string>;
+};
+
+/**
+ * DateRange
+ *
+ * Date range
+ */
+export type DateRange = {
+    /**
+     * Start date
+     */
+    start: string;
+    /**
+     * End date
+     */
+    end: string;
+};
+
+/**
+ * DashboardStatistics
+ *
+ * Dashboard statistics
+ */
+export type DashboardStatistics = {
+    /**
+     * Total number of applications
+     */
+    total_applications: number;
+    /**
+     * Number of auto-approved applications
+     */
+    auto_approved: number;
+    /**
+     * Number of manually approved applications
+     */
+    manual_approved: number;
+    /**
+     * Number of rejected applications
+     */
+    rejected: number;
+    /**
+     * Auto approval rate (%)
+     */
+    auto_approval_rate: number;
+    /**
+     * Average processing time in minutes
+     */
+    average_processing_time_minutes: number;
+    /**
+     * Average risk score
+     */
+    average_risk_score: number;
+};
+
+/**
+ * RiskDistribution
+ *
+ * Risk distribution
+ */
+export type RiskDistribution = {
+    /**
+     * Number of low risk applications (risk_score < 30)
+     */
+    low_risk: number;
+    /**
+     * Number of medium risk applications (30 <= risk_score < 70)
+     */
+    medium_risk: number;
+    /**
+     * Number of high risk applications (risk_score >= 70)
+     */
+    high_risk: number;
+};
+
+/**
+ * RejectionReasons
+ *
+ * Rejection reasons breakdown
+ */
+export type RejectionReasons = {
+    /**
+     * Blacklist match count
+     */
+    blacklist_match: number;
+    /**
+     * Duplicate application count
+     */
+    duplicate_application: number;
+    /**
+     * Payment failure count
+     */
+    payment_failure: number;
+    /**
+     * High risk score count
+     */
+    high_risk_score: number;
+    /**
+     * Document issue count
+     */
+    document_issue: number;
+    /**
+     * Other reasons count
+     */
+    other: number;
+};
+
+/**
+ * DailyTrend
+ *
+ * Daily trend data
+ */
+export type DailyTrend = {
+    /**
+     * Date
+     */
+    date: string;
+    /**
+     * Total applications
+     */
+    total: number;
+    /**
+     * Auto-approved applications
+     */
+    auto_approved: number;
+    /**
+     * Manually approved applications
+     */
+    manual_approved: number;
+    /**
+     * Rejected applications
+     */
+    rejected: number;
+};
+
+/**
+ * RecentActivity
+ *
+ * Recent activity information
+ */
+export type RecentActivity = {
+    /**
+     * Activity ID
+     */
+    id: string;
+    /**
+     * Activity type
+     */
+    type: 'auto_approved' | 'manual_approved' | 'rejected';
+    /**
+     * Application ID
+     */
+    application_id: string;
+    /**
+     * Applicant name
+     */
+    applicant_name: string;
+    /**
+     * Risk score
+     */
+    risk_score: number;
+    /**
+     * Activity timestamp
+     */
+    timestamp: string;
+    /**
+     * Staff ID who approved (for manual approval)
+     */
+    approved_by?: string;
+    /**
+     * Staff ID who rejected (for rejection)
+     */
+    rejected_by?: string;
+    /**
+     * Rejection reason (for rejection)
+     */
+    rejection_reason?: string;
+};
+
+/**
+ * MemberListItem
+ *
+ * Member information for list view
+ */
+export type MemberListItem = {
+    /**
+     * Member ID
+     */
+    id: string;
+    /**
+     * Member number
+     */
+    member_number: string;
+    /**
+     * Name in kanji
+     */
+    name_kanji: string;
+    /**
+     * Name in kana
+     */
+    name_kana: string;
+    /**
+     * Member type
+     */
+    member_type: 'regular' | 'family' | 'corporate' | 'company_discount';
+    /**
+     * Member status
+     */
+    status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
+    /**
+     * Store name
+     */
+    store_name: string;
+    /**
+     * Store ID
+     */
+    store_id: string;
+    /**
+     * Brand
+     */
+    brand: 'joyfit' | 'fit365';
+    /**
+     * Contract plan name
+     */
+    contract_plan_name: string;
+    /**
+     * Contract plan ID
+     */
+    contract_plan_id: string;
+    /**
+     * Join date
+     */
+    joined_at: string;
+    /**
+     * Last visit date
+     */
+    last_visit_date?: string;
+    /**
+     * Whether member has unpaid fees
+     */
+    has_unpaid: boolean;
+    /**
+     * Phone number
+     */
+    phone: string;
+    /**
+     * Email address
+     */
+    email: string;
+};
+
+/**
+ * Pagination
+ *
+ * Pagination information
+ */
+export type Pagination = {
+    /**
+     * Current page number
+     */
+    page: number;
+    /**
+     * Items per page
+     */
+    limit: number;
+    /**
+     * Total number of items
+     */
+    total: number;
+    /**
+     * Total number of pages
+     */
+    total_pages: number;
+};
+
+/**
+ * GetMembersQuery
+ *
+ * Query parameters for getting members
+ */
+export type GetMembersQuery = {
+    /**
+     * Page number
+     */
+    page?: number;
+    /**
+     * Items per page
+     */
+    limit?: number;
+    /**
+     * Search query (name, member number, phone, email)
+     */
+    search?: string;
+    /**
+     * Filter by member type (array)
+     */
+    member_type?: Array<'regular' | 'family' | 'corporate' | 'company_discount'> | null;
+    /**
+     * Filter by status (array)
+     */
+    status?: Array<'active' | 'suspended' | 'withdrawn' | 'force_withdrawn'> | null;
+    /**
+     * Filter by brand (array)
+     */
+    brand?: Array<'joyfit' | 'fit365'> | null;
+    /**
+     * Filter by store ID (array)
+     */
+    store_id?: Array<string> | null;
+    /**
+     * Filter by contract plan ID (array)
+     */
+    contract_plan_id?: Array<string> | null;
+    /**
+     * Filter by last visit days (-1 for 3+ months)
+     */
+    last_visit_days?: number | null;
+    /**
+     * Filter by unpaid status
+     */
+    has_unpaid?: boolean | null;
+    /**
+     * Sort field
+     */
+    sort_by?: 'member_number' | 'joined_at' | 'last_visit' | 'name';
+    /**
+     * Sort order
+     */
+    sort_order?: 'asc' | 'desc';
+};
+
+/**
+ * GetMembersResponse
+ *
+ * Response for getting members list
+ */
+export type GetMembersResponse = {
+    /**
+     * List of members
+     */
+    members: Array<{
+        /**
+         * Member ID
+         */
+        id: string;
+        /**
+         * Member number
+         */
+        member_number: string;
+        /**
+         * Name in kanji
+         */
+        name_kanji: string;
+        /**
+         * Name in kana
+         */
+        name_kana: string;
+        /**
+         * Member type
+         */
+        member_type: 'regular' | 'family' | 'corporate' | 'company_discount';
+        /**
+         * Member status
+         */
+        status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
+        /**
+         * Store name
+         */
+        store_name: string;
+        /**
+         * Store ID
+         */
+        store_id: string;
+        /**
+         * Brand
+         */
+        brand: 'joyfit' | 'fit365';
+        /**
+         * Contract plan name
+         */
+        contract_plan_name: string;
+        /**
+         * Contract plan ID
+         */
+        contract_plan_id: string;
+        /**
+         * Join date
+         */
+        joined_at: string;
+        /**
+         * Last visit date
+         */
+        last_visit_date?: string;
+        /**
+         * Whether member has unpaid fees
+         */
+        has_unpaid: boolean;
+        /**
+         * Phone number
+         */
+        phone: string;
+        /**
+         * Email address
+         */
+        email: string;
+    }>;
+    /**
+     * Pagination
+     *
+     * Pagination information
+     */
+    pagination: {
+        /**
+         * Current page number
+         */
+        page: number;
+        /**
+         * Items per page
+         */
+        limit: number;
+        /**
+         * Total number of items
+         */
+        total: number;
+        /**
+         * Total number of pages
+         */
+        total_pages: number;
     };
 };
 
-export type GetServiceUsageResponse = {
-    personal_training?: {
-        [key: string]: unknown;
-    };
-    studio_programs?: {
-        [key: string]: unknown;
-    };
-    other_services?: {
-        [key: string]: unknown;
+/**
+ * GetMemberDetailResponse
+ *
+ * Response for getting member detail
+ */
+export type GetMemberDetailResponse = {
+    /**
+     * Complete member information
+     */
+    member: {
+        /**
+         * Basic member information
+         */
+        basic_info?: unknown;
+        /**
+         * Member profile
+         */
+        profile?: unknown;
+        /**
+         * eKYC information
+         */
+        ekyc?: unknown;
+        /**
+         * Consent information
+         */
+        consent?: unknown;
+        /**
+         * Health information
+         */
+        health_info?: unknown;
+        /**
+         * Contract information
+         */
+        contracts?: unknown;
+        /**
+         * Payment information
+         */
+        payment_info?: unknown;
+        /**
+         * Points information
+         */
+        points?: unknown;
+        /**
+         * Usage summary
+         */
+        usage_summary?: unknown;
+        /**
+         * Training summary
+         */
+        training_summary?: unknown;
+        /**
+         * Service usage
+         */
+        service_usage?: unknown;
+        /**
+         * Communications
+         */
+        communications?: unknown;
+        /**
+         * Staff memos
+         */
+        memos?: unknown;
+        /**
+         * Change history
+         */
+        change_history?: unknown;
     };
 };
 
-export type GetTrainingRecordsResponse = {
-    summary?: {
-        [key: string]: unknown;
-    };
-    strength_records?: Array<unknown>;
-    cardio_records?: Array<unknown>;
-    body_records?: Array<unknown>;
-};
-
-export type GetUsageHistoryResponse = {
-    summary?: {
-        [key: string]: unknown;
-    };
-    visits?: Array<unknown>;
-    store_usage?: Array<unknown>;
-};
-
-export type ExportMembersResponse = {
-    success?: boolean;
-    download_url?: string;
-    expires_at?: string;
-};
-
-export type RegisterRequest = {
+/**
+ * UpdateBasicInfoRequest
+ *
+ * Request payload for updating basic info
+ */
+export type UpdateBasicInfoRequest = {
+    /**
+     * Name in kanji
+     */
+    name_kanji?: string;
+    /**
+     * Name in kana
+     */
+    name_kana?: string;
+    /**
+     * Postal code
+     */
+    postal_code?: string;
+    /**
+     * Prefecture
+     */
+    prefecture?: string;
+    /**
+     * City
+     */
+    city?: string;
+    /**
+     * Address
+     */
+    address?: string;
+    /**
+     * Building name
+     */
+    building?: string;
+    /**
+     * Phone number
+     */
+    phone?: string;
+    /**
+     * Email address
+     */
     email?: string;
-    password?: string;
-    name?: string;
+    /**
+     * Emergency contact information
+     */
+    emergency_contact?: {
+        name: string;
+        relationship: string;
+        phone: string;
+    };
 };
 
-export type RegisterResponse = {
-    success?: boolean;
-    user_id?: string;
+/**
+ * UpdateBasicInfoResponse
+ *
+ * Response for updating basic info
+ */
+export type UpdateBasicInfoResponse = {
+    /**
+     * Whether the update was successful
+     */
+    success: boolean;
+    /**
+     * Updated member information
+     */
+    member?: unknown;
 };
 
+/**
+ * UpdateHealthInfoRequest
+ *
+ * Request payload for updating health info
+ */
+export type UpdateHealthInfoRequest = {
+    /**
+     * Health status
+     */
+    health_status?: string;
+    /**
+     * Medical history
+     */
+    medical_history?: string;
+    /**
+     * Allergies
+     */
+    allergies?: string;
+    /**
+     * Exercise restrictions
+     */
+    exercise_restrictions?: string;
+    /**
+     * Other notes
+     */
+    other_notes?: string;
+};
+
+/**
+ * UpdateHealthInfoResponse
+ *
+ * Response for updating health info
+ */
+export type UpdateHealthInfoResponse = {
+    /**
+     * Whether the update was successful
+     */
+    success: boolean;
+    /**
+     * Updated member information
+     */
+    member?: unknown;
+};
+
+/**
+ * UpdateMarketingConsentRequest
+ *
+ * Request payload for updating marketing consent
+ */
+export type UpdateMarketingConsentRequest = {
+    /**
+     * Email marketing consent
+     */
+    email?: boolean;
+    /**
+     * SMS marketing consent
+     */
+    sms?: boolean;
+    /**
+     * Push notification consent
+     */
+    push?: boolean;
+};
+
+/**
+ * UpdateMarketingConsentResponse
+ *
+ * Response for updating marketing consent
+ */
+export type UpdateMarketingConsentResponse = {
+    /**
+     * Whether the update was successful
+     */
+    success: boolean;
+    /**
+     * Updated member information
+     */
+    member?: unknown;
+};
+
+/**
+ * PointAdjustmentRequest
+ *
+ * Request payload for adjusting points
+ */
 export type PointAdjustmentRequest = {
+    /**
+     * Adjustment type
+     */
     type: 'add' | 'subtract';
+    /**
+     * Number of points
+     */
     points: number;
+    /**
+     * Reason for adjustment (10-500 characters)
+     */
     reason: string;
 };
 
+/**
+ * PointAdjustmentResponse
+ *
+ * Response for adjusting points
+ */
+export type PointAdjustmentResponse = {
+    /**
+     * Whether the adjustment was successful
+     */
+    success: boolean;
+    /**
+     * Member ID
+     */
+    id: string;
+    /**
+     * PointAdjustmentRequest
+     *
+     * Adjustment details
+     */
+    adjustment: {
+        /**
+         * Adjustment type
+         */
+        type: 'add' | 'subtract';
+        /**
+         * Number of points
+         */
+        points: number;
+        /**
+         * Reason for adjustment (10-500 characters)
+         */
+        reason: string;
+    };
+};
+
+/**
+ * GetPointsResponse
+ *
+ * Response for getting points
+ */
+export type GetPointsResponse = {
+    /**
+     * FIT365 points information
+     */
+    fit365?: unknown;
+    /**
+     * JOYFIT points information
+     */
+    joyfit?: unknown;
+    /**
+     * Rank information
+     */
+    rank?: unknown;
+    /**
+     * Earn history
+     */
+    earn_history: Array<unknown>;
+    /**
+     * Spend history
+     */
+    spend_history: Array<unknown>;
+    /**
+     * Adjustment history
+     */
+    adjustment_history: Array<unknown>;
+};
+
+/**
+ * CreateMemoRequest
+ *
+ * Request payload for creating a memo
+ */
 export type CreateMemoRequest = {
     /**
-     * メモ種別（要注意/VIP/その他）
+     * Memo type
      */
     type: 'caution' | 'vip' | 'other';
     /**
-     * メモ内容（1000文字まで）
+     * Memo content (1-1000 characters)
      */
     content: string;
     /**
-     * 記録スタッフ（未指定時はAPIでデフォルト設定）
+     * Creator name
      */
     created_by?: string;
 };
 
+/**
+ * CreateMemoResponse
+ *
+ * Response for creating a memo
+ */
+export type CreateMemoResponse = {
+    /**
+     * Whether the creation was successful
+     */
+    success: boolean;
+    /**
+     * Created memo
+     */
+    memo?: unknown;
+};
+
+/**
+ * UpdateMemoRequest
+ *
+ * Request payload for updating a memo
+ */
 export type UpdateMemoRequest = {
+    /**
+     * Memo type
+     */
     type?: 'caution' | 'vip' | 'other';
+    /**
+     * Memo content (max 1000 characters)
+     */
     content?: string;
 };
 
-export type StaffMemo = {
-    /**
-     * メモID
-     */
-    id: string;
-    /**
-     * 記録日時
-     */
-    date: string;
-    /**
-     * メモ種別
-     */
-    type: 'caution' | 'vip' | 'other';
-    /**
-     * メモ内容
-     */
-    content: string;
-    /**
-     * 記録スタッフ
-     */
-    created_by: string;
-};
-
-export type CreateMemoResponse = {
-    success?: boolean;
-    memo?: StaffMemo;
-};
-
+/**
+ * UpdateMemoResponse
+ *
+ * Response for updating a memo
+ */
 export type UpdateMemoResponse = {
-    success?: boolean;
-    memo?: StaffMemo;
+    /**
+     * Whether the update was successful
+     */
+    success: boolean;
+    /**
+     * Updated memo
+     */
+    memo?: unknown;
 };
 
+/**
+ * GetMemosResponse
+ *
+ * Response for getting memos
+ */
+export type GetMemosResponse = {
+    /**
+     * List of memos
+     */
+    memos: Array<unknown>;
+};
+
+/**
+ * ExportMembersRequest
+ *
+ * Request payload for exporting members
+ */
 export type ExportMembersRequest = {
+    /**
+     * Export format
+     */
     format: 'csv' | 'excel';
+    /**
+     * Export target
+     */
     target: 'selected' | 'filtered';
+    /**
+     * Member IDs (for selected target)
+     */
     member_ids?: Array<string>;
+    /**
+     * Fields to export
+     */
     fields: Array<string>;
 };
 
 /**
- * コミュニケーションタブ取得レスポンス
+ * ExportMembersResponse
+ *
+ * Response for exporting members
  */
-export type GetCommunicationsResponse = {
+export type ExportMembersResponse = {
     /**
-     * スタッフメモ一覧
+     * Whether the export was successful
      */
-    memos?: Array<StaffMemo>;
-    inquiries?: Array<{
-        id?: string;
-        date?: string;
-        content?: string;
-        staff_name?: string;
-        result?: string;
-        status?: 'in_progress' | 'completed';
-    }>;
-    notifications?: {
-        [key: string]: unknown;
-    };
-    phoneRecords?: Array<unknown>;
+    success: boolean;
+    /**
+     * Export ID
+     */
+    exportId: string;
+    /**
+     * Export format
+     */
+    format: 'csv' | 'excel';
+    /**
+     * Export status
+     */
+    status: string;
 };
 
-export type Error = {
-    error?: string;
+/**
+ * ContractChange
+ *
+ * Contract change history item
+ */
+export type ContractChange = {
+    /**
+     * Change date and time
+     */
+    changed_at: string;
+    /**
+     * Previous plan name
+     */
+    previous_plan: string;
+    /**
+     * New plan name
+     */
+    new_plan: string;
+    /**
+     * Reason for change
+     */
+    reason?: string;
+};
+
+/**
+ * MainContract
+ *
+ * Main contract information
+ */
+export type MainContract = {
+    /**
+     * Plan name
+     */
+    plan_name: string;
+    /**
+     * Monthly fee (tax included)
+     */
+    monthly_fee: number;
+    /**
+     * Contract start date
+     */
+    start_date: string;
+    /**
+     * Penalty period end date
+     */
+    penalty_period_end?: string;
+    /**
+     * Contract change history
+     */
+    change_history: Array<{
+        /**
+         * Change date and time
+         */
+        changed_at: string;
+        /**
+         * Previous plan name
+         */
+        previous_plan: string;
+        /**
+         * New plan name
+         */
+        new_plan: string;
+        /**
+         * Reason for change
+         */
+        reason?: string;
+    }>;
+};
+
+/**
+ * OptionContract
+ *
+ * Option contract information
+ */
+export type OptionContract = {
+    /**
+     * Option contract ID
+     */
+    id: string;
+    /**
+     * Option name
+     */
+    name: string;
+    /**
+     * Monthly fee
+     */
+    monthly_fee: number;
+    /**
+     * Start date
+     */
+    start_date: string;
+    /**
+     * Next billing date
+     */
+    next_billing_date: string;
+};
+
+/**
+ * OptionChangeHistory
+ *
+ * Option change history item
+ */
+export type OptionChangeHistory = {
+    /**
+     * Change date and time
+     */
+    changed_at: string;
+    /**
+     * Option name
+     */
+    option_name: string;
+    /**
+     * Action type
+     */
+    action_type: 'add' | 'remove';
+    /**
+     * Notes
+     */
+    notes?: string;
+};
+
+/**
+ * SpecialContractItem
+ *
+ * Special contract item
+ */
+export type SpecialContractItem = {
+    /**
+     * Whether enrolled
+     */
+    enrolled: boolean;
+    /**
+     * Start date
+     */
+    start_date?: string;
+    /**
+     * Applied month (YYYY-MM format)
+     */
+    applied_month?: string;
+};
+
+/**
+ * SpecialContracts
+ *
+ * Special contracts information
+ */
+export type SpecialContracts = {
+    /**
+     * SpecialContractItem
+     *
+     * Anshin support contract
+     */
+    anshin_support?: {
+        /**
+         * Whether enrolled
+         */
+        enrolled: boolean;
+        /**
+         * Start date
+         */
+        start_date?: string;
+        /**
+         * Applied month (YYYY-MM format)
+         */
+        applied_month?: string;
+    };
+    /**
+     * SpecialContractItem
+     *
+     * Mutual use contract
+     */
+    mutual_use?: {
+        /**
+         * Whether enrolled
+         */
+        enrolled: boolean;
+        /**
+         * Start date
+         */
+        start_date?: string;
+        /**
+         * Applied month (YYYY-MM format)
+         */
+        applied_month?: string;
+    };
+    /**
+     * SpecialContractItem
+     *
+     * Security fee contract
+     */
+    security_fee?: {
+        /**
+         * Whether enrolled
+         */
+        enrolled: boolean;
+        /**
+         * Start date
+         */
+        start_date?: string;
+        /**
+         * Applied month (YYYY-MM format)
+         */
+        applied_month?: string;
+    };
+    /**
+     * SpecialContractItem
+     *
+     * Maintenance fee contract
+     */
+    maintenance_fee?: {
+        /**
+         * Whether enrolled
+         */
+        enrolled: boolean;
+        /**
+         * Start date
+         */
+        start_date?: string;
+        /**
+         * Applied month (YYYY-MM format)
+         */
+        applied_month?: string;
+    };
+};
+
+/**
+ * PaymentRecord
+ *
+ * Payment history record
+ */
+export type PaymentRecord = {
+    /**
+     * Payment date
+     */
+    date: string;
+    /**
+     * Payment amount
+     */
+    amount: number;
+    /**
+     * Payment breakdown
+     */
+    breakdown: string;
+    /**
+     * Payment status
+     */
+    status: 'success' | 'failed';
+    /**
+     * Additional notes
+     */
+    notes?: string;
+};
+
+/**
+ * PaymentInfo
+ *
+ * Payment information
+ */
+export type PaymentInfo = {
+    /**
+     * Payment method
+     */
+    method: 'credit_card' | 'bank_transfer';
+    /**
+     * Masked card number (last 4 digits only)
+     */
+    card_number?: string;
+    /**
+     * Cardholder name
+     */
+    cardholder_name?: string;
+    /**
+     * Card expiry date
+     */
+    expiry_date?: string;
+    /**
+     * Billing day of month
+     */
+    billing_day: number;
+    /**
+     * Last payment date
+     */
+    last_payment_date?: string;
+    /**
+     * Last payment amount
+     */
+    last_payment_amount?: number;
+    /**
+     * Payment status
+     */
+    status: 'normal' | 'error';
+    /**
+     * Payment history
+     */
+    payment_history: Array<{
+        /**
+         * Payment date
+         */
+        date: string;
+        /**
+         * Payment amount
+         */
+        amount: number;
+        /**
+         * Payment breakdown
+         */
+        breakdown: string;
+        /**
+         * Payment status
+         */
+        status: 'success' | 'failed';
+        /**
+         * Additional notes
+         */
+        notes?: string;
+    }>;
+};
+
+/**
+ * UnpaidInfo
+ *
+ * Unpaid information
+ */
+export type UnpaidInfo = {
+    /**
+     * Unpaid amount
+     */
+    amount: number;
+    /**
+     * Due date
+     */
+    due_date: string;
+    /**
+     * Reason for unpaid
+     */
+    reason?: string;
+};
+
+/**
+ * Campaign
+ *
+ * Campaign information
+ */
+export type Campaign = {
+    /**
+     * Campaign name
+     */
+    campaign_name: string;
+    /**
+     * Campaign period start date
+     */
+    period_start?: string;
+    /**
+     * Campaign period end date
+     */
+    period_end?: string;
+    /**
+     * Discount content
+     */
+    discount_content?: string;
+    /**
+     * Remaining days
+     */
+    remaining_days?: number;
+    /**
+     * Applied date
+     */
+    applied_at?: string;
+    /**
+     * Campaign content
+     */
+    content?: string;
+    /**
+     * Campaign status
+     */
+    status?: string;
+};
+
+/**
+ * Campaigns
+ *
+ * Campaign information
+ */
+export type Campaigns = {
+    /**
+     * Active campaigns
+     */
+    active: Array<{
+        /**
+         * Campaign name
+         */
+        campaign_name: string;
+        /**
+         * Campaign period start date
+         */
+        period_start?: string;
+        /**
+         * Campaign period end date
+         */
+        period_end?: string;
+        /**
+         * Discount content
+         */
+        discount_content?: string;
+        /**
+         * Remaining days
+         */
+        remaining_days?: number;
+        /**
+         * Applied date
+         */
+        applied_at?: string;
+        /**
+         * Campaign content
+         */
+        content?: string;
+        /**
+         * Campaign status
+         */
+        status?: string;
+    }>;
+    /**
+     * Campaign history
+     */
+    history: Array<{
+        /**
+         * Campaign name
+         */
+        campaign_name: string;
+        /**
+         * Campaign period start date
+         */
+        period_start?: string;
+        /**
+         * Campaign period end date
+         */
+        period_end?: string;
+        /**
+         * Discount content
+         */
+        discount_content?: string;
+        /**
+         * Remaining days
+         */
+        remaining_days?: number;
+        /**
+         * Applied date
+         */
+        applied_at?: string;
+        /**
+         * Campaign content
+         */
+        content?: string;
+        /**
+         * Campaign status
+         */
+        status?: string;
+    }>;
+};
+
+/**
+ * GetContractsResponse
+ *
+ * Response for getting contracts
+ */
+export type GetContractsResponse = {
+    /**
+     * MainContract
+     *
+     * Main contract information
+     */
+    main_contract: {
+        /**
+         * Plan name
+         */
+        plan_name: string;
+        /**
+         * Monthly fee (tax included)
+         */
+        monthly_fee: number;
+        /**
+         * Contract start date
+         */
+        start_date: string;
+        /**
+         * Penalty period end date
+         */
+        penalty_period_end?: string;
+        /**
+         * Contract change history
+         */
+        change_history: Array<{
+            /**
+             * Change date and time
+             */
+            changed_at: string;
+            /**
+             * Previous plan name
+             */
+            previous_plan: string;
+            /**
+             * New plan name
+             */
+            new_plan: string;
+            /**
+             * Reason for change
+             */
+            reason?: string;
+        }>;
+    };
+    /**
+     * Option contracts
+     */
+    option_contracts: Array<{
+        /**
+         * Option contract ID
+         */
+        id: string;
+        /**
+         * Option name
+         */
+        name: string;
+        /**
+         * Monthly fee
+         */
+        monthly_fee: number;
+        /**
+         * Start date
+         */
+        start_date: string;
+        /**
+         * Next billing date
+         */
+        next_billing_date: string;
+    }>;
+    /**
+     * Option change history
+     */
+    option_change_history: Array<{
+        /**
+         * Change date and time
+         */
+        changed_at: string;
+        /**
+         * Option name
+         */
+        option_name: string;
+        /**
+         * Action type
+         */
+        action_type: 'add' | 'remove';
+        /**
+         * Notes
+         */
+        notes?: string;
+    }>;
+    /**
+     * SpecialContracts
+     *
+     * Special contracts
+     */
+    special_contracts: {
+        /**
+         * SpecialContractItem
+         *
+         * Anshin support contract
+         */
+        anshin_support?: {
+            /**
+             * Whether enrolled
+             */
+            enrolled: boolean;
+            /**
+             * Start date
+             */
+            start_date?: string;
+            /**
+             * Applied month (YYYY-MM format)
+             */
+            applied_month?: string;
+        };
+        /**
+         * SpecialContractItem
+         *
+         * Mutual use contract
+         */
+        mutual_use?: {
+            /**
+             * Whether enrolled
+             */
+            enrolled: boolean;
+            /**
+             * Start date
+             */
+            start_date?: string;
+            /**
+             * Applied month (YYYY-MM format)
+             */
+            applied_month?: string;
+        };
+        /**
+         * SpecialContractItem
+         *
+         * Security fee contract
+         */
+        security_fee?: {
+            /**
+             * Whether enrolled
+             */
+            enrolled: boolean;
+            /**
+             * Start date
+             */
+            start_date?: string;
+            /**
+             * Applied month (YYYY-MM format)
+             */
+            applied_month?: string;
+        };
+        /**
+         * SpecialContractItem
+         *
+         * Maintenance fee contract
+         */
+        maintenance_fee?: {
+            /**
+             * Whether enrolled
+             */
+            enrolled: boolean;
+            /**
+             * Start date
+             */
+            start_date?: string;
+            /**
+             * Applied month (YYYY-MM format)
+             */
+            applied_month?: string;
+        };
+    };
+    /**
+     * PaymentInfo
+     *
+     * Payment information
+     */
+    payment_info: {
+        /**
+         * Payment method
+         */
+        method: 'credit_card' | 'bank_transfer';
+        /**
+         * Masked card number (last 4 digits only)
+         */
+        card_number?: string;
+        /**
+         * Cardholder name
+         */
+        cardholder_name?: string;
+        /**
+         * Card expiry date
+         */
+        expiry_date?: string;
+        /**
+         * Billing day of month
+         */
+        billing_day: number;
+        /**
+         * Last payment date
+         */
+        last_payment_date?: string;
+        /**
+         * Last payment amount
+         */
+        last_payment_amount?: number;
+        /**
+         * Payment status
+         */
+        status: 'normal' | 'error';
+        /**
+         * Payment history
+         */
+        payment_history: Array<{
+            /**
+             * Payment date
+             */
+            date: string;
+            /**
+             * Payment amount
+             */
+            amount: number;
+            /**
+             * Payment breakdown
+             */
+            breakdown: string;
+            /**
+             * Payment status
+             */
+            status: 'success' | 'failed';
+            /**
+             * Additional notes
+             */
+            notes?: string;
+        }>;
+    };
+    /**
+     * UnpaidInfo
+     *
+     * Unpaid information
+     */
+    unpaid_info: {
+        /**
+         * Unpaid amount
+         */
+        amount: number;
+        /**
+         * Due date
+         */
+        due_date: string;
+        /**
+         * Reason for unpaid
+         */
+        reason?: string;
+    } | null;
+    /**
+     * Campaigns
+     *
+     * Campaign information
+     */
+    campaigns: {
+        /**
+         * Active campaigns
+         */
+        active: Array<{
+            /**
+             * Campaign name
+             */
+            campaign_name: string;
+            /**
+             * Campaign period start date
+             */
+            period_start?: string;
+            /**
+             * Campaign period end date
+             */
+            period_end?: string;
+            /**
+             * Discount content
+             */
+            discount_content?: string;
+            /**
+             * Remaining days
+             */
+            remaining_days?: number;
+            /**
+             * Applied date
+             */
+            applied_at?: string;
+            /**
+             * Campaign content
+             */
+            content?: string;
+            /**
+             * Campaign status
+             */
+            status?: string;
+        }>;
+        /**
+         * Campaign history
+         */
+        history: Array<{
+            /**
+             * Campaign name
+             */
+            campaign_name: string;
+            /**
+             * Campaign period start date
+             */
+            period_start?: string;
+            /**
+             * Campaign period end date
+             */
+            period_end?: string;
+            /**
+             * Discount content
+             */
+            discount_content?: string;
+            /**
+             * Remaining days
+             */
+            remaining_days?: number;
+            /**
+             * Applied date
+             */
+            applied_at?: string;
+            /**
+             * Campaign content
+             */
+            content?: string;
+            /**
+             * Campaign status
+             */
+            status?: string;
+        }>;
+    };
+};
+
+/**
+ * MembershipApplication
+ *
+ * Membership application information
+ */
+export type MembershipApplication = {
+    /**
+     * Application ID
+     */
+    id: string;
+    /**
+     * Applicant name
+     */
+    applicant_name: string;
+    /**
+     * Application date and time
+     */
+    applied_at: string;
+    /**
+     * Elapsed time since application
+     */
+    elapsed_time?: string;
+    /**
+     * Risk score (0-100)
+     */
+    risk_score: number;
+    /**
+     * Risk reason
+     */
+    risk_reason: string;
+    /**
+     * Plan name
+     */
+    plan_name: string;
+    /**
+     * Scheduled start date
+     */
+    scheduled_start_date: string;
+    /**
+     * Application status
+     */
+    status: 'payment_failed' | 'pending' | 'auto_approved' | 'manual_approved' | 'rejected' | 'cancelled';
+    /**
+     * Payment failed deadline
+     */
+    payment_failed_deadline?: string;
+    /**
+     * Pending deadline
+     */
+    pending_deadline?: string;
+};
+
+/**
+ * GetMembershipApplicationsQuery
+ *
+ * Query parameters for getting membership applications
+ */
+export type GetMembershipApplicationsQuery = {
+    /**
+     * Page number
+     */
+    page?: number;
+    /**
+     * Items per page
+     */
+    limit?: number;
+    /**
+     * Filter by status
+     */
+    status?: 'payment_failed' | 'pending' | 'auto_approved' | 'manual_approved' | 'rejected' | 'cancelled';
+    /**
+     * Filter by risk reason
+     */
+    risk_reason?: string;
+    /**
+     * Sort field
+     */
+    sort_by?: 'applied_at' | 'risk_score' | 'deadline';
+    /**
+     * Sort order
+     */
+    sort_order?: 'asc' | 'desc';
+    /**
+     * Search query
+     */
+    search?: string;
+};
+
+/**
+ * GetMembershipApplicationsResponse
+ *
+ * Response for getting membership applications
+ */
+export type GetMembershipApplicationsResponse = {
+    /**
+     * List of membership applications
+     */
+    applications: Array<{
+        /**
+         * Application ID
+         */
+        id: string;
+        /**
+         * Applicant name
+         */
+        applicant_name: string;
+        /**
+         * Application date and time
+         */
+        applied_at: string;
+        /**
+         * Elapsed time since application
+         */
+        elapsed_time?: string;
+        /**
+         * Risk score (0-100)
+         */
+        risk_score: number;
+        /**
+         * Risk reason
+         */
+        risk_reason: string;
+        /**
+         * Plan name
+         */
+        plan_name: string;
+        /**
+         * Scheduled start date
+         */
+        scheduled_start_date: string;
+        /**
+         * Application status
+         */
+        status: 'payment_failed' | 'pending' | 'auto_approved' | 'manual_approved' | 'rejected' | 'cancelled';
+        /**
+         * Payment failed deadline
+         */
+        payment_failed_deadline?: string;
+        /**
+         * Pending deadline
+         */
+        pending_deadline?: string;
+    }>;
+    /**
+     * Pagination
+     *
+     * Pagination information
+     */
+    pagination: {
+        /**
+         * Total number of items
+         */
+        total: number;
+        /**
+         * Total number of pages
+         */
+        total_pages: number;
+        /**
+         * Current page number
+         */
+        current_page: number;
+        /**
+         * Items per page
+         */
+        limit: number;
+    };
+};
+
+/**
+ * AutoJudgeRequest
+ *
+ * Request payload for auto-judge
+ */
+export type AutoJudgeRequest = {
+    /**
+     * List of application IDs to auto-judge
+     */
+    application_ids: Array<string>;
+};
+
+/**
+ * AutoJudgeResponse
+ *
+ * Response for auto-judge operation
+ */
+export type AutoJudgeResponse = {
+    /**
+     * Auto-judge results
+     */
+    results: Array<{
+        /**
+         * Application ID
+         */
+        application_id: string;
+        /**
+         * Whether the application was approved
+         */
+        approved: boolean;
+        /**
+         * Risk score
+         */
+        risk_score: number;
+        /**
+         * Reason for the decision
+         */
+        reason: string;
+    }>;
+    /**
+     * Summary of auto-judge results
+     */
+    summary: {
+        /**
+         * Total number of applications
+         */
+        total: number;
+        /**
+         * Number of approved applications
+         */
+        approved: number;
+        /**
+         * Number of rejected applications
+         */
+        rejected: number;
+    };
+};
+
+/**
+ * GetSummaryQuery
+ *
+ * Query parameters for getting summary
+ */
+export type GetSummaryQuery = {
+    /**
+     * Time period
+     */
+    period?: 'day' | 'week' | 'month';
+    /**
+     * Start date (overrides period)
+     */
+    start_date?: string;
+    /**
+     * End date (overrides period)
+     */
+    end_date?: string;
+};
+
+/**
+ * GetSummaryResponse
+ *
+ * Response for getting summary
+ */
+export type GetSummaryResponse = {
+    /**
+     * MembershipApplicationSummary
+     *
+     * Summary information
+     */
+    summary: {
+        /**
+         * Total number of applications
+         */
+        total_applications: number;
+        /**
+         * Auto approval rate (%)
+         */
+        auto_approval_rate: number;
+        /**
+         * Number of auto-approved applications
+         */
+        auto_approval_count: number;
+        /**
+         * Average processing time
+         */
+        avg_processing_time: string;
+        /**
+         * Number of payment failed applications
+         */
+        payment_failed_count: number;
+        /**
+         * Payment failed deadline
+         */
+        payment_failed_deadline?: string;
+        /**
+         * Number of pending applications
+         */
+        pending_count: number;
+        /**
+         * Pending deadline
+         */
+        pending_deadline?: string;
+        /**
+         * RiskReasonsBreakdown
+         *
+         * Breakdown of risk reasons
+         */
+        risk_reasons_breakdown: {
+            /**
+             * Blacklist match count
+             */
+            blacklist_match: number;
+            /**
+             * Duplicate application count
+             */
+            duplicate_application: number;
+            /**
+             * Payment failure count
+             */
+            payment_failure: number;
+            /**
+             * High risk score count
+             */
+            high_risk_score: number;
+            /**
+             * Document issue count
+             */
+            document_issue: number;
+            /**
+             * Other risk reasons count
+             */
+            other: number;
+        };
+        /**
+         * Number of auto-approved applications today
+         */
+        auto_approved_today_count: number;
+        /**
+         * Auto approval rate today (%)
+         */
+        auto_approved_today_rate: number;
+        /**
+         * Number of manually approved applications
+         */
+        manual_approved_count: number;
+        /**
+         * Total number of rejected applications
+         */
+        rejected_count: number;
+        /**
+         * Number of auto-rejected applications
+         */
+        rejected_auto_count: number;
+        /**
+         * Number of manually rejected applications
+         */
+        rejected_manual_count: number;
+        /**
+         * Date range start
+         */
+        date_range_start: string;
+        /**
+         * Date range end
+         */
+        date_range_end: string;
+    };
+    /**
+     * List of alerts
+     */
+    alerts: Array<{
+        /**
+         * Alert title
+         */
+        title: string;
+        /**
+         * Alert description
+         */
+        description: string;
+        /**
+         * Alert type
+         */
+        type: 'payment_failed' | 'pending' | 'high_risk' | 'all';
+        /**
+         * Number of items
+         */
+        count: number;
+        /**
+         * Deadline
+         */
+        deadline?: string;
+    }>;
+};
+
+/**
+ * MembershipApplicationSummary
+ *
+ * Summary of membership applications
+ */
+export type MembershipApplicationSummary = {
+    /**
+     * Total number of applications
+     */
+    total_applications: number;
+    /**
+     * Auto approval rate (%)
+     */
+    auto_approval_rate: number;
+    /**
+     * Number of auto-approved applications
+     */
+    auto_approval_count: number;
+    /**
+     * Average processing time
+     */
+    avg_processing_time: string;
+    /**
+     * Number of payment failed applications
+     */
+    payment_failed_count: number;
+    /**
+     * Payment failed deadline
+     */
+    payment_failed_deadline?: string;
+    /**
+     * Number of pending applications
+     */
+    pending_count: number;
+    /**
+     * Pending deadline
+     */
+    pending_deadline?: string;
+    /**
+     * RiskReasonsBreakdown
+     *
+     * Breakdown of risk reasons
+     */
+    risk_reasons_breakdown: {
+        /**
+         * Blacklist match count
+         */
+        blacklist_match: number;
+        /**
+         * Duplicate application count
+         */
+        duplicate_application: number;
+        /**
+         * Payment failure count
+         */
+        payment_failure: number;
+        /**
+         * High risk score count
+         */
+        high_risk_score: number;
+        /**
+         * Document issue count
+         */
+        document_issue: number;
+        /**
+         * Other risk reasons count
+         */
+        other: number;
+    };
+    /**
+     * Number of auto-approved applications today
+     */
+    auto_approved_today_count: number;
+    /**
+     * Auto approval rate today (%)
+     */
+    auto_approved_today_rate: number;
+    /**
+     * Number of manually approved applications
+     */
+    manual_approved_count: number;
+    /**
+     * Total number of rejected applications
+     */
+    rejected_count: number;
+    /**
+     * Number of auto-rejected applications
+     */
+    rejected_auto_count: number;
+    /**
+     * Number of manually rejected applications
+     */
+    rejected_manual_count: number;
+    /**
+     * Date range start
+     */
+    date_range_start: string;
+    /**
+     * Date range end
+     */
+    date_range_end: string;
+};
+
+/**
+ * MembershipApplicationAlert
+ *
+ * Alert information
+ */
+export type MembershipApplicationAlert = {
+    /**
+     * Alert title
+     */
+    title: string;
+    /**
+     * Alert description
+     */
+    description: string;
+    /**
+     * Alert type
+     */
+    type: 'payment_failed' | 'pending' | 'high_risk' | 'all';
+    /**
+     * Number of items
+     */
+    count: number;
+    /**
+     * Deadline
+     */
+    deadline?: string;
+};
+
+/**
+ * RiskReasonsBreakdown
+ *
+ * Breakdown of risk reasons
+ */
+export type RiskReasonsBreakdown = {
+    /**
+     * Blacklist match count
+     */
+    blacklist_match: number;
+    /**
+     * Duplicate application count
+     */
+    duplicate_application: number;
+    /**
+     * Payment failure count
+     */
+    payment_failure: number;
+    /**
+     * High risk score count
+     */
+    high_risk_score: number;
+    /**
+     * Document issue count
+     */
+    document_issue: number;
+    /**
+     * Other risk reasons count
+     */
+    other: number;
+};
+
+/**
+ * BulkApproveRequest
+ *
+ * Request payload for bulk approval
+ */
+export type BulkApproveRequest = {
+    /**
+     * List of application IDs to approve
+     */
+    application_ids: Array<string>;
+    /**
+     * Approval reason
+     */
+    approval_reason?: string;
+};
+
+/**
+ * BulkApproveResponse
+ *
+ * Response for bulk approve operation
+ */
+export type BulkApproveResponse = {
+    /**
+     * Whether the operation was successful
+     */
+    success: boolean;
+    /**
+     * Bulk approve results
+     */
+    results: Array<{
+        /**
+         * Application ID
+         */
+        application_id: string;
+        /**
+         * Whether the application was approved
+         */
+        approved: boolean;
+        /**
+         * Approval date and time
+         */
+        approved_at: string;
+    }>;
+    /**
+     * Summary of bulk approve results
+     */
+    summary: {
+        /**
+         * Total number of applications
+         */
+        total: number;
+        /**
+         * Number of approved applications
+         */
+        approved: number;
+        /**
+         * Number of failed applications
+         */
+        failed: number;
+    };
+    /**
+     * Approval reason
+     */
+    approval_reason?: string;
+};
+
+/**
+ * GetApplicationDetailResponse
+ *
+ * Response for getting application detail
+ */
+export type GetApplicationDetailResponse = {
+    /**
+     * MembershipApplication
+     *
+     * Application detail information
+     */
+    application: {
+        /**
+         * Application ID
+         */
+        id: string;
+        /**
+         * Applicant name
+         */
+        applicant_name: string;
+        /**
+         * Application date and time
+         */
+        applied_at: string;
+        /**
+         * Elapsed time since application
+         */
+        elapsed_time?: string;
+        /**
+         * Risk score (0-100)
+         */
+        risk_score: number;
+        /**
+         * Risk reason
+         */
+        risk_reason: string;
+        /**
+         * Plan name
+         */
+        plan_name: string;
+        /**
+         * Scheduled start date
+         */
+        scheduled_start_date: string;
+        /**
+         * Application status
+         */
+        status: 'payment_failed' | 'pending' | 'auto_approved' | 'manual_approved' | 'rejected' | 'cancelled';
+        /**
+         * Payment failed deadline
+         */
+        payment_failed_deadline?: string;
+        /**
+         * Pending deadline
+         */
+        pending_deadline?: string;
+        /**
+         * Applicant email
+         */
+        applicant_email?: string;
+        /**
+         * Applicant phone number
+         */
+        applicant_phone?: string;
+        /**
+         * Applicant address
+         */
+        applicant_address?: string;
+        /**
+         * Payment method
+         */
+        payment_method?: string;
+        /**
+         * Payment status
+         */
+        payment_status?: string;
+        /**
+         * Detailed risk information
+         */
+        risk_details?: Array<{
+            reason: string;
+            score: number;
+            description: string;
+        }>;
+        /**
+         * Application documents
+         */
+        documents?: Array<{
+            type: string;
+            url: string;
+            verified: boolean;
+        }>;
+        /**
+         * Contract details
+         */
+        contract_details?: {
+            plan_id: string;
+            plan_name: string;
+            start_date: string;
+            monthly_fee: number;
+            contract_period: number;
+        };
+    };
+};
+
+/**
+ * ApproveRequest
+ *
+ * Request payload for approving an application
+ */
+export type ApproveRequest = {
+    /**
+     * Approval reason
+     */
+    approval_reason?: string;
+    /**
+     * Staff ID who approved
+     */
+    staff_id?: string;
+};
+
+/**
+ * ApproveResponse
+ *
+ * Response for approving an application
+ */
+export type ApproveResponse = {
+    /**
+     * Whether the operation was successful
+     */
+    success: boolean;
+    /**
+     * Application ID
+     */
+    application_id: string;
+    /**
+     * New application status
+     */
+    status: 'manual_approved';
+    /**
+     * Approval date and time
+     */
+    approved_at: string;
+    /**
+     * Staff ID who approved
+     */
+    approved_by: string;
+    /**
+     * Approval reason
+     */
+    approval_reason: string;
+    /**
+     * Whether contract was created
+     */
+    contract_created: boolean;
+    /**
+     * Contract ID
+     */
+    contract_id: string;
+};
+
+/**
+ * RejectRequest
+ *
+ * Request payload for rejecting an application
+ */
+export type RejectRequest = {
+    /**
+     * Rejection reason
+     */
+    rejection_reason: string;
+    /**
+     * Staff ID who rejected
+     */
+    staff_id?: string;
+};
+
+/**
+ * RejectResponse
+ *
+ * Response for rejecting an application
+ */
+export type RejectResponse = {
+    /**
+     * Whether the operation was successful
+     */
+    success: boolean;
+    /**
+     * Application ID
+     */
+    application_id: string;
+    /**
+     * New application status
+     */
+    status: 'rejected';
+    /**
+     * Rejection date and time
+     */
+    rejected_at: string;
+    /**
+     * Staff ID who rejected
+     */
+    rejected_by: string;
+    /**
+     * Rejection reason
+     */
+    rejection_reason: string;
+};
+
+/**
+ * CancelRequest
+ *
+ * Request payload for cancelling an application
+ */
+export type CancelRequest = {
+    /**
+     * Cancellation reason
+     */
+    cancellation_reason: string;
+    /**
+     * Staff ID who cancelled
+     */
+    staff_id?: string;
+};
+
+/**
+ * CancelResponse
+ *
+ * Response for cancelling an application
+ */
+export type CancelResponse = {
+    /**
+     * Whether the operation was successful
+     */
+    success: boolean;
+    /**
+     * Application ID
+     */
+    application_id: string;
+    /**
+     * New application status
+     */
+    status: 'cancelled';
+    /**
+     * Cancellation date and time
+     */
+    cancelled_at: string;
+    /**
+     * Staff ID who cancelled
+     */
+    cancelled_by: string;
+    /**
+     * Cancellation reason
+     */
+    cancellation_reason: string;
+    /**
+     * Whether refund was processed
+     */
+    refund_processed: boolean;
+    /**
+     * Refund amount
+     */
+    refund_amount: number;
 };
 
 export type PostAuthLoginData = {
-    body: LoginRequest;
+    /**
+     * LoginRequest
+     *
+     * Login request payload
+     */
+    body?: {
+        /**
+         * User email address
+         */
+        email: string;
+        /**
+         * User password
+         */
+        password: string;
+    };
     path?: never;
     query?: never;
     url: '/auth/login';
@@ -772,28 +3387,89 @@ export type PostAuthLoginData = {
 
 export type PostAuthLoginErrors = {
     /**
-     * Bad request
+     * ErrorResponse
+     *
+     * Error response
      */
-    400: Error;
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
     /**
-     * Unauthorized
+     * ErrorResponse
+     *
+     * Error response
      */
-    401: Error;
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
 };
 
 export type PostAuthLoginError = PostAuthLoginErrors[keyof PostAuthLoginErrors];
 
 export type PostAuthLoginResponses = {
     /**
-     * Login successful
+     * LoginResponse
+     *
+     * Login response with authentication tokens
      */
-    200: LoginResponse;
+    200: {
+        /**
+         * Token
+         *
+         * Authentication token response
+         */
+        token: {
+            /**
+             * JWT access token
+             */
+            access_token: string;
+            /**
+             * JWT refresh token
+             */
+            refresh_token: string;
+            /**
+             * Token type
+             */
+            token_type: string;
+            /**
+             * Company ID associated with the user
+             */
+            company_id?: number | null;
+        };
+    };
 };
 
 export type PostAuthLoginResponse = PostAuthLoginResponses[keyof PostAuthLoginResponses];
 
 export type PostAuthRefreshData = {
-    body: RefreshTokenRequest;
+    /**
+     * RefreshRequest
+     *
+     * Refresh token request payload
+     */
+    body?: {
+        /**
+         * JWT refresh token
+         */
+        refresh_token: string;
+    };
     path?: never;
     query?: never;
     url: '/auth/refresh';
@@ -801,25 +3477,1584 @@ export type PostAuthRefreshData = {
 
 export type PostAuthRefreshErrors = {
     /**
-     * Bad request
+     * ErrorResponse
+     *
+     * Error response
      */
-    400: Error;
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
     /**
-     * Unauthorized - Invalid or expired refresh token
+     * ErrorResponse
+     *
+     * Error response
      */
-    401: Error;
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
 };
 
 export type PostAuthRefreshError = PostAuthRefreshErrors[keyof PostAuthRefreshErrors];
 
 export type PostAuthRefreshResponses = {
     /**
-     * Token refreshed successfully
+     * RefreshResponse
+     *
+     * Refresh token response with new authentication tokens
      */
-    200: RefreshTokenResponse;
+    200: {
+        /**
+         * New JWT access token
+         */
+        accessToken: string;
+        /**
+         * New JWT refresh token
+         */
+        refresh_token: string;
+        /**
+         * Token type
+         */
+        token_type: string;
+        /**
+         * Company ID associated with the user
+         */
+        company_id?: number | null;
+    };
 };
 
 export type PostAuthRefreshResponse = PostAuthRefreshResponses[keyof PostAuthRefreshResponses];
+
+export type GetCrmMembershipApplicationsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page number
+         */
+        page?: number;
+        /**
+         * Items per page
+         */
+        limit?: number;
+        /**
+         * Filter by status
+         */
+        status?: 'payment_failed' | 'pending' | 'auto_approved' | 'manual_approved' | 'rejected' | 'cancelled';
+        /**
+         * Filter by risk reason
+         */
+        risk_reason?: string;
+        /**
+         * Sort field
+         */
+        sort_by?: 'applied_at' | 'risk_score' | 'deadline';
+        /**
+         * Sort order
+         */
+        sort_order?: 'asc' | 'desc';
+        /**
+         * Search query
+         */
+        search?: string;
+    };
+    url: '/crm/membership-applications';
+};
+
+export type GetCrmMembershipApplicationsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembershipApplicationsError = GetCrmMembershipApplicationsErrors[keyof GetCrmMembershipApplicationsErrors];
+
+export type GetCrmMembershipApplicationsResponses = {
+    /**
+     * GetMembershipApplicationsResponse
+     *
+     * Response for getting membership applications
+     */
+    200: {
+        /**
+         * List of membership applications
+         */
+        applications: Array<{
+            /**
+             * Application ID
+             */
+            id: string;
+            /**
+             * Applicant name
+             */
+            applicant_name: string;
+            /**
+             * Application date and time
+             */
+            applied_at: string;
+            /**
+             * Elapsed time since application
+             */
+            elapsed_time?: string;
+            /**
+             * Risk score (0-100)
+             */
+            risk_score: number;
+            /**
+             * Risk reason
+             */
+            risk_reason: string;
+            /**
+             * Plan name
+             */
+            plan_name: string;
+            /**
+             * Scheduled start date
+             */
+            scheduled_start_date: string;
+            /**
+             * Application status
+             */
+            status: 'payment_failed' | 'pending' | 'auto_approved' | 'manual_approved' | 'rejected' | 'cancelled';
+            /**
+             * Payment failed deadline
+             */
+            payment_failed_deadline?: string;
+            /**
+             * Pending deadline
+             */
+            pending_deadline?: string;
+        }>;
+        /**
+         * Pagination
+         *
+         * Pagination information
+         */
+        pagination: {
+            /**
+             * Total number of items
+             */
+            total: number;
+            /**
+             * Total number of pages
+             */
+            total_pages: number;
+            /**
+             * Current page number
+             */
+            current_page: number;
+            /**
+             * Items per page
+             */
+            limit: number;
+        };
+    };
+};
+
+export type GetCrmMembershipApplicationsResponse = GetCrmMembershipApplicationsResponses[keyof GetCrmMembershipApplicationsResponses];
+
+export type PostCrmMembershipApplicationsData = {
+    /**
+     * AutoJudgeRequest
+     *
+     * Request payload for auto-judge
+     */
+    body?: {
+        /**
+         * List of application IDs to auto-judge
+         */
+        application_ids: Array<string>;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/membership-applications';
+};
+
+export type PostCrmMembershipApplicationsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembershipApplicationsError = PostCrmMembershipApplicationsErrors[keyof PostCrmMembershipApplicationsErrors];
+
+export type PostCrmMembershipApplicationsResponses = {
+    /**
+     * AutoJudgeResponse
+     *
+     * Response for auto-judge operation
+     */
+    200: {
+        /**
+         * Auto-judge results
+         */
+        results: Array<{
+            /**
+             * Application ID
+             */
+            application_id: string;
+            /**
+             * Whether the application was approved
+             */
+            approved: boolean;
+            /**
+             * Risk score
+             */
+            risk_score: number;
+            /**
+             * Reason for the decision
+             */
+            reason: string;
+        }>;
+        /**
+         * Summary of auto-judge results
+         */
+        summary: {
+            /**
+             * Total number of applications
+             */
+            total: number;
+            /**
+             * Number of approved applications
+             */
+            approved: number;
+            /**
+             * Number of rejected applications
+             */
+            rejected: number;
+        };
+    };
+};
+
+export type PostCrmMembershipApplicationsResponse = PostCrmMembershipApplicationsResponses[keyof PostCrmMembershipApplicationsResponses];
+
+export type GetCrmMembershipApplicationsSummaryData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Time period
+         */
+        period?: 'day' | 'week' | 'month';
+        /**
+         * Start date (overrides period)
+         */
+        start_date?: string;
+        /**
+         * End date (overrides period)
+         */
+        end_date?: string;
+    };
+    url: '/crm/membership-applications/summary';
+};
+
+export type GetCrmMembershipApplicationsSummaryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembershipApplicationsSummaryError = GetCrmMembershipApplicationsSummaryErrors[keyof GetCrmMembershipApplicationsSummaryErrors];
+
+export type GetCrmMembershipApplicationsSummaryResponses = {
+    /**
+     * GetSummaryResponse
+     *
+     * Response for getting summary
+     */
+    200: {
+        /**
+         * MembershipApplicationSummary
+         *
+         * Summary information
+         */
+        summary: {
+            /**
+             * Total number of applications
+             */
+            total_applications: number;
+            /**
+             * Auto approval rate (%)
+             */
+            auto_approval_rate: number;
+            /**
+             * Number of auto-approved applications
+             */
+            auto_approval_count: number;
+            /**
+             * Average processing time
+             */
+            avg_processing_time: string;
+            /**
+             * Number of payment failed applications
+             */
+            payment_failed_count: number;
+            /**
+             * Payment failed deadline
+             */
+            payment_failed_deadline?: string;
+            /**
+             * Number of pending applications
+             */
+            pending_count: number;
+            /**
+             * Pending deadline
+             */
+            pending_deadline?: string;
+            /**
+             * RiskReasonsBreakdown
+             *
+             * Breakdown of risk reasons
+             */
+            risk_reasons_breakdown: {
+                /**
+                 * Blacklist match count
+                 */
+                blacklist_match: number;
+                /**
+                 * Duplicate application count
+                 */
+                duplicate_application: number;
+                /**
+                 * Payment failure count
+                 */
+                payment_failure: number;
+                /**
+                 * High risk score count
+                 */
+                high_risk_score: number;
+                /**
+                 * Document issue count
+                 */
+                document_issue: number;
+                /**
+                 * Other risk reasons count
+                 */
+                other: number;
+            };
+            /**
+             * Number of auto-approved applications today
+             */
+            auto_approved_today_count: number;
+            /**
+             * Auto approval rate today (%)
+             */
+            auto_approved_today_rate: number;
+            /**
+             * Number of manually approved applications
+             */
+            manual_approved_count: number;
+            /**
+             * Total number of rejected applications
+             */
+            rejected_count: number;
+            /**
+             * Number of auto-rejected applications
+             */
+            rejected_auto_count: number;
+            /**
+             * Number of manually rejected applications
+             */
+            rejected_manual_count: number;
+            /**
+             * Date range start
+             */
+            date_range_start: string;
+            /**
+             * Date range end
+             */
+            date_range_end: string;
+        };
+        /**
+         * List of alerts
+         */
+        alerts: Array<{
+            /**
+             * Alert title
+             */
+            title: string;
+            /**
+             * Alert description
+             */
+            description: string;
+            /**
+             * Alert type
+             */
+            type: 'payment_failed' | 'pending' | 'high_risk' | 'all';
+            /**
+             * Number of items
+             */
+            count: number;
+            /**
+             * Deadline
+             */
+            deadline?: string;
+        }>;
+    };
+};
+
+export type GetCrmMembershipApplicationsSummaryResponse = GetCrmMembershipApplicationsSummaryResponses[keyof GetCrmMembershipApplicationsSummaryResponses];
+
+export type PostCrmMembershipApplicationsBulkApproveData = {
+    /**
+     * BulkApproveRequest
+     *
+     * Request payload for bulk approval
+     */
+    body?: {
+        /**
+         * List of application IDs to approve
+         */
+        application_ids: Array<string>;
+        /**
+         * Approval reason
+         */
+        approval_reason?: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/membership-applications/bulk-approve';
+};
+
+export type PostCrmMembershipApplicationsBulkApproveErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembershipApplicationsBulkApproveError = PostCrmMembershipApplicationsBulkApproveErrors[keyof PostCrmMembershipApplicationsBulkApproveErrors];
+
+export type PostCrmMembershipApplicationsBulkApproveResponses = {
+    /**
+     * BulkApproveResponse
+     *
+     * Response for bulk approve operation
+     */
+    200: {
+        /**
+         * Whether the operation was successful
+         */
+        success: boolean;
+        /**
+         * Bulk approve results
+         */
+        results: Array<{
+            /**
+             * Application ID
+             */
+            application_id: string;
+            /**
+             * Whether the application was approved
+             */
+            approved: boolean;
+            /**
+             * Approval date and time
+             */
+            approved_at: string;
+        }>;
+        /**
+         * Summary of bulk approve results
+         */
+        summary: {
+            /**
+             * Total number of applications
+             */
+            total: number;
+            /**
+             * Number of approved applications
+             */
+            approved: number;
+            /**
+             * Number of failed applications
+             */
+            failed: number;
+        };
+        /**
+         * Approval reason
+         */
+        approval_reason?: string;
+    };
+};
+
+export type PostCrmMembershipApplicationsBulkApproveResponse = PostCrmMembershipApplicationsBulkApproveResponses[keyof PostCrmMembershipApplicationsBulkApproveResponses];
+
+export type GetCrmMembershipApplicationsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Membership application ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/membership-applications/{id}';
+};
+
+export type GetCrmMembershipApplicationsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembershipApplicationsByIdError = GetCrmMembershipApplicationsByIdErrors[keyof GetCrmMembershipApplicationsByIdErrors];
+
+export type GetCrmMembershipApplicationsByIdResponses = {
+    /**
+     * GetApplicationDetailResponse
+     *
+     * Response for getting application detail
+     */
+    200: {
+        /**
+         * MembershipApplication
+         *
+         * Application detail information
+         */
+        application: {
+            /**
+             * Application ID
+             */
+            id: string;
+            /**
+             * Applicant name
+             */
+            applicant_name: string;
+            /**
+             * Application date and time
+             */
+            applied_at: string;
+            /**
+             * Elapsed time since application
+             */
+            elapsed_time?: string;
+            /**
+             * Risk score (0-100)
+             */
+            risk_score: number;
+            /**
+             * Risk reason
+             */
+            risk_reason: string;
+            /**
+             * Plan name
+             */
+            plan_name: string;
+            /**
+             * Scheduled start date
+             */
+            scheduled_start_date: string;
+            /**
+             * Application status
+             */
+            status: 'payment_failed' | 'pending' | 'auto_approved' | 'manual_approved' | 'rejected' | 'cancelled';
+            /**
+             * Payment failed deadline
+             */
+            payment_failed_deadline?: string;
+            /**
+             * Pending deadline
+             */
+            pending_deadline?: string;
+            /**
+             * Applicant email
+             */
+            applicant_email?: string;
+            /**
+             * Applicant phone number
+             */
+            applicant_phone?: string;
+            /**
+             * Applicant address
+             */
+            applicant_address?: string;
+            /**
+             * Payment method
+             */
+            payment_method?: string;
+            /**
+             * Payment status
+             */
+            payment_status?: string;
+            /**
+             * Detailed risk information
+             */
+            risk_details?: Array<{
+                reason: string;
+                score: number;
+                description: string;
+            }>;
+            /**
+             * Application documents
+             */
+            documents?: Array<{
+                type: string;
+                url: string;
+                verified: boolean;
+            }>;
+            /**
+             * Contract details
+             */
+            contract_details?: {
+                plan_id: string;
+                plan_name: string;
+                start_date: string;
+                monthly_fee: number;
+                contract_period: number;
+            };
+        };
+    };
+};
+
+export type GetCrmMembershipApplicationsByIdResponse = GetCrmMembershipApplicationsByIdResponses[keyof GetCrmMembershipApplicationsByIdResponses];
+
+export type PostCrmMembershipApplicationsByIdApproveData = {
+    /**
+     * ApproveRequest
+     *
+     * Request payload for approving an application
+     */
+    body?: {
+        /**
+         * Approval reason
+         */
+        approval_reason?: string;
+        /**
+         * Staff ID who approved
+         */
+        staff_id?: string;
+    };
+    path: {
+        /**
+         * Membership application ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/membership-applications/{id}/approve';
+};
+
+export type PostCrmMembershipApplicationsByIdApproveErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembershipApplicationsByIdApproveError = PostCrmMembershipApplicationsByIdApproveErrors[keyof PostCrmMembershipApplicationsByIdApproveErrors];
+
+export type PostCrmMembershipApplicationsByIdApproveResponses = {
+    /**
+     * ApproveResponse
+     *
+     * Response for approving an application
+     */
+    200: {
+        /**
+         * Whether the operation was successful
+         */
+        success: boolean;
+        /**
+         * Application ID
+         */
+        application_id: string;
+        /**
+         * New application status
+         */
+        status: 'manual_approved';
+        /**
+         * Approval date and time
+         */
+        approved_at: string;
+        /**
+         * Staff ID who approved
+         */
+        approved_by: string;
+        /**
+         * Approval reason
+         */
+        approval_reason: string;
+        /**
+         * Whether contract was created
+         */
+        contract_created: boolean;
+        /**
+         * Contract ID
+         */
+        contract_id: string;
+    };
+};
+
+export type PostCrmMembershipApplicationsByIdApproveResponse = PostCrmMembershipApplicationsByIdApproveResponses[keyof PostCrmMembershipApplicationsByIdApproveResponses];
+
+export type PostCrmMembershipApplicationsByIdRejectData = {
+    /**
+     * RejectRequest
+     *
+     * Request payload for rejecting an application
+     */
+    body?: {
+        /**
+         * Rejection reason
+         */
+        rejection_reason: string;
+        /**
+         * Staff ID who rejected
+         */
+        staff_id?: string;
+    };
+    path: {
+        /**
+         * Membership application ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/membership-applications/{id}/reject';
+};
+
+export type PostCrmMembershipApplicationsByIdRejectErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembershipApplicationsByIdRejectError = PostCrmMembershipApplicationsByIdRejectErrors[keyof PostCrmMembershipApplicationsByIdRejectErrors];
+
+export type PostCrmMembershipApplicationsByIdRejectResponses = {
+    /**
+     * RejectResponse
+     *
+     * Response for rejecting an application
+     */
+    200: {
+        /**
+         * Whether the operation was successful
+         */
+        success: boolean;
+        /**
+         * Application ID
+         */
+        application_id: string;
+        /**
+         * New application status
+         */
+        status: 'rejected';
+        /**
+         * Rejection date and time
+         */
+        rejected_at: string;
+        /**
+         * Staff ID who rejected
+         */
+        rejected_by: string;
+        /**
+         * Rejection reason
+         */
+        rejection_reason: string;
+    };
+};
+
+export type PostCrmMembershipApplicationsByIdRejectResponse = PostCrmMembershipApplicationsByIdRejectResponses[keyof PostCrmMembershipApplicationsByIdRejectResponses];
+
+export type PostCrmMembershipApplicationsByIdCancelData = {
+    /**
+     * CancelRequest
+     *
+     * Request payload for cancelling an application
+     */
+    body?: {
+        /**
+         * Cancellation reason
+         */
+        cancellation_reason: string;
+        /**
+         * Staff ID who cancelled
+         */
+        staff_id?: string;
+    };
+    path: {
+        /**
+         * Membership application ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/membership-applications/{id}/cancel';
+};
+
+export type PostCrmMembershipApplicationsByIdCancelErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembershipApplicationsByIdCancelError = PostCrmMembershipApplicationsByIdCancelErrors[keyof PostCrmMembershipApplicationsByIdCancelErrors];
+
+export type PostCrmMembershipApplicationsByIdCancelResponses = {
+    /**
+     * CancelResponse
+     *
+     * Response for cancelling an application
+     */
+    200: {
+        /**
+         * Whether the operation was successful
+         */
+        success: boolean;
+        /**
+         * Application ID
+         */
+        application_id: string;
+        /**
+         * New application status
+         */
+        status: 'cancelled';
+        /**
+         * Cancellation date and time
+         */
+        cancelled_at: string;
+        /**
+         * Staff ID who cancelled
+         */
+        cancelled_by: string;
+        /**
+         * Cancellation reason
+         */
+        cancellation_reason: string;
+        /**
+         * Whether refund was processed
+         */
+        refund_processed: boolean;
+        /**
+         * Refund amount
+         */
+        refund_amount: number;
+    };
+};
+
+export type PostCrmMembershipApplicationsByIdCancelResponse = PostCrmMembershipApplicationsByIdCancelResponses[keyof PostCrmMembershipApplicationsByIdCancelResponses];
+
+export type GetCrmAutoApprovalSettingsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/auto-approval/settings';
+};
+
+export type GetCrmAutoApprovalSettingsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmAutoApprovalSettingsError = GetCrmAutoApprovalSettingsErrors[keyof GetCrmAutoApprovalSettingsErrors];
+
+export type GetCrmAutoApprovalSettingsResponses = {
+    /**
+     * GetSettingsResponse
+     *
+     * Response for getting auto-approval settings
+     */
+    200: {
+        /**
+         * AutoApprovalSettings
+         *
+         * Auto-approval settings
+         */
+        settings: {
+            /**
+             * Whether auto-approval is enabled
+             */
+            enabled: boolean;
+            /**
+             * Risk score threshold (0-100)
+             */
+            risk_score_threshold: number;
+            /**
+             * Auto approve applications below threshold
+             */
+            auto_approve_below_threshold: boolean;
+            /**
+             * Require manual review for applications above threshold
+             */
+            require_manual_review_above_threshold: boolean;
+            /**
+             * Enable blacklist check
+             */
+            blacklist_check_enabled: boolean;
+            /**
+             * Enable duplicate check
+             */
+            duplicate_check_enabled: boolean;
+            /**
+             * Require payment verification
+             */
+            payment_verification_required: boolean;
+            /**
+             * Require document verification
+             */
+            document_verification_required: boolean;
+            /**
+             * NotificationSettings
+             *
+             * Notification settings
+             */
+            notification_settings: {
+                /**
+                 * Notify on high risk applications
+                 */
+                notify_on_high_risk: boolean;
+                /**
+                 * Notify on blacklist match
+                 */
+                notify_on_blacklist_match: boolean;
+                /**
+                 * Notify on duplicate applications
+                 */
+                notify_on_duplicate: boolean;
+                /**
+                 * Email recipients for notifications
+                 */
+                email_recipients: Array<string>;
+            };
+            /**
+             * Last update timestamp
+             */
+            updated_at: string;
+            /**
+             * User who last updated the settings
+             */
+            updated_by: string;
+        };
+    };
+};
+
+export type GetCrmAutoApprovalSettingsResponse = GetCrmAutoApprovalSettingsResponses[keyof GetCrmAutoApprovalSettingsResponses];
+
+export type PutCrmAutoApprovalSettingsData = {
+    /**
+     * UpdateSettingsRequest
+     *
+     * Request payload for updating auto-approval settings
+     */
+    body?: {
+        /**
+         * Whether auto-approval is enabled
+         */
+        enabled: boolean;
+        /**
+         * Risk score threshold (0-100)
+         */
+        risk_score_threshold?: number;
+        /**
+         * Auto approve applications below threshold
+         */
+        auto_approve_below_threshold?: boolean;
+        /**
+         * Require manual review for applications above threshold
+         */
+        require_manual_review_above_threshold?: boolean;
+        /**
+         * Enable blacklist check
+         */
+        blacklist_check_enabled?: boolean;
+        /**
+         * Enable duplicate check
+         */
+        duplicate_check_enabled?: boolean;
+        /**
+         * Require payment verification
+         */
+        payment_verification_required?: boolean;
+        /**
+         * Require document verification
+         */
+        document_verification_required?: boolean;
+        /**
+         * NotificationSettings
+         *
+         * Notification settings
+         */
+        notification_settings?: {
+            /**
+             * Notify on high risk applications
+             */
+            notify_on_high_risk: boolean;
+            /**
+             * Notify on blacklist match
+             */
+            notify_on_blacklist_match: boolean;
+            /**
+             * Notify on duplicate applications
+             */
+            notify_on_duplicate: boolean;
+            /**
+             * Email recipients for notifications
+             */
+            email_recipients: Array<string>;
+        };
+        /**
+         * Last update timestamp
+         */
+        updated_at?: string;
+        /**
+         * User who last updated the settings
+         */
+        updated_by?: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/auto-approval/settings';
+};
+
+export type PutCrmAutoApprovalSettingsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PutCrmAutoApprovalSettingsError = PutCrmAutoApprovalSettingsErrors[keyof PutCrmAutoApprovalSettingsErrors];
+
+export type PutCrmAutoApprovalSettingsResponses = {
+    /**
+     * UpdateSettingsResponse
+     *
+     * Response for updating auto-approval settings
+     */
+    200: {
+        /**
+         * Whether the update was successful
+         */
+        success: boolean;
+        /**
+         * AutoApprovalSettings
+         *
+         * Updated settings
+         */
+        settings: {
+            /**
+             * Whether auto-approval is enabled
+             */
+            enabled: boolean;
+            /**
+             * Risk score threshold (0-100)
+             */
+            risk_score_threshold: number;
+            /**
+             * Auto approve applications below threshold
+             */
+            auto_approve_below_threshold: boolean;
+            /**
+             * Require manual review for applications above threshold
+             */
+            require_manual_review_above_threshold: boolean;
+            /**
+             * Enable blacklist check
+             */
+            blacklist_check_enabled: boolean;
+            /**
+             * Enable duplicate check
+             */
+            duplicate_check_enabled: boolean;
+            /**
+             * Require payment verification
+             */
+            payment_verification_required: boolean;
+            /**
+             * Require document verification
+             */
+            document_verification_required: boolean;
+            /**
+             * NotificationSettings
+             *
+             * Notification settings
+             */
+            notification_settings: {
+                /**
+                 * Notify on high risk applications
+                 */
+                notify_on_high_risk: boolean;
+                /**
+                 * Notify on blacklist match
+                 */
+                notify_on_blacklist_match: boolean;
+                /**
+                 * Notify on duplicate applications
+                 */
+                notify_on_duplicate: boolean;
+                /**
+                 * Email recipients for notifications
+                 */
+                email_recipients: Array<string>;
+            };
+            /**
+             * Last update timestamp
+             */
+            updated_at: string;
+            /**
+             * User who last updated the settings
+             */
+            updated_by: string;
+        };
+    };
+};
+
+export type PutCrmAutoApprovalSettingsResponse = PutCrmAutoApprovalSettingsResponses[keyof PutCrmAutoApprovalSettingsResponses];
+
+export type GetCrmAutoApprovalDashboardData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Time period
+         */
+        period?: 'day' | 'week' | 'month';
+    };
+    url: '/crm/auto-approval/dashboard';
+};
+
+export type GetCrmAutoApprovalDashboardErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmAutoApprovalDashboardError = GetCrmAutoApprovalDashboardErrors[keyof GetCrmAutoApprovalDashboardErrors];
+
+export type GetCrmAutoApprovalDashboardResponses = {
+    /**
+     * GetDashboardResponse
+     *
+     * Response for getting dashboard
+     */
+    200: {
+        /**
+         * Dashboard
+         *
+         * Dashboard data
+         */
+        dashboard: {
+            /**
+             * Time period
+             */
+            period: string;
+            /**
+             * DateRange
+             *
+             * Date range
+             */
+            date_range: {
+                /**
+                 * Start date
+                 */
+                start: string;
+                /**
+                 * End date
+                 */
+                end: string;
+            };
+            /**
+             * DashboardStatistics
+             *
+             * Statistics
+             */
+            statistics: {
+                /**
+                 * Total number of applications
+                 */
+                total_applications: number;
+                /**
+                 * Number of auto-approved applications
+                 */
+                auto_approved: number;
+                /**
+                 * Number of manually approved applications
+                 */
+                manual_approved: number;
+                /**
+                 * Number of rejected applications
+                 */
+                rejected: number;
+                /**
+                 * Auto approval rate (%)
+                 */
+                auto_approval_rate: number;
+                /**
+                 * Average processing time in minutes
+                 */
+                average_processing_time_minutes: number;
+                /**
+                 * Average risk score
+                 */
+                average_risk_score: number;
+            };
+            /**
+             * RiskDistribution
+             *
+             * Risk distribution
+             */
+            risk_distribution: {
+                /**
+                 * Number of low risk applications (risk_score < 30)
+                 */
+                low_risk: number;
+                /**
+                 * Number of medium risk applications (30 <= risk_score < 70)
+                 */
+                medium_risk: number;
+                /**
+                 * Number of high risk applications (risk_score >= 70)
+                 */
+                high_risk: number;
+            };
+            /**
+             * RejectionReasons
+             *
+             * Rejection reasons
+             */
+            rejection_reasons: {
+                /**
+                 * Blacklist match count
+                 */
+                blacklist_match: number;
+                /**
+                 * Duplicate application count
+                 */
+                duplicate_application: number;
+                /**
+                 * Payment failure count
+                 */
+                payment_failure: number;
+                /**
+                 * High risk score count
+                 */
+                high_risk_score: number;
+                /**
+                 * Document issue count
+                 */
+                document_issue: number;
+                /**
+                 * Other reasons count
+                 */
+                other: number;
+            };
+            /**
+             * Daily trends
+             */
+            daily_trends: Array<{
+                /**
+                 * Date
+                 */
+                date: string;
+                /**
+                 * Total applications
+                 */
+                total: number;
+                /**
+                 * Auto-approved applications
+                 */
+                auto_approved: number;
+                /**
+                 * Manually approved applications
+                 */
+                manual_approved: number;
+                /**
+                 * Rejected applications
+                 */
+                rejected: number;
+            }>;
+            /**
+             * Recent activities
+             */
+            recent_activities: Array<{
+                /**
+                 * Activity ID
+                 */
+                id: string;
+                /**
+                 * Activity type
+                 */
+                type: 'auto_approved' | 'manual_approved' | 'rejected';
+                /**
+                 * Application ID
+                 */
+                application_id: string;
+                /**
+                 * Applicant name
+                 */
+                applicant_name: string;
+                /**
+                 * Risk score
+                 */
+                risk_score: number;
+                /**
+                 * Activity timestamp
+                 */
+                timestamp: string;
+                /**
+                 * Staff ID who approved (for manual approval)
+                 */
+                approved_by?: string;
+                /**
+                 * Staff ID who rejected (for rejection)
+                 */
+                rejected_by?: string;
+                /**
+                 * Rejection reason (for rejection)
+                 */
+                rejection_reason?: string;
+            }>;
+        };
+    };
+};
+
+export type GetCrmAutoApprovalDashboardResponse = GetCrmAutoApprovalDashboardResponses[keyof GetCrmAutoApprovalDashboardResponses];
 
 export type GetCrmMembersData = {
     body?: never;
@@ -834,37 +5069,37 @@ export type GetCrmMembersData = {
          */
         limit?: number;
         /**
-         * Search by member number, name, phone, or email
+         * Search query (name, member number, phone, email)
          */
         search?: string;
         /**
-         * Filter by member type
+         * Filter by member type (array)
          */
-        member_type?: Array<'regular' | 'family' | 'corporate' | 'company_discount'>;
+        member_type?: Array<'regular' | 'family' | 'corporate' | 'company_discount'> | null;
         /**
-         * Filter by status
+         * Filter by status (array)
          */
-        status?: Array<'active' | 'suspended' | 'withdrawn' | 'force_withdrawn'>;
+        status?: Array<'active' | 'suspended' | 'withdrawn' | 'force_withdrawn'> | null;
         /**
-         * Filter by brand
+         * Filter by brand (array)
          */
-        brand?: Array<'joyfit' | 'fit365'>;
+        brand?: Array<'joyfit' | 'fit365'> | null;
         /**
-         * Filter by store ID
+         * Filter by store ID (array)
          */
-        store_id?: Array<string>;
+        store_id?: Array<string> | null;
         /**
-         * Filter by contract plan ID
+         * Filter by contract plan ID (array)
          */
-        contract_plan_id?: Array<string>;
+        contract_plan_id?: Array<string> | null;
         /**
-         * Filter by last visit days (7=1週間以内, 30=1ヶ月以内, 90=3ヶ月以内, -1=3ヶ月以上)
+         * Filter by last visit days (-1 for 3+ months)
          */
-        last_visit_days?: number;
+        last_visit_days?: number | null;
         /**
          * Filter by unpaid status
          */
-        has_unpaid?: boolean;
+        has_unpaid?: boolean | null;
         /**
          * Sort field
          */
@@ -877,11 +5112,133 @@ export type GetCrmMembersData = {
     url: '/crm/members';
 };
 
+export type GetCrmMembersErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembersError = GetCrmMembersErrors[keyof GetCrmMembersErrors];
+
 export type GetCrmMembersResponses = {
     /**
-     * Success
+     * GetMembersResponse
+     *
+     * Response for getting members list
      */
-    200: GetMembersResponse;
+    200: {
+        /**
+         * List of members
+         */
+        members: Array<{
+            /**
+             * Member ID
+             */
+            id: string;
+            /**
+             * Member number
+             */
+            member_number: string;
+            /**
+             * Name in kanji
+             */
+            name_kanji: string;
+            /**
+             * Name in kana
+             */
+            name_kana: string;
+            /**
+             * Member type
+             */
+            member_type: 'regular' | 'family' | 'corporate' | 'company_discount';
+            /**
+             * Member status
+             */
+            status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
+            /**
+             * Store name
+             */
+            store_name: string;
+            /**
+             * Store ID
+             */
+            store_id: string;
+            /**
+             * Brand
+             */
+            brand: 'joyfit' | 'fit365';
+            /**
+             * Contract plan name
+             */
+            contract_plan_name: string;
+            /**
+             * Contract plan ID
+             */
+            contract_plan_id: string;
+            /**
+             * Join date
+             */
+            joined_at: string;
+            /**
+             * Last visit date
+             */
+            last_visit_date?: string;
+            /**
+             * Whether member has unpaid fees
+             */
+            has_unpaid: boolean;
+            /**
+             * Phone number
+             */
+            phone: string;
+            /**
+             * Email address
+             */
+            email: string;
+        }>;
+        /**
+         * Pagination
+         *
+         * Pagination information
+         */
+        pagination: {
+            /**
+             * Current page number
+             */
+            page: number;
+            /**
+             * Items per page
+             */
+            limit: number;
+            /**
+             * Total number of items
+             */
+            total: number;
+            /**
+             * Total number of pages
+             */
+            total_pages: number;
+        };
+    };
 };
 
 export type GetCrmMembersResponse = GetCrmMembersResponses[keyof GetCrmMembersResponses];
@@ -900,18 +5257,100 @@ export type GetCrmMembersByIdData = {
 
 export type GetCrmMembersByIdErrors = {
     /**
-     * Member not found
+     * ErrorResponse
+     *
+     * Error response
      */
-    404: Error;
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
 };
 
 export type GetCrmMembersByIdError = GetCrmMembersByIdErrors[keyof GetCrmMembersByIdErrors];
 
 export type GetCrmMembersByIdResponses = {
     /**
-     * Success
+     * GetMemberDetailResponse
+     *
+     * Response for getting member detail
      */
-    200: GetMemberDetailResponse;
+    200: {
+        /**
+         * Complete member information
+         */
+        member: {
+            /**
+             * Basic member information
+             */
+            basic_info?: unknown;
+            /**
+             * Member profile
+             */
+            profile?: unknown;
+            /**
+             * eKYC information
+             */
+            ekyc?: unknown;
+            /**
+             * Consent information
+             */
+            consent?: unknown;
+            /**
+             * Health information
+             */
+            health_info?: unknown;
+            /**
+             * Contract information
+             */
+            contracts?: unknown;
+            /**
+             * Payment information
+             */
+            payment_info?: unknown;
+            /**
+             * Points information
+             */
+            points?: unknown;
+            /**
+             * Usage summary
+             */
+            usage_summary?: unknown;
+            /**
+             * Training summary
+             */
+            training_summary?: unknown;
+            /**
+             * Service usage
+             */
+            service_usage?: unknown;
+            /**
+             * Communications
+             */
+            communications?: unknown;
+            /**
+             * Staff memos
+             */
+            memos?: unknown;
+            /**
+             * Change history
+             */
+            change_history?: unknown;
+        };
+    };
 };
 
 export type GetCrmMembersByIdResponse = GetCrmMembersByIdResponses[keyof GetCrmMembersByIdResponses];
@@ -920,7 +5359,7 @@ export type GetCrmMembersByIdBasicInfoData = {
     body?: never;
     path: {
         /**
-         * 会員ID
+         * Member ID
          */
         id: string;
     };
@@ -930,31 +5369,159 @@ export type GetCrmMembersByIdBasicInfoData = {
 
 export type GetCrmMembersByIdBasicInfoErrors = {
     /**
-     * Member not found
+     * ErrorResponse
+     *
+     * Error response
      */
-    404: Error;
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
     /**
-     * Internal server error
+     * ErrorResponse
+     *
+     * Error response
      */
-    500: Error;
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
 };
 
 export type GetCrmMembersByIdBasicInfoError = GetCrmMembersByIdBasicInfoErrors[keyof GetCrmMembersByIdBasicInfoErrors];
 
 export type GetCrmMembersByIdBasicInfoResponses = {
     /**
-     * Success
+     * GetMemberDetailResponse
+     *
+     * Response for getting member detail
      */
-    200: GetBasicInfoResponse;
+    200: {
+        /**
+         * Complete member information
+         */
+        member: {
+            /**
+             * Basic member information
+             */
+            basic_info?: unknown;
+            /**
+             * Member profile
+             */
+            profile?: unknown;
+            /**
+             * eKYC information
+             */
+            ekyc?: unknown;
+            /**
+             * Consent information
+             */
+            consent?: unknown;
+            /**
+             * Health information
+             */
+            health_info?: unknown;
+            /**
+             * Contract information
+             */
+            contracts?: unknown;
+            /**
+             * Payment information
+             */
+            payment_info?: unknown;
+            /**
+             * Points information
+             */
+            points?: unknown;
+            /**
+             * Usage summary
+             */
+            usage_summary?: unknown;
+            /**
+             * Training summary
+             */
+            training_summary?: unknown;
+            /**
+             * Service usage
+             */
+            service_usage?: unknown;
+            /**
+             * Communications
+             */
+            communications?: unknown;
+            /**
+             * Staff memos
+             */
+            memos?: unknown;
+            /**
+             * Change history
+             */
+            change_history?: unknown;
+        };
+    };
 };
 
 export type GetCrmMembersByIdBasicInfoResponse = GetCrmMembersByIdBasicInfoResponses[keyof GetCrmMembersByIdBasicInfoResponses];
 
 export type PutCrmMembersByIdBasicInfoData = {
-    body: UpdateBasicInfoRequest;
+    /**
+     * UpdateBasicInfoRequest
+     *
+     * Request payload for updating basic info
+     */
+    body?: {
+        /**
+         * Name in kanji
+         */
+        name_kanji?: string;
+        /**
+         * Name in kana
+         */
+        name_kana?: string;
+        /**
+         * Postal code
+         */
+        postal_code?: string;
+        /**
+         * Prefecture
+         */
+        prefecture?: string;
+        /**
+         * City
+         */
+        city?: string;
+        /**
+         * Address
+         */
+        address?: string;
+        /**
+         * Building name
+         */
+        building?: string;
+        /**
+         * Phone number
+         */
+        phone?: string;
+        /**
+         * Email address
+         */
+        email?: string;
+        /**
+         * Emergency contact information
+         */
+        emergency_contact?: {
+            name: string;
+            relationship: string;
+            phone: string;
+        };
+    };
     path: {
         /**
-         * 会員ID
+         * Member ID
          */
         id: string;
     };
@@ -964,307 +5531,93 @@ export type PutCrmMembersByIdBasicInfoData = {
 
 export type PutCrmMembersByIdBasicInfoErrors = {
     /**
-     * Bad request
+     * ErrorResponse
+     *
+     * Error response
      */
-    400: Error;
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
     /**
-     * Member not found
+     * ErrorResponse
+     *
+     * Error response
      */
-    404: Error;
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
     /**
-     * Internal server error
+     * ErrorResponse
+     *
+     * Error response
      */
-    500: Error;
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
 };
 
 export type PutCrmMembersByIdBasicInfoError = PutCrmMembersByIdBasicInfoErrors[keyof PutCrmMembersByIdBasicInfoErrors];
 
 export type PutCrmMembersByIdBasicInfoResponses = {
     /**
-     * Success
+     * UpdateBasicInfoResponse
+     *
+     * Response for updating basic info
      */
-    200: PutBasicInfoResponse;
+    200: {
+        /**
+         * Whether the update was successful
+         */
+        success: boolean;
+        /**
+         * Updated member information
+         */
+        member?: unknown;
+    };
 };
 
 export type PutCrmMembersByIdBasicInfoResponse = PutCrmMembersByIdBasicInfoResponses[keyof PutCrmMembersByIdBasicInfoResponses];
 
-export type GetCrmMembersByIdContractsData = {
-    body?: never;
-    path: {
-        /**
-         * 会員ID
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/crm/members/{id}/contracts';
-};
-
-export type GetCrmMembersByIdContractsErrors = {
-    /**
-     * Member not found
-     */
-    404: Error;
-    /**
-     * Internal server error
-     */
-    500: Error;
-};
-
-export type GetCrmMembersByIdContractsError = GetCrmMembersByIdContractsErrors[keyof GetCrmMembersByIdContractsErrors];
-
-export type GetCrmMembersByIdContractsResponses = {
-    /**
-     * Success
-     */
-    200: GetContractsResponse;
-};
-
-export type GetCrmMembersByIdContractsResponse = GetCrmMembersByIdContractsResponses[keyof GetCrmMembersByIdContractsResponses];
-
-export type GetCrmMembersByIdPointsData = {
-    body?: never;
-    path: {
-        /**
-         * 会員ID
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/crm/members/{id}/points';
-};
-
-export type GetCrmMembersByIdPointsErrors = {
-    /**
-     * Member not found
-     */
-    404: Error;
-    /**
-     * Internal server error
-     */
-    500: Error;
-};
-
-export type GetCrmMembersByIdPointsError = GetCrmMembersByIdPointsErrors[keyof GetCrmMembersByIdPointsErrors];
-
-export type GetCrmMembersByIdPointsResponses = {
-    /**
-     * Success
-     */
-    200: GetPointsResponse;
-};
-
-export type GetCrmMembersByIdPointsResponse = GetCrmMembersByIdPointsResponses[keyof GetCrmMembersByIdPointsResponses];
-
-export type PostCrmMembersByIdPointsData = {
-    /**
-     * ポイント操作パラメータ
-     */
-    body: {
-        [key: string]: unknown;
-    };
-    path: {
-        /**
-         * 会員ID
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/crm/members/{id}/points';
-};
-
-export type PostCrmMembersByIdPointsErrors = {
-    /**
-     * Bad request
-     */
-    400: Error;
-    /**
-     * Internal server error
-     */
-    500: Error;
-};
-
-export type PostCrmMembersByIdPointsError = PostCrmMembersByIdPointsErrors[keyof PostCrmMembersByIdPointsErrors];
-
-export type PostCrmMembersByIdPointsResponses = {
-    /**
-     * Success
-     */
-    200: GetPointsResponse;
-};
-
-export type PostCrmMembersByIdPointsResponse = PostCrmMembersByIdPointsResponses[keyof PostCrmMembersByIdPointsResponses];
-
-export type PostCrmMembersByIdPointsAdjustData = {
-    body: PointAdjustmentRequest;
-    path: {
-        /**
-         * 会員ID
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/crm/members/{id}/points/adjust';
-};
-
-export type PostCrmMembersByIdPointsAdjustErrors = {
-    /**
-     * Bad request
-     */
-    400: Error;
-    /**
-     * Member not found
-     */
-    404: Error;
-    /**
-     * Internal server error
-     */
-    500: Error;
-};
-
-export type PostCrmMembersByIdPointsAdjustError = PostCrmMembersByIdPointsAdjustErrors[keyof PostCrmMembersByIdPointsAdjustErrors];
-
-export type PostCrmMembersByIdPointsAdjustResponses = {
-    /**
-     * Success
-     */
-    200: PointAdjustmentResponse;
-};
-
-export type PostCrmMembersByIdPointsAdjustResponse = PostCrmMembersByIdPointsAdjustResponses[keyof PostCrmMembersByIdPointsAdjustResponses];
-
-export type PostCrmMembersByIdMemosData = {
-    body: CreateMemoRequest;
-    path: {
-        /**
-         * 会員ID
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/crm/members/{id}/memos';
-};
-
-export type PostCrmMembersByIdMemosErrors = {
-    /**
-     * Bad request
-     */
-    400: Error;
-    /**
-     * Internal server error
-     */
-    500: Error;
-};
-
-export type PostCrmMembersByIdMemosError = PostCrmMembersByIdMemosErrors[keyof PostCrmMembersByIdMemosErrors];
-
-export type PostCrmMembersByIdMemosResponses = {
-    /**
-     * Success
-     */
-    200: CreateMemoResponse;
-};
-
-export type PostCrmMembersByIdMemosResponse = PostCrmMembersByIdMemosResponses[keyof PostCrmMembersByIdMemosResponses];
-
-export type PostCrmMembersExportData = {
-    body: ExportMembersRequest;
-    path?: never;
-    query?: never;
-    url: '/crm/members/export';
-};
-
-export type PostCrmMembersExportErrors = {
-    /**
-     * Bad request
-     */
-    400: Error;
-    /**
-     * Internal server error
-     */
-    500: Error;
-};
-
-export type PostCrmMembersExportError = PostCrmMembersExportErrors[keyof PostCrmMembersExportErrors];
-
-export type PostCrmMembersExportResponses = {
-    /**
-     * Success
-     */
-    200: ExportMembersResponse;
-};
-
-export type PostCrmMembersExportResponse = PostCrmMembersExportResponses[keyof PostCrmMembersExportResponses];
-
-export type GetCrmMembersByIdChangeHistoryData = {
-    body?: never;
-    path: {
-        /**
-         * 会員ID
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/crm/members/{id}/change-history';
-};
-
-export type GetCrmMembersByIdChangeHistoryErrors = {
-    /**
-     * Member not found
-     */
-    404: Error;
-    /**
-     * Internal server error
-     */
-    500: Error;
-};
-
-export type GetCrmMembersByIdChangeHistoryError = GetCrmMembersByIdChangeHistoryErrors[keyof GetCrmMembersByIdChangeHistoryErrors];
-
-export type GetCrmMembersByIdChangeHistoryResponses = {
-    /**
-     * Success
-     */
-    200: GetChangeHistoryResponse;
-};
-
-export type GetCrmMembersByIdChangeHistoryResponse = GetCrmMembersByIdChangeHistoryResponses[keyof GetCrmMembersByIdChangeHistoryResponses];
-
-export type GetCrmMembersByIdCommunicationsData = {
-    body?: never;
-    path: {
-        /**
-         * id parameter
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/crm/members/{id}/communications';
-};
-
-export type GetCrmMembersByIdCommunicationsErrors = {
-    /**
-     * Internal server error
-     */
-    500: Error;
-};
-
-export type GetCrmMembersByIdCommunicationsError = GetCrmMembersByIdCommunicationsErrors[keyof GetCrmMembersByIdCommunicationsErrors];
-
-export type GetCrmMembersByIdCommunicationsResponses = {
-    /**
-     * Success
-     */
-    200: GetCommunicationsResponse;
-};
-
-export type GetCrmMembersByIdCommunicationsResponse = GetCrmMembersByIdCommunicationsResponses[keyof GetCrmMembersByIdCommunicationsResponses];
-
 export type PutCrmMembersByIdHealthInfoData = {
-    body: UpdateHealthInfoRequest;
+    /**
+     * UpdateHealthInfoRequest
+     *
+     * Request payload for updating health info
+     */
+    body?: {
+        /**
+         * Health status
+         */
+        health_status?: string;
+        /**
+         * Medical history
+         */
+        medical_history?: string;
+        /**
+         * Allergies
+         */
+        allergies?: string;
+        /**
+         * Exercise restrictions
+         */
+        exercise_restrictions?: string;
+        /**
+         * Other notes
+         */
+        other_notes?: string;
+    };
     path: {
         /**
-         * 会員ID
+         * Member ID
          */
         id: string;
     };
@@ -1274,35 +5627,85 @@ export type PutCrmMembersByIdHealthInfoData = {
 
 export type PutCrmMembersByIdHealthInfoErrors = {
     /**
-     * Bad request
+     * ErrorResponse
+     *
+     * Error response
      */
-    400: Error;
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
     /**
-     * Member not found
+     * ErrorResponse
+     *
+     * Error response
      */
-    404: Error;
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
     /**
-     * Internal server error
+     * ErrorResponse
+     *
+     * Error response
      */
-    500: Error;
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
 };
 
 export type PutCrmMembersByIdHealthInfoError = PutCrmMembersByIdHealthInfoErrors[keyof PutCrmMembersByIdHealthInfoErrors];
 
 export type PutCrmMembersByIdHealthInfoResponses = {
     /**
-     * Success
+     * UpdateHealthInfoResponse
+     *
+     * Response for updating health info
      */
-    200: PutHealthInfoResponse;
+    200: {
+        /**
+         * Whether the update was successful
+         */
+        success: boolean;
+        /**
+         * Updated member information
+         */
+        member?: unknown;
+    };
 };
 
 export type PutCrmMembersByIdHealthInfoResponse = PutCrmMembersByIdHealthInfoResponses[keyof PutCrmMembersByIdHealthInfoResponses];
 
 export type PutCrmMembersByIdMarketingConsentData = {
-    body: UpdateMarketingConsentRequest;
+    /**
+     * UpdateMarketingConsentRequest
+     *
+     * Request payload for updating marketing consent
+     */
+    body?: {
+        /**
+         * Email marketing consent
+         */
+        email?: boolean;
+        /**
+         * SMS marketing consent
+         */
+        sms?: boolean;
+        /**
+         * Push notification consent
+         */
+        push?: boolean;
+    };
     path: {
         /**
-         * 会員ID
+         * Member ID
          */
         id: string;
     };
@@ -1312,181 +5715,356 @@ export type PutCrmMembersByIdMarketingConsentData = {
 
 export type PutCrmMembersByIdMarketingConsentErrors = {
     /**
-     * Bad request
+     * ErrorResponse
+     *
+     * Error response
      */
-    400: Error;
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
     /**
-     * Member not found
+     * ErrorResponse
+     *
+     * Error response
      */
-    404: Error;
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
     /**
-     * Internal server error
+     * ErrorResponse
+     *
+     * Error response
      */
-    500: Error;
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
 };
 
 export type PutCrmMembersByIdMarketingConsentError = PutCrmMembersByIdMarketingConsentErrors[keyof PutCrmMembersByIdMarketingConsentErrors];
 
 export type PutCrmMembersByIdMarketingConsentResponses = {
     /**
-     * Success
+     * UpdateMarketingConsentResponse
+     *
+     * Response for updating marketing consent
      */
-    200: PutMarketingConsentResponse;
+    200: {
+        /**
+         * Whether the update was successful
+         */
+        success: boolean;
+        /**
+         * Updated member information
+         */
+        member?: unknown;
+    };
 };
 
 export type PutCrmMembersByIdMarketingConsentResponse = PutCrmMembersByIdMarketingConsentResponses[keyof PutCrmMembersByIdMarketingConsentResponses];
 
-export type DeleteCrmMembersByIdMemosByMemoIdData = {
+export type GetCrmMembersByIdPointsData = {
     body?: never;
     path: {
         /**
-         * 会員ID
+         * Member ID
          */
         id: string;
-        /**
-         * メモID
-         */
-        memoId: string;
     };
     query?: never;
-    url: '/crm/members/{id}/memos/{memoId}';
+    url: '/crm/members/{id}/points';
 };
 
-export type DeleteCrmMembersByIdMemosByMemoIdErrors = {
+export type GetCrmMembersByIdPointsErrors = {
     /**
-     * Memo not found
+     * ErrorResponse
+     *
+     * Error response
      */
-    404: Error;
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
     /**
-     * Internal server error
+     * ErrorResponse
+     *
+     * Error response
      */
-    500: Error;
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
 };
 
-export type DeleteCrmMembersByIdMemosByMemoIdError = DeleteCrmMembersByIdMemosByMemoIdErrors[keyof DeleteCrmMembersByIdMemosByMemoIdErrors];
+export type GetCrmMembersByIdPointsError = GetCrmMembersByIdPointsErrors[keyof GetCrmMembersByIdPointsErrors];
 
-export type DeleteCrmMembersByIdMemosByMemoIdResponses = {
+export type GetCrmMembersByIdPointsResponses = {
     /**
-     * Success
+     * GetPointsResponse
+     *
+     * Response for getting points
      */
     200: {
-        success?: boolean;
+        /**
+         * FIT365 points information
+         */
+        fit365?: unknown;
+        /**
+         * JOYFIT points information
+         */
+        joyfit?: unknown;
+        /**
+         * Rank information
+         */
+        rank?: unknown;
+        /**
+         * Earn history
+         */
+        earn_history: Array<unknown>;
+        /**
+         * Spend history
+         */
+        spend_history: Array<unknown>;
+        /**
+         * Adjustment history
+         */
+        adjustment_history: Array<unknown>;
     };
 };
 
-export type DeleteCrmMembersByIdMemosByMemoIdResponse = DeleteCrmMembersByIdMemosByMemoIdResponses[keyof DeleteCrmMembersByIdMemosByMemoIdResponses];
+export type GetCrmMembersByIdPointsResponse = GetCrmMembersByIdPointsResponses[keyof GetCrmMembersByIdPointsResponses];
 
-export type PutCrmMembersByIdMemosByMemoIdData = {
-    body: UpdateMemoRequest;
-    path: {
+export type PostCrmMembersByIdPointsData = {
+    /**
+     * PointAdjustmentRequest
+     *
+     * Request payload for adjusting points
+     */
+    body?: {
         /**
-         * 会員ID
+         * Adjustment type
          */
-        id: string;
+        type: 'add' | 'subtract';
         /**
-         * メモID
+         * Number of points
          */
-        memoId: string;
+        points: number;
+        /**
+         * Reason for adjustment (10-500 characters)
+         */
+        reason: string;
     };
-    query?: never;
-    url: '/crm/members/{id}/memos/{memoId}';
-};
-
-export type PutCrmMembersByIdMemosByMemoIdErrors = {
-    /**
-     * Memo not found
-     */
-    404: Error;
-    /**
-     * Internal server error
-     */
-    500: Error;
-};
-
-export type PutCrmMembersByIdMemosByMemoIdError = PutCrmMembersByIdMemosByMemoIdErrors[keyof PutCrmMembersByIdMemosByMemoIdErrors];
-
-export type PutCrmMembersByIdMemosByMemoIdResponses = {
-    /**
-     * Success
-     */
-    200: UpdateMemoResponse;
-};
-
-export type PutCrmMembersByIdMemosByMemoIdResponse = PutCrmMembersByIdMemosByMemoIdResponses[keyof PutCrmMembersByIdMemosByMemoIdResponses];
-
-export type GetCrmMembersByIdRelationshipsData = {
-    body?: never;
     path: {
         /**
-         * 会員ID
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/crm/members/{id}/relationships';
-};
-
-export type GetCrmMembersByIdRelationshipsErrors = {
-    /**
-     * Member not found
-     */
-    404: Error;
-    /**
-     * Internal server error
-     */
-    500: Error;
-};
-
-export type GetCrmMembersByIdRelationshipsError = GetCrmMembersByIdRelationshipsErrors[keyof GetCrmMembersByIdRelationshipsErrors];
-
-export type GetCrmMembersByIdRelationshipsResponses = {
-    /**
-     * Success
-     */
-    200: GetRelationshipsResponse;
-};
-
-export type GetCrmMembersByIdRelationshipsResponse = GetCrmMembersByIdRelationshipsResponses[keyof GetCrmMembersByIdRelationshipsResponses];
-
-export type GetCrmMembersByIdServiceUsageData = {
-    body?: never;
-    path: {
-        /**
-         * 会員ID
+         * Member ID
          */
         id: string;
     };
     query?: never;
-    url: '/crm/members/{id}/service-usage';
+    url: '/crm/members/{id}/points';
 };
 
-export type GetCrmMembersByIdServiceUsageErrors = {
+export type PostCrmMembersByIdPointsErrors = {
     /**
-     * Member not found
+     * ErrorResponse
+     *
+     * Error response
      */
-    404: Error;
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
     /**
-     * Internal server error
+     * ErrorResponse
+     *
+     * Error response
      */
-    500: Error;
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
 };
 
-export type GetCrmMembersByIdServiceUsageError = GetCrmMembersByIdServiceUsageErrors[keyof GetCrmMembersByIdServiceUsageErrors];
+export type PostCrmMembersByIdPointsError = PostCrmMembersByIdPointsErrors[keyof PostCrmMembersByIdPointsErrors];
 
-export type GetCrmMembersByIdServiceUsageResponses = {
+export type PostCrmMembersByIdPointsResponses = {
     /**
-     * Success
+     * PointAdjustmentResponse
+     *
+     * Response for adjusting points
      */
-    200: GetServiceUsageResponse;
+    200: {
+        /**
+         * Whether the adjustment was successful
+         */
+        success: boolean;
+        /**
+         * Member ID
+         */
+        id: string;
+        /**
+         * PointAdjustmentRequest
+         *
+         * Adjustment details
+         */
+        adjustment: {
+            /**
+             * Adjustment type
+             */
+            type: 'add' | 'subtract';
+            /**
+             * Number of points
+             */
+            points: number;
+            /**
+             * Reason for adjustment (10-500 characters)
+             */
+            reason: string;
+        };
+    };
 };
 
-export type GetCrmMembersByIdServiceUsageResponse = GetCrmMembersByIdServiceUsageResponses[keyof GetCrmMembersByIdServiceUsageResponses];
+export type PostCrmMembersByIdPointsResponse = PostCrmMembersByIdPointsResponses[keyof PostCrmMembersByIdPointsResponses];
+
+export type PostCrmMembersByIdPointsAdjustData = {
+    /**
+     * PointAdjustmentRequest
+     *
+     * Request payload for adjusting points
+     */
+    body?: {
+        /**
+         * Adjustment type
+         */
+        type: 'add' | 'subtract';
+        /**
+         * Number of points
+         */
+        points: number;
+        /**
+         * Reason for adjustment (10-500 characters)
+         */
+        reason: string;
+    };
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/points/adjust';
+};
+
+export type PostCrmMembersByIdPointsAdjustErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembersByIdPointsAdjustError = PostCrmMembersByIdPointsAdjustErrors[keyof PostCrmMembersByIdPointsAdjustErrors];
+
+export type PostCrmMembersByIdPointsAdjustResponses = {
+    /**
+     * PointAdjustmentResponse
+     *
+     * Response for adjusting points
+     */
+    200: {
+        /**
+         * Whether the adjustment was successful
+         */
+        success: boolean;
+        /**
+         * Member ID
+         */
+        id: string;
+        /**
+         * PointAdjustmentRequest
+         *
+         * Adjustment details
+         */
+        adjustment: {
+            /**
+             * Adjustment type
+             */
+            type: 'add' | 'subtract';
+            /**
+             * Number of points
+             */
+            points: number;
+            /**
+             * Reason for adjustment (10-500 characters)
+             */
+            reason: string;
+        };
+    };
+};
+
+export type PostCrmMembersByIdPointsAdjustResponse = PostCrmMembersByIdPointsAdjustResponses[keyof PostCrmMembersByIdPointsAdjustResponses];
 
 export type GetCrmMembersByIdTrainingRecordsData = {
     body?: never;
     path: {
         /**
-         * 会員ID
+         * Member ID
          */
         id: string;
     };
@@ -1496,31 +6074,456 @@ export type GetCrmMembersByIdTrainingRecordsData = {
 
 export type GetCrmMembersByIdTrainingRecordsErrors = {
     /**
-     * Member not found
+     * ErrorResponse
+     *
+     * Error response
      */
-    404: Error;
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
     /**
-     * Internal server error
+     * ErrorResponse
+     *
+     * Error response
      */
-    500: Error;
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
 };
 
 export type GetCrmMembersByIdTrainingRecordsError = GetCrmMembersByIdTrainingRecordsErrors[keyof GetCrmMembersByIdTrainingRecordsErrors];
 
 export type GetCrmMembersByIdTrainingRecordsResponses = {
     /**
-     * Success
+     * GetTrainingRecordsResponse
+     *
+     * Response for getting training records
      */
-    200: GetTrainingRecordsResponse;
+    200: {
+        /**
+         * Training summary
+         */
+        summary?: unknown;
+        /**
+         * Strength training records
+         */
+        strengthRecords: Array<unknown>;
+        /**
+         * Cardio records
+         */
+        cardioRecords: Array<unknown>;
+        /**
+         * Body measurement records
+         */
+        bodyRecords: Array<unknown>;
+        /**
+         * Training menus
+         */
+        trainingMenus: Array<unknown>;
+    };
 };
 
 export type GetCrmMembersByIdTrainingRecordsResponse = GetCrmMembersByIdTrainingRecordsResponses[keyof GetCrmMembersByIdTrainingRecordsResponses];
+
+export type GetCrmMembersByIdContractsData = {
+    body?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/contracts';
+};
+
+export type GetCrmMembersByIdContractsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembersByIdContractsError = GetCrmMembersByIdContractsErrors[keyof GetCrmMembersByIdContractsErrors];
+
+export type GetCrmMembersByIdContractsResponses = {
+    /**
+     * GetContractsResponse
+     *
+     * Response for getting contracts
+     */
+    200: {
+        /**
+         * MainContract
+         *
+         * Main contract information
+         */
+        main_contract: {
+            /**
+             * Plan name
+             */
+            plan_name: string;
+            /**
+             * Monthly fee (tax included)
+             */
+            monthly_fee: number;
+            /**
+             * Contract start date
+             */
+            start_date: string;
+            /**
+             * Penalty period end date
+             */
+            penalty_period_end?: string;
+            /**
+             * Contract change history
+             */
+            change_history: Array<{
+                /**
+                 * Change date and time
+                 */
+                changed_at: string;
+                /**
+                 * Previous plan name
+                 */
+                previous_plan: string;
+                /**
+                 * New plan name
+                 */
+                new_plan: string;
+                /**
+                 * Reason for change
+                 */
+                reason?: string;
+            }>;
+        };
+        /**
+         * Option contracts
+         */
+        option_contracts: Array<{
+            /**
+             * Option contract ID
+             */
+            id: string;
+            /**
+             * Option name
+             */
+            name: string;
+            /**
+             * Monthly fee
+             */
+            monthly_fee: number;
+            /**
+             * Start date
+             */
+            start_date: string;
+            /**
+             * Next billing date
+             */
+            next_billing_date: string;
+        }>;
+        /**
+         * Option change history
+         */
+        option_change_history: Array<{
+            /**
+             * Change date and time
+             */
+            changed_at: string;
+            /**
+             * Option name
+             */
+            option_name: string;
+            /**
+             * Action type
+             */
+            action_type: 'add' | 'remove';
+            /**
+             * Notes
+             */
+            notes?: string;
+        }>;
+        /**
+         * SpecialContracts
+         *
+         * Special contracts
+         */
+        special_contracts: {
+            /**
+             * SpecialContractItem
+             *
+             * Anshin support contract
+             */
+            anshin_support?: {
+                /**
+                 * Whether enrolled
+                 */
+                enrolled: boolean;
+                /**
+                 * Start date
+                 */
+                start_date?: string;
+                /**
+                 * Applied month (YYYY-MM format)
+                 */
+                applied_month?: string;
+            };
+            /**
+             * SpecialContractItem
+             *
+             * Mutual use contract
+             */
+            mutual_use?: {
+                /**
+                 * Whether enrolled
+                 */
+                enrolled: boolean;
+                /**
+                 * Start date
+                 */
+                start_date?: string;
+                /**
+                 * Applied month (YYYY-MM format)
+                 */
+                applied_month?: string;
+            };
+            /**
+             * SpecialContractItem
+             *
+             * Security fee contract
+             */
+            security_fee?: {
+                /**
+                 * Whether enrolled
+                 */
+                enrolled: boolean;
+                /**
+                 * Start date
+                 */
+                start_date?: string;
+                /**
+                 * Applied month (YYYY-MM format)
+                 */
+                applied_month?: string;
+            };
+            /**
+             * SpecialContractItem
+             *
+             * Maintenance fee contract
+             */
+            maintenance_fee?: {
+                /**
+                 * Whether enrolled
+                 */
+                enrolled: boolean;
+                /**
+                 * Start date
+                 */
+                start_date?: string;
+                /**
+                 * Applied month (YYYY-MM format)
+                 */
+                applied_month?: string;
+            };
+        };
+        /**
+         * PaymentInfo
+         *
+         * Payment information
+         */
+        payment_info: {
+            /**
+             * Payment method
+             */
+            method: 'credit_card' | 'bank_transfer';
+            /**
+             * Masked card number (last 4 digits only)
+             */
+            card_number?: string;
+            /**
+             * Cardholder name
+             */
+            cardholder_name?: string;
+            /**
+             * Card expiry date
+             */
+            expiry_date?: string;
+            /**
+             * Billing day of month
+             */
+            billing_day: number;
+            /**
+             * Last payment date
+             */
+            last_payment_date?: string;
+            /**
+             * Last payment amount
+             */
+            last_payment_amount?: number;
+            /**
+             * Payment status
+             */
+            status: 'normal' | 'error';
+            /**
+             * Payment history
+             */
+            payment_history: Array<{
+                /**
+                 * Payment date
+                 */
+                date: string;
+                /**
+                 * Payment amount
+                 */
+                amount: number;
+                /**
+                 * Payment breakdown
+                 */
+                breakdown: string;
+                /**
+                 * Payment status
+                 */
+                status: 'success' | 'failed';
+                /**
+                 * Additional notes
+                 */
+                notes?: string;
+            }>;
+        };
+        /**
+         * UnpaidInfo
+         *
+         * Unpaid information
+         */
+        unpaid_info: {
+            /**
+             * Unpaid amount
+             */
+            amount: number;
+            /**
+             * Due date
+             */
+            due_date: string;
+            /**
+             * Reason for unpaid
+             */
+            reason?: string;
+        } | null;
+        /**
+         * Campaigns
+         *
+         * Campaign information
+         */
+        campaigns: {
+            /**
+             * Active campaigns
+             */
+            active: Array<{
+                /**
+                 * Campaign name
+                 */
+                campaign_name: string;
+                /**
+                 * Campaign period start date
+                 */
+                period_start?: string;
+                /**
+                 * Campaign period end date
+                 */
+                period_end?: string;
+                /**
+                 * Discount content
+                 */
+                discount_content?: string;
+                /**
+                 * Remaining days
+                 */
+                remaining_days?: number;
+                /**
+                 * Applied date
+                 */
+                applied_at?: string;
+                /**
+                 * Campaign content
+                 */
+                content?: string;
+                /**
+                 * Campaign status
+                 */
+                status?: string;
+            }>;
+            /**
+             * Campaign history
+             */
+            history: Array<{
+                /**
+                 * Campaign name
+                 */
+                campaign_name: string;
+                /**
+                 * Campaign period start date
+                 */
+                period_start?: string;
+                /**
+                 * Campaign period end date
+                 */
+                period_end?: string;
+                /**
+                 * Discount content
+                 */
+                discount_content?: string;
+                /**
+                 * Remaining days
+                 */
+                remaining_days?: number;
+                /**
+                 * Applied date
+                 */
+                applied_at?: string;
+                /**
+                 * Campaign content
+                 */
+                content?: string;
+                /**
+                 * Campaign status
+                 */
+                status?: string;
+            }>;
+        };
+    };
+};
+
+export type GetCrmMembersByIdContractsResponse = GetCrmMembersByIdContractsResponses[keyof GetCrmMembersByIdContractsResponses];
 
 export type GetCrmMembersByIdUsageHistoryData = {
     body?: never;
     path: {
         /**
-         * 会員ID
+         * Member ID
          */
         id: string;
     };
@@ -1530,407 +6533,693 @@ export type GetCrmMembersByIdUsageHistoryData = {
 
 export type GetCrmMembersByIdUsageHistoryErrors = {
     /**
-     * Member not found
+     * ErrorResponse
+     *
+     * Error response
      */
-    404: Error;
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
     /**
-     * Internal server error
+     * ErrorResponse
+     *
+     * Error response
      */
-    500: Error;
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
 };
 
 export type GetCrmMembersByIdUsageHistoryError = GetCrmMembersByIdUsageHistoryErrors[keyof GetCrmMembersByIdUsageHistoryErrors];
 
 export type GetCrmMembersByIdUsageHistoryResponses = {
     /**
-     * Success
+     * GetUsageHistoryResponse
+     *
+     * Response for getting usage history
      */
-    200: GetUsageHistoryResponse;
+    200: {
+        /**
+         * Usage summary
+         */
+        summary?: unknown;
+        /**
+         * Store usage statistics
+         */
+        storeUsage: Array<unknown>;
+        /**
+         * Visit records
+         */
+        visitRecords: Array<unknown>;
+    };
 };
 
 export type GetCrmMembersByIdUsageHistoryResponse = GetCrmMembersByIdUsageHistoryResponses[keyof GetCrmMembersByIdUsageHistoryResponses];
 
-export type GetOpenapiJsonData = {
+export type GetCrmMembersByIdServiceUsageData = {
     body?: never;
-    path?: never;
-    query?: never;
-    url: '/openapi.json';
-};
-
-export type GetOpenapiJsonErrors = {
-    /**
-     * Internal server error
-     */
-    500: Error;
-};
-
-export type GetOpenapiJsonError = GetOpenapiJsonErrors[keyof GetOpenapiJsonErrors];
-
-export type GetOpenapiJsonResponses = {
-    /**
-     * Success
-     */
-    200: {
-        [key: string]: unknown;
-    };
-};
-
-export type GetOpenapiJsonResponse = GetOpenapiJsonResponses[keyof GetOpenapiJsonResponses];
-
-export type PostAuthRegisterData = {
-    body: RegisterRequest;
-    path?: never;
-    query?: never;
-    url: '/auth/register';
-};
-
-export type PostAuthRegisterErrors = {
-    /**
-     * Bad request
-     */
-    400: Error;
-    /**
-     * Internal server error
-     */
-    500: Error;
-};
-
-export type PostAuthRegisterError = PostAuthRegisterErrors[keyof PostAuthRegisterErrors];
-
-export type PostAuthRegisterResponses = {
-    /**
-     * Success
-     */
-    200: RegisterResponse;
-};
-
-export type PostAuthRegisterResponse = PostAuthRegisterResponses[keyof PostAuthRegisterResponses];
-
-export type GetCrmAutoApprovalDashboardData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/crm/auto-approval/dashboard';
-};
-
-export type GetCrmAutoApprovalDashboardErrors = {
-    /**
-     * Internal server error
-     */
-    500: Error;
-};
-
-export type GetCrmAutoApprovalDashboardError = GetCrmAutoApprovalDashboardErrors[keyof GetCrmAutoApprovalDashboardErrors];
-
-export type GetCrmAutoApprovalDashboardResponses = {
-    /**
-     * Success
-     */
-    200: {
-        [key: string]: unknown;
-    };
-};
-
-export type GetCrmAutoApprovalDashboardResponse = GetCrmAutoApprovalDashboardResponses[keyof GetCrmAutoApprovalDashboardResponses];
-
-export type GetCrmAutoApprovalSettingsData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/crm/auto-approval/settings';
-};
-
-export type GetCrmAutoApprovalSettingsErrors = {
-    /**
-     * Internal server error
-     */
-    500: Error;
-};
-
-export type GetCrmAutoApprovalSettingsError = GetCrmAutoApprovalSettingsErrors[keyof GetCrmAutoApprovalSettingsErrors];
-
-export type GetCrmAutoApprovalSettingsResponses = {
-    /**
-     * Success
-     */
-    200: {
-        [key: string]: unknown;
-    };
-};
-
-export type GetCrmAutoApprovalSettingsResponse = GetCrmAutoApprovalSettingsResponses[keyof GetCrmAutoApprovalSettingsResponses];
-
-export type PutCrmAutoApprovalSettingsData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/crm/auto-approval/settings';
-};
-
-export type PutCrmAutoApprovalSettingsErrors = {
-    /**
-     * Bad request
-     */
-    400: Error;
-    /**
-     * Internal server error
-     */
-    500: Error;
-};
-
-export type PutCrmAutoApprovalSettingsError = PutCrmAutoApprovalSettingsErrors[keyof PutCrmAutoApprovalSettingsErrors];
-
-export type PutCrmAutoApprovalSettingsResponses = {
-    /**
-     * Success
-     */
-    200: RegisterResponse;
-};
-
-export type PutCrmAutoApprovalSettingsResponse = PutCrmAutoApprovalSettingsResponses[keyof PutCrmAutoApprovalSettingsResponses];
-
-export type PostCrmMembershipApplicationsByIdApproveData = {
-    body: {
-        [key: string]: unknown;
-    };
     path: {
         /**
-         * id parameter
+         * Member ID
          */
         id: string;
     };
     query?: never;
-    url: '/crm/membership-applications/{id}/approve';
+    url: '/crm/members/{id}/service-usage';
 };
 
-export type PostCrmMembershipApplicationsByIdApproveErrors = {
+export type GetCrmMembersByIdServiceUsageErrors = {
     /**
-     * Internal server error
+     * ErrorResponse
+     *
+     * Error response
      */
-    500: Error;
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
 };
 
-export type PostCrmMembershipApplicationsByIdApproveError = PostCrmMembershipApplicationsByIdApproveErrors[keyof PostCrmMembershipApplicationsByIdApproveErrors];
+export type GetCrmMembersByIdServiceUsageError = GetCrmMembersByIdServiceUsageErrors[keyof GetCrmMembersByIdServiceUsageErrors];
 
-export type PostCrmMembershipApplicationsByIdApproveResponses = {
+export type GetCrmMembersByIdServiceUsageResponses = {
     /**
-     * Success
+     * GetServiceUsageResponse
+     *
+     * Response for getting service usage
      */
     200: {
-        [key: string]: unknown;
+        /**
+         * Personal training information
+         */
+        personalTraining?: unknown;
+        /**
+         * Studio program information
+         */
+        studioProgram?: unknown;
+        /**
+         * Other services usage
+         */
+        otherServices?: unknown;
     };
 };
 
-export type PostCrmMembershipApplicationsByIdApproveResponse = PostCrmMembershipApplicationsByIdApproveResponses[keyof PostCrmMembershipApplicationsByIdApproveResponses];
+export type GetCrmMembersByIdServiceUsageResponse = GetCrmMembersByIdServiceUsageResponses[keyof GetCrmMembersByIdServiceUsageResponses];
 
-export type PostCrmMembershipApplicationsByIdCancelData = {
-    body: {
-        [key: string]: unknown;
-    };
+export type GetCrmMembersByIdMemosData = {
+    body?: never;
     path: {
         /**
-         * id parameter
+         * Member ID
          */
         id: string;
     };
     query?: never;
-    url: '/crm/membership-applications/{id}/cancel';
+    url: '/crm/members/{id}/memos';
 };
 
-export type PostCrmMembershipApplicationsByIdCancelErrors = {
+export type GetCrmMembersByIdMemosErrors = {
     /**
-     * Internal server error
+     * ErrorResponse
+     *
+     * Error response
      */
-    500: Error;
-};
-
-export type PostCrmMembershipApplicationsByIdCancelError = PostCrmMembershipApplicationsByIdCancelErrors[keyof PostCrmMembershipApplicationsByIdCancelErrors];
-
-export type PostCrmMembershipApplicationsByIdCancelResponses = {
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
     /**
-     * Success
+     * ErrorResponse
+     *
+     * Error response
      */
-    200: {
-        [key: string]: unknown;
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
     };
 };
 
-export type PostCrmMembershipApplicationsByIdCancelResponse = PostCrmMembershipApplicationsByIdCancelResponses[keyof PostCrmMembershipApplicationsByIdCancelResponses];
+export type GetCrmMembersByIdMemosError = GetCrmMembersByIdMemosErrors[keyof GetCrmMembersByIdMemosErrors];
 
-export type PostCrmMembershipApplicationsByIdRejectData = {
-    body: {
-        [key: string]: unknown;
+export type GetCrmMembersByIdMemosResponses = {
+    /**
+     * GetMemosResponse
+     *
+     * Response for getting memos
+     */
+    200: {
+        /**
+         * List of memos
+         */
+        memos: Array<unknown>;
+    };
+};
+
+export type GetCrmMembersByIdMemosResponse = GetCrmMembersByIdMemosResponses[keyof GetCrmMembersByIdMemosResponses];
+
+export type PostCrmMembersByIdMemosData = {
+    /**
+     * CreateMemoRequest
+     *
+     * Request payload for creating a memo
+     */
+    body?: {
+        /**
+         * Memo type
+         */
+        type: 'caution' | 'vip' | 'other';
+        /**
+         * Memo content (1-1000 characters)
+         */
+        content: string;
+        /**
+         * Creator name
+         */
+        created_by?: string;
     };
     path: {
         /**
-         * id parameter
+         * Member ID
          */
         id: string;
     };
     query?: never;
-    url: '/crm/membership-applications/{id}/reject';
+    url: '/crm/members/{id}/memos';
 };
 
-export type PostCrmMembershipApplicationsByIdRejectErrors = {
+export type PostCrmMembersByIdMemosErrors = {
     /**
-     * Internal server error
+     * ErrorResponse
+     *
+     * Error response
      */
-    500: Error;
-};
-
-export type PostCrmMembershipApplicationsByIdRejectError = PostCrmMembershipApplicationsByIdRejectErrors[keyof PostCrmMembershipApplicationsByIdRejectErrors];
-
-export type PostCrmMembershipApplicationsByIdRejectResponses = {
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
     /**
-     * Success
+     * ErrorResponse
+     *
+     * Error response
      */
-    200: {
-        [key: string]: unknown;
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
     };
 };
 
-export type PostCrmMembershipApplicationsByIdRejectResponse = PostCrmMembershipApplicationsByIdRejectResponses[keyof PostCrmMembershipApplicationsByIdRejectResponses];
+export type PostCrmMembersByIdMemosError = PostCrmMembersByIdMemosErrors[keyof PostCrmMembersByIdMemosErrors];
 
-export type GetCrmMembershipApplicationsByIdData = {
+export type PostCrmMembersByIdMemosResponses = {
+    /**
+     * CreateMemoResponse
+     *
+     * Response for creating a memo
+     */
+    200: {
+        /**
+         * Whether the creation was successful
+         */
+        success: boolean;
+        /**
+         * Created memo
+         */
+        memo?: unknown;
+    };
+};
+
+export type PostCrmMembersByIdMemosResponse = PostCrmMembersByIdMemosResponses[keyof PostCrmMembersByIdMemosResponses];
+
+export type GetCrmMembersByIdCommunicationsData = {
     body?: never;
     path: {
         /**
-         * id parameter
+         * Member ID
          */
         id: string;
     };
     query?: never;
-    url: '/crm/membership-applications/{id}';
+    url: '/crm/members/{id}/communications';
 };
 
-export type GetCrmMembershipApplicationsByIdErrors = {
+export type GetCrmMembersByIdCommunicationsErrors = {
     /**
-     * Internal server error
+     * ErrorResponse
+     *
+     * Error response
      */
-    500: Error;
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
 };
 
-export type GetCrmMembershipApplicationsByIdError = GetCrmMembershipApplicationsByIdErrors[keyof GetCrmMembershipApplicationsByIdErrors];
+export type GetCrmMembersByIdCommunicationsError = GetCrmMembersByIdCommunicationsErrors[keyof GetCrmMembersByIdCommunicationsErrors];
 
-export type GetCrmMembershipApplicationsByIdResponses = {
+export type GetCrmMembersByIdCommunicationsResponses = {
     /**
-     * Success
+     * GetCommunicationsResponse
+     *
+     * Response for getting communications
      */
     200: {
-        [key: string]: unknown;
+        /**
+         * Inquiry records
+         */
+        inquiries: Array<unknown>;
+        /**
+         * Staff memos
+         */
+        memos: Array<unknown>;
+        /**
+         * Notification history
+         */
+        notifications?: unknown;
+        /**
+         * Phone records
+         */
+        phoneRecords: Array<unknown>;
     };
 };
 
-export type GetCrmMembershipApplicationsByIdResponse = GetCrmMembershipApplicationsByIdResponses[keyof GetCrmMembershipApplicationsByIdResponses];
+export type GetCrmMembersByIdCommunicationsResponse = GetCrmMembersByIdCommunicationsResponses[keyof GetCrmMembersByIdCommunicationsResponses];
 
-export type PostCrmMembershipApplicationsBulkApproveData = {
-    body: {
-        [key: string]: unknown;
-    };
-    path?: never;
-    query?: never;
-    url: '/crm/membership-applications/bulk-approve';
-};
-
-export type PostCrmMembershipApplicationsBulkApproveErrors = {
-    /**
-     * Internal server error
-     */
-    500: Error;
-};
-
-export type PostCrmMembershipApplicationsBulkApproveError = PostCrmMembershipApplicationsBulkApproveErrors[keyof PostCrmMembershipApplicationsBulkApproveErrors];
-
-export type PostCrmMembershipApplicationsBulkApproveResponses = {
-    /**
-     * Success
-     */
-    200: {
-        [key: string]: unknown;
-    };
-};
-
-export type PostCrmMembershipApplicationsBulkApproveResponse = PostCrmMembershipApplicationsBulkApproveResponses[keyof PostCrmMembershipApplicationsBulkApproveResponses];
-
-export type GetCrmMembershipApplicationsData = {
+export type DeleteCrmMembersByIdMemosByMemoIdData = {
     body?: never;
-    path?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+        /**
+         * Memo ID
+         */
+        memoId: string;
+    };
     query?: never;
-    url: '/crm/membership-applications';
+    url: '/crm/members/{id}/memos/{memoId}';
 };
 
-export type GetCrmMembershipApplicationsErrors = {
+export type DeleteCrmMembersByIdMemosByMemoIdErrors = {
     /**
-     * Internal server error
+     * ErrorResponse
+     *
+     * Error response
      */
-    500: Error;
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
 };
 
-export type GetCrmMembershipApplicationsError = GetCrmMembershipApplicationsErrors[keyof GetCrmMembershipApplicationsErrors];
+export type DeleteCrmMembersByIdMemosByMemoIdError = DeleteCrmMembersByIdMemosByMemoIdErrors[keyof DeleteCrmMembersByIdMemosByMemoIdErrors];
 
-export type GetCrmMembershipApplicationsResponses = {
+export type DeleteCrmMembersByIdMemosByMemoIdResponses = {
     /**
-     * Success
+     * DeleteMemoResponse
+     *
+     * Response for deleting a memo
      */
     200: {
-        [key: string]: unknown;
+        /**
+         * Whether the deletion was successful
+         */
+        success: boolean;
     };
 };
 
-export type GetCrmMembershipApplicationsResponse = GetCrmMembershipApplicationsResponses[keyof GetCrmMembershipApplicationsResponses];
+export type DeleteCrmMembersByIdMemosByMemoIdResponse = DeleteCrmMembersByIdMemosByMemoIdResponses[keyof DeleteCrmMembersByIdMemosByMemoIdResponses];
 
-export type PostCrmMembershipApplicationsData = {
-    body: {
-        [key: string]: unknown;
-    };
-    path?: never;
-    query?: never;
-    url: '/crm/membership-applications';
-};
-
-export type PostCrmMembershipApplicationsErrors = {
+export type PutCrmMembersByIdMemosByMemoIdData = {
     /**
-     * Internal server error
+     * UpdateMemoRequest
+     *
+     * Request payload for updating a memo
      */
-    500: Error;
+    body?: {
+        /**
+         * Memo type
+         */
+        type?: 'caution' | 'vip' | 'other';
+        /**
+         * Memo content (max 1000 characters)
+         */
+        content?: string;
+    };
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+        /**
+         * Memo ID
+         */
+        memoId: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/memos/{memoId}';
 };
 
-export type PostCrmMembershipApplicationsError = PostCrmMembershipApplicationsErrors[keyof PostCrmMembershipApplicationsErrors];
-
-export type PostCrmMembershipApplicationsResponses = {
+export type PutCrmMembersByIdMemosByMemoIdErrors = {
     /**
-     * Success
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PutCrmMembersByIdMemosByMemoIdError = PutCrmMembersByIdMemosByMemoIdErrors[keyof PutCrmMembersByIdMemosByMemoIdErrors];
+
+export type PutCrmMembersByIdMemosByMemoIdResponses = {
+    /**
+     * UpdateMemoResponse
+     *
+     * Response for updating a memo
      */
     200: {
-        [key: string]: unknown;
+        /**
+         * Whether the update was successful
+         */
+        success: boolean;
+        /**
+         * Updated memo
+         */
+        memo?: unknown;
     };
 };
 
-export type PostCrmMembershipApplicationsResponse = PostCrmMembershipApplicationsResponses[keyof PostCrmMembershipApplicationsResponses];
+export type PutCrmMembersByIdMemosByMemoIdResponse = PutCrmMembersByIdMemosByMemoIdResponses[keyof PutCrmMembersByIdMemosByMemoIdResponses];
 
-export type GetCrmMembershipApplicationsSummaryData = {
+export type GetCrmMembersByIdChangeHistoryData = {
     body?: never;
-    path?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
     query?: never;
-    url: '/crm/membership-applications/summary';
+    url: '/crm/members/{id}/change-history';
 };
 
-export type GetCrmMembershipApplicationsSummaryErrors = {
+export type GetCrmMembersByIdChangeHistoryErrors = {
     /**
-     * Internal server error
+     * ErrorResponse
+     *
+     * Error response
      */
-    500: Error;
-};
-
-export type GetCrmMembershipApplicationsSummaryError = GetCrmMembershipApplicationsSummaryErrors[keyof GetCrmMembershipApplicationsSummaryErrors];
-
-export type GetCrmMembershipApplicationsSummaryResponses = {
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
     /**
-     * Success
+     * ErrorResponse
+     *
+     * Error response
      */
-    200: {
-        [key: string]: unknown;
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
     };
 };
 
-export type GetCrmMembershipApplicationsSummaryResponse = GetCrmMembershipApplicationsSummaryResponses[keyof GetCrmMembershipApplicationsSummaryResponses];
+export type GetCrmMembersByIdChangeHistoryError = GetCrmMembersByIdChangeHistoryErrors[keyof GetCrmMembersByIdChangeHistoryErrors];
+
+export type GetCrmMembersByIdChangeHistoryResponses = {
+    /**
+     * GetChangeHistoryResponse
+     *
+     * Response for getting change history
+     */
+    200: {
+        /**
+         * Timeline of changes
+         */
+        timeline: Array<unknown>;
+        /**
+         * Membership history
+         */
+        membershipHistory?: unknown;
+        /**
+         * Transfer history
+         */
+        transferHistory: Array<unknown>;
+        /**
+         * Suspension history
+         */
+        suspensionHistory: Array<unknown>;
+        /**
+         * Withdrawal history
+         */
+        withdrawalHistory: Array<unknown>;
+        /**
+         * Edit history
+         */
+        editHistory: Array<unknown>;
+    };
+};
+
+export type GetCrmMembersByIdChangeHistoryResponse = GetCrmMembersByIdChangeHistoryResponses[keyof GetCrmMembersByIdChangeHistoryResponses];
+
+export type GetCrmMembersByIdRelationshipsData = {
+    body?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/relationships';
+};
+
+export type GetCrmMembersByIdRelationshipsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembersByIdRelationshipsError = GetCrmMembersByIdRelationshipsErrors[keyof GetCrmMembersByIdRelationshipsErrors];
+
+export type GetCrmMembersByIdRelationshipsResponses = {
+    /**
+     * GetRelationshipsResponse
+     *
+     * Response for getting relationships
+     */
+    200: {
+        /**
+         * Family relationships
+         */
+        family?: unknown;
+        /**
+         * Corporate relationships
+         */
+        corporate?: unknown;
+        /**
+         * Referral relationships
+         */
+        referral?: unknown;
+    };
+};
+
+export type GetCrmMembersByIdRelationshipsResponse = GetCrmMembersByIdRelationshipsResponses[keyof GetCrmMembersByIdRelationshipsResponses];
+
+export type PostCrmMembersExportData = {
+    /**
+     * ExportMembersRequest
+     *
+     * Request payload for exporting members
+     */
+    body?: {
+        /**
+         * Export format
+         */
+        format: 'csv' | 'excel';
+        /**
+         * Export target
+         */
+        target: 'selected' | 'filtered';
+        /**
+         * Member IDs (for selected target)
+         */
+        member_ids?: Array<string>;
+        /**
+         * Fields to export
+         */
+        fields: Array<string>;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/members/export';
+};
+
+export type PostCrmMembersExportErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembersExportError = PostCrmMembersExportErrors[keyof PostCrmMembersExportErrors];
+
+export type PostCrmMembersExportResponses = {
+    /**
+     * ExportMembersResponse
+     *
+     * Response for exporting members
+     */
+    200: {
+        /**
+         * Whether the export was successful
+         */
+        success: boolean;
+        /**
+         * Export ID
+         */
+        exportId: string;
+        /**
+         * Export format
+         */
+        format: 'csv' | 'excel';
+        /**
+         * Export status
+         */
+        status: string;
+    };
+};
+
+export type PostCrmMembersExportResponse = PostCrmMembersExportResponses[keyof PostCrmMembersExportResponses];

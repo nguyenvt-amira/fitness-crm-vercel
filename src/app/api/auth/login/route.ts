@@ -1,6 +1,50 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import type { LoginRequest, LoginResponse, Token } from '@/types/api/auth.type';
+import {
+  ErrorResponseSchema,
+  type LoginRequest,
+  LoginRequestSchema,
+  type LoginResponse,
+  LoginResponseSchema,
+  type Token,
+} from '@/app/api/_schemas/auth.schema';
+import { registerRoute } from '@/app/api/_scripts/register-route';
+import { z } from 'zod';
+
+// Register OpenAPI documentation for this route
+registerRoute({
+  method: 'post',
+  path: '/auth/login',
+  summary: 'User login',
+  description: 'Authenticate user and get access token',
+  tags: ['Authentication'],
+  requestBody: {
+    schema: LoginRequestSchema,
+    description: 'Login credentials',
+  },
+  responses: [
+    {
+      status: 200,
+      schema: LoginResponseSchema,
+      description: 'Login successful',
+    },
+    {
+      status: 400,
+      schema: ErrorResponseSchema,
+      description: 'Bad request - missing required fields',
+    },
+    {
+      status: 401,
+      schema: ErrorResponseSchema,
+      description: 'Unauthorized - invalid credentials',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
 
 // Mock user database
 const MOCK_USERS = [
@@ -31,15 +75,21 @@ function generateToken(payload: Record<string, any>): string {
 
 export async function POST(request: NextRequest) {
   try {
-    const body: LoginRequest = await request.json();
+    const body = await request.json();
 
-    // Validate request body
-    if (!body.email || !body.password) {
-      return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
+    // Validate request body with Zod
+    const validationResult = LoginRequestSchema.safeParse(body);
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((issue) => issue.message).join(', ');
+      return NextResponse.json({ error: errors }, { status: 400 });
     }
 
+    const validatedBody: LoginRequest = validationResult.data;
+
     // Find user in mock database
-    const user = MOCK_USERS.find((u) => u.email === body.email && u.password === body.password);
+    const user = MOCK_USERS.find(
+      (u) => u.email === validatedBody.email && u.password === validatedBody.password,
+    );
 
     if (!user) {
       return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
@@ -47,16 +97,16 @@ export async function POST(request: NextRequest) {
 
     // Generate tokens
     const accessTokenPayload = {
-      sub: body.email,
-      email: body.email,
+      sub: validatedBody.email,
+      email: validatedBody.email,
       company_id: user.companyId,
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + 3600, // 1 hour
     };
 
     const refreshTokenPayload = {
-      sub: body.email,
-      email: body.email,
+      sub: validatedBody.email,
+      email: validatedBody.email,
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + 86400 * 7, // 7 days
     };

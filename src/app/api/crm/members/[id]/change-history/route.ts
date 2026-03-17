@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { ErrorResponseSchema } from '@/app/api/_schemas/member.schema';
+import { registerRoute } from '@/app/api/_scripts/register-route';
+import { z } from 'zod';
+
 import type {
   ChangeHistoryItem,
   EditHistory,
@@ -8,6 +12,65 @@ import type {
   TransferHistory,
   WithdrawalHistory,
 } from '@/types/api/member.type';
+
+// Register OpenAPI documentation for this route
+registerRoute({
+  method: 'get',
+  path: '/crm/members/{id}/change-history',
+  summary: 'Get member change history',
+  description: 'Get change history for a member',
+  tags: ['Members'],
+  parameters: [
+    {
+      name: 'id',
+      in: 'path',
+      required: true,
+      description: 'Member ID',
+      schema: { type: 'string' },
+    },
+  ],
+  responses: [
+    {
+      status: 200,
+      schema: z
+        .object({
+          timeline: z.array(z.any()).openapi({
+            description: 'Timeline of changes',
+          }),
+          membershipHistory: z.any().openapi({
+            description: 'Membership history',
+          }),
+          transferHistory: z.array(z.any()).openapi({
+            description: 'Transfer history',
+          }),
+          suspensionHistory: z.array(z.any()).openapi({
+            description: 'Suspension history',
+          }),
+          withdrawalHistory: z.array(z.any()).openapi({
+            description: 'Withdrawal history',
+          }),
+          editHistory: z.array(z.any()).openapi({
+            description: 'Edit history',
+          }),
+        })
+        .openapi({
+          title: 'GetChangeHistoryResponse',
+          description: 'Response for getting change history',
+        }),
+      description: 'Change history',
+    },
+    {
+      status: 404,
+      schema: ErrorResponseSchema,
+      description: 'Member not found',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {

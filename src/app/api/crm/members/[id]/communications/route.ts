@@ -1,8 +1,65 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { ErrorResponseSchema } from '@/app/api/_schemas/member.schema';
+import { registerRoute } from '@/app/api/_scripts/register-route';
+import { z } from 'zod';
+
 import type { InquiryRecord, NotificationHistory, PhoneRecord } from '@/types/api/member.type';
 
 import { getMemos } from '../memos/route';
+
+// Register OpenAPI documentation for this route
+registerRoute({
+  method: 'get',
+  path: '/crm/members/{id}/communications',
+  summary: 'Get member communications',
+  description: 'Get communication history for a member',
+  tags: ['Members'],
+  parameters: [
+    {
+      name: 'id',
+      in: 'path',
+      required: true,
+      description: 'Member ID',
+      schema: { type: 'string' },
+    },
+  ],
+  responses: [
+    {
+      status: 200,
+      schema: z
+        .object({
+          inquiries: z.array(z.any()).openapi({
+            description: 'Inquiry records',
+          }),
+          memos: z.array(z.any()).openapi({
+            description: 'Staff memos',
+          }),
+          notifications: z.any().openapi({
+            description: 'Notification history',
+          }),
+          phoneRecords: z.array(z.any()).openapi({
+            description: 'Phone records',
+          }),
+        })
+        .openapi({
+          title: 'GetCommunicationsResponse',
+          description: 'Response for getting communications',
+        }),
+      description: 'Communication history',
+    },
+    {
+      status: 404,
+      schema: ErrorResponseSchema,
+      description: 'Member not found',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {

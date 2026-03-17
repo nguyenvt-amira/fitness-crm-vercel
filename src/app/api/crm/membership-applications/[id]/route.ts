@@ -1,6 +1,47 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import type { MembershipApplication } from '@/types/api/membership-application.type';
+import { ErrorResponseSchema } from '@/app/api/_schemas/auth.schema';
+import {
+  GetApplicationDetailResponse,
+  GetApplicationDetailResponseSchema,
+  MembershipApplication,
+} from '@/app/api/_schemas/membership-application.schema';
+import { registerRoute } from '@/app/api/_scripts/register-route';
+
+// Register OpenAPI documentation for this route
+registerRoute({
+  method: 'get',
+  path: '/crm/membership-applications/{id}',
+  summary: 'Get membership application detail',
+  description: 'Get detailed information about a specific membership application',
+  tags: ['Membership Applications'],
+  parameters: [
+    {
+      name: 'id',
+      in: 'path',
+      required: true,
+      description: 'Membership application ID',
+      schema: { type: 'string' },
+    },
+  ],
+  responses: [
+    {
+      status: 200,
+      schema: GetApplicationDetailResponseSchema,
+      description: 'Application detail',
+    },
+    {
+      status: 404,
+      schema: ErrorResponseSchema,
+      description: 'Application not found',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
 
 // GET /api/crm/membership-applications/{id} - 詳細取得
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -92,7 +133,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       },
     };
 
-    return NextResponse.json({ application });
+    const response: GetApplicationDetailResponse = { application };
+    return NextResponse.json(response);
   } catch (error) {
     console.error('Error fetching application detail:', error);
     return NextResponse.json({ error: 'Failed to fetch application detail' }, { status: 500 });

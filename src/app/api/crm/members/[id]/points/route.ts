@@ -1,6 +1,94 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import type { GetPointsResponse } from '@/types/api/member.type';
+import {
+  ErrorResponseSchema,
+  type GetPointsResponse,
+  GetPointsResponseSchema,
+  type PointAdjustmentRequest,
+  PointAdjustmentRequestSchema,
+  type PointAdjustmentResponse,
+  PointAdjustmentResponseSchema,
+} from '@/app/api/_schemas/member.schema';
+import { registerRoute } from '@/app/api/_scripts/register-route';
+
+// Register OpenAPI documentation for GET route
+registerRoute({
+  method: 'get',
+  path: '/crm/members/{id}/points',
+  summary: 'Get member points',
+  description: 'Get points information for a member',
+  tags: ['Members'],
+  parameters: [
+    {
+      name: 'id',
+      in: 'path',
+      required: true,
+      description: 'Member ID',
+      schema: { type: 'string' },
+    },
+  ],
+  responses: [
+    {
+      status: 200,
+      schema: GetPointsResponseSchema,
+      description: 'Points information',
+    },
+    {
+      status: 404,
+      schema: ErrorResponseSchema,
+      description: 'Member not found',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
+
+// Register OpenAPI documentation for POST route
+registerRoute({
+  method: 'post',
+  path: '/crm/members/{id}/points',
+  summary: 'Adjust member points',
+  description: 'Adjust points for a member',
+  tags: ['Members'],
+  parameters: [
+    {
+      name: 'id',
+      in: 'path',
+      required: true,
+      description: 'Member ID',
+      schema: { type: 'string' },
+    },
+  ],
+  requestBody: {
+    schema: PointAdjustmentRequestSchema,
+    description: 'Point adjustment details',
+  },
+  responses: [
+    {
+      status: 200,
+      schema: PointAdjustmentResponseSchema,
+      description: 'Points adjusted successfully',
+    },
+    {
+      status: 400,
+      schema: ErrorResponseSchema,
+      description: 'Bad request - invalid request body',
+    },
+    {
+      status: 404,
+      schema: ErrorResponseSchema,
+      description: 'Member not found',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
 
 /** Mock data for GET /crm/members/{id}/points — ポイントタブ用（member_points, member_point_histories 想定） */
 function buildMockPoints(memberId: string): GetPointsResponse {
@@ -96,7 +184,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   try {
     const { id } = await params;
     const data = buildMockPoints(id);
-    return NextResponse.json(data);
+    const response: GetPointsResponse = data as any;
+    return NextResponse.json(response);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch points' }, { status: 500 });
   }
@@ -106,7 +195,22 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   try {
     const { id } = await params;
     const body = await request.json();
-    return NextResponse.json({ success: true, id, adjustment: body });
+
+    // Validate request body with Zod
+    const validationResult = PointAdjustmentRequestSchema.safeParse(body);
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((issue) => issue.message).join(', ');
+      return NextResponse.json({ error: errors }, { status: 400 });
+    }
+
+    const validatedBody: PointAdjustmentRequest = validationResult.data;
+    const response: PointAdjustmentResponse = {
+      success: true,
+      id,
+      adjustment: validatedBody,
+    };
+
+    return NextResponse.json(response);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to adjust points' }, { status: 500 });
   }

@@ -1,9 +1,47 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import type { GetContractsResponse } from '@/types/api/member.type';
+import { ErrorResponseSchema, GetContractsResponseSchema } from '@/app/api/_schemas/member.schema';
+import { registerRoute } from '@/app/api/_scripts/register-route';
+
+import { GetCrmMembersByIdContractsResponse } from '@/lib/api';
+
+// Register OpenAPI documentation for this route
+registerRoute({
+  method: 'get',
+  path: '/crm/members/{id}/contracts',
+  summary: 'Get member contracts',
+  description: 'Get contract information for a member',
+  tags: ['Members'],
+  parameters: [
+    {
+      name: 'id',
+      in: 'path',
+      required: true,
+      description: 'Member ID',
+      schema: { type: 'string' },
+    },
+  ],
+  responses: [
+    {
+      status: 200,
+      schema: GetContractsResponseSchema,
+      description: 'Contract information',
+    },
+    {
+      status: 404,
+      schema: ErrorResponseSchema,
+      description: 'Member not found',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
 
 /** Mock data for GET /crm/members/{id}/contracts — 契約情報タブ用 */
-function buildMockContracts(memberId: string): GetContractsResponse {
+function buildMockContracts(memberId: string): GetCrmMembersByIdContractsResponse {
   return {
     main_contract: {
       plan_name: 'スタンダードプラン',
