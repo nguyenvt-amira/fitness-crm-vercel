@@ -1,8 +1,96 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import type { StaffMemo } from '@/types/api/member.type';
-import type { CreateMemoRequest } from '@/types/api/member.type';
+import {
+  type CreateMemoRequest,
+  CreateMemoRequestSchema,
+  type CreateMemoResponse,
+  CreateMemoResponseSchema,
+  ErrorResponseSchema,
+  GetMemosResponseSchema,
+} from '@/app/api/_schemas/member.schema';
+import { registerRoute } from '@/app/api/_scripts/register-route';
+
 import { MemoType } from '@/types/api/member.type';
+import type { StaffMemo } from '@/types/api/member.type';
+
+// Register OpenAPI documentation for GET route
+registerRoute({
+  method: 'get',
+  path: '/crm/members/{id}/memos',
+  summary: 'Get member memos',
+  description: 'Get all memos for a member',
+  tags: ['Members'],
+  parameters: [
+    {
+      name: 'id',
+      in: 'path',
+      required: true,
+      description: 'Member ID',
+      schema: { type: 'string' },
+    },
+  ],
+  responses: [
+    {
+      status: 200,
+      schema: GetMemosResponseSchema,
+      description: 'List of memos',
+    },
+    {
+      status: 404,
+      schema: ErrorResponseSchema,
+      description: 'Member not found',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
+
+// Register OpenAPI documentation for POST route
+registerRoute({
+  method: 'post',
+  path: '/crm/members/{id}/memos',
+  summary: 'Create member memo',
+  description: 'Create a new memo for a member',
+  tags: ['Members'],
+  parameters: [
+    {
+      name: 'id',
+      in: 'path',
+      required: true,
+      description: 'Member ID',
+      schema: { type: 'string' },
+    },
+  ],
+  requestBody: {
+    schema: CreateMemoRequestSchema,
+    description: 'Memo details',
+  },
+  responses: [
+    {
+      status: 200,
+      schema: CreateMemoResponseSchema,
+      description: 'Memo created successfully',
+    },
+    {
+      status: 400,
+      schema: ErrorResponseSchema,
+      description: 'Bad request - invalid request body',
+    },
+    {
+      status: 404,
+      schema: ErrorResponseSchema,
+      description: 'Member not found',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
 
 // In-memory mock store for member_memos
 const memosByMemberId = new Map<string, StaffMemo[]>([
@@ -91,20 +179,28 @@ export { getMemos };
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const body: CreateMemoRequest = await request.json();
-    const content = (body.content ?? '').trim();
-    if (!content || content.length > 1000) {
-      return NextResponse.json(
-        { error: 'Content is required and must be 1-1000 characters' },
-        { status: 400 },
-      );
+    const body = await request.json();
+
+    // Validate request body with Zod
+    const validationResult = CreateMemoRequestSchema.safeParse(body);
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((issue) => issue.message).join(', ');
+      return NextResponse.json({ error: errors }, { status: 400 });
     }
+
+    const validatedBody: CreateMemoRequest = validationResult.data;
     const newMemo = addMemo(id, {
-      type: body.type,
-      content,
-      created_by: body.created_by,
+      type: validatedBody.type as MemoType,
+      content: validatedBody.content.trim(),
+      created_by: validatedBody.created_by,
     });
-    return NextResponse.json({ success: true, memo: newMemo });
+
+    const response: CreateMemoResponse = {
+      success: true,
+      memo: newMemo as any,
+    };
+
+    return NextResponse.json(response);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to create memo' }, { status: 500 });
   }

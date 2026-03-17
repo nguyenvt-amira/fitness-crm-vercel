@@ -1,14 +1,61 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import type { GetMembershipApplicationsSummaryResponse } from '@/types/api/membership-application.type';
+import {
+  ErrorResponseSchema,
+  type GetSummaryQuery,
+  GetSummaryQuerySchema,
+  type GetSummaryResponse,
+  GetSummaryResponseSchema,
+} from '@/app/api/_schemas/membership-application.schema';
+import { registerRoute } from '@/app/api/_scripts/register-route';
+
+// Register OpenAPI documentation for this route
+registerRoute({
+  method: 'get',
+  path: '/crm/membership-applications/summary',
+  summary: 'Get membership applications summary',
+  description: 'Get summary statistics and alerts for membership applications',
+  tags: ['Membership Applications'],
+  query: GetSummaryQuerySchema,
+  responses: [
+    {
+      status: 200,
+      schema: GetSummaryResponseSchema,
+      description: 'Summary and alerts',
+    },
+    {
+      status: 400,
+      schema: ErrorResponseSchema,
+      description: 'Bad request - invalid query parameters',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
 
 // GET /api/crm/membership-applications/summary - サマリ取得
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const period = searchParams.get('period') || 'month'; // month, week, day
-    const start_date = searchParams.get('start_date');
-    const end_date = searchParams.get('end_date');
+
+    // Build query object from searchParams
+    const queryObj: Record<string, string | undefined> = {};
+    searchParams.forEach((value, key) => {
+      queryObj[key] = value;
+    });
+
+    // Validate query parameters with Zod
+    const validationResult = GetSummaryQuerySchema.safeParse(queryObj);
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((issue) => issue.message).join(', ');
+      return NextResponse.json({ error: errors }, { status: 400 });
+    }
+
+    const query: GetSummaryQuery = validationResult.data;
+    const { period = 'month', start_date, end_date } = query;
 
     // Calculate date range based on period
     const now = new Date();
@@ -36,7 +83,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Mock summary data
-    const response: GetMembershipApplicationsSummaryResponse = {
+    const response: GetSummaryResponse = {
       summary: {
         total_applications: 1234,
         auto_approval_rate: 82.5,

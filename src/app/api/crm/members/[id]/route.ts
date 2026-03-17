@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import {
-  Brand,
+  ErrorResponseSchema,
   type GetMemberDetailResponse,
+  GetMemberDetailResponseSchema,
+} from '@/app/api/_schemas/member.schema';
+import { registerRoute } from '@/app/api/_scripts/register-route';
+
+import {
+  Brand,
   type Member,
   MemberStatus,
   MemberType,
@@ -10,6 +16,41 @@ import {
   type UpdateHealthInfoRequest,
   type UpdateMarketingConsentRequest,
 } from '@/types/api/member.type';
+
+// Register OpenAPI documentation for this route
+registerRoute({
+  method: 'get',
+  path: '/crm/members/{id}',
+  summary: 'Get member detail',
+  description: 'Get detailed information about a specific member',
+  tags: ['Members'],
+  parameters: [
+    {
+      name: 'id',
+      in: 'path',
+      required: true,
+      description: 'Member ID',
+      schema: { type: 'string' },
+    },
+  ],
+  responses: [
+    {
+      status: 200,
+      schema: GetMemberDetailResponseSchema,
+      description: 'Member detail',
+    },
+    {
+      status: 404,
+      schema: ErrorResponseSchema,
+      description: 'Member not found',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
 
 const memberStore = new Map<string, Member>();
 
@@ -165,7 +206,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const member = getMemberFromStore(id);
 
     const response: GetMemberDetailResponse = {
-      member,
+      member: member as any, // Member type is complex, using any for OpenAPI
     };
 
     return NextResponse.json(response);

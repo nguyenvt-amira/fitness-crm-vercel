@@ -109,7 +109,7 @@ export function CommunicationsTab({
         </CardContent>
       </Card>
 
-      {(data as { inquiries?: unknown[] }).inquiries?.length > 0 && (
+      {((data as { inquiries?: unknown[] }).inquiries?.length ?? 0) > 0 && (
         <Card>
           <CardHeader>
             <CardTitle>問い合わせ・対応履歴</CardTitle>

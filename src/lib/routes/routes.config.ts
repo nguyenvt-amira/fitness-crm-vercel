@@ -44,12 +44,6 @@ export const routes = {
     pattern: '/403',
     private: false,
   },
-  '/api-docs': {
-    router: '/api-docs',
-    filePath: '(public)/api-docs',
-    pattern: '/api-docs',
-    private: false,
-  },
   '/login': {
     router: '/login',
     filePath: '(public)/login',
@@ -67,7 +61,6 @@ export const routeKeys = [
   '/members/[id]',
   '/membership-applications',
   '/403',
-  '/api-docs',
   '/login',
 ] as const;
 
@@ -80,6 +73,5 @@ export const routePatterns = [
   '/members/:id',
   '/membership-applications',
   '/403',
-  '/api-docs',
   '/login',
 ] as const;

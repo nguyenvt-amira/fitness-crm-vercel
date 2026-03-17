@@ -17,8 +17,6 @@ import {
 
 import { getCrmMembersByIdContractsOptions } from '@/lib/api/@tanstack/react-query.gen';
 
-import type { GetContractsResponse } from '@/types/api/member.type';
-
 function formatDate(v: string | undefined) {
   return v ? new Date(v).toLocaleDateString('ja-JP') : '—';
 }
@@ -67,7 +65,7 @@ export function ContractsTab({ memberId }: { memberId: string }) {
     );
   }
 
-  const contracts = data as unknown as GetContractsResponse;
+  const contracts = data;
   const main = contracts.main_contract;
   const options = contracts.option_contracts ?? [];
   const optionHistory = contracts.option_change_history ?? [];
@@ -342,7 +340,7 @@ export function ContractsTab({ memberId }: { memberId: string }) {
       </Card>
 
       {/* 未納情報（該当する場合） */}
-      {unpaid && unpaid.items && unpaid.items.length > 0 && (
+      {/* {unpaid && unpaid.items && unpaid.items.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle className="text-lg font-semibold">未納情報</CardTitle>
@@ -370,7 +368,7 @@ export function ContractsTab({ memberId }: { memberId: string }) {
             </Table>
           </CardContent>
         </Card>
-      )}
+      )} */}
 
       {/* キャンペーン適用情報 */}
       <Card>

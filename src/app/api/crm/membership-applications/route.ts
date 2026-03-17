@@ -1,11 +1,79 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import {
+  type AutoJudgeRequest,
+  AutoJudgeRequestSchema,
+  type AutoJudgeResponse,
+  AutoJudgeResponseSchema,
+  ErrorResponseSchema,
+  type GetMembershipApplicationsQuery,
+  GetMembershipApplicationsQuerySchema,
+  type GetMembershipApplicationsResponse,
+  GetMembershipApplicationsResponseSchema,
+} from '@/app/api/_schemas/membership-application.schema';
+import { registerRoute } from '@/app/api/_scripts/register-route';
+
 import type {
-  GetMembershipApplicationsQueryParams,
-  GetMembershipApplicationsResponse,
   MembershipApplication,
   MembershipApplicationStatus,
 } from '@/types/api/membership-application.type';
+
+// Register OpenAPI documentation for GET route
+registerRoute({
+  method: 'get',
+  path: '/crm/membership-applications',
+  summary: 'Get membership applications list',
+  description: 'Get paginated list of membership applications with filtering and sorting',
+  tags: ['Membership Applications'],
+  query: GetMembershipApplicationsQuerySchema,
+  responses: [
+    {
+      status: 200,
+      schema: GetMembershipApplicationsResponseSchema,
+      description: 'List of membership applications',
+    },
+    {
+      status: 400,
+      schema: ErrorResponseSchema,
+      description: 'Bad request - invalid query parameters',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
+
+// Register OpenAPI documentation for POST route (auto-judge)
+registerRoute({
+  method: 'post',
+  path: '/crm/membership-applications',
+  summary: 'Auto-judge membership applications',
+  description: 'Execute auto-judge on multiple membership applications',
+  tags: ['Membership Applications'],
+  requestBody: {
+    schema: AutoJudgeRequestSchema,
+    description: 'List of application IDs to auto-judge',
+  },
+  responses: [
+    {
+      status: 200,
+      schema: AutoJudgeResponseSchema,
+      description: 'Auto-judge results',
+    },
+    {
+      status: 400,
+      schema: ErrorResponseSchema,
+      description: 'Bad request - invalid request body',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
 
 // Mock data generator
 function generateMockApplications(count: number): MembershipApplication[] {
@@ -67,16 +135,22 @@ function generateMockApplications(count: number): MembershipApplication[] {
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const page = parseInt(searchParams.get('page') || '1', 10);
-    const limit = parseInt(searchParams.get('limit') || '50', 10);
-    const status = searchParams.get('status') as MembershipApplicationStatus | null;
-    const risk_reason = searchParams.get('risk_reason');
-    const sort_by = (searchParams.get('sort_by') || 'applied_at') as
-      | 'applied_at'
-      | 'risk_score'
-      | 'deadline';
-    const sort_order = (searchParams.get('sort_order') || 'desc') as 'asc' | 'desc';
-    const search = searchParams.get('search') || '';
+
+    // Build query object from searchParams
+    const queryObj: Record<string, string | undefined> = {};
+    searchParams.forEach((value, key) => {
+      queryObj[key] = value;
+    });
+
+    // Validate query parameters with Zod
+    const validationResult = GetMembershipApplicationsQuerySchema.safeParse(queryObj);
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((issue) => issue.message).join(', ');
+      return NextResponse.json({ error: errors }, { status: 400 });
+    }
+
+    const query: GetMembershipApplicationsQuery = validationResult.data;
+    const { page, limit, status, risk_reason, sort_by, sort_order, search } = query;
 
     // Generate mock data
     const allApplications = generateMockApplications(200);
@@ -147,11 +221,16 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { application_ids } = body;
 
-    if (!Array.isArray(application_ids) || application_ids.length === 0) {
-      return NextResponse.json({ error: 'application_ids is required' }, { status: 400 });
+    // Validate request body with Zod
+    const validationResult = AutoJudgeRequestSchema.safeParse(body);
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((issue) => issue.message).join(', ');
+      return NextResponse.json({ error: errors }, { status: 400 });
     }
+
+    const validatedBody: AutoJudgeRequest = validationResult.data;
+    const { application_ids } = validatedBody;
 
     // Mock auto-judge result
     const results = application_ids.map((id: string) => {
@@ -166,14 +245,16 @@ export async function POST(request: NextRequest) {
       };
     });
 
-    return NextResponse.json({
+    const response: AutoJudgeResponse = {
       results,
       summary: {
         total: application_ids.length,
         approved: results.filter((r) => r.approved).length,
         rejected: results.filter((r) => !r.approved).length,
       },
-    });
+    };
+
+    return NextResponse.json(response);
   } catch (error) {
     console.error('Error executing auto-judge:', error);
     return NextResponse.json({ error: 'Failed to execute auto-judge' }, { status: 500 });

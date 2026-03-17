@@ -1,6 +1,42 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { Brand, GetMembersResponse, MemberStatus, MemberType } from '@/types/api/member.type';
+import {
+  ErrorResponseSchema,
+  type GetMembersQuery,
+  GetMembersQuerySchema,
+  type GetMembersResponse,
+  GetMembersResponseSchema,
+} from '@/app/api/_schemas/member.schema';
+import { registerRoute } from '@/app/api/_scripts/register-route';
+
+import { Brand, MemberStatus, MemberType } from '@/types/api/member.type';
+
+// Register OpenAPI documentation for this route
+registerRoute({
+  method: 'get',
+  path: '/crm/members',
+  summary: 'Get members list',
+  description: 'Get paginated list of members with filtering and sorting',
+  tags: ['Members'],
+  query: GetMembersQuerySchema,
+  responses: [
+    {
+      status: 200,
+      schema: GetMembersResponseSchema,
+      description: 'List of members',
+    },
+    {
+      status: 400,
+      schema: ErrorResponseSchema,
+      description: 'Bad request - invalid query parameters',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
 
 const MOCK_STORES = [
   { id: 'store-001', name: 'Fit365八潮店' },
@@ -61,22 +97,35 @@ function generateMockMembers(count: number): GetMembersResponse['members'] {
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const page = parseInt(searchParams.get('page') || '1', 10);
-    const limit = parseInt(searchParams.get('limit') || '50', 10);
-    const search = searchParams.get('search') || '';
-    const member_type = searchParams.get('member_type')?.split(',') as MemberType[] | undefined;
-    const status = searchParams.get('status')?.split(',') as MemberStatus[] | undefined;
-    const brand = searchParams.get('brand')?.split(',') as Brand[] | undefined;
-    const store_id = searchParams.get('store_id')?.split(',');
-    const contract_plan_id = searchParams.get('contract_plan_id')?.split(',');
-    const last_visit_days = searchParams.get('last_visit_days')
-      ? parseInt(searchParams.get('last_visit_days')!, 10)
-      : undefined;
-    const has_unpaid = searchParams.get('has_unpaid')
-      ? searchParams.get('has_unpaid') === 'true'
-      : undefined;
-    const sort_by = searchParams.get('sort_by') || 'member_number';
-    const sort_order = searchParams.get('sort_order') || 'asc';
+
+    // Build query object from searchParams
+    const queryObj: Record<string, string | undefined> = {};
+    searchParams.forEach((value, key) => {
+      queryObj[key] = value;
+    });
+
+    // Validate query parameters with Zod
+    const validationResult = GetMembersQuerySchema.safeParse(queryObj);
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((issue) => issue.message).join(', ');
+      return NextResponse.json({ error: errors }, { status: 400 });
+    }
+
+    const query: GetMembersQuery = validationResult.data;
+    const {
+      page,
+      limit,
+      search = '',
+      member_type,
+      status,
+      brand,
+      store_id,
+      contract_plan_id,
+      last_visit_days,
+      has_unpaid,
+      sort_by = 'member_number',
+      sort_order = 'asc',
+    } = query;
 
     // Generate mock data
     const allMembers = generateMockMembers(200);
