@@ -5,11 +5,11 @@ import Link from 'next/link';
 import { ColumnDef } from '@tanstack/react-table';
 import { ChevronRight, Mars, Venus } from 'lucide-react';
 
+import { DataTable } from '@/components/common/data-table';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { DataTable } from '@/components/ui/data-table';
 
 import { navigate } from '@/lib/routes/routes.util';
 

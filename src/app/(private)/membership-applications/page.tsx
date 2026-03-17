@@ -83,43 +83,6 @@ export default function MembershipApplicationsPage() {
     return `${start} ~ ${end}`;
   }, [summaryData]);
 
-  // Generate tabs from summary data
-  const tabs = useMemo(() => {
-    if (!summaryData?.summary) return [];
-    return [
-      {
-        value: 'payment_failed',
-        label: '決済失敗',
-        count: summaryData.summary.payment_failed_count,
-      },
-      {
-        value: 'pending',
-        label: '要確認',
-        count: summaryData.summary.pending_count,
-      },
-      {
-        value: 'auto_approved',
-        label: '自動承認済み',
-        count: summaryData.summary.auto_approved_today_count,
-      },
-      {
-        value: 'manual_approved',
-        label: '手動承認済み',
-        count: summaryData.summary.manual_approved_count,
-      },
-      {
-        value: 'rejected',
-        label: '却下',
-        count: summaryData.summary.rejected_count,
-      },
-      {
-        value: 'all',
-        label: '全件',
-        count: summaryData.summary.total_applications,
-      },
-    ];
-  }, [summaryData]);
-
   if (isLoadingSummary) {
     return (
       <div className="flex flex-1 items-center justify-center">
@@ -145,7 +108,7 @@ export default function MembershipApplicationsPage() {
 
       <MembershipApplicationsOverview summary={summary} alerts={alerts} />
 
-      <MembershipApplicationsListSection tabs={tabs} />
+      <MembershipApplicationsListSection />
     </div>
   );
 }
