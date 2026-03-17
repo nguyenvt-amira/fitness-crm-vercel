@@ -1661,15 +1661,17 @@ export type GetCrmAutoApprovalSettingsResponses = {
 export type GetCrmAutoApprovalSettingsResponse = GetCrmAutoApprovalSettingsResponses[keyof GetCrmAutoApprovalSettingsResponses];
 
 export type PutCrmAutoApprovalSettingsData = {
-    body: {
-        [key: string]: unknown;
-    };
+    body?: never;
     path?: never;
     query?: never;
     url: '/crm/auto-approval/settings';
 };
 
 export type PutCrmAutoApprovalSettingsErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
     /**
      * Internal server error
      */
@@ -1682,9 +1684,7 @@ export type PutCrmAutoApprovalSettingsResponses = {
     /**
      * Success
      */
-    200: {
-        [key: string]: unknown;
-    };
+    200: RegisterResponse;
 };
 
 export type PutCrmAutoApprovalSettingsResponse = PutCrmAutoApprovalSettingsResponses[keyof PutCrmAutoApprovalSettingsResponses];

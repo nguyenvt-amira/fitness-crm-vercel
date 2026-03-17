@@ -412,15 +412,11 @@ export class Crm {
      *
      * Auto-generated from src/app/api/crm/auto-approval/settings/route.ts
      */
-    public static putCrmAutoApprovalSettings<ThrowOnError extends boolean = false>(options: Options<PutCrmAutoApprovalSettingsData, ThrowOnError>) {
-        return (options.client ?? client).put<PutCrmAutoApprovalSettingsResponses, PutCrmAutoApprovalSettingsErrors, ThrowOnError>({
+    public static putCrmAutoApprovalSettings<ThrowOnError extends boolean = false>(options?: Options<PutCrmAutoApprovalSettingsData, ThrowOnError>) {
+        return (options?.client ?? client).put<PutCrmAutoApprovalSettingsResponses, PutCrmAutoApprovalSettingsErrors, ThrowOnError>({
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/crm/auto-approval/settings',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            }
+            ...options
         });
     }
     

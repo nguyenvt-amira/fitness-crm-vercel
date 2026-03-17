@@ -302,7 +302,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "description": "会員ID"
           }
         ],
@@ -311,20 +313,30 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GetBasicInfoResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/GetBasicInfoResponse"
+                }
               }
             }
           },
           "404": {
             "description": "Member not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
@@ -338,7 +350,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "description": "会員ID"
           }
         ],
@@ -346,7 +360,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/UpdateBasicInfoRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBasicInfoRequest"
+              }
             }
           }
         },
@@ -355,26 +371,40 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/PutBasicInfoResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/PutBasicInfoResponse"
+                }
               }
             }
           },
           "400": {
             "description": "Bad request",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           },
           "404": {
             "description": "Member not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
@@ -390,7 +420,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "description": "会員ID"
           }
         ],
@@ -399,20 +431,30 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GetContractsResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/GetContractsResponse"
+                }
               }
             }
           },
           "404": {
             "description": "Member not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
@@ -428,7 +470,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "description": "会員ID"
           }
         ],
@@ -437,20 +481,30 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GetPointsResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/GetPointsResponse"
+                }
               }
             }
           },
           "404": {
             "description": "Member not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
@@ -464,7 +518,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "description": "会員ID"
           }
         ],
@@ -472,7 +528,10 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "type": "object", "description": "ポイント操作パラメータ" }
+              "schema": {
+                "type": "object",
+                "description": "ポイント操作パラメータ"
+              }
             }
           }
         },
@@ -481,20 +540,30 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GetPointsResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/GetPointsResponse"
+                }
               }
             }
           },
           "400": {
             "description": "Bad request",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
@@ -510,7 +579,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "description": "会員ID"
           }
         ],
@@ -518,7 +589,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/PointAdjustmentRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/PointAdjustmentRequest"
+              }
             }
           }
         },
@@ -527,26 +600,40 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/PointAdjustmentResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/PointAdjustmentResponse"
+                }
               }
             }
           },
           "400": {
             "description": "Bad request",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           },
           "404": {
             "description": "Member not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
@@ -621,7 +708,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/ExportMembersRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/ExportMembersRequest"
+              }
             }
           }
         },
@@ -630,20 +719,30 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ExportMembersResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ExportMembersResponse"
+                }
               }
             }
           },
           "400": {
             "description": "Bad request",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
@@ -659,7 +758,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "description": "会員ID"
           }
         ],
@@ -668,20 +769,30 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GetChangeHistoryResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/GetChangeHistoryResponse"
+                }
               }
             }
           },
           "404": {
             "description": "Member not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
@@ -737,7 +848,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "description": "会員ID"
           }
         ],
@@ -745,7 +858,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/UpdateHealthInfoRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/UpdateHealthInfoRequest"
+              }
             }
           }
         },
@@ -754,26 +869,40 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/PutHealthInfoResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/PutHealthInfoResponse"
+                }
               }
             }
           },
           "400": {
             "description": "Bad request",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           },
           "404": {
             "description": "Member not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
@@ -789,7 +918,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "description": "会員ID"
           }
         ],
@@ -797,7 +928,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/UpdateMarketingConsentRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMarketingConsentRequest"
+              }
             }
           }
         },
@@ -806,26 +939,40 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/PutMarketingConsentResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/PutMarketingConsentResponse"
+                }
               }
             }
           },
           "400": {
             "description": "Bad request",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           },
           "404": {
             "description": "Member not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
@@ -972,7 +1119,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "description": "会員ID"
           }
         ],
@@ -981,20 +1130,30 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GetRelationshipsResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/GetRelationshipsResponse"
+                }
               }
             }
           },
           "404": {
             "description": "Member not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
@@ -1010,7 +1169,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "description": "会員ID"
           }
         ],
@@ -1019,20 +1180,30 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GetServiceUsageResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/GetServiceUsageResponse"
+                }
               }
             }
           },
           "404": {
             "description": "Member not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
@@ -1048,7 +1219,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "description": "会員ID"
           }
         ],
@@ -1057,20 +1230,30 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GetTrainingRecordsResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/GetTrainingRecordsResponse"
+                }
               }
             }
           },
           "404": {
             "description": "Member not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
@@ -1086,7 +1269,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "description": "会員ID"
           }
         ],
@@ -1095,20 +1280,30 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GetUsageHistoryResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/GetUsageHistoryResponse"
+                }
               }
             }
           },
           "404": {
             "description": "Member not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
@@ -1152,7 +1347,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/RegisterRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
             }
           }
         },
@@ -1161,20 +1358,30 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/RegisterResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterResponse"
+                }
               }
             }
           },
           "400": {
             "description": "Bad request",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
@@ -1247,7 +1454,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/RegisterResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
@@ -1259,16 +1476,6 @@
                 "schema": {
                   "$ref": "#/components/schemas/Error"
                 }
-              }
-            }
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
               }
             }
           }
@@ -1763,9 +1970,18 @@
         "type": "object",
         "required": ["name", "relationship", "phone"],
         "properties": {
-          "name": { "type": "string", "description": "緊急連絡先氏名" },
-          "relationship": { "type": "string", "description": "続柄" },
-          "phone": { "type": "string", "description": "電話番号" }
+          "name": {
+            "type": "string",
+            "description": "緊急連絡先氏名"
+          },
+          "relationship": {
+            "type": "string",
+            "description": "続柄"
+          },
+          "phone": {
+            "type": "string",
+            "description": "電話番号"
+          }
         }
       },
       "MemberBasicInfo": {
@@ -1782,25 +1998,67 @@
           "email"
         ],
         "properties": {
-          "id": { "type": "string" },
-          "member_number": { "type": "string", "description": "会員番号" },
-          "name_kanji": { "type": "string", "description": "氏名（漢字）" },
-          "name_kana": { "type": "string", "description": "氏名（カナ）" },
-          "birthday": { "type": "string", "format": "date", "description": "生年月日" },
-          "age": { "type": "integer", "description": "年齢" },
+          "id": {
+            "type": "string"
+          },
+          "member_number": {
+            "type": "string",
+            "description": "会員番号"
+          },
+          "name_kanji": {
+            "type": "string",
+            "description": "氏名（漢字）"
+          },
+          "name_kana": {
+            "type": "string",
+            "description": "氏名（カナ）"
+          },
+          "birthday": {
+            "type": "string",
+            "format": "date",
+            "description": "生年月日"
+          },
+          "age": {
+            "type": "integer",
+            "description": "年齢"
+          },
           "gender": {
             "type": "string",
             "enum": ["male", "female", "other"],
             "description": "性別"
           },
-          "postal_code": { "type": "string", "description": "郵便番号" },
-          "prefecture": { "type": "string", "description": "都道府県" },
-          "city": { "type": "string", "description": "市区町村" },
-          "address": { "type": "string", "description": "番地" },
-          "building": { "type": "string", "description": "建物名" },
-          "phone": { "type": "string", "description": "電話番号" },
-          "email": { "type": "string", "format": "email", "description": "メールアドレス" },
-          "emergency_contact": { "$ref": "#/components/schemas/EmergencyContact" }
+          "postal_code": {
+            "type": "string",
+            "description": "郵便番号"
+          },
+          "prefecture": {
+            "type": "string",
+            "description": "都道府県"
+          },
+          "city": {
+            "type": "string",
+            "description": "市区町村"
+          },
+          "address": {
+            "type": "string",
+            "description": "番地"
+          },
+          "building": {
+            "type": "string",
+            "description": "建物名"
+          },
+          "phone": {
+            "type": "string",
+            "description": "電話番号"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "メールアドレス"
+          },
+          "emergency_contact": {
+            "$ref": "#/components/schemas/EmergencyContact"
+          }
         }
       },
       "MemberProfile": {
@@ -1825,31 +2083,58 @@
             "enum": ["active", "suspended", "withdrawn", "force_withdrawn"],
             "description": "会員ステータス"
           },
-          "store_id": { "type": "string", "description": "店舗ID" },
-          "store_name": { "type": "string", "description": "所属店舗" },
+          "store_id": {
+            "type": "string",
+            "description": "店舗ID"
+          },
+          "store_name": {
+            "type": "string",
+            "description": "所属店舗"
+          },
           "brand": {
             "type": "string",
             "enum": ["joyfit", "fit365"],
             "description": "所属ブランド"
           },
-          "joined_at": { "type": "string", "format": "date", "description": "入会日" },
+          "joined_at": {
+            "type": "string",
+            "format": "date",
+            "description": "入会日"
+          },
           "withdrawn_at": {
             "type": "string",
             "format": "date",
             "nullable": true,
             "description": "退会日"
           },
-          "is_black_listed": { "type": "boolean", "description": "ブラックリスト登録状況" }
+          "is_black_listed": {
+            "type": "boolean",
+            "description": "ブラックリスト登録状況"
+          }
         }
       },
       "MemberEKYC": {
         "type": "object",
         "required": ["verified"],
         "properties": {
-          "verified": { "type": "boolean", "description": "eKYC検証結果" },
-          "verified_at": { "type": "string", "format": "date-time", "description": "検証日時" },
-          "document_type": { "type": "string", "description": "本人確認書類の種類" },
-          "photoUrl": { "type": "string", "format": "uri", "description": "顔写真URL" }
+          "verified": {
+            "type": "boolean",
+            "description": "eKYC検証結果"
+          },
+          "verified_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "検証日時"
+          },
+          "document_type": {
+            "type": "string",
+            "description": "本人確認書類の種類"
+          },
+          "photoUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "顔写真URL"
+          }
         }
       },
       "MemberConsent": {
@@ -1860,32 +2145,53 @@
             "type": "object",
             "required": ["version", "agreed_at"],
             "properties": {
-              "version": { "type": "string" },
-              "agreed_at": { "type": "string", "format": "date-time" }
+              "version": {
+                "type": "string"
+              },
+              "agreed_at": {
+                "type": "string",
+                "format": "date-time"
+              }
             }
           },
           "privacy_policy": {
             "type": "object",
             "required": ["version", "agreed_at"],
             "properties": {
-              "version": { "type": "string" },
-              "agreed_at": { "type": "string", "format": "date-time" }
+              "version": {
+                "type": "string"
+              },
+              "agreed_at": {
+                "type": "string",
+                "format": "date-time"
+              }
             }
           },
           "optional_agreement": {
             "type": "object",
             "properties": {
-              "version": { "type": "string" },
-              "agreed_at": { "type": "string", "format": "date-time" }
+              "version": {
+                "type": "string"
+              },
+              "agreed_at": {
+                "type": "string",
+                "format": "date-time"
+              }
             }
           },
           "marketing_consent": {
             "type": "object",
             "required": ["email", "sms", "push"],
             "properties": {
-              "email": { "type": "boolean" },
-              "sms": { "type": "boolean" },
-              "push": { "type": "boolean" }
+              "email": {
+                "type": "boolean"
+              },
+              "sms": {
+                "type": "boolean"
+              },
+              "push": {
+                "type": "boolean"
+              }
             }
           }
         }
@@ -1893,29 +2199,56 @@
       "MemberHealthInfo": {
         "type": "object",
         "properties": {
-          "health_status": { "type": "string", "description": "健康状態申告" },
-          "medical_history": { "type": "string", "description": "既往歴・持病" },
-          "allergies": { "type": "string", "description": "アレルギー情報" },
-          "exercise_restrictions": { "type": "string", "description": "運動制限事項" },
-          "other_notes": { "type": "string", "description": "その他特記事項" }
+          "health_status": {
+            "type": "string",
+            "description": "健康状態申告"
+          },
+          "medical_history": {
+            "type": "string",
+            "description": "既往歴・持病"
+          },
+          "allergies": {
+            "type": "string",
+            "description": "アレルギー情報"
+          },
+          "exercise_restrictions": {
+            "type": "string",
+            "description": "運動制限事項"
+          },
+          "other_notes": {
+            "type": "string",
+            "description": "その他特記事項"
+          }
         }
       },
       "Member": {
         "type": "object",
         "required": ["basic_info", "profile"],
         "properties": {
-          "basic_info": { "$ref": "#/components/schemas/MemberBasicInfo" },
-          "profile": { "$ref": "#/components/schemas/MemberProfile" },
-          "ekyc": { "$ref": "#/components/schemas/MemberEKYC" },
-          "consent": { "$ref": "#/components/schemas/MemberConsent" },
-          "health_info": { "$ref": "#/components/schemas/MemberHealthInfo" }
+          "basic_info": {
+            "$ref": "#/components/schemas/MemberBasicInfo"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/MemberProfile"
+          },
+          "ekyc": {
+            "$ref": "#/components/schemas/MemberEKYC"
+          },
+          "consent": {
+            "$ref": "#/components/schemas/MemberConsent"
+          },
+          "health_info": {
+            "$ref": "#/components/schemas/MemberHealthInfo"
+          }
         }
       },
       "GetMemberDetailResponse": {
         "type": "object",
         "required": ["member"],
         "properties": {
-          "member": { "$ref": "#/components/schemas/Member" }
+          "member": {
+            "$ref": "#/components/schemas/Member"
+          }
         }
       },
       "GetBasicInfoResponse": {
@@ -1923,89 +2256,163 @@
         "description": "GET /crm/members/{id}/basic-info レスポンス（基本情報タブ用）",
         "required": ["member"],
         "properties": {
-          "member": { "$ref": "#/components/schemas/Member" }
+          "member": {
+            "$ref": "#/components/schemas/Member"
+          }
         }
       },
       "PutBasicInfoResponse": {
         "type": "object",
         "description": "PUT /crm/members/{id}/basic-info レスポンス",
         "properties": {
-          "success": { "type": "boolean" },
-          "id": { "type": "string" },
-          "updated": { "type": "object", "description": "更新されたフィールド" }
+          "success": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string"
+          },
+          "updated": {
+            "type": "object",
+            "description": "更新されたフィールド"
+          }
         }
       },
       "UpdateBasicInfoRequest": {
         "type": "object",
         "description": "PUT /crm/members/{id}/basic-info リクエスト（個人情報の更新）",
         "properties": {
-          "name_kanji": { "type": "string" },
-          "name_kana": { "type": "string" },
-          "postal_code": { "type": "string" },
-          "prefecture": { "type": "string" },
-          "city": { "type": "string" },
-          "address": { "type": "string" },
-          "building": { "type": "string" },
-          "phone": { "type": "string" },
-          "email": { "type": "string", "format": "email" },
-          "emergency_contact": { "$ref": "#/components/schemas/EmergencyContact" }
+          "name_kanji": {
+            "type": "string"
+          },
+          "name_kana": {
+            "type": "string"
+          },
+          "postal_code": {
+            "type": "string"
+          },
+          "prefecture": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "building": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "emergency_contact": {
+            "$ref": "#/components/schemas/EmergencyContact"
+          }
         }
       },
       "UpdateHealthInfoRequest": {
         "type": "object",
         "description": "PUT /crm/members/{id}/health-info リクエスト",
         "properties": {
-          "health_status": { "type": "string" },
-          "medical_history": { "type": "string" },
-          "allergies": { "type": "string" },
-          "exercise_restrictions": { "type": "string" },
-          "other_notes": { "type": "string" }
+          "health_status": {
+            "type": "string"
+          },
+          "medical_history": {
+            "type": "string"
+          },
+          "allergies": {
+            "type": "string"
+          },
+          "exercise_restrictions": {
+            "type": "string"
+          },
+          "other_notes": {
+            "type": "string"
+          }
         }
       },
       "PutHealthInfoResponse": {
         "type": "object",
         "properties": {
-          "success": { "type": "boolean" },
-          "health_info": { "$ref": "#/components/schemas/MemberHealthInfo" }
+          "success": {
+            "type": "boolean"
+          },
+          "health_info": {
+            "$ref": "#/components/schemas/MemberHealthInfo"
+          }
         }
       },
       "UpdateMarketingConsentRequest": {
         "type": "object",
         "description": "PUT /crm/members/{id}/marketing-consent リクエスト",
         "properties": {
-          "email": { "type": "boolean" },
-          "sms": { "type": "boolean" },
-          "push": { "type": "boolean" }
+          "email": {
+            "type": "boolean"
+          },
+          "sms": {
+            "type": "boolean"
+          },
+          "push": {
+            "type": "boolean"
+          }
         }
       },
       "PutMarketingConsentResponse": {
         "type": "object",
         "properties": {
-          "success": { "type": "boolean" }
+          "success": {
+            "type": "boolean"
+          }
         }
       },
       "PointAdjustmentResponse": {
         "type": "object",
         "properties": {
-          "success": { "type": "boolean" },
-          "new_balance": { "type": "integer" }
+          "success": {
+            "type": "boolean"
+          },
+          "new_balance": {
+            "type": "integer"
+          }
         }
       },
       "ContractChange": {
         "type": "object",
         "properties": {
-          "changed_at": { "type": "string", "format": "date-time" },
-          "previous_plan": { "type": "string" },
-          "new_plan": { "type": "string" },
-          "reason": { "type": "string" }
+          "changed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "previous_plan": {
+            "type": "string"
+          },
+          "new_plan": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
         }
       },
       "MainContract": {
         "type": "object",
         "properties": {
-          "plan_name": { "type": "string", "description": "現在の主契約プラン名" },
-          "monthly_fee": { "type": "integer", "description": "月会費（税込）" },
-          "start_date": { "type": "string", "format": "date" },
+          "plan_name": {
+            "type": "string",
+            "description": "現在の主契約プラン名"
+          },
+          "monthly_fee": {
+            "type": "integer",
+            "description": "月会費（税込）"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date"
+          },
           "penalty_period_end": {
             "type": "string",
             "format": "date",
@@ -2013,120 +2420,242 @@
           },
           "change_history": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/ContractChange" }
+            "items": {
+              "$ref": "#/components/schemas/ContractChange"
+            }
           }
         }
       },
       "OptionContract": {
         "type": "object",
         "properties": {
-          "id": { "type": "string" },
-          "name": { "type": "string", "description": "オプション名" },
-          "monthly_fee": { "type": "integer", "description": "月額料金" },
-          "start_date": { "type": "string", "format": "date" },
-          "next_billing_date": { "type": "string", "format": "date", "description": "次回請求日" }
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "オプション名"
+          },
+          "monthly_fee": {
+            "type": "integer",
+            "description": "月額料金"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "next_billing_date": {
+            "type": "string",
+            "format": "date",
+            "description": "次回請求日"
+          }
         }
       },
       "OptionChangeHistoryItem": {
         "type": "object",
         "properties": {
-          "changed_at": { "type": "string", "format": "date-time" },
-          "option_name": { "type": "string" },
-          "action_type": { "type": "string", "enum": ["add", "remove", "change"] },
-          "notes": { "type": "string" }
+          "changed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "option_name": {
+            "type": "string"
+          },
+          "action_type": {
+            "type": "string",
+            "enum": ["add", "remove", "change"]
+          },
+          "notes": {
+            "type": "string"
+          }
         }
       },
       "SpecialContractItem": {
         "type": "object",
         "properties": {
-          "enrolled": { "type": "boolean" },
-          "start_date": { "type": "string", "format": "date" },
-          "applied_month": { "type": "string", "description": "請求月" }
+          "enrolled": {
+            "type": "boolean"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "applied_month": {
+            "type": "string",
+            "description": "請求月"
+          }
         }
       },
       "SpecialContracts": {
         "type": "object",
         "properties": {
-          "anshin_support": { "$ref": "#/components/schemas/SpecialContractItem" },
-          "mutual_use": { "$ref": "#/components/schemas/SpecialContractItem" },
-          "security_fee": { "$ref": "#/components/schemas/SpecialContractItem" },
-          "maintenance_fee": { "$ref": "#/components/schemas/SpecialContractItem" }
+          "anshin_support": {
+            "$ref": "#/components/schemas/SpecialContractItem"
+          },
+          "mutual_use": {
+            "$ref": "#/components/schemas/SpecialContractItem"
+          },
+          "security_fee": {
+            "$ref": "#/components/schemas/SpecialContractItem"
+          },
+          "maintenance_fee": {
+            "$ref": "#/components/schemas/SpecialContractItem"
+          }
         }
       },
       "PaymentRecord": {
         "type": "object",
         "properties": {
-          "date": { "type": "string", "format": "date" },
-          "amount": { "type": "integer" },
-          "breakdown": { "type": "string" },
-          "status": { "type": "string", "enum": ["success", "failed"] },
-          "notes": { "type": "string" }
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "amount": {
+            "type": "integer"
+          },
+          "breakdown": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["success", "failed"]
+          },
+          "notes": {
+            "type": "string"
+          }
         }
       },
       "PaymentInfo": {
         "type": "object",
         "properties": {
-          "method": { "type": "string", "enum": ["credit_card", "bank_transfer"] },
-          "card_number": { "type": "string", "description": "マスク済み、下4桁" },
-          "cardholder_name": { "type": "string" },
-          "expiry_date": { "type": "string" },
-          "billing_day": { "type": "integer" },
-          "last_payment_date": { "type": "string", "format": "date" },
-          "last_payment_amount": { "type": "integer" },
-          "status": { "type": "string", "enum": ["normal", "error"] },
+          "method": {
+            "type": "string",
+            "enum": ["credit_card", "bank_transfer"]
+          },
+          "card_number": {
+            "type": "string",
+            "description": "マスク済み、下4桁"
+          },
+          "cardholder_name": {
+            "type": "string"
+          },
+          "expiry_date": {
+            "type": "string"
+          },
+          "billing_day": {
+            "type": "integer"
+          },
+          "last_payment_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "last_payment_amount": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["normal", "error"]
+          },
           "payment_history": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/PaymentRecord" }
+            "items": {
+              "$ref": "#/components/schemas/PaymentRecord"
+            }
           }
         }
       },
       "UnpaidItem": {
         "type": "object",
         "properties": {
-          "month": { "type": "string" },
-          "amount": { "type": "integer" },
-          "reason": { "type": "string" },
-          "reminder_status": { "type": "string" }
+          "month": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "integer"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "reminder_status": {
+            "type": "string"
+          }
         }
       },
       "CampaignActiveItem": {
         "type": "object",
         "properties": {
-          "campaign_name": { "type": "string" },
-          "period_start": { "type": "string", "format": "date" },
-          "period_end": { "type": "string", "format": "date" },
-          "discount_content": { "type": "string" },
-          "remaining_days": { "type": "integer" }
+          "campaign_name": {
+            "type": "string"
+          },
+          "period_start": {
+            "type": "string",
+            "format": "date"
+          },
+          "period_end": {
+            "type": "string",
+            "format": "date"
+          },
+          "discount_content": {
+            "type": "string"
+          },
+          "remaining_days": {
+            "type": "integer"
+          }
         }
       },
       "CampaignHistoryItem": {
         "type": "object",
         "properties": {
-          "applied_at": { "type": "string", "format": "date" },
-          "campaign_name": { "type": "string" },
-          "content": { "type": "string" },
-          "status": { "type": "string", "enum": ["active", "expired", "cancelled"] }
+          "applied_at": {
+            "type": "string",
+            "format": "date"
+          },
+          "campaign_name": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "expired", "cancelled"]
+          }
         }
       },
       "GetContractsResponse": {
         "type": "object",
         "description": "契約情報タブ用レスポンス",
         "properties": {
-          "main_contract": { "$ref": "#/components/schemas/MainContract" },
+          "main_contract": {
+            "$ref": "#/components/schemas/MainContract"
+          },
           "option_contracts": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/OptionContract" }
+            "items": {
+              "$ref": "#/components/schemas/OptionContract"
+            }
           },
           "option_change_history": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/OptionChangeHistoryItem" }
+            "items": {
+              "$ref": "#/components/schemas/OptionChangeHistoryItem"
+            }
           },
-          "special_contracts": { "$ref": "#/components/schemas/SpecialContracts" },
-          "payment_info": { "$ref": "#/components/schemas/PaymentInfo" },
+          "special_contracts": {
+            "$ref": "#/components/schemas/SpecialContracts"
+          },
+          "payment_info": {
+            "$ref": "#/components/schemas/PaymentInfo"
+          },
           "unpaid_info": {
             "type": "object",
             "properties": {
-              "items": { "type": "array", "items": { "$ref": "#/components/schemas/UnpaidItem" } }
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/UnpaidItem"
+                }
+              }
             }
           },
           "campaigns": {
@@ -2134,11 +2663,15 @@
             "properties": {
               "active": {
                 "type": "array",
-                "items": { "$ref": "#/components/schemas/CampaignActiveItem" }
+                "items": {
+                  "$ref": "#/components/schemas/CampaignActiveItem"
+                }
               },
               "history": {
                 "type": "array",
-                "items": { "$ref": "#/components/schemas/CampaignHistoryItem" }
+                "items": {
+                  "$ref": "#/components/schemas/CampaignHistoryItem"
+                }
               }
             }
           }
@@ -2148,11 +2681,26 @@
         "type": "object",
         "description": "ブランド別ポイント保有（member_points に紐づく想定）。FIT365=ベアレージ、JOYFIT=エンジョイ",
         "properties": {
-          "current_balance": { "type": "integer", "description": "現在の保有ポイント" },
-          "total_earned": { "type": "integer", "description": "累計獲得ポイント" },
-          "total_spent": { "type": "integer", "description": "累計消費ポイント" },
-          "expiry": { "type": "string", "description": "有効期限（none=無期限）" },
-          "usage_destination": { "type": "string", "description": "利用先" }
+          "current_balance": {
+            "type": "integer",
+            "description": "現在の保有ポイント"
+          },
+          "total_earned": {
+            "type": "integer",
+            "description": "累計獲得ポイント"
+          },
+          "total_spent": {
+            "type": "integer",
+            "description": "累計消費ポイント"
+          },
+          "expiry": {
+            "type": "string",
+            "description": "有効期限（none=無期限）"
+          },
+          "usage_destination": {
+            "type": "string",
+            "description": "利用先"
+          }
         }
       },
       "MemberRankInfo": {
@@ -2163,7 +2711,10 @@
             "type": "string",
             "description": "現在のランク（ブロンズ/シルバー/ゴールド/プラチナなど）"
           },
-          "benefits": { "type": "string", "description": "ランク特典内容" },
+          "benefits": {
+            "type": "string",
+            "description": "ランク特典内容"
+          },
           "next_rank": {
             "type": "object",
             "properties": {
@@ -2171,7 +2722,10 @@
                 "type": "integer",
                 "description": "次回ランクアップ必要ポイント"
               },
-              "progress": { "type": "integer", "description": "進捗率%" }
+              "progress": {
+                "type": "integer",
+                "description": "進捗率%"
+              }
             }
           }
         }
@@ -2180,44 +2734,80 @@
         "type": "object",
         "description": "ポイント獲得履歴（member_point_histories type=earn）",
         "properties": {
-          "id": { "type": "string" },
-          "date": { "type": "string", "format": "date-time", "description": "獲得日時" },
+          "id": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "獲得日時"
+          },
           "reason": {
             "type": "string",
             "description": "獲得理由（来館/友達紹介/キャンペーン/誕生日ボーナスなど）"
           },
-          "points": { "type": "integer" },
-          "notes": { "type": "string", "description": "詳細・備考" }
+          "points": {
+            "type": "integer"
+          },
+          "notes": {
+            "type": "string",
+            "description": "詳細・備考"
+          }
         }
       },
       "PointSpendRecord": {
         "type": "object",
         "description": "ポイント消費履歴（member_point_histories type=spend）",
         "properties": {
-          "id": { "type": "string" },
-          "date": { "type": "string", "format": "date-time", "description": "消費日時" },
+          "id": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "消費日時"
+          },
           "content": {
             "type": "string",
             "description": "消費内容（月会費充当/EC決済/商品交換/ギフトカード交換など）"
           },
-          "points": { "type": "integer" },
-          "notes": { "type": "string", "description": "詳細・備考" }
+          "points": {
+            "type": "integer"
+          },
+          "notes": {
+            "type": "string",
+            "description": "詳細・備考"
+          }
         }
       },
       "PointAdjustmentRecord": {
         "type": "object",
         "description": "ポイント調整履歴（member_point_histories type=adjust）",
         "properties": {
-          "id": { "type": "string" },
-          "date": { "type": "string", "format": "date-time", "description": "調整日時" },
+          "id": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "調整日時"
+          },
           "adjustment_type": {
             "type": "string",
             "enum": ["add", "subtract"],
             "description": "手動付与/手動減算"
           },
-          "points": { "type": "integer" },
-          "reason": { "type": "string", "description": "調整理由" },
-          "adjusted_by": { "type": "string", "description": "実施スタッフ" }
+          "points": {
+            "type": "integer"
+          },
+          "reason": {
+            "type": "string",
+            "description": "調整理由"
+          },
+          "adjusted_by": {
+            "type": "string",
+            "description": "実施スタッフ"
+          }
         }
       },
       "GetPointsResponse": {
@@ -2238,17 +2828,23 @@
           },
           "earn_history": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/PointEarnRecord" },
+            "items": {
+              "$ref": "#/components/schemas/PointEarnRecord"
+            },
             "description": "ポイント獲得履歴（最近20件・全件表示可）"
           },
           "spend_history": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/PointSpendRecord" },
+            "items": {
+              "$ref": "#/components/schemas/PointSpendRecord"
+            },
             "description": "ポイント消費履歴（最近20件・全件表示可）"
           },
           "adjustment_history": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/PointAdjustmentRecord" },
+            "items": {
+              "$ref": "#/components/schemas/PointAdjustmentRecord"
+            },
             "description": "ポイント調整履歴（該当する場合）"
           }
         }
@@ -2256,8 +2852,12 @@
       "PostPointsAdjustResponse": {
         "type": "object",
         "properties": {
-          "success": { "type": "boolean" },
-          "new_balance": { "type": "integer" }
+          "success": {
+            "type": "boolean"
+          },
+          "new_balance": {
+            "type": "integer"
+          }
         }
       },
       "GetChangeHistoryResponse": {
@@ -2268,10 +2868,19 @@
             "items": {
               "type": "object",
               "properties": {
-                "id": { "type": "string" },
-                "date": { "type": "string", "format": "date-time" },
-                "event_type": { "type": "string" },
-                "content": { "type": "string" }
+                "id": {
+                  "type": "string"
+                },
+                "date": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "event_type": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                }
               }
             }
           }
@@ -2280,57 +2889,101 @@
       "GetRelationshipsResponse": {
         "type": "object",
         "properties": {
-          "family": { "type": "object" },
-          "corporate": { "type": "object" },
-          "referral": { "type": "object" }
+          "family": {
+            "type": "object"
+          },
+          "corporate": {
+            "type": "object"
+          },
+          "referral": {
+            "type": "object"
+          }
         }
       },
       "GetServiceUsageResponse": {
         "type": "object",
         "properties": {
-          "personal_training": { "type": "object" },
-          "studio_programs": { "type": "object" },
-          "other_services": { "type": "object" }
+          "personal_training": {
+            "type": "object"
+          },
+          "studio_programs": {
+            "type": "object"
+          },
+          "other_services": {
+            "type": "object"
+          }
         }
       },
       "GetTrainingRecordsResponse": {
         "type": "object",
         "properties": {
-          "summary": { "type": "object" },
-          "strength_records": { "type": "array" },
-          "cardio_records": { "type": "array" },
-          "body_records": { "type": "array" }
+          "summary": {
+            "type": "object"
+          },
+          "strength_records": {
+            "type": "array"
+          },
+          "cardio_records": {
+            "type": "array"
+          },
+          "body_records": {
+            "type": "array"
+          }
         }
       },
       "GetUsageHistoryResponse": {
         "type": "object",
         "properties": {
-          "summary": { "type": "object" },
-          "visits": { "type": "array" },
-          "store_usage": { "type": "array" }
+          "summary": {
+            "type": "object"
+          },
+          "visits": {
+            "type": "array"
+          },
+          "store_usage": {
+            "type": "array"
+          }
         }
       },
       "ExportMembersResponse": {
         "type": "object",
         "properties": {
-          "success": { "type": "boolean" },
-          "download_url": { "type": "string" },
-          "expires_at": { "type": "string", "format": "date-time" }
+          "success": {
+            "type": "boolean"
+          },
+          "download_url": {
+            "type": "string"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          }
         }
       },
       "RegisterRequest": {
         "type": "object",
         "properties": {
-          "email": { "type": "string", "format": "email" },
-          "password": { "type": "string" },
-          "name": { "type": "string" }
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
         }
       },
       "RegisterResponse": {
         "type": "object",
         "properties": {
-          "success": { "type": "boolean" },
-          "user_id": { "type": "string" }
+          "success": {
+            "type": "boolean"
+          },
+          "user_id": {
+            "type": "string"
+          }
         }
       },
       "PointAdjustmentRequest": {
