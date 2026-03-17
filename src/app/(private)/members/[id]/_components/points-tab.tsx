@@ -1,5 +1,6 @@
 'use client';
 
+import { GetPointsResponse } from '@/app/api/_schemas/member.schema';
 import { useQuery } from '@tanstack/react-query';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,7 +15,6 @@ import {
 
 import { getCrmMembersByIdPointsOptions } from '@/lib/api/@tanstack/react-query.gen';
 
-import type { GetPointsResponse } from '@/types/api/member.type';
 import { Brand } from '@/types/api/member.type';
 
 const EARN_HISTORY_LIMIT = 20;

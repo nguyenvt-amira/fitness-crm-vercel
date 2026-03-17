@@ -1,8 +1,119 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import type { UpdateMemoRequest } from '@/types/api/member.type';
+import {
+  ErrorResponseSchema,
+  type UpdateMemoRequest,
+  UpdateMemoRequestSchema,
+  type UpdateMemoResponse,
+  UpdateMemoResponseSchema,
+} from '@/app/api/_schemas/member.schema';
+import { registerRoute } from '@/app/api/_scripts/register-route';
+import { z } from 'zod';
 
 import { deleteMemo, updateMemo } from '../route';
+
+// Register OpenAPI documentation for PUT route
+registerRoute({
+  method: 'put',
+  path: '/crm/members/{id}/memos/{memoId}',
+  summary: 'Update member memo',
+  description: 'Update a memo for a member',
+  tags: ['Members'],
+  parameters: [
+    {
+      name: 'id',
+      in: 'path',
+      required: true,
+      description: 'Member ID',
+      schema: { type: 'string' },
+    },
+    {
+      name: 'memoId',
+      in: 'path',
+      required: true,
+      description: 'Memo ID',
+      schema: { type: 'string' },
+    },
+  ],
+  requestBody: {
+    schema: UpdateMemoRequestSchema,
+    description: 'Updated memo details',
+  },
+  responses: [
+    {
+      status: 200,
+      schema: UpdateMemoResponseSchema,
+      description: 'Memo updated successfully',
+    },
+    {
+      status: 400,
+      schema: ErrorResponseSchema,
+      description: 'Bad request - invalid request body',
+    },
+    {
+      status: 404,
+      schema: ErrorResponseSchema,
+      description: 'Memo not found',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
+
+// Register OpenAPI documentation for DELETE route
+registerRoute({
+  method: 'delete',
+  path: '/crm/members/{id}/memos/{memoId}',
+  summary: 'Delete member memo',
+  description: 'Delete a memo for a member',
+  tags: ['Members'],
+  parameters: [
+    {
+      name: 'id',
+      in: 'path',
+      required: true,
+      description: 'Member ID',
+      schema: { type: 'string' },
+    },
+    {
+      name: 'memoId',
+      in: 'path',
+      required: true,
+      description: 'Memo ID',
+      schema: { type: 'string' },
+    },
+  ],
+  responses: [
+    {
+      status: 200,
+      schema: z
+        .object({
+          success: z.boolean().openapi({
+            example: true,
+            description: 'Whether the deletion was successful',
+          }),
+        })
+        .openapi({
+          title: 'DeleteMemoResponse',
+          description: 'Response for deleting a memo',
+        }),
+      description: 'Memo deleted successfully',
+    },
+    {
+      status: 404,
+      schema: ErrorResponseSchema,
+      description: 'Memo not found',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
 
 export async function PUT(
   request: NextRequest,
@@ -10,24 +121,33 @@ export async function PUT(
 ) {
   try {
     const { id, memoId } = await params;
-    const body: UpdateMemoRequest = await request.json();
-    const updates: Partial<{ type: 'caution' | 'vip' | 'other'; content: string }> = {};
-    if (body.type !== undefined) updates.type = body.type;
-    if (body.content !== undefined) {
-      const content = String(body.content).trim();
-      if (content.length > 1000) {
-        return NextResponse.json(
-          { error: 'Content must be at most 1000 characters' },
-          { status: 400 },
-        );
-      }
-      updates.content = content;
+    const body = await request.json();
+
+    // Validate request body with Zod
+    const validationResult = UpdateMemoRequestSchema.safeParse(body);
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((issue) => issue.message).join(', ');
+      return NextResponse.json({ error: errors }, { status: 400 });
     }
+
+    const validatedBody: UpdateMemoRequest = validationResult.data;
+    const updates: Partial<{ type: 'caution' | 'vip' | 'other'; content: string }> = {};
+    if (validatedBody.type !== undefined) updates.type = validatedBody.type;
+    if (validatedBody.content !== undefined) {
+      updates.content = validatedBody.content.trim();
+    }
+
     const memo = updateMemo(id, memoId, updates);
     if (!memo) {
       return NextResponse.json({ error: 'Memo not found' }, { status: 404 });
     }
-    return NextResponse.json({ success: true, memo });
+
+    const response: UpdateMemoResponse = {
+      success: true,
+      memo: memo as any,
+    };
+
+    return NextResponse.json(response);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to update memo' }, { status: 500 });
   }

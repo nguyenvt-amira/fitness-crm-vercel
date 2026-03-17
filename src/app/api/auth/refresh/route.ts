@@ -1,6 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import type { Token } from '@/types/api/auth.type';
+import {
+  ErrorResponseSchema,
+  type RefreshRequest,
+  RefreshRequestSchema,
+  type RefreshResponse,
+  RefreshResponseSchema,
+  Token,
+} from '@/app/api/_schemas/auth.schema';
+import { registerRoute } from '@/app/api/_scripts/register-route';
+
+// Register OpenAPI documentation for this route
+registerRoute({
+  method: 'post',
+  path: '/auth/refresh',
+  summary: 'Refresh access token',
+  description: 'Refresh access token using refresh token',
+  tags: ['Authentication'],
+  requestBody: {
+    schema: RefreshRequestSchema,
+    description: 'Refresh token',
+  },
+  responses: [
+    {
+      status: 200,
+      schema: RefreshResponseSchema,
+      description: 'Token refreshed successfully',
+    },
+    {
+      status: 400,
+      schema: ErrorResponseSchema,
+      description: 'Bad request - missing refresh token',
+    },
+    {
+      status: 401,
+      schema: ErrorResponseSchema,
+      description: 'Unauthorized - invalid or expired refresh token',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
 
 // Simple JWT-like token generator (mock)
 function generateToken(payload: Record<string, any>): string {
@@ -26,13 +69,17 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // Validate request body
-    if (!body.refresh_token) {
-      return NextResponse.json({ error: 'Refresh token is required' }, { status: 400 });
+    // Validate request body with Zod
+    const validationResult = RefreshRequestSchema.safeParse(body);
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((issue) => issue.message).join(', ');
+      return NextResponse.json({ error: errors }, { status: 400 });
     }
 
+    const validatedBody: RefreshRequest = validationResult.data;
+
     // Decode refresh token to get user info
-    const decoded = decodeToken(body.refresh_token);
+    const decoded = decodeToken(validatedBody.refresh_token);
     if (!decoded || !decoded.email) {
       return NextResponse.json({ error: 'Invalid refresh token' }, { status: 401 });
     }
@@ -68,7 +115,7 @@ export async function POST(request: NextRequest) {
     };
 
     // Return response matching the expected format
-    const response = {
+    const response: RefreshResponse = {
       accessToken: token.access_token,
       refresh_token: token.refresh_token,
       token_type: token.token_type,

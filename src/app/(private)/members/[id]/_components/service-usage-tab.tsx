@@ -139,7 +139,8 @@ export function ServiceUsageTab({ memberId }: { memberId: string }) {
           {/* 実施履歴（最近10件、全件表示可） */}
           <div>
             <p className="mb-2 text-sm font-semibold">
-              実施履歴（最近10件{personalTraining?.history?.length > 10 ? '、全件表示可' : ''}）
+              実施履歴（最近10件
+              {(personalTraining?.history?.length ?? 0) > 10 ? '、全件表示可' : ''}）
             </p>
             {personalTraining?.history && personalTraining.history.length > 0 ? (
               <Table>
@@ -191,7 +192,7 @@ export function ServiceUsageTab({ memberId }: { memberId: string }) {
           <div>
             <p className="mb-2 text-sm font-semibold">
               参加履歴（最近20件
-              {studioProgram?.participation_history?.length > 20 ? '、全件表示可' : ''}）
+              {(studioProgram?.participation_history?.length ?? 0) > 20 ? '、全件表示可' : ''}）
             </p>
             {studioProgram?.participation_history &&
             studioProgram.participation_history.length > 0 ? (

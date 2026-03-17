@@ -1,11 +1,71 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { ErrorResponseSchema } from '@/app/api/_schemas/member.schema';
+import { registerRoute } from '@/app/api/_scripts/register-route';
+import { z } from 'zod';
+
 import type {
   BodyRecord,
   CardioRecord,
   StrengthTrainingRecord,
   TrainingSummary,
 } from '@/types/api/member.type';
+
+// Register OpenAPI documentation for this route
+registerRoute({
+  method: 'get',
+  path: '/crm/members/{id}/training-records',
+  summary: 'Get member training records',
+  description: 'Get training records for a member',
+  tags: ['Members'],
+  parameters: [
+    {
+      name: 'id',
+      in: 'path',
+      required: true,
+      description: 'Member ID',
+      schema: { type: 'string' },
+    },
+  ],
+  responses: [
+    {
+      status: 200,
+      schema: z
+        .object({
+          summary: z.any().openapi({
+            description: 'Training summary',
+          }),
+          strengthRecords: z.array(z.any()).openapi({
+            description: 'Strength training records',
+          }),
+          cardioRecords: z.array(z.any()).openapi({
+            description: 'Cardio records',
+          }),
+          bodyRecords: z.array(z.any()).openapi({
+            description: 'Body measurement records',
+          }),
+          trainingMenus: z.array(z.any()).openapi({
+            description: 'Training menus',
+          }),
+        })
+        .openapi({
+          title: 'GetTrainingRecordsResponse',
+          description: 'Response for getting training records',
+        }),
+      description: 'Training records',
+    },
+    {
+      status: 404,
+      schema: ErrorResponseSchema,
+      description: 'Member not found',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {

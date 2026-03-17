@@ -1,6 +1,60 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { ErrorResponseSchema } from '@/app/api/_schemas/member.schema';
+import { registerRoute } from '@/app/api/_scripts/register-route';
+import { z } from 'zod';
+
 import type { OtherServiceUsage, PersonalTraining, StudioProgram } from '@/types/api/member.type';
+
+// Register OpenAPI documentation for this route
+registerRoute({
+  method: 'get',
+  path: '/crm/members/{id}/service-usage',
+  summary: 'Get member service usage',
+  description: 'Get service usage information for a member',
+  tags: ['Members'],
+  parameters: [
+    {
+      name: 'id',
+      in: 'path',
+      required: true,
+      description: 'Member ID',
+      schema: { type: 'string' },
+    },
+  ],
+  responses: [
+    {
+      status: 200,
+      schema: z
+        .object({
+          personalTraining: z.any().openapi({
+            description: 'Personal training information',
+          }),
+          studioProgram: z.any().openapi({
+            description: 'Studio program information',
+          }),
+          otherServices: z.any().openapi({
+            description: 'Other services usage',
+          }),
+        })
+        .openapi({
+          title: 'GetServiceUsageResponse',
+          description: 'Response for getting service usage',
+        }),
+      description: 'Service usage information',
+    },
+    {
+      status: 404,
+      schema: ErrorResponseSchema,
+      description: 'Member not found',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
