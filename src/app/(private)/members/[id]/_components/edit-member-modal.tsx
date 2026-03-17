@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 import {
@@ -21,7 +22,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -111,30 +111,59 @@ export function EditMemberModal({ open, onOpenChange, member }: EditMemberModalP
   const queryClient = useQueryClient();
   const [confirmOpen, setConfirmOpen] = useState(false);
 
+  const defaultValues: EditMemberFormValues = {
+    name_kanji: member.basic_info.name_kanji,
+    name_kana: member.basic_info.name_kana,
+    postal_code: member.basic_info.postal_code || '',
+    prefecture: member.basic_info.prefecture || '',
+    city: member.basic_info.city || '',
+    address: member.basic_info.address || '',
+    building: member.basic_info.building || '',
+    phone: member.basic_info.phone,
+    email: member.basic_info.email,
+    emergency_contactName: member.basic_info.emergency_contact?.name || '',
+    emergency_contactRelationship: member.basic_info.emergency_contact?.relationship || '',
+    emergency_contactPhone: member.basic_info.emergency_contact?.phone || '',
+    health_status: member.health_info?.health_status || '',
+    medical_history: member.health_info?.medical_history || '',
+    allergies: member.health_info?.allergies || '',
+    exercise_restrictions: member.health_info?.exercise_restrictions || '',
+    marketingEmail: member.consent?.marketing_consent.email ?? false,
+    marketingSms: member.consent?.marketing_consent.sms ?? false,
+    marketingPush: member.consent?.marketing_consent.push ?? false,
+  };
+
   const form = useForm<EditMemberFormValues>({
     resolver: zodResolver(editMemberSchema),
-    defaultValues: {
-      name_kanji: member.basic_info.name_kanji,
-      name_kana: member.basic_info.name_kana,
-      postal_code: member.basic_info.postal_code || '',
-      prefecture: member.basic_info.prefecture || '',
-      city: member.basic_info.city || '',
-      address: member.basic_info.address || '',
-      building: member.basic_info.building || '',
-      phone: member.basic_info.phone,
-      email: member.basic_info.email,
-      emergency_contactName: member.basic_info.emergency_contact?.name || '',
-      emergency_contactRelationship: member.basic_info.emergency_contact?.relationship || '',
-      emergency_contactPhone: member.basic_info.emergency_contact?.phone || '',
-      health_status: member.health_info?.health_status || '',
-      medical_history: member.health_info?.medical_history || '',
-      allergies: member.health_info?.allergies || '',
-      exercise_restrictions: member.health_info?.exercise_restrictions || '',
-      marketingEmail: member.consent?.marketing_consent.email ?? false,
-      marketingSms: member.consent?.marketing_consent.sms ?? false,
-      marketingPush: member.consent?.marketing_consent.push ?? false,
-    },
+    defaultValues,
   });
+
+  // Reset form when modal opens so isDirty reflects changes from current member data
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        name_kanji: member.basic_info.name_kanji,
+        name_kana: member.basic_info.name_kana,
+        postal_code: member.basic_info.postal_code || '',
+        prefecture: member.basic_info.prefecture || '',
+        city: member.basic_info.city || '',
+        address: member.basic_info.address || '',
+        building: member.basic_info.building || '',
+        phone: member.basic_info.phone,
+        email: member.basic_info.email,
+        emergency_contactName: member.basic_info.emergency_contact?.name || '',
+        emergency_contactRelationship: member.basic_info.emergency_contact?.relationship || '',
+        emergency_contactPhone: member.basic_info.emergency_contact?.phone || '',
+        health_status: member.health_info?.health_status || '',
+        medical_history: member.health_info?.medical_history || '',
+        allergies: member.health_info?.allergies || '',
+        exercise_restrictions: member.health_info?.exercise_restrictions || '',
+        marketingEmail: member.consent?.marketing_consent.email ?? false,
+        marketingSms: member.consent?.marketing_consent.sms ?? false,
+        marketingPush: member.consent?.marketing_consent.push ?? false,
+      });
+    }
+  }, [open, member.basic_info.id]);
 
   const basicInfoMutation = useMutation(putCrmMembersByIdBasicInfoMutation());
   const healthInfoMutation = useMutation(putCrmMembersByIdHealthInfoMutation());
@@ -201,335 +230,339 @@ export function EditMemberModal({ open, onOpenChange, member }: EditMemberModalP
         queryClient.invalidateQueries({
           queryKey: getCrmMembersByIdQueryKey({ path: { id: memberId } } as any),
         });
+        toast.success('会員情報を保存しました');
         onOpenChange(false);
       })
       .catch((error) => {
         console.error('Failed to save member:', error);
+        toast.error('会員情報の保存に失敗しました。しばらく経ってから再度お試しください。');
       });
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>会員情報編集</DialogTitle>
-          <DialogDescription>会員情報を編集します。編集不可項目は表示のみです。</DialogDescription>
         </DialogHeader>
-
-        <Form {...form}>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* 個人情報セクション */}
-            <div className="space-y-4">
-              <h3 className="text-base font-semibold">個人情報</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="name_kanji"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>氏名（漢字）</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="name_kana"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>氏名（カナ）</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="postal_code"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>郵便番号</FormLabel>
-                      <FormControl>
-                        <Input {...field} maxLength={7} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="prefecture"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>都道府県</FormLabel>
-                      <Select value={field.value} onValueChange={field.onChange}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="選択してください" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="東京都">東京都</SelectItem>
-                          <SelectItem value="神奈川県">神奈川県</SelectItem>
-                          <SelectItem value="埼玉県">埼玉県</SelectItem>
-                          <SelectItem value="千葉県">千葉県</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="city"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>市区町村</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="address"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>番地</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="building"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>建物名</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>電話番号</FormLabel>
-                      <FormControl>
-                        <Input {...field} maxLength={11} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem className="col-span-2">
-                      <FormLabel>メールアドレス</FormLabel>
-                      <FormControl>
-                        <Input {...field} type="email" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
-            {/* 緊急連絡先セクション */}
-            <div className="space-y-4">
-              <h3 className="text-base font-semibold">緊急連絡先</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="emergency_contactName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>氏名</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="emergency_contactRelationship"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>続柄</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="emergency_contactPhone"
-                  render={({ field }) => (
-                    <FormItem className="col-span-2">
-                      <FormLabel>電話番号</FormLabel>
-                      <FormControl>
-                        <Input {...field} maxLength={11} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
-            {/* 健康情報セクション */}
-            <div className="space-y-4">
-              <h3 className="text-base font-semibold">健康情報</h3>
+        <div className="max-h-[70vh] overflow-y-auto px-2">
+          <Form {...form}>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* 個人情報セクション */}
               <div className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="health_status"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>健康状態申告</FormLabel>
-                      <FormControl>
-                        <Textarea {...field} rows={3} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="medical_history"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>既往歴・持病</FormLabel>
-                      <FormControl>
-                        <Textarea {...field} rows={3} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="allergies"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>アレルギー情報</FormLabel>
-                      <FormControl>
-                        <Textarea {...field} rows={3} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="exercise_restrictions"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>運動制限事項</FormLabel>
-                      <FormControl>
-                        <Textarea {...field} rows={3} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <h3 className="text-base font-semibold">個人情報</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="name_kanji"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>氏名（漢字）</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="name_kana"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>氏名（カナ）</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="postal_code"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>郵便番号</FormLabel>
+                        <FormControl>
+                          <Input {...field} maxLength={7} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="prefecture"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>都道府県</FormLabel>
+                        <Select value={field.value} onValueChange={field.onChange}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="選択してください" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="東京都">東京都</SelectItem>
+                            <SelectItem value="神奈川県">神奈川県</SelectItem>
+                            <SelectItem value="埼玉県">埼玉県</SelectItem>
+                            <SelectItem value="千葉県">千葉県</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>市区町村</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>番地</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="building"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>建物名</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>電話番号</FormLabel>
+                        <FormControl>
+                          <Input {...field} maxLength={11} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem className="col-span-2">
+                        <FormLabel>メールアドレス</FormLabel>
+                        <FormControl>
+                          <Input {...field} type="email" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
-            </div>
 
-            {/* マーケティング配信同意セクション */}
-            <div className="space-y-4">
-              <h3 className="text-base font-semibold">マーケティング配信同意</h3>
-              <div className="space-y-2">
-                <FormField
-                  control={form.control}
-                  name="marketingEmail"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center space-y-0 space-x-2">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value ?? false}
-                          onCheckedChange={(checked) => field.onChange(checked === true)}
-                        />
-                      </FormControl>
-                      <FormLabel className="cursor-pointer font-normal">メール配信同意</FormLabel>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="marketingSms"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center space-y-0 space-x-2">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value ?? false}
-                          onCheckedChange={(checked) => field.onChange(checked === true)}
-                        />
-                      </FormControl>
-                      <FormLabel className="cursor-pointer font-normal">SMS配信同意</FormLabel>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="marketingPush"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center space-y-0 space-x-2">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value ?? false}
-                          onCheckedChange={(checked) => field.onChange(checked === true)}
-                        />
-                      </FormControl>
-                      <FormLabel className="cursor-pointer font-normal">プッシュ通知同意</FormLabel>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              {/* 緊急連絡先セクション */}
+              <div className="space-y-4">
+                <h3 className="text-base font-semibold">緊急連絡先</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="emergency_contactName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>氏名</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="emergency_contactRelationship"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>続柄</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="emergency_contactPhone"
+                    render={({ field }) => (
+                      <FormItem className="col-span-2">
+                        <FormLabel>電話番号</FormLabel>
+                        <FormControl>
+                          <Input {...field} maxLength={11} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
-            </div>
 
-            {/* 注意事項 */}
-            <div className="bg-muted rounded-lg p-4">
-              <p className="text-muted-foreground text-sm">
-                <strong>編集不可項目:</strong>{' '}
-                会員番号、生年月日、性別、入会日などは編集できません。
-              </p>
-            </div>
+              {/* 健康情報セクション */}
+              <div className="space-y-4">
+                <h3 className="text-base font-semibold">健康情報</h3>
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="health_status"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>健康状態申告</FormLabel>
+                        <FormControl>
+                          <Textarea {...field} rows={3} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="medical_history"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>既往歴・持病</FormLabel>
+                        <FormControl>
+                          <Textarea {...field} rows={3} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="allergies"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>アレルギー情報</FormLabel>
+                        <FormControl>
+                          <Textarea {...field} rows={3} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="exercise_restrictions"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>運動制限事項</FormLabel>
+                        <FormControl>
+                          <Textarea {...field} rows={3} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
 
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                キャンセル
-              </Button>
-              <Button type="submit" disabled={isSaving}>
-                {isSaving ? '保存中...' : '保存'}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+              {/* マーケティング配信同意セクション */}
+              <div className="space-y-4">
+                <h3 className="text-base font-semibold">マーケティング配信同意</h3>
+                <div className="space-y-2">
+                  <FormField
+                    control={form.control}
+                    name="marketingEmail"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center space-y-0 space-x-2">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value ?? false}
+                            onCheckedChange={(checked) => field.onChange(checked === true)}
+                          />
+                        </FormControl>
+                        <FormLabel className="cursor-pointer font-normal">メール配信同意</FormLabel>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="marketingSms"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center space-y-0 space-x-2">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value ?? false}
+                            onCheckedChange={(checked) => field.onChange(checked === true)}
+                          />
+                        </FormControl>
+                        <FormLabel className="cursor-pointer font-normal">SMS配信同意</FormLabel>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="marketingPush"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center space-y-0 space-x-2">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value ?? false}
+                            onCheckedChange={(checked) => field.onChange(checked === true)}
+                          />
+                        </FormControl>
+                        <FormLabel className="cursor-pointer font-normal">
+                          プッシュ通知同意
+                        </FormLabel>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              {/* 注意事項 */}
+              <div className="bg-muted rounded-lg p-4">
+                <p className="text-muted-foreground text-sm">
+                  <strong>編集不可項目:</strong>{' '}
+                  会員番号、生年月日、性別、入会日などは編集できません。
+                </p>
+              </div>
+
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                  キャンセル
+                </Button>
+                <Button type="submit" disabled={isSaving || !form.formState.isDirty}>
+                  {isSaving ? '保存中...' : '保存'}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </div>
       </DialogContent>
 
       {/* 保存確認モーダル */}

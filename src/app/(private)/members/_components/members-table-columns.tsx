@@ -163,14 +163,7 @@ export function MembersTableColumns({
           onSort={onSortChange}
         />
       ),
-      cell: ({ row }) => (
-        <button
-          onClick={() => row.original.id && onMemberClick(row.original.id)}
-          className="text-left text-blue-600 hover:underline"
-        >
-          {row.original.member_number || '-'}
-        </button>
-      ),
+      cell: ({ row }) => row.original.member_number || '-',
       meta: {
         label: '会員番号',
       },
@@ -188,7 +181,6 @@ export function MembersTableColumns({
       ),
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          {row.original.has_unpaid && <AlertOctagon className="text-destructive size-4" />}
           <span>{row.original.name_kanji || '-'}</span>
         </div>
       ),
