@@ -3,10 +3,10 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, SquareDashed } from 'lucide-react';
 
+import { DataTable } from '@/components/common/data-table';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { DataTable } from '@/components/ui/data-table';
 
 interface Reservation {
   id: string;

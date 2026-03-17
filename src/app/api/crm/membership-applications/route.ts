@@ -184,7 +184,7 @@ export async function GET(request: NextRequest) {
         comparison = new Date(a.applied_at).getTime() - new Date(b.applied_at).getTime();
       } else if (sort_by === 'risk_score') {
         comparison = a.risk_score - b.risk_score;
-      } else if (sort_by === 'deadline') {
+      } else if (sort_by === 'pending_deadline') {
         const aDeadline = a.pending_deadline || a.payment_failed_deadline || '';
         const bDeadline = b.pending_deadline || b.payment_failed_deadline || '';
         comparison = aDeadline.localeCompare(bDeadline);

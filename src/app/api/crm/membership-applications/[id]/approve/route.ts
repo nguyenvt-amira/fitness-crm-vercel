@@ -57,7 +57,13 @@ registerRoute({
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const body = await request.json();
+    // Body is optional for this endpoint; handle empty body safely.
+    let body: unknown = {};
+    try {
+      body = await request.json();
+    } catch {
+      body = {};
+    }
 
     // Validate request body with Zod
     const validationResult = ApproveRequestSchema.safeParse(body);

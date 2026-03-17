@@ -132,7 +132,7 @@ export const GetMembershipApplicationsQuerySchema = z
       description: 'Filter by risk reason',
     }),
     sort_by: z
-      .enum(['applied_at', 'risk_score', 'deadline'])
+      .enum(['applied_at', 'risk_score', 'pending_deadline'])
       .optional()
       .default('applied_at')
       .openapi({

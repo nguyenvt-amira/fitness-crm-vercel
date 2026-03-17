@@ -5,14 +5,14 @@ import { Suspense, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { Table as TableInstance } from '@tanstack/react-table';
+import { Table as TableInstance, getSortedRowModel } from '@tanstack/react-table';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { VisibilityState } from '@tanstack/react-table';
 import { Download, User } from 'lucide-react';
 
 import { BreadcrumbNav } from '@/components/common/breadcrumb-nav';
+import { DataTable } from '@/components/common/data-table';
 import { Button } from '@/components/ui/button';
-import { DataTable } from '@/components/ui/data-table';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -168,8 +168,12 @@ function MembersPageContent() {
             totalRowsFetched={totalFetched}
             fetchNextPage={fetchNextPage}
             hasNextPage={hasNextPage}
-            columnVisibility={columnVisibility}
-            setColumnVisibility={setColumnVisibility}
+            tableOptions={{
+              onColumnVisibilityChange: setColumnVisibility,
+              state: {
+                columnVisibility,
+              },
+            }}
             onRowClick={(row) => {
               if (row.id) {
                 window.location.href = `/members/${row.id}`;

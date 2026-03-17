@@ -4,9 +4,9 @@ import { Suspense } from 'react';
 
 import { Download } from 'lucide-react';
 
+import { DataTable } from '@/components/common/data-table';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { DataTable } from '@/components/ui/data-table';
 
 import {
   HistoriesFilterCard,

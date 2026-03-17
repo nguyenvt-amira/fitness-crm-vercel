@@ -3,9 +3,9 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, SquareDashed } from 'lucide-react';
 
+import { DataTable } from '@/components/common/data-table';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { DataTable } from '@/components/ui/data-table';
 
 interface HandoverNote {
   id: string;

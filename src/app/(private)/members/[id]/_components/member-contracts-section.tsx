@@ -3,9 +3,9 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, Pencil, Plus } from 'lucide-react';
 
+import { DataTable } from '@/components/common/data-table';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { DataTable } from '@/components/ui/data-table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export type MemberDetailsTabItem = {
