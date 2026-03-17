@@ -85,18 +85,590 @@ export type Pagination = {
     total_pages?: number;
 };
 
+export type EmergencyContact = {
+    /**
+     * 緊急連絡先氏名
+     */
+    name: string;
+    /**
+     * 続柄
+     */
+    relationship: string;
+    /**
+     * 電話番号
+     */
+    phone: string;
+};
+
+export type MemberBasicInfo = {
+    id: string;
+    /**
+     * 会員番号
+     */
+    member_number: string;
+    /**
+     * 氏名（漢字）
+     */
+    name_kanji: string;
+    /**
+     * 氏名（カナ）
+     */
+    name_kana: string;
+    /**
+     * 生年月日
+     */
+    birthday: string;
+    /**
+     * 年齢
+     */
+    age: number;
+    /**
+     * 性別
+     */
+    gender: 'male' | 'female' | 'other';
+    /**
+     * 郵便番号
+     */
+    postal_code?: string;
+    /**
+     * 都道府県
+     */
+    prefecture?: string;
+    /**
+     * 市区町村
+     */
+    city?: string;
+    /**
+     * 番地
+     */
+    address?: string;
+    /**
+     * 建物名
+     */
+    building?: string;
+    /**
+     * 電話番号
+     */
+    phone: string;
+    /**
+     * メールアドレス
+     */
+    email: string;
+    emergency_contact?: EmergencyContact;
+};
+
+export type MemberProfile = {
+    /**
+     * 会員種別
+     */
+    member_type: 'regular' | 'family' | 'corporate' | 'company_discount';
+    /**
+     * 会員ステータス
+     */
+    status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
+    /**
+     * 店舗ID
+     */
+    store_id: string;
+    /**
+     * 所属店舗
+     */
+    store_name: string;
+    /**
+     * 所属ブランド
+     */
+    brand: 'joyfit' | 'fit365';
+    /**
+     * 入会日
+     */
+    joined_at: string;
+    /**
+     * 退会日
+     */
+    withdrawn_at?: string | null;
+    /**
+     * ブラックリスト登録状況
+     */
+    is_black_listed: boolean;
+};
+
+export type MemberEkyc = {
+    /**
+     * eKYC検証結果
+     */
+    verified: boolean;
+    /**
+     * 検証日時
+     */
+    verified_at?: string;
+    /**
+     * 本人確認書類の種類
+     */
+    document_type?: string;
+    /**
+     * 顔写真URL
+     */
+    photoUrl?: string;
+};
+
+export type MemberConsent = {
+    member_agreement: {
+        version: string;
+        agreed_at: string;
+    };
+    privacy_policy: {
+        version: string;
+        agreed_at: string;
+    };
+    optional_agreement?: {
+        version?: string;
+        agreed_at?: string;
+    };
+    marketing_consent: {
+        email: boolean;
+        sms: boolean;
+        push: boolean;
+    };
+};
+
+export type MemberHealthInfo = {
+    /**
+     * 健康状態申告
+     */
+    health_status?: string;
+    /**
+     * 既往歴・持病
+     */
+    medical_history?: string;
+    /**
+     * アレルギー情報
+     */
+    allergies?: string;
+    /**
+     * 運動制限事項
+     */
+    exercise_restrictions?: string;
+    /**
+     * その他特記事項
+     */
+    other_notes?: string;
+};
+
+export type Member = {
+    basic_info: MemberBasicInfo;
+    profile: MemberProfile;
+    ekyc?: MemberEkyc;
+    consent?: MemberConsent;
+    health_info?: MemberHealthInfo;
+};
+
 export type GetMemberDetailResponse = {
-    member?: {
+    member: Member;
+};
+
+/**
+ * GET /crm/members/{id}/basic-info レスポンス（基本情報タブ用）
+ */
+export type GetBasicInfoResponse = {
+    member: Member;
+};
+
+/**
+ * PUT /crm/members/{id}/basic-info レスポンス
+ */
+export type PutBasicInfoResponse = {
+    success?: boolean;
+    id?: string;
+    /**
+     * 更新されたフィールド
+     */
+    updated?: {
         [key: string]: unknown;
     };
 };
 
+/**
+ * PUT /crm/members/{id}/basic-info リクエスト（個人情報の更新）
+ */
 export type UpdateBasicInfoRequest = {
     name_kanji?: string;
     name_kana?: string;
     postal_code?: string;
+    prefecture?: string;
+    city?: string;
+    address?: string;
+    building?: string;
     phone?: string;
     email?: string;
+    emergency_contact?: EmergencyContact;
+};
+
+/**
+ * PUT /crm/members/{id}/health-info リクエスト
+ */
+export type UpdateHealthInfoRequest = {
+    health_status?: string;
+    medical_history?: string;
+    allergies?: string;
+    exercise_restrictions?: string;
+    other_notes?: string;
+};
+
+export type PutHealthInfoResponse = {
+    success?: boolean;
+    health_info?: MemberHealthInfo;
+};
+
+/**
+ * PUT /crm/members/{id}/marketing-consent リクエスト
+ */
+export type UpdateMarketingConsentRequest = {
+    email?: boolean;
+    sms?: boolean;
+    push?: boolean;
+};
+
+export type PutMarketingConsentResponse = {
+    success?: boolean;
+};
+
+export type PointAdjustmentResponse = {
+    success?: boolean;
+    new_balance?: number;
+};
+
+export type ContractChange = {
+    changed_at?: string;
+    previous_plan?: string;
+    new_plan?: string;
+    reason?: string;
+};
+
+export type MainContract = {
+    /**
+     * 現在の主契約プラン名
+     */
+    plan_name?: string;
+    /**
+     * 月会費（税込）
+     */
+    monthly_fee?: number;
+    start_date?: string;
+    /**
+     * 違約金発生期間終了日
+     */
+    penalty_period_end?: string;
+    change_history?: Array<ContractChange>;
+};
+
+export type OptionContract = {
+    id?: string;
+    /**
+     * オプション名
+     */
+    name?: string;
+    /**
+     * 月額料金
+     */
+    monthly_fee?: number;
+    start_date?: string;
+    /**
+     * 次回請求日
+     */
+    next_billing_date?: string;
+};
+
+export type OptionChangeHistoryItem = {
+    changed_at?: string;
+    option_name?: string;
+    action_type?: 'add' | 'remove' | 'change';
+    notes?: string;
+};
+
+export type SpecialContractItem = {
+    enrolled?: boolean;
+    start_date?: string;
+    /**
+     * 請求月
+     */
+    applied_month?: string;
+};
+
+export type SpecialContracts = {
+    anshin_support?: SpecialContractItem;
+    mutual_use?: SpecialContractItem;
+    security_fee?: SpecialContractItem;
+    maintenance_fee?: SpecialContractItem;
+};
+
+export type PaymentRecord = {
+    date?: string;
+    amount?: number;
+    breakdown?: string;
+    status?: 'success' | 'failed';
+    notes?: string;
+};
+
+export type PaymentInfo = {
+    method?: 'credit_card' | 'bank_transfer';
+    /**
+     * マスク済み、下4桁
+     */
+    card_number?: string;
+    cardholder_name?: string;
+    expiry_date?: string;
+    billing_day?: number;
+    last_payment_date?: string;
+    last_payment_amount?: number;
+    status?: 'normal' | 'error';
+    payment_history?: Array<PaymentRecord>;
+};
+
+export type UnpaidItem = {
+    month?: string;
+    amount?: number;
+    reason?: string;
+    reminder_status?: string;
+};
+
+export type CampaignActiveItem = {
+    campaign_name?: string;
+    period_start?: string;
+    period_end?: string;
+    discount_content?: string;
+    remaining_days?: number;
+};
+
+export type CampaignHistoryItem = {
+    applied_at?: string;
+    campaign_name?: string;
+    content?: string;
+    status?: 'active' | 'expired' | 'cancelled';
+};
+
+/**
+ * 契約情報タブ用レスポンス
+ */
+export type GetContractsResponse = {
+    main_contract?: MainContract;
+    option_contracts?: Array<OptionContract>;
+    option_change_history?: Array<OptionChangeHistoryItem>;
+    special_contracts?: SpecialContracts;
+    payment_info?: PaymentInfo;
+    unpaid_info?: {
+        items?: Array<UnpaidItem>;
+    };
+    campaigns?: {
+        active?: Array<CampaignActiveItem>;
+        history?: Array<CampaignHistoryItem>;
+    };
+};
+
+/**
+ * ブランド別ポイント保有（member_points に紐づく想定）。FIT365=ベアレージ、JOYFIT=エンジョイ
+ */
+export type BrandPointBalance = {
+    /**
+     * 現在の保有ポイント
+     */
+    current_balance?: number;
+    /**
+     * 累計獲得ポイント
+     */
+    total_earned?: number;
+    /**
+     * 累計消費ポイント
+     */
+    total_spent?: number;
+    /**
+     * 有効期限（none=無期限）
+     */
+    expiry?: string;
+    /**
+     * 利用先
+     */
+    usage_destination?: string;
+};
+
+/**
+ * 会員ランク情報
+ */
+export type MemberRankInfo = {
+    /**
+     * 現在のランク（ブロンズ/シルバー/ゴールド/プラチナなど）
+     */
+    current?: string;
+    /**
+     * ランク特典内容
+     */
+    benefits?: string;
+    next_rank?: {
+        /**
+         * 次回ランクアップ必要ポイント
+         */
+        required_points?: number;
+        /**
+         * 進捗率%
+         */
+        progress?: number;
+    };
+};
+
+/**
+ * ポイント獲得履歴（member_point_histories type=earn）
+ */
+export type PointEarnRecord = {
+    id?: string;
+    /**
+     * 獲得日時
+     */
+    date?: string;
+    /**
+     * 獲得理由（来館/友達紹介/キャンペーン/誕生日ボーナスなど）
+     */
+    reason?: string;
+    points?: number;
+    /**
+     * 詳細・備考
+     */
+    notes?: string;
+};
+
+/**
+ * ポイント消費履歴（member_point_histories type=spend）
+ */
+export type PointSpendRecord = {
+    id?: string;
+    /**
+     * 消費日時
+     */
+    date?: string;
+    /**
+     * 消費内容（月会費充当/EC決済/商品交換/ギフトカード交換など）
+     */
+    content?: string;
+    points?: number;
+    /**
+     * 詳細・備考
+     */
+    notes?: string;
+};
+
+/**
+ * ポイント調整履歴（member_point_histories type=adjust）
+ */
+export type PointAdjustmentRecord = {
+    id?: string;
+    /**
+     * 調整日時
+     */
+    date?: string;
+    /**
+     * 手動付与/手動減算
+     */
+    adjustment_type?: 'add' | 'subtract';
+    points?: number;
+    /**
+     * 調整理由
+     */
+    reason?: string;
+    /**
+     * 実施スタッフ
+     */
+    adjusted_by?: string;
+};
+
+/**
+ * GET /crm/members/{id}/points レスポンス（ポイントタブ用）。member_points / member_point_histories に相当
+ */
+export type GetPointsResponse = {
+    fit365?: BrandPointBalance;
+    joyfit?: BrandPointBalance;
+    rank?: MemberRankInfo;
+    /**
+     * ポイント獲得履歴（最近20件・全件表示可）
+     */
+    earn_history?: Array<PointEarnRecord>;
+    /**
+     * ポイント消費履歴（最近20件・全件表示可）
+     */
+    spend_history?: Array<PointSpendRecord>;
+    /**
+     * ポイント調整履歴（該当する場合）
+     */
+    adjustment_history?: Array<PointAdjustmentRecord>;
+};
+
+export type PostPointsAdjustResponse = {
+    success?: boolean;
+    new_balance?: number;
+};
+
+export type GetChangeHistoryResponse = {
+    items?: Array<{
+        id?: string;
+        date?: string;
+        event_type?: string;
+        content?: string;
+    }>;
+};
+
+export type GetRelationshipsResponse = {
+    family?: {
+        [key: string]: unknown;
+    };
+    corporate?: {
+        [key: string]: unknown;
+    };
+    referral?: {
+        [key: string]: unknown;
+    };
+};
+
+export type GetServiceUsageResponse = {
+    personal_training?: {
+        [key: string]: unknown;
+    };
+    studio_programs?: {
+        [key: string]: unknown;
+    };
+    other_services?: {
+        [key: string]: unknown;
+    };
+};
+
+export type GetTrainingRecordsResponse = {
+    summary?: {
+        [key: string]: unknown;
+    };
+    strength_records?: Array<unknown>;
+    cardio_records?: Array<unknown>;
+    body_records?: Array<unknown>;
+};
+
+export type GetUsageHistoryResponse = {
+    summary?: {
+        [key: string]: unknown;
+    };
+    visits?: Array<unknown>;
+    store_usage?: Array<unknown>;
+};
+
+export type ExportMembersResponse = {
+    success?: boolean;
+    download_url?: string;
+    expires_at?: string;
+};
+
+export type RegisterRequest = {
+    email?: string;
+    password?: string;
+    name?: string;
+};
+
+export type RegisterResponse = {
+    success?: boolean;
+    user_id?: string;
 };
 
 export type PointAdjustmentRequest = {
@@ -347,19 +919,33 @@ export type GetCrmMembersByIdResponse = GetCrmMembersByIdResponses[keyof GetCrmM
 export type GetCrmMembersByIdBasicInfoData = {
     body?: never;
     path: {
+        /**
+         * 会員ID
+         */
         id: string;
     };
     query?: never;
     url: '/crm/members/{id}/basic-info';
 };
 
+export type GetCrmMembersByIdBasicInfoErrors = {
+    /**
+     * Member not found
+     */
+    404: Error;
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type GetCrmMembersByIdBasicInfoError = GetCrmMembersByIdBasicInfoErrors[keyof GetCrmMembersByIdBasicInfoErrors];
+
 export type GetCrmMembersByIdBasicInfoResponses = {
     /**
      * Success
      */
-    200: {
-        [key: string]: unknown;
-    };
+    200: GetBasicInfoResponse;
 };
 
 export type GetCrmMembersByIdBasicInfoResponse = GetCrmMembersByIdBasicInfoResponses[keyof GetCrmMembersByIdBasicInfoResponses];
@@ -367,58 +953,119 @@ export type GetCrmMembersByIdBasicInfoResponse = GetCrmMembersByIdBasicInfoRespo
 export type PutCrmMembersByIdBasicInfoData = {
     body: UpdateBasicInfoRequest;
     path: {
+        /**
+         * 会員ID
+         */
         id: string;
     };
     query?: never;
     url: '/crm/members/{id}/basic-info';
 };
 
+export type PutCrmMembersByIdBasicInfoErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
+    /**
+     * Member not found
+     */
+    404: Error;
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type PutCrmMembersByIdBasicInfoError = PutCrmMembersByIdBasicInfoErrors[keyof PutCrmMembersByIdBasicInfoErrors];
+
 export type PutCrmMembersByIdBasicInfoResponses = {
     /**
      * Success
      */
-    200: unknown;
+    200: PutBasicInfoResponse;
 };
+
+export type PutCrmMembersByIdBasicInfoResponse = PutCrmMembersByIdBasicInfoResponses[keyof PutCrmMembersByIdBasicInfoResponses];
 
 export type GetCrmMembersByIdContractsData = {
     body?: never;
     path: {
+        /**
+         * 会員ID
+         */
         id: string;
     };
     query?: never;
     url: '/crm/members/{id}/contracts';
 };
 
+export type GetCrmMembersByIdContractsErrors = {
+    /**
+     * Member not found
+     */
+    404: Error;
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type GetCrmMembersByIdContractsError = GetCrmMembersByIdContractsErrors[keyof GetCrmMembersByIdContractsErrors];
+
 export type GetCrmMembersByIdContractsResponses = {
     /**
      * Success
      */
-    200: unknown;
+    200: GetContractsResponse;
 };
+
+export type GetCrmMembersByIdContractsResponse = GetCrmMembersByIdContractsResponses[keyof GetCrmMembersByIdContractsResponses];
 
 export type GetCrmMembersByIdPointsData = {
     body?: never;
     path: {
+        /**
+         * 会員ID
+         */
         id: string;
     };
     query?: never;
     url: '/crm/members/{id}/points';
 };
 
+export type GetCrmMembersByIdPointsErrors = {
+    /**
+     * Member not found
+     */
+    404: Error;
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type GetCrmMembersByIdPointsError = GetCrmMembersByIdPointsErrors[keyof GetCrmMembersByIdPointsErrors];
+
 export type GetCrmMembersByIdPointsResponses = {
     /**
      * Success
      */
-    200: unknown;
+    200: GetPointsResponse;
 };
 
+export type GetCrmMembersByIdPointsResponse = GetCrmMembersByIdPointsResponses[keyof GetCrmMembersByIdPointsResponses];
+
 export type PostCrmMembersByIdPointsData = {
+    /**
+     * ポイント操作パラメータ
+     */
     body: {
         [key: string]: unknown;
     };
     path: {
         /**
-         * id parameter
+         * 会員ID
          */
         id: string;
     };
@@ -427,6 +1074,10 @@ export type PostCrmMembersByIdPointsData = {
 };
 
 export type PostCrmMembersByIdPointsErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
     /**
      * Internal server error
      */
@@ -439,9 +1090,7 @@ export type PostCrmMembersByIdPointsResponses = {
     /**
      * Success
      */
-    200: {
-        [key: string]: unknown;
-    };
+    200: GetPointsResponse;
 };
 
 export type PostCrmMembersByIdPointsResponse = PostCrmMembersByIdPointsResponses[keyof PostCrmMembersByIdPointsResponses];
@@ -449,18 +1098,40 @@ export type PostCrmMembersByIdPointsResponse = PostCrmMembersByIdPointsResponses
 export type PostCrmMembersByIdPointsAdjustData = {
     body: PointAdjustmentRequest;
     path: {
+        /**
+         * 会員ID
+         */
         id: string;
     };
     query?: never;
     url: '/crm/members/{id}/points/adjust';
 };
 
+export type PostCrmMembersByIdPointsAdjustErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
+    /**
+     * Member not found
+     */
+    404: Error;
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type PostCrmMembersByIdPointsAdjustError = PostCrmMembersByIdPointsAdjustErrors[keyof PostCrmMembersByIdPointsAdjustErrors];
+
 export type PostCrmMembersByIdPointsAdjustResponses = {
     /**
      * Success
      */
-    200: unknown;
+    200: PointAdjustmentResponse;
 };
+
+export type PostCrmMembersByIdPointsAdjustResponse = PostCrmMembersByIdPointsAdjustResponses[keyof PostCrmMembersByIdPointsAdjustResponses];
 
 export type PostCrmMembersByIdMemosData = {
     body: CreateMemoRequest;
@@ -503,18 +1174,33 @@ export type PostCrmMembersExportData = {
     url: '/crm/members/export';
 };
 
+export type PostCrmMembersExportErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
+    /**
+     * Internal server error
+     */
+    500: Error;
+};
+
+export type PostCrmMembersExportError = PostCrmMembersExportErrors[keyof PostCrmMembersExportErrors];
+
 export type PostCrmMembersExportResponses = {
     /**
      * Success
      */
-    200: unknown;
+    200: ExportMembersResponse;
 };
+
+export type PostCrmMembersExportResponse = PostCrmMembersExportResponses[keyof PostCrmMembersExportResponses];
 
 export type GetCrmMembersByIdChangeHistoryData = {
     body?: never;
     path: {
         /**
-         * id parameter
+         * 会員ID
          */
         id: string;
     };
@@ -523,6 +1209,10 @@ export type GetCrmMembersByIdChangeHistoryData = {
 };
 
 export type GetCrmMembersByIdChangeHistoryErrors = {
+    /**
+     * Member not found
+     */
+    404: Error;
     /**
      * Internal server error
      */
@@ -535,9 +1225,7 @@ export type GetCrmMembersByIdChangeHistoryResponses = {
     /**
      * Success
      */
-    200: {
-        [key: string]: unknown;
-    };
+    200: GetChangeHistoryResponse;
 };
 
 export type GetCrmMembersByIdChangeHistoryResponse = GetCrmMembersByIdChangeHistoryResponses[keyof GetCrmMembersByIdChangeHistoryResponses];
@@ -573,12 +1261,10 @@ export type GetCrmMembersByIdCommunicationsResponses = {
 export type GetCrmMembersByIdCommunicationsResponse = GetCrmMembersByIdCommunicationsResponses[keyof GetCrmMembersByIdCommunicationsResponses];
 
 export type PutCrmMembersByIdHealthInfoData = {
-    body: {
-        [key: string]: unknown;
-    };
+    body: UpdateHealthInfoRequest;
     path: {
         /**
-         * id parameter
+         * 会員ID
          */
         id: string;
     };
@@ -587,6 +1273,14 @@ export type PutCrmMembersByIdHealthInfoData = {
 };
 
 export type PutCrmMembersByIdHealthInfoErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
+    /**
+     * Member not found
+     */
+    404: Error;
     /**
      * Internal server error
      */
@@ -599,20 +1293,16 @@ export type PutCrmMembersByIdHealthInfoResponses = {
     /**
      * Success
      */
-    200: {
-        [key: string]: unknown;
-    };
+    200: PutHealthInfoResponse;
 };
 
 export type PutCrmMembersByIdHealthInfoResponse = PutCrmMembersByIdHealthInfoResponses[keyof PutCrmMembersByIdHealthInfoResponses];
 
 export type PutCrmMembersByIdMarketingConsentData = {
-    body: {
-        [key: string]: unknown;
-    };
+    body: UpdateMarketingConsentRequest;
     path: {
         /**
-         * id parameter
+         * 会員ID
          */
         id: string;
     };
@@ -621,6 +1311,14 @@ export type PutCrmMembersByIdMarketingConsentData = {
 };
 
 export type PutCrmMembersByIdMarketingConsentErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
+    /**
+     * Member not found
+     */
+    404: Error;
     /**
      * Internal server error
      */
@@ -633,9 +1331,7 @@ export type PutCrmMembersByIdMarketingConsentResponses = {
     /**
      * Success
      */
-    200: {
-        [key: string]: unknown;
-    };
+    200: PutMarketingConsentResponse;
 };
 
 export type PutCrmMembersByIdMarketingConsentResponse = PutCrmMembersByIdMarketingConsentResponses[keyof PutCrmMembersByIdMarketingConsentResponses];
@@ -722,7 +1418,7 @@ export type GetCrmMembersByIdRelationshipsData = {
     body?: never;
     path: {
         /**
-         * id parameter
+         * 会員ID
          */
         id: string;
     };
@@ -731,6 +1427,10 @@ export type GetCrmMembersByIdRelationshipsData = {
 };
 
 export type GetCrmMembersByIdRelationshipsErrors = {
+    /**
+     * Member not found
+     */
+    404: Error;
     /**
      * Internal server error
      */
@@ -743,9 +1443,7 @@ export type GetCrmMembersByIdRelationshipsResponses = {
     /**
      * Success
      */
-    200: {
-        [key: string]: unknown;
-    };
+    200: GetRelationshipsResponse;
 };
 
 export type GetCrmMembersByIdRelationshipsResponse = GetCrmMembersByIdRelationshipsResponses[keyof GetCrmMembersByIdRelationshipsResponses];
@@ -754,7 +1452,7 @@ export type GetCrmMembersByIdServiceUsageData = {
     body?: never;
     path: {
         /**
-         * id parameter
+         * 会員ID
          */
         id: string;
     };
@@ -763,6 +1461,10 @@ export type GetCrmMembersByIdServiceUsageData = {
 };
 
 export type GetCrmMembersByIdServiceUsageErrors = {
+    /**
+     * Member not found
+     */
+    404: Error;
     /**
      * Internal server error
      */
@@ -775,9 +1477,7 @@ export type GetCrmMembersByIdServiceUsageResponses = {
     /**
      * Success
      */
-    200: {
-        [key: string]: unknown;
-    };
+    200: GetServiceUsageResponse;
 };
 
 export type GetCrmMembersByIdServiceUsageResponse = GetCrmMembersByIdServiceUsageResponses[keyof GetCrmMembersByIdServiceUsageResponses];
@@ -786,7 +1486,7 @@ export type GetCrmMembersByIdTrainingRecordsData = {
     body?: never;
     path: {
         /**
-         * id parameter
+         * 会員ID
          */
         id: string;
     };
@@ -795,6 +1495,10 @@ export type GetCrmMembersByIdTrainingRecordsData = {
 };
 
 export type GetCrmMembersByIdTrainingRecordsErrors = {
+    /**
+     * Member not found
+     */
+    404: Error;
     /**
      * Internal server error
      */
@@ -807,9 +1511,7 @@ export type GetCrmMembersByIdTrainingRecordsResponses = {
     /**
      * Success
      */
-    200: {
-        [key: string]: unknown;
-    };
+    200: GetTrainingRecordsResponse;
 };
 
 export type GetCrmMembersByIdTrainingRecordsResponse = GetCrmMembersByIdTrainingRecordsResponses[keyof GetCrmMembersByIdTrainingRecordsResponses];
@@ -818,7 +1520,7 @@ export type GetCrmMembersByIdUsageHistoryData = {
     body?: never;
     path: {
         /**
-         * id parameter
+         * 会員ID
          */
         id: string;
     };
@@ -827,6 +1529,10 @@ export type GetCrmMembersByIdUsageHistoryData = {
 };
 
 export type GetCrmMembersByIdUsageHistoryErrors = {
+    /**
+     * Member not found
+     */
+    404: Error;
     /**
      * Internal server error
      */
@@ -839,9 +1545,7 @@ export type GetCrmMembersByIdUsageHistoryResponses = {
     /**
      * Success
      */
-    200: {
-        [key: string]: unknown;
-    };
+    200: GetUsageHistoryResponse;
 };
 
 export type GetCrmMembersByIdUsageHistoryResponse = GetCrmMembersByIdUsageHistoryResponses[keyof GetCrmMembersByIdUsageHistoryResponses];
@@ -874,15 +1578,17 @@ export type GetOpenapiJsonResponses = {
 export type GetOpenapiJsonResponse = GetOpenapiJsonResponses[keyof GetOpenapiJsonResponses];
 
 export type PostAuthRegisterData = {
-    body: {
-        [key: string]: unknown;
-    };
+    body: RegisterRequest;
     path?: never;
     query?: never;
     url: '/auth/register';
 };
 
 export type PostAuthRegisterErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
     /**
      * Internal server error
      */
@@ -895,9 +1601,7 @@ export type PostAuthRegisterResponses = {
     /**
      * Success
      */
-    200: {
-        [key: string]: unknown;
-    };
+    200: RegisterResponse;
 };
 
 export type PostAuthRegisterResponse = PostAuthRegisterResponses[keyof PostAuthRegisterResponses];
@@ -957,15 +1661,17 @@ export type GetCrmAutoApprovalSettingsResponses = {
 export type GetCrmAutoApprovalSettingsResponse = GetCrmAutoApprovalSettingsResponses[keyof GetCrmAutoApprovalSettingsResponses];
 
 export type PutCrmAutoApprovalSettingsData = {
-    body: {
-        [key: string]: unknown;
-    };
+    body?: never;
     path?: never;
     query?: never;
     url: '/crm/auto-approval/settings';
 };
 
 export type PutCrmAutoApprovalSettingsErrors = {
+    /**
+     * Bad request
+     */
+    400: Error;
     /**
      * Internal server error
      */
@@ -978,9 +1684,7 @@ export type PutCrmAutoApprovalSettingsResponses = {
     /**
      * Success
      */
-    200: {
-        [key: string]: unknown;
-    };
+    200: RegisterResponse;
 };
 
 export type PutCrmAutoApprovalSettingsResponse = PutCrmAutoApprovalSettingsResponses[keyof PutCrmAutoApprovalSettingsResponses];
