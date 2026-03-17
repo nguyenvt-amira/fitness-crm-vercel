@@ -169,13 +169,6 @@ export default function MemberDetailPage() {
     console.log('Withdraw membership');
   };
 
-  const handleSaveMember = async (data: Partial<typeof member>) => {
-    // TODO: Implement API call to update member
-    console.log('Saving member:', data);
-    // Mock API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  };
-
   const handleSaveMemo = (data: { type: 'caution' | 'vip' | 'other'; content: string }) => {
     const onSuccess = () => {
       setShowMemoModal(false);
@@ -368,12 +361,7 @@ export default function MemberDetailPage() {
       </div>
 
       {/* Modals */}
-      <EditMemberModal
-        open={showEditModal}
-        onOpenChange={setShowEditModal}
-        member={member}
-        onSave={handleSaveMember}
-      />
+      <EditMemberModal open={showEditModal} onOpenChange={setShowEditModal} member={member} />
       <MemoModal
         open={showMemoModal}
         onOpenChange={handleMemoModalOpenChange}
