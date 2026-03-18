@@ -517,6 +517,103 @@ export const BulkApproveResponseSchema = z
   });
 
 /**
+ * Bulk Reject Request Schema
+ */
+export const BulkRejectRequestSchema = z
+  .object({
+    application_ids: z
+      .array(z.string())
+      .min(1, 'At least one application ID is required')
+      .openapi({
+        example: ['APP-00001', 'APP-00002'],
+        description: 'List of application IDs to reject',
+      }),
+    rejection_reason: z.string().min(1, 'Rejection reason is required').openapi({
+      example: 'リスクスコアが高すぎます',
+      description: 'Rejection reason',
+    }),
+    staff_id: z.string().optional().openapi({
+      example: 'staff-001',
+      description: 'Staff ID who rejected',
+    }),
+  })
+  .openapi({
+    title: 'BulkRejectRequest',
+    description: 'Request payload for bulk rejection',
+  });
+
+/**
+ * Bulk Reject Result Schema
+ */
+export const BulkRejectResultSchema = z
+  .object({
+    application_id: z.string().openapi({
+      example: 'APP-00001',
+      description: 'Application ID',
+    }),
+    rejected: z.boolean().openapi({
+      example: true,
+      description: 'Whether the application was rejected',
+    }),
+    rejected_at: z.string().datetime().optional().openapi({
+      example: '2024-01-15T12:30:00Z',
+      description: 'Rejection date and time',
+    }),
+    error: z.string().optional().openapi({
+      example: 'Application not found',
+      description: 'Error message if rejection failed for this item',
+    }),
+  })
+  .openapi({
+    title: 'BulkRejectResult',
+    description: 'Bulk reject result for a single application',
+  });
+
+/**
+ * Bulk Reject Response Schema
+ */
+export const BulkRejectResponseSchema = z
+  .object({
+    success: z.boolean().openapi({
+      example: true,
+      description: 'Whether the operation was successful',
+    }),
+    results: z.array(BulkRejectResultSchema).openapi({
+      description: 'Bulk reject results',
+    }),
+    summary: z
+      .object({
+        total: z.number().openapi({
+          example: 2,
+          description: 'Total number of applications',
+        }),
+        rejected: z.number().openapi({
+          example: 2,
+          description: 'Number of rejected applications',
+        }),
+        failed: z.number().openapi({
+          example: 0,
+          description: 'Number of failed applications',
+        }),
+      })
+      .openapi({
+        description: 'Summary of bulk reject results',
+      }),
+    rejection_reason: z.string().openapi({
+      example: 'リスクスコアが高すぎます',
+      description: 'Rejection reason',
+    }),
+    rejected_by: z.string().openapi({
+      example: 'staff-001',
+      description: 'Staff ID who rejected',
+    }),
+  })
+  .openapi({
+    title: 'BulkRejectResponse',
+    description: 'Response for bulk reject operation',
+  });
+
+/**
  * Get Application Detail Response Schema
  */
 export const GetApplicationDetailResponseSchema = z
@@ -795,6 +892,8 @@ export type GetSummaryQuery = z.infer<typeof GetSummaryQuerySchema>;
 export type GetSummaryResponse = z.infer<typeof GetSummaryResponseSchema>;
 export type BulkApproveRequest = z.infer<typeof BulkApproveRequestSchema>;
 export type BulkApproveResponse = z.infer<typeof BulkApproveResponseSchema>;
+export type BulkRejectRequest = z.infer<typeof BulkRejectRequestSchema>;
+export type BulkRejectResponse = z.infer<typeof BulkRejectResponseSchema>;
 export type GetApplicationDetailResponse = z.infer<typeof GetApplicationDetailResponseSchema>;
 export type ApproveRequest = z.infer<typeof ApproveRequestSchema>;
 export type ApproveResponse = z.infer<typeof ApproveResponseSchema>;

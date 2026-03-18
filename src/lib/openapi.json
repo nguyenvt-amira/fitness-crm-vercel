@@ -3503,7 +3503,7 @@
           },
           "sort_by": {
             "type": "string",
-            "enum": ["applied_at", "risk_score", "deadline"],
+            "enum": ["applied_at", "risk_score", "pending_deadline"],
             "default": "applied_at",
             "example": "applied_at",
             "description": "Sort field"
@@ -4279,6 +4279,112 @@
         "required": ["success", "results", "summary"],
         "title": "BulkApproveResponse",
         "description": "Response for bulk approve operation"
+      },
+      "BulkRejectRequest": {
+        "type": "object",
+        "properties": {
+          "application_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "example": ["APP-00001", "APP-00002"],
+            "description": "List of application IDs to reject"
+          },
+          "rejection_reason": {
+            "type": "string",
+            "minLength": 1,
+            "example": "リスクスコアが高すぎます",
+            "description": "Rejection reason"
+          },
+          "staff_id": {
+            "type": "string",
+            "example": "staff-001",
+            "description": "Staff ID who rejected"
+          }
+        },
+        "required": ["application_ids", "rejection_reason"],
+        "title": "BulkRejectRequest",
+        "description": "Request payload for bulk rejection"
+      },
+      "BulkRejectResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether the operation was successful"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "application_id": {
+                  "type": "string",
+                  "example": "APP-00001",
+                  "description": "Application ID"
+                },
+                "rejected": {
+                  "type": "boolean",
+                  "example": true,
+                  "description": "Whether the application was rejected"
+                },
+                "rejected_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2024-01-15T12:30:00Z",
+                  "description": "Rejection date and time"
+                },
+                "error": {
+                  "type": "string",
+                  "example": "Application not found",
+                  "description": "Error message if rejection failed for this item"
+                }
+              },
+              "required": ["application_id", "rejected"],
+              "title": "BulkRejectResult",
+              "description": "Bulk reject result for a single application"
+            },
+            "description": "Bulk reject results"
+          },
+          "summary": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "number",
+                "example": 2,
+                "description": "Total number of applications"
+              },
+              "rejected": {
+                "type": "number",
+                "example": 2,
+                "description": "Number of rejected applications"
+              },
+              "failed": {
+                "type": "number",
+                "example": 0,
+                "description": "Number of failed applications"
+              }
+            },
+            "required": ["total", "rejected", "failed"],
+            "description": "Summary of bulk reject results"
+          },
+          "rejection_reason": {
+            "type": "string",
+            "example": "リスクスコアが高すぎます",
+            "description": "Rejection reason"
+          },
+          "rejected_by": {
+            "type": "string",
+            "example": "staff-001",
+            "description": "Staff ID who rejected"
+          }
+        },
+        "required": ["success", "results", "summary", "rejection_reason", "rejected_by"],
+        "title": "BulkRejectResponse",
+        "description": "Response for bulk reject operation"
       },
       "GetApplicationDetailResponse": {
         "type": "object",
@@ -9904,6 +10010,175 @@
         }
       }
     },
+    "/crm/membership-applications/bulk-reject": {
+      "post": {
+        "summary": "Bulk reject membership applications",
+        "description": "Reject multiple membership applications at once",
+        "tags": ["Membership Applications"],
+        "requestBody": {
+          "description": "List of application IDs to reject",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "application_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1,
+                    "example": ["APP-00001", "APP-00002"],
+                    "description": "List of application IDs to reject"
+                  },
+                  "rejection_reason": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "リスクスコアが高すぎます",
+                    "description": "Rejection reason"
+                  },
+                  "staff_id": {
+                    "type": "string",
+                    "example": "staff-001",
+                    "description": "Staff ID who rejected"
+                  }
+                },
+                "required": ["application_ids", "rejection_reason"],
+                "title": "BulkRejectRequest",
+                "description": "Request payload for bulk rejection"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bulk rejection results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true,
+                      "description": "Whether the operation was successful"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "application_id": {
+                            "type": "string",
+                            "example": "APP-00001",
+                            "description": "Application ID"
+                          },
+                          "rejected": {
+                            "type": "boolean",
+                            "example": true,
+                            "description": "Whether the application was rejected"
+                          },
+                          "rejected_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2024-01-15T12:30:00Z",
+                            "description": "Rejection date and time"
+                          },
+                          "error": {
+                            "type": "string",
+                            "example": "Application not found",
+                            "description": "Error message if rejection failed for this item"
+                          }
+                        },
+                        "required": ["application_id", "rejected"],
+                        "title": "BulkRejectResult",
+                        "description": "Bulk reject result for a single application"
+                      },
+                      "description": "Bulk reject results"
+                    },
+                    "summary": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "number",
+                          "example": 2,
+                          "description": "Total number of applications"
+                        },
+                        "rejected": {
+                          "type": "number",
+                          "example": 2,
+                          "description": "Number of rejected applications"
+                        },
+                        "failed": {
+                          "type": "number",
+                          "example": 0,
+                          "description": "Number of failed applications"
+                        }
+                      },
+                      "required": ["total", "rejected", "failed"],
+                      "description": "Summary of bulk reject results"
+                    },
+                    "rejection_reason": {
+                      "type": "string",
+                      "example": "リスクスコアが高すぎます",
+                      "description": "Rejection reason"
+                    },
+                    "rejected_by": {
+                      "type": "string",
+                      "example": "staff-001",
+                      "description": "Staff ID who rejected"
+                    }
+                  },
+                  "required": ["success", "results", "summary", "rejection_reason", "rejected_by"],
+                  "title": "BulkRejectResponse",
+                  "description": "Response for bulk reject operation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/membership-applications": {
       "get": {
         "summary": "Get membership applications list",
@@ -9971,7 +10246,7 @@
           {
             "schema": {
               "type": "string",
-              "enum": ["applied_at", "risk_score", "deadline"],
+              "enum": ["applied_at", "risk_score", "pending_deadline"],
               "default": "applied_at",
               "example": "applied_at",
               "description": "Sort field"
