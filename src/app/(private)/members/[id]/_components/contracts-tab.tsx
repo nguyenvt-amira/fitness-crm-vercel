@@ -1,29 +1,14 @@
 'use client';
 
+import { formatDate, formatYen } from '@/utils/format.util';
 import { useQuery } from '@tanstack/react-query';
-import { Edit, Plus } from 'lucide-react';
+import { type ColumnDef } from '@tanstack/react-table';
 
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { DataTable } from '@/components/ui/data-table';
 
 import { getCrmMembersByIdContractsOptions } from '@/lib/api/@tanstack/react-query.gen';
-
-function formatDate(v: string | undefined) {
-  return v ? new Date(v).toLocaleDateString('ja-JP') : '—';
-}
-
-function formatYen(n: number | undefined) {
-  return n != null ? `¥${n.toLocaleString()}` : '—';
-}
 
 function InfoRow({
   label,
@@ -71,8 +56,179 @@ export function ContractsTab({ memberId }: { memberId: string }) {
   const optionHistory = contracts.option_change_history ?? [];
   const special = contracts.special_contracts;
   const payment = contracts.payment_info;
-  const unpaid = contracts.unpaid_info;
   const campaigns = contracts.campaigns;
+
+  const mainChangeColumns: ColumnDef<NonNullable<typeof main>['change_history'][number]>[] = [
+    {
+      accessorKey: 'changed_at',
+      header: '変更日',
+      cell: ({ row }) => <span className="text-sm">{formatDate(row.original.changed_at)}</span>,
+    },
+    {
+      accessorKey: 'previous_plan',
+      header: '変更前プラン',
+      cell: ({ row }) => <span className="text-sm">{row.original.previous_plan}</span>,
+    },
+    {
+      accessorKey: 'new_plan',
+      header: '変更後プラン',
+      cell: ({ row }) => <span className="text-sm">{row.original.new_plan}</span>,
+    },
+    {
+      accessorKey: 'reason',
+      header: '変更理由',
+      cell: ({ row }) => <span className="text-sm">{row.original.reason ?? '—'}</span>,
+    },
+  ];
+
+  const optionColumns: ColumnDef<(typeof options)[number]>[] = [
+    {
+      accessorKey: 'name',
+      header: 'オプション名',
+      cell: ({ row }) => <span className="text-sm">{row.original.name}</span>,
+    },
+    {
+      accessorKey: 'monthly_fee',
+      header: '月額料金',
+      cell: ({ row }) => <span className="text-sm">{formatYen(row.original.monthly_fee)}</span>,
+    },
+    {
+      accessorKey: 'start_date',
+      header: '開始日',
+      cell: ({ row }) => <span className="text-sm">{formatDate(row.original.start_date)}</span>,
+    },
+    {
+      accessorKey: 'next_billing_date',
+      header: '次回請求日',
+      cell: ({ row }) => (
+        <span className="text-sm">{formatDate(row.original.next_billing_date)}</span>
+      ),
+    },
+  ];
+
+  const optionHistoryColumns: ColumnDef<(typeof optionHistory)[number]>[] = [
+    {
+      accessorKey: 'changed_at',
+      header: '変更日',
+      cell: ({ row }) => <span className="text-sm">{formatDate(row.original.changed_at)}</span>,
+    },
+    {
+      accessorKey: 'option_name',
+      header: 'オプション名',
+      cell: ({ row }) => <span className="text-sm">{row.original.option_name}</span>,
+    },
+    {
+      accessorKey: 'action_type',
+      header: '操作種別',
+      cell: ({ row }) => (
+        <span className="text-sm">
+          {row.original.action_type === 'add'
+            ? '追加'
+            : row.original.action_type === 'remove'
+              ? '解除'
+              : '変更'}
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'notes',
+      header: '備考',
+      cell: ({ row }) => <span className="text-sm">{row.original.notes ?? '—'}</span>,
+    },
+  ];
+
+  const paymentHistoryColumns: ColumnDef<NonNullable<typeof payment>['payment_history'][number]>[] =
+    [
+      {
+        accessorKey: 'date',
+        header: '決済日',
+        cell: ({ row }) => <span className="text-sm">{formatDate(row.original.date)}</span>,
+      },
+      {
+        accessorKey: 'amount',
+        header: '金額',
+        cell: ({ row }) => <span className="text-sm">{formatYen(row.original.amount)}</span>,
+      },
+      {
+        accessorKey: 'breakdown',
+        header: '内訳',
+        cell: ({ row }) => <span className="text-sm">{row.original.breakdown}</span>,
+      },
+      {
+        accessorKey: 'status',
+        header: '状態',
+        cell: ({ row }) => (
+          <span className="text-sm">{row.original.status === 'success' ? '成功' : '失敗'}</span>
+        ),
+      },
+      {
+        accessorKey: 'notes',
+        header: '備考',
+        cell: ({ row }) => <span className="text-sm">{row.original.notes ?? '—'}</span>,
+      },
+    ];
+
+  const activeCampaignColumns: ColumnDef<NonNullable<typeof campaigns>['active'][number]>[] = [
+    {
+      accessorKey: 'campaign_name',
+      header: 'キャンペーン名',
+      cell: ({ row }) => <span className="text-sm">{row.original.campaign_name}</span>,
+    },
+    {
+      id: 'period',
+      header: '適用期間',
+      cell: ({ row }) => (
+        <span className="text-sm">
+          {formatDate(row.original.period_start)} ～ {formatDate(row.original.period_end)}
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'discount_content',
+      header: '割引内容',
+      cell: ({ row }) => <span className="text-sm">{row.original.discount_content}</span>,
+    },
+    {
+      accessorKey: 'remaining_days',
+      header: '残り期間',
+      cell: ({ row }) => (
+        <span className="text-sm">
+          {row.original.remaining_days != null ? `${row.original.remaining_days}日` : '—'}
+        </span>
+      ),
+    },
+  ];
+
+  const historyCampaignColumns: ColumnDef<NonNullable<typeof campaigns>['history'][number]>[] = [
+    {
+      accessorKey: 'applied_at',
+      header: '適用日',
+      cell: ({ row }) => <span className="text-sm">{formatDate(row.original.applied_at)}</span>,
+    },
+    {
+      accessorKey: 'campaign_name',
+      header: 'キャンペーン名',
+      cell: ({ row }) => <span className="text-sm">{row.original.campaign_name}</span>,
+    },
+    {
+      accessorKey: 'content',
+      header: '内容',
+      cell: ({ row }) => <span className="text-sm">{row.original.content}</span>,
+    },
+    {
+      accessorKey: 'status',
+      header: '状態',
+      cell: ({ row }) => (
+        <Badge variant={row.original.status === 'active' ? 'default' : 'secondary'}>
+          {row.original.status === 'active'
+            ? '適用中'
+            : row.original.status === 'expired'
+              ? '終了'
+              : 'キャンセル'}
+        </Badge>
+      ),
+    },
+  ];
 
   return (
     <div className="space-y-4">
@@ -82,14 +238,14 @@ export function ContractsTab({ memberId }: { memberId: string }) {
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg font-semibold">主契約情報</CardTitle>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm">
+              {/* <Button variant="outline" size="sm">
                 <Edit className="mr-2 size-4" />
                 主契約変更
               </Button>
               <Button variant="outline" size="sm">
                 <Plus className="mr-2 size-4" />
                 主契約追加
-              </Button>
+              </Button> */}
             </div>
           </div>
         </CardHeader>
@@ -112,34 +268,11 @@ export function ContractsTab({ memberId }: { memberId: string }) {
               {main.change_history && main.change_history.length > 0 && (
                 <div>
                   <p className="text-muted-foreground mb-2 text-sm font-medium">主契約変更履歴</p>
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="bg-muted/50">
-                        <TableHead className="text-foreground text-sm font-medium">
-                          変更日
-                        </TableHead>
-                        <TableHead className="text-foreground text-sm font-medium">
-                          変更前プラン
-                        </TableHead>
-                        <TableHead className="text-foreground text-sm font-medium">
-                          変更後プラン
-                        </TableHead>
-                        <TableHead className="text-foreground text-sm font-medium">
-                          変更理由
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {main.change_history.map((h, i) => (
-                        <TableRow key={i}>
-                          <TableCell className="text-sm">{formatDate(h.changed_at)}</TableCell>
-                          <TableCell className="text-sm">{h.previous_plan}</TableCell>
-                          <TableCell className="text-sm">{h.new_plan}</TableCell>
-                          <TableCell className="text-sm">{h.reason ?? '—'}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                  <DataTable
+                    variant="simple"
+                    columns={mainChangeColumns}
+                    data={main.change_history}
+                  />
                 </div>
               )}
             </>
@@ -154,77 +287,23 @@ export function ContractsTab({ memberId }: { memberId: string }) {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg font-semibold">オプション契約情報</CardTitle>
-            <Button variant="outline" size="sm">
+            {/* <Button variant="outline" size="sm">
               <Plus className="mr-2 size-4" />
               オプション契約追加
-            </Button>
+            </Button> */}
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
           {options.length > 0 ? (
             <>
               <p className="text-muted-foreground text-sm font-medium">契約中オプション一覧</p>
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted/50">
-                    <TableHead className="text-foreground text-sm font-medium">
-                      オプション名
-                    </TableHead>
-                    <TableHead className="text-foreground text-sm font-medium">月額料金</TableHead>
-                    <TableHead className="text-foreground text-sm font-medium">開始日</TableHead>
-                    <TableHead className="text-foreground text-sm font-medium">
-                      次回請求日
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {options.map((opt) => (
-                    <TableRow key={opt.id}>
-                      <TableCell className="text-sm">{opt.name}</TableCell>
-                      <TableCell className="text-sm">{formatYen(opt.monthly_fee)}</TableCell>
-                      <TableCell className="text-sm">{formatDate(opt.start_date)}</TableCell>
-                      <TableCell className="text-sm">{formatDate(opt.next_billing_date)}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <DataTable variant="simple" columns={optionColumns} data={options} />
               {optionHistory.length > 0 && (
                 <>
                   <p className="text-muted-foreground mt-4 text-sm font-medium">
                     オプション変更履歴
                   </p>
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="bg-muted/50">
-                        <TableHead className="text-foreground text-sm font-medium">
-                          変更日
-                        </TableHead>
-                        <TableHead className="text-foreground text-sm font-medium">
-                          オプション名
-                        </TableHead>
-                        <TableHead className="text-foreground text-sm font-medium">
-                          操作種別
-                        </TableHead>
-                        <TableHead className="text-foreground text-sm font-medium">備考</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {optionHistory.map((h, i) => (
-                        <TableRow key={i}>
-                          <TableCell className="text-sm">{formatDate(h.changed_at)}</TableCell>
-                          <TableCell className="text-sm">{h.option_name}</TableCell>
-                          <TableCell className="text-sm">
-                            {h.action_type === 'add'
-                              ? '追加'
-                              : h.action_type === 'remove'
-                                ? '解除'
-                                : '変更'}
-                          </TableCell>
-                          <TableCell className="text-sm">{h.notes ?? '—'}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                  <DataTable variant="simple" columns={optionHistoryColumns} data={optionHistory} />
                 </>
               )}
             </>
@@ -304,32 +383,11 @@ export function ContractsTab({ memberId }: { memberId: string }) {
               {payment.payment_history && payment.payment_history.length > 0 && (
                 <div>
                   <p className="text-muted-foreground mb-2 text-sm font-medium">決済履歴</p>
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="bg-muted/50">
-                        <TableHead className="text-foreground text-sm font-medium">
-                          決済日
-                        </TableHead>
-                        <TableHead className="text-foreground text-sm font-medium">金額</TableHead>
-                        <TableHead className="text-foreground text-sm font-medium">内訳</TableHead>
-                        <TableHead className="text-foreground text-sm font-medium">状態</TableHead>
-                        <TableHead className="text-foreground text-sm font-medium">備考</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {payment.payment_history.map((r, i) => (
-                        <TableRow key={i}>
-                          <TableCell className="text-sm">{formatDate(r.date)}</TableCell>
-                          <TableCell className="text-sm">{formatYen(r.amount)}</TableCell>
-                          <TableCell className="text-sm">{r.breakdown}</TableCell>
-                          <TableCell className="text-sm">
-                            {r.status === 'success' ? '成功' : '失敗'}
-                          </TableCell>
-                          <TableCell className="text-sm">{r.notes ?? '—'}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                  <DataTable
+                    variant="simple"
+                    columns={paymentHistoryColumns}
+                    data={payment.payment_history}
+                  />
                 </div>
               )}
             </>
@@ -338,37 +396,6 @@ export function ContractsTab({ memberId }: { memberId: string }) {
           )}
         </CardContent>
       </Card>
-
-      {/* 未納情報（該当する場合） */}
-      {/* {unpaid && unpaid.items && unpaid.items.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">未納情報</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead className="text-foreground text-sm font-medium">未納月</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">未納金額</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">未納理由</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">督促状況</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {unpaid.items.map((item, i) => (
-                  <TableRow key={i}>
-                    <TableCell className="text-sm">{item.month}</TableCell>
-                    <TableCell className="text-sm">{formatYen(item.amount)}</TableCell>
-                    <TableCell className="text-sm">{item.reason ?? '—'}</TableCell>
-                    <TableCell className="text-sm">{item.reminder_status ?? '—'}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      )} */}
 
       {/* キャンペーン適用情報 */}
       <Card>
@@ -383,38 +410,11 @@ export function ContractsTab({ memberId }: { memberId: string }) {
                   <p className="text-muted-foreground mb-2 text-sm font-medium">
                     適用中キャンペーン
                   </p>
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="bg-muted/50">
-                        <TableHead className="text-foreground text-sm font-medium">
-                          キャンペーン名
-                        </TableHead>
-                        <TableHead className="text-foreground text-sm font-medium">
-                          適用期間
-                        </TableHead>
-                        <TableHead className="text-foreground text-sm font-medium">
-                          割引内容
-                        </TableHead>
-                        <TableHead className="text-foreground text-sm font-medium">
-                          残り期間
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {campaigns.active.map((c, i) => (
-                        <TableRow key={i}>
-                          <TableCell className="text-sm">{c.campaign_name}</TableCell>
-                          <TableCell className="text-sm">
-                            {formatDate(c.period_start)} ～ {formatDate(c.period_end)}
-                          </TableCell>
-                          <TableCell className="text-sm">{c.discount_content}</TableCell>
-                          <TableCell className="text-sm">
-                            {c.remaining_days != null ? `${c.remaining_days}日` : '—'}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                  <DataTable
+                    variant="simple"
+                    columns={activeCampaignColumns}
+                    data={campaigns.active}
+                  />
                 </div>
               )}
               {campaigns.history && campaigns.history.length > 0 && (
@@ -422,38 +422,11 @@ export function ContractsTab({ memberId }: { memberId: string }) {
                   <p className="text-muted-foreground mb-2 text-sm font-medium">
                     キャンペーン適用履歴
                   </p>
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="bg-muted/50">
-                        <TableHead className="text-foreground text-sm font-medium">
-                          適用日
-                        </TableHead>
-                        <TableHead className="text-foreground text-sm font-medium">
-                          キャンペーン名
-                        </TableHead>
-                        <TableHead className="text-foreground text-sm font-medium">内容</TableHead>
-                        <TableHead className="text-foreground text-sm font-medium">状態</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {campaigns.history.map((h, i) => (
-                        <TableRow key={i}>
-                          <TableCell className="text-sm">{formatDate(h.applied_at)}</TableCell>
-                          <TableCell className="text-sm">{h.campaign_name}</TableCell>
-                          <TableCell className="text-sm">{h.content}</TableCell>
-                          <TableCell className="text-sm">
-                            <Badge variant={h.status === 'active' ? 'default' : 'secondary'}>
-                              {h.status === 'active'
-                                ? '適用中'
-                                : h.status === 'expired'
-                                  ? '終了'
-                                  : 'キャンセル'}
-                            </Badge>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                  <DataTable
+                    variant="simple"
+                    columns={historyCampaignColumns}
+                    data={campaigns.history}
+                  />
                 </div>
               )}
             </>

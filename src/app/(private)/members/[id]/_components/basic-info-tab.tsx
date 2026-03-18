@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 
+import { formatDate } from '@/utils/format.util';
 import { useQuery } from '@tanstack/react-query';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -29,10 +30,6 @@ const BRAND_LABELS: Record<Brand, string> = {
   [Brand.JOYFIT]: 'JOYFIT',
   [Brand.FIT365]: 'FIT365',
 };
-
-function formatDate(value: string | undefined) {
-  return value ? new Date(value).toLocaleDateString('ja-JP') : '—';
-}
 
 function formatDateTime(value: string | undefined) {
   return value ? new Date(value).toLocaleString('ja-JP') : '—';

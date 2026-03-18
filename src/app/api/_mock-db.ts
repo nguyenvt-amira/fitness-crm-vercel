@@ -2,6 +2,8 @@
  * Shared in-memory mock database for all CRM API routes.
  * All APIs should read/update data through this module so list and detail stay in sync.
  */
+import type { GetContractsResponse } from '@/app/api/_schemas/member.schema';
+
 import {
   Brand,
   type Member,
@@ -60,6 +62,17 @@ const MOCK_PLANS = [
   { id: 'plan-002', name: 'スタンダードプラン' },
   { id: 'plan-003', name: 'プレミアムプラン' },
 ];
+
+type ContractRow = {
+  contract_id: string;
+  member_id: string;
+  /**
+   * For traceability in mocks: which membership application created this contract (if any).
+   */
+  application_id?: string;
+  created_at: string;
+  data: GetContractsResponse;
+};
 
 function createMember(
   id: string,
@@ -173,6 +186,68 @@ function memberToListItem(m: MemberRow): MemberListItem {
   };
 }
 
+function toIsoDate(d: Date): string {
+  return d.toISOString().split('T')[0]!;
+}
+
+function addMonths(date: Date, months: number): Date {
+  const d = new Date(date);
+  d.setMonth(d.getMonth() + months);
+  return d;
+}
+
+function buildMemberContractData(input: {
+  plan_name: string;
+  start_date: string;
+  monthly_fee: number;
+  created_at: string;
+}): GetContractsResponse {
+  const start = new Date(input.start_date);
+  const penaltyEnd = addMonths(start, 12);
+  penaltyEnd.setDate(penaltyEnd.getDate() - 1);
+
+  return {
+    main_contract: {
+      plan_name: input.plan_name,
+      monthly_fee: input.monthly_fee,
+      start_date: input.start_date,
+      penalty_period_end: toIsoDate(penaltyEnd),
+      change_history: [
+        {
+          changed_at: input.created_at,
+          previous_plan: '—',
+          new_plan: input.plan_name,
+          reason: '入会',
+        },
+      ],
+    },
+    option_contracts: [],
+    option_change_history: [],
+    special_contracts: {
+      anshin_support: { enrolled: false },
+      mutual_use: { enrolled: false },
+      security_fee: { enrolled: false },
+      maintenance_fee: { enrolled: false },
+    },
+    payment_info: {
+      method: 'credit_card',
+      card_number: '**** **** **** 1234',
+      cardholder_name: 'TARO YAMADA',
+      expiry_date: '12/28',
+      billing_day: 27,
+      last_payment_date: undefined,
+      last_payment_amount: undefined,
+      status: 'normal',
+      payment_history: [],
+    },
+    unpaid_info: null,
+    campaigns: {
+      active: [],
+      history: [],
+    },
+  };
+}
+
 export const db = {
   members: {
     _members: [] as MemberRow[],
@@ -225,6 +300,33 @@ export const db = {
     getList(): MemberListItem[] {
       this._seed();
       return this._members.map(memberToListItem);
+    },
+
+    createFromApplication(application: MembershipApplication): Member {
+      this._seed();
+      const nextNumber = this._members.length + 1;
+      const id = `M-${String(nextNumber).padStart(5, '0')}`;
+      const store = MOCK_STORES[nextNumber % MOCK_STORES.length]!;
+      const plan = MOCK_PLANS[nextNumber % MOCK_PLANS.length]!;
+      const now = new Date();
+      const row = createMember(id, {
+        name_kanji: application.applicant_name,
+        name_kana: application.applicant_name,
+        phone: `090${String(1000 + (nextNumber % 9000)).slice(-4)}${String(1000 + (nextNumber % 9000)).slice(-4)}`,
+        email: `applicant${String(nextNumber).padStart(5, '0')}@example.jp`,
+        member_type: (['regular', 'family', 'corporate'] as MemberType[])[nextNumber % 3]!,
+        status: MemberStatus.ACTIVE,
+        store_name: store.name,
+        store_id: store.id,
+        brand: nextNumber % 2 === 0 ? Brand.FIT365 : Brand.JOYFIT,
+        joined_at: toIsoDate(now),
+        contract_plan_name: application.plan_name || plan.name,
+        contract_plan_id: plan.id,
+        last_visit_date: undefined,
+        has_unpaid: false,
+      });
+      this._members.push(row);
+      return row;
     },
 
     updateBasicInfo(id: string, body: UpdateBasicInfoRequest): Member | undefined {
@@ -281,6 +383,127 @@ export const db = {
       };
       this._members[idx] = updated;
       return updated;
+    },
+  },
+
+  contracts: {
+    _contracts: [] as ContractRow[],
+    _seeded: false,
+
+    _seed(): void {
+      if (this._seeded) return;
+      this._seeded = true;
+
+      // Ensure members are seeded first so contracts can reference them
+      db.members._seed();
+
+      const members = db.members._members;
+      for (let i = 0; i < members.length; i++) {
+        const m = members[i]!;
+        const meta = m._listMeta;
+        const planName = meta?.contract_plan_name ?? 'ベーシックプラン';
+        const joinedAt = m.profile.joined_at;
+
+        const createdAt = new Date(joinedAt + 'T00:00:00.000Z').toISOString();
+        const monthlyFee = planName.includes('プレミアム')
+          ? 12000
+          : planName.includes('スタンダード')
+            ? 8580
+            : 6580;
+
+        const contractId = `CONTRACT-${m.basic_info.id}`;
+        const data = buildMemberContractData({
+          plan_name: planName,
+          start_date: joinedAt,
+          monthly_fee: monthlyFee,
+          created_at: createdAt,
+        });
+
+        // Add a couple of deterministic options for some members
+        if (i % 10 === 0) {
+          data.option_contracts.push({
+            id: `opt-${m.basic_info.id}-001`,
+            name: 'パーソナルトレーニング',
+            monthly_fee: 11000,
+            start_date: joinedAt,
+            next_billing_date: toIsoDate(addMonths(new Date(joinedAt), 1)),
+          });
+          data.option_change_history.push({
+            changed_at: createdAt,
+            option_name: 'パーソナルトレーニング',
+            action_type: 'add',
+            notes: 'オプション追加',
+          });
+        }
+
+        this._contracts.push({
+          contract_id: contractId,
+          member_id: m.basic_info.id,
+          created_at: createdAt,
+          data,
+        });
+      }
+    },
+
+    getByMemberId(memberId: string): GetContractsResponse | undefined {
+      this._seed();
+      const row = this._contracts.find((c) => c.member_id === memberId);
+      return row?.data;
+    },
+
+    create(input: {
+      contract_id: string;
+      member_id: string;
+      application_id?: string;
+      data: GetContractsResponse;
+    }): ContractRow {
+      this._seed();
+      const now = new Date().toISOString();
+      const row: ContractRow = {
+        contract_id: input.contract_id,
+        member_id: input.member_id,
+        application_id: input.application_id,
+        created_at: now,
+        data: input.data,
+      };
+      this._contracts.unshift(row);
+      return row;
+    },
+
+    /**
+     * Create initial main contract for an approved application.
+     * Member creation must be done by the caller (e.g. approve API).
+     */
+    createFromApprovedApplication(input: {
+      application: MembershipApplication;
+      member_id: string;
+    }): { member_id: string; contract_id: string } {
+      this._seed();
+      const { application, member_id } = input;
+      const contractId = `CONTRACT-${application.id}`;
+      const createdAt = new Date().toISOString();
+
+      const monthlyFee = application.plan_name?.includes('プレミアム')
+        ? 12000
+        : application.plan_name?.includes('スタンダード')
+          ? 8580
+          : 6580;
+
+      const data = buildMemberContractData({
+        plan_name: application.plan_name,
+        start_date: application.scheduled_start_date,
+        monthly_fee: monthlyFee,
+        created_at: createdAt,
+      });
+
+      this.create({
+        contract_id: contractId,
+        member_id,
+        application_id: application.id,
+        data,
+      });
+
+      return { member_id, contract_id: contractId };
     },
   },
 
@@ -363,4 +586,5 @@ export const db = {
 
 // Seed mock data immediately at module load time
 db.members._seed();
+db.contracts._seed();
 db.membershipApplications._seed();
