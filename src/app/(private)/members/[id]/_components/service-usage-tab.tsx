@@ -4,8 +4,8 @@ import { formatDate } from '@/utils/format.util';
 import { useQuery } from '@tanstack/react-query';
 import { type ColumnDef } from '@tanstack/react-table';
 
+import { DataTable } from '@/components/common/data-table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { DataTable } from '@/components/ui/data-table';
 
 import { getCrmMembersByIdServiceUsageOptions } from '@/lib/api/@tanstack/react-query.gen';
 
