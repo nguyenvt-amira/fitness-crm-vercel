@@ -4,8 +4,8 @@ import { GetPointsResponse } from '@/app/api/_schemas/member.schema';
 import { useQuery } from '@tanstack/react-query';
 import { type ColumnDef } from '@tanstack/react-table';
 
+import { DataTable } from '@/components/common/data-table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { DataTable } from '@/components/ui/data-table';
 
 import { getCrmMembersByIdPointsOptions } from '@/lib/api/@tanstack/react-query.gen';
 

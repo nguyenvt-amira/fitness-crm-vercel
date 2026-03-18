@@ -4,9 +4,9 @@ import { formatDate, formatYen } from '@/utils/format.util';
 import { useQuery } from '@tanstack/react-query';
 import { type ColumnDef } from '@tanstack/react-table';
 
+import { DataTable } from '@/components/common/data-table';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { DataTable } from '@/components/ui/data-table';
 
 import { getCrmMembersByIdContractsOptions } from '@/lib/api/@tanstack/react-query.gen';
 
