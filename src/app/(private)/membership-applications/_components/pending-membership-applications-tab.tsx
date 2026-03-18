@@ -159,7 +159,7 @@ export function PendingMembershipApplicationsTab({
       status: 'pending' as const,
       risk_reason: riskReason === 'all' ? undefined : riskReason,
       ...(sorting?.[0] && {
-        sort_by: sorting?.[0]?.id as 'applied_at' | 'risk_score' | 'deadline',
+        sort_by: sorting?.[0]?.id as 'applied_at' | 'risk_score' | 'pending_deadline',
         sort_order: (sorting?.[0]?.desc ? 'desc' : 'asc') as 'desc' | 'asc',
       }),
       limit: 50,

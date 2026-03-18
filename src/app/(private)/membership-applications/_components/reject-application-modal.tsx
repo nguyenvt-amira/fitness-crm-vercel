@@ -26,12 +26,11 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 
 import {
   getCrmMembershipApplicationsInfiniteQueryKey,
-  postCrmMembershipApplicationsBulkApproveMutation,
+  postCrmMembershipApplicationsBulkRejectMutation,
   postCrmMembershipApplicationsByIdRejectMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
 import type { MembershipApplication } from '@/lib/api/types.gen';
@@ -71,9 +70,9 @@ export function RejectApplicationModal({
         rejection_reason: '',
       });
     }
-  }, [modalState?.status]);
+  }, [form, modalState?.status]);
   const rejectMutation = useMutation(postCrmMembershipApplicationsByIdRejectMutation());
-  const bulkApproveMutation = useMutation(postCrmMembershipApplicationsBulkApproveMutation());
+  const bulkRejectMutation = useMutation(postCrmMembershipApplicationsBulkRejectMutation());
 
   const onSubmit = (data: RejectFormSchema) => {
     if (modalState.type === 'single') {
@@ -99,11 +98,12 @@ export function RejectApplicationModal({
       );
       return;
     }
-    bulkApproveMutation.mutate(
+    bulkRejectMutation.mutate(
       {
         body: {
           application_ids: selectedIDs,
-          //TODO: Add rejection reason
+          rejection_reason: data.rejection_reason,
+          staff_id: 'staff-001',
         },
       },
       {
@@ -122,11 +122,11 @@ export function RejectApplicationModal({
     <AlertDialog open={modalState.status} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>承認の確認</AlertDialogTitle>
+          <AlertDialogTitle>却下の確認</AlertDialogTitle>
           <AlertDialogDescription>
             {modalState.type === 'single'
-              ? 'この会員の入会申込を承認してもよろしいですか？'
-              : 'この会員の入会申込を一括承認してもよろしいですか？'}
+              ? 'この会員の入会申込を却下してもよろしいですか？'
+              : 'この会員の入会申込を一括却下してもよろしいですか？'}
           </AlertDialogDescription>
         </AlertDialogHeader>
         {modalState.type === 'single' && (
@@ -162,16 +162,16 @@ export function RejectApplicationModal({
               <AlertDialogAction
                 disabled={
                   rejectMutation.isPending ||
-                  bulkApproveMutation.isPending ||
+                  bulkRejectMutation.isPending ||
                   (!form.formState.isValid && form.formState.isSubmitted)
                 }
                 onClick={form.handleSubmit(onSubmit)}
               >
                 {rejectMutation.isPending
-                  ? '承認中...'
-                  : bulkApproveMutation.isPending
-                    ? '一括承認中...'
-                    : '承認する'}
+                  ? '却下中...'
+                  : bulkRejectMutation.isPending
+                    ? '一括却下中...'
+                    : '却下する'}
               </AlertDialogAction>
             </AlertDialogFooter>
           </form>

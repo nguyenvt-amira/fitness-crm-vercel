@@ -2566,7 +2566,7 @@ export type GetMembershipApplicationsQuery = {
     /**
      * Sort field
      */
-    sort_by?: 'applied_at' | 'risk_score' | 'deadline';
+    sort_by?: 'applied_at' | 'risk_score' | 'pending_deadline';
     /**
      * Sort order
      */
@@ -3097,6 +3097,84 @@ export type BulkApproveResponse = {
      * Approval reason
      */
     approval_reason?: string;
+};
+
+/**
+ * BulkRejectRequest
+ *
+ * Request payload for bulk rejection
+ */
+export type BulkRejectRequest = {
+    /**
+     * List of application IDs to reject
+     */
+    application_ids: Array<string>;
+    /**
+     * Rejection reason
+     */
+    rejection_reason: string;
+    /**
+     * Staff ID who rejected
+     */
+    staff_id?: string;
+};
+
+/**
+ * BulkRejectResponse
+ *
+ * Response for bulk reject operation
+ */
+export type BulkRejectResponse = {
+    /**
+     * Whether the operation was successful
+     */
+    success: boolean;
+    /**
+     * Bulk reject results
+     */
+    results: Array<{
+        /**
+         * Application ID
+         */
+        application_id: string;
+        /**
+         * Whether the application was rejected
+         */
+        rejected: boolean;
+        /**
+         * Rejection date and time
+         */
+        rejected_at?: string;
+        /**
+         * Error message if rejection failed for this item
+         */
+        error?: string;
+    }>;
+    /**
+     * Summary of bulk reject results
+     */
+    summary: {
+        /**
+         * Total number of applications
+         */
+        total: number;
+        /**
+         * Number of rejected applications
+         */
+        rejected: number;
+        /**
+         * Number of failed applications
+         */
+        failed: number;
+    };
+    /**
+     * Rejection reason
+     */
+    rejection_reason: string;
+    /**
+     * Staff ID who rejected
+     */
+    rejected_by: string;
 };
 
 /**
@@ -6797,6 +6875,120 @@ export type PostCrmMembershipApplicationsBulkApproveResponses = {
 
 export type PostCrmMembershipApplicationsBulkApproveResponse = PostCrmMembershipApplicationsBulkApproveResponses[keyof PostCrmMembershipApplicationsBulkApproveResponses];
 
+export type PostCrmMembershipApplicationsBulkRejectData = {
+    /**
+     * BulkRejectRequest
+     *
+     * Request payload for bulk rejection
+     */
+    body?: {
+        /**
+         * List of application IDs to reject
+         */
+        application_ids: Array<string>;
+        /**
+         * Rejection reason
+         */
+        rejection_reason: string;
+        /**
+         * Staff ID who rejected
+         */
+        staff_id?: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/membership-applications/bulk-reject';
+};
+
+export type PostCrmMembershipApplicationsBulkRejectErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembershipApplicationsBulkRejectError = PostCrmMembershipApplicationsBulkRejectErrors[keyof PostCrmMembershipApplicationsBulkRejectErrors];
+
+export type PostCrmMembershipApplicationsBulkRejectResponses = {
+    /**
+     * BulkRejectResponse
+     *
+     * Response for bulk reject operation
+     */
+    200: {
+        /**
+         * Whether the operation was successful
+         */
+        success: boolean;
+        /**
+         * Bulk reject results
+         */
+        results: Array<{
+            /**
+             * Application ID
+             */
+            application_id: string;
+            /**
+             * Whether the application was rejected
+             */
+            rejected: boolean;
+            /**
+             * Rejection date and time
+             */
+            rejected_at?: string;
+            /**
+             * Error message if rejection failed for this item
+             */
+            error?: string;
+        }>;
+        /**
+         * Summary of bulk reject results
+         */
+        summary: {
+            /**
+             * Total number of applications
+             */
+            total: number;
+            /**
+             * Number of rejected applications
+             */
+            rejected: number;
+            /**
+             * Number of failed applications
+             */
+            failed: number;
+        };
+        /**
+         * Rejection reason
+         */
+        rejection_reason: string;
+        /**
+         * Staff ID who rejected
+         */
+        rejected_by: string;
+    };
+};
+
+export type PostCrmMembershipApplicationsBulkRejectResponse = PostCrmMembershipApplicationsBulkRejectResponses[keyof PostCrmMembershipApplicationsBulkRejectResponses];
+
 export type GetCrmMembershipApplicationsData = {
     body?: never;
     path?: never;
@@ -6820,7 +7012,7 @@ export type GetCrmMembershipApplicationsData = {
         /**
          * Sort field
          */
-        sort_by?: 'applied_at' | 'risk_score' | 'deadline';
+        sort_by?: 'applied_at' | 'risk_score' | 'pending_deadline';
         /**
          * Sort order
          */

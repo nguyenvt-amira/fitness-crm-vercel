@@ -309,6 +309,14 @@ export function registerAllSchemas() {
     ),
   );
   registeredSchemaMap.set(
+    'BulkRejectRequest',
+    registry.register('BulkRejectRequest', membershipApplicationSchemas.BulkRejectRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'BulkRejectResponse',
+    registry.register('BulkRejectResponse', membershipApplicationSchemas.BulkRejectResponseSchema),
+  );
+  registeredSchemaMap.set(
     'GetApplicationDetailResponse',
     registry.register(
       'GetApplicationDetailResponse',
