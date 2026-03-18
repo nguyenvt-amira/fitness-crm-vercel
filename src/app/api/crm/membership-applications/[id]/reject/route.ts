@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { db } from '@/app/api/_mock-db';
 import {
   ErrorResponseSchema,
   type RejectRequest,
@@ -69,7 +70,11 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const validatedBody: RejectRequest = validationResult.data;
     const { rejection_reason, staff_id } = validatedBody;
 
-    // Mock rejection result
+    const updated = db.membershipApplications.updateStatus(id, 'rejected');
+    if (!updated) {
+      return NextResponse.json({ error: 'Application not found' }, { status: 404 });
+    }
+
     const response: RejectResponse = {
       success: true,
       application_id: id,

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { db } from '@/app/api/_mock-db';
 import {
   ErrorResponseSchema,
   type UpdateMarketingConsentRequest,
@@ -8,8 +9,6 @@ import {
   UpdateMarketingConsentResponseSchema,
 } from '@/app/api/_schemas/member.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
-
-import { updateMarketingConsentInStore } from '../route';
 
 // Register OpenAPI documentation for this route
 registerRoute({
@@ -68,7 +67,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     const validatedBody: UpdateMarketingConsentRequest = validationResult.data;
-    const updatedMember = updateMarketingConsentInStore(id, validatedBody);
+    const updatedMember = db.members.updateMarketingConsent(id, validatedBody);
+    if (!updatedMember) {
+      return NextResponse.json({ error: 'Member not found' }, { status: 404 });
+    }
 
     const response: UpdateMarketingConsentResponse = {
       success: true,

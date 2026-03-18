@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { db } from '@/app/api/_mock-db';
 import {
   ErrorResponseSchema,
   type UpdateHealthInfoRequest,
@@ -8,8 +9,6 @@ import {
   UpdateHealthInfoResponseSchema,
 } from '@/app/api/_schemas/member.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
-
-import { updateHealthInfoInStore } from '../route';
 
 // Register OpenAPI documentation for this route
 registerRoute({
@@ -68,7 +67,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     const validatedBody: UpdateHealthInfoRequest = validationResult.data;
-    const updatedMember = updateHealthInfoInStore(id, validatedBody);
+    const updatedMember = db.members.updateHealthInfo(id, validatedBody);
+    if (!updatedMember) {
+      return NextResponse.json({ error: 'Member not found' }, { status: 404 });
+    }
 
     const response: UpdateHealthInfoResponse = {
       success: true,
