@@ -38,75 +38,11 @@ const useMembershipApplicationsSummary = () => {
 };
 
 export default function MembershipApplicationsPage() {
-  const {
-    data: summaryData,
-    isLoading: isLoadingSummary,
-    error: summaryError,
-  } = useMembershipApplicationsSummary();
-
-  // Transform API response to component props
-  const summary = useMemo<{
-    totalApplications: number;
-    autoApprovalRate: number;
-    autoApprovalCount: number;
-    avgProcessingTime: string;
-  } | null>(() => {
-    if (!summaryData?.summary) return null;
-    return {
-      totalApplications: summaryData.summary.total_applications,
-      autoApprovalRate: summaryData.summary.auto_approval_rate,
-      autoApprovalCount: summaryData.summary.auto_approval_count,
-      avgProcessingTime: summaryData.summary.avg_processing_time,
-    };
-  }, [summaryData]);
-
-  const alerts = useMemo<AlertType[]>(() => {
-    if (!summaryData?.alerts) return [];
-    return summaryData.alerts.map((alert: MembershipApplicationAlert) => ({
-      title: alert.title,
-      description: alert.description,
-    }));
-  }, [summaryData]);
-
-  const dateRangeLabel = useMemo(() => {
-    if (!summaryData?.summary) return '';
-    const start = new Date(summaryData.summary.date_range_start).toLocaleDateString('ja-JP', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-    const end = new Date(summaryData.summary.date_range_end).toLocaleDateString('ja-JP', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-    return `${start} ~ ${end}`;
-  }, [summaryData]);
-
-  if (isLoadingSummary) {
-    return (
-      <div className="flex flex-1 items-center justify-center">
-        <div className="text-muted-foreground">読み込み中...</div>
-      </div>
-    );
-  }
-
-  if (summaryError || !summary) {
-    return (
-      <div className="flex flex-1 items-center justify-center">
-        <div className="text-destructive">データの読み込みに失敗しました</div>
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-1 flex-col">
-      <MembershipApplicationsHeader
-        breadcrumbItems={BREADCRUMB_ITEMS}
-        dateRangeLabel={dateRangeLabel}
-      />
+      <MembershipApplicationsHeader breadcrumbItems={BREADCRUMB_ITEMS} />
 
-      <MembershipApplicationsOverview summary={summary} alerts={alerts} />
+      <MembershipApplicationsOverview />
 
       <MembershipApplicationsListSection />
     </div>
