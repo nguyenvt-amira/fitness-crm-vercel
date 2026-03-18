@@ -29,7 +29,7 @@ interface GetMembersResponseMember {
   store_name: string;
   store_id: string;
   brand: Brand;
-  contract_plan_name?: string;
+  contract_plan_name: string;
   contract_plan_id: string;
   joined_at: string;
   last_visit_date?: string;

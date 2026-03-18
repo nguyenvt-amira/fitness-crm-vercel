@@ -52,116 +52,16 @@ export class Authentication {
     }
 }
 
-export class MembershipApplications {
-    /**
-     * Get membership applications list
-     *
-     * Get paginated list of membership applications with filtering and sorting
-     */
-    public static getCrmMembershipApplications<ThrowOnError extends boolean = false>(options?: Options<GetCrmMembershipApplicationsData, ThrowOnError>) {
-        return (options?.client ?? client).get<GetCrmMembershipApplicationsResponses, GetCrmMembershipApplicationsErrors, ThrowOnError>({ url: '/crm/membership-applications', ...options });
-    }
-    
-    /**
-     * Auto-judge membership applications
-     *
-     * Execute auto-judge on multiple membership applications
-     */
-    public static postCrmMembershipApplications<ThrowOnError extends boolean = false>(options?: Options<PostCrmMembershipApplicationsData, ThrowOnError>) {
-        return (options?.client ?? client).post<PostCrmMembershipApplicationsResponses, PostCrmMembershipApplicationsErrors, ThrowOnError>({
-            url: '/crm/membership-applications',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options?.headers
-            }
-        });
-    }
-    
-    /**
-     * Get membership applications summary
-     *
-     * Get summary statistics and alerts for membership applications
-     */
-    public static getCrmMembershipApplicationsSummary<ThrowOnError extends boolean = false>(options?: Options<GetCrmMembershipApplicationsSummaryData, ThrowOnError>) {
-        return (options?.client ?? client).get<GetCrmMembershipApplicationsSummaryResponses, GetCrmMembershipApplicationsSummaryErrors, ThrowOnError>({ url: '/crm/membership-applications/summary', ...options });
-    }
-    
-    /**
-     * Bulk approve membership applications
-     *
-     * Approve multiple membership applications at once
-     */
-    public static postCrmMembershipApplicationsBulkApprove<ThrowOnError extends boolean = false>(options?: Options<PostCrmMembershipApplicationsBulkApproveData, ThrowOnError>) {
-        return (options?.client ?? client).post<PostCrmMembershipApplicationsBulkApproveResponses, PostCrmMembershipApplicationsBulkApproveErrors, ThrowOnError>({
-            url: '/crm/membership-applications/bulk-approve',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options?.headers
-            }
-        });
-    }
-    
-    /**
-     * Get membership application detail
-     *
-     * Get detailed information about a specific membership application
-     */
-    public static getCrmMembershipApplicationsById<ThrowOnError extends boolean = false>(options: Options<GetCrmMembershipApplicationsByIdData, ThrowOnError>) {
-        return (options.client ?? client).get<GetCrmMembershipApplicationsByIdResponses, GetCrmMembershipApplicationsByIdErrors, ThrowOnError>({ url: '/crm/membership-applications/{id}', ...options });
-    }
-    
-    /**
-     * Approve membership application
-     *
-     * Manually approve a membership application
-     */
-    public static postCrmMembershipApplicationsByIdApprove<ThrowOnError extends boolean = false>(options: Options<PostCrmMembershipApplicationsByIdApproveData, ThrowOnError>) {
-        return (options.client ?? client).post<PostCrmMembershipApplicationsByIdApproveResponses, PostCrmMembershipApplicationsByIdApproveErrors, ThrowOnError>({
-            url: '/crm/membership-applications/{id}/approve',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            }
-        });
-    }
-    
-    /**
-     * Reject membership application
-     *
-     * Reject a membership application
-     */
-    public static postCrmMembershipApplicationsByIdReject<ThrowOnError extends boolean = false>(options: Options<PostCrmMembershipApplicationsByIdRejectData, ThrowOnError>) {
-        return (options.client ?? client).post<PostCrmMembershipApplicationsByIdRejectResponses, PostCrmMembershipApplicationsByIdRejectErrors, ThrowOnError>({
-            url: '/crm/membership-applications/{id}/reject',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            }
-        });
-    }
-    
-    /**
-     * Cancel membership application
-     *
-     * Cancel a membership application (post-approval cancellation)
-     */
-    public static postCrmMembershipApplicationsByIdCancel<ThrowOnError extends boolean = false>(options: Options<PostCrmMembershipApplicationsByIdCancelData, ThrowOnError>) {
-        return (options.client ?? client).post<PostCrmMembershipApplicationsByIdCancelResponses, PostCrmMembershipApplicationsByIdCancelErrors, ThrowOnError>({
-            url: '/crm/membership-applications/{id}/cancel',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            }
-        });
-    }
-}
-
 export class AutoApproval {
+    /**
+     * Get auto-approval dashboard
+     *
+     * Get dashboard data for auto-approval system
+     */
+    public static getCrmAutoApprovalDashboard<ThrowOnError extends boolean = false>(options?: Options<GetCrmAutoApprovalDashboardData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmAutoApprovalDashboardResponses, GetCrmAutoApprovalDashboardErrors, ThrowOnError>({ url: '/crm/auto-approval/dashboard', ...options });
+    }
+    
     /**
      * Get auto-approval settings
      *
@@ -186,36 +86,9 @@ export class AutoApproval {
             }
         });
     }
-    
-    /**
-     * Get auto-approval dashboard
-     *
-     * Get dashboard data for auto-approval system
-     */
-    public static getCrmAutoApprovalDashboard<ThrowOnError extends boolean = false>(options?: Options<GetCrmAutoApprovalDashboardData, ThrowOnError>) {
-        return (options?.client ?? client).get<GetCrmAutoApprovalDashboardResponses, GetCrmAutoApprovalDashboardErrors, ThrowOnError>({ url: '/crm/auto-approval/dashboard', ...options });
-    }
 }
 
 export class Members {
-    /**
-     * Get members list
-     *
-     * Get paginated list of members with filtering and sorting
-     */
-    public static getCrmMembers<ThrowOnError extends boolean = false>(options?: Options<GetCrmMembersData, ThrowOnError>) {
-        return (options?.client ?? client).get<GetCrmMembersResponses, GetCrmMembersErrors, ThrowOnError>({ url: '/crm/members', ...options });
-    }
-    
-    /**
-     * Get member detail
-     *
-     * Get detailed information about a specific member
-     */
-    public static getCrmMembersById<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdData, ThrowOnError>) {
-        return (options.client ?? client).get<GetCrmMembersByIdResponses, GetCrmMembersByIdErrors, ThrowOnError>({ url: '/crm/members/{id}', ...options });
-    }
-    
     /**
      * Get member basic info
      *
@@ -242,112 +115,12 @@ export class Members {
     }
     
     /**
-     * Update member health info
+     * Get member change history
      *
-     * Update health information of a member
+     * Get change history for a member
      */
-    public static putCrmMembersByIdHealthInfo<ThrowOnError extends boolean = false>(options: Options<PutCrmMembersByIdHealthInfoData, ThrowOnError>) {
-        return (options.client ?? client).put<PutCrmMembersByIdHealthInfoResponses, PutCrmMembersByIdHealthInfoErrors, ThrowOnError>({
-            url: '/crm/members/{id}/health-info',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            }
-        });
-    }
-    
-    /**
-     * Update member marketing consent
-     *
-     * Update marketing consent preferences of a member
-     */
-    public static putCrmMembersByIdMarketingConsent<ThrowOnError extends boolean = false>(options: Options<PutCrmMembersByIdMarketingConsentData, ThrowOnError>) {
-        return (options.client ?? client).put<PutCrmMembersByIdMarketingConsentResponses, PutCrmMembersByIdMarketingConsentErrors, ThrowOnError>({
-            url: '/crm/members/{id}/marketing-consent',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            }
-        });
-    }
-    
-    /**
-     * Get member points
-     *
-     * Get points information for a member
-     */
-    public static getCrmMembersByIdPoints<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdPointsData, ThrowOnError>) {
-        return (options.client ?? client).get<GetCrmMembersByIdPointsResponses, GetCrmMembersByIdPointsErrors, ThrowOnError>({ url: '/crm/members/{id}/points', ...options });
-    }
-    
-    /**
-     * Adjust member points
-     *
-     * Adjust points for a member
-     */
-    public static postCrmMembersByIdPoints<ThrowOnError extends boolean = false>(options: Options<PostCrmMembersByIdPointsData, ThrowOnError>) {
-        return (options.client ?? client).post<PostCrmMembersByIdPointsResponses, PostCrmMembersByIdPointsErrors, ThrowOnError>({
-            url: '/crm/members/{id}/points',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            }
-        });
-    }
-    
-    /**
-     * Adjust member points
-     *
-     * Adjust points for a member (alternative endpoint)
-     */
-    public static postCrmMembersByIdPointsAdjust<ThrowOnError extends boolean = false>(options: Options<PostCrmMembersByIdPointsAdjustData, ThrowOnError>) {
-        return (options.client ?? client).post<PostCrmMembersByIdPointsAdjustResponses, PostCrmMembersByIdPointsAdjustErrors, ThrowOnError>({
-            url: '/crm/members/{id}/points/adjust',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            }
-        });
-    }
-    
-    /**
-     * Get member training records
-     *
-     * Get training records for a member
-     */
-    public static getCrmMembersByIdTrainingRecords<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdTrainingRecordsData, ThrowOnError>) {
-        return (options.client ?? client).get<GetCrmMembersByIdTrainingRecordsResponses, GetCrmMembersByIdTrainingRecordsErrors, ThrowOnError>({ url: '/crm/members/{id}/training-records', ...options });
-    }
-    
-    /**
-     * Get member contracts
-     *
-     * Get contract information for a member
-     */
-    public static getCrmMembersByIdContracts<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdContractsData, ThrowOnError>) {
-        return (options.client ?? client).get<GetCrmMembersByIdContractsResponses, GetCrmMembersByIdContractsErrors, ThrowOnError>({ url: '/crm/members/{id}/contracts', ...options });
-    }
-    
-    /**
-     * Get member usage history
-     *
-     * Get usage history for a member
-     */
-    public static getCrmMembersByIdUsageHistory<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdUsageHistoryData, ThrowOnError>) {
-        return (options.client ?? client).get<GetCrmMembersByIdUsageHistoryResponses, GetCrmMembersByIdUsageHistoryErrors, ThrowOnError>({ url: '/crm/members/{id}/usage-history', ...options });
-    }
-    
-    /**
-     * Get member service usage
-     *
-     * Get service usage information for a member
-     */
-    public static getCrmMembersByIdServiceUsage<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdServiceUsageData, ThrowOnError>) {
-        return (options.client ?? client).get<GetCrmMembersByIdServiceUsageResponses, GetCrmMembersByIdServiceUsageErrors, ThrowOnError>({ url: '/crm/members/{id}/service-usage', ...options });
+    public static getCrmMembersByIdChangeHistory<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdChangeHistoryData, ThrowOnError>) {
+        return (options.client ?? client).get<GetCrmMembersByIdChangeHistoryResponses, GetCrmMembersByIdChangeHistoryErrors, ThrowOnError>({ url: '/crm/members/{id}/change-history', ...options });
     }
     
     /**
@@ -385,6 +158,47 @@ export class Members {
     }
     
     /**
+     * Get member contracts
+     *
+     * Get contract information for a member
+     */
+    public static getCrmMembersByIdContracts<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdContractsData, ThrowOnError>) {
+        return (options.client ?? client).get<GetCrmMembersByIdContractsResponses, GetCrmMembersByIdContractsErrors, ThrowOnError>({ url: '/crm/members/{id}/contracts', ...options });
+    }
+    
+    /**
+     * Update member health info
+     *
+     * Update health information of a member
+     */
+    public static putCrmMembersByIdHealthInfo<ThrowOnError extends boolean = false>(options: Options<PutCrmMembersByIdHealthInfoData, ThrowOnError>) {
+        return (options.client ?? client).put<PutCrmMembersByIdHealthInfoResponses, PutCrmMembersByIdHealthInfoErrors, ThrowOnError>({
+            url: '/crm/members/{id}/health-info',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Update member marketing consent
+     *
+     * Update marketing consent preferences of a member
+     */
+    public static putCrmMembersByIdMarketingConsent<ThrowOnError extends boolean = false>(options: Options<PutCrmMembersByIdMarketingConsentData, ThrowOnError>) {
+        return (options.client ?? client).put<PutCrmMembersByIdMarketingConsentResponses, PutCrmMembersByIdMarketingConsentErrors, ThrowOnError>({
+            url: '/crm/members/{id}/marketing-consent',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
      * Delete member memo
      *
      * Delete a memo for a member
@@ -410,12 +224,44 @@ export class Members {
     }
     
     /**
-     * Get member change history
+     * Adjust member points
      *
-     * Get change history for a member
+     * Adjust points for a member (alternative endpoint)
      */
-    public static getCrmMembersByIdChangeHistory<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdChangeHistoryData, ThrowOnError>) {
-        return (options.client ?? client).get<GetCrmMembersByIdChangeHistoryResponses, GetCrmMembersByIdChangeHistoryErrors, ThrowOnError>({ url: '/crm/members/{id}/change-history', ...options });
+    public static postCrmMembersByIdPointsAdjust<ThrowOnError extends boolean = false>(options: Options<PostCrmMembersByIdPointsAdjustData, ThrowOnError>) {
+        return (options.client ?? client).post<PostCrmMembersByIdPointsAdjustResponses, PostCrmMembersByIdPointsAdjustErrors, ThrowOnError>({
+            url: '/crm/members/{id}/points/adjust',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Get member points
+     *
+     * Get points information for a member
+     */
+    public static getCrmMembersByIdPoints<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdPointsData, ThrowOnError>) {
+        return (options.client ?? client).get<GetCrmMembersByIdPointsResponses, GetCrmMembersByIdPointsErrors, ThrowOnError>({ url: '/crm/members/{id}/points', ...options });
+    }
+    
+    /**
+     * Adjust member points
+     *
+     * Adjust points for a member
+     */
+    public static postCrmMembersByIdPoints<ThrowOnError extends boolean = false>(options: Options<PostCrmMembersByIdPointsData, ThrowOnError>) {
+        return (options.client ?? client).post<PostCrmMembersByIdPointsResponses, PostCrmMembersByIdPointsErrors, ThrowOnError>({
+            url: '/crm/members/{id}/points',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
     }
     
     /**
@@ -425,6 +271,42 @@ export class Members {
      */
     public static getCrmMembersByIdRelationships<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdRelationshipsData, ThrowOnError>) {
         return (options.client ?? client).get<GetCrmMembersByIdRelationshipsResponses, GetCrmMembersByIdRelationshipsErrors, ThrowOnError>({ url: '/crm/members/{id}/relationships', ...options });
+    }
+    
+    /**
+     * Get member detail
+     *
+     * Get detailed information about a specific member
+     */
+    public static getCrmMembersById<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdData, ThrowOnError>) {
+        return (options.client ?? client).get<GetCrmMembersByIdResponses, GetCrmMembersByIdErrors, ThrowOnError>({ url: '/crm/members/{id}', ...options });
+    }
+    
+    /**
+     * Get member service usage
+     *
+     * Get service usage information for a member
+     */
+    public static getCrmMembersByIdServiceUsage<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdServiceUsageData, ThrowOnError>) {
+        return (options.client ?? client).get<GetCrmMembersByIdServiceUsageResponses, GetCrmMembersByIdServiceUsageErrors, ThrowOnError>({ url: '/crm/members/{id}/service-usage', ...options });
+    }
+    
+    /**
+     * Get member training records
+     *
+     * Get training records for a member
+     */
+    public static getCrmMembersByIdTrainingRecords<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdTrainingRecordsData, ThrowOnError>) {
+        return (options.client ?? client).get<GetCrmMembersByIdTrainingRecordsResponses, GetCrmMembersByIdTrainingRecordsErrors, ThrowOnError>({ url: '/crm/members/{id}/training-records', ...options });
+    }
+    
+    /**
+     * Get member usage history
+     *
+     * Get usage history for a member
+     */
+    public static getCrmMembersByIdUsageHistory<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByIdUsageHistoryData, ThrowOnError>) {
+        return (options.client ?? client).get<GetCrmMembersByIdUsageHistoryResponses, GetCrmMembersByIdUsageHistoryErrors, ThrowOnError>({ url: '/crm/members/{id}/usage-history', ...options });
     }
     
     /**
@@ -441,5 +323,123 @@ export class Members {
                 ...options?.headers
             }
         });
+    }
+    
+    /**
+     * Get members list
+     *
+     * Get paginated list of members with filtering and sorting
+     */
+    public static getCrmMembers<ThrowOnError extends boolean = false>(options?: Options<GetCrmMembersData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmMembersResponses, GetCrmMembersErrors, ThrowOnError>({ url: '/crm/members', ...options });
+    }
+}
+
+export class MembershipApplications {
+    /**
+     * Approve membership application
+     *
+     * Manually approve a membership application
+     */
+    public static postCrmMembershipApplicationsByIdApprove<ThrowOnError extends boolean = false>(options: Options<PostCrmMembershipApplicationsByIdApproveData, ThrowOnError>) {
+        return (options.client ?? client).post<PostCrmMembershipApplicationsByIdApproveResponses, PostCrmMembershipApplicationsByIdApproveErrors, ThrowOnError>({
+            url: '/crm/membership-applications/{id}/approve',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Cancel membership application
+     *
+     * Cancel a membership application (post-approval cancellation)
+     */
+    public static postCrmMembershipApplicationsByIdCancel<ThrowOnError extends boolean = false>(options: Options<PostCrmMembershipApplicationsByIdCancelData, ThrowOnError>) {
+        return (options.client ?? client).post<PostCrmMembershipApplicationsByIdCancelResponses, PostCrmMembershipApplicationsByIdCancelErrors, ThrowOnError>({
+            url: '/crm/membership-applications/{id}/cancel',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Reject membership application
+     *
+     * Reject a membership application
+     */
+    public static postCrmMembershipApplicationsByIdReject<ThrowOnError extends boolean = false>(options: Options<PostCrmMembershipApplicationsByIdRejectData, ThrowOnError>) {
+        return (options.client ?? client).post<PostCrmMembershipApplicationsByIdRejectResponses, PostCrmMembershipApplicationsByIdRejectErrors, ThrowOnError>({
+            url: '/crm/membership-applications/{id}/reject',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Get membership application detail
+     *
+     * Get detailed information about a specific membership application
+     */
+    public static getCrmMembershipApplicationsById<ThrowOnError extends boolean = false>(options: Options<GetCrmMembershipApplicationsByIdData, ThrowOnError>) {
+        return (options.client ?? client).get<GetCrmMembershipApplicationsByIdResponses, GetCrmMembershipApplicationsByIdErrors, ThrowOnError>({ url: '/crm/membership-applications/{id}', ...options });
+    }
+    
+    /**
+     * Bulk approve membership applications
+     *
+     * Approve multiple membership applications at once
+     */
+    public static postCrmMembershipApplicationsBulkApprove<ThrowOnError extends boolean = false>(options?: Options<PostCrmMembershipApplicationsBulkApproveData, ThrowOnError>) {
+        return (options?.client ?? client).post<PostCrmMembershipApplicationsBulkApproveResponses, PostCrmMembershipApplicationsBulkApproveErrors, ThrowOnError>({
+            url: '/crm/membership-applications/bulk-approve',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options?.headers
+            }
+        });
+    }
+    
+    /**
+     * Get membership applications list
+     *
+     * Get paginated list of membership applications with filtering and sorting
+     */
+    public static getCrmMembershipApplications<ThrowOnError extends boolean = false>(options?: Options<GetCrmMembershipApplicationsData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmMembershipApplicationsResponses, GetCrmMembershipApplicationsErrors, ThrowOnError>({ url: '/crm/membership-applications', ...options });
+    }
+    
+    /**
+     * Auto-judge membership applications
+     *
+     * Execute auto-judge on multiple membership applications
+     */
+    public static postCrmMembershipApplications<ThrowOnError extends boolean = false>(options?: Options<PostCrmMembershipApplicationsData, ThrowOnError>) {
+        return (options?.client ?? client).post<PostCrmMembershipApplicationsResponses, PostCrmMembershipApplicationsErrors, ThrowOnError>({
+            url: '/crm/membership-applications',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options?.headers
+            }
+        });
+    }
+    
+    /**
+     * Get membership applications summary
+     *
+     * Get summary statistics and alerts for membership applications
+     */
+    public static getCrmMembershipApplicationsSummary<ThrowOnError extends boolean = false>(options?: Options<GetCrmMembershipApplicationsSummaryData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmMembershipApplicationsSummaryResponses, GetCrmMembershipApplicationsSummaryErrors, ThrowOnError>({ url: '/crm/membership-applications/summary', ...options });
     }
 }

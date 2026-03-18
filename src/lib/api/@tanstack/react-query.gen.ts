@@ -77,16 +77,16 @@ const createQueryKey = <TOptions extends Options>(id: string, options?: TOptions
     return [params];
 };
 
-export const getCrmMembershipApplicationsQueryKey = (options?: Options<GetCrmMembershipApplicationsData>) => createQueryKey('getCrmMembershipApplications', options);
+export const getCrmAutoApprovalDashboardQueryKey = (options?: Options<GetCrmAutoApprovalDashboardData>) => createQueryKey('getCrmAutoApprovalDashboard', options);
 
 /**
- * Get membership applications list
+ * Get auto-approval dashboard
  *
- * Get paginated list of membership applications with filtering and sorting
+ * Get dashboard data for auto-approval system
  */
-export const getCrmMembershipApplicationsOptions = (options?: Options<GetCrmMembershipApplicationsData>) => queryOptions<GetCrmMembershipApplicationsResponse, GetCrmMembershipApplicationsError, GetCrmMembershipApplicationsResponse, ReturnType<typeof getCrmMembershipApplicationsQueryKey>>({
+export const getCrmAutoApprovalDashboardOptions = (options?: Options<GetCrmAutoApprovalDashboardData>) => queryOptions<GetCrmAutoApprovalDashboardResponse, GetCrmAutoApprovalDashboardError, GetCrmAutoApprovalDashboardResponse, ReturnType<typeof getCrmAutoApprovalDashboardQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await MembershipApplications.getCrmMembershipApplications({
+        const { data } = await AutoApproval.getCrmAutoApprovalDashboard({
             ...options,
             ...queryKey[0],
             signal,
@@ -94,7 +94,457 @@ export const getCrmMembershipApplicationsOptions = (options?: Options<GetCrmMemb
         });
         return data;
     },
-    queryKey: getCrmMembershipApplicationsQueryKey(options)
+    queryKey: getCrmAutoApprovalDashboardQueryKey(options)
+});
+
+export const getCrmAutoApprovalSettingsQueryKey = (options?: Options<GetCrmAutoApprovalSettingsData>) => createQueryKey('getCrmAutoApprovalSettings', options);
+
+/**
+ * Get auto-approval settings
+ *
+ * Get current auto-approval settings configuration
+ */
+export const getCrmAutoApprovalSettingsOptions = (options?: Options<GetCrmAutoApprovalSettingsData>) => queryOptions<GetCrmAutoApprovalSettingsResponse, GetCrmAutoApprovalSettingsError, GetCrmAutoApprovalSettingsResponse, ReturnType<typeof getCrmAutoApprovalSettingsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await AutoApproval.getCrmAutoApprovalSettings({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmAutoApprovalSettingsQueryKey(options)
+});
+
+/**
+ * Update auto-approval settings
+ *
+ * Update auto-approval settings configuration
+ */
+export const putCrmAutoApprovalSettingsMutation = (options?: Partial<Options<PutCrmAutoApprovalSettingsData>>): UseMutationOptions<PutCrmAutoApprovalSettingsResponse, PutCrmAutoApprovalSettingsError, Options<PutCrmAutoApprovalSettingsData>> => {
+    const mutationOptions: UseMutationOptions<PutCrmAutoApprovalSettingsResponse, PutCrmAutoApprovalSettingsError, Options<PutCrmAutoApprovalSettingsData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await AutoApproval.putCrmAutoApprovalSettings({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmMembersByIdBasicInfoQueryKey = (options: Options<GetCrmMembersByIdBasicInfoData>) => createQueryKey('getCrmMembersByIdBasicInfo', options);
+
+/**
+ * Get member basic info
+ *
+ * Get basic information of a member
+ */
+export const getCrmMembersByIdBasicInfoOptions = (options: Options<GetCrmMembersByIdBasicInfoData>) => queryOptions<GetCrmMembersByIdBasicInfoResponse, GetCrmMembersByIdBasicInfoError, GetCrmMembersByIdBasicInfoResponse, ReturnType<typeof getCrmMembersByIdBasicInfoQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdBasicInfo({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdBasicInfoQueryKey(options)
+});
+
+/**
+ * Update member basic info
+ *
+ * Update basic information of a member
+ */
+export const putCrmMembersByIdBasicInfoMutation = (options?: Partial<Options<PutCrmMembersByIdBasicInfoData>>): UseMutationOptions<PutCrmMembersByIdBasicInfoResponse, PutCrmMembersByIdBasicInfoError, Options<PutCrmMembersByIdBasicInfoData>> => {
+    const mutationOptions: UseMutationOptions<PutCrmMembersByIdBasicInfoResponse, PutCrmMembersByIdBasicInfoError, Options<PutCrmMembersByIdBasicInfoData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Members.putCrmMembersByIdBasicInfo({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmMembersByIdChangeHistoryQueryKey = (options: Options<GetCrmMembersByIdChangeHistoryData>) => createQueryKey('getCrmMembersByIdChangeHistory', options);
+
+/**
+ * Get member change history
+ *
+ * Get change history for a member
+ */
+export const getCrmMembersByIdChangeHistoryOptions = (options: Options<GetCrmMembersByIdChangeHistoryData>) => queryOptions<GetCrmMembersByIdChangeHistoryResponse, GetCrmMembersByIdChangeHistoryError, GetCrmMembersByIdChangeHistoryResponse, ReturnType<typeof getCrmMembersByIdChangeHistoryQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdChangeHistory({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdChangeHistoryQueryKey(options)
+});
+
+export const getCrmMembersByIdMemosQueryKey = (options: Options<GetCrmMembersByIdMemosData>) => createQueryKey('getCrmMembersByIdMemos', options);
+
+/**
+ * Get member memos
+ *
+ * Get all memos for a member
+ */
+export const getCrmMembersByIdMemosOptions = (options: Options<GetCrmMembersByIdMemosData>) => queryOptions<GetCrmMembersByIdMemosResponse, GetCrmMembersByIdMemosError, GetCrmMembersByIdMemosResponse, ReturnType<typeof getCrmMembersByIdMemosQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdMemos({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdMemosQueryKey(options)
+});
+
+/**
+ * Create member memo
+ *
+ * Create a new memo for a member
+ */
+export const postCrmMembersByIdMemosMutation = (options?: Partial<Options<PostCrmMembersByIdMemosData>>): UseMutationOptions<PostCrmMembersByIdMemosResponse, PostCrmMembersByIdMemosError, Options<PostCrmMembersByIdMemosData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembersByIdMemosResponse, PostCrmMembersByIdMemosError, Options<PostCrmMembersByIdMemosData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Members.postCrmMembersByIdMemos({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmMembersByIdCommunicationsQueryKey = (options: Options<GetCrmMembersByIdCommunicationsData>) => createQueryKey('getCrmMembersByIdCommunications', options);
+
+/**
+ * Get member communications
+ *
+ * Get communication history for a member
+ */
+export const getCrmMembersByIdCommunicationsOptions = (options: Options<GetCrmMembersByIdCommunicationsData>) => queryOptions<GetCrmMembersByIdCommunicationsResponse, GetCrmMembersByIdCommunicationsError, GetCrmMembersByIdCommunicationsResponse, ReturnType<typeof getCrmMembersByIdCommunicationsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdCommunications({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdCommunicationsQueryKey(options)
+});
+
+export const getCrmMembersByIdContractsQueryKey = (options: Options<GetCrmMembersByIdContractsData>) => createQueryKey('getCrmMembersByIdContracts', options);
+
+/**
+ * Get member contracts
+ *
+ * Get contract information for a member
+ */
+export const getCrmMembersByIdContractsOptions = (options: Options<GetCrmMembersByIdContractsData>) => queryOptions<GetCrmMembersByIdContractsResponse, GetCrmMembersByIdContractsError, GetCrmMembersByIdContractsResponse, ReturnType<typeof getCrmMembersByIdContractsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdContracts({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdContractsQueryKey(options)
+});
+
+/**
+ * Update member health info
+ *
+ * Update health information of a member
+ */
+export const putCrmMembersByIdHealthInfoMutation = (options?: Partial<Options<PutCrmMembersByIdHealthInfoData>>): UseMutationOptions<PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdHealthInfoError, Options<PutCrmMembersByIdHealthInfoData>> => {
+    const mutationOptions: UseMutationOptions<PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdHealthInfoError, Options<PutCrmMembersByIdHealthInfoData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Members.putCrmMembersByIdHealthInfo({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Update member marketing consent
+ *
+ * Update marketing consent preferences of a member
+ */
+export const putCrmMembersByIdMarketingConsentMutation = (options?: Partial<Options<PutCrmMembersByIdMarketingConsentData>>): UseMutationOptions<PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMarketingConsentError, Options<PutCrmMembersByIdMarketingConsentData>> => {
+    const mutationOptions: UseMutationOptions<PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMarketingConsentError, Options<PutCrmMembersByIdMarketingConsentData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Members.putCrmMembersByIdMarketingConsent({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Delete member memo
+ *
+ * Delete a memo for a member
+ */
+export const deleteCrmMembersByIdMemosByMemoIdMutation = (options?: Partial<Options<DeleteCrmMembersByIdMemosByMemoIdData>>): UseMutationOptions<DeleteCrmMembersByIdMemosByMemoIdResponse, DeleteCrmMembersByIdMemosByMemoIdError, Options<DeleteCrmMembersByIdMemosByMemoIdData>> => {
+    const mutationOptions: UseMutationOptions<DeleteCrmMembersByIdMemosByMemoIdResponse, DeleteCrmMembersByIdMemosByMemoIdError, Options<DeleteCrmMembersByIdMemosByMemoIdData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Members.deleteCrmMembersByIdMemosByMemoId({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Update member memo
+ *
+ * Update a memo for a member
+ */
+export const putCrmMembersByIdMemosByMemoIdMutation = (options?: Partial<Options<PutCrmMembersByIdMemosByMemoIdData>>): UseMutationOptions<PutCrmMembersByIdMemosByMemoIdResponse, PutCrmMembersByIdMemosByMemoIdError, Options<PutCrmMembersByIdMemosByMemoIdData>> => {
+    const mutationOptions: UseMutationOptions<PutCrmMembersByIdMemosByMemoIdResponse, PutCrmMembersByIdMemosByMemoIdError, Options<PutCrmMembersByIdMemosByMemoIdData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Members.putCrmMembersByIdMemosByMemoId({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Adjust member points
+ *
+ * Adjust points for a member (alternative endpoint)
+ */
+export const postCrmMembersByIdPointsAdjustMutation = (options?: Partial<Options<PostCrmMembersByIdPointsAdjustData>>): UseMutationOptions<PostCrmMembersByIdPointsAdjustResponse, PostCrmMembersByIdPointsAdjustError, Options<PostCrmMembersByIdPointsAdjustData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembersByIdPointsAdjustResponse, PostCrmMembersByIdPointsAdjustError, Options<PostCrmMembersByIdPointsAdjustData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Members.postCrmMembersByIdPointsAdjust({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmMembersByIdPointsQueryKey = (options: Options<GetCrmMembersByIdPointsData>) => createQueryKey('getCrmMembersByIdPoints', options);
+
+/**
+ * Get member points
+ *
+ * Get points information for a member
+ */
+export const getCrmMembersByIdPointsOptions = (options: Options<GetCrmMembersByIdPointsData>) => queryOptions<GetCrmMembersByIdPointsResponse, GetCrmMembersByIdPointsError, GetCrmMembersByIdPointsResponse, ReturnType<typeof getCrmMembersByIdPointsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdPoints({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdPointsQueryKey(options)
+});
+
+/**
+ * Adjust member points
+ *
+ * Adjust points for a member
+ */
+export const postCrmMembersByIdPointsMutation = (options?: Partial<Options<PostCrmMembersByIdPointsData>>): UseMutationOptions<PostCrmMembersByIdPointsResponse, PostCrmMembersByIdPointsError, Options<PostCrmMembersByIdPointsData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembersByIdPointsResponse, PostCrmMembersByIdPointsError, Options<PostCrmMembersByIdPointsData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Members.postCrmMembersByIdPoints({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmMembersByIdRelationshipsQueryKey = (options: Options<GetCrmMembersByIdRelationshipsData>) => createQueryKey('getCrmMembersByIdRelationships', options);
+
+/**
+ * Get member relationships
+ *
+ * Get relationship information for a member (family, corporate, referral)
+ */
+export const getCrmMembersByIdRelationshipsOptions = (options: Options<GetCrmMembersByIdRelationshipsData>) => queryOptions<GetCrmMembersByIdRelationshipsResponse, GetCrmMembersByIdRelationshipsError, GetCrmMembersByIdRelationshipsResponse, ReturnType<typeof getCrmMembersByIdRelationshipsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdRelationships({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdRelationshipsQueryKey(options)
+});
+
+export const getCrmMembersByIdQueryKey = (options: Options<GetCrmMembersByIdData>) => createQueryKey('getCrmMembersById', options);
+
+/**
+ * Get member detail
+ *
+ * Get detailed information about a specific member
+ */
+export const getCrmMembersByIdOptions = (options: Options<GetCrmMembersByIdData>) => queryOptions<GetCrmMembersByIdResponse, GetCrmMembersByIdError, GetCrmMembersByIdResponse, ReturnType<typeof getCrmMembersByIdQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersById({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdQueryKey(options)
+});
+
+export const getCrmMembersByIdServiceUsageQueryKey = (options: Options<GetCrmMembersByIdServiceUsageData>) => createQueryKey('getCrmMembersByIdServiceUsage', options);
+
+/**
+ * Get member service usage
+ *
+ * Get service usage information for a member
+ */
+export const getCrmMembersByIdServiceUsageOptions = (options: Options<GetCrmMembersByIdServiceUsageData>) => queryOptions<GetCrmMembersByIdServiceUsageResponse, GetCrmMembersByIdServiceUsageError, GetCrmMembersByIdServiceUsageResponse, ReturnType<typeof getCrmMembersByIdServiceUsageQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdServiceUsage({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdServiceUsageQueryKey(options)
+});
+
+export const getCrmMembersByIdTrainingRecordsQueryKey = (options: Options<GetCrmMembersByIdTrainingRecordsData>) => createQueryKey('getCrmMembersByIdTrainingRecords', options);
+
+/**
+ * Get member training records
+ *
+ * Get training records for a member
+ */
+export const getCrmMembersByIdTrainingRecordsOptions = (options: Options<GetCrmMembersByIdTrainingRecordsData>) => queryOptions<GetCrmMembersByIdTrainingRecordsResponse, GetCrmMembersByIdTrainingRecordsError, GetCrmMembersByIdTrainingRecordsResponse, ReturnType<typeof getCrmMembersByIdTrainingRecordsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdTrainingRecords({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdTrainingRecordsQueryKey(options)
+});
+
+export const getCrmMembersByIdUsageHistoryQueryKey = (options: Options<GetCrmMembersByIdUsageHistoryData>) => createQueryKey('getCrmMembersByIdUsageHistory', options);
+
+/**
+ * Get member usage history
+ *
+ * Get usage history for a member
+ */
+export const getCrmMembersByIdUsageHistoryOptions = (options: Options<GetCrmMembersByIdUsageHistoryData>) => queryOptions<GetCrmMembersByIdUsageHistoryResponse, GetCrmMembersByIdUsageHistoryError, GetCrmMembersByIdUsageHistoryResponse, ReturnType<typeof getCrmMembersByIdUsageHistoryQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdUsageHistory({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdUsageHistoryQueryKey(options)
+});
+
+/**
+ * Export members
+ *
+ * Export members data to CSV or Excel
+ */
+export const postCrmMembersExportMutation = (options?: Partial<Options<PostCrmMembersExportData>>): UseMutationOptions<PostCrmMembersExportResponse, PostCrmMembersExportError, Options<PostCrmMembersExportData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembersExportResponse, PostCrmMembersExportError, Options<PostCrmMembersExportData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Members.postCrmMembersExport({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmMembersQueryKey = (options?: Options<GetCrmMembersData>) => createQueryKey('getCrmMembers', options);
+
+/**
+ * Get members list
+ *
+ * Get paginated list of members with filtering and sorting
+ */
+export const getCrmMembersOptions = (options?: Options<GetCrmMembersData>) => queryOptions<GetCrmMembersResponse, GetCrmMembersError, GetCrmMembersResponse, ReturnType<typeof getCrmMembersQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembers({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersQueryKey(options)
 });
 
 const createInfiniteParams = <K extends Pick<QueryKey<Options>[0], 'body' | 'headers' | 'path' | 'query'>>(queryKey: QueryKey<Options>, page: K) => {
@@ -125,6 +575,151 @@ const createInfiniteParams = <K extends Pick<QueryKey<Options>[0], 'body' | 'hea
     }
     return params as unknown as typeof page;
 };
+
+export const getCrmMembersInfiniteQueryKey = (options?: Options<GetCrmMembersData>): QueryKey<Options<GetCrmMembersData>> => createQueryKey('getCrmMembers', options, true);
+
+/**
+ * Get members list
+ *
+ * Get paginated list of members with filtering and sorting
+ */
+export const getCrmMembersInfiniteOptions = (options?: Options<GetCrmMembersData>) => infiniteQueryOptions<GetCrmMembersResponse, GetCrmMembersError, InfiniteData<GetCrmMembersResponse>, QueryKey<Options<GetCrmMembersData>>, number | Pick<QueryKey<Options<GetCrmMembersData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetCrmMembersData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await Members.getCrmMembers({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersInfiniteQueryKey(options)
+});
+
+/**
+ * Approve membership application
+ *
+ * Manually approve a membership application
+ */
+export const postCrmMembershipApplicationsByIdApproveMutation = (options?: Partial<Options<PostCrmMembershipApplicationsByIdApproveData>>): UseMutationOptions<PostCrmMembershipApplicationsByIdApproveResponse, PostCrmMembershipApplicationsByIdApproveError, Options<PostCrmMembershipApplicationsByIdApproveData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembershipApplicationsByIdApproveResponse, PostCrmMembershipApplicationsByIdApproveError, Options<PostCrmMembershipApplicationsByIdApproveData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await MembershipApplications.postCrmMembershipApplicationsByIdApprove({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Cancel membership application
+ *
+ * Cancel a membership application (post-approval cancellation)
+ */
+export const postCrmMembershipApplicationsByIdCancelMutation = (options?: Partial<Options<PostCrmMembershipApplicationsByIdCancelData>>): UseMutationOptions<PostCrmMembershipApplicationsByIdCancelResponse, PostCrmMembershipApplicationsByIdCancelError, Options<PostCrmMembershipApplicationsByIdCancelData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembershipApplicationsByIdCancelResponse, PostCrmMembershipApplicationsByIdCancelError, Options<PostCrmMembershipApplicationsByIdCancelData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await MembershipApplications.postCrmMembershipApplicationsByIdCancel({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Reject membership application
+ *
+ * Reject a membership application
+ */
+export const postCrmMembershipApplicationsByIdRejectMutation = (options?: Partial<Options<PostCrmMembershipApplicationsByIdRejectData>>): UseMutationOptions<PostCrmMembershipApplicationsByIdRejectResponse, PostCrmMembershipApplicationsByIdRejectError, Options<PostCrmMembershipApplicationsByIdRejectData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembershipApplicationsByIdRejectResponse, PostCrmMembershipApplicationsByIdRejectError, Options<PostCrmMembershipApplicationsByIdRejectData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await MembershipApplications.postCrmMembershipApplicationsByIdReject({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmMembershipApplicationsByIdQueryKey = (options: Options<GetCrmMembershipApplicationsByIdData>) => createQueryKey('getCrmMembershipApplicationsById', options);
+
+/**
+ * Get membership application detail
+ *
+ * Get detailed information about a specific membership application
+ */
+export const getCrmMembershipApplicationsByIdOptions = (options: Options<GetCrmMembershipApplicationsByIdData>) => queryOptions<GetCrmMembershipApplicationsByIdResponse, GetCrmMembershipApplicationsByIdError, GetCrmMembershipApplicationsByIdResponse, ReturnType<typeof getCrmMembershipApplicationsByIdQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await MembershipApplications.getCrmMembershipApplicationsById({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembershipApplicationsByIdQueryKey(options)
+});
+
+/**
+ * Bulk approve membership applications
+ *
+ * Approve multiple membership applications at once
+ */
+export const postCrmMembershipApplicationsBulkApproveMutation = (options?: Partial<Options<PostCrmMembershipApplicationsBulkApproveData>>): UseMutationOptions<PostCrmMembershipApplicationsBulkApproveResponse, PostCrmMembershipApplicationsBulkApproveError, Options<PostCrmMembershipApplicationsBulkApproveData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembershipApplicationsBulkApproveResponse, PostCrmMembershipApplicationsBulkApproveError, Options<PostCrmMembershipApplicationsBulkApproveData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await MembershipApplications.postCrmMembershipApplicationsBulkApprove({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmMembershipApplicationsQueryKey = (options?: Options<GetCrmMembershipApplicationsData>) => createQueryKey('getCrmMembershipApplications', options);
+
+/**
+ * Get membership applications list
+ *
+ * Get paginated list of membership applications with filtering and sorting
+ */
+export const getCrmMembershipApplicationsOptions = (options?: Options<GetCrmMembershipApplicationsData>) => queryOptions<GetCrmMembershipApplicationsResponse, GetCrmMembershipApplicationsError, GetCrmMembershipApplicationsResponse, ReturnType<typeof getCrmMembershipApplicationsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await MembershipApplications.getCrmMembershipApplications({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembershipApplicationsQueryKey(options)
+});
 
 export const getCrmMembershipApplicationsInfiniteQueryKey = (options?: Options<GetCrmMembershipApplicationsData>): QueryKey<Options<GetCrmMembershipApplicationsData>> => createQueryKey('getCrmMembershipApplications', options, true);
 
@@ -193,598 +788,3 @@ export const getCrmMembershipApplicationsSummaryOptions = (options?: Options<Get
     },
     queryKey: getCrmMembershipApplicationsSummaryQueryKey(options)
 });
-
-/**
- * Bulk approve membership applications
- *
- * Approve multiple membership applications at once
- */
-export const postCrmMembershipApplicationsBulkApproveMutation = (options?: Partial<Options<PostCrmMembershipApplicationsBulkApproveData>>): UseMutationOptions<PostCrmMembershipApplicationsBulkApproveResponse, PostCrmMembershipApplicationsBulkApproveError, Options<PostCrmMembershipApplicationsBulkApproveData>> => {
-    const mutationOptions: UseMutationOptions<PostCrmMembershipApplicationsBulkApproveResponse, PostCrmMembershipApplicationsBulkApproveError, Options<PostCrmMembershipApplicationsBulkApproveData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await MembershipApplications.postCrmMembershipApplicationsBulkApprove({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-export const getCrmMembershipApplicationsByIdQueryKey = (options: Options<GetCrmMembershipApplicationsByIdData>) => createQueryKey('getCrmMembershipApplicationsById', options);
-
-/**
- * Get membership application detail
- *
- * Get detailed information about a specific membership application
- */
-export const getCrmMembershipApplicationsByIdOptions = (options: Options<GetCrmMembershipApplicationsByIdData>) => queryOptions<GetCrmMembershipApplicationsByIdResponse, GetCrmMembershipApplicationsByIdError, GetCrmMembershipApplicationsByIdResponse, ReturnType<typeof getCrmMembershipApplicationsByIdQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await MembershipApplications.getCrmMembershipApplicationsById({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmMembershipApplicationsByIdQueryKey(options)
-});
-
-/**
- * Approve membership application
- *
- * Manually approve a membership application
- */
-export const postCrmMembershipApplicationsByIdApproveMutation = (options?: Partial<Options<PostCrmMembershipApplicationsByIdApproveData>>): UseMutationOptions<PostCrmMembershipApplicationsByIdApproveResponse, PostCrmMembershipApplicationsByIdApproveError, Options<PostCrmMembershipApplicationsByIdApproveData>> => {
-    const mutationOptions: UseMutationOptions<PostCrmMembershipApplicationsByIdApproveResponse, PostCrmMembershipApplicationsByIdApproveError, Options<PostCrmMembershipApplicationsByIdApproveData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await MembershipApplications.postCrmMembershipApplicationsByIdApprove({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Reject membership application
- *
- * Reject a membership application
- */
-export const postCrmMembershipApplicationsByIdRejectMutation = (options?: Partial<Options<PostCrmMembershipApplicationsByIdRejectData>>): UseMutationOptions<PostCrmMembershipApplicationsByIdRejectResponse, PostCrmMembershipApplicationsByIdRejectError, Options<PostCrmMembershipApplicationsByIdRejectData>> => {
-    const mutationOptions: UseMutationOptions<PostCrmMembershipApplicationsByIdRejectResponse, PostCrmMembershipApplicationsByIdRejectError, Options<PostCrmMembershipApplicationsByIdRejectData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await MembershipApplications.postCrmMembershipApplicationsByIdReject({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Cancel membership application
- *
- * Cancel a membership application (post-approval cancellation)
- */
-export const postCrmMembershipApplicationsByIdCancelMutation = (options?: Partial<Options<PostCrmMembershipApplicationsByIdCancelData>>): UseMutationOptions<PostCrmMembershipApplicationsByIdCancelResponse, PostCrmMembershipApplicationsByIdCancelError, Options<PostCrmMembershipApplicationsByIdCancelData>> => {
-    const mutationOptions: UseMutationOptions<PostCrmMembershipApplicationsByIdCancelResponse, PostCrmMembershipApplicationsByIdCancelError, Options<PostCrmMembershipApplicationsByIdCancelData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await MembershipApplications.postCrmMembershipApplicationsByIdCancel({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-export const getCrmAutoApprovalSettingsQueryKey = (options?: Options<GetCrmAutoApprovalSettingsData>) => createQueryKey('getCrmAutoApprovalSettings', options);
-
-/**
- * Get auto-approval settings
- *
- * Get current auto-approval settings configuration
- */
-export const getCrmAutoApprovalSettingsOptions = (options?: Options<GetCrmAutoApprovalSettingsData>) => queryOptions<GetCrmAutoApprovalSettingsResponse, GetCrmAutoApprovalSettingsError, GetCrmAutoApprovalSettingsResponse, ReturnType<typeof getCrmAutoApprovalSettingsQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await AutoApproval.getCrmAutoApprovalSettings({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmAutoApprovalSettingsQueryKey(options)
-});
-
-/**
- * Update auto-approval settings
- *
- * Update auto-approval settings configuration
- */
-export const putCrmAutoApprovalSettingsMutation = (options?: Partial<Options<PutCrmAutoApprovalSettingsData>>): UseMutationOptions<PutCrmAutoApprovalSettingsResponse, PutCrmAutoApprovalSettingsError, Options<PutCrmAutoApprovalSettingsData>> => {
-    const mutationOptions: UseMutationOptions<PutCrmAutoApprovalSettingsResponse, PutCrmAutoApprovalSettingsError, Options<PutCrmAutoApprovalSettingsData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await AutoApproval.putCrmAutoApprovalSettings({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-export const getCrmAutoApprovalDashboardQueryKey = (options?: Options<GetCrmAutoApprovalDashboardData>) => createQueryKey('getCrmAutoApprovalDashboard', options);
-
-/**
- * Get auto-approval dashboard
- *
- * Get dashboard data for auto-approval system
- */
-export const getCrmAutoApprovalDashboardOptions = (options?: Options<GetCrmAutoApprovalDashboardData>) => queryOptions<GetCrmAutoApprovalDashboardResponse, GetCrmAutoApprovalDashboardError, GetCrmAutoApprovalDashboardResponse, ReturnType<typeof getCrmAutoApprovalDashboardQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await AutoApproval.getCrmAutoApprovalDashboard({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmAutoApprovalDashboardQueryKey(options)
-});
-
-export const getCrmMembersQueryKey = (options?: Options<GetCrmMembersData>) => createQueryKey('getCrmMembers', options);
-
-/**
- * Get members list
- *
- * Get paginated list of members with filtering and sorting
- */
-export const getCrmMembersOptions = (options?: Options<GetCrmMembersData>) => queryOptions<GetCrmMembersResponse, GetCrmMembersError, GetCrmMembersResponse, ReturnType<typeof getCrmMembersQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Members.getCrmMembers({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmMembersQueryKey(options)
-});
-
-export const getCrmMembersInfiniteQueryKey = (options?: Options<GetCrmMembersData>): QueryKey<Options<GetCrmMembersData>> => createQueryKey('getCrmMembers', options, true);
-
-/**
- * Get members list
- *
- * Get paginated list of members with filtering and sorting
- */
-export const getCrmMembersInfiniteOptions = (options?: Options<GetCrmMembersData>) => infiniteQueryOptions<GetCrmMembersResponse, GetCrmMembersError, InfiniteData<GetCrmMembersResponse>, QueryKey<Options<GetCrmMembersData>>, number | Pick<QueryKey<Options<GetCrmMembersData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<GetCrmMembersData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            query: {
-                page: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await Members.getCrmMembers({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmMembersInfiniteQueryKey(options)
-});
-
-export const getCrmMembersByIdQueryKey = (options: Options<GetCrmMembersByIdData>) => createQueryKey('getCrmMembersById', options);
-
-/**
- * Get member detail
- *
- * Get detailed information about a specific member
- */
-export const getCrmMembersByIdOptions = (options: Options<GetCrmMembersByIdData>) => queryOptions<GetCrmMembersByIdResponse, GetCrmMembersByIdError, GetCrmMembersByIdResponse, ReturnType<typeof getCrmMembersByIdQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Members.getCrmMembersById({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmMembersByIdQueryKey(options)
-});
-
-export const getCrmMembersByIdBasicInfoQueryKey = (options: Options<GetCrmMembersByIdBasicInfoData>) => createQueryKey('getCrmMembersByIdBasicInfo', options);
-
-/**
- * Get member basic info
- *
- * Get basic information of a member
- */
-export const getCrmMembersByIdBasicInfoOptions = (options: Options<GetCrmMembersByIdBasicInfoData>) => queryOptions<GetCrmMembersByIdBasicInfoResponse, GetCrmMembersByIdBasicInfoError, GetCrmMembersByIdBasicInfoResponse, ReturnType<typeof getCrmMembersByIdBasicInfoQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Members.getCrmMembersByIdBasicInfo({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmMembersByIdBasicInfoQueryKey(options)
-});
-
-/**
- * Update member basic info
- *
- * Update basic information of a member
- */
-export const putCrmMembersByIdBasicInfoMutation = (options?: Partial<Options<PutCrmMembersByIdBasicInfoData>>): UseMutationOptions<PutCrmMembersByIdBasicInfoResponse, PutCrmMembersByIdBasicInfoError, Options<PutCrmMembersByIdBasicInfoData>> => {
-    const mutationOptions: UseMutationOptions<PutCrmMembersByIdBasicInfoResponse, PutCrmMembersByIdBasicInfoError, Options<PutCrmMembersByIdBasicInfoData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await Members.putCrmMembersByIdBasicInfo({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Update member health info
- *
- * Update health information of a member
- */
-export const putCrmMembersByIdHealthInfoMutation = (options?: Partial<Options<PutCrmMembersByIdHealthInfoData>>): UseMutationOptions<PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdHealthInfoError, Options<PutCrmMembersByIdHealthInfoData>> => {
-    const mutationOptions: UseMutationOptions<PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdHealthInfoError, Options<PutCrmMembersByIdHealthInfoData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await Members.putCrmMembersByIdHealthInfo({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Update member marketing consent
- *
- * Update marketing consent preferences of a member
- */
-export const putCrmMembersByIdMarketingConsentMutation = (options?: Partial<Options<PutCrmMembersByIdMarketingConsentData>>): UseMutationOptions<PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMarketingConsentError, Options<PutCrmMembersByIdMarketingConsentData>> => {
-    const mutationOptions: UseMutationOptions<PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMarketingConsentError, Options<PutCrmMembersByIdMarketingConsentData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await Members.putCrmMembersByIdMarketingConsent({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-export const getCrmMembersByIdPointsQueryKey = (options: Options<GetCrmMembersByIdPointsData>) => createQueryKey('getCrmMembersByIdPoints', options);
-
-/**
- * Get member points
- *
- * Get points information for a member
- */
-export const getCrmMembersByIdPointsOptions = (options: Options<GetCrmMembersByIdPointsData>) => queryOptions<GetCrmMembersByIdPointsResponse, GetCrmMembersByIdPointsError, GetCrmMembersByIdPointsResponse, ReturnType<typeof getCrmMembersByIdPointsQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Members.getCrmMembersByIdPoints({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmMembersByIdPointsQueryKey(options)
-});
-
-/**
- * Adjust member points
- *
- * Adjust points for a member
- */
-export const postCrmMembersByIdPointsMutation = (options?: Partial<Options<PostCrmMembersByIdPointsData>>): UseMutationOptions<PostCrmMembersByIdPointsResponse, PostCrmMembersByIdPointsError, Options<PostCrmMembersByIdPointsData>> => {
-    const mutationOptions: UseMutationOptions<PostCrmMembersByIdPointsResponse, PostCrmMembersByIdPointsError, Options<PostCrmMembersByIdPointsData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await Members.postCrmMembersByIdPoints({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Adjust member points
- *
- * Adjust points for a member (alternative endpoint)
- */
-export const postCrmMembersByIdPointsAdjustMutation = (options?: Partial<Options<PostCrmMembersByIdPointsAdjustData>>): UseMutationOptions<PostCrmMembersByIdPointsAdjustResponse, PostCrmMembersByIdPointsAdjustError, Options<PostCrmMembersByIdPointsAdjustData>> => {
-    const mutationOptions: UseMutationOptions<PostCrmMembersByIdPointsAdjustResponse, PostCrmMembersByIdPointsAdjustError, Options<PostCrmMembersByIdPointsAdjustData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await Members.postCrmMembersByIdPointsAdjust({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-export const getCrmMembersByIdTrainingRecordsQueryKey = (options: Options<GetCrmMembersByIdTrainingRecordsData>) => createQueryKey('getCrmMembersByIdTrainingRecords', options);
-
-/**
- * Get member training records
- *
- * Get training records for a member
- */
-export const getCrmMembersByIdTrainingRecordsOptions = (options: Options<GetCrmMembersByIdTrainingRecordsData>) => queryOptions<GetCrmMembersByIdTrainingRecordsResponse, GetCrmMembersByIdTrainingRecordsError, GetCrmMembersByIdTrainingRecordsResponse, ReturnType<typeof getCrmMembersByIdTrainingRecordsQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Members.getCrmMembersByIdTrainingRecords({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmMembersByIdTrainingRecordsQueryKey(options)
-});
-
-export const getCrmMembersByIdContractsQueryKey = (options: Options<GetCrmMembersByIdContractsData>) => createQueryKey('getCrmMembersByIdContracts', options);
-
-/**
- * Get member contracts
- *
- * Get contract information for a member
- */
-export const getCrmMembersByIdContractsOptions = (options: Options<GetCrmMembersByIdContractsData>) => queryOptions<GetCrmMembersByIdContractsResponse, GetCrmMembersByIdContractsError, GetCrmMembersByIdContractsResponse, ReturnType<typeof getCrmMembersByIdContractsQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Members.getCrmMembersByIdContracts({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmMembersByIdContractsQueryKey(options)
-});
-
-export const getCrmMembersByIdUsageHistoryQueryKey = (options: Options<GetCrmMembersByIdUsageHistoryData>) => createQueryKey('getCrmMembersByIdUsageHistory', options);
-
-/**
- * Get member usage history
- *
- * Get usage history for a member
- */
-export const getCrmMembersByIdUsageHistoryOptions = (options: Options<GetCrmMembersByIdUsageHistoryData>) => queryOptions<GetCrmMembersByIdUsageHistoryResponse, GetCrmMembersByIdUsageHistoryError, GetCrmMembersByIdUsageHistoryResponse, ReturnType<typeof getCrmMembersByIdUsageHistoryQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Members.getCrmMembersByIdUsageHistory({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmMembersByIdUsageHistoryQueryKey(options)
-});
-
-export const getCrmMembersByIdServiceUsageQueryKey = (options: Options<GetCrmMembersByIdServiceUsageData>) => createQueryKey('getCrmMembersByIdServiceUsage', options);
-
-/**
- * Get member service usage
- *
- * Get service usage information for a member
- */
-export const getCrmMembersByIdServiceUsageOptions = (options: Options<GetCrmMembersByIdServiceUsageData>) => queryOptions<GetCrmMembersByIdServiceUsageResponse, GetCrmMembersByIdServiceUsageError, GetCrmMembersByIdServiceUsageResponse, ReturnType<typeof getCrmMembersByIdServiceUsageQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Members.getCrmMembersByIdServiceUsage({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmMembersByIdServiceUsageQueryKey(options)
-});
-
-export const getCrmMembersByIdMemosQueryKey = (options: Options<GetCrmMembersByIdMemosData>) => createQueryKey('getCrmMembersByIdMemos', options);
-
-/**
- * Get member memos
- *
- * Get all memos for a member
- */
-export const getCrmMembersByIdMemosOptions = (options: Options<GetCrmMembersByIdMemosData>) => queryOptions<GetCrmMembersByIdMemosResponse, GetCrmMembersByIdMemosError, GetCrmMembersByIdMemosResponse, ReturnType<typeof getCrmMembersByIdMemosQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Members.getCrmMembersByIdMemos({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmMembersByIdMemosQueryKey(options)
-});
-
-/**
- * Create member memo
- *
- * Create a new memo for a member
- */
-export const postCrmMembersByIdMemosMutation = (options?: Partial<Options<PostCrmMembersByIdMemosData>>): UseMutationOptions<PostCrmMembersByIdMemosResponse, PostCrmMembersByIdMemosError, Options<PostCrmMembersByIdMemosData>> => {
-    const mutationOptions: UseMutationOptions<PostCrmMembersByIdMemosResponse, PostCrmMembersByIdMemosError, Options<PostCrmMembersByIdMemosData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await Members.postCrmMembersByIdMemos({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-export const getCrmMembersByIdCommunicationsQueryKey = (options: Options<GetCrmMembersByIdCommunicationsData>) => createQueryKey('getCrmMembersByIdCommunications', options);
-
-/**
- * Get member communications
- *
- * Get communication history for a member
- */
-export const getCrmMembersByIdCommunicationsOptions = (options: Options<GetCrmMembersByIdCommunicationsData>) => queryOptions<GetCrmMembersByIdCommunicationsResponse, GetCrmMembersByIdCommunicationsError, GetCrmMembersByIdCommunicationsResponse, ReturnType<typeof getCrmMembersByIdCommunicationsQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Members.getCrmMembersByIdCommunications({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmMembersByIdCommunicationsQueryKey(options)
-});
-
-/**
- * Delete member memo
- *
- * Delete a memo for a member
- */
-export const deleteCrmMembersByIdMemosByMemoIdMutation = (options?: Partial<Options<DeleteCrmMembersByIdMemosByMemoIdData>>): UseMutationOptions<DeleteCrmMembersByIdMemosByMemoIdResponse, DeleteCrmMembersByIdMemosByMemoIdError, Options<DeleteCrmMembersByIdMemosByMemoIdData>> => {
-    const mutationOptions: UseMutationOptions<DeleteCrmMembersByIdMemosByMemoIdResponse, DeleteCrmMembersByIdMemosByMemoIdError, Options<DeleteCrmMembersByIdMemosByMemoIdData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await Members.deleteCrmMembersByIdMemosByMemoId({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-/**
- * Update member memo
- *
- * Update a memo for a member
- */
-export const putCrmMembersByIdMemosByMemoIdMutation = (options?: Partial<Options<PutCrmMembersByIdMemosByMemoIdData>>): UseMutationOptions<PutCrmMembersByIdMemosByMemoIdResponse, PutCrmMembersByIdMemosByMemoIdError, Options<PutCrmMembersByIdMemosByMemoIdData>> => {
-    const mutationOptions: UseMutationOptions<PutCrmMembersByIdMemosByMemoIdResponse, PutCrmMembersByIdMemosByMemoIdError, Options<PutCrmMembersByIdMemosByMemoIdData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await Members.putCrmMembersByIdMemosByMemoId({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
-export const getCrmMembersByIdChangeHistoryQueryKey = (options: Options<GetCrmMembersByIdChangeHistoryData>) => createQueryKey('getCrmMembersByIdChangeHistory', options);
-
-/**
- * Get member change history
- *
- * Get change history for a member
- */
-export const getCrmMembersByIdChangeHistoryOptions = (options: Options<GetCrmMembersByIdChangeHistoryData>) => queryOptions<GetCrmMembersByIdChangeHistoryResponse, GetCrmMembersByIdChangeHistoryError, GetCrmMembersByIdChangeHistoryResponse, ReturnType<typeof getCrmMembersByIdChangeHistoryQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Members.getCrmMembersByIdChangeHistory({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmMembersByIdChangeHistoryQueryKey(options)
-});
-
-export const getCrmMembersByIdRelationshipsQueryKey = (options: Options<GetCrmMembersByIdRelationshipsData>) => createQueryKey('getCrmMembersByIdRelationships', options);
-
-/**
- * Get member relationships
- *
- * Get relationship information for a member (family, corporate, referral)
- */
-export const getCrmMembersByIdRelationshipsOptions = (options: Options<GetCrmMembersByIdRelationshipsData>) => queryOptions<GetCrmMembersByIdRelationshipsResponse, GetCrmMembersByIdRelationshipsError, GetCrmMembersByIdRelationshipsResponse, ReturnType<typeof getCrmMembersByIdRelationshipsQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Members.getCrmMembersByIdRelationships({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmMembersByIdRelationshipsQueryKey(options)
-});
-
-/**
- * Export members
- *
- * Export members data to CSV or Excel
- */
-export const postCrmMembersExportMutation = (options?: Partial<Options<PostCrmMembersExportData>>): UseMutationOptions<PostCrmMembersExportResponse, PostCrmMembersExportError, Options<PostCrmMembersExportData>> => {
-    const mutationOptions: UseMutationOptions<PostCrmMembersExportResponse, PostCrmMembersExportError, Options<PostCrmMembersExportData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await Members.postCrmMembersExport({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
