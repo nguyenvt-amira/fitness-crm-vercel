@@ -2,16 +2,10 @@
 
 import { GetPointsResponse } from '@/app/api/_schemas/member.schema';
 import { useQuery } from '@tanstack/react-query';
+import { type ColumnDef } from '@tanstack/react-table';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { DataTable } from '@/components/ui/data-table';
 
 import { getCrmMembersByIdPointsOptions } from '@/lib/api/@tanstack/react-query.gen';
 
@@ -114,6 +108,103 @@ export function PointsTab({ memberId, brand }: { memberId: string; brand: Brand 
   const hasMoreEarn = (pointsData.earn_history?.length ?? 0) > EARN_HISTORY_LIMIT;
   const hasMoreSpend = (pointsData.spend_history?.length ?? 0) > SPEND_HISTORY_LIMIT;
 
+  const earnColumns: ColumnDef<(typeof earnList)[number]>[] = [
+    {
+      accessorKey: 'date',
+      header: '獲得日時',
+      cell: ({ row }) => <span className="text-sm">{formatDateTime(row.original.date)}</span>,
+    },
+    {
+      accessorKey: 'reason',
+      header: '獲得理由',
+      cell: ({ row }) => <span className="text-sm">{row.original.reason}</span>,
+    },
+    {
+      accessorKey: 'points',
+      header: () => <span className="block text-right">ポイント数</span>,
+      cell: ({ row }) => (
+        <span className="block text-right text-sm font-medium text-green-600">
+          +{row.original.points}P
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'notes',
+      header: '詳細・備考',
+      cell: ({ row }) => (
+        <span className="text-muted-foreground text-sm">{row.original.notes ?? '—'}</span>
+      ),
+    },
+  ];
+
+  const spendColumns: ColumnDef<(typeof spendList)[number]>[] = [
+    {
+      accessorKey: 'date',
+      header: '消費日時',
+      cell: ({ row }) => <span className="text-sm">{formatDateTime(row.original.date)}</span>,
+    },
+    {
+      accessorKey: 'content',
+      header: '消費内容',
+      cell: ({ row }) => <span className="text-sm">{row.original.content}</span>,
+    },
+    {
+      accessorKey: 'points',
+      header: () => <span className="block text-right">ポイント数</span>,
+      cell: ({ row }) => (
+        <span className="block text-right text-sm font-medium text-red-600">
+          -{row.original.points}P
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'notes',
+      header: '詳細・備考',
+      cell: ({ row }) => (
+        <span className="text-muted-foreground text-sm">{row.original.notes ?? '—'}</span>
+      ),
+    },
+  ];
+
+  const adjustmentColumns: ColumnDef<(typeof adjustmentList)[number]>[] = [
+    {
+      accessorKey: 'date',
+      header: '調整日時',
+      cell: ({ row }) => <span className="text-sm">{formatDateTime(row.original.date)}</span>,
+    },
+    {
+      accessorKey: 'adjustment_type',
+      header: '調整種別',
+      cell: ({ row }) => (
+        <span className="text-sm">
+          {row.original.adjustment_type === 'add' ? '手動付与' : '手動減算'}
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'points',
+      header: () => <span className="block text-right">ポイント数</span>,
+      cell: ({ row }) => (
+        <span className="block text-right text-sm font-medium">
+          {row.original.adjustment_type === 'add' ? '+' : '-'}
+          {row.original.points}P
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'reason',
+      header: '調整理由',
+      cell: ({ row }) => <span className="text-sm">{row.original.reason}</span>,
+    },
+    {
+      accessorKey: 'adjusted_by',
+      header: '実施スタッフ',
+      cell: ({ row }) => (
+        <span className="text-muted-foreground text-sm">{row.original.adjusted_by ?? '—'}</span>
+      ),
+    },
+  ];
+
   return (
     <div className="space-y-4">
       {/* ポイント保有状況カード（会員のブランドに応じて表示） */}
@@ -168,32 +259,7 @@ export function PointsTab({ memberId, brand }: { memberId: string; brand: Brand 
         </CardHeader>
         <CardContent>
           {earnList.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead className="text-foreground text-sm font-medium">獲得日時</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">獲得理由</TableHead>
-                  <TableHead className="text-foreground text-right text-sm font-medium">
-                    ポイント数
-                  </TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">詳細・備考</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {earnList.map((row) => (
-                  <TableRow key={row.id}>
-                    <TableCell className="text-sm">{formatDateTime(row.date)}</TableCell>
-                    <TableCell className="text-sm">{row.reason}</TableCell>
-                    <TableCell className="text-right text-sm font-medium text-green-600">
-                      +{row.points}P
-                    </TableCell>
-                    <TableCell className="text-muted-foreground text-sm">
-                      {row.notes ?? '—'}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <DataTable variant="simple" columns={earnColumns} data={earnList} />
           ) : (
             <p className="text-muted-foreground py-4 text-sm">該当のデータがありません。</p>
           )}
@@ -215,32 +281,7 @@ export function PointsTab({ memberId, brand }: { memberId: string; brand: Brand 
         </CardHeader>
         <CardContent>
           {spendList.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead className="text-foreground text-sm font-medium">消費日時</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">消費内容</TableHead>
-                  <TableHead className="text-foreground text-right text-sm font-medium">
-                    ポイント数
-                  </TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">詳細・備考</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {spendList.map((row) => (
-                  <TableRow key={row.id}>
-                    <TableCell className="text-sm">{formatDateTime(row.date)}</TableCell>
-                    <TableCell className="text-sm">{row.content}</TableCell>
-                    <TableCell className="text-right text-sm font-medium text-red-600">
-                      -{row.points}P
-                    </TableCell>
-                    <TableCell className="text-muted-foreground text-sm">
-                      {row.notes ?? '—'}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <DataTable variant="simple" columns={spendColumns} data={spendList} />
           ) : (
             <p className="text-muted-foreground py-4 text-sm">該当のデータがありません。</p>
           )}
@@ -255,39 +296,7 @@ export function PointsTab({ memberId, brand }: { memberId: string; brand: Brand 
         </CardHeader>
         <CardContent>
           {adjustmentList.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead className="text-foreground text-sm font-medium">調整日時</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">調整種別</TableHead>
-                  <TableHead className="text-foreground text-right text-sm font-medium">
-                    ポイント数
-                  </TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">調整理由</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">
-                    実施スタッフ
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {adjustmentList.map((row) => (
-                  <TableRow key={row.id}>
-                    <TableCell className="text-sm">{formatDateTime(row.date)}</TableCell>
-                    <TableCell className="text-sm">
-                      {row.adjustment_type === 'add' ? '手動付与' : '手動減算'}
-                    </TableCell>
-                    <TableCell className="text-right text-sm font-medium">
-                      {row.adjustment_type === 'add' ? '+' : '-'}
-                      {row.points}P
-                    </TableCell>
-                    <TableCell className="text-sm">{row.reason}</TableCell>
-                    <TableCell className="text-muted-foreground text-sm">
-                      {row.adjusted_by ?? '—'}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <DataTable variant="simple" columns={adjustmentColumns} data={adjustmentList} />
           ) : (
             <p className="text-muted-foreground py-4 text-sm">該当のデータがありません。</p>
           )}

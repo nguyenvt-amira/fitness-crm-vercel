@@ -1,16 +1,11 @@
 'use client';
 
+import { formatDate } from '@/utils/format.util';
 import { useQuery } from '@tanstack/react-query';
+import { type ColumnDef } from '@tanstack/react-table';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { DataTable } from '@/components/ui/data-table';
 
 import { getCrmMembersByIdTrainingRecordsOptions } from '@/lib/api/@tanstack/react-query.gen';
 
@@ -20,10 +15,6 @@ const BODY_LIMIT = 10;
 
 function formatDateTime(value: string) {
   return new Date(value).toLocaleString('ja-JP');
-}
-
-function formatDate(value: string) {
-  return new Date(value).toLocaleDateString('ja-JP');
 }
 
 export function TrainingRecordsTab({ memberId }: { memberId: string }) {
@@ -88,6 +79,160 @@ export function TrainingRecordsTab({ memberId }: { memberId: string }) {
   const hasMoreCardio = cardioRecords.length > CARDIO_LIMIT;
   const hasMoreBody = bodyRecords.length > BODY_LIMIT;
 
+  const strengthColumns: ColumnDef<(typeof recentStrength)[number]>[] = [
+    {
+      accessorKey: 'date',
+      header: '記録日時',
+      cell: ({ row }) => <span className="text-sm">{formatDateTime(row.original.date)}</span>,
+    },
+    {
+      accessorKey: 'exercise_name',
+      header: '種目名',
+      cell: ({ row }) => <span className="text-sm">{row.original.exercise_name}</span>,
+    },
+    {
+      accessorKey: 'weight',
+      header: '重量',
+      cell: ({ row }) => (
+        <span className="text-sm">
+          {row.original.weight != null ? `${row.original.weight}kg` : '-'}
+        </span>
+      ),
+    },
+    {
+      id: 'reps_sets',
+      header: '回数×セット数',
+      cell: ({ row }) => (
+        <span className="text-sm">
+          {row.original.reps != null && row.original.sets != null
+            ? `${row.original.reps}回 × ${row.original.sets}セット`
+            : '-'}
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'notes',
+      header: 'メモ',
+      cell: ({ row }) => (
+        <span className="text-muted-foreground text-sm">{row.original.notes ?? '—'}</span>
+      ),
+    },
+  ];
+
+  const cardioColumns: ColumnDef<(typeof recentCardio)[number]>[] = [
+    {
+      accessorKey: 'date',
+      header: '記録日時',
+      cell: ({ row }) => <span className="text-sm">{formatDateTime(row.original.date)}</span>,
+    },
+    {
+      accessorKey: 'exercise_type',
+      header: '種目（ランニング、バイクなど）',
+      cell: ({ row }) => <span className="text-sm">{row.original.exercise_type}</span>,
+    },
+    {
+      accessorKey: 'duration',
+      header: '時間',
+      cell: ({ row }) => <span className="text-sm">{row.original.duration}分</span>,
+    },
+    {
+      accessorKey: 'distance',
+      header: '距離',
+      cell: ({ row }) => (
+        <span className="text-sm">
+          {row.original.distance != null ? `${row.original.distance}km` : '-'}
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'calories',
+      header: '消費カロリー',
+      cell: ({ row }) => (
+        <span className="text-sm">
+          {row.original.calories != null ? `${row.original.calories}kcal` : '-'}
+        </span>
+      ),
+    },
+  ];
+
+  const bodyColumns: ColumnDef<(typeof recentBody)[number]>[] = [
+    {
+      accessorKey: 'date',
+      header: '記録日',
+      cell: ({ row }) => <span className="text-sm">{formatDate(row.original.date)}</span>,
+    },
+    {
+      accessorKey: 'weight',
+      header: '体重',
+      cell: ({ row }) => (
+        <span className="text-sm">
+          {row.original.weight != null ? `${row.original.weight}kg` : '-'}
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'body_fat',
+      header: '体脂肪率',
+      cell: ({ row }) => (
+        <span className="text-sm">
+          {row.original.body_fat != null ? `${row.original.body_fat}%` : '-'}
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'muscle_mass',
+      header: '筋肉量',
+      cell: ({ row }) => (
+        <span className="text-sm">
+          {row.original.muscle_mass != null ? `${row.original.muscle_mass}kg` : '-'}
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'bmi',
+      header: 'BMI',
+      cell: ({ row }) => (
+        <span className="text-sm">
+          {row.original.bmi != null ? row.original.bmi.toFixed(1) : '-'}
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'notes',
+      header: 'メモ',
+      cell: ({ row }) => (
+        <span className="text-muted-foreground text-sm">{row.original.notes ?? '—'}</span>
+      ),
+    },
+  ];
+
+  const menuColumns: ColumnDef<(typeof trainingMenus)[number]>[] = [
+    {
+      accessorKey: 'name',
+      header: 'メニュー名',
+      cell: ({ row }) => <span className="text-sm">{row.original.name}</span>,
+    },
+    {
+      accessorKey: 'exercise_count',
+      header: '種目数',
+      cell: ({ row }) => <span className="text-sm">{row.original.exercise_count}</span>,
+    },
+    {
+      accessorKey: 'created_at',
+      header: '作成日',
+      cell: ({ row }) => <span className="text-sm">{formatDateTime(row.original.created_at)}</span>,
+    },
+    {
+      accessorKey: 'last_used_at',
+      header: '最終利用日',
+      cell: ({ row }) => (
+        <span className="text-sm">
+          {row.original.last_used_at ? formatDateTime(row.original.last_used_at) : '-'}
+        </span>
+      ),
+    },
+  ];
+
   return (
     <div className="space-y-4">
       {/* トレーニングサマリカード（直近1ヶ月） */}
@@ -131,36 +276,7 @@ export function TrainingRecordsTab({ memberId }: { memberId: string }) {
         </CardHeader>
         <CardContent>
           {recentStrength.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead className="text-foreground text-sm font-medium">記録日時</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">種目名</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">重量</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">
-                    回数×セット数
-                  </TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">メモ</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {recentStrength.map((r) => (
-                  <TableRow key={r.id}>
-                    <TableCell className="text-sm">{formatDateTime(r.date)}</TableCell>
-                    <TableCell className="text-sm">{r.exercise_name}</TableCell>
-                    <TableCell className="text-sm">
-                      {r.weight != null ? `${r.weight}kg` : '-'}
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      {r.reps != null && r.sets != null ? `${r.reps}回 × ${r.sets}セット` : '-'}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground text-sm">
-                      {r.notes ?? '—'}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <DataTable variant="simple" columns={strengthColumns} data={recentStrength} />
           ) : (
             <p className="text-muted-foreground py-4 text-sm">該当のデータがありません。</p>
           )}
@@ -177,36 +293,7 @@ export function TrainingRecordsTab({ memberId }: { memberId: string }) {
         </CardHeader>
         <CardContent>
           {recentCardio.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead className="text-foreground text-sm font-medium">記録日時</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">
-                    種目（ランニング、バイクなど）
-                  </TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">時間</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">距離</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">
-                    消費カロリー
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {recentCardio.map((r) => (
-                  <TableRow key={r.id}>
-                    <TableCell className="text-sm">{formatDateTime(r.date)}</TableCell>
-                    <TableCell className="text-sm">{r.exercise_type}</TableCell>
-                    <TableCell className="text-sm">{r.duration}分</TableCell>
-                    <TableCell className="text-sm">
-                      {r.distance != null ? `${r.distance}km` : '-'}
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      {r.calories != null ? `${r.calories}kcal` : '-'}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <DataTable variant="simple" columns={cardioColumns} data={recentCardio} />
           ) : (
             <p className="text-muted-foreground py-4 text-sm">該当のデータがありません。</p>
           )}
@@ -223,40 +310,7 @@ export function TrainingRecordsTab({ memberId }: { memberId: string }) {
         </CardHeader>
         <CardContent>
           {recentBody.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead className="text-foreground text-sm font-medium">記録日</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">体重</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">体脂肪率</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">筋肉量</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">BMI</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">メモ</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {recentBody.map((r) => (
-                  <TableRow key={r.id}>
-                    <TableCell className="text-sm">{formatDate(r.date)}</TableCell>
-                    <TableCell className="text-sm">
-                      {r.weight != null ? `${r.weight}kg` : '-'}
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      {r.body_fat != null ? `${r.body_fat}%` : '-'}
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      {r.muscle_mass != null ? `${r.muscle_mass}kg` : '-'}
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      {r.bmi != null ? r.bmi.toFixed(1) : '-'}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground text-sm">
-                      {r.notes ?? '—'}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <DataTable variant="simple" columns={bodyColumns} data={recentBody} />
           ) : (
             <p className="text-muted-foreground py-4 text-sm">該当のデータがありません。</p>
           )}
@@ -270,28 +324,7 @@ export function TrainingRecordsTab({ memberId }: { memberId: string }) {
         </CardHeader>
         <CardContent>
           {trainingMenus.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead className="text-foreground text-sm font-medium">メニュー名</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">種目数</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">作成日</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">最終利用日</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {trainingMenus.map((m) => (
-                  <TableRow key={m.id}>
-                    <TableCell className="text-sm">{m.name}</TableCell>
-                    <TableCell className="text-sm">{m.exercise_count}</TableCell>
-                    <TableCell className="text-sm">{formatDateTime(m.created_at)}</TableCell>
-                    <TableCell className="text-sm">
-                      {m.last_used_at ? formatDateTime(m.last_used_at) : '-'}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <DataTable variant="simple" columns={menuColumns} data={trainingMenus} />
           ) : (
             <p className="text-muted-foreground py-4 text-sm">
               保存済みのトレーニングメニューがありません。

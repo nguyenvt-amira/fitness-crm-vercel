@@ -76,10 +76,18 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const validatedBody: ApproveRequest = validationResult.data;
     const { approval_reason, staff_id } = validatedBody;
 
-    const updated = db.membershipApplications.updateStatus(id, 'manual_approved');
-    if (!updated) {
+    const application = db.membershipApplications.getById(id);
+    if (!application) {
       return NextResponse.json({ error: 'Application not found' }, { status: 404 });
     }
+
+    db.membershipApplications.updateStatus(id, 'manual_approved');
+
+    const member = db.members.createFromApplication(application);
+    const { contract_id } = db.contracts.createFromApprovedApplication({
+      application,
+      member_id: member.basic_info.id,
+    });
 
     const response: ApproveResponse = {
       success: true,
@@ -89,7 +97,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       approved_by: staff_id || 'staff-001',
       approval_reason: approval_reason || '手動承認',
       contract_created: true,
-      contract_id: `CONTRACT-${id}`,
+      contract_id,
     };
 
     return NextResponse.json(response);

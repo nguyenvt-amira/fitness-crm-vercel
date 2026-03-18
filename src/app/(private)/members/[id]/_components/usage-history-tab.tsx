@@ -1,16 +1,10 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { type ColumnDef } from '@tanstack/react-table';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { DataTable } from '@/components/ui/data-table';
 
 import { getCrmMembersByIdUsageHistoryOptions } from '@/lib/api/@tanstack/react-query.gen';
 
@@ -70,6 +64,63 @@ export function UsageHistoryTab({ memberId }: { memberId: string }) {
     store_name: string;
     entry_method?: string;
   }>;
+
+  const storeUsageColumns: ColumnDef<(typeof storeUsage)[number]>[] = [
+    {
+      accessorKey: 'store_name',
+      header: '店舗名',
+      cell: ({ row }) => <span className="text-sm">{row.original.store_name}</span>,
+    },
+    {
+      accessorKey: 'visit_count',
+      header: '利用回数',
+      cell: ({ row }) => <span className="text-sm">{row.original.visit_count}回</span>,
+    },
+    {
+      accessorKey: 'usage_rate',
+      header: '利用率（%）',
+      cell: ({ row }) => <span className="text-sm">{row.original.usage_rate.toFixed(1)}%</span>,
+    },
+    {
+      accessorKey: 'average_stay_time',
+      header: '平均滞在時間',
+      cell: ({ row }) => <span className="text-sm">{row.original.average_stay_time}分</span>,
+    },
+  ];
+
+  const visitColumns: ColumnDef<(typeof visitRecords)[number]>[] = [
+    {
+      accessorKey: 'entry_time',
+      header: '来館日時',
+      cell: ({ row }) => <span className="text-sm">{formatDateTime(row.original.entry_time)}</span>,
+    },
+    {
+      accessorKey: 'exit_time',
+      header: '退館日時',
+      cell: ({ row }) => <span className="text-sm">{formatDateTime(row.original.exit_time)}</span>,
+    },
+    {
+      accessorKey: 'stay_time',
+      header: '滞在時間',
+      cell: ({ row }) => (
+        <span className="text-sm">
+          {row.original.stay_time != null ? `${row.original.stay_time}分` : '-'}
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'store_name',
+      header: '利用店舗',
+      cell: ({ row }) => <span className="text-sm">{row.original.store_name}</span>,
+    },
+    {
+      accessorKey: 'entry_method',
+      header: '入館方法',
+      cell: ({ row }) => (
+        <span className="text-sm">{getEntryMethodLabel(row.original.entry_method)}</span>
+      ),
+    },
+  ];
 
   const recentVisits = visitRecords.slice(0, VISIT_HISTORY_LIMIT);
   const hasMoreVisits = visitRecords.length > VISIT_HISTORY_LIMIT;
@@ -155,28 +206,7 @@ export function UsageHistoryTab({ memberId }: { memberId: string }) {
             <CardTitle>店舗別利用実績（直近3ヶ月）</CardTitle>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead className="text-foreground text-sm font-medium">店舗名</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">利用回数</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">利用率（%）</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">
-                    平均滞在時間
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {storeUsage.map((s) => (
-                  <TableRow key={s.store_id}>
-                    <TableCell className="text-sm">{s.store_name}</TableCell>
-                    <TableCell className="text-sm">{s.visit_count}回</TableCell>
-                    <TableCell className="text-sm">{s.usage_rate.toFixed(1)}%</TableCell>
-                    <TableCell className="text-sm">{s.average_stay_time}分</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <DataTable variant="simple" columns={storeUsageColumns} data={storeUsage} />
           </CardContent>
         </Card>
       )}
@@ -191,30 +221,7 @@ export function UsageHistoryTab({ memberId }: { memberId: string }) {
         </CardHeader>
         <CardContent>
           {recentVisits.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead className="text-foreground text-sm font-medium">来館日時</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">退館日時</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">滞在時間</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">利用店舗</TableHead>
-                  <TableHead className="text-foreground text-sm font-medium">入館方法</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {recentVisits.map((r) => (
-                  <TableRow key={r.id}>
-                    <TableCell className="text-sm">{formatDateTime(r.entry_time)}</TableCell>
-                    <TableCell className="text-sm">{formatDateTime(r.exit_time)}</TableCell>
-                    <TableCell className="text-sm">
-                      {r.stay_time != null ? `${r.stay_time}分` : '-'}
-                    </TableCell>
-                    <TableCell className="text-sm">{r.store_name}</TableCell>
-                    <TableCell className="text-sm">{getEntryMethodLabel(r.entry_method)}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <DataTable variant="simple" columns={visitColumns} data={recentVisits} />
           ) : (
             <p className="text-muted-foreground py-4 text-sm">該当のデータがありません。</p>
           )}
