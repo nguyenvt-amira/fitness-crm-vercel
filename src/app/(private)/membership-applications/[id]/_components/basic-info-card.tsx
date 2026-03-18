@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 import { formatDateYYYYMM_HHMMSS } from '@/utils/date.util';
 import { Edit } from 'lucide-react';
 
@@ -7,30 +9,32 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
+import { GetCrmMembershipApplicationsByIdResponse } from '@/lib/api';
+
+import { EditMembershipApplicationModal } from './edit-membership-application-modal';
+
 type BasicInfoCardProps = {
-  application: {
-    id: string;
-    applicant_name: string;
-    applied_at: string;
-    status: string;
-    elapsed_time?: string;
-  };
+  application: GetCrmMembershipApplicationsByIdResponse['application'];
   statusLabels: Record<string, string>;
-  onEdit?: () => void;
 };
 
-export function BasicInfoCard({ application, statusLabels, onEdit }: BasicInfoCardProps) {
+export function BasicInfoCard({ application, statusLabels }: BasicInfoCardProps) {
+  const [editOpen, setEditOpen] = useState(false);
+
   return (
     <Card>
       <CardContent className="p-4">
+        <EditMembershipApplicationModal
+          open={editOpen}
+          onOpenChange={setEditOpen}
+          application={application}
+        />
         <div className="flex items-start justify-between">
           <h2 className="text-lg font-semibold">会員基本情報</h2>
-          {onEdit && (
-            <Button variant="outline" size="sm" className="gap-2" onClick={onEdit}>
-              <Edit className="size-4" />
-              編集
-            </Button>
-          )}
+          <Button variant="outline" size="sm" className="gap-2" onClick={() => setEditOpen(true)}>
+            <Edit className="size-4" />
+            編集
+          </Button>
         </div>
 
         <div className="mt-4 flex gap-4">

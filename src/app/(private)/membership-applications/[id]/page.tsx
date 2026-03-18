@@ -147,11 +147,7 @@ export default function MembershipApplicationDetailPage() {
 
       <div className="flex flex-1 flex-col gap-4 overflow-auto p-4">
         {/* Basic Info Card */}
-        <BasicInfoCard
-          application={application}
-          statusLabels={statusLabels}
-          onEdit={() => toast.info('準備中です')}
-        />
+        <BasicInfoCard application={application} statusLabels={statusLabels} />
 
         {/* Risk Details Section */}
         {application.risk_score > 0 && (

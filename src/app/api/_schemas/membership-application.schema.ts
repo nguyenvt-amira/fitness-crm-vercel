@@ -619,6 +619,18 @@ export const BulkRejectResponseSchema = z
 export const GetApplicationDetailResponseSchema = z
   .object({
     application: MembershipApplicationSchema.extend({
+      gender: z.enum(['male', 'female', 'other', 'unknown']).optional().openapi({
+        example: 'male',
+        description: 'Gender',
+      }),
+      blood_type: z.enum(['A', 'B', 'O', 'AB', 'unknown']).optional().openapi({
+        example: 'A',
+        description: 'Blood type',
+      }),
+      birthday: z.string().date().optional().openapi({
+        example: '2000-01-01',
+        description: 'Birthday (YYYY-MM-DD)',
+      }),
       applicant_email: z.string().email().optional().openapi({
         example: 'yamada.taro@example.com',
         description: 'Applicant email',
@@ -630,6 +642,18 @@ export const GetApplicationDetailResponseSchema = z
       applicant_address: z.string().optional().openapi({
         example: '東京都渋谷区1-2-3',
         description: 'Applicant address',
+      }),
+      emergency_contact_name: z.string().optional().openapi({
+        example: '佐藤 太郎',
+        description: 'Emergency contact name',
+      }),
+      emergency_contact_relationship: z.string().optional().openapi({
+        example: '夫',
+        description: 'Emergency contact relationship',
+      }),
+      emergency_contact_phone: z.string().optional().openapi({
+        example: '090-8765-4321',
+        description: 'Emergency contact phone',
       }),
       payment_method: z.string().optional().openapi({
         example: 'クレジットカード',
@@ -670,6 +694,7 @@ export const GetApplicationDetailResponseSchema = z
           start_date: z.string().date(),
           monthly_fee: z.number(),
           contract_period: z.number(),
+          option_ids: z.array(z.string()).optional(),
         })
         .optional()
         .openapi({
@@ -682,6 +707,113 @@ export const GetApplicationDetailResponseSchema = z
   .openapi({
     title: 'GetApplicationDetailResponse',
     description: 'Response for getting application detail',
+  });
+
+/**
+ * Update Membership Application Request Schema (Edit screen)
+ */
+export const UpdateMembershipApplicationRequestSchema = z
+  .object({
+    basic: z
+      .object({
+        applicant_name: z.string().min(1).optional().openapi({
+          example: '山田太郎',
+          description: 'Applicant name',
+        }),
+        gender: z.enum(['male', 'female', 'other', 'unknown']).optional().openapi({
+          example: 'male',
+          description: 'Gender',
+        }),
+        blood_type: z.enum(['A', 'B', 'O', 'AB', 'unknown']).optional().openapi({
+          example: 'A',
+          description: 'Blood type',
+        }),
+        birthday: z.string().date().optional().openapi({
+          example: '2000-01-01',
+          description: 'Birthday (YYYY-MM-DD)',
+        }),
+      })
+      .optional()
+      .openapi({ description: 'Basic info' }),
+    contact: z
+      .object({
+        applicant_address: z.string().optional().openapi({
+          example: '東京都渋谷区1-2-3',
+          description: 'Address',
+        }),
+        applicant_phone: z.string().optional().openapi({
+          example: '090-1234-5678',
+          description: 'Phone',
+        }),
+        applicant_email: z.string().email().optional().openapi({
+          example: 'yamada.taro@example.com',
+          description: 'Email',
+        }),
+        emergency_contact_name: z.string().optional().openapi({
+          example: '佐藤 太郎',
+          description: 'Emergency contact name',
+        }),
+        emergency_contact_relationship: z.string().optional().openapi({
+          example: '夫',
+          description: 'Emergency contact relationship',
+        }),
+        emergency_contact_phone: z.string().optional().openapi({
+          example: '090-8765-4321',
+          description: 'Emergency contact phone',
+        }),
+      })
+      .optional()
+      .openapi({ description: 'Contact info' }),
+    contract: z
+      .object({
+        start_date: z.string().date().optional().openapi({
+          example: '2024-01-20',
+          description: 'Scheduled start date (YYYY-MM-DD)',
+        }),
+        plan_id: z.string().optional().openapi({
+          example: 'plan-001',
+          description: 'Plan ID',
+        }),
+        plan_name: z.string().optional().openapi({
+          example: '通常会員',
+          description: 'Plan name',
+        }),
+        option_ids: z
+          .array(z.string())
+          .optional()
+          .openapi({
+            example: ['opt-001', 'opt-002'],
+            description: 'Option IDs',
+          }),
+        recalculate_fee: z.boolean().optional().openapi({
+          example: false,
+          description: 'Whether to recalculate fee',
+        }),
+      })
+      .optional()
+      .openapi({ description: 'Contract info' }),
+  })
+  .openapi({
+    title: 'UpdateMembershipApplicationRequest',
+    description: 'Request payload for editing membership application',
+  });
+
+/**
+ * Update Membership Application Response Schema
+ */
+export const UpdateMembershipApplicationResponseSchema = z
+  .object({
+    success: z.boolean().openapi({
+      example: true,
+      description: 'Whether the operation was successful',
+    }),
+    application: z.record(z.string(), z.any()).openapi({
+      description: 'Updated application (shape follows detail response)',
+    }),
+  })
+  .openapi({
+    title: 'UpdateMembershipApplicationResponse',
+    description: 'Response for editing membership application',
   });
 
 /**
@@ -895,6 +1027,12 @@ export type BulkApproveResponse = z.infer<typeof BulkApproveResponseSchema>;
 export type BulkRejectRequest = z.infer<typeof BulkRejectRequestSchema>;
 export type BulkRejectResponse = z.infer<typeof BulkRejectResponseSchema>;
 export type GetApplicationDetailResponse = z.infer<typeof GetApplicationDetailResponseSchema>;
+export type UpdateMembershipApplicationRequest = z.infer<
+  typeof UpdateMembershipApplicationRequestSchema
+>;
+export type UpdateMembershipApplicationResponse = z.infer<
+  typeof UpdateMembershipApplicationResponseSchema
+>;
 export type ApproveRequest = z.infer<typeof ApproveRequestSchema>;
 export type ApproveResponse = z.infer<typeof ApproveResponseSchema>;
 export type RejectRequest = z.infer<typeof RejectRequestSchema>;

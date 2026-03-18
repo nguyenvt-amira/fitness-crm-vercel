@@ -3234,6 +3234,18 @@ export type GetApplicationDetailResponse = {
          */
         pending_deadline?: string;
         /**
+         * Gender
+         */
+        gender?: 'male' | 'female' | 'other' | 'unknown';
+        /**
+         * Blood type
+         */
+        blood_type?: 'A' | 'B' | 'O' | 'AB' | 'unknown';
+        /**
+         * Birthday (YYYY-MM-DD)
+         */
+        birthday?: string;
+        /**
          * Applicant email
          */
         applicant_email?: string;
@@ -3245,6 +3257,18 @@ export type GetApplicationDetailResponse = {
          * Applicant address
          */
         applicant_address?: string;
+        /**
+         * Emergency contact name
+         */
+        emergency_contact_name?: string;
+        /**
+         * Emergency contact relationship
+         */
+        emergency_contact_relationship?: string;
+        /**
+         * Emergency contact phone
+         */
+        emergency_contact_phone?: string;
         /**
          * Payment method
          */
@@ -3278,7 +3302,109 @@ export type GetApplicationDetailResponse = {
             start_date: string;
             monthly_fee: number;
             contract_period: number;
+            option_ids?: Array<string>;
         };
+    };
+};
+
+/**
+ * UpdateMembershipApplicationRequest
+ *
+ * Request payload for editing membership application
+ */
+export type UpdateMembershipApplicationRequest = {
+    /**
+     * Basic info
+     */
+    basic?: {
+        /**
+         * Applicant name
+         */
+        applicant_name?: string;
+        /**
+         * Gender
+         */
+        gender?: 'male' | 'female' | 'other' | 'unknown';
+        /**
+         * Blood type
+         */
+        blood_type?: 'A' | 'B' | 'O' | 'AB' | 'unknown';
+        /**
+         * Birthday (YYYY-MM-DD)
+         */
+        birthday?: string;
+    };
+    /**
+     * Contact info
+     */
+    contact?: {
+        /**
+         * Address
+         */
+        applicant_address?: string;
+        /**
+         * Phone
+         */
+        applicant_phone?: string;
+        /**
+         * Email
+         */
+        applicant_email?: string;
+        /**
+         * Emergency contact name
+         */
+        emergency_contact_name?: string;
+        /**
+         * Emergency contact relationship
+         */
+        emergency_contact_relationship?: string;
+        /**
+         * Emergency contact phone
+         */
+        emergency_contact_phone?: string;
+    };
+    /**
+     * Contract info
+     */
+    contract?: {
+        /**
+         * Scheduled start date (YYYY-MM-DD)
+         */
+        start_date?: string;
+        /**
+         * Plan ID
+         */
+        plan_id?: string;
+        /**
+         * Plan name
+         */
+        plan_name?: string;
+        /**
+         * Option IDs
+         */
+        option_ids?: Array<string>;
+        /**
+         * Whether to recalculate fee
+         */
+        recalculate_fee?: boolean;
+    };
+};
+
+/**
+ * UpdateMembershipApplicationResponse
+ *
+ * Response for editing membership application
+ */
+export type UpdateMembershipApplicationResponse = {
+    /**
+     * Whether the operation was successful
+     */
+    success: boolean;
+    /**
+     * Updated application (shape follows detail response)
+     */
+    application: {
+        [key: string]: unknown;
     };
 };
 
@@ -6722,6 +6848,18 @@ export type GetCrmMembershipApplicationsByIdResponses = {
              */
             pending_deadline?: string;
             /**
+             * Gender
+             */
+            gender?: 'male' | 'female' | 'other' | 'unknown';
+            /**
+             * Blood type
+             */
+            blood_type?: 'A' | 'B' | 'O' | 'AB' | 'unknown';
+            /**
+             * Birthday (YYYY-MM-DD)
+             */
+            birthday?: string;
+            /**
              * Applicant email
              */
             applicant_email?: string;
@@ -6733,6 +6871,18 @@ export type GetCrmMembershipApplicationsByIdResponses = {
              * Applicant address
              */
             applicant_address?: string;
+            /**
+             * Emergency contact name
+             */
+            emergency_contact_name?: string;
+            /**
+             * Emergency contact relationship
+             */
+            emergency_contact_relationship?: string;
+            /**
+             * Emergency contact phone
+             */
+            emergency_contact_phone?: string;
             /**
              * Payment method
              */
@@ -6766,12 +6916,166 @@ export type GetCrmMembershipApplicationsByIdResponses = {
                 start_date: string;
                 monthly_fee: number;
                 contract_period: number;
+                option_ids?: Array<string>;
             };
         };
     };
 };
 
 export type GetCrmMembershipApplicationsByIdResponse = GetCrmMembershipApplicationsByIdResponses[keyof GetCrmMembershipApplicationsByIdResponses];
+
+export type PatchCrmMembershipApplicationsByIdData = {
+    /**
+     * UpdateMembershipApplicationRequest
+     *
+     * Request payload for editing membership application
+     */
+    body?: {
+        /**
+         * Basic info
+         */
+        basic?: {
+            /**
+             * Applicant name
+             */
+            applicant_name?: string;
+            /**
+             * Gender
+             */
+            gender?: 'male' | 'female' | 'other' | 'unknown';
+            /**
+             * Blood type
+             */
+            blood_type?: 'A' | 'B' | 'O' | 'AB' | 'unknown';
+            /**
+             * Birthday (YYYY-MM-DD)
+             */
+            birthday?: string;
+        };
+        /**
+         * Contact info
+         */
+        contact?: {
+            /**
+             * Address
+             */
+            applicant_address?: string;
+            /**
+             * Phone
+             */
+            applicant_phone?: string;
+            /**
+             * Email
+             */
+            applicant_email?: string;
+            /**
+             * Emergency contact name
+             */
+            emergency_contact_name?: string;
+            /**
+             * Emergency contact relationship
+             */
+            emergency_contact_relationship?: string;
+            /**
+             * Emergency contact phone
+             */
+            emergency_contact_phone?: string;
+        };
+        /**
+         * Contract info
+         */
+        contract?: {
+            /**
+             * Scheduled start date (YYYY-MM-DD)
+             */
+            start_date?: string;
+            /**
+             * Plan ID
+             */
+            plan_id?: string;
+            /**
+             * Plan name
+             */
+            plan_name?: string;
+            /**
+             * Option IDs
+             */
+            option_ids?: Array<string>;
+            /**
+             * Whether to recalculate fee
+             */
+            recalculate_fee?: boolean;
+        };
+    };
+    path: {
+        /**
+         * Membership application ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/membership-applications/{id}';
+};
+
+export type PatchCrmMembershipApplicationsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PatchCrmMembershipApplicationsByIdError = PatchCrmMembershipApplicationsByIdErrors[keyof PatchCrmMembershipApplicationsByIdErrors];
+
+export type PatchCrmMembershipApplicationsByIdResponses = {
+    /**
+     * UpdateMembershipApplicationResponse
+     *
+     * Response for editing membership application
+     */
+    200: {
+        /**
+         * Whether the operation was successful
+         */
+        success: boolean;
+        /**
+         * Updated application (shape follows detail response)
+         */
+        application: {
+            [key: string]: unknown;
+        };
+    };
+};
+
+export type PatchCrmMembershipApplicationsByIdResponse = PatchCrmMembershipApplicationsByIdResponses[keyof PatchCrmMembershipApplicationsByIdResponses];
 
 export type PostCrmMembershipApplicationsBulkApproveData = {
     /**
