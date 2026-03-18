@@ -27,36 +27,36 @@ export function DateRangePicker({
     className,
 }: DateRangePickerProps) {
     return (
-        <Popover>
-            <PopoverTrigger asChild>
-                <Button
-                    variant="outline"
+            <Popover>
+                <PopoverTrigger asChild>
+                    <Button
+                        variant="outline"
                     className={className || "h-9 justify-start gap-2 px-3 font-normal"}
-                >
+                    >
                     <CalendarIcon className="size-4" />
-                    {date?.from ? (
-                        date.to ? (
-                            <>
+                        {date?.from ? (
+                            date.to ? (
+                                <>
                                 {format(date.from, "yyyy年M月d日", { locale: ja })} -{" "}
                                 {format(date.to, "yyyy年M月d日", { locale: ja })}
-                            </>
-                        ) : (
+                                </>
+                            ) : (
                             format(date.from, "yyyy年M月d日", { locale: ja })
-                        )
-                    ) : (
+                            )
+                        ) : (
                         <span>{placeholder}</span>
-                    )}
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                    mode="range"
-                    defaultMonth={date?.from}
-                    selected={date}
+                        )}
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                        mode="range"
+                        defaultMonth={date?.from}
+                        selected={date}
                     onSelect={onDateChange}
-                    numberOfMonths={2}
-                />
-            </PopoverContent>
-        </Popover>
+                        numberOfMonths={2}
+                    />
+                </PopoverContent>
+            </Popover>
     )
 }

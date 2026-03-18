@@ -2,27 +2,17 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
+import { useRouter } from 'next/navigation';
+
 import { formatDateYYYYMM_HHMMSS } from '@/utils/date.util';
-import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import type { ColumnDef, RowSelectionState } from '@tanstack/react-table';
 import { type SortingState } from '@tanstack/react-table';
 import { Search } from 'lucide-react';
-import { toast } from 'sonner';
 
 import { DataTable } from '@/components/common/data-table';
 import { DataTableColumnCheckbox } from '@/components/common/data-table/data-table-column-checkbox';
 import { DataTableColumnHeader } from '@/components/common/data-table/data-table-column-header';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -35,16 +25,15 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import {
-  getCrmMembershipApplicationsInfiniteOptions,
-  getCrmMembershipApplicationsInfiniteQueryKey,
-  postCrmMembershipApplicationsBulkApproveMutation,
-  postCrmMembershipApplicationsByIdApproveMutation,
-} from '@/lib/api/@tanstack/react-query.gen';
+import { getCrmMembershipApplicationsInfiniteOptions } from '@/lib/api/@tanstack/react-query.gen';
 import type {
   GetCrmMembershipApplicationsResponse,
   MembershipApplication,
 } from '@/lib/api/types.gen';
+import { navigate } from '@/lib/routes/routes.util';
+
+import { ApproveApplicationModal, SelectType } from './approve-application-modal';
+import { RejectApplicationModal } from './reject-application-modal';
 
 const createApplicationColumns = (args: {
   onApprove: (row: MembershipApplication) => void;
@@ -56,6 +45,7 @@ const createApplicationColumns = (args: {
       <div className="w-[32px] px-2 py-2.5">
         <Checkbox
           aria-label="Select all"
+          checked={table.getIsAllPageRowsSelected()}
           onCheckedChange={(value) => table.toggleAllRowsSelected(!!value)}
         />
       </div>
@@ -103,7 +93,7 @@ const createApplicationColumns = (args: {
     id: 'actions',
     header: () => <span className="inline-flex w-full justify-end font-medium">アクション</span>,
     cell: ({ row }) => (
-      <div className="flex justify-end gap-2">
+      <div className="flex justify-end gap-2" onClick={(e) => e.stopPropagation()}>
         <Button
           variant="destructive"
           size="sm"
@@ -125,15 +115,21 @@ export function PendingMembershipApplicationsTab({
   enabled = true,
 }: Readonly<{ enabled?: boolean }> = {}) {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [riskReason, setRiskReason] = useState<string>('all');
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({}); //manage your own row selection state
 
-  const [approveTarget, setApproveTarget] = useState<MembershipApplication | null>(null);
+  const [targetApplication, setTargetApplication] = useState<MembershipApplication>();
   const [modalState, setModalState] = useState({
     status: false,
-    type: null as 'approve' | 'bulk_approve' | null,
+    type: undefined as SelectType | undefined,
+  });
+  const [rejectModalState, setRejectModalState] = useState({
+    status: false,
+    type: undefined as SelectType | undefined,
   });
 
   // Debounce search to avoid triggering API requests on every keystroke
@@ -147,12 +143,13 @@ export function PendingMembershipApplicationsTab({
   const columnsToUse = useMemo(() => {
     return createApplicationColumns({
       onApprove: (row) => {
-        setApproveTarget(row);
-        setModalState({ status: true, type: 'approve' });
+        setTargetApplication(row);
+        setModalState({ status: true, type: 'single' });
       },
       onReject: (row) => {
         // TODO: implement reject action
-        console.log('reject', row.id);
+        setTargetApplication(row);
+        setRejectModalState({ status: true, type: 'single' });
       },
     });
   }, []);
@@ -193,104 +190,54 @@ export function PendingMembershipApplicationsTab({
     },
   });
 
-  const approveMutation = useMutation(postCrmMembershipApplicationsByIdApproveMutation());
-  const bulkApproveMutation = useMutation(postCrmMembershipApplicationsBulkApproveMutation());
-
   const applications = useMemo(() => {
     return listData?.pages.flatMap((page) => page.applications || []) || [];
   }, [listData]);
 
   const totalRows = listData?.pages[0]?.pagination?.total || 0;
   const totalRowsFetched = applications.length;
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({}); //manage your own row selection state
   const selectedIDs = Object.keys(rowSelection);
-  const handleApprove = async () => {
-    if (modalState.type === 'approve') {
-      if (!approveTarget) return;
-      approveMutation.mutate(
-        {
-          path: { id: approveTarget.id },
-        },
-        {
-          onSuccess: () => {
-            toast.success('承認しました');
-            setModalState({ status: false, type: modalState.type });
-            setApproveTarget(null);
-            queryClient.invalidateQueries({
-              queryKey: getCrmMembershipApplicationsInfiniteQueryKey({ query: listQuery }),
-            });
-          },
-        },
-      );
-      return;
-    }
-    bulkApproveMutation.mutate(
-      {
-        body: {
-          application_ids: selectedIDs,
-        },
-      },
-      {
-        onSuccess: () => {
-          toast.success(`${selectedIDs.length}件の承認に成功しました`);
-          setModalState({ status: false, type: modalState.type });
-          setRowSelection({});
-          queryClient.invalidateQueries({
-            queryKey: getCrmMembershipApplicationsInfiniteQueryKey({ query: listQuery }),
-          });
-        },
-      },
-    );
-  };
 
   return (
     <>
-      <AlertDialog
-        open={modalState.status}
+      <ApproveApplicationModal
+        modalState={modalState}
+        setModalState={setModalState}
+        selectedIDs={selectedIDs}
         onOpenChange={(open) => {
           setModalState({ status: open, type: modalState.type });
-          if (!open) setApproveTarget(null);
+          if (!open) setTargetApplication(undefined);
         }}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>承認の確認</AlertDialogTitle>
-            <AlertDialogDescription>
-              {modalState.type === 'approve'
-                ? 'この会員の入会申込を承認してもよろしいですか？'
-                : 'この会員の入会申込を一括承認してもよろしいですか？'}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          {modalState.type === 'approve' && (
-            <div className="flex items-center gap-3">
-              <Avatar size="lg">
-                <AvatarFallback>
-                  {(approveTarget?.applicant_name?.trim()?.[0] || 'M').toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div className="min-w-0">
-                <div className="text-muted-foreground text-sm">会員</div>
-                <div className="truncate font-medium">{approveTarget?.applicant_name}</div>
-                <div className="text-muted-foreground text-sm">{approveTarget?.risk_score}</div>
-              </div>
-            </div>
-          )}
-
-          <AlertDialogFooter>
-            <AlertDialogCancel>キャンセル</AlertDialogCancel>
-            <AlertDialogAction
-              disabled={approveMutation.isPending || bulkApproveMutation.isPending}
-              onClick={handleApprove}
-            >
-              {approveMutation.isPending
-                ? '承認中...'
-                : bulkApproveMutation.isPending
-                  ? '一括承認中...'
-                  : '承認する'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        application={targetApplication}
+        onSuccess={() => {
+          if (modalState.type === 'single') {
+            setModalState({ status: false, type: modalState.type });
+            setTargetApplication(undefined);
+          } else {
+            setModalState({ status: false, type: modalState.type });
+            setRowSelection({});
+          }
+        }}
+      />
+      <RejectApplicationModal
+        modalState={rejectModalState}
+        setModalState={setRejectModalState}
+        selectedIDs={selectedIDs}
+        onOpenChange={(open) => {
+          setRejectModalState({ status: open, type: rejectModalState.type });
+          if (!open) setTargetApplication(undefined);
+        }}
+        application={targetApplication}
+        onSuccess={() => {
+          if (rejectModalState.type === 'single') {
+            setRejectModalState({ status: false, type: rejectModalState.type });
+            setTargetApplication(undefined);
+          } else {
+            setRejectModalState({ status: false, type: rejectModalState.type });
+            setRowSelection({});
+          }
+        }}
+      />
 
       <Card className="overflow-hidden rounded-lg border shadow-sm">
         <div className="flex flex-col gap-4 p-4">
@@ -335,14 +282,23 @@ export function PendingMembershipApplicationsTab({
                   >
                     {selectedIDs.length}件選択中
                   </Button>
+
                   <Button
-                    variant="outline"
+                    variant="destructive"
                     size="sm"
                     className="h-8"
                     onClick={() => {
-                      setModalState({ status: true, type: 'bulk_approve' });
+                      setRejectModalState({ status: true, type: 'bulk' });
                     }}
-                    // loading={bulkApproveMutation.isPending}
+                  >
+                    一括却下
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="h-8"
+                    onClick={() => {
+                      setModalState({ status: true, type: 'bulk' });
+                    }}
                   >
                     一括承認
                   </Button>
@@ -368,6 +324,9 @@ export function PendingMembershipApplicationsTab({
                 },
                 getRowId: (originalRow) => originalRow?.id,
                 onRowSelectionChange: setRowSelection,
+              }}
+              onRowClick={(row) => {
+                router.push(navigate('/membership-applications/[id]', row.id));
               }}
             />
           </div>
