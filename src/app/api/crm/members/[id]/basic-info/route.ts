@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { db } from '@/app/api/_mock-db';
 import {
   ErrorResponseSchema,
   GetMemberDetailResponseSchema,
@@ -9,8 +10,6 @@ import {
   UpdateBasicInfoResponseSchema,
 } from '@/app/api/_schemas/member.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
-
-import { getMemberFromStore, updateBasicInfoInStore } from '../route';
 
 // Register OpenAPI documentation for GET route
 registerRoute({
@@ -94,7 +93,10 @@ registerRoute({
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const member = getMemberFromStore(id);
+    const member = db.members.get(id);
+    if (!member) {
+      return NextResponse.json({ error: 'Member not found' }, { status: 404 });
+    }
     return NextResponse.json({ member });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch basic info' }, { status: 500 });
@@ -114,7 +116,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     const validatedBody: UpdateBasicInfoRequest = validationResult.data;
-    const updatedMember = updateBasicInfoInStore(id, validatedBody);
+    const updatedMember = db.members.updateBasicInfo(id, validatedBody);
+    if (!updatedMember) {
+      return NextResponse.json({ error: 'Member not found' }, { status: 404 });
+    }
 
     const response: UpdateBasicInfoResponse = {
       success: true,

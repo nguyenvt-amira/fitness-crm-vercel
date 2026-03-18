@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { db } from '@/app/api/_mock-db';
 import {
   type AutoJudgeRequest,
   AutoJudgeRequestSchema,
@@ -12,11 +13,6 @@ import {
   GetMembershipApplicationsResponseSchema,
 } from '@/app/api/_schemas/membership-application.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
-
-import type {
-  MembershipApplication,
-  MembershipApplicationStatus,
-} from '@/types/api/membership-application.type';
 
 // Register OpenAPI documentation for GET route
 registerRoute({
@@ -75,62 +71,6 @@ registerRoute({
   ],
 });
 
-// Mock data generator
-function generateMockApplications(count: number): MembershipApplication[] {
-  const applications: MembershipApplication[] = [];
-  const names = ['山田太郎', '佐藤花子', '鈴木一郎', '田中次郎', '中村三郎'];
-  const plans = ['通常会員', 'プレミアム会員', 'ベーシックプラン'];
-  const riskReasons = ['ブラックリスト一致', '重複申込', '決済失敗', '高リスクスコア', '書類問題'];
-  const statuses: MembershipApplicationStatus[] = [
-    'pending',
-    'payment_failed',
-    'auto_approved',
-    'manual_approved',
-    'rejected',
-  ];
-
-  const now = new Date();
-
-  for (let i = 1; i <= count; i++) {
-    const appliedDate = new Date(now);
-    appliedDate.setDate(appliedDate.getDate() - (i % 10));
-    appliedDate.setHours(12 - (i % 12), i % 60, 0);
-
-    const scheduledStart = new Date(appliedDate);
-    scheduledStart.setDate(scheduledStart.getDate() + 5);
-
-    const elapsedHours = Math.floor((now.getTime() - appliedDate.getTime()) / (1000 * 60 * 60));
-    const elapsedDays = Math.floor(elapsedHours / 24);
-    const remainingHours = elapsedHours % 24;
-    const elapsedTime =
-      elapsedDays > 0 ? `${elapsedDays}日${remainingHours}時間経過` : `${elapsedHours}時間経過`;
-
-    const status = statuses[i % statuses.length];
-    const deadline = new Date(appliedDate);
-    deadline.setDate(deadline.getDate() + 7);
-
-    applications.push({
-      id: `APP-${String(i).padStart(5, '0')}`,
-      applicant_name: names[i % names.length],
-      applied_at: appliedDate.toISOString(),
-      elapsed_time: elapsedTime,
-      risk_score: 30 + (i % 70),
-      risk_reason: riskReasons[i % riskReasons.length],
-      plan_name: plans[i % plans.length],
-      scheduled_start_date: scheduledStart.toISOString().split('T')[0],
-      status,
-      ...(status === 'payment_failed' && {
-        payment_failed_deadline: deadline.toISOString(),
-      }),
-      ...(status === 'pending' && {
-        pending_deadline: deadline.toISOString(),
-      }),
-    });
-  }
-
-  return applications;
-}
-
 // GET /api/crm/membership-applications - 一覧取得
 export async function GET(request: NextRequest) {
   try {
@@ -152,8 +92,8 @@ export async function GET(request: NextRequest) {
     const query: GetMembershipApplicationsQuery = validationResult.data;
     const { page, limit, status, risk_reason, sort_by, sort_order, search } = query;
 
-    // Generate mock data
-    const allApplications = generateMockApplications(200);
+    // Get data from shared mock DB
+    const allApplications = db.membershipApplications.getAll();
 
     // Apply filters
     let filtered = allApplications;
@@ -232,11 +172,11 @@ export async function POST(request: NextRequest) {
     const validatedBody: AutoJudgeRequest = validationResult.data;
     const { application_ids } = validatedBody;
 
-    // Mock auto-judge result
     const results = application_ids.map((id: string) => {
       const riskScore = Math.floor(Math.random() * 100);
-      const approved = riskScore < 70; // Auto approve if risk score < 70
-
+      const approved = riskScore < 70;
+      const newStatus = approved ? 'auto_approved' : 'rejected';
+      db.membershipApplications.updateStatus(id, newStatus);
       return {
         application_id: id,
         approved,

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { db } from '@/app/api/_mock-db';
 import {
   type ApproveRequest,
   ApproveRequestSchema,
@@ -75,7 +76,11 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const validatedBody: ApproveRequest = validationResult.data;
     const { approval_reason, staff_id } = validatedBody;
 
-    // Mock approval result
+    const updated = db.membershipApplications.updateStatus(id, 'manual_approved');
+    if (!updated) {
+      return NextResponse.json({ error: 'Application not found' }, { status: 404 });
+    }
+
     const response: ApproveResponse = {
       success: true,
       application_id: id,

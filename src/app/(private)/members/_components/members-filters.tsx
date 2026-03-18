@@ -76,17 +76,8 @@ export function MembersFilters({
   const { filters, searchInput, setSearchInput, updateFilter, hasActiveFilters, clearFilters } =
     useMembersFiltersContext();
 
-  const {
-    member_type,
-    status,
-    brand,
-    store_id,
-    contract_plan_id,
-    last_visit_days,
-    has_unpaid,
-    sort_by,
-    sort_order,
-  } = filters;
+  const { member_type, status, brand, store_id, contract_plan_id, last_visit_days, has_unpaid } =
+    filters;
   return (
     <div className="space-y-2">
       {/* Search Bar and Filters */}

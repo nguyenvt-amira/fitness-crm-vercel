@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { db } from '@/app/api/_mock-db';
 import {
   type CancelRequest,
   CancelRequestSchema,
@@ -69,7 +70,11 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const validatedBody: CancelRequest = validationResult.data;
     const { cancellation_reason, staff_id } = validatedBody;
 
-    // Mock cancellation result
+    const updated = db.membershipApplications.updateStatus(id, 'cancelled');
+    if (!updated) {
+      return NextResponse.json({ error: 'Application not found' }, { status: 404 });
+    }
+
     const response: CancelResponse = {
       success: true,
       application_id: id,
