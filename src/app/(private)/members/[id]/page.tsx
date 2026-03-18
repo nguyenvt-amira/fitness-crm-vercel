@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
+import Link from 'next/link';
 import { useParams, useSearchParams } from 'next/navigation';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -254,10 +255,12 @@ export default function MemberDetailPage() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" onClick={() => navigate('/members')}>
-                  <ArrowLeft className="mr-2 size-4" />
-                  一覧に戻る
-                </Button>
+                <Link href={navigate('/members')}>
+                  <Button variant="outline" size="sm">
+                    <ArrowLeft className="mr-2 size-4" />
+                    一覧に戻る
+                  </Button>
+                </Link>
                 <Button variant="outline" size="sm" onClick={handlePrint}>
                   <Printer className="mr-2 size-4" />
                   印刷

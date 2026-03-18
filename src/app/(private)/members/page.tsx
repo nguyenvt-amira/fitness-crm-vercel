@@ -22,6 +22,7 @@ import {
 
 import { getCrmMembersInfiniteOptions } from '@/lib/api/@tanstack/react-query.gen';
 import type { GetCrmMembersResponse } from '@/lib/api/types.gen';
+import { navigate } from '@/lib/routes/routes.util';
 
 import { MembersFilters } from './_components/members-filters';
 import { MembersTableColumns } from './_components/members-table-columns';
@@ -72,10 +73,10 @@ function MembersPageContent() {
   const columns: ColumnDef<NonNullable<GetCrmMembersResponse['members']>[0]>[] =
     MembersTableColumns({
       onMemberClick: (memberId) => {
-        router.push(`/members/${memberId}`);
+        router.push(navigate('/members/[id]', memberId));
       },
       onMemoClick: (memberId) => {
-        router.push(`/members/${memberId}?tab=communications&memo=add`);
+        router.push(navigate('/members/[id]', memberId) + '?tab=communications&memo=add');
       },
       selectedMembers,
       onSelectionChange: setSelectedMembers,
