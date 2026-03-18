@@ -286,6 +286,30 @@ export const db = {
 
   membershipApplications: {
     _applications: [] as MembershipApplication[],
+    _details: {} as Record<
+      string,
+      Partial<{
+        // Basic info
+        applicant_name: string;
+        gender: 'male' | 'female' | 'other' | 'unknown';
+        blood_type: 'A' | 'B' | 'O' | 'AB' | 'unknown';
+        birthday: string; // YYYY-MM-DD
+        // Contact
+        applicant_email: string;
+        applicant_phone: string;
+        applicant_address: string;
+        emergency_contact_name: string;
+        emergency_contact_relationship: string;
+        emergency_contact_phone: string;
+        // Contract
+        contract_details: {
+          plan_id: string;
+          plan_name: string;
+          start_date: string; // YYYY-MM-DD
+          option_ids?: string[];
+        };
+      }>
+    >,
     _seeded: false,
 
     _seed(): void {
@@ -335,6 +359,26 @@ export const db = {
           ...(status === 'payment_failed' && { payment_failed_deadline: deadline.toISOString() }),
           ...(status === 'pending' && { pending_deadline: deadline.toISOString() }),
         });
+
+        const id = `APP-${String(i).padStart(5, '0')}`;
+        // Seed editable detail fields (used by detail/edit screen)
+        this._details[id] = {
+          gender: i % 2 === 0 ? 'male' : 'female',
+          blood_type: (['A', 'B', 'O', 'AB'] as const)[i % 4],
+          birthday: `199${i % 10}-0${(i % 9) + 1}-15`,
+          applicant_email: `applicant${String(i).padStart(5, '0')}@example.jp`,
+          applicant_phone: '090-1234-5678',
+          applicant_address: '東京都渋谷区1-2-3',
+          emergency_contact_name: '佐藤 太郎',
+          emergency_contact_relationship: '夫',
+          emergency_contact_phone: '090-8765-4321',
+          contract_details: {
+            plan_id: `plan-00${(i % 3) + 1}`,
+            plan_name: plans[i % plans.length],
+            start_date: scheduledStart.toISOString().split('T')[0],
+            option_ids: [],
+          },
+        };
       }
     },
 
@@ -346,6 +390,19 @@ export const db = {
     getById(id: string): MembershipApplication | undefined {
       this._seed();
       return this._applications.find((a) => a.id === id);
+    },
+
+    getDetails(id: string) {
+      this._seed();
+      return this._details[id] ?? {};
+    },
+
+    updateDetails(id: string, patch: Record<string, any>) {
+      this._seed();
+      const exists = this._applications.some((a) => a.id === id);
+      if (!exists) return undefined;
+      this._details[id] = { ...(this._details[id] ?? {}), ...patch };
+      return this._details[id];
     },
 
     updateStatus(

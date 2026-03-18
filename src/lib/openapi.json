@@ -4461,6 +4461,24 @@
                 "example": "2024-01-22T12:30:00Z",
                 "description": "Pending deadline"
               },
+              "gender": {
+                "type": "string",
+                "enum": ["male", "female", "other", "unknown"],
+                "example": "male",
+                "description": "Gender"
+              },
+              "blood_type": {
+                "type": "string",
+                "enum": ["A", "B", "O", "AB", "unknown"],
+                "example": "A",
+                "description": "Blood type"
+              },
+              "birthday": {
+                "type": "string",
+                "format": "date",
+                "example": "2000-01-01",
+                "description": "Birthday (YYYY-MM-DD)"
+              },
               "applicant_email": {
                 "type": "string",
                 "format": "email",
@@ -4476,6 +4494,21 @@
                 "type": "string",
                 "example": "東京都渋谷区1-2-3",
                 "description": "Applicant address"
+              },
+              "emergency_contact_name": {
+                "type": "string",
+                "example": "佐藤 太郎",
+                "description": "Emergency contact name"
+              },
+              "emergency_contact_relationship": {
+                "type": "string",
+                "example": "夫",
+                "description": "Emergency contact relationship"
+              },
+              "emergency_contact_phone": {
+                "type": "string",
+                "example": "090-8765-4321",
+                "description": "Emergency contact phone"
               },
               "payment_method": {
                 "type": "string",
@@ -4543,6 +4576,12 @@
                   },
                   "contract_period": {
                     "type": "number"
+                  },
+                  "option_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
                   }
                 },
                 "required": [
@@ -4572,6 +4611,135 @@
         "required": ["application"],
         "title": "GetApplicationDetailResponse",
         "description": "Response for getting application detail"
+      },
+      "UpdateMembershipApplicationRequest": {
+        "type": "object",
+        "properties": {
+          "basic": {
+            "type": "object",
+            "properties": {
+              "applicant_name": {
+                "type": "string",
+                "minLength": 1,
+                "example": "山田太郎",
+                "description": "Applicant name"
+              },
+              "gender": {
+                "type": "string",
+                "enum": ["male", "female", "other", "unknown"],
+                "example": "male",
+                "description": "Gender"
+              },
+              "blood_type": {
+                "type": "string",
+                "enum": ["A", "B", "O", "AB", "unknown"],
+                "example": "A",
+                "description": "Blood type"
+              },
+              "birthday": {
+                "type": "string",
+                "format": "date",
+                "example": "2000-01-01",
+                "description": "Birthday (YYYY-MM-DD)"
+              }
+            },
+            "description": "Basic info"
+          },
+          "contact": {
+            "type": "object",
+            "properties": {
+              "applicant_address": {
+                "type": "string",
+                "example": "東京都渋谷区1-2-3",
+                "description": "Address"
+              },
+              "applicant_phone": {
+                "type": "string",
+                "example": "090-1234-5678",
+                "description": "Phone"
+              },
+              "applicant_email": {
+                "type": "string",
+                "format": "email",
+                "example": "yamada.taro@example.com",
+                "description": "Email"
+              },
+              "emergency_contact_name": {
+                "type": "string",
+                "example": "佐藤 太郎",
+                "description": "Emergency contact name"
+              },
+              "emergency_contact_relationship": {
+                "type": "string",
+                "example": "夫",
+                "description": "Emergency contact relationship"
+              },
+              "emergency_contact_phone": {
+                "type": "string",
+                "example": "090-8765-4321",
+                "description": "Emergency contact phone"
+              }
+            },
+            "description": "Contact info"
+          },
+          "contract": {
+            "type": "object",
+            "properties": {
+              "start_date": {
+                "type": "string",
+                "format": "date",
+                "example": "2024-01-20",
+                "description": "Scheduled start date (YYYY-MM-DD)"
+              },
+              "plan_id": {
+                "type": "string",
+                "example": "plan-001",
+                "description": "Plan ID"
+              },
+              "plan_name": {
+                "type": "string",
+                "example": "通常会員",
+                "description": "Plan name"
+              },
+              "option_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "example": ["opt-001", "opt-002"],
+                "description": "Option IDs"
+              },
+              "recalculate_fee": {
+                "type": "boolean",
+                "example": false,
+                "description": "Whether to recalculate fee"
+              }
+            },
+            "description": "Contract info"
+          }
+        },
+        "title": "UpdateMembershipApplicationRequest",
+        "description": "Request payload for editing membership application"
+      },
+      "UpdateMembershipApplicationResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether the operation was successful"
+          },
+          "application": {
+            "type": "object",
+            "additionalProperties": {
+              "nullable": true
+            },
+            "description": "Updated application (shape follows detail response)"
+          }
+        },
+        "required": ["success", "application"],
+        "title": "UpdateMembershipApplicationResponse",
+        "description": "Response for editing membership application"
       },
       "ApproveRequest": {
         "type": "object",
@@ -9699,6 +9867,24 @@
                           "example": "2024-01-22T12:30:00Z",
                           "description": "Pending deadline"
                         },
+                        "gender": {
+                          "type": "string",
+                          "enum": ["male", "female", "other", "unknown"],
+                          "example": "male",
+                          "description": "Gender"
+                        },
+                        "blood_type": {
+                          "type": "string",
+                          "enum": ["A", "B", "O", "AB", "unknown"],
+                          "example": "A",
+                          "description": "Blood type"
+                        },
+                        "birthday": {
+                          "type": "string",
+                          "format": "date",
+                          "example": "2000-01-01",
+                          "description": "Birthday (YYYY-MM-DD)"
+                        },
                         "applicant_email": {
                           "type": "string",
                           "format": "email",
@@ -9714,6 +9900,21 @@
                           "type": "string",
                           "example": "東京都渋谷区1-2-3",
                           "description": "Applicant address"
+                        },
+                        "emergency_contact_name": {
+                          "type": "string",
+                          "example": "佐藤 太郎",
+                          "description": "Emergency contact name"
+                        },
+                        "emergency_contact_relationship": {
+                          "type": "string",
+                          "example": "夫",
+                          "description": "Emergency contact relationship"
+                        },
+                        "emergency_contact_phone": {
+                          "type": "string",
+                          "example": "090-8765-4321",
+                          "description": "Emergency contact phone"
                         },
                         "payment_method": {
                           "type": "string",
@@ -9781,6 +9982,12 @@
                             },
                             "contract_period": {
                               "type": "number"
+                            },
+                            "option_ids": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
                             }
                           },
                           "required": [
@@ -9810,6 +10017,227 @@
                   "required": ["application"],
                   "title": "GetApplicationDetailResponse",
                   "description": "Response for getting application detail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Application not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update membership application detail",
+        "description": "Edit membership application data (basic info, contacts, contract). Immutable fields are ignored.",
+        "tags": ["Membership Applications"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Membership application ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Editable membership application fields",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "basic": {
+                    "type": "object",
+                    "properties": {
+                      "applicant_name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "example": "山田太郎",
+                        "description": "Applicant name"
+                      },
+                      "gender": {
+                        "type": "string",
+                        "enum": ["male", "female", "other", "unknown"],
+                        "example": "male",
+                        "description": "Gender"
+                      },
+                      "blood_type": {
+                        "type": "string",
+                        "enum": ["A", "B", "O", "AB", "unknown"],
+                        "example": "A",
+                        "description": "Blood type"
+                      },
+                      "birthday": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2000-01-01",
+                        "description": "Birthday (YYYY-MM-DD)"
+                      }
+                    },
+                    "description": "Basic info"
+                  },
+                  "contact": {
+                    "type": "object",
+                    "properties": {
+                      "applicant_address": {
+                        "type": "string",
+                        "example": "東京都渋谷区1-2-3",
+                        "description": "Address"
+                      },
+                      "applicant_phone": {
+                        "type": "string",
+                        "example": "090-1234-5678",
+                        "description": "Phone"
+                      },
+                      "applicant_email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "yamada.taro@example.com",
+                        "description": "Email"
+                      },
+                      "emergency_contact_name": {
+                        "type": "string",
+                        "example": "佐藤 太郎",
+                        "description": "Emergency contact name"
+                      },
+                      "emergency_contact_relationship": {
+                        "type": "string",
+                        "example": "夫",
+                        "description": "Emergency contact relationship"
+                      },
+                      "emergency_contact_phone": {
+                        "type": "string",
+                        "example": "090-8765-4321",
+                        "description": "Emergency contact phone"
+                      }
+                    },
+                    "description": "Contact info"
+                  },
+                  "contract": {
+                    "type": "object",
+                    "properties": {
+                      "start_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2024-01-20",
+                        "description": "Scheduled start date (YYYY-MM-DD)"
+                      },
+                      "plan_id": {
+                        "type": "string",
+                        "example": "plan-001",
+                        "description": "Plan ID"
+                      },
+                      "plan_name": {
+                        "type": "string",
+                        "example": "通常会員",
+                        "description": "Plan name"
+                      },
+                      "option_ids": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "example": ["opt-001", "opt-002"],
+                        "description": "Option IDs"
+                      },
+                      "recalculate_fee": {
+                        "type": "boolean",
+                        "example": false,
+                        "description": "Whether to recalculate fee"
+                      }
+                    },
+                    "description": "Contract info"
+                  }
+                },
+                "title": "UpdateMembershipApplicationRequest",
+                "description": "Request payload for editing membership application"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Application updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true,
+                      "description": "Whether the operation was successful"
+                    },
+                    "application": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "nullable": true
+                      },
+                      "description": "Updated application (shape follows detail response)"
+                    }
+                  },
+                  "required": ["success", "application"],
+                  "title": "UpdateMembershipApplicationResponse",
+                  "description": "Response for editing membership application"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
                 }
               }
             }

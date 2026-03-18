@@ -27,6 +27,7 @@ export function DatePicker({
   disabled = false,
   placeholder = 'Pick a date',
 }: Readonly<DatePickerProps>) {
+  console.log('date', date);
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -48,6 +49,8 @@ export function DatePicker({
           selected={date}
           onSelect={onDateChange}
           disabled={disabled}
+          defaultMonth={date}
+          captionLayout="dropdown"
           initialFocus
         />
       </PopoverContent>

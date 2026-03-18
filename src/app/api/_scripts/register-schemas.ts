@@ -324,6 +324,20 @@ export function registerAllSchemas() {
     ),
   );
   registeredSchemaMap.set(
+    'UpdateMembershipApplicationRequest',
+    registry.register(
+      'UpdateMembershipApplicationRequest',
+      membershipApplicationSchemas.UpdateMembershipApplicationRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateMembershipApplicationResponse',
+    registry.register(
+      'UpdateMembershipApplicationResponse',
+      membershipApplicationSchemas.UpdateMembershipApplicationResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
     'ApproveRequest',
     registry.register('ApproveRequest', membershipApplicationSchemas.ApproveRequestSchema),
   );
