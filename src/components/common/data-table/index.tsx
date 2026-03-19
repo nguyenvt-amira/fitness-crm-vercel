@@ -53,6 +53,7 @@ interface DataTableProps<TData, TValue> {
    * Note: `data` and `columns` are controlled by `DataTable` props.
    */
   tableOptions?: Omit<Partial<TableOptions<TData>>, 'data' | 'columns'>;
+  containerClassName?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -72,6 +73,7 @@ export function DataTable<TData, TValue>({
   onRowClick,
   onTableReady,
   tableOptions,
+  containerClassName,
 }: Readonly<DataTableProps<TData, TValue>>) {
   const table = useReactTable({
     data,
@@ -154,7 +156,7 @@ export function DataTable<TData, TValue>({
       <Table
         ref={tableRef}
         onScroll={onScroll}
-        containerClassName="max-h-[calc(100vh-361px)] rounded-md border"
+        containerClassName={cn('rounded-md border', containerClassName)}
       >
         <TableHeader className={cn('bg-background sticky top-0 z-20')}>
           {table.getHeaderGroups().map((headerGroup) => (
