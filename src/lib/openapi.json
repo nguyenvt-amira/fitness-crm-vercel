@@ -5745,6 +5745,963 @@
         ],
         "title": "CancelResponse",
         "description": "Response for cancelling an application"
+      },
+      "FamilyMember": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "M-00010",
+            "description": "Child member id"
+          },
+          "member_number": {
+            "type": "string",
+            "example": "M-00010",
+            "description": "Member number"
+          },
+          "name_kanji": {
+            "type": "string",
+            "example": "山田 花子"
+          },
+          "relationship": {
+            "type": "string",
+            "enum": ["spouse", "child", "parent", "sibling", "grandparent", "grandchild"],
+            "example": "child"
+          },
+          "joined_at": {
+            "type": "string",
+            "format": "date",
+            "example": "2024-01-15"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "suspended", "withdrawn"],
+            "example": "active"
+          },
+          "monthly_fee": {
+            "type": "number",
+            "example": 0,
+            "description": "Monthly fee (JPY)"
+          },
+          "store_id": {
+            "type": "string",
+            "example": "store-001"
+          },
+          "store_name": {
+            "type": "string",
+            "example": "Fit365八潮店"
+          }
+        },
+        "required": [
+          "id",
+          "member_number",
+          "name_kanji",
+          "relationship",
+          "joined_at",
+          "status",
+          "monthly_fee",
+          "store_id",
+          "store_name"
+        ],
+        "title": "FamilyMember",
+        "description": "Family member list item"
+      },
+      "GetFamilyMembersResponse": {
+        "type": "object",
+        "properties": {
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "M-00010",
+                  "description": "Child member id"
+                },
+                "member_number": {
+                  "type": "string",
+                  "example": "M-00010",
+                  "description": "Member number"
+                },
+                "name_kanji": {
+                  "type": "string",
+                  "example": "山田 花子"
+                },
+                "relationship": {
+                  "type": "string",
+                  "enum": ["spouse", "child", "parent", "sibling", "grandparent", "grandchild"],
+                  "example": "child"
+                },
+                "joined_at": {
+                  "type": "string",
+                  "format": "date",
+                  "example": "2024-01-15"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["active", "suspended", "withdrawn"],
+                  "example": "active"
+                },
+                "monthly_fee": {
+                  "type": "number",
+                  "example": 0,
+                  "description": "Monthly fee (JPY)"
+                },
+                "store_id": {
+                  "type": "string",
+                  "example": "store-001"
+                },
+                "store_name": {
+                  "type": "string",
+                  "example": "Fit365八潮店"
+                }
+              },
+              "required": [
+                "id",
+                "member_number",
+                "name_kanji",
+                "relationship",
+                "joined_at",
+                "status",
+                "monthly_fee",
+                "store_id",
+                "store_name"
+              ],
+              "title": "FamilyMember",
+              "description": "Family member list item"
+            }
+          },
+          "limit": {
+            "type": "number",
+            "example": 3,
+            "description": "Brand setting family_member_limit"
+          }
+        },
+        "required": ["members", "limit"],
+        "title": "GetFamilyMembersResponse",
+        "description": "Response for getting primary member family members"
+      },
+      "CheckPrimaryMemberRequest": {
+        "type": "object",
+        "properties": {
+          "primary_member_id": {
+            "type": "string",
+            "minLength": 1,
+            "example": "M-00001"
+          }
+        },
+        "required": ["primary_member_id"],
+        "title": "CheckPrimaryMemberRequest",
+        "description": "Request to check if a primary member can invite/register more family members"
+      },
+      "CheckPrimaryMemberResponse": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "example": true
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [],
+            "description": "Blocking reasons when ok=false"
+          },
+          "brand": {
+            "type": "string",
+            "enum": ["joyfit", "fit365"],
+            "example": "fit365"
+          },
+          "limit": {
+            "type": "number",
+            "example": 3
+          },
+          "current_count": {
+            "type": "number",
+            "example": 2
+          },
+          "fee": {
+            "type": "number",
+            "example": 0,
+            "description": "Brand setting family_member_fee (JPY)"
+          },
+          "payment_cycle": {
+            "type": "string",
+            "enum": ["monthly", "yearly"],
+            "example": "monthly"
+          }
+        },
+        "required": ["ok", "reasons", "brand", "limit", "current_count", "fee", "payment_cycle"],
+        "title": "CheckPrimaryMemberResponse",
+        "description": "Primary member eligibility check result"
+      },
+      "RiskEvaluationRequest": {
+        "type": "object",
+        "properties": {
+          "primary_member_id": {
+            "type": "string",
+            "minLength": 1,
+            "example": "M-00001"
+          },
+          "applicant": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "example": "山田 花子"
+              },
+              "birthday": {
+                "type": "string",
+                "format": "date",
+                "example": "2000-01-01"
+              },
+              "phone": {
+                "type": "string",
+                "example": "09012345678"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "example": "hanako@example.jp"
+              },
+              "relationship": {
+                "type": "string",
+                "enum": ["spouse", "child", "parent", "sibling", "grandparent", "grandchild"],
+                "example": "child"
+              }
+            },
+            "required": ["name", "birthday", "relationship"],
+            "description": "Child applicant info"
+          }
+        },
+        "required": ["primary_member_id", "applicant"],
+        "title": "RiskEvaluationRequest",
+        "description": "Request payload for risk evaluation (mocked)"
+      },
+      "RiskEvaluationResponse": {
+        "type": "object",
+        "properties": {
+          "risk_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "example": 35
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["duplicate_check: ok"]
+          },
+          "recommended_action": {
+            "type": "string",
+            "enum": ["auto_approve", "manual_review", "reject"],
+            "example": "auto_approve"
+          }
+        },
+        "required": ["risk_score", "reasons", "recommended_action"],
+        "title": "RiskEvaluationResponse",
+        "description": "Risk evaluation result"
+      },
+      "FamilyRegistration": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "FR-00001",
+            "description": "Family registration id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-15T12:30:00Z"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "invited",
+              "awaiting_acceptance",
+              "declined",
+              "expired",
+              "awaiting_profile",
+              "pending_review",
+              "approved",
+              "rejected",
+              "completed"
+            ],
+            "example": "awaiting_profile"
+          },
+          "primary_member_id": {
+            "type": "string",
+            "example": "M-00001"
+          },
+          "primary_member_name": {
+            "type": "string",
+            "example": "山田 太郎"
+          },
+          "applicant_name": {
+            "type": "string",
+            "example": "山田 花子"
+          },
+          "relationship": {
+            "type": "string",
+            "enum": ["spouse", "child", "parent", "sibling", "grandparent", "grandchild"],
+            "example": "child"
+          },
+          "invite_expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-01-22T12:30:00Z"
+          },
+          "store_id": {
+            "type": "string",
+            "example": "store-001"
+          },
+          "store_name": {
+            "type": "string",
+            "example": "Fit365八潮店"
+          },
+          "monthly_fee": {
+            "type": "number",
+            "example": 0
+          },
+          "risk_score": {
+            "type": "number",
+            "example": 20
+          }
+        },
+        "required": [
+          "id",
+          "created_at",
+          "status",
+          "primary_member_id",
+          "primary_member_name",
+          "applicant_name",
+          "relationship",
+          "store_id",
+          "store_name",
+          "monthly_fee"
+        ],
+        "title": "FamilyRegistration",
+        "description": "Family registration list item"
+      },
+      "GetFamilyRegistrationsQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "default": 1
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "default": 50
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "invited",
+              "awaiting_acceptance",
+              "declined",
+              "expired",
+              "awaiting_profile",
+              "pending_review",
+              "approved",
+              "rejected",
+              "completed"
+            ]
+          },
+          "search": {
+            "type": "string",
+            "example": "山田"
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": ["created_at", "risk_score"],
+            "default": "created_at"
+          },
+          "sort_order": {
+            "type": "string",
+            "enum": ["asc", "desc"],
+            "default": "desc"
+          }
+        },
+        "title": "GetFamilyRegistrationsQuery",
+        "description": "Query for family registrations"
+      },
+      "GetFamilyRegistrationsResponse": {
+        "type": "object",
+        "properties": {
+          "registrations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "FR-00001",
+                  "description": "Family registration id"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2024-01-15T12:30:00Z"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "invited",
+                    "awaiting_acceptance",
+                    "declined",
+                    "expired",
+                    "awaiting_profile",
+                    "pending_review",
+                    "approved",
+                    "rejected",
+                    "completed"
+                  ],
+                  "example": "awaiting_profile"
+                },
+                "primary_member_id": {
+                  "type": "string",
+                  "example": "M-00001"
+                },
+                "primary_member_name": {
+                  "type": "string",
+                  "example": "山田 太郎"
+                },
+                "applicant_name": {
+                  "type": "string",
+                  "example": "山田 花子"
+                },
+                "relationship": {
+                  "type": "string",
+                  "enum": ["spouse", "child", "parent", "sibling", "grandparent", "grandchild"],
+                  "example": "child"
+                },
+                "invite_expires_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2024-01-22T12:30:00Z"
+                },
+                "store_id": {
+                  "type": "string",
+                  "example": "store-001"
+                },
+                "store_name": {
+                  "type": "string",
+                  "example": "Fit365八潮店"
+                },
+                "monthly_fee": {
+                  "type": "number",
+                  "example": 0
+                },
+                "risk_score": {
+                  "type": "number",
+                  "example": 20
+                }
+              },
+              "required": [
+                "id",
+                "created_at",
+                "status",
+                "primary_member_id",
+                "primary_member_name",
+                "applicant_name",
+                "relationship",
+                "store_id",
+                "store_name",
+                "monthly_fee"
+              ],
+              "title": "FamilyRegistration",
+              "description": "Family registration list item"
+            }
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "number"
+              },
+              "total_pages": {
+                "type": "number"
+              },
+              "current_page": {
+                "type": "number"
+              },
+              "limit": {
+                "type": "number"
+              }
+            },
+            "required": ["total", "total_pages", "current_page", "limit"]
+          }
+        },
+        "required": ["registrations", "pagination"],
+        "title": "GetFamilyRegistrationsResponse",
+        "description": "Paginated list response for family registrations"
+      },
+      "GetFamilyRegistrationDetailResponse": {
+        "type": "object",
+        "properties": {
+          "registration": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "FR-00001",
+                "description": "Family registration id"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2024-01-15T12:30:00Z"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "invited",
+                  "awaiting_acceptance",
+                  "declined",
+                  "expired",
+                  "awaiting_profile",
+                  "pending_review",
+                  "approved",
+                  "rejected",
+                  "completed"
+                ],
+                "example": "awaiting_profile"
+              },
+              "primary_member_id": {
+                "type": "string",
+                "example": "M-00001"
+              },
+              "primary_member_name": {
+                "type": "string",
+                "example": "山田 太郎"
+              },
+              "applicant_name": {
+                "type": "string",
+                "example": "山田 花子"
+              },
+              "relationship": {
+                "type": "string",
+                "enum": ["spouse", "child", "parent", "sibling", "grandparent", "grandchild"],
+                "example": "child"
+              },
+              "invite_expires_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2024-01-22T12:30:00Z"
+              },
+              "store_id": {
+                "type": "string",
+                "example": "store-001"
+              },
+              "store_name": {
+                "type": "string",
+                "example": "Fit365八潮店"
+              },
+              "monthly_fee": {
+                "type": "number",
+                "example": 0
+              },
+              "risk_score": {
+                "type": "number",
+                "example": 20
+              },
+              "applicant": {
+                "type": "object",
+                "properties": {
+                  "birthday": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "phone": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  }
+                }
+              },
+              "primary_member": {
+                "type": "object",
+                "properties": {
+                  "member_number": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string"
+                  },
+                  "has_unpaid": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "required": [
+              "id",
+              "created_at",
+              "status",
+              "primary_member_id",
+              "primary_member_name",
+              "applicant_name",
+              "relationship",
+              "store_id",
+              "store_name",
+              "monthly_fee"
+            ],
+            "title": "FamilyRegistration",
+            "description": "Family registration list item"
+          }
+        },
+        "required": ["registration"],
+        "title": "GetFamilyRegistrationDetailResponse",
+        "description": "Detail response for family registration"
+      },
+      "CreateFamilyRegistrationRequest": {
+        "type": "object",
+        "properties": {
+          "primary_member_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "applicant": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "birthday": {
+                "type": "string",
+                "format": "date"
+              },
+              "relationship": {
+                "type": "string",
+                "enum": ["spouse", "child", "parent", "sibling", "grandparent", "grandchild"]
+              },
+              "phone": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string",
+                "format": "email"
+              }
+            },
+            "required": ["name", "birthday", "relationship"]
+          }
+        },
+        "required": ["primary_member_id", "applicant"],
+        "title": "CreateFamilyRegistrationRequest",
+        "description": "Request payload to create a family registration"
+      },
+      "CreateFamilyRegistrationResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "registration": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "FR-00001",
+                "description": "Family registration id"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2024-01-15T12:30:00Z"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "invited",
+                  "awaiting_acceptance",
+                  "declined",
+                  "expired",
+                  "awaiting_profile",
+                  "pending_review",
+                  "approved",
+                  "rejected",
+                  "completed"
+                ],
+                "example": "awaiting_profile"
+              },
+              "primary_member_id": {
+                "type": "string",
+                "example": "M-00001"
+              },
+              "primary_member_name": {
+                "type": "string",
+                "example": "山田 太郎"
+              },
+              "applicant_name": {
+                "type": "string",
+                "example": "山田 花子"
+              },
+              "relationship": {
+                "type": "string",
+                "enum": ["spouse", "child", "parent", "sibling", "grandparent", "grandchild"],
+                "example": "child"
+              },
+              "invite_expires_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2024-01-22T12:30:00Z"
+              },
+              "store_id": {
+                "type": "string",
+                "example": "store-001"
+              },
+              "store_name": {
+                "type": "string",
+                "example": "Fit365八潮店"
+              },
+              "monthly_fee": {
+                "type": "number",
+                "example": 0
+              },
+              "risk_score": {
+                "type": "number",
+                "example": 20
+              }
+            },
+            "required": [
+              "id",
+              "created_at",
+              "status",
+              "primary_member_id",
+              "primary_member_name",
+              "applicant_name",
+              "relationship",
+              "store_id",
+              "store_name",
+              "monthly_fee"
+            ],
+            "title": "FamilyRegistration",
+            "description": "Family registration list item"
+          }
+        },
+        "required": ["success", "registration"],
+        "title": "CreateFamilyRegistrationResponse",
+        "description": "Create family registration response"
+      },
+      "ApproveFamilyRegistrationRequest": {
+        "type": "object",
+        "properties": {
+          "approval_reason": {
+            "type": "string"
+          },
+          "staff_id": {
+            "type": "string"
+          }
+        },
+        "title": "ApproveFamilyRegistrationRequest",
+        "description": "Approve family registration request"
+      },
+      "ApproveFamilyRegistrationResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["approved"]
+          },
+          "approved_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "approved_by": {
+            "type": "string"
+          }
+        },
+        "required": ["success", "id", "status", "approved_at", "approved_by"],
+        "title": "ApproveFamilyRegistrationResponse",
+        "description": "Approve family registration response"
+      },
+      "RejectFamilyRegistrationRequest": {
+        "type": "object",
+        "properties": {
+          "rejection_reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "staff_id": {
+            "type": "string"
+          }
+        },
+        "required": ["rejection_reason"],
+        "title": "RejectFamilyRegistrationRequest",
+        "description": "Reject family registration request"
+      },
+      "RejectFamilyRegistrationResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["rejected"]
+          },
+          "rejected_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rejected_by": {
+            "type": "string"
+          },
+          "rejection_reason": {
+            "type": "string"
+          }
+        },
+        "required": ["success", "id", "status", "rejected_at", "rejected_by", "rejection_reason"],
+        "title": "RejectFamilyRegistrationResponse",
+        "description": "Reject family registration response"
+      },
+      "CompleteFamilyRegistrationRequest": {
+        "type": "object",
+        "properties": {
+          "staff_id": {
+            "type": "string"
+          }
+        },
+        "title": "CompleteFamilyRegistrationRequest",
+        "description": "Complete family registration request"
+      },
+      "CompleteFamilyRegistrationResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["completed"]
+          },
+          "completed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "member_id": {
+            "type": "string",
+            "example": "M-00123",
+            "description": "Created child member id"
+          }
+        },
+        "required": ["success", "id", "status", "completed_at", "member_id"],
+        "title": "CompleteFamilyRegistrationResponse",
+        "description": "Complete family registration response"
+      },
+      "GetFamilyRegistrationsSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number"
+          },
+          "by_status": {
+            "type": "object",
+            "properties": {
+              "invited": {
+                "type": "number"
+              },
+              "awaiting_acceptance": {
+                "type": "number"
+              },
+              "declined": {
+                "type": "number"
+              },
+              "expired": {
+                "type": "number"
+              },
+              "awaiting_profile": {
+                "type": "number"
+              },
+              "pending_review": {
+                "type": "number"
+              },
+              "approved": {
+                "type": "number"
+              },
+              "rejected": {
+                "type": "number"
+              },
+              "completed": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "required": ["total", "by_status"],
+        "title": "GetFamilyRegistrationsSummaryResponse",
+        "description": "Summary counts for family registrations"
+      },
+      "GetFamilyRegistrationsDashboardResponse": {
+        "type": "object",
+        "properties": {
+          "month_invites": {
+            "type": "number"
+          },
+          "month_completed": {
+            "type": "number"
+          },
+          "acceptance_rate": {
+            "type": "number"
+          },
+          "family_member_ratio": {
+            "type": "number"
+          },
+          "top_primary_members": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "primary_member_id": {
+                  "type": "string"
+                },
+                "primary_member_name": {
+                  "type": "string"
+                },
+                "family_count": {
+                  "type": "number"
+                }
+              },
+              "required": ["primary_member_id", "primary_member_name", "family_count"]
+            }
+          }
+        },
+        "required": [
+          "month_invites",
+          "month_completed",
+          "acceptance_rate",
+          "family_member_ratio",
+          "top_primary_members"
+        ],
+        "title": "GetFamilyRegistrationsDashboardResponse",
+        "description": "Dashboard response for family registrations (mocked)"
       }
     },
     "parameters": {}
@@ -6789,6 +7746,1547 @@
                       "type": "string",
                       "example": "Failed to process request",
                       "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/family-registrations/{id}/approve": {
+      "post": {
+        "summary": "Approve family registration",
+        "tags": ["Family Registrations"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "approval_reason": {
+                    "type": "string"
+                  },
+                  "staff_id": {
+                    "type": "string"
+                  }
+                },
+                "title": "ApproveFamilyRegistrationRequest",
+                "description": "Approve family registration request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Approved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": ["approved"]
+                    },
+                    "approved_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "approved_by": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["success", "id", "status", "approved_at", "approved_by"],
+                  "title": "ApproveFamilyRegistrationResponse",
+                  "description": "Approve family registration response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/family-registrations/{id}/complete": {
+      "post": {
+        "summary": "Complete family registration",
+        "description": "Finalize family registration and create child member (mocked)",
+        "tags": ["Family Registrations"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "staff_id": {
+                    "type": "string"
+                  }
+                },
+                "title": "CompleteFamilyRegistrationRequest",
+                "description": "Complete family registration request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": ["completed"]
+                    },
+                    "completed_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "member_id": {
+                      "type": "string",
+                      "example": "M-00123",
+                      "description": "Created child member id"
+                    }
+                  },
+                  "required": ["success", "id", "status", "completed_at", "member_id"],
+                  "title": "CompleteFamilyRegistrationResponse",
+                  "description": "Complete family registration response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/family-registrations/{id}/reject": {
+      "post": {
+        "summary": "Reject family registration",
+        "tags": ["Family Registrations"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "rejection_reason": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "staff_id": {
+                    "type": "string"
+                  }
+                },
+                "required": ["rejection_reason"],
+                "title": "RejectFamilyRegistrationRequest",
+                "description": "Reject family registration request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rejected",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": ["rejected"]
+                    },
+                    "rejected_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "rejected_by": {
+                      "type": "string"
+                    },
+                    "rejection_reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "id",
+                    "status",
+                    "rejected_at",
+                    "rejected_by",
+                    "rejection_reason"
+                  ],
+                  "title": "RejectFamilyRegistrationResponse",
+                  "description": "Reject family registration response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/family-registrations/{id}": {
+      "get": {
+        "summary": "Get family registration detail",
+        "tags": ["Family Registrations"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Family registration id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "registration": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "FR-00001",
+                          "description": "Family registration id"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-01-15T12:30:00Z"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "invited",
+                            "awaiting_acceptance",
+                            "declined",
+                            "expired",
+                            "awaiting_profile",
+                            "pending_review",
+                            "approved",
+                            "rejected",
+                            "completed"
+                          ],
+                          "example": "awaiting_profile"
+                        },
+                        "primary_member_id": {
+                          "type": "string",
+                          "example": "M-00001"
+                        },
+                        "primary_member_name": {
+                          "type": "string",
+                          "example": "山田 太郎"
+                        },
+                        "applicant_name": {
+                          "type": "string",
+                          "example": "山田 花子"
+                        },
+                        "relationship": {
+                          "type": "string",
+                          "enum": [
+                            "spouse",
+                            "child",
+                            "parent",
+                            "sibling",
+                            "grandparent",
+                            "grandchild"
+                          ],
+                          "example": "child"
+                        },
+                        "invite_expires_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-01-22T12:30:00Z"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "example": "store-001"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "example": "Fit365八潮店"
+                        },
+                        "monthly_fee": {
+                          "type": "number",
+                          "example": 0
+                        },
+                        "risk_score": {
+                          "type": "number",
+                          "example": 20
+                        },
+                        "applicant": {
+                          "type": "object",
+                          "properties": {
+                            "birthday": {
+                              "type": "string",
+                              "format": "date"
+                            },
+                            "phone": {
+                              "type": "string"
+                            },
+                            "email": {
+                              "type": "string",
+                              "format": "email"
+                            }
+                          }
+                        },
+                        "primary_member": {
+                          "type": "object",
+                          "properties": {
+                            "member_number": {
+                              "type": "string"
+                            },
+                            "status": {
+                              "type": "string"
+                            },
+                            "has_unpaid": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "created_at",
+                        "status",
+                        "primary_member_id",
+                        "primary_member_name",
+                        "applicant_name",
+                        "relationship",
+                        "store_id",
+                        "store_name",
+                        "monthly_fee"
+                      ],
+                      "title": "FamilyRegistration",
+                      "description": "Family registration list item"
+                    }
+                  },
+                  "required": ["registration"],
+                  "title": "GetFamilyRegistrationDetailResponse",
+                  "description": "Detail response for family registration"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/family-registrations/bulk-approve": {
+      "post": {
+        "summary": "Bulk approve family registrations",
+        "tags": ["Family Registrations"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1,
+                    "example": ["FR-00001", "FR-00002"]
+                  },
+                  "approval_reason": {
+                    "type": "string"
+                  },
+                  "staff_id": {
+                    "type": "string"
+                  }
+                },
+                "required": ["ids"],
+                "title": "BulkApproveFamilyRegistrationsRequest",
+                "description": "Bulk approve family registrations request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bulk approved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "success": {
+                            "type": "boolean"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["approved"]
+                          },
+                          "error": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["id", "success"]
+                      }
+                    }
+                  },
+                  "required": ["success", "results"],
+                  "title": "BulkApproveFamilyRegistrationsResponse",
+                  "description": "Bulk approve family registrations response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/family-registrations/bulk-reject": {
+      "post": {
+        "summary": "Bulk reject family registrations",
+        "tags": ["Family Registrations"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1,
+                    "example": ["FR-00001", "FR-00002"]
+                  },
+                  "rejection_reason": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "staff_id": {
+                    "type": "string"
+                  }
+                },
+                "required": ["ids", "rejection_reason"],
+                "title": "BulkRejectFamilyRegistrationsRequest",
+                "description": "Bulk reject family registrations request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bulk rejected",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "success": {
+                            "type": "boolean"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["rejected"]
+                          },
+                          "error": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["id", "success"]
+                      }
+                    }
+                  },
+                  "required": ["success", "results"],
+                  "title": "BulkRejectFamilyRegistrationsResponse",
+                  "description": "Bulk reject family registrations response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/family-registrations/check-primary-member": {
+      "post": {
+        "summary": "Check primary member eligibility",
+        "tags": ["Family Registrations"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "primary_member_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "M-00001"
+                  }
+                },
+                "required": ["primary_member_id"],
+                "title": "CheckPrimaryMemberRequest",
+                "description": "Request to check if a primary member can invite/register more family members"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Check result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "reasons": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": [],
+                      "description": "Blocking reasons when ok=false"
+                    },
+                    "brand": {
+                      "type": "string",
+                      "enum": ["joyfit", "fit365"],
+                      "example": "fit365"
+                    },
+                    "limit": {
+                      "type": "number",
+                      "example": 3
+                    },
+                    "current_count": {
+                      "type": "number",
+                      "example": 2
+                    },
+                    "fee": {
+                      "type": "number",
+                      "example": 0,
+                      "description": "Brand setting family_member_fee (JPY)"
+                    },
+                    "payment_cycle": {
+                      "type": "string",
+                      "enum": ["monthly", "yearly"],
+                      "example": "monthly"
+                    }
+                  },
+                  "required": [
+                    "ok",
+                    "reasons",
+                    "brand",
+                    "limit",
+                    "current_count",
+                    "fee",
+                    "payment_cycle"
+                  ],
+                  "title": "CheckPrimaryMemberResponse",
+                  "description": "Primary member eligibility check result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Primary member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/family-registrations/dashboard": {
+      "get": {
+        "summary": "Get family registrations dashboard",
+        "tags": ["Family Registrations"],
+        "responses": {
+          "200": {
+            "description": "Dashboard response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "month_invites": {
+                      "type": "number"
+                    },
+                    "month_completed": {
+                      "type": "number"
+                    },
+                    "acceptance_rate": {
+                      "type": "number"
+                    },
+                    "family_member_ratio": {
+                      "type": "number"
+                    },
+                    "top_primary_members": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "primary_member_id": {
+                            "type": "string"
+                          },
+                          "primary_member_name": {
+                            "type": "string"
+                          },
+                          "family_count": {
+                            "type": "number"
+                          }
+                        },
+                        "required": ["primary_member_id", "primary_member_name", "family_count"]
+                      }
+                    }
+                  },
+                  "required": [
+                    "month_invites",
+                    "month_completed",
+                    "acceptance_rate",
+                    "family_member_ratio",
+                    "top_primary_members"
+                  ],
+                  "title": "GetFamilyRegistrationsDashboardResponse",
+                  "description": "Dashboard response for family registrations (mocked)"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/family-registrations/risk-evaluation": {
+      "post": {
+        "summary": "Family registration risk evaluation",
+        "tags": ["Family Registrations"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "primary_member_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "M-00001"
+                  },
+                  "applicant": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "example": "山田 花子"
+                      },
+                      "birthday": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2000-01-01"
+                      },
+                      "phone": {
+                        "type": "string",
+                        "example": "09012345678"
+                      },
+                      "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "hanako@example.jp"
+                      },
+                      "relationship": {
+                        "type": "string",
+                        "enum": [
+                          "spouse",
+                          "child",
+                          "parent",
+                          "sibling",
+                          "grandparent",
+                          "grandchild"
+                        ],
+                        "example": "child"
+                      }
+                    },
+                    "required": ["name", "birthday", "relationship"],
+                    "description": "Child applicant info"
+                  }
+                },
+                "required": ["primary_member_id", "applicant"],
+                "title": "RiskEvaluationRequest",
+                "description": "Request payload for risk evaluation (mocked)"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Risk evaluation result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "risk_score": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "example": 35
+                    },
+                    "reasons": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": ["duplicate_check: ok"]
+                    },
+                    "recommended_action": {
+                      "type": "string",
+                      "enum": ["auto_approve", "manual_review", "reject"],
+                      "example": "auto_approve"
+                    }
+                  },
+                  "required": ["risk_score", "reasons", "recommended_action"],
+                  "title": "RiskEvaluationResponse",
+                  "description": "Risk evaluation result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Primary member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/family-registrations": {
+      "get": {
+        "summary": "Get family registrations list",
+        "description": "Get paginated list of family registrations",
+        "tags": ["Family Registrations"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 50
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "invited",
+                "awaiting_acceptance",
+                "declined",
+                "expired",
+                "awaiting_profile",
+                "pending_review",
+                "approved",
+                "rejected",
+                "completed"
+              ]
+            },
+            "required": false,
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "山田"
+            },
+            "required": false,
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["created_at", "risk_score"],
+              "default": "created_at"
+            },
+            "required": false,
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "desc"
+            },
+            "required": false,
+            "name": "sort_order",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "registrations": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "FR-00001",
+                            "description": "Family registration id"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2024-01-15T12:30:00Z"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "invited",
+                              "awaiting_acceptance",
+                              "declined",
+                              "expired",
+                              "awaiting_profile",
+                              "pending_review",
+                              "approved",
+                              "rejected",
+                              "completed"
+                            ],
+                            "example": "awaiting_profile"
+                          },
+                          "primary_member_id": {
+                            "type": "string",
+                            "example": "M-00001"
+                          },
+                          "primary_member_name": {
+                            "type": "string",
+                            "example": "山田 太郎"
+                          },
+                          "applicant_name": {
+                            "type": "string",
+                            "example": "山田 花子"
+                          },
+                          "relationship": {
+                            "type": "string",
+                            "enum": [
+                              "spouse",
+                              "child",
+                              "parent",
+                              "sibling",
+                              "grandparent",
+                              "grandchild"
+                            ],
+                            "example": "child"
+                          },
+                          "invite_expires_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2024-01-22T12:30:00Z"
+                          },
+                          "store_id": {
+                            "type": "string",
+                            "example": "store-001"
+                          },
+                          "store_name": {
+                            "type": "string",
+                            "example": "Fit365八潮店"
+                          },
+                          "monthly_fee": {
+                            "type": "number",
+                            "example": 0
+                          },
+                          "risk_score": {
+                            "type": "number",
+                            "example": 20
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "created_at",
+                          "status",
+                          "primary_member_id",
+                          "primary_member_name",
+                          "applicant_name",
+                          "relationship",
+                          "store_id",
+                          "store_name",
+                          "monthly_fee"
+                        ],
+                        "title": "FamilyRegistration",
+                        "description": "Family registration list item"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "number"
+                        },
+                        "total_pages": {
+                          "type": "number"
+                        },
+                        "current_page": {
+                          "type": "number"
+                        },
+                        "limit": {
+                          "type": "number"
+                        }
+                      },
+                      "required": ["total", "total_pages", "current_page", "limit"]
+                    }
+                  },
+                  "required": ["registrations", "pagination"],
+                  "title": "GetFamilyRegistrationsResponse",
+                  "description": "Paginated list response for family registrations"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create family registration",
+        "description": "Create a family registration (child enrollment application)",
+        "tags": ["Family Registrations"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "primary_member_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "applicant": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "birthday": {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      "relationship": {
+                        "type": "string",
+                        "enum": [
+                          "spouse",
+                          "child",
+                          "parent",
+                          "sibling",
+                          "grandparent",
+                          "grandchild"
+                        ]
+                      },
+                      "phone": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string",
+                        "format": "email"
+                      }
+                    },
+                    "required": ["name", "birthday", "relationship"]
+                  }
+                },
+                "required": ["primary_member_id", "applicant"],
+                "title": "CreateFamilyRegistrationRequest",
+                "description": "Request payload to create a family registration"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "registration": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "FR-00001",
+                          "description": "Family registration id"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-01-15T12:30:00Z"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "invited",
+                            "awaiting_acceptance",
+                            "declined",
+                            "expired",
+                            "awaiting_profile",
+                            "pending_review",
+                            "approved",
+                            "rejected",
+                            "completed"
+                          ],
+                          "example": "awaiting_profile"
+                        },
+                        "primary_member_id": {
+                          "type": "string",
+                          "example": "M-00001"
+                        },
+                        "primary_member_name": {
+                          "type": "string",
+                          "example": "山田 太郎"
+                        },
+                        "applicant_name": {
+                          "type": "string",
+                          "example": "山田 花子"
+                        },
+                        "relationship": {
+                          "type": "string",
+                          "enum": [
+                            "spouse",
+                            "child",
+                            "parent",
+                            "sibling",
+                            "grandparent",
+                            "grandchild"
+                          ],
+                          "example": "child"
+                        },
+                        "invite_expires_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-01-22T12:30:00Z"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "example": "store-001"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "example": "Fit365八潮店"
+                        },
+                        "monthly_fee": {
+                          "type": "number",
+                          "example": 0
+                        },
+                        "risk_score": {
+                          "type": "number",
+                          "example": 20
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "created_at",
+                        "status",
+                        "primary_member_id",
+                        "primary_member_name",
+                        "applicant_name",
+                        "relationship",
+                        "store_id",
+                        "store_name",
+                        "monthly_fee"
+                      ],
+                      "title": "FamilyRegistration",
+                      "description": "Family registration list item"
+                    }
+                  },
+                  "required": ["success", "registration"],
+                  "title": "CreateFamilyRegistrationResponse",
+                  "description": "Create family registration response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Primary member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/family-registrations/summary": {
+      "get": {
+        "summary": "Get family registrations summary",
+        "tags": ["Family Registrations"],
+        "responses": {
+          "200": {
+            "description": "Summary response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "number"
+                    },
+                    "by_status": {
+                      "type": "object",
+                      "properties": {
+                        "invited": {
+                          "type": "number"
+                        },
+                        "awaiting_acceptance": {
+                          "type": "number"
+                        },
+                        "declined": {
+                          "type": "number"
+                        },
+                        "expired": {
+                          "type": "number"
+                        },
+                        "awaiting_profile": {
+                          "type": "number"
+                        },
+                        "pending_review": {
+                          "type": "number"
+                        },
+                        "approved": {
+                          "type": "number"
+                        },
+                        "rejected": {
+                          "type": "number"
+                        },
+                        "completed": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  },
+                  "required": ["total", "by_status"],
+                  "title": "GetFamilyRegistrationsSummaryResponse",
+                  "description": "Summary counts for family registrations"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request"
                     }
                   },
                   "required": ["error"],
@@ -8881,6 +11379,135 @@
                       "type": "string",
                       "example": "Failed to process request",
                       "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{member_id}/family-members": {
+      "get": {
+        "summary": "Get primary member family members",
+        "description": "Get family members linked to a primary member",
+        "tags": ["Family Members"],
+        "parameters": [
+          {
+            "name": "member_id",
+            "in": "path",
+            "required": true,
+            "description": "Primary member id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Family members list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "members": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "M-00010",
+                            "description": "Child member id"
+                          },
+                          "member_number": {
+                            "type": "string",
+                            "example": "M-00010",
+                            "description": "Member number"
+                          },
+                          "name_kanji": {
+                            "type": "string",
+                            "example": "山田 花子"
+                          },
+                          "relationship": {
+                            "type": "string",
+                            "enum": [
+                              "spouse",
+                              "child",
+                              "parent",
+                              "sibling",
+                              "grandparent",
+                              "grandchild"
+                            ],
+                            "example": "child"
+                          },
+                          "joined_at": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2024-01-15"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["active", "suspended", "withdrawn"],
+                            "example": "active"
+                          },
+                          "monthly_fee": {
+                            "type": "number",
+                            "example": 0,
+                            "description": "Monthly fee (JPY)"
+                          },
+                          "store_id": {
+                            "type": "string",
+                            "example": "store-001"
+                          },
+                          "store_name": {
+                            "type": "string",
+                            "example": "Fit365八潮店"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "member_number",
+                          "name_kanji",
+                          "relationship",
+                          "joined_at",
+                          "status",
+                          "monthly_fee",
+                          "store_id",
+                          "store_name"
+                        ],
+                        "title": "FamilyMember",
+                        "description": "Family member list item"
+                      }
+                    },
+                    "limit": {
+                      "type": "number",
+                      "example": 3,
+                      "description": "Brand setting family_member_limit"
+                    }
+                  },
+                  "required": ["members", "limit"],
+                  "title": "GetFamilyMembersResponse",
+                  "description": "Response for getting primary member family members"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Primary member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request"
                     }
                   },
                   "required": ["error"],
