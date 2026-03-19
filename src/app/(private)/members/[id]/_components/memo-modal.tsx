@@ -31,8 +31,8 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
-import type { StaffMemo } from '@/types/api/member.type';
-import { MemoType } from '@/types/api/member.type';
+import type { StaffMemo } from '@/types/member.type';
+import { MemoType } from '@/types/member.type';
 
 const memoFormSchema = z.object({
   type: z.enum(['caution', 'vip', 'other']),

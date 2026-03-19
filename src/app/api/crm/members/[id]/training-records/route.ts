@@ -9,7 +9,7 @@ import type {
   CardioRecord,
   StrengthTrainingRecord,
   TrainingSummary,
-} from '@/types/api/member.type';
+} from '@/types/member.type';
 
 // Register OpenAPI documentation for this route
 registerRoute({

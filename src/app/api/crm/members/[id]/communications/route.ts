@@ -4,7 +4,7 @@ import { ErrorResponseSchema } from '@/app/api/_schemas/member.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
 import { z } from 'zod';
 
-import type { InquiryRecord, NotificationHistory, PhoneRecord } from '@/types/api/member.type';
+import type { InquiryRecord, NotificationHistory, PhoneRecord } from '@/types/member.type';
 
 import { getMemos } from '../memos/route';
 

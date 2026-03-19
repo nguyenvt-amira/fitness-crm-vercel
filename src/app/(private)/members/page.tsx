@@ -5,7 +5,7 @@ import { Suspense, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { Table as TableInstance, getSortedRowModel } from '@tanstack/react-table';
+import { Table as TableInstance } from '@tanstack/react-table';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { VisibilityState } from '@tanstack/react-table';
 import { Download, User } from 'lucide-react';

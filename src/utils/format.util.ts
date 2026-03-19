@@ -5,3 +5,7 @@ export function formatDate(value: string | undefined | null, fallback: string = 
 export function formatYen(value: number | undefined | null, fallback: string = '—'): string {
   return value != null ? `¥${value.toLocaleString()}` : fallback;
 }
+
+export function formatDateTime(value: string | undefined | null, fallback: string = '—'): string {
+  return value ? new Date(value).toLocaleString('ja-JP') : fallback;
+}

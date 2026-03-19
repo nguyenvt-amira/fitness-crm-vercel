@@ -50,8 +50,7 @@ import {
   putCrmMembersByIdHealthInfoMutation,
   putCrmMembersByIdMarketingConsentMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
-
-import type { Member } from '@/types/api/member.type';
+import type { GetMemberDetailResponse } from '@/lib/api/types.gen';
 
 const kanaRegex = /^[ァ-ンヴー\s]+$/;
 const postalCodeRegex = /^\d{7}$/;
@@ -104,7 +103,7 @@ type EditMemberFormValues = z.infer<typeof editMemberSchema>;
 interface EditMemberModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  member: Member;
+  member: GetMemberDetailResponse['member'];
 }
 
 export function EditMemberModal({ open, onOpenChange, member }: EditMemberModalProps) {

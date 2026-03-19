@@ -4,7 +4,7 @@ import { ErrorResponseSchema } from '@/app/api/_schemas/member.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
 import { z } from 'zod';
 
-import type { OtherServiceUsage, PersonalTraining, StudioProgram } from '@/types/api/member.type';
+import type { OtherServiceUsage, PersonalTraining, StudioProgram } from '@/types/member.type';
 
 // Register OpenAPI documentation for this route
 registerRoute({

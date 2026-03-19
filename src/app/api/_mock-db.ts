@@ -2,35 +2,29 @@
  * Shared in-memory mock database for all CRM API routes.
  * All APIs should read/update data through this module so list and detail stay in sync.
  */
-import type { GetContractsResponse } from '@/app/api/_schemas/member.schema';
+import type {
+  GetContractsResponse,
+  GetMemberDetailResponse,
+  UpdateBasicInfoRequest,
+  UpdateHealthInfoRequest,
+  UpdateMarketingConsentRequest,
+} from '@/lib/api/types.gen';
 
-import {
-  Brand,
-  type Member,
-  MemberStatus,
-  MemberType,
-  type UpdateBasicInfoRequest,
-  type UpdateHealthInfoRequest,
-  type UpdateMarketingConsentRequest,
-} from '@/types/api/member.type';
 import type {
   MembershipApplication,
   MembershipApplicationStatus,
 } from '@/types/api/membership-application.type';
-
-// --- Types ---
-export type MemberListItem = GetMembersResponseMember;
 
 interface GetMembersResponseMember {
   id: string;
   member_number: string;
   name_kanji: string;
   name_kana: string;
-  member_type: MemberType;
-  status: MemberStatus;
+  member_type: NonNullable<GetMemberDetailResponse['member']['profile']>['member_type'];
+  status: NonNullable<GetMemberDetailResponse['member']['profile']>['status'];
   store_name: string;
   store_id: string;
-  brand: Brand;
+  brand: NonNullable<GetMemberDetailResponse['member']['profile']>['brand'];
   contract_plan_name: string;
   contract_plan_id: string;
   joined_at: string;
@@ -47,7 +41,7 @@ interface MemberListMeta {
   last_visit_date?: string;
   has_unpaid: boolean;
 }
-
+type Member = GetMemberDetailResponse['member'];
 type MemberRow = Member & { _listMeta?: MemberListMeta };
 
 const MOCK_STORES = [
@@ -74,6 +68,8 @@ type ContractRow = {
   data: GetContractsResponse;
 };
 
+type MemberProfile = NonNullable<GetMemberDetailResponse['member']['profile']>;
+
 function createMember(
   id: string,
   listMeta: {
@@ -81,11 +77,11 @@ function createMember(
     name_kana: string;
     phone: string;
     email: string;
-    member_type: MemberType;
-    status: MemberStatus;
+    member_type: MemberProfile['member_type'];
+    status: MemberProfile['status'];
     store_id: string;
     store_name: string;
-    brand: Brand;
+    brand: MemberProfile['brand'];
     joined_at: string;
     contract_plan_id: string;
     contract_plan_name: string;
@@ -164,7 +160,7 @@ function createMember(
   };
 }
 
-function memberToListItem(m: MemberRow): MemberListItem {
+function memberToListItem(m: MemberRow): GetMembersResponseMember {
   const meta = m._listMeta;
   return {
     id: m.basic_info.id,
@@ -276,11 +272,13 @@ export const db = {
             name_kana: name.kana,
             phone,
             email,
-            member_type: (['regular', 'family', 'corporate'] as MemberType[])[i % 3],
-            status: (['active', 'suspended', 'withdrawn'] as MemberStatus[])[i % 3],
+            member_type: (['regular', 'family', 'corporate'] as MemberProfile['member_type'][])[
+              i % 3
+            ],
+            status: (['active', 'suspended', 'withdrawn'] as MemberProfile['status'][])[i % 3],
             store_name: store.name,
             store_id: store.id,
-            brand: i % 2 === 0 ? Brand.FIT365 : Brand.JOYFIT,
+            brand: i % 2 === 0 ? 'fit365' : 'joyfit',
             contract_plan_name: plan.name,
             contract_plan_id: plan.id,
             joined_at: `2024-${String((i % 12) + 1).padStart(2, '0')}-${String((i % 28) + 1).padStart(2, '0')}`,
@@ -297,7 +295,7 @@ export const db = {
       return this._members.find((m) => m.basic_info.id === id);
     },
 
-    getList(): MemberListItem[] {
+    getList(): GetMembersResponseMember[] {
       this._seed();
       return this._members.map(memberToListItem);
     },
@@ -314,11 +312,13 @@ export const db = {
         name_kana: application.applicant_name,
         phone: `090${String(1000 + (nextNumber % 9000)).slice(-4)}${String(1000 + (nextNumber % 9000)).slice(-4)}`,
         email: `applicant${String(nextNumber).padStart(5, '0')}@example.jp`,
-        member_type: (['regular', 'family', 'corporate'] as MemberType[])[nextNumber % 3]!,
-        status: MemberStatus.ACTIVE,
+        member_type: (['regular', 'family', 'corporate'] as MemberProfile['member_type'][])[
+          nextNumber % 3
+        ]!,
+        status: 'active',
         store_name: store.name,
         store_id: store.id,
-        brand: nextNumber % 2 === 0 ? Brand.FIT365 : Brand.JOYFIT,
+        brand: nextNumber % 2 === 0 ? 'fit365' : 'joyfit',
         joined_at: toIsoDate(now),
         contract_plan_name: application.plan_name || plan.name,
         contract_plan_id: plan.id,

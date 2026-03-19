@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { Brand, MemberStatus, MemberType } from '@/types/api/member.type';
+import { Brand, MemberStatus, MemberType } from '@/types/member.type';
 
 import { useMembersFiltersContext } from '../_contexts/members-filters-context';
 

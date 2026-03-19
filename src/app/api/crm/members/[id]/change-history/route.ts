@@ -11,7 +11,7 @@ import type {
   SuspensionHistory,
   TransferHistory,
   WithdrawalHistory,
-} from '@/types/api/member.type';
+} from '@/types/member.type';
 
 // Register OpenAPI documentation for this route
 registerRoute({

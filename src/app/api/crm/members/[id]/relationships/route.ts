@@ -8,8 +8,8 @@ import type {
   CorporateRelationship,
   FamilyRelationship,
   ReferralRelationship,
-} from '@/types/api/member.type';
-import { MemberStatus } from '@/types/api/member.type';
+} from '@/types/member.type';
+import { MemberStatus } from '@/types/member.type';
 
 // Register OpenAPI documentation for this route
 registerRoute({

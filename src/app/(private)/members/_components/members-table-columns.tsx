@@ -23,7 +23,7 @@ import {
 
 import type { GetCrmMembersResponse } from '@/lib/api/types.gen';
 
-import { Brand, MemberStatus, MemberType } from '@/types/api/member.type';
+import { Brand, MemberStatus, MemberType } from '@/types/member.type';
 
 /** API sort field names */
 const SORT_FIELD_MEMBER_NUMBER = 'member_number';

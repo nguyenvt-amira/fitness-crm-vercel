@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
-import { PointAdjustmentType } from '@/types/api/member.type';
+import { PointAdjustmentType } from '@/types/member.type';
 
 interface PointAdjustmentModalProps {
   open: boolean;

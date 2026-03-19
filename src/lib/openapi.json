@@ -1816,62 +1816,847 @@
             "type": "object",
             "properties": {
               "basic_info": {
-                "nullable": true,
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "example": "M-00001",
+                    "description": "Member ID"
+                  },
+                  "member_number": {
+                    "type": "string",
+                    "example": "M-00001",
+                    "description": "Member number"
+                  },
+                  "name_kanji": {
+                    "type": "string",
+                    "example": "佐藤 花子",
+                    "description": "Name in kanji"
+                  },
+                  "name_kana": {
+                    "type": "string",
+                    "example": "サトウ ハナコ",
+                    "description": "Name in kana"
+                  },
+                  "birthday": {
+                    "type": "string",
+                    "example": "1990-01-01",
+                    "description": "Birthday (ISO date)"
+                  },
+                  "age": {
+                    "type": "integer",
+                    "example": 35,
+                    "description": "Age"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "enum": ["male", "female", "other"],
+                    "example": "female",
+                    "description": "Gender"
+                  },
+                  "postal_code": {
+                    "type": "string",
+                    "example": "1500002",
+                    "description": "Postal code"
+                  },
+                  "prefecture": {
+                    "type": "string",
+                    "example": "東京都",
+                    "description": "Prefecture"
+                  },
+                  "city": {
+                    "type": "string",
+                    "example": "渋谷区",
+                    "description": "City"
+                  },
+                  "address": {
+                    "type": "string",
+                    "example": "渋谷1-2-3",
+                    "description": "Address"
+                  },
+                  "building": {
+                    "type": "string",
+                    "example": "サンプルマンション101",
+                    "description": "Building"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "090-1234-5678",
+                    "description": "Phone number"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "member00001@example.jp",
+                    "description": "Email address"
+                  },
+                  "emergency_contact": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "example": "山田 太郎",
+                        "description": "Emergency contact name"
+                      },
+                      "relationship": {
+                        "type": "string",
+                        "example": "配偶者",
+                        "description": "Relationship to member"
+                      },
+                      "phone": {
+                        "type": "string",
+                        "example": "090-0000-0000",
+                        "description": "Emergency contact phone"
+                      }
+                    },
+                    "required": ["name", "relationship", "phone"],
+                    "title": "MemberEmergencyContact",
+                    "description": "Emergency contact information"
+                  }
+                },
+                "required": [
+                  "id",
+                  "member_number",
+                  "name_kanji",
+                  "name_kana",
+                  "birthday",
+                  "age",
+                  "gender",
+                  "phone",
+                  "email"
+                ],
+                "title": "MemberBasicInfo",
                 "description": "Basic member information"
               },
               "profile": {
-                "nullable": true,
+                "type": "object",
+                "properties": {
+                  "member_type": {
+                    "type": "string",
+                    "enum": ["regular", "family", "corporate", "company_discount"],
+                    "example": "regular",
+                    "description": "Member type"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["active", "suspended", "withdrawn", "force_withdrawn"],
+                    "example": "active",
+                    "description": "Member status"
+                  },
+                  "store_id": {
+                    "type": "string",
+                    "example": "store-001",
+                    "description": "Store ID"
+                  },
+                  "store_name": {
+                    "type": "string",
+                    "example": "Fit365八潮店",
+                    "description": "Store name"
+                  },
+                  "brand": {
+                    "type": "string",
+                    "enum": ["joyfit", "fit365"],
+                    "example": "fit365",
+                    "description": "Brand"
+                  },
+                  "joined_at": {
+                    "type": "string",
+                    "example": "2024-01-15",
+                    "description": "Join date (ISO date)"
+                  },
+                  "withdrawn_at": {
+                    "type": "string",
+                    "example": "2025-02-01",
+                    "description": "Withdrawal date (ISO date)"
+                  },
+                  "is_black_listed": {
+                    "type": "boolean",
+                    "example": false,
+                    "description": "Blacklisted status"
+                  }
+                },
+                "required": [
+                  "member_type",
+                  "status",
+                  "store_id",
+                  "store_name",
+                  "brand",
+                  "joined_at",
+                  "is_black_listed"
+                ],
+                "title": "MemberProfile",
                 "description": "Member profile"
               },
               "ekyc": {
-                "nullable": true,
+                "type": "object",
+                "properties": {
+                  "verified": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "Whether eKYC is verified"
+                  },
+                  "verified_at": {
+                    "type": "string",
+                    "example": "2025-01-20T10:00:00.000Z",
+                    "description": "Verification datetime (ISO)"
+                  },
+                  "document_type": {
+                    "type": "string",
+                    "example": "driver_license",
+                    "description": "Document type"
+                  },
+                  "photoUrl": {
+                    "type": "string",
+                    "example": "https://example.com/photo.jpg",
+                    "description": "Photo URL"
+                  }
+                },
+                "required": ["verified"],
+                "title": "MemberEKYC",
                 "description": "eKYC information"
               },
               "consent": {
-                "nullable": true,
+                "type": "object",
+                "properties": {
+                  "member_agreement": {
+                    "type": "object",
+                    "properties": {
+                      "version": {
+                        "type": "string",
+                        "example": "1.0",
+                        "description": "Agreement version"
+                      },
+                      "agreed_at": {
+                        "type": "string",
+                        "example": "2025-01-10T10:00:00.000Z",
+                        "description": "Agreed datetime (ISO)"
+                      }
+                    },
+                    "required": ["version", "agreed_at"],
+                    "description": "Member agreement consent"
+                  },
+                  "privacy_policy": {
+                    "type": "object",
+                    "properties": {
+                      "version": {
+                        "type": "string",
+                        "example": "1.0",
+                        "description": "Policy version"
+                      },
+                      "agreed_at": {
+                        "type": "string",
+                        "example": "2025-01-10T10:00:00.000Z",
+                        "description": "Agreed datetime (ISO)"
+                      }
+                    },
+                    "required": ["version", "agreed_at"],
+                    "description": "Privacy policy consent"
+                  },
+                  "optional_agreement": {
+                    "type": "object",
+                    "properties": {
+                      "version": {
+                        "type": "string",
+                        "example": "1.0",
+                        "description": "Optional agreement version"
+                      },
+                      "agreed_at": {
+                        "type": "string",
+                        "example": "2025-01-10T10:00:00.000Z",
+                        "description": "Agreed datetime (ISO)"
+                      }
+                    },
+                    "required": ["version", "agreed_at"],
+                    "description": "Optional agreement consent"
+                  },
+                  "marketing_consent": {
+                    "type": "object",
+                    "properties": {
+                      "email": {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "Email marketing consent"
+                      },
+                      "sms": {
+                        "type": "boolean",
+                        "example": false,
+                        "description": "SMS marketing consent"
+                      },
+                      "push": {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "Push marketing consent"
+                      }
+                    },
+                    "required": ["email", "sms", "push"],
+                    "description": "Marketing consent"
+                  }
+                },
+                "required": ["member_agreement", "privacy_policy", "marketing_consent"],
+                "title": "MemberConsent",
                 "description": "Consent information"
               },
               "health_info": {
-                "nullable": true,
+                "type": "object",
+                "properties": {
+                  "health_status": {
+                    "type": "string",
+                    "example": "良好",
+                    "description": "Health status"
+                  },
+                  "medical_history": {
+                    "type": "string",
+                    "example": "なし",
+                    "description": "Medical history"
+                  },
+                  "allergies": {
+                    "type": "string",
+                    "example": "花粉症",
+                    "description": "Allergies"
+                  },
+                  "exercise_restrictions": {
+                    "type": "string",
+                    "example": "膝に負担がかかる運動は避ける",
+                    "description": "Exercise restrictions"
+                  },
+                  "other_notes": {
+                    "type": "string",
+                    "example": "特記事項なし",
+                    "description": "Other notes"
+                  }
+                },
+                "title": "MemberHealthInfo",
                 "description": "Health information"
               },
               "contracts": {
-                "nullable": true,
+                "type": "object",
+                "properties": {
+                  "main_contract": {
+                    "type": "object",
+                    "properties": {
+                      "plan_name": {
+                        "type": "string",
+                        "example": "スタンダードプラン",
+                        "description": "Plan name"
+                      },
+                      "monthly_fee": {
+                        "type": "number",
+                        "example": 8580,
+                        "description": "Monthly fee (tax included)"
+                      },
+                      "start_date": {
+                        "type": "string",
+                        "example": "2024-01-15",
+                        "description": "Contract start date"
+                      },
+                      "penalty_period_end": {
+                        "type": "string",
+                        "example": "2025-01-14",
+                        "description": "Penalty period end date"
+                      },
+                      "change_history": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "changed_at": {
+                              "type": "string",
+                              "example": "2024-01-15T00:00:00+09:00",
+                              "description": "Change date and time"
+                            },
+                            "previous_plan": {
+                              "type": "string",
+                              "example": "ベーシックプラン",
+                              "description": "Previous plan name"
+                            },
+                            "new_plan": {
+                              "type": "string",
+                              "example": "スタンダードプラン",
+                              "description": "New plan name"
+                            },
+                            "reason": {
+                              "type": "string",
+                              "example": "プラン変更希望",
+                              "description": "Reason for change"
+                            }
+                          },
+                          "required": ["changed_at", "previous_plan", "new_plan"],
+                          "title": "ContractChange",
+                          "description": "Contract change history item"
+                        },
+                        "description": "Contract change history"
+                      }
+                    },
+                    "required": ["plan_name", "monthly_fee", "start_date", "change_history"],
+                    "title": "MainContract",
+                    "description": "Main contract information"
+                  },
+                  "option_contracts": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "opt-001",
+                          "description": "Option contract ID"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "パーソナルトレーニング",
+                          "description": "Option name"
+                        },
+                        "monthly_fee": {
+                          "type": "number",
+                          "example": 11000,
+                          "description": "Monthly fee"
+                        },
+                        "start_date": {
+                          "type": "string",
+                          "example": "2024-02-01",
+                          "description": "Start date"
+                        },
+                        "next_billing_date": {
+                          "type": "string",
+                          "example": "2025-03-01",
+                          "description": "Next billing date"
+                        }
+                      },
+                      "required": ["id", "name", "monthly_fee", "start_date", "next_billing_date"],
+                      "title": "OptionContract",
+                      "description": "Option contract information"
+                    },
+                    "description": "Option contracts"
+                  },
+                  "option_change_history": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "changed_at": {
+                          "type": "string",
+                          "example": "2024-02-01T00:00:00+09:00",
+                          "description": "Change date and time"
+                        },
+                        "option_name": {
+                          "type": "string",
+                          "example": "パーソナルトレーニング",
+                          "description": "Option name"
+                        },
+                        "action_type": {
+                          "type": "string",
+                          "enum": ["add", "remove"],
+                          "example": "add",
+                          "description": "Action type"
+                        },
+                        "notes": {
+                          "type": "string",
+                          "example": "オプション追加",
+                          "description": "Notes"
+                        }
+                      },
+                      "required": ["changed_at", "option_name", "action_type"],
+                      "title": "OptionChangeHistory",
+                      "description": "Option change history item"
+                    },
+                    "description": "Option change history"
+                  },
+                  "special_contracts": {
+                    "type": "object",
+                    "properties": {
+                      "anshin_support": {
+                        "type": "object",
+                        "properties": {
+                          "enrolled": {
+                            "type": "boolean",
+                            "example": true,
+                            "description": "Whether enrolled"
+                          },
+                          "start_date": {
+                            "type": "string",
+                            "example": "2024-01-15",
+                            "description": "Start date"
+                          },
+                          "applied_month": {
+                            "type": "string",
+                            "example": "2025-03",
+                            "description": "Applied month (YYYY-MM format)"
+                          }
+                        },
+                        "required": ["enrolled"],
+                        "title": "SpecialContractItem",
+                        "description": "Anshin support contract"
+                      },
+                      "mutual_use": {
+                        "type": "object",
+                        "properties": {
+                          "enrolled": {
+                            "type": "boolean",
+                            "example": true,
+                            "description": "Whether enrolled"
+                          },
+                          "start_date": {
+                            "type": "string",
+                            "example": "2024-01-15",
+                            "description": "Start date"
+                          },
+                          "applied_month": {
+                            "type": "string",
+                            "example": "2025-03",
+                            "description": "Applied month (YYYY-MM format)"
+                          }
+                        },
+                        "required": ["enrolled"],
+                        "title": "SpecialContractItem",
+                        "description": "Mutual use contract"
+                      },
+                      "security_fee": {
+                        "type": "object",
+                        "properties": {
+                          "enrolled": {
+                            "type": "boolean",
+                            "example": true,
+                            "description": "Whether enrolled"
+                          },
+                          "start_date": {
+                            "type": "string",
+                            "example": "2024-01-15",
+                            "description": "Start date"
+                          },
+                          "applied_month": {
+                            "type": "string",
+                            "example": "2025-03",
+                            "description": "Applied month (YYYY-MM format)"
+                          }
+                        },
+                        "required": ["enrolled"],
+                        "title": "SpecialContractItem",
+                        "description": "Security fee contract"
+                      },
+                      "maintenance_fee": {
+                        "type": "object",
+                        "properties": {
+                          "enrolled": {
+                            "type": "boolean",
+                            "example": true,
+                            "description": "Whether enrolled"
+                          },
+                          "start_date": {
+                            "type": "string",
+                            "example": "2024-01-15",
+                            "description": "Start date"
+                          },
+                          "applied_month": {
+                            "type": "string",
+                            "example": "2025-03",
+                            "description": "Applied month (YYYY-MM format)"
+                          }
+                        },
+                        "required": ["enrolled"],
+                        "title": "SpecialContractItem",
+                        "description": "Maintenance fee contract"
+                      }
+                    },
+                    "title": "SpecialContracts",
+                    "description": "Special contracts"
+                  },
+                  "payment_info": {
+                    "type": "object",
+                    "properties": {
+                      "method": {
+                        "type": "string",
+                        "enum": ["credit_card", "bank_transfer"],
+                        "example": "credit_card",
+                        "description": "Payment method"
+                      },
+                      "card_number": {
+                        "type": "string",
+                        "example": "**** **** **** 1234",
+                        "description": "Masked card number (last 4 digits only)"
+                      },
+                      "cardholder_name": {
+                        "type": "string",
+                        "example": "SATOU HANAKO",
+                        "description": "Cardholder name"
+                      },
+                      "expiry_date": {
+                        "type": "string",
+                        "example": "12/28",
+                        "description": "Card expiry date"
+                      },
+                      "billing_day": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 31,
+                        "example": 27,
+                        "description": "Billing day of month"
+                      },
+                      "last_payment_date": {
+                        "type": "string",
+                        "example": "2025-02-27",
+                        "description": "Last payment date"
+                      },
+                      "last_payment_amount": {
+                        "type": "number",
+                        "example": 9680,
+                        "description": "Last payment amount"
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": ["normal", "error"],
+                        "example": "normal",
+                        "description": "Payment status"
+                      },
+                      "payment_history": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "date": {
+                              "type": "string",
+                              "example": "2025-02-27",
+                              "description": "Payment date"
+                            },
+                            "amount": {
+                              "type": "number",
+                              "example": 9680,
+                              "description": "Payment amount"
+                            },
+                            "breakdown": {
+                              "type": "string",
+                              "example": "月会費 8,580円 + オプション 1,100円",
+                              "description": "Payment breakdown"
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": ["success", "failed"],
+                              "example": "success",
+                              "description": "Payment status"
+                            },
+                            "notes": {
+                              "type": "string",
+                              "example": "",
+                              "description": "Additional notes"
+                            }
+                          },
+                          "required": ["date", "amount", "breakdown", "status"],
+                          "title": "PaymentRecord",
+                          "description": "Payment history record"
+                        },
+                        "description": "Payment history"
+                      }
+                    },
+                    "required": ["method", "billing_day", "status", "payment_history"],
+                    "title": "PaymentInfo",
+                    "description": "Payment information"
+                  },
+                  "unpaid_info": {
+                    "type": "object",
+                    "nullable": true,
+                    "properties": {
+                      "amount": {
+                        "type": "number",
+                        "example": 5000,
+                        "description": "Unpaid amount"
+                      },
+                      "due_date": {
+                        "type": "string",
+                        "example": "2025-03-15",
+                        "description": "Due date"
+                      },
+                      "reason": {
+                        "type": "string",
+                        "example": "Payment failed",
+                        "description": "Reason for unpaid"
+                      }
+                    },
+                    "required": ["amount", "due_date"],
+                    "title": "UnpaidInfo",
+                    "description": "Unpaid information"
+                  },
+                  "campaigns": {
+                    "type": "object",
+                    "properties": {
+                      "active": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "campaign_name": {
+                              "type": "string",
+                              "example": "春の入会キャンペーン",
+                              "description": "Campaign name"
+                            },
+                            "period_start": {
+                              "type": "string",
+                              "example": "2025-03-01",
+                              "description": "Campaign period start date"
+                            },
+                            "period_end": {
+                              "type": "string",
+                              "example": "2025-03-31",
+                              "description": "Campaign period end date"
+                            },
+                            "discount_content": {
+                              "type": "string",
+                              "example": "入会金50%OFF",
+                              "description": "Discount content"
+                            },
+                            "remaining_days": {
+                              "type": "number",
+                              "example": 15,
+                              "description": "Remaining days"
+                            },
+                            "applied_at": {
+                              "type": "string",
+                              "example": "2024-01-15",
+                              "description": "Applied date"
+                            },
+                            "content": {
+                              "type": "string",
+                              "example": "初月月会費無料",
+                              "description": "Campaign content"
+                            },
+                            "status": {
+                              "type": "string",
+                              "example": "expired",
+                              "description": "Campaign status"
+                            }
+                          },
+                          "required": ["campaign_name"],
+                          "title": "Campaign",
+                          "description": "Campaign information"
+                        },
+                        "description": "Active campaigns"
+                      },
+                      "history": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "campaign_name": {
+                              "type": "string",
+                              "example": "春の入会キャンペーン",
+                              "description": "Campaign name"
+                            },
+                            "period_start": {
+                              "type": "string",
+                              "example": "2025-03-01",
+                              "description": "Campaign period start date"
+                            },
+                            "period_end": {
+                              "type": "string",
+                              "example": "2025-03-31",
+                              "description": "Campaign period end date"
+                            },
+                            "discount_content": {
+                              "type": "string",
+                              "example": "入会金50%OFF",
+                              "description": "Discount content"
+                            },
+                            "remaining_days": {
+                              "type": "number",
+                              "example": 15,
+                              "description": "Remaining days"
+                            },
+                            "applied_at": {
+                              "type": "string",
+                              "example": "2024-01-15",
+                              "description": "Applied date"
+                            },
+                            "content": {
+                              "type": "string",
+                              "example": "初月月会費無料",
+                              "description": "Campaign content"
+                            },
+                            "status": {
+                              "type": "string",
+                              "example": "expired",
+                              "description": "Campaign status"
+                            }
+                          },
+                          "required": ["campaign_name"],
+                          "title": "Campaign",
+                          "description": "Campaign information"
+                        },
+                        "description": "Campaign history"
+                      }
+                    },
+                    "required": ["active", "history"],
+                    "title": "Campaigns",
+                    "description": "Campaign information"
+                  }
+                },
+                "required": [
+                  "main_contract",
+                  "option_contracts",
+                  "option_change_history",
+                  "special_contracts",
+                  "payment_info",
+                  "unpaid_info",
+                  "campaigns"
+                ],
+                "title": "GetContractsResponse",
                 "description": "Contract information"
               },
-              "payment_info": {
-                "nullable": true,
-                "description": "Payment information"
-              },
               "points": {
-                "nullable": true,
+                "type": "object",
+                "properties": {
+                  "fit365": {
+                    "nullable": true,
+                    "description": "FIT365 points information"
+                  },
+                  "joyfit": {
+                    "nullable": true,
+                    "description": "JOYFIT points information"
+                  },
+                  "rank": {
+                    "nullable": true,
+                    "description": "Rank information"
+                  },
+                  "earn_history": {
+                    "type": "array",
+                    "items": {
+                      "nullable": true
+                    },
+                    "description": "Earn history"
+                  },
+                  "spend_history": {
+                    "type": "array",
+                    "items": {
+                      "nullable": true
+                    },
+                    "description": "Spend history"
+                  },
+                  "adjustment_history": {
+                    "type": "array",
+                    "items": {
+                      "nullable": true
+                    },
+                    "description": "Adjustment history"
+                  }
+                },
+                "required": ["earn_history", "spend_history", "adjustment_history"],
+                "title": "GetPointsResponse",
                 "description": "Points information"
               },
-              "usage_summary": {
-                "nullable": true,
-                "description": "Usage summary"
-              },
-              "training_summary": {
-                "nullable": true,
-                "description": "Training summary"
-              },
-              "service_usage": {
-                "nullable": true,
-                "description": "Service usage"
-              },
-              "communications": {
-                "nullable": true,
-                "description": "Communications"
-              },
               "memos": {
-                "nullable": true,
+                "type": "object",
+                "properties": {
+                  "memos": {
+                    "type": "array",
+                    "items": {
+                      "nullable": true
+                    },
+                    "description": "List of memos"
+                  }
+                },
+                "required": ["memos"],
+                "title": "GetMemosResponse",
                 "description": "Staff memos"
-              },
-              "change_history": {
-                "nullable": true,
-                "description": "Change history"
               }
             },
+            "required": ["basic_info", "profile"],
             "description": "Complete member information"
           }
         },
@@ -6044,62 +6829,858 @@
                       "type": "object",
                       "properties": {
                         "basic_info": {
-                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "example": "M-00001",
+                              "description": "Member ID"
+                            },
+                            "member_number": {
+                              "type": "string",
+                              "example": "M-00001",
+                              "description": "Member number"
+                            },
+                            "name_kanji": {
+                              "type": "string",
+                              "example": "佐藤 花子",
+                              "description": "Name in kanji"
+                            },
+                            "name_kana": {
+                              "type": "string",
+                              "example": "サトウ ハナコ",
+                              "description": "Name in kana"
+                            },
+                            "birthday": {
+                              "type": "string",
+                              "example": "1990-01-01",
+                              "description": "Birthday (ISO date)"
+                            },
+                            "age": {
+                              "type": "integer",
+                              "example": 35,
+                              "description": "Age"
+                            },
+                            "gender": {
+                              "type": "string",
+                              "enum": ["male", "female", "other"],
+                              "example": "female",
+                              "description": "Gender"
+                            },
+                            "postal_code": {
+                              "type": "string",
+                              "example": "1500002",
+                              "description": "Postal code"
+                            },
+                            "prefecture": {
+                              "type": "string",
+                              "example": "東京都",
+                              "description": "Prefecture"
+                            },
+                            "city": {
+                              "type": "string",
+                              "example": "渋谷区",
+                              "description": "City"
+                            },
+                            "address": {
+                              "type": "string",
+                              "example": "渋谷1-2-3",
+                              "description": "Address"
+                            },
+                            "building": {
+                              "type": "string",
+                              "example": "サンプルマンション101",
+                              "description": "Building"
+                            },
+                            "phone": {
+                              "type": "string",
+                              "example": "090-1234-5678",
+                              "description": "Phone number"
+                            },
+                            "email": {
+                              "type": "string",
+                              "format": "email",
+                              "example": "member00001@example.jp",
+                              "description": "Email address"
+                            },
+                            "emergency_contact": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "example": "山田 太郎",
+                                  "description": "Emergency contact name"
+                                },
+                                "relationship": {
+                                  "type": "string",
+                                  "example": "配偶者",
+                                  "description": "Relationship to member"
+                                },
+                                "phone": {
+                                  "type": "string",
+                                  "example": "090-0000-0000",
+                                  "description": "Emergency contact phone"
+                                }
+                              },
+                              "required": ["name", "relationship", "phone"],
+                              "title": "MemberEmergencyContact",
+                              "description": "Emergency contact information"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "member_number",
+                            "name_kanji",
+                            "name_kana",
+                            "birthday",
+                            "age",
+                            "gender",
+                            "phone",
+                            "email"
+                          ],
+                          "title": "MemberBasicInfo",
                           "description": "Basic member information"
                         },
                         "profile": {
-                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "member_type": {
+                              "type": "string",
+                              "enum": ["regular", "family", "corporate", "company_discount"],
+                              "example": "regular",
+                              "description": "Member type"
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": ["active", "suspended", "withdrawn", "force_withdrawn"],
+                              "example": "active",
+                              "description": "Member status"
+                            },
+                            "store_id": {
+                              "type": "string",
+                              "example": "store-001",
+                              "description": "Store ID"
+                            },
+                            "store_name": {
+                              "type": "string",
+                              "example": "Fit365八潮店",
+                              "description": "Store name"
+                            },
+                            "brand": {
+                              "type": "string",
+                              "enum": ["joyfit", "fit365"],
+                              "example": "fit365",
+                              "description": "Brand"
+                            },
+                            "joined_at": {
+                              "type": "string",
+                              "example": "2024-01-15",
+                              "description": "Join date (ISO date)"
+                            },
+                            "withdrawn_at": {
+                              "type": "string",
+                              "example": "2025-02-01",
+                              "description": "Withdrawal date (ISO date)"
+                            },
+                            "is_black_listed": {
+                              "type": "boolean",
+                              "example": false,
+                              "description": "Blacklisted status"
+                            }
+                          },
+                          "required": [
+                            "member_type",
+                            "status",
+                            "store_id",
+                            "store_name",
+                            "brand",
+                            "joined_at",
+                            "is_black_listed"
+                          ],
+                          "title": "MemberProfile",
                           "description": "Member profile"
                         },
                         "ekyc": {
-                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "verified": {
+                              "type": "boolean",
+                              "example": true,
+                              "description": "Whether eKYC is verified"
+                            },
+                            "verified_at": {
+                              "type": "string",
+                              "example": "2025-01-20T10:00:00.000Z",
+                              "description": "Verification datetime (ISO)"
+                            },
+                            "document_type": {
+                              "type": "string",
+                              "example": "driver_license",
+                              "description": "Document type"
+                            },
+                            "photoUrl": {
+                              "type": "string",
+                              "example": "https://example.com/photo.jpg",
+                              "description": "Photo URL"
+                            }
+                          },
+                          "required": ["verified"],
+                          "title": "MemberEKYC",
                           "description": "eKYC information"
                         },
                         "consent": {
-                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "member_agreement": {
+                              "type": "object",
+                              "properties": {
+                                "version": {
+                                  "type": "string",
+                                  "example": "1.0",
+                                  "description": "Agreement version"
+                                },
+                                "agreed_at": {
+                                  "type": "string",
+                                  "example": "2025-01-10T10:00:00.000Z",
+                                  "description": "Agreed datetime (ISO)"
+                                }
+                              },
+                              "required": ["version", "agreed_at"],
+                              "description": "Member agreement consent"
+                            },
+                            "privacy_policy": {
+                              "type": "object",
+                              "properties": {
+                                "version": {
+                                  "type": "string",
+                                  "example": "1.0",
+                                  "description": "Policy version"
+                                },
+                                "agreed_at": {
+                                  "type": "string",
+                                  "example": "2025-01-10T10:00:00.000Z",
+                                  "description": "Agreed datetime (ISO)"
+                                }
+                              },
+                              "required": ["version", "agreed_at"],
+                              "description": "Privacy policy consent"
+                            },
+                            "optional_agreement": {
+                              "type": "object",
+                              "properties": {
+                                "version": {
+                                  "type": "string",
+                                  "example": "1.0",
+                                  "description": "Optional agreement version"
+                                },
+                                "agreed_at": {
+                                  "type": "string",
+                                  "example": "2025-01-10T10:00:00.000Z",
+                                  "description": "Agreed datetime (ISO)"
+                                }
+                              },
+                              "required": ["version", "agreed_at"],
+                              "description": "Optional agreement consent"
+                            },
+                            "marketing_consent": {
+                              "type": "object",
+                              "properties": {
+                                "email": {
+                                  "type": "boolean",
+                                  "example": true,
+                                  "description": "Email marketing consent"
+                                },
+                                "sms": {
+                                  "type": "boolean",
+                                  "example": false,
+                                  "description": "SMS marketing consent"
+                                },
+                                "push": {
+                                  "type": "boolean",
+                                  "example": true,
+                                  "description": "Push marketing consent"
+                                }
+                              },
+                              "required": ["email", "sms", "push"],
+                              "description": "Marketing consent"
+                            }
+                          },
+                          "required": ["member_agreement", "privacy_policy", "marketing_consent"],
+                          "title": "MemberConsent",
                           "description": "Consent information"
                         },
                         "health_info": {
-                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "health_status": {
+                              "type": "string",
+                              "example": "良好",
+                              "description": "Health status"
+                            },
+                            "medical_history": {
+                              "type": "string",
+                              "example": "なし",
+                              "description": "Medical history"
+                            },
+                            "allergies": {
+                              "type": "string",
+                              "example": "花粉症",
+                              "description": "Allergies"
+                            },
+                            "exercise_restrictions": {
+                              "type": "string",
+                              "example": "膝に負担がかかる運動は避ける",
+                              "description": "Exercise restrictions"
+                            },
+                            "other_notes": {
+                              "type": "string",
+                              "example": "特記事項なし",
+                              "description": "Other notes"
+                            }
+                          },
+                          "title": "MemberHealthInfo",
                           "description": "Health information"
                         },
                         "contracts": {
-                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "main_contract": {
+                              "type": "object",
+                              "properties": {
+                                "plan_name": {
+                                  "type": "string",
+                                  "example": "スタンダードプラン",
+                                  "description": "Plan name"
+                                },
+                                "monthly_fee": {
+                                  "type": "number",
+                                  "example": 8580,
+                                  "description": "Monthly fee (tax included)"
+                                },
+                                "start_date": {
+                                  "type": "string",
+                                  "example": "2024-01-15",
+                                  "description": "Contract start date"
+                                },
+                                "penalty_period_end": {
+                                  "type": "string",
+                                  "example": "2025-01-14",
+                                  "description": "Penalty period end date"
+                                },
+                                "change_history": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "changed_at": {
+                                        "type": "string",
+                                        "example": "2024-01-15T00:00:00+09:00",
+                                        "description": "Change date and time"
+                                      },
+                                      "previous_plan": {
+                                        "type": "string",
+                                        "example": "ベーシックプラン",
+                                        "description": "Previous plan name"
+                                      },
+                                      "new_plan": {
+                                        "type": "string",
+                                        "example": "スタンダードプラン",
+                                        "description": "New plan name"
+                                      },
+                                      "reason": {
+                                        "type": "string",
+                                        "example": "プラン変更希望",
+                                        "description": "Reason for change"
+                                      }
+                                    },
+                                    "required": ["changed_at", "previous_plan", "new_plan"],
+                                    "title": "ContractChange",
+                                    "description": "Contract change history item"
+                                  },
+                                  "description": "Contract change history"
+                                }
+                              },
+                              "required": [
+                                "plan_name",
+                                "monthly_fee",
+                                "start_date",
+                                "change_history"
+                              ],
+                              "title": "MainContract",
+                              "description": "Main contract information"
+                            },
+                            "option_contracts": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "example": "opt-001",
+                                    "description": "Option contract ID"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "example": "パーソナルトレーニング",
+                                    "description": "Option name"
+                                  },
+                                  "monthly_fee": {
+                                    "type": "number",
+                                    "example": 11000,
+                                    "description": "Monthly fee"
+                                  },
+                                  "start_date": {
+                                    "type": "string",
+                                    "example": "2024-02-01",
+                                    "description": "Start date"
+                                  },
+                                  "next_billing_date": {
+                                    "type": "string",
+                                    "example": "2025-03-01",
+                                    "description": "Next billing date"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "name",
+                                  "monthly_fee",
+                                  "start_date",
+                                  "next_billing_date"
+                                ],
+                                "title": "OptionContract",
+                                "description": "Option contract information"
+                              },
+                              "description": "Option contracts"
+                            },
+                            "option_change_history": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "changed_at": {
+                                    "type": "string",
+                                    "example": "2024-02-01T00:00:00+09:00",
+                                    "description": "Change date and time"
+                                  },
+                                  "option_name": {
+                                    "type": "string",
+                                    "example": "パーソナルトレーニング",
+                                    "description": "Option name"
+                                  },
+                                  "action_type": {
+                                    "type": "string",
+                                    "enum": ["add", "remove"],
+                                    "example": "add",
+                                    "description": "Action type"
+                                  },
+                                  "notes": {
+                                    "type": "string",
+                                    "example": "オプション追加",
+                                    "description": "Notes"
+                                  }
+                                },
+                                "required": ["changed_at", "option_name", "action_type"],
+                                "title": "OptionChangeHistory",
+                                "description": "Option change history item"
+                              },
+                              "description": "Option change history"
+                            },
+                            "special_contracts": {
+                              "type": "object",
+                              "properties": {
+                                "anshin_support": {
+                                  "type": "object",
+                                  "properties": {
+                                    "enrolled": {
+                                      "type": "boolean",
+                                      "example": true,
+                                      "description": "Whether enrolled"
+                                    },
+                                    "start_date": {
+                                      "type": "string",
+                                      "example": "2024-01-15",
+                                      "description": "Start date"
+                                    },
+                                    "applied_month": {
+                                      "type": "string",
+                                      "example": "2025-03",
+                                      "description": "Applied month (YYYY-MM format)"
+                                    }
+                                  },
+                                  "required": ["enrolled"],
+                                  "title": "SpecialContractItem",
+                                  "description": "Anshin support contract"
+                                },
+                                "mutual_use": {
+                                  "type": "object",
+                                  "properties": {
+                                    "enrolled": {
+                                      "type": "boolean",
+                                      "example": true,
+                                      "description": "Whether enrolled"
+                                    },
+                                    "start_date": {
+                                      "type": "string",
+                                      "example": "2024-01-15",
+                                      "description": "Start date"
+                                    },
+                                    "applied_month": {
+                                      "type": "string",
+                                      "example": "2025-03",
+                                      "description": "Applied month (YYYY-MM format)"
+                                    }
+                                  },
+                                  "required": ["enrolled"],
+                                  "title": "SpecialContractItem",
+                                  "description": "Mutual use contract"
+                                },
+                                "security_fee": {
+                                  "type": "object",
+                                  "properties": {
+                                    "enrolled": {
+                                      "type": "boolean",
+                                      "example": true,
+                                      "description": "Whether enrolled"
+                                    },
+                                    "start_date": {
+                                      "type": "string",
+                                      "example": "2024-01-15",
+                                      "description": "Start date"
+                                    },
+                                    "applied_month": {
+                                      "type": "string",
+                                      "example": "2025-03",
+                                      "description": "Applied month (YYYY-MM format)"
+                                    }
+                                  },
+                                  "required": ["enrolled"],
+                                  "title": "SpecialContractItem",
+                                  "description": "Security fee contract"
+                                },
+                                "maintenance_fee": {
+                                  "type": "object",
+                                  "properties": {
+                                    "enrolled": {
+                                      "type": "boolean",
+                                      "example": true,
+                                      "description": "Whether enrolled"
+                                    },
+                                    "start_date": {
+                                      "type": "string",
+                                      "example": "2024-01-15",
+                                      "description": "Start date"
+                                    },
+                                    "applied_month": {
+                                      "type": "string",
+                                      "example": "2025-03",
+                                      "description": "Applied month (YYYY-MM format)"
+                                    }
+                                  },
+                                  "required": ["enrolled"],
+                                  "title": "SpecialContractItem",
+                                  "description": "Maintenance fee contract"
+                                }
+                              },
+                              "title": "SpecialContracts",
+                              "description": "Special contracts"
+                            },
+                            "payment_info": {
+                              "type": "object",
+                              "properties": {
+                                "method": {
+                                  "type": "string",
+                                  "enum": ["credit_card", "bank_transfer"],
+                                  "example": "credit_card",
+                                  "description": "Payment method"
+                                },
+                                "card_number": {
+                                  "type": "string",
+                                  "example": "**** **** **** 1234",
+                                  "description": "Masked card number (last 4 digits only)"
+                                },
+                                "cardholder_name": {
+                                  "type": "string",
+                                  "example": "SATOU HANAKO",
+                                  "description": "Cardholder name"
+                                },
+                                "expiry_date": {
+                                  "type": "string",
+                                  "example": "12/28",
+                                  "description": "Card expiry date"
+                                },
+                                "billing_day": {
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 31,
+                                  "example": 27,
+                                  "description": "Billing day of month"
+                                },
+                                "last_payment_date": {
+                                  "type": "string",
+                                  "example": "2025-02-27",
+                                  "description": "Last payment date"
+                                },
+                                "last_payment_amount": {
+                                  "type": "number",
+                                  "example": 9680,
+                                  "description": "Last payment amount"
+                                },
+                                "status": {
+                                  "type": "string",
+                                  "enum": ["normal", "error"],
+                                  "example": "normal",
+                                  "description": "Payment status"
+                                },
+                                "payment_history": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "date": {
+                                        "type": "string",
+                                        "example": "2025-02-27",
+                                        "description": "Payment date"
+                                      },
+                                      "amount": {
+                                        "type": "number",
+                                        "example": 9680,
+                                        "description": "Payment amount"
+                                      },
+                                      "breakdown": {
+                                        "type": "string",
+                                        "example": "月会費 8,580円 + オプション 1,100円",
+                                        "description": "Payment breakdown"
+                                      },
+                                      "status": {
+                                        "type": "string",
+                                        "enum": ["success", "failed"],
+                                        "example": "success",
+                                        "description": "Payment status"
+                                      },
+                                      "notes": {
+                                        "type": "string",
+                                        "example": "",
+                                        "description": "Additional notes"
+                                      }
+                                    },
+                                    "required": ["date", "amount", "breakdown", "status"],
+                                    "title": "PaymentRecord",
+                                    "description": "Payment history record"
+                                  },
+                                  "description": "Payment history"
+                                }
+                              },
+                              "required": ["method", "billing_day", "status", "payment_history"],
+                              "title": "PaymentInfo",
+                              "description": "Payment information"
+                            },
+                            "unpaid_info": {
+                              "type": "object",
+                              "nullable": true,
+                              "properties": {
+                                "amount": {
+                                  "type": "number",
+                                  "example": 5000,
+                                  "description": "Unpaid amount"
+                                },
+                                "due_date": {
+                                  "type": "string",
+                                  "example": "2025-03-15",
+                                  "description": "Due date"
+                                },
+                                "reason": {
+                                  "type": "string",
+                                  "example": "Payment failed",
+                                  "description": "Reason for unpaid"
+                                }
+                              },
+                              "required": ["amount", "due_date"],
+                              "title": "UnpaidInfo",
+                              "description": "Unpaid information"
+                            },
+                            "campaigns": {
+                              "type": "object",
+                              "properties": {
+                                "active": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "campaign_name": {
+                                        "type": "string",
+                                        "example": "春の入会キャンペーン",
+                                        "description": "Campaign name"
+                                      },
+                                      "period_start": {
+                                        "type": "string",
+                                        "example": "2025-03-01",
+                                        "description": "Campaign period start date"
+                                      },
+                                      "period_end": {
+                                        "type": "string",
+                                        "example": "2025-03-31",
+                                        "description": "Campaign period end date"
+                                      },
+                                      "discount_content": {
+                                        "type": "string",
+                                        "example": "入会金50%OFF",
+                                        "description": "Discount content"
+                                      },
+                                      "remaining_days": {
+                                        "type": "number",
+                                        "example": 15,
+                                        "description": "Remaining days"
+                                      },
+                                      "applied_at": {
+                                        "type": "string",
+                                        "example": "2024-01-15",
+                                        "description": "Applied date"
+                                      },
+                                      "content": {
+                                        "type": "string",
+                                        "example": "初月月会費無料",
+                                        "description": "Campaign content"
+                                      },
+                                      "status": {
+                                        "type": "string",
+                                        "example": "expired",
+                                        "description": "Campaign status"
+                                      }
+                                    },
+                                    "required": ["campaign_name"],
+                                    "title": "Campaign",
+                                    "description": "Campaign information"
+                                  },
+                                  "description": "Active campaigns"
+                                },
+                                "history": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "campaign_name": {
+                                        "type": "string",
+                                        "example": "春の入会キャンペーン",
+                                        "description": "Campaign name"
+                                      },
+                                      "period_start": {
+                                        "type": "string",
+                                        "example": "2025-03-01",
+                                        "description": "Campaign period start date"
+                                      },
+                                      "period_end": {
+                                        "type": "string",
+                                        "example": "2025-03-31",
+                                        "description": "Campaign period end date"
+                                      },
+                                      "discount_content": {
+                                        "type": "string",
+                                        "example": "入会金50%OFF",
+                                        "description": "Discount content"
+                                      },
+                                      "remaining_days": {
+                                        "type": "number",
+                                        "example": 15,
+                                        "description": "Remaining days"
+                                      },
+                                      "applied_at": {
+                                        "type": "string",
+                                        "example": "2024-01-15",
+                                        "description": "Applied date"
+                                      },
+                                      "content": {
+                                        "type": "string",
+                                        "example": "初月月会費無料",
+                                        "description": "Campaign content"
+                                      },
+                                      "status": {
+                                        "type": "string",
+                                        "example": "expired",
+                                        "description": "Campaign status"
+                                      }
+                                    },
+                                    "required": ["campaign_name"],
+                                    "title": "Campaign",
+                                    "description": "Campaign information"
+                                  },
+                                  "description": "Campaign history"
+                                }
+                              },
+                              "required": ["active", "history"],
+                              "title": "Campaigns",
+                              "description": "Campaign information"
+                            }
+                          },
+                          "required": [
+                            "main_contract",
+                            "option_contracts",
+                            "option_change_history",
+                            "special_contracts",
+                            "payment_info",
+                            "unpaid_info",
+                            "campaigns"
+                          ],
+                          "title": "GetContractsResponse",
                           "description": "Contract information"
                         },
-                        "payment_info": {
-                          "nullable": true,
-                          "description": "Payment information"
-                        },
                         "points": {
-                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "fit365": {
+                              "nullable": true,
+                              "description": "FIT365 points information"
+                            },
+                            "joyfit": {
+                              "nullable": true,
+                              "description": "JOYFIT points information"
+                            },
+                            "rank": {
+                              "nullable": true,
+                              "description": "Rank information"
+                            },
+                            "earn_history": {
+                              "type": "array",
+                              "items": {
+                                "nullable": true
+                              },
+                              "description": "Earn history"
+                            },
+                            "spend_history": {
+                              "type": "array",
+                              "items": {
+                                "nullable": true
+                              },
+                              "description": "Spend history"
+                            },
+                            "adjustment_history": {
+                              "type": "array",
+                              "items": {
+                                "nullable": true
+                              },
+                              "description": "Adjustment history"
+                            }
+                          },
+                          "required": ["earn_history", "spend_history", "adjustment_history"],
+                          "title": "GetPointsResponse",
                           "description": "Points information"
                         },
-                        "usage_summary": {
-                          "nullable": true,
-                          "description": "Usage summary"
-                        },
-                        "training_summary": {
-                          "nullable": true,
-                          "description": "Training summary"
-                        },
-                        "service_usage": {
-                          "nullable": true,
-                          "description": "Service usage"
-                        },
-                        "communications": {
-                          "nullable": true,
-                          "description": "Communications"
-                        },
                         "memos": {
-                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "memos": {
+                              "type": "array",
+                              "items": {
+                                "nullable": true
+                              },
+                              "description": "List of memos"
+                            }
+                          },
+                          "required": ["memos"],
+                          "title": "GetMemosResponse",
                           "description": "Staff memos"
-                        },
-                        "change_history": {
-                          "nullable": true,
-                          "description": "Change history"
                         }
                       },
+                      "required": ["basic_info", "profile"],
                       "description": "Complete member information"
                     }
                   },
@@ -8370,62 +9951,858 @@
                       "type": "object",
                       "properties": {
                         "basic_info": {
-                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "example": "M-00001",
+                              "description": "Member ID"
+                            },
+                            "member_number": {
+                              "type": "string",
+                              "example": "M-00001",
+                              "description": "Member number"
+                            },
+                            "name_kanji": {
+                              "type": "string",
+                              "example": "佐藤 花子",
+                              "description": "Name in kanji"
+                            },
+                            "name_kana": {
+                              "type": "string",
+                              "example": "サトウ ハナコ",
+                              "description": "Name in kana"
+                            },
+                            "birthday": {
+                              "type": "string",
+                              "example": "1990-01-01",
+                              "description": "Birthday (ISO date)"
+                            },
+                            "age": {
+                              "type": "integer",
+                              "example": 35,
+                              "description": "Age"
+                            },
+                            "gender": {
+                              "type": "string",
+                              "enum": ["male", "female", "other"],
+                              "example": "female",
+                              "description": "Gender"
+                            },
+                            "postal_code": {
+                              "type": "string",
+                              "example": "1500002",
+                              "description": "Postal code"
+                            },
+                            "prefecture": {
+                              "type": "string",
+                              "example": "東京都",
+                              "description": "Prefecture"
+                            },
+                            "city": {
+                              "type": "string",
+                              "example": "渋谷区",
+                              "description": "City"
+                            },
+                            "address": {
+                              "type": "string",
+                              "example": "渋谷1-2-3",
+                              "description": "Address"
+                            },
+                            "building": {
+                              "type": "string",
+                              "example": "サンプルマンション101",
+                              "description": "Building"
+                            },
+                            "phone": {
+                              "type": "string",
+                              "example": "090-1234-5678",
+                              "description": "Phone number"
+                            },
+                            "email": {
+                              "type": "string",
+                              "format": "email",
+                              "example": "member00001@example.jp",
+                              "description": "Email address"
+                            },
+                            "emergency_contact": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "example": "山田 太郎",
+                                  "description": "Emergency contact name"
+                                },
+                                "relationship": {
+                                  "type": "string",
+                                  "example": "配偶者",
+                                  "description": "Relationship to member"
+                                },
+                                "phone": {
+                                  "type": "string",
+                                  "example": "090-0000-0000",
+                                  "description": "Emergency contact phone"
+                                }
+                              },
+                              "required": ["name", "relationship", "phone"],
+                              "title": "MemberEmergencyContact",
+                              "description": "Emergency contact information"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "member_number",
+                            "name_kanji",
+                            "name_kana",
+                            "birthday",
+                            "age",
+                            "gender",
+                            "phone",
+                            "email"
+                          ],
+                          "title": "MemberBasicInfo",
                           "description": "Basic member information"
                         },
                         "profile": {
-                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "member_type": {
+                              "type": "string",
+                              "enum": ["regular", "family", "corporate", "company_discount"],
+                              "example": "regular",
+                              "description": "Member type"
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": ["active", "suspended", "withdrawn", "force_withdrawn"],
+                              "example": "active",
+                              "description": "Member status"
+                            },
+                            "store_id": {
+                              "type": "string",
+                              "example": "store-001",
+                              "description": "Store ID"
+                            },
+                            "store_name": {
+                              "type": "string",
+                              "example": "Fit365八潮店",
+                              "description": "Store name"
+                            },
+                            "brand": {
+                              "type": "string",
+                              "enum": ["joyfit", "fit365"],
+                              "example": "fit365",
+                              "description": "Brand"
+                            },
+                            "joined_at": {
+                              "type": "string",
+                              "example": "2024-01-15",
+                              "description": "Join date (ISO date)"
+                            },
+                            "withdrawn_at": {
+                              "type": "string",
+                              "example": "2025-02-01",
+                              "description": "Withdrawal date (ISO date)"
+                            },
+                            "is_black_listed": {
+                              "type": "boolean",
+                              "example": false,
+                              "description": "Blacklisted status"
+                            }
+                          },
+                          "required": [
+                            "member_type",
+                            "status",
+                            "store_id",
+                            "store_name",
+                            "brand",
+                            "joined_at",
+                            "is_black_listed"
+                          ],
+                          "title": "MemberProfile",
                           "description": "Member profile"
                         },
                         "ekyc": {
-                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "verified": {
+                              "type": "boolean",
+                              "example": true,
+                              "description": "Whether eKYC is verified"
+                            },
+                            "verified_at": {
+                              "type": "string",
+                              "example": "2025-01-20T10:00:00.000Z",
+                              "description": "Verification datetime (ISO)"
+                            },
+                            "document_type": {
+                              "type": "string",
+                              "example": "driver_license",
+                              "description": "Document type"
+                            },
+                            "photoUrl": {
+                              "type": "string",
+                              "example": "https://example.com/photo.jpg",
+                              "description": "Photo URL"
+                            }
+                          },
+                          "required": ["verified"],
+                          "title": "MemberEKYC",
                           "description": "eKYC information"
                         },
                         "consent": {
-                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "member_agreement": {
+                              "type": "object",
+                              "properties": {
+                                "version": {
+                                  "type": "string",
+                                  "example": "1.0",
+                                  "description": "Agreement version"
+                                },
+                                "agreed_at": {
+                                  "type": "string",
+                                  "example": "2025-01-10T10:00:00.000Z",
+                                  "description": "Agreed datetime (ISO)"
+                                }
+                              },
+                              "required": ["version", "agreed_at"],
+                              "description": "Member agreement consent"
+                            },
+                            "privacy_policy": {
+                              "type": "object",
+                              "properties": {
+                                "version": {
+                                  "type": "string",
+                                  "example": "1.0",
+                                  "description": "Policy version"
+                                },
+                                "agreed_at": {
+                                  "type": "string",
+                                  "example": "2025-01-10T10:00:00.000Z",
+                                  "description": "Agreed datetime (ISO)"
+                                }
+                              },
+                              "required": ["version", "agreed_at"],
+                              "description": "Privacy policy consent"
+                            },
+                            "optional_agreement": {
+                              "type": "object",
+                              "properties": {
+                                "version": {
+                                  "type": "string",
+                                  "example": "1.0",
+                                  "description": "Optional agreement version"
+                                },
+                                "agreed_at": {
+                                  "type": "string",
+                                  "example": "2025-01-10T10:00:00.000Z",
+                                  "description": "Agreed datetime (ISO)"
+                                }
+                              },
+                              "required": ["version", "agreed_at"],
+                              "description": "Optional agreement consent"
+                            },
+                            "marketing_consent": {
+                              "type": "object",
+                              "properties": {
+                                "email": {
+                                  "type": "boolean",
+                                  "example": true,
+                                  "description": "Email marketing consent"
+                                },
+                                "sms": {
+                                  "type": "boolean",
+                                  "example": false,
+                                  "description": "SMS marketing consent"
+                                },
+                                "push": {
+                                  "type": "boolean",
+                                  "example": true,
+                                  "description": "Push marketing consent"
+                                }
+                              },
+                              "required": ["email", "sms", "push"],
+                              "description": "Marketing consent"
+                            }
+                          },
+                          "required": ["member_agreement", "privacy_policy", "marketing_consent"],
+                          "title": "MemberConsent",
                           "description": "Consent information"
                         },
                         "health_info": {
-                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "health_status": {
+                              "type": "string",
+                              "example": "良好",
+                              "description": "Health status"
+                            },
+                            "medical_history": {
+                              "type": "string",
+                              "example": "なし",
+                              "description": "Medical history"
+                            },
+                            "allergies": {
+                              "type": "string",
+                              "example": "花粉症",
+                              "description": "Allergies"
+                            },
+                            "exercise_restrictions": {
+                              "type": "string",
+                              "example": "膝に負担がかかる運動は避ける",
+                              "description": "Exercise restrictions"
+                            },
+                            "other_notes": {
+                              "type": "string",
+                              "example": "特記事項なし",
+                              "description": "Other notes"
+                            }
+                          },
+                          "title": "MemberHealthInfo",
                           "description": "Health information"
                         },
                         "contracts": {
-                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "main_contract": {
+                              "type": "object",
+                              "properties": {
+                                "plan_name": {
+                                  "type": "string",
+                                  "example": "スタンダードプラン",
+                                  "description": "Plan name"
+                                },
+                                "monthly_fee": {
+                                  "type": "number",
+                                  "example": 8580,
+                                  "description": "Monthly fee (tax included)"
+                                },
+                                "start_date": {
+                                  "type": "string",
+                                  "example": "2024-01-15",
+                                  "description": "Contract start date"
+                                },
+                                "penalty_period_end": {
+                                  "type": "string",
+                                  "example": "2025-01-14",
+                                  "description": "Penalty period end date"
+                                },
+                                "change_history": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "changed_at": {
+                                        "type": "string",
+                                        "example": "2024-01-15T00:00:00+09:00",
+                                        "description": "Change date and time"
+                                      },
+                                      "previous_plan": {
+                                        "type": "string",
+                                        "example": "ベーシックプラン",
+                                        "description": "Previous plan name"
+                                      },
+                                      "new_plan": {
+                                        "type": "string",
+                                        "example": "スタンダードプラン",
+                                        "description": "New plan name"
+                                      },
+                                      "reason": {
+                                        "type": "string",
+                                        "example": "プラン変更希望",
+                                        "description": "Reason for change"
+                                      }
+                                    },
+                                    "required": ["changed_at", "previous_plan", "new_plan"],
+                                    "title": "ContractChange",
+                                    "description": "Contract change history item"
+                                  },
+                                  "description": "Contract change history"
+                                }
+                              },
+                              "required": [
+                                "plan_name",
+                                "monthly_fee",
+                                "start_date",
+                                "change_history"
+                              ],
+                              "title": "MainContract",
+                              "description": "Main contract information"
+                            },
+                            "option_contracts": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "example": "opt-001",
+                                    "description": "Option contract ID"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "example": "パーソナルトレーニング",
+                                    "description": "Option name"
+                                  },
+                                  "monthly_fee": {
+                                    "type": "number",
+                                    "example": 11000,
+                                    "description": "Monthly fee"
+                                  },
+                                  "start_date": {
+                                    "type": "string",
+                                    "example": "2024-02-01",
+                                    "description": "Start date"
+                                  },
+                                  "next_billing_date": {
+                                    "type": "string",
+                                    "example": "2025-03-01",
+                                    "description": "Next billing date"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "name",
+                                  "monthly_fee",
+                                  "start_date",
+                                  "next_billing_date"
+                                ],
+                                "title": "OptionContract",
+                                "description": "Option contract information"
+                              },
+                              "description": "Option contracts"
+                            },
+                            "option_change_history": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "changed_at": {
+                                    "type": "string",
+                                    "example": "2024-02-01T00:00:00+09:00",
+                                    "description": "Change date and time"
+                                  },
+                                  "option_name": {
+                                    "type": "string",
+                                    "example": "パーソナルトレーニング",
+                                    "description": "Option name"
+                                  },
+                                  "action_type": {
+                                    "type": "string",
+                                    "enum": ["add", "remove"],
+                                    "example": "add",
+                                    "description": "Action type"
+                                  },
+                                  "notes": {
+                                    "type": "string",
+                                    "example": "オプション追加",
+                                    "description": "Notes"
+                                  }
+                                },
+                                "required": ["changed_at", "option_name", "action_type"],
+                                "title": "OptionChangeHistory",
+                                "description": "Option change history item"
+                              },
+                              "description": "Option change history"
+                            },
+                            "special_contracts": {
+                              "type": "object",
+                              "properties": {
+                                "anshin_support": {
+                                  "type": "object",
+                                  "properties": {
+                                    "enrolled": {
+                                      "type": "boolean",
+                                      "example": true,
+                                      "description": "Whether enrolled"
+                                    },
+                                    "start_date": {
+                                      "type": "string",
+                                      "example": "2024-01-15",
+                                      "description": "Start date"
+                                    },
+                                    "applied_month": {
+                                      "type": "string",
+                                      "example": "2025-03",
+                                      "description": "Applied month (YYYY-MM format)"
+                                    }
+                                  },
+                                  "required": ["enrolled"],
+                                  "title": "SpecialContractItem",
+                                  "description": "Anshin support contract"
+                                },
+                                "mutual_use": {
+                                  "type": "object",
+                                  "properties": {
+                                    "enrolled": {
+                                      "type": "boolean",
+                                      "example": true,
+                                      "description": "Whether enrolled"
+                                    },
+                                    "start_date": {
+                                      "type": "string",
+                                      "example": "2024-01-15",
+                                      "description": "Start date"
+                                    },
+                                    "applied_month": {
+                                      "type": "string",
+                                      "example": "2025-03",
+                                      "description": "Applied month (YYYY-MM format)"
+                                    }
+                                  },
+                                  "required": ["enrolled"],
+                                  "title": "SpecialContractItem",
+                                  "description": "Mutual use contract"
+                                },
+                                "security_fee": {
+                                  "type": "object",
+                                  "properties": {
+                                    "enrolled": {
+                                      "type": "boolean",
+                                      "example": true,
+                                      "description": "Whether enrolled"
+                                    },
+                                    "start_date": {
+                                      "type": "string",
+                                      "example": "2024-01-15",
+                                      "description": "Start date"
+                                    },
+                                    "applied_month": {
+                                      "type": "string",
+                                      "example": "2025-03",
+                                      "description": "Applied month (YYYY-MM format)"
+                                    }
+                                  },
+                                  "required": ["enrolled"],
+                                  "title": "SpecialContractItem",
+                                  "description": "Security fee contract"
+                                },
+                                "maintenance_fee": {
+                                  "type": "object",
+                                  "properties": {
+                                    "enrolled": {
+                                      "type": "boolean",
+                                      "example": true,
+                                      "description": "Whether enrolled"
+                                    },
+                                    "start_date": {
+                                      "type": "string",
+                                      "example": "2024-01-15",
+                                      "description": "Start date"
+                                    },
+                                    "applied_month": {
+                                      "type": "string",
+                                      "example": "2025-03",
+                                      "description": "Applied month (YYYY-MM format)"
+                                    }
+                                  },
+                                  "required": ["enrolled"],
+                                  "title": "SpecialContractItem",
+                                  "description": "Maintenance fee contract"
+                                }
+                              },
+                              "title": "SpecialContracts",
+                              "description": "Special contracts"
+                            },
+                            "payment_info": {
+                              "type": "object",
+                              "properties": {
+                                "method": {
+                                  "type": "string",
+                                  "enum": ["credit_card", "bank_transfer"],
+                                  "example": "credit_card",
+                                  "description": "Payment method"
+                                },
+                                "card_number": {
+                                  "type": "string",
+                                  "example": "**** **** **** 1234",
+                                  "description": "Masked card number (last 4 digits only)"
+                                },
+                                "cardholder_name": {
+                                  "type": "string",
+                                  "example": "SATOU HANAKO",
+                                  "description": "Cardholder name"
+                                },
+                                "expiry_date": {
+                                  "type": "string",
+                                  "example": "12/28",
+                                  "description": "Card expiry date"
+                                },
+                                "billing_day": {
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 31,
+                                  "example": 27,
+                                  "description": "Billing day of month"
+                                },
+                                "last_payment_date": {
+                                  "type": "string",
+                                  "example": "2025-02-27",
+                                  "description": "Last payment date"
+                                },
+                                "last_payment_amount": {
+                                  "type": "number",
+                                  "example": 9680,
+                                  "description": "Last payment amount"
+                                },
+                                "status": {
+                                  "type": "string",
+                                  "enum": ["normal", "error"],
+                                  "example": "normal",
+                                  "description": "Payment status"
+                                },
+                                "payment_history": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "date": {
+                                        "type": "string",
+                                        "example": "2025-02-27",
+                                        "description": "Payment date"
+                                      },
+                                      "amount": {
+                                        "type": "number",
+                                        "example": 9680,
+                                        "description": "Payment amount"
+                                      },
+                                      "breakdown": {
+                                        "type": "string",
+                                        "example": "月会費 8,580円 + オプション 1,100円",
+                                        "description": "Payment breakdown"
+                                      },
+                                      "status": {
+                                        "type": "string",
+                                        "enum": ["success", "failed"],
+                                        "example": "success",
+                                        "description": "Payment status"
+                                      },
+                                      "notes": {
+                                        "type": "string",
+                                        "example": "",
+                                        "description": "Additional notes"
+                                      }
+                                    },
+                                    "required": ["date", "amount", "breakdown", "status"],
+                                    "title": "PaymentRecord",
+                                    "description": "Payment history record"
+                                  },
+                                  "description": "Payment history"
+                                }
+                              },
+                              "required": ["method", "billing_day", "status", "payment_history"],
+                              "title": "PaymentInfo",
+                              "description": "Payment information"
+                            },
+                            "unpaid_info": {
+                              "type": "object",
+                              "nullable": true,
+                              "properties": {
+                                "amount": {
+                                  "type": "number",
+                                  "example": 5000,
+                                  "description": "Unpaid amount"
+                                },
+                                "due_date": {
+                                  "type": "string",
+                                  "example": "2025-03-15",
+                                  "description": "Due date"
+                                },
+                                "reason": {
+                                  "type": "string",
+                                  "example": "Payment failed",
+                                  "description": "Reason for unpaid"
+                                }
+                              },
+                              "required": ["amount", "due_date"],
+                              "title": "UnpaidInfo",
+                              "description": "Unpaid information"
+                            },
+                            "campaigns": {
+                              "type": "object",
+                              "properties": {
+                                "active": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "campaign_name": {
+                                        "type": "string",
+                                        "example": "春の入会キャンペーン",
+                                        "description": "Campaign name"
+                                      },
+                                      "period_start": {
+                                        "type": "string",
+                                        "example": "2025-03-01",
+                                        "description": "Campaign period start date"
+                                      },
+                                      "period_end": {
+                                        "type": "string",
+                                        "example": "2025-03-31",
+                                        "description": "Campaign period end date"
+                                      },
+                                      "discount_content": {
+                                        "type": "string",
+                                        "example": "入会金50%OFF",
+                                        "description": "Discount content"
+                                      },
+                                      "remaining_days": {
+                                        "type": "number",
+                                        "example": 15,
+                                        "description": "Remaining days"
+                                      },
+                                      "applied_at": {
+                                        "type": "string",
+                                        "example": "2024-01-15",
+                                        "description": "Applied date"
+                                      },
+                                      "content": {
+                                        "type": "string",
+                                        "example": "初月月会費無料",
+                                        "description": "Campaign content"
+                                      },
+                                      "status": {
+                                        "type": "string",
+                                        "example": "expired",
+                                        "description": "Campaign status"
+                                      }
+                                    },
+                                    "required": ["campaign_name"],
+                                    "title": "Campaign",
+                                    "description": "Campaign information"
+                                  },
+                                  "description": "Active campaigns"
+                                },
+                                "history": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "campaign_name": {
+                                        "type": "string",
+                                        "example": "春の入会キャンペーン",
+                                        "description": "Campaign name"
+                                      },
+                                      "period_start": {
+                                        "type": "string",
+                                        "example": "2025-03-01",
+                                        "description": "Campaign period start date"
+                                      },
+                                      "period_end": {
+                                        "type": "string",
+                                        "example": "2025-03-31",
+                                        "description": "Campaign period end date"
+                                      },
+                                      "discount_content": {
+                                        "type": "string",
+                                        "example": "入会金50%OFF",
+                                        "description": "Discount content"
+                                      },
+                                      "remaining_days": {
+                                        "type": "number",
+                                        "example": 15,
+                                        "description": "Remaining days"
+                                      },
+                                      "applied_at": {
+                                        "type": "string",
+                                        "example": "2024-01-15",
+                                        "description": "Applied date"
+                                      },
+                                      "content": {
+                                        "type": "string",
+                                        "example": "初月月会費無料",
+                                        "description": "Campaign content"
+                                      },
+                                      "status": {
+                                        "type": "string",
+                                        "example": "expired",
+                                        "description": "Campaign status"
+                                      }
+                                    },
+                                    "required": ["campaign_name"],
+                                    "title": "Campaign",
+                                    "description": "Campaign information"
+                                  },
+                                  "description": "Campaign history"
+                                }
+                              },
+                              "required": ["active", "history"],
+                              "title": "Campaigns",
+                              "description": "Campaign information"
+                            }
+                          },
+                          "required": [
+                            "main_contract",
+                            "option_contracts",
+                            "option_change_history",
+                            "special_contracts",
+                            "payment_info",
+                            "unpaid_info",
+                            "campaigns"
+                          ],
+                          "title": "GetContractsResponse",
                           "description": "Contract information"
                         },
-                        "payment_info": {
-                          "nullable": true,
-                          "description": "Payment information"
-                        },
                         "points": {
-                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "fit365": {
+                              "nullable": true,
+                              "description": "FIT365 points information"
+                            },
+                            "joyfit": {
+                              "nullable": true,
+                              "description": "JOYFIT points information"
+                            },
+                            "rank": {
+                              "nullable": true,
+                              "description": "Rank information"
+                            },
+                            "earn_history": {
+                              "type": "array",
+                              "items": {
+                                "nullable": true
+                              },
+                              "description": "Earn history"
+                            },
+                            "spend_history": {
+                              "type": "array",
+                              "items": {
+                                "nullable": true
+                              },
+                              "description": "Spend history"
+                            },
+                            "adjustment_history": {
+                              "type": "array",
+                              "items": {
+                                "nullable": true
+                              },
+                              "description": "Adjustment history"
+                            }
+                          },
+                          "required": ["earn_history", "spend_history", "adjustment_history"],
+                          "title": "GetPointsResponse",
                           "description": "Points information"
                         },
-                        "usage_summary": {
-                          "nullable": true,
-                          "description": "Usage summary"
-                        },
-                        "training_summary": {
-                          "nullable": true,
-                          "description": "Training summary"
-                        },
-                        "service_usage": {
-                          "nullable": true,
-                          "description": "Service usage"
-                        },
-                        "communications": {
-                          "nullable": true,
-                          "description": "Communications"
-                        },
                         "memos": {
-                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "memos": {
+                              "type": "array",
+                              "items": {
+                                "nullable": true
+                              },
+                              "description": "List of memos"
+                            }
+                          },
+                          "required": ["memos"],
+                          "title": "GetMemosResponse",
                           "description": "Staff memos"
-                        },
-                        "change_history": {
-                          "nullable": true,
-                          "description": "Change history"
                         }
                       },
+                      "required": ["basic_info", "profile"],
                       "description": "Complete member information"
                     }
                   },
