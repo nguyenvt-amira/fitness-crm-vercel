@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import {
+  BookUser,
   Calendar,
   ChevronDown,
   CircleDollarSign,
@@ -14,6 +15,7 @@ import {
   Package,
   Settings,
   User,
+  Users,
 } from 'lucide-react';
 
 import {
@@ -58,6 +60,11 @@ const menuItems = [
     label: '入会処理',
     icon: FileText,
     href: getRoutePattern('/membership-applications'),
+  },
+  {
+    label: '家族入会',
+    icon: BookUser,
+    href: getRoutePattern('/family-registrations'),
   },
   {
     label: '入退館',
