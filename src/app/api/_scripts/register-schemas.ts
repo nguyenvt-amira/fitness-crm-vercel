@@ -5,6 +5,7 @@
 // Import all schemas
 import * as authSchemas from '../_schemas/auth.schema';
 import * as autoApprovalSchemas from '../_schemas/auto-approval.schema';
+import * as familyRegistrationSchemas from '../_schemas/family-registration.schema';
 import * as memberSchemas from '../_schemas/member.schema';
 import * as membershipApplicationSchemas from '../_schemas/membership-application.schema';
 import { registry } from './register-route';
@@ -360,5 +361,141 @@ export function registerAllSchemas() {
   registeredSchemaMap.set(
     'CancelResponse',
     registry.register('CancelResponse', membershipApplicationSchemas.CancelResponseSchema),
+  );
+
+  // Register family registration schemas
+  registeredSchemaMap.set(
+    'FamilyMember',
+    registry.register('FamilyMember', familyRegistrationSchemas.FamilyMemberSchema),
+  );
+  registeredSchemaMap.set(
+    'GetFamilyMembersResponse',
+    registry.register(
+      'GetFamilyMembersResponse',
+      familyRegistrationSchemas.GetFamilyMembersResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'CheckPrimaryMemberRequest',
+    registry.register(
+      'CheckPrimaryMemberRequest',
+      familyRegistrationSchemas.CheckPrimaryMemberRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'CheckPrimaryMemberResponse',
+    registry.register(
+      'CheckPrimaryMemberResponse',
+      familyRegistrationSchemas.CheckPrimaryMemberResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'RiskEvaluationRequest',
+    registry.register(
+      'RiskEvaluationRequest',
+      familyRegistrationSchemas.RiskEvaluationRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'RiskEvaluationResponse',
+    registry.register(
+      'RiskEvaluationResponse',
+      familyRegistrationSchemas.RiskEvaluationResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'FamilyRegistration',
+    registry.register('FamilyRegistration', familyRegistrationSchemas.FamilyRegistrationSchema),
+  );
+  registeredSchemaMap.set(
+    'GetFamilyRegistrationsQuery',
+    registry.register(
+      'GetFamilyRegistrationsQuery',
+      familyRegistrationSchemas.GetFamilyRegistrationsQuerySchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetFamilyRegistrationsResponse',
+    registry.register(
+      'GetFamilyRegistrationsResponse',
+      familyRegistrationSchemas.GetFamilyRegistrationsResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetFamilyRegistrationDetailResponse',
+    registry.register(
+      'GetFamilyRegistrationDetailResponse',
+      familyRegistrationSchemas.GetFamilyRegistrationDetailResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'CreateFamilyRegistrationRequest',
+    registry.register(
+      'CreateFamilyRegistrationRequest',
+      familyRegistrationSchemas.CreateFamilyRegistrationRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'CreateFamilyRegistrationResponse',
+    registry.register(
+      'CreateFamilyRegistrationResponse',
+      familyRegistrationSchemas.CreateFamilyRegistrationResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'ApproveFamilyRegistrationRequest',
+    registry.register(
+      'ApproveFamilyRegistrationRequest',
+      familyRegistrationSchemas.ApproveFamilyRegistrationRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'ApproveFamilyRegistrationResponse',
+    registry.register(
+      'ApproveFamilyRegistrationResponse',
+      familyRegistrationSchemas.ApproveFamilyRegistrationResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'RejectFamilyRegistrationRequest',
+    registry.register(
+      'RejectFamilyRegistrationRequest',
+      familyRegistrationSchemas.RejectFamilyRegistrationRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'RejectFamilyRegistrationResponse',
+    registry.register(
+      'RejectFamilyRegistrationResponse',
+      familyRegistrationSchemas.RejectFamilyRegistrationResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'CompleteFamilyRegistrationRequest',
+    registry.register(
+      'CompleteFamilyRegistrationRequest',
+      familyRegistrationSchemas.CompleteFamilyRegistrationRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'CompleteFamilyRegistrationResponse',
+    registry.register(
+      'CompleteFamilyRegistrationResponse',
+      familyRegistrationSchemas.CompleteFamilyRegistrationResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetFamilyRegistrationsSummaryResponse',
+    registry.register(
+      'GetFamilyRegistrationsSummaryResponse',
+      familyRegistrationSchemas.GetFamilyRegistrationsSummaryResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetFamilyRegistrationsDashboardResponse',
+    registry.register(
+      'GetFamilyRegistrationsDashboardResponse',
+      familyRegistrationSchemas.GetFamilyRegistrationsDashboardResponseSchema,
+    ),
   );
 }

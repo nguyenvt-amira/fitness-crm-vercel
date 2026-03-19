@@ -2,6 +2,10 @@
  * Shared in-memory mock database for all CRM API routes.
  * All APIs should read/update data through this module so list and detail stay in sync.
  */
+import type {
+  FamilyRegistrationStatus,
+  FamilyRelationship,
+} from '@/app/api/_schemas/family-registration.schema';
 import type { GetContractsResponse } from '@/app/api/_schemas/member.schema';
 
 import {
@@ -639,9 +643,243 @@ export const db = {
       return this._applications[idx];
     },
   },
+
+  family: {
+    _seeded: false,
+
+    /**
+     * Brand settings mock (normally from brand_settings table)
+     */
+    _brandSettings: {
+      [Brand.JOYFIT]: {
+        family_member_limit: 3,
+        family_member_fee: 0,
+        payment_cycle: 'monthly' as const,
+      },
+      [Brand.FIT365]: {
+        family_member_limit: 5,
+        family_member_fee: 0,
+        payment_cycle: 'monthly' as const,
+      },
+    },
+
+    /**
+     * family_relationships table (primary -> children)
+     */
+    _relationships: new Map<
+      string,
+      Array<{
+        child_member_id: string;
+        relationship: FamilyRelationship;
+        joined_at: string;
+      }>
+    >(),
+
+    /**
+     * family_registrations table
+     */
+    _registrations: [] as Array<{
+      id: string;
+      created_at: string;
+      status: FamilyRegistrationStatus;
+      primary_member_id: string;
+      applicant_name: string;
+      relationship: FamilyRelationship;
+      invite_expires_at?: string;
+      risk_score?: number;
+      applicant?: {
+        birthday?: string;
+        phone?: string;
+        email?: string;
+      };
+      rejection_reason?: string;
+      staff_id?: string;
+      child_member_id?: string;
+    }>,
+
+    _seed(): void {
+      if (this._seeded) return;
+      this._seeded = true;
+
+      db.members._seed();
+
+      const members = db.members._members;
+      const primaries = members.filter(
+        (m) =>
+          m.profile.member_type === MemberType.REGULAR && m.profile.status === MemberStatus.ACTIVE,
+      );
+      const familyCandidates = members.filter((m) => m.profile.member_type === MemberType.FAMILY);
+
+      // Seed relationships deterministically: each primary gets 0-3 children from familyCandidates
+      for (let i = 0; i < primaries.length; i++) {
+        const p = primaries[i]!;
+        const childCount = i % 4; // 0..3
+        const rels: Array<{
+          child_member_id: string;
+          relationship: FamilyRelationship;
+          joined_at: string;
+        }> = [];
+        for (let j = 0; j < childCount; j++) {
+          const child = familyCandidates[(i * 3 + j) % familyCandidates.length]!;
+          rels.push({
+            child_member_id: child.basic_info.id,
+            relationship: (
+              ['spouse', 'child', 'parent', 'sibling', 'grandparent', 'grandchild'] as const
+            )[(i + j) % 6]!,
+            joined_at: child.profile.joined_at,
+          });
+        }
+        if (rels.length) this._relationships.set(p.basic_info.id, rels);
+      }
+
+      // Seed family registrations
+      const statuses: FamilyRegistrationStatus[] = [
+        'awaiting_acceptance',
+        'awaiting_profile',
+        'pending_review',
+        'approved',
+        'rejected',
+        'completed',
+        'declined',
+        'expired',
+        'invited',
+      ];
+
+      const now = new Date();
+      for (let i = 1; i <= 80; i++) {
+        const created = new Date(now);
+        created.setDate(created.getDate() - (i % 20));
+        created.setHours(10 + (i % 8), (i * 7) % 60, 0, 0);
+
+        const primary = primaries[i % primaries.length]!;
+        const status = statuses[i % statuses.length]!;
+        const inviteExpires = new Date(created);
+        inviteExpires.setDate(inviteExpires.getDate() + 7);
+
+        const riskScore =
+          status === 'pending_review' || status === 'rejected'
+            ? 70 + (i % 30)
+            : status === 'approved' || status === 'completed'
+              ? 10 + (i % 40)
+              : undefined;
+
+        this._registrations.push({
+          id: `FR-${String(i).padStart(5, '0')}`,
+          created_at: created.toISOString(),
+          status,
+          primary_member_id: primary.basic_info.id,
+          applicant_name: `家族申請者${String(i).padStart(3, '0')}`,
+          relationship: (
+            ['spouse', 'child', 'parent', 'sibling', 'grandparent', 'grandchild'] as const
+          )[i % 6]!,
+          invite_expires_at:
+            status === 'expired'
+              ? new Date(created.getTime() + 2 * 24 * 3600 * 1000).toISOString()
+              : inviteExpires.toISOString(),
+          risk_score: riskScore,
+          applicant: {
+            birthday: `199${i % 10}-0${(i % 9) + 1}-15`,
+            phone: `090${String(1000 + (i % 9000)).slice(-4)}${String(2000 + (i % 8000)).slice(-4)}`,
+            email: `family${String(i).padStart(5, '0')}@example.jp`,
+          },
+          ...(status === 'rejected'
+            ? { rejection_reason: 'リスクスコアが高すぎます', staff_id: 'staff-001' }
+            : {}),
+        });
+      }
+    },
+
+    getBrandSettingsByPrimaryMemberId(primary_member_id: string) {
+      this._seed();
+      const primary = db.members.get(primary_member_id);
+      const brand = primary?.profile.brand ?? Brand.FIT365;
+      const settings = this._brandSettings[brand];
+      return { brand, settings };
+    },
+
+    getFamilyMembers(primary_member_id: string) {
+      this._seed();
+      const { brand, settings } = this.getBrandSettingsByPrimaryMemberId(primary_member_id);
+      const rels = this._relationships.get(primary_member_id) ?? [];
+      const members = rels
+        .map((r) => {
+          const child = db.members.get(r.child_member_id);
+          if (!child) return undefined;
+          return {
+            id: child.basic_info.id,
+            member_number: child.basic_info.member_number,
+            name_kanji: child.basic_info.name_kanji,
+            relationship: r.relationship,
+            joined_at: r.joined_at,
+            status: child.profile.status,
+            monthly_fee: settings.family_member_fee,
+            store_id: child.profile.store_id,
+            store_name: child.profile.store_name,
+          };
+        })
+        .filter(Boolean);
+      return { brand, settings, members };
+    },
+
+    listRegistrations() {
+      this._seed();
+      return [...this._registrations];
+    },
+
+    getRegistrationById(id: string) {
+      this._seed();
+      return this._registrations.find((r) => r.id === id);
+    },
+
+    createRegistration(input: {
+      primary_member_id: string;
+      applicant: {
+        name: string;
+        birthday: string;
+        relationship: FamilyRelationship;
+        phone?: string;
+        email?: string;
+      };
+    }) {
+      this._seed();
+      const now = new Date().toISOString();
+      const inviteExpiresAt = new Date(Date.now() + 7 * 24 * 3600 * 1000).toISOString();
+      const next = this._registrations.length + 1;
+      const row = {
+        id: `FR-${String(next).padStart(5, '0')}`,
+        created_at: now,
+        status: 'awaiting_profile' as FamilyRegistrationStatus,
+        primary_member_id: input.primary_member_id,
+        applicant_name: input.applicant.name,
+        relationship: input.applicant.relationship,
+        invite_expires_at: inviteExpiresAt,
+        risk_score: undefined as number | undefined,
+        applicant: {
+          birthday: input.applicant.birthday,
+          phone: input.applicant.phone,
+          email: input.applicant.email,
+        },
+      };
+      this._registrations.unshift(row);
+      return row;
+    },
+
+    updateRegistrationStatus(
+      id: string,
+      status: FamilyRegistrationStatus,
+      patch?: Record<string, any>,
+    ) {
+      this._seed();
+      const idx = this._registrations.findIndex((r) => r.id === id);
+      if (idx === -1) return undefined;
+      this._registrations[idx] = { ...this._registrations[idx], status, ...(patch ?? {}) };
+      return this._registrations[idx];
+    },
+  },
 };
 
 // Seed mock data immediately at module load time
 db.members._seed();
 db.contracts._seed();
 db.membershipApplications._seed();
+db.family._seed();

@@ -3,8 +3,8 @@
 import { type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { Authentication, AutoApproval, Members, MembershipApplications, type Options } from '../sdk.gen';
-import type { DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdError, DeleteCrmMembersByIdMemosByMemoIdResponse, GetCrmAutoApprovalDashboardData, GetCrmAutoApprovalDashboardError, GetCrmAutoApprovalDashboardResponse, GetCrmAutoApprovalSettingsData, GetCrmAutoApprovalSettingsError, GetCrmAutoApprovalSettingsResponse, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoError, GetCrmMembersByIdBasicInfoResponse, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryError, GetCrmMembersByIdChangeHistoryResponse, GetCrmMembersByIdCommunicationsData, GetCrmMembersByIdCommunicationsError, GetCrmMembersByIdCommunicationsResponse, GetCrmMembersByIdContractsData, GetCrmMembersByIdContractsError, GetCrmMembersByIdContractsResponse, GetCrmMembersByIdData, GetCrmMembersByIdError, GetCrmMembersByIdMemosData, GetCrmMembersByIdMemosError, GetCrmMembersByIdMemosResponse, GetCrmMembersByIdPointsData, GetCrmMembersByIdPointsError, GetCrmMembersByIdPointsResponse, GetCrmMembersByIdRelationshipsData, GetCrmMembersByIdRelationshipsError, GetCrmMembersByIdRelationshipsResponse, GetCrmMembersByIdResponse, GetCrmMembersByIdServiceUsageData, GetCrmMembersByIdServiceUsageError, GetCrmMembersByIdServiceUsageResponse, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsError, GetCrmMembersByIdTrainingRecordsResponse, GetCrmMembersByIdUsageHistoryData, GetCrmMembersByIdUsageHistoryError, GetCrmMembersByIdUsageHistoryResponse, GetCrmMembersData, GetCrmMembersError, GetCrmMembershipApplicationsByIdData, GetCrmMembershipApplicationsByIdError, GetCrmMembershipApplicationsByIdResponse, GetCrmMembershipApplicationsData, GetCrmMembershipApplicationsError, GetCrmMembershipApplicationsResponse, GetCrmMembershipApplicationsSummaryData, GetCrmMembershipApplicationsSummaryError, GetCrmMembershipApplicationsSummaryResponse, GetCrmMembersResponse, PatchCrmMembershipApplicationsByIdData, PatchCrmMembershipApplicationsByIdError, PatchCrmMembershipApplicationsByIdResponse, PostAuthLoginData, PostAuthLoginError, PostAuthLoginResponse, PostAuthRefreshData, PostAuthRefreshError, PostAuthRefreshResponse, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosError, PostCrmMembersByIdMemosResponse, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsAdjustError, PostCrmMembersByIdPointsAdjustResponse, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsError, PostCrmMembersByIdPointsResponse, PostCrmMembersExportData, PostCrmMembersExportError, PostCrmMembersExportResponse, PostCrmMembershipApplicationsBulkApproveData, PostCrmMembershipApplicationsBulkApproveError, PostCrmMembershipApplicationsBulkApproveResponse, PostCrmMembershipApplicationsBulkRejectData, PostCrmMembershipApplicationsBulkRejectError, PostCrmMembershipApplicationsBulkRejectResponse, PostCrmMembershipApplicationsByIdApproveData, PostCrmMembershipApplicationsByIdApproveError, PostCrmMembershipApplicationsByIdApproveResponse, PostCrmMembershipApplicationsByIdCancelData, PostCrmMembershipApplicationsByIdCancelError, PostCrmMembershipApplicationsByIdCancelResponse, PostCrmMembershipApplicationsByIdRejectData, PostCrmMembershipApplicationsByIdRejectError, PostCrmMembershipApplicationsByIdRejectResponse, PostCrmMembershipApplicationsData, PostCrmMembershipApplicationsError, PostCrmMembershipApplicationsResponse, PutCrmAutoApprovalSettingsData, PutCrmAutoApprovalSettingsError, PutCrmAutoApprovalSettingsResponse, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdBasicInfoError, PutCrmMembersByIdBasicInfoResponse, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoError, PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentError, PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdError, PutCrmMembersByIdMemosByMemoIdResponse } from '../types.gen';
+import { Authentication, AutoApproval, FamilyMembers, FamilyRegistrations, Members, MembershipApplications, type Options } from '../sdk.gen';
+import type { DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdError, DeleteCrmMembersByIdMemosByMemoIdResponse, GetCrmAutoApprovalDashboardData, GetCrmAutoApprovalDashboardError, GetCrmAutoApprovalDashboardResponse, GetCrmAutoApprovalSettingsData, GetCrmAutoApprovalSettingsError, GetCrmAutoApprovalSettingsResponse, GetCrmFamilyRegistrationsByIdData, GetCrmFamilyRegistrationsByIdError, GetCrmFamilyRegistrationsByIdResponse, GetCrmFamilyRegistrationsDashboardData, GetCrmFamilyRegistrationsDashboardError, GetCrmFamilyRegistrationsDashboardResponse, GetCrmFamilyRegistrationsData, GetCrmFamilyRegistrationsError, GetCrmFamilyRegistrationsResponse, GetCrmFamilyRegistrationsSummaryData, GetCrmFamilyRegistrationsSummaryError, GetCrmFamilyRegistrationsSummaryResponse, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoError, GetCrmMembersByIdBasicInfoResponse, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryError, GetCrmMembersByIdChangeHistoryResponse, GetCrmMembersByIdCommunicationsData, GetCrmMembersByIdCommunicationsError, GetCrmMembersByIdCommunicationsResponse, GetCrmMembersByIdContractsData, GetCrmMembersByIdContractsError, GetCrmMembersByIdContractsResponse, GetCrmMembersByIdData, GetCrmMembersByIdError, GetCrmMembersByIdMemosData, GetCrmMembersByIdMemosError, GetCrmMembersByIdMemosResponse, GetCrmMembersByIdPointsData, GetCrmMembersByIdPointsError, GetCrmMembersByIdPointsResponse, GetCrmMembersByIdRelationshipsData, GetCrmMembersByIdRelationshipsError, GetCrmMembersByIdRelationshipsResponse, GetCrmMembersByIdResponse, GetCrmMembersByIdServiceUsageData, GetCrmMembersByIdServiceUsageError, GetCrmMembersByIdServiceUsageResponse, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsError, GetCrmMembersByIdTrainingRecordsResponse, GetCrmMembersByIdUsageHistoryData, GetCrmMembersByIdUsageHistoryError, GetCrmMembersByIdUsageHistoryResponse, GetCrmMembersByMemberIdFamilyMembersData, GetCrmMembersByMemberIdFamilyMembersError, GetCrmMembersByMemberIdFamilyMembersResponse, GetCrmMembersData, GetCrmMembersError, GetCrmMembershipApplicationsByIdData, GetCrmMembershipApplicationsByIdError, GetCrmMembershipApplicationsByIdResponse, GetCrmMembershipApplicationsData, GetCrmMembershipApplicationsError, GetCrmMembershipApplicationsResponse, GetCrmMembershipApplicationsSummaryData, GetCrmMembershipApplicationsSummaryError, GetCrmMembershipApplicationsSummaryResponse, GetCrmMembersResponse, PatchCrmMembershipApplicationsByIdData, PatchCrmMembershipApplicationsByIdError, PatchCrmMembershipApplicationsByIdResponse, PostAuthLoginData, PostAuthLoginError, PostAuthLoginResponse, PostAuthRefreshData, PostAuthRefreshError, PostAuthRefreshResponse, PostCrmFamilyRegistrationsBulkApproveData, PostCrmFamilyRegistrationsBulkApproveError, PostCrmFamilyRegistrationsBulkApproveResponse, PostCrmFamilyRegistrationsBulkRejectData, PostCrmFamilyRegistrationsBulkRejectError, PostCrmFamilyRegistrationsBulkRejectResponse, PostCrmFamilyRegistrationsByIdApproveData, PostCrmFamilyRegistrationsByIdApproveError, PostCrmFamilyRegistrationsByIdApproveResponse, PostCrmFamilyRegistrationsByIdCompleteData, PostCrmFamilyRegistrationsByIdCompleteError, PostCrmFamilyRegistrationsByIdCompleteResponse, PostCrmFamilyRegistrationsByIdRejectData, PostCrmFamilyRegistrationsByIdRejectError, PostCrmFamilyRegistrationsByIdRejectResponse, PostCrmFamilyRegistrationsCheckPrimaryMemberData, PostCrmFamilyRegistrationsCheckPrimaryMemberError, PostCrmFamilyRegistrationsCheckPrimaryMemberResponse, PostCrmFamilyRegistrationsData, PostCrmFamilyRegistrationsError, PostCrmFamilyRegistrationsResponse, PostCrmFamilyRegistrationsRiskEvaluationData, PostCrmFamilyRegistrationsRiskEvaluationError, PostCrmFamilyRegistrationsRiskEvaluationResponse, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosError, PostCrmMembersByIdMemosResponse, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsAdjustError, PostCrmMembersByIdPointsAdjustResponse, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsError, PostCrmMembersByIdPointsResponse, PostCrmMembersExportData, PostCrmMembersExportError, PostCrmMembersExportResponse, PostCrmMembershipApplicationsBulkApproveData, PostCrmMembershipApplicationsBulkApproveError, PostCrmMembershipApplicationsBulkApproveResponse, PostCrmMembershipApplicationsBulkRejectData, PostCrmMembershipApplicationsBulkRejectError, PostCrmMembershipApplicationsBulkRejectResponse, PostCrmMembershipApplicationsByIdApproveData, PostCrmMembershipApplicationsByIdApproveError, PostCrmMembershipApplicationsByIdApproveResponse, PostCrmMembershipApplicationsByIdCancelData, PostCrmMembershipApplicationsByIdCancelError, PostCrmMembershipApplicationsByIdCancelResponse, PostCrmMembershipApplicationsByIdRejectData, PostCrmMembershipApplicationsByIdRejectError, PostCrmMembershipApplicationsByIdRejectResponse, PostCrmMembershipApplicationsData, PostCrmMembershipApplicationsError, PostCrmMembershipApplicationsResponse, PutCrmAutoApprovalSettingsData, PutCrmAutoApprovalSettingsError, PutCrmAutoApprovalSettingsResponse, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdBasicInfoError, PutCrmMembersByIdBasicInfoResponse, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoError, PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentError, PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdError, PutCrmMembersByIdMemosByMemoIdResponse } from '../types.gen';
 
 /**
  * User login
@@ -272,6 +272,26 @@ export const getCrmMembersByIdContractsOptions = (options: Options<GetCrmMembers
         return data;
     },
     queryKey: getCrmMembersByIdContractsQueryKey(options)
+});
+
+export const getCrmMembersByMemberIdFamilyMembersQueryKey = (options: Options<GetCrmMembersByMemberIdFamilyMembersData>) => createQueryKey('getCrmMembersByMemberIdFamilyMembers', options);
+
+/**
+ * Get primary member family members
+ *
+ * Get family members linked to a primary member
+ */
+export const getCrmMembersByMemberIdFamilyMembersOptions = (options: Options<GetCrmMembersByMemberIdFamilyMembersData>) => queryOptions<GetCrmMembersByMemberIdFamilyMembersResponse, GetCrmMembersByMemberIdFamilyMembersError, GetCrmMembersByMemberIdFamilyMembersResponse, ReturnType<typeof getCrmMembersByMemberIdFamilyMembersQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await FamilyMembers.getCrmMembersByMemberIdFamilyMembers({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByMemberIdFamilyMembersQueryKey(options)
 });
 
 /**
@@ -826,3 +846,246 @@ export const getCrmMembershipApplicationsSummaryOptions = (options?: Options<Get
     },
     queryKey: getCrmMembershipApplicationsSummaryQueryKey(options)
 });
+
+export const getCrmFamilyRegistrationsQueryKey = (options?: Options<GetCrmFamilyRegistrationsData>) => createQueryKey('getCrmFamilyRegistrations', options);
+
+/**
+ * Get family registrations list
+ *
+ * Get paginated list of family registrations
+ */
+export const getCrmFamilyRegistrationsOptions = (options?: Options<GetCrmFamilyRegistrationsData>) => queryOptions<GetCrmFamilyRegistrationsResponse, GetCrmFamilyRegistrationsError, GetCrmFamilyRegistrationsResponse, ReturnType<typeof getCrmFamilyRegistrationsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await FamilyRegistrations.getCrmFamilyRegistrations({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmFamilyRegistrationsQueryKey(options)
+});
+
+export const getCrmFamilyRegistrationsInfiniteQueryKey = (options?: Options<GetCrmFamilyRegistrationsData>): QueryKey<Options<GetCrmFamilyRegistrationsData>> => createQueryKey('getCrmFamilyRegistrations', options, true);
+
+/**
+ * Get family registrations list
+ *
+ * Get paginated list of family registrations
+ */
+export const getCrmFamilyRegistrationsInfiniteOptions = (options?: Options<GetCrmFamilyRegistrationsData>) => infiniteQueryOptions<GetCrmFamilyRegistrationsResponse, GetCrmFamilyRegistrationsError, InfiniteData<GetCrmFamilyRegistrationsResponse>, QueryKey<Options<GetCrmFamilyRegistrationsData>>, number | Pick<QueryKey<Options<GetCrmFamilyRegistrationsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetCrmFamilyRegistrationsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await FamilyRegistrations.getCrmFamilyRegistrations({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmFamilyRegistrationsInfiniteQueryKey(options)
+});
+
+/**
+ * Create family registration
+ *
+ * Create a family registration (child enrollment application)
+ */
+export const postCrmFamilyRegistrationsMutation = (options?: Partial<Options<PostCrmFamilyRegistrationsData>>): UseMutationOptions<PostCrmFamilyRegistrationsResponse, PostCrmFamilyRegistrationsError, Options<PostCrmFamilyRegistrationsData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmFamilyRegistrationsResponse, PostCrmFamilyRegistrationsError, Options<PostCrmFamilyRegistrationsData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await FamilyRegistrations.postCrmFamilyRegistrations({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmFamilyRegistrationsByIdQueryKey = (options: Options<GetCrmFamilyRegistrationsByIdData>) => createQueryKey('getCrmFamilyRegistrationsById', options);
+
+/**
+ * Get family registration detail
+ */
+export const getCrmFamilyRegistrationsByIdOptions = (options: Options<GetCrmFamilyRegistrationsByIdData>) => queryOptions<GetCrmFamilyRegistrationsByIdResponse, GetCrmFamilyRegistrationsByIdError, GetCrmFamilyRegistrationsByIdResponse, ReturnType<typeof getCrmFamilyRegistrationsByIdQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await FamilyRegistrations.getCrmFamilyRegistrationsById({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmFamilyRegistrationsByIdQueryKey(options)
+});
+
+/**
+ * Approve family registration
+ */
+export const postCrmFamilyRegistrationsByIdApproveMutation = (options?: Partial<Options<PostCrmFamilyRegistrationsByIdApproveData>>): UseMutationOptions<PostCrmFamilyRegistrationsByIdApproveResponse, PostCrmFamilyRegistrationsByIdApproveError, Options<PostCrmFamilyRegistrationsByIdApproveData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmFamilyRegistrationsByIdApproveResponse, PostCrmFamilyRegistrationsByIdApproveError, Options<PostCrmFamilyRegistrationsByIdApproveData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await FamilyRegistrations.postCrmFamilyRegistrationsByIdApprove({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Reject family registration
+ */
+export const postCrmFamilyRegistrationsByIdRejectMutation = (options?: Partial<Options<PostCrmFamilyRegistrationsByIdRejectData>>): UseMutationOptions<PostCrmFamilyRegistrationsByIdRejectResponse, PostCrmFamilyRegistrationsByIdRejectError, Options<PostCrmFamilyRegistrationsByIdRejectData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmFamilyRegistrationsByIdRejectResponse, PostCrmFamilyRegistrationsByIdRejectError, Options<PostCrmFamilyRegistrationsByIdRejectData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await FamilyRegistrations.postCrmFamilyRegistrationsByIdReject({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Complete family registration
+ *
+ * Finalize family registration and create child member (mocked)
+ */
+export const postCrmFamilyRegistrationsByIdCompleteMutation = (options?: Partial<Options<PostCrmFamilyRegistrationsByIdCompleteData>>): UseMutationOptions<PostCrmFamilyRegistrationsByIdCompleteResponse, PostCrmFamilyRegistrationsByIdCompleteError, Options<PostCrmFamilyRegistrationsByIdCompleteData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmFamilyRegistrationsByIdCompleteResponse, PostCrmFamilyRegistrationsByIdCompleteError, Options<PostCrmFamilyRegistrationsByIdCompleteData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await FamilyRegistrations.postCrmFamilyRegistrationsByIdComplete({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Check primary member eligibility
+ */
+export const postCrmFamilyRegistrationsCheckPrimaryMemberMutation = (options?: Partial<Options<PostCrmFamilyRegistrationsCheckPrimaryMemberData>>): UseMutationOptions<PostCrmFamilyRegistrationsCheckPrimaryMemberResponse, PostCrmFamilyRegistrationsCheckPrimaryMemberError, Options<PostCrmFamilyRegistrationsCheckPrimaryMemberData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmFamilyRegistrationsCheckPrimaryMemberResponse, PostCrmFamilyRegistrationsCheckPrimaryMemberError, Options<PostCrmFamilyRegistrationsCheckPrimaryMemberData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await FamilyRegistrations.postCrmFamilyRegistrationsCheckPrimaryMember({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Family registration risk evaluation
+ */
+export const postCrmFamilyRegistrationsRiskEvaluationMutation = (options?: Partial<Options<PostCrmFamilyRegistrationsRiskEvaluationData>>): UseMutationOptions<PostCrmFamilyRegistrationsRiskEvaluationResponse, PostCrmFamilyRegistrationsRiskEvaluationError, Options<PostCrmFamilyRegistrationsRiskEvaluationData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmFamilyRegistrationsRiskEvaluationResponse, PostCrmFamilyRegistrationsRiskEvaluationError, Options<PostCrmFamilyRegistrationsRiskEvaluationData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await FamilyRegistrations.postCrmFamilyRegistrationsRiskEvaluation({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmFamilyRegistrationsSummaryQueryKey = (options?: Options<GetCrmFamilyRegistrationsSummaryData>) => createQueryKey('getCrmFamilyRegistrationsSummary', options);
+
+/**
+ * Get family registrations summary
+ */
+export const getCrmFamilyRegistrationsSummaryOptions = (options?: Options<GetCrmFamilyRegistrationsSummaryData>) => queryOptions<GetCrmFamilyRegistrationsSummaryResponse, GetCrmFamilyRegistrationsSummaryError, GetCrmFamilyRegistrationsSummaryResponse, ReturnType<typeof getCrmFamilyRegistrationsSummaryQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await FamilyRegistrations.getCrmFamilyRegistrationsSummary({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmFamilyRegistrationsSummaryQueryKey(options)
+});
+
+export const getCrmFamilyRegistrationsDashboardQueryKey = (options?: Options<GetCrmFamilyRegistrationsDashboardData>) => createQueryKey('getCrmFamilyRegistrationsDashboard', options);
+
+/**
+ * Get family registrations dashboard
+ */
+export const getCrmFamilyRegistrationsDashboardOptions = (options?: Options<GetCrmFamilyRegistrationsDashboardData>) => queryOptions<GetCrmFamilyRegistrationsDashboardResponse, GetCrmFamilyRegistrationsDashboardError, GetCrmFamilyRegistrationsDashboardResponse, ReturnType<typeof getCrmFamilyRegistrationsDashboardQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await FamilyRegistrations.getCrmFamilyRegistrationsDashboard({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmFamilyRegistrationsDashboardQueryKey(options)
+});
+
+/**
+ * Bulk approve family registrations
+ */
+export const postCrmFamilyRegistrationsBulkApproveMutation = (options?: Partial<Options<PostCrmFamilyRegistrationsBulkApproveData>>): UseMutationOptions<PostCrmFamilyRegistrationsBulkApproveResponse, PostCrmFamilyRegistrationsBulkApproveError, Options<PostCrmFamilyRegistrationsBulkApproveData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmFamilyRegistrationsBulkApproveResponse, PostCrmFamilyRegistrationsBulkApproveError, Options<PostCrmFamilyRegistrationsBulkApproveData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await FamilyRegistrations.postCrmFamilyRegistrationsBulkApprove({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Bulk reject family registrations
+ */
+export const postCrmFamilyRegistrationsBulkRejectMutation = (options?: Partial<Options<PostCrmFamilyRegistrationsBulkRejectData>>): UseMutationOptions<PostCrmFamilyRegistrationsBulkRejectResponse, PostCrmFamilyRegistrationsBulkRejectError, Options<PostCrmFamilyRegistrationsBulkRejectData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmFamilyRegistrationsBulkRejectResponse, PostCrmFamilyRegistrationsBulkRejectError, Options<PostCrmFamilyRegistrationsBulkRejectData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await FamilyRegistrations.postCrmFamilyRegistrationsBulkReject({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};

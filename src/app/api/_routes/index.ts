@@ -8,10 +8,23 @@ import '@/app/api/auth/refresh/route';
 import '@/app/api/crm/auto-approval/dashboard/route';
 // Import auto-approval routes
 import '@/app/api/crm/auto-approval/settings/route';
+import '@/app/api/crm/family-registrations/[id]/approve/route';
+import '@/app/api/crm/family-registrations/[id]/complete/route';
+import '@/app/api/crm/family-registrations/[id]/reject/route';
+import '@/app/api/crm/family-registrations/[id]/route';
+import '@/app/api/crm/family-registrations/bulk-approve/route';
+import '@/app/api/crm/family-registrations/bulk-reject/route';
+import '@/app/api/crm/family-registrations/check-primary-member/route';
+import '@/app/api/crm/family-registrations/dashboard/route';
+import '@/app/api/crm/family-registrations/risk-evaluation/route';
+// Import family registrations routes
+import '@/app/api/crm/family-registrations/route';
+import '@/app/api/crm/family-registrations/summary/route';
 import '@/app/api/crm/members/[id]/basic-info/route';
 import '@/app/api/crm/members/[id]/change-history/route';
 import '@/app/api/crm/members/[id]/communications/route';
 import '@/app/api/crm/members/[id]/contracts/route';
+import '@/app/api/crm/members/[id]/family-members/route';
 import '@/app/api/crm/members/[id]/health-info/route';
 import '@/app/api/crm/members/[id]/marketing-consent/route';
 import '@/app/api/crm/members/[id]/memos/[memoId]/route';

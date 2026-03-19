@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdErrors, DeleteCrmMembersByIdMemosByMemoIdResponses, GetCrmAutoApprovalDashboardData, GetCrmAutoApprovalDashboardErrors, GetCrmAutoApprovalDashboardResponses, GetCrmAutoApprovalSettingsData, GetCrmAutoApprovalSettingsErrors, GetCrmAutoApprovalSettingsResponses, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoErrors, GetCrmMembersByIdBasicInfoResponses, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryErrors, GetCrmMembersByIdChangeHistoryResponses, GetCrmMembersByIdCommunicationsData, GetCrmMembersByIdCommunicationsErrors, GetCrmMembersByIdCommunicationsResponses, GetCrmMembersByIdContractsData, GetCrmMembersByIdContractsErrors, GetCrmMembersByIdContractsResponses, GetCrmMembersByIdData, GetCrmMembersByIdErrors, GetCrmMembersByIdMemosData, GetCrmMembersByIdMemosErrors, GetCrmMembersByIdMemosResponses, GetCrmMembersByIdPointsData, GetCrmMembersByIdPointsErrors, GetCrmMembersByIdPointsResponses, GetCrmMembersByIdRelationshipsData, GetCrmMembersByIdRelationshipsErrors, GetCrmMembersByIdRelationshipsResponses, GetCrmMembersByIdResponses, GetCrmMembersByIdServiceUsageData, GetCrmMembersByIdServiceUsageErrors, GetCrmMembersByIdServiceUsageResponses, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsErrors, GetCrmMembersByIdTrainingRecordsResponses, GetCrmMembersByIdUsageHistoryData, GetCrmMembersByIdUsageHistoryErrors, GetCrmMembersByIdUsageHistoryResponses, GetCrmMembersData, GetCrmMembersErrors, GetCrmMembershipApplicationsByIdData, GetCrmMembershipApplicationsByIdErrors, GetCrmMembershipApplicationsByIdResponses, GetCrmMembershipApplicationsData, GetCrmMembershipApplicationsErrors, GetCrmMembershipApplicationsResponses, GetCrmMembershipApplicationsSummaryData, GetCrmMembershipApplicationsSummaryErrors, GetCrmMembershipApplicationsSummaryResponses, GetCrmMembersResponses, PatchCrmMembershipApplicationsByIdData, PatchCrmMembershipApplicationsByIdErrors, PatchCrmMembershipApplicationsByIdResponses, PostAuthLoginData, PostAuthLoginErrors, PostAuthLoginResponses, PostAuthRefreshData, PostAuthRefreshErrors, PostAuthRefreshResponses, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosErrors, PostCrmMembersByIdMemosResponses, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsAdjustErrors, PostCrmMembersByIdPointsAdjustResponses, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsErrors, PostCrmMembersByIdPointsResponses, PostCrmMembersExportData, PostCrmMembersExportErrors, PostCrmMembersExportResponses, PostCrmMembershipApplicationsBulkApproveData, PostCrmMembershipApplicationsBulkApproveErrors, PostCrmMembershipApplicationsBulkApproveResponses, PostCrmMembershipApplicationsBulkRejectData, PostCrmMembershipApplicationsBulkRejectErrors, PostCrmMembershipApplicationsBulkRejectResponses, PostCrmMembershipApplicationsByIdApproveData, PostCrmMembershipApplicationsByIdApproveErrors, PostCrmMembershipApplicationsByIdApproveResponses, PostCrmMembershipApplicationsByIdCancelData, PostCrmMembershipApplicationsByIdCancelErrors, PostCrmMembershipApplicationsByIdCancelResponses, PostCrmMembershipApplicationsByIdRejectData, PostCrmMembershipApplicationsByIdRejectErrors, PostCrmMembershipApplicationsByIdRejectResponses, PostCrmMembershipApplicationsData, PostCrmMembershipApplicationsErrors, PostCrmMembershipApplicationsResponses, PutCrmAutoApprovalSettingsData, PutCrmAutoApprovalSettingsErrors, PutCrmAutoApprovalSettingsResponses, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdBasicInfoErrors, PutCrmMembersByIdBasicInfoResponses, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoErrors, PutCrmMembersByIdHealthInfoResponses, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentErrors, PutCrmMembersByIdMarketingConsentResponses, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdErrors, PutCrmMembersByIdMemosByMemoIdResponses } from './types.gen';
+import type { DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdErrors, DeleteCrmMembersByIdMemosByMemoIdResponses, GetCrmAutoApprovalDashboardData, GetCrmAutoApprovalDashboardErrors, GetCrmAutoApprovalDashboardResponses, GetCrmAutoApprovalSettingsData, GetCrmAutoApprovalSettingsErrors, GetCrmAutoApprovalSettingsResponses, GetCrmFamilyRegistrationsByIdData, GetCrmFamilyRegistrationsByIdErrors, GetCrmFamilyRegistrationsByIdResponses, GetCrmFamilyRegistrationsDashboardData, GetCrmFamilyRegistrationsDashboardErrors, GetCrmFamilyRegistrationsDashboardResponses, GetCrmFamilyRegistrationsData, GetCrmFamilyRegistrationsErrors, GetCrmFamilyRegistrationsResponses, GetCrmFamilyRegistrationsSummaryData, GetCrmFamilyRegistrationsSummaryErrors, GetCrmFamilyRegistrationsSummaryResponses, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoErrors, GetCrmMembersByIdBasicInfoResponses, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryErrors, GetCrmMembersByIdChangeHistoryResponses, GetCrmMembersByIdCommunicationsData, GetCrmMembersByIdCommunicationsErrors, GetCrmMembersByIdCommunicationsResponses, GetCrmMembersByIdContractsData, GetCrmMembersByIdContractsErrors, GetCrmMembersByIdContractsResponses, GetCrmMembersByIdData, GetCrmMembersByIdErrors, GetCrmMembersByIdMemosData, GetCrmMembersByIdMemosErrors, GetCrmMembersByIdMemosResponses, GetCrmMembersByIdPointsData, GetCrmMembersByIdPointsErrors, GetCrmMembersByIdPointsResponses, GetCrmMembersByIdRelationshipsData, GetCrmMembersByIdRelationshipsErrors, GetCrmMembersByIdRelationshipsResponses, GetCrmMembersByIdResponses, GetCrmMembersByIdServiceUsageData, GetCrmMembersByIdServiceUsageErrors, GetCrmMembersByIdServiceUsageResponses, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsErrors, GetCrmMembersByIdTrainingRecordsResponses, GetCrmMembersByIdUsageHistoryData, GetCrmMembersByIdUsageHistoryErrors, GetCrmMembersByIdUsageHistoryResponses, GetCrmMembersByMemberIdFamilyMembersData, GetCrmMembersByMemberIdFamilyMembersErrors, GetCrmMembersByMemberIdFamilyMembersResponses, GetCrmMembersData, GetCrmMembersErrors, GetCrmMembershipApplicationsByIdData, GetCrmMembershipApplicationsByIdErrors, GetCrmMembershipApplicationsByIdResponses, GetCrmMembershipApplicationsData, GetCrmMembershipApplicationsErrors, GetCrmMembershipApplicationsResponses, GetCrmMembershipApplicationsSummaryData, GetCrmMembershipApplicationsSummaryErrors, GetCrmMembershipApplicationsSummaryResponses, GetCrmMembersResponses, PatchCrmMembershipApplicationsByIdData, PatchCrmMembershipApplicationsByIdErrors, PatchCrmMembershipApplicationsByIdResponses, PostAuthLoginData, PostAuthLoginErrors, PostAuthLoginResponses, PostAuthRefreshData, PostAuthRefreshErrors, PostAuthRefreshResponses, PostCrmFamilyRegistrationsBulkApproveData, PostCrmFamilyRegistrationsBulkApproveErrors, PostCrmFamilyRegistrationsBulkApproveResponses, PostCrmFamilyRegistrationsBulkRejectData, PostCrmFamilyRegistrationsBulkRejectErrors, PostCrmFamilyRegistrationsBulkRejectResponses, PostCrmFamilyRegistrationsByIdApproveData, PostCrmFamilyRegistrationsByIdApproveErrors, PostCrmFamilyRegistrationsByIdApproveResponses, PostCrmFamilyRegistrationsByIdCompleteData, PostCrmFamilyRegistrationsByIdCompleteErrors, PostCrmFamilyRegistrationsByIdCompleteResponses, PostCrmFamilyRegistrationsByIdRejectData, PostCrmFamilyRegistrationsByIdRejectErrors, PostCrmFamilyRegistrationsByIdRejectResponses, PostCrmFamilyRegistrationsCheckPrimaryMemberData, PostCrmFamilyRegistrationsCheckPrimaryMemberErrors, PostCrmFamilyRegistrationsCheckPrimaryMemberResponses, PostCrmFamilyRegistrationsData, PostCrmFamilyRegistrationsErrors, PostCrmFamilyRegistrationsResponses, PostCrmFamilyRegistrationsRiskEvaluationData, PostCrmFamilyRegistrationsRiskEvaluationErrors, PostCrmFamilyRegistrationsRiskEvaluationResponses, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosErrors, PostCrmMembersByIdMemosResponses, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsAdjustErrors, PostCrmMembersByIdPointsAdjustResponses, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsErrors, PostCrmMembersByIdPointsResponses, PostCrmMembersExportData, PostCrmMembersExportErrors, PostCrmMembersExportResponses, PostCrmMembershipApplicationsBulkApproveData, PostCrmMembershipApplicationsBulkApproveErrors, PostCrmMembershipApplicationsBulkApproveResponses, PostCrmMembershipApplicationsBulkRejectData, PostCrmMembershipApplicationsBulkRejectErrors, PostCrmMembershipApplicationsBulkRejectResponses, PostCrmMembershipApplicationsByIdApproveData, PostCrmMembershipApplicationsByIdApproveErrors, PostCrmMembershipApplicationsByIdApproveResponses, PostCrmMembershipApplicationsByIdCancelData, PostCrmMembershipApplicationsByIdCancelErrors, PostCrmMembershipApplicationsByIdCancelResponses, PostCrmMembershipApplicationsByIdRejectData, PostCrmMembershipApplicationsByIdRejectErrors, PostCrmMembershipApplicationsByIdRejectResponses, PostCrmMembershipApplicationsData, PostCrmMembershipApplicationsErrors, PostCrmMembershipApplicationsResponses, PutCrmAutoApprovalSettingsData, PutCrmAutoApprovalSettingsErrors, PutCrmAutoApprovalSettingsResponses, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdBasicInfoErrors, PutCrmMembersByIdBasicInfoResponses, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoErrors, PutCrmMembersByIdHealthInfoResponses, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentErrors, PutCrmMembersByIdMarketingConsentResponses, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdErrors, PutCrmMembersByIdMemosByMemoIdResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -335,6 +335,17 @@ export class Members {
     }
 }
 
+export class FamilyMembers {
+    /**
+     * Get primary member family members
+     *
+     * Get family members linked to a primary member
+     */
+    public static getCrmMembersByMemberIdFamilyMembers<ThrowOnError extends boolean = false>(options: Options<GetCrmMembersByMemberIdFamilyMembersData, ThrowOnError>) {
+        return (options.client ?? client).get<GetCrmMembersByMemberIdFamilyMembersResponses, GetCrmMembersByMemberIdFamilyMembersErrors, ThrowOnError>({ url: '/crm/members/{member_id}/family-members', ...options });
+    }
+}
+
 export class MembershipApplications {
     /**
      * Approve membership application
@@ -473,5 +484,153 @@ export class MembershipApplications {
      */
     public static getCrmMembershipApplicationsSummary<ThrowOnError extends boolean = false>(options?: Options<GetCrmMembershipApplicationsSummaryData, ThrowOnError>) {
         return (options?.client ?? client).get<GetCrmMembershipApplicationsSummaryResponses, GetCrmMembershipApplicationsSummaryErrors, ThrowOnError>({ url: '/crm/membership-applications/summary', ...options });
+    }
+}
+
+export class FamilyRegistrations {
+    /**
+     * Get family registrations list
+     *
+     * Get paginated list of family registrations
+     */
+    public static getCrmFamilyRegistrations<ThrowOnError extends boolean = false>(options?: Options<GetCrmFamilyRegistrationsData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmFamilyRegistrationsResponses, GetCrmFamilyRegistrationsErrors, ThrowOnError>({ url: '/crm/family-registrations', ...options });
+    }
+    
+    /**
+     * Create family registration
+     *
+     * Create a family registration (child enrollment application)
+     */
+    public static postCrmFamilyRegistrations<ThrowOnError extends boolean = false>(options?: Options<PostCrmFamilyRegistrationsData, ThrowOnError>) {
+        return (options?.client ?? client).post<PostCrmFamilyRegistrationsResponses, PostCrmFamilyRegistrationsErrors, ThrowOnError>({
+            url: '/crm/family-registrations',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options?.headers
+            }
+        });
+    }
+    
+    /**
+     * Get family registration detail
+     */
+    public static getCrmFamilyRegistrationsById<ThrowOnError extends boolean = false>(options: Options<GetCrmFamilyRegistrationsByIdData, ThrowOnError>) {
+        return (options.client ?? client).get<GetCrmFamilyRegistrationsByIdResponses, GetCrmFamilyRegistrationsByIdErrors, ThrowOnError>({ url: '/crm/family-registrations/{id}', ...options });
+    }
+    
+    /**
+     * Approve family registration
+     */
+    public static postCrmFamilyRegistrationsByIdApprove<ThrowOnError extends boolean = false>(options: Options<PostCrmFamilyRegistrationsByIdApproveData, ThrowOnError>) {
+        return (options.client ?? client).post<PostCrmFamilyRegistrationsByIdApproveResponses, PostCrmFamilyRegistrationsByIdApproveErrors, ThrowOnError>({
+            url: '/crm/family-registrations/{id}/approve',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Reject family registration
+     */
+    public static postCrmFamilyRegistrationsByIdReject<ThrowOnError extends boolean = false>(options: Options<PostCrmFamilyRegistrationsByIdRejectData, ThrowOnError>) {
+        return (options.client ?? client).post<PostCrmFamilyRegistrationsByIdRejectResponses, PostCrmFamilyRegistrationsByIdRejectErrors, ThrowOnError>({
+            url: '/crm/family-registrations/{id}/reject',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Complete family registration
+     *
+     * Finalize family registration and create child member (mocked)
+     */
+    public static postCrmFamilyRegistrationsByIdComplete<ThrowOnError extends boolean = false>(options: Options<PostCrmFamilyRegistrationsByIdCompleteData, ThrowOnError>) {
+        return (options.client ?? client).post<PostCrmFamilyRegistrationsByIdCompleteResponses, PostCrmFamilyRegistrationsByIdCompleteErrors, ThrowOnError>({
+            url: '/crm/family-registrations/{id}/complete',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Check primary member eligibility
+     */
+    public static postCrmFamilyRegistrationsCheckPrimaryMember<ThrowOnError extends boolean = false>(options?: Options<PostCrmFamilyRegistrationsCheckPrimaryMemberData, ThrowOnError>) {
+        return (options?.client ?? client).post<PostCrmFamilyRegistrationsCheckPrimaryMemberResponses, PostCrmFamilyRegistrationsCheckPrimaryMemberErrors, ThrowOnError>({
+            url: '/crm/family-registrations/check-primary-member',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options?.headers
+            }
+        });
+    }
+    
+    /**
+     * Family registration risk evaluation
+     */
+    public static postCrmFamilyRegistrationsRiskEvaluation<ThrowOnError extends boolean = false>(options?: Options<PostCrmFamilyRegistrationsRiskEvaluationData, ThrowOnError>) {
+        return (options?.client ?? client).post<PostCrmFamilyRegistrationsRiskEvaluationResponses, PostCrmFamilyRegistrationsRiskEvaluationErrors, ThrowOnError>({
+            url: '/crm/family-registrations/risk-evaluation',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options?.headers
+            }
+        });
+    }
+    
+    /**
+     * Get family registrations summary
+     */
+    public static getCrmFamilyRegistrationsSummary<ThrowOnError extends boolean = false>(options?: Options<GetCrmFamilyRegistrationsSummaryData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmFamilyRegistrationsSummaryResponses, GetCrmFamilyRegistrationsSummaryErrors, ThrowOnError>({ url: '/crm/family-registrations/summary', ...options });
+    }
+    
+    /**
+     * Get family registrations dashboard
+     */
+    public static getCrmFamilyRegistrationsDashboard<ThrowOnError extends boolean = false>(options?: Options<GetCrmFamilyRegistrationsDashboardData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmFamilyRegistrationsDashboardResponses, GetCrmFamilyRegistrationsDashboardErrors, ThrowOnError>({ url: '/crm/family-registrations/dashboard', ...options });
+    }
+    
+    /**
+     * Bulk approve family registrations
+     */
+    public static postCrmFamilyRegistrationsBulkApprove<ThrowOnError extends boolean = false>(options?: Options<PostCrmFamilyRegistrationsBulkApproveData, ThrowOnError>) {
+        return (options?.client ?? client).post<PostCrmFamilyRegistrationsBulkApproveResponses, PostCrmFamilyRegistrationsBulkApproveErrors, ThrowOnError>({
+            url: '/crm/family-registrations/bulk-approve',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options?.headers
+            }
+        });
+    }
+    
+    /**
+     * Bulk reject family registrations
+     */
+    public static postCrmFamilyRegistrationsBulkReject<ThrowOnError extends boolean = false>(options?: Options<PostCrmFamilyRegistrationsBulkRejectData, ThrowOnError>) {
+        return (options?.client ?? client).post<PostCrmFamilyRegistrationsBulkRejectResponses, PostCrmFamilyRegistrationsBulkRejectErrors, ThrowOnError>({
+            url: '/crm/family-registrations/bulk-reject',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options?.headers
+            }
+        });
     }
 }
