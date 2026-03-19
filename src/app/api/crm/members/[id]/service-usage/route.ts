@@ -4,8 +4,6 @@ import { ErrorResponseSchema } from '@/app/api/_schemas/member.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
 import { z } from 'zod';
 
-import type { OtherServiceUsage, PersonalTraining, StudioProgram } from '@/types/member.type';
-
 // Register OpenAPI documentation for this route
 registerRoute({
   method: 'get',
@@ -81,7 +79,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             rating: 5,
           },
         ],
-      } as PersonalTraining,
+      },
       studioProgram: {
         participation_history: [
           {
@@ -101,7 +99,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             action: 'reserve' as const,
           },
         ],
-      } as StudioProgram,
+      },
       otherServices: {
         tanning: [
           {
@@ -129,7 +127,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             payment_method: 'クレジットカード',
           },
         ],
-      } as OtherServiceUsage,
+      },
     };
 
     return NextResponse.json(mockData);

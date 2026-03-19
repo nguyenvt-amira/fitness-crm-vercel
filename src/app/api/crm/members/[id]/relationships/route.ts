@@ -4,11 +4,6 @@ import { ErrorResponseSchema } from '@/app/api/_schemas/member.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
 import { z } from 'zod';
 
-import type {
-  CorporateRelationship,
-  FamilyRelationship,
-  ReferralRelationship,
-} from '@/types/member.type';
 import { MemberStatus } from '@/types/member.type';
 
 // Register OpenAPI documentation for this route
@@ -78,8 +73,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         ],
         current_count: 1,
         max_count: 3,
-      } as FamilyRelationship,
-      corporate: null as CorporateRelationship | null,
+      },
+      corporate: null,
       referral: {
         as_referrer: {
           referrals: [
@@ -97,7 +92,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             total_points: 500,
           },
         },
-      } as ReferralRelationship,
+      },
     };
 
     return NextResponse.json(mockData);

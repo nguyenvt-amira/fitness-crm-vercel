@@ -18,3 +18,13 @@ export const BRAND_LABELS: Record<Brand, string> = {
   [Brand.JOYFIT]: 'JOYFIT',
   [Brand.FIT365]: 'FIT365',
 };
+
+export const STATUS_VARIANTS: Record<
+  MemberStatus,
+  'default' | 'secondary' | 'destructive' | 'outline'
+> = {
+  [MemberStatus.ACTIVE]: 'default',
+  [MemberStatus.SUSPENDED]: 'secondary',
+  [MemberStatus.WITHDRAWN]: 'outline',
+  [MemberStatus.FORCE_WITHDRAWN]: 'destructive',
+};

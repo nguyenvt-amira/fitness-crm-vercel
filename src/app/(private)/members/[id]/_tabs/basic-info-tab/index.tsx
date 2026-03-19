@@ -11,8 +11,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { getCrmMembersByIdBasicInfoOptions } from '@/lib/api/@tanstack/react-query.gen';
 
+import { BRAND_LABELS, MEMBER_STATUS_LABELS, MEMBER_TYPE_LABELS } from '../../../_lib/constants';
 import InfoRow from '../../_components/info-row';
-import { BRAND_LABELS, MEMBER_STATUS_LABELS, MEMBER_TYPE_LABELS } from './constants';
 
 export function BasicInfoTab({ memberId }: { memberId: string }) {
   const { data, isLoading, isError, refetch } = useQuery(
