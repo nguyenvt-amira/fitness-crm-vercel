@@ -13,9 +13,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { Brand, MemberStatus, MemberType } from '@/types/api/member.type';
+import { Brand, MemberStatus, MemberType } from '@/types/member.type';
 
 import { useMembersFiltersContext } from '../_contexts/members-filters-context';
+import { BRAND_LABELS, MEMBER_STATUS_LABELS, MEMBER_TYPE_LABELS } from '../_lib/constants';
 
 interface MembersFiltersProps {
   onQRScan: () => void;
@@ -24,25 +25,6 @@ interface MembersFiltersProps {
   onExport: () => void;
   onBulkEmail: () => void;
 }
-
-const MEMBER_TYPE_LABELS: Record<MemberType, string> = {
-  [MemberType.REGULAR]: '通常会員',
-  [MemberType.FAMILY]: '家族会員',
-  [MemberType.CORPORATE]: '法人会員',
-  [MemberType.COMPANY_DISCOUNT]: '社割会員',
-};
-
-const STATUS_LABELS: Record<MemberStatus, string> = {
-  [MemberStatus.ACTIVE]: '利用中',
-  [MemberStatus.SUSPENDED]: '休会中',
-  [MemberStatus.WITHDRAWN]: '退会済み',
-  [MemberStatus.FORCE_WITHDRAWN]: '強制退会済み',
-};
-
-const BRAND_LABELS: Record<Brand, string> = {
-  [Brand.JOYFIT]: 'JOYFIT',
-  [Brand.FIT365]: 'FIT365',
-};
 
 // Mock stores data
 const MOCK_STORES = [
@@ -144,12 +126,12 @@ export function MembersFilters({
                 <div className="flex items-center gap-1.5">
                   <span className="text-muted-foreground text-sm">ステータス:</span>
                   <SelectValue placeholder="すべて">
-                    {status.length > 0 ? STATUS_LABELS[status[0] as MemberStatus] : null}
+                    {status.length > 0 ? MEMBER_STATUS_LABELS[status[0] as MemberStatus] : null}
                   </SelectValue>
                 </div>
               </SelectTrigger>
               <SelectContent>
-                {Object.entries(STATUS_LABELS).map(([value, label]) => (
+                {Object.entries(MEMBER_STATUS_LABELS).map(([value, label]) => (
                   <SelectItem key={value} value={value}>
                     {label}
                   </SelectItem>

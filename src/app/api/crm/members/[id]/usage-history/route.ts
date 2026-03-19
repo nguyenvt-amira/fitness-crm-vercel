@@ -4,8 +4,6 @@ import { ErrorResponseSchema } from '@/app/api/_schemas/member.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
 import { z } from 'zod';
 
-import type { StoreUsage, UsageSummary, VisitRecord } from '@/types/api/member.type';
-
 // Register OpenAPI documentation for this route
 registerRoute({
   method: 'get',
@@ -67,7 +65,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         last_visit_date: '2024-11-25',
         frequent_time_slot: '18-21時',
         frequent_day_of_week: '火曜日',
-      } as UsageSummary,
+      },
       storeUsage: [
         {
           store_id: 'store-001',
@@ -83,7 +81,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           usage_rate: 33.3,
           average_stay_time: 85,
         },
-      ] as StoreUsage[],
+      ],
       visitRecords: [
         {
           id: 'vr-001',
@@ -103,7 +101,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           store_name: 'Fit365八潮店',
           entry_method: 'face_recognition',
         },
-      ] as VisitRecord[],
+      ],
     };
 
     return NextResponse.json(mockData);

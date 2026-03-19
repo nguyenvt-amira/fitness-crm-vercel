@@ -295,55 +295,179 @@ export const GetMembersResponseSchema = z
 
 /**
  * Get Member Detail Response Schema
- * Note: This is a simplified version. Full Member type is very complex.
- * For OpenAPI documentation, we'll use a simplified schema.
  */
+export const MemberEmergencyContactSchema = z
+  .object({
+    name: z.string().openapi({ example: '山田 太郎', description: 'Emergency contact name' }),
+    relationship: z.string().openapi({ example: '配偶者', description: 'Relationship to member' }),
+    phone: z.string().openapi({ example: '090-0000-0000', description: 'Emergency contact phone' }),
+  })
+  .openapi({
+    title: 'MemberEmergencyContact',
+    description: 'Emergency contact information',
+  });
+
+export const MemberBasicInfoSchema = z
+  .object({
+    id: z.string().openapi({ example: 'M-00001', description: 'Member ID' }),
+    member_number: z.string().openapi({ example: 'M-00001', description: 'Member number' }),
+    name_kanji: z.string().openapi({ example: '佐藤 花子', description: 'Name in kanji' }),
+    name_kana: z.string().openapi({ example: 'サトウ ハナコ', description: 'Name in kana' }),
+    birthday: z.string().openapi({ example: '1990-01-01', description: 'Birthday (ISO date)' }),
+    age: z.number().int().openapi({ example: 35, description: 'Age' }),
+    gender: z
+      .enum(['male', 'female', 'other'])
+      .openapi({ example: 'female', description: 'Gender' }),
+    postal_code: z.string().optional().openapi({ example: '1500002', description: 'Postal code' }),
+    prefecture: z.string().optional().openapi({ example: '東京都', description: 'Prefecture' }),
+    city: z.string().optional().openapi({ example: '渋谷区', description: 'City' }),
+    address: z.string().optional().openapi({ example: '渋谷1-2-3', description: 'Address' }),
+    building: z
+      .string()
+      .optional()
+      .openapi({ example: 'サンプルマンション101', description: 'Building' }),
+    phone: z.string().openapi({ example: '090-1234-5678', description: 'Phone number' }),
+    email: z
+      .string()
+      .email()
+      .openapi({ example: 'member00001@example.jp', description: 'Email address' }),
+    emergency_contact: MemberEmergencyContactSchema.optional().openapi({
+      description: 'Emergency contact information',
+    }),
+  })
+  .openapi({
+    title: 'MemberBasicInfo',
+    description: 'Basic member information',
+  });
+
+export const MemberProfileSchema = z
+  .object({
+    member_type: MemberTypeSchema.openapi({ example: 'regular', description: 'Member type' }),
+    status: MemberStatusSchema.openapi({ example: 'active', description: 'Member status' }),
+    store_id: z.string().openapi({ example: 'store-001', description: 'Store ID' }),
+    store_name: z.string().openapi({ example: 'Fit365八潮店', description: 'Store name' }),
+    brand: BrandSchema.openapi({ example: 'fit365', description: 'Brand' }),
+    joined_at: z.string().openapi({ example: '2024-01-15', description: 'Join date (ISO date)' }),
+    withdrawn_at: z.string().optional().openapi({
+      example: '2025-02-01',
+      description: 'Withdrawal date (ISO date)',
+    }),
+    is_black_listed: z.boolean().openapi({ example: false, description: 'Blacklisted status' }),
+  })
+  .openapi({
+    title: 'MemberProfile',
+    description: 'Member profile',
+  });
+
+export const MemberEKYCSchema = z
+  .object({
+    verified: z.boolean().openapi({ example: true, description: 'Whether eKYC is verified' }),
+    verified_at: z.string().optional().openapi({
+      example: '2025-01-20T10:00:00.000Z',
+      description: 'Verification datetime (ISO)',
+    }),
+    document_type: z
+      .string()
+      .optional()
+      .openapi({ example: 'driver_license', description: 'Document type' }),
+    photoUrl: z
+      .string()
+      .optional()
+      .openapi({ example: 'https://example.com/photo.jpg', description: 'Photo URL' }),
+  })
+  .openapi({
+    title: 'MemberEKYC',
+    description: 'eKYC information',
+  });
+
+export const MemberConsentSchema = z
+  .object({
+    member_agreement: z
+      .object({
+        version: z.string().openapi({ example: '1.0', description: 'Agreement version' }),
+        agreed_at: z.string().openapi({
+          example: '2025-01-10T10:00:00.000Z',
+          description: 'Agreed datetime (ISO)',
+        }),
+      })
+      .openapi({ description: 'Member agreement consent' }),
+    privacy_policy: z
+      .object({
+        version: z.string().openapi({ example: '1.0', description: 'Policy version' }),
+        agreed_at: z.string().openapi({
+          example: '2025-01-10T10:00:00.000Z',
+          description: 'Agreed datetime (ISO)',
+        }),
+      })
+      .openapi({ description: 'Privacy policy consent' }),
+    optional_agreement: z
+      .object({
+        version: z.string().openapi({ example: '1.0', description: 'Optional agreement version' }),
+        agreed_at: z.string().openapi({
+          example: '2025-01-10T10:00:00.000Z',
+          description: 'Agreed datetime (ISO)',
+        }),
+      })
+      .optional()
+      .openapi({ description: 'Optional agreement consent' }),
+    marketing_consent: z
+      .object({
+        email: z.boolean().openapi({ example: true, description: 'Email marketing consent' }),
+        sms: z.boolean().openapi({ example: false, description: 'SMS marketing consent' }),
+        push: z.boolean().openapi({ example: true, description: 'Push marketing consent' }),
+      })
+      .openapi({ description: 'Marketing consent' }),
+  })
+  .openapi({
+    title: 'MemberConsent',
+    description: 'Consent information',
+  });
+
+export const MemberHealthInfoSchema = z
+  .object({
+    health_status: z.string().optional().openapi({ example: '良好', description: 'Health status' }),
+    medical_history: z
+      .string()
+      .optional()
+      .openapi({ example: 'なし', description: 'Medical history' }),
+    allergies: z.string().optional().openapi({ example: '花粉症', description: 'Allergies' }),
+    exercise_restrictions: z.string().optional().openapi({
+      example: '膝に負担がかかる運動は避ける',
+      description: 'Exercise restrictions',
+    }),
+    other_notes: z
+      .string()
+      .optional()
+      .openapi({ example: '特記事項なし', description: 'Other notes' }),
+  })
+  .openapi({
+    title: 'MemberHealthInfo',
+    description: 'Health information',
+  });
+
 export const GetMemberDetailResponseSchema = z
   .object({
     member: z
       .object({
-        basic_info: z.any().openapi({
-          description: 'Basic member information',
-        }),
-        profile: z.any().openapi({
-          description: 'Member profile',
-        }),
-        ekyc: z.any().openapi({
-          description: 'eKYC information',
-        }),
-        consent: z.any().openapi({
-          description: 'Consent information',
-        }),
-        health_info: z.any().optional().openapi({
+        basic_info: MemberBasicInfoSchema.openapi({ description: 'Basic member information' }),
+        profile: MemberProfileSchema.openapi({ description: 'Member profile' }),
+        ekyc: MemberEKYCSchema.optional().openapi({ description: 'eKYC information' }),
+        consent: MemberConsentSchema.optional().openapi({ description: 'Consent information' }),
+        health_info: MemberHealthInfoSchema.optional().openapi({
           description: 'Health information',
         }),
-        contracts: z.any().optional().openapi({
-          description: 'Contract information',
-        }),
-        payment_info: z.any().optional().openapi({
-          description: 'Payment information',
-        }),
-        points: z.any().optional().openapi({
-          description: 'Points information',
-        }),
-        usage_summary: z.any().optional().openapi({
-          description: 'Usage summary',
-        }),
-        training_summary: z.any().optional().openapi({
-          description: 'Training summary',
-        }),
-        service_usage: z.any().optional().openapi({
-          description: 'Service usage',
-        }),
-        communications: z.any().optional().openapi({
-          description: 'Communications',
-        }),
-        memos: z.any().optional().openapi({
-          description: 'Staff memos',
-        }),
-        change_history: z.any().optional().openapi({
-          description: 'Change history',
-        }),
+        contracts: z
+          .lazy(() => GetContractsResponseSchema)
+          .optional()
+          .openapi({ description: 'Contract information' }),
+        points: z
+          .lazy(() => GetPointsResponseSchema)
+          .optional()
+          .openapi({ description: 'Points information' }),
+        memos: z
+          .lazy(() => GetMemosResponseSchema)
+          .optional()
+          .openapi({ description: 'Staff memos' }),
       })
       .openapi({
         description: 'Complete member information',

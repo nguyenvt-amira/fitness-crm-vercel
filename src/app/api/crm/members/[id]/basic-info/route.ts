@@ -92,6 +92,7 @@ registerRoute({
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    // throw new Error('test');
     const { id } = await params;
     const member = db.members.get(id);
     if (!member) {

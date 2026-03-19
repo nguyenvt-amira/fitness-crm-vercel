@@ -31,8 +31,9 @@ export default function ReactQueryProvider({ children }: ReactQueryProviderProps
         }),
         queryCache: new QueryCache({
           onError: (error: any) => {
-            const errorMsg = error?.detail?.message;
-            console.error(errorMsg); //TODO: toast error
+            const errorMsg =
+              error?.detail?.message || 'エラーが発生しました。後で再試行してください。';
+            toast.error(errorMsg);
           },
         }),
       }),

@@ -4,13 +4,6 @@ import { ErrorResponseSchema } from '@/app/api/_schemas/member.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
 import { z } from 'zod';
 
-import type {
-  BodyRecord,
-  CardioRecord,
-  StrengthTrainingRecord,
-  TrainingSummary,
-} from '@/types/api/member.type';
-
 // Register OpenAPI documentation for this route
 registerRoute({
   method: 'get',
@@ -77,7 +70,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         total_training_time: 1200,
         average_training_time: 80,
         frequent_exercises: ['ベンチプレス', 'スクワット', 'デッドリフト'],
-      } as TrainingSummary,
+      },
       strengthRecords: [
         {
           id: 'str-001',
@@ -96,7 +89,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           reps: 8,
           sets: 3,
         },
-      ] as StrengthTrainingRecord[],
+      ],
       cardioRecords: [
         {
           id: 'card-001',
@@ -114,7 +107,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           distance: 12,
           calories: 260,
         },
-      ] as CardioRecord[],
+      ],
       bodyRecords: [
         {
           id: 'body-001',
@@ -133,7 +126,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           muscle_mass: 51.5,
           bmi: 22.4,
         },
-      ] as BodyRecord[],
+      ],
       trainingMenus: [
         {
           id: 'menu-001',

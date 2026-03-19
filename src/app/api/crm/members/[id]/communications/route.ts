@@ -4,8 +4,6 @@ import { ErrorResponseSchema } from '@/app/api/_schemas/member.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
 import { z } from 'zod';
 
-import type { InquiryRecord, NotificationHistory, PhoneRecord } from '@/types/api/member.type';
-
 import { getMemos } from '../memos/route';
 
 // Register OpenAPI documentation for this route
@@ -76,7 +74,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           result: 'プラン変更を案内',
           status: 'completed' as const,
         },
-      ] as InquiryRecord[],
+      ],
       memos,
       notifications: {
         emails: [
@@ -104,7 +102,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             opened: false,
           },
         ],
-      } as NotificationHistory,
+      },
       phoneRecords: [
         {
           id: 'phone-001',
@@ -113,7 +111,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           staff_name: '佐藤 健太',
           result: '手続き完了',
         },
-      ] as PhoneRecord[],
+      ],
     };
 
     return NextResponse.json(mockData);

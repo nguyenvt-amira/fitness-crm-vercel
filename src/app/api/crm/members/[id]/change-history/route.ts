@@ -4,15 +4,6 @@ import { ErrorResponseSchema } from '@/app/api/_schemas/member.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
 import { z } from 'zod';
 
-import type {
-  ChangeHistoryItem,
-  EditHistory,
-  MembershipHistory,
-  SuspensionHistory,
-  TransferHistory,
-  WithdrawalHistory,
-} from '@/types/api/member.type';
-
 // Register OpenAPI documentation for this route
 registerRoute({
   method: 'get',
@@ -96,15 +87,15 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           event_type: '入会',
           content: 'Fit365八潮店で入会',
         },
-      ] as ChangeHistoryItem[],
+      ],
       membershipHistory: {
         joined_at: '2024-01-15T10:00:00Z',
         join_route: 'store' as const,
         join_store: 'Fit365八潮店',
-      } as MembershipHistory,
-      transferHistory: [] as TransferHistory[],
-      suspensionHistory: [] as SuspensionHistory[],
-      withdrawalHistory: [] as WithdrawalHistory[],
+      },
+      transferHistory: [],
+      suspensionHistory: [],
+      withdrawalHistory: [],
       editHistory: [
         {
           date: '2024-11-20T10:00:00Z',
@@ -113,7 +104,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           new_value: '090-1234-5678',
           edited_by: '田中 太郎',
         },
-      ] as EditHistory[],
+      ],
     };
 
     return NextResponse.json(mockData);

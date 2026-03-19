@@ -23,7 +23,10 @@ import {
 
 import type { GetCrmMembersResponse } from '@/lib/api/types.gen';
 
-import { Brand, MemberStatus, MemberType } from '@/types/api/member.type';
+import { Brand, MemberStatus, MemberType } from '@/types/member.type';
+
+import { STATUS_VARIANTS } from '../_lib/constants';
+import { MEMBER_STATUS_LABELS, MEMBER_TYPE_LABELS } from '../_lib/constants';
 
 /** API sort field names */
 const SORT_FIELD_MEMBER_NUMBER = 'member_number';
@@ -69,27 +72,6 @@ function SortableHeader({ label, sortKey, sort_by, sort_order, onSort }: Sortabl
     </div>
   );
 }
-
-const MEMBER_TYPE_LABELS: Record<MemberType, string> = {
-  [MemberType.REGULAR]: '通常',
-  [MemberType.FAMILY]: '家族',
-  [MemberType.CORPORATE]: '法人',
-  [MemberType.COMPANY_DISCOUNT]: '社割',
-};
-
-const STATUS_LABELS: Record<MemberStatus, string> = {
-  [MemberStatus.ACTIVE]: '利用中',
-  [MemberStatus.SUSPENDED]: '休会中',
-  [MemberStatus.WITHDRAWN]: '退会済み',
-  [MemberStatus.FORCE_WITHDRAWN]: '強制退会済み',
-};
-
-const STATUS_VARIANTS: Record<MemberStatus, 'default' | 'secondary' | 'destructive' | 'outline'> = {
-  [MemberStatus.ACTIVE]: 'default',
-  [MemberStatus.SUSPENDED]: 'secondary',
-  [MemberStatus.WITHDRAWN]: 'outline',
-  [MemberStatus.FORCE_WITHDRAWN]: 'destructive',
-};
 
 interface MembersTableColumnsProps {
   onMemberClick: (memberId: string) => void;
@@ -207,7 +189,7 @@ export function MembersTableColumns({
       header: 'ステータス',
       cell: ({ row }) => (
         <Badge variant={STATUS_VARIANTS[row.original.status as MemberStatus]}>
-          {row.original.status ? STATUS_LABELS[row.original.status as MemberStatus] : '-'}
+          {row.original.status ? MEMBER_STATUS_LABELS[row.original.status as MemberStatus] : '-'}
         </Badge>
       ),
     },

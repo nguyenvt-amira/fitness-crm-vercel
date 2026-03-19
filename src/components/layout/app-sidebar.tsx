@@ -29,7 +29,7 @@ import {
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 
-import { getRoute, getRoutePattern, navigate } from '@/lib/routes/routes.util';
+import { getRoutePattern } from '@/lib/routes/routes.util';
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
 

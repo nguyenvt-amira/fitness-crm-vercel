@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 
 import { BreadcrumbNav } from '@/components/common/breadcrumb-nav';
+import { DataStateBoundary } from '@/components/common/data-state-boundary';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -33,21 +34,22 @@ import {
 } from '@/lib/api/@tanstack/react-query.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
-import type { GetMemberDetailResponse, StaffMemo } from '@/types/api/member.type';
-import { Brand, MemberStatus } from '@/types/api/member.type';
+import type { StaffMemo } from '@/types/member.type';
 
-import { BasicInfoTab } from './_components/basic-info-tab';
-import { ChangeHistoryTab } from './_components/change-history-tab';
-import { CommunicationsTab } from './_components/communications-tab';
-import { ContractsTab } from './_components/contracts-tab';
+import { STATUS_VARIANTS } from '../_lib/constants';
+import { MEMBER_STATUS_LABELS } from '../_lib/constants';
 import { EditMemberModal } from './_components/edit-member-modal';
 import { MemoModal } from './_components/memo-modal';
-import { PointsTab } from './_components/points-tab';
 import { PrintModal } from './_components/print-modal';
-import { RelationshipsTab } from './_components/relationships-tab';
-import { ServiceUsageTab } from './_components/service-usage-tab';
-import { TrainingRecordsTab } from './_components/training-records-tab';
-import { UsageHistoryTab } from './_components/usage-history-tab';
+import { BasicInfoTab } from './_tabs/basic-info-tab';
+import { ChangeHistoryTab } from './_tabs/change-history-tab';
+import { CommunicationsTab } from './_tabs/communications-tab';
+import { ContractsTab } from './_tabs/contracts-tab';
+import { PointsTab } from './_tabs/points-tab';
+import { RelationshipsTab } from './_tabs/relationships-tab';
+import { ServiceUsageTab } from './_tabs/service-usage-tab';
+import { TrainingRecordsTab } from './_tabs/training-records-tab';
+import { UsageHistoryTab } from './_tabs/usage-history-tab';
 
 const BREADCRUMB_ITEMS = [{ url: '/members', label: '会員一覧' }, { label: '会員詳細' }];
 
@@ -86,7 +88,7 @@ export default function MemberDetailPage() {
     onSuccess: invalidateCommunications,
   });
 
-  const { data, isLoading } = useQuery(
+  const { data, isLoading, isError, refetch } = useQuery(
     getCrmMembersByIdOptions({
       path: {
         id: memberId,
@@ -94,39 +96,18 @@ export default function MemberDetailPage() {
     }),
   );
 
-  if (isLoading) {
+  if (isLoading || isError || !data?.member) {
     return (
-      <div className="flex flex-1 items-center justify-center">
-        <div className="text-muted-foreground">読み込み中...</div>
-      </div>
+      <DataStateBoundary
+        isLoading={isLoading}
+        isError={isError}
+        isEmpty={!data?.member}
+        onRetry={() => refetch()}
+      />
     );
   }
 
-  if (!data?.member) {
-    return (
-      <div className="flex flex-1 items-center justify-center">
-        <div className="text-destructive">会員情報が見つかりません</div>
-      </div>
-    );
-  }
-
-  // Type assertion to use the proper type from member.type.ts
-  const typedData = data as unknown as GetMemberDetailResponse;
-  const { member } = typedData;
-  const statusLabels: Record<MemberStatus, string> = {
-    [MemberStatus.ACTIVE]: '利用中',
-    [MemberStatus.SUSPENDED]: '休会中',
-    [MemberStatus.WITHDRAWN]: '退会済み',
-    [MemberStatus.FORCE_WITHDRAWN]: '強制退会済み',
-  };
-
-  const STATUS_VARIANTS: Record<MemberStatus, 'default' | 'secondary' | 'destructive' | 'outline'> =
-    {
-      [MemberStatus.ACTIVE]: 'default',
-      [MemberStatus.SUSPENDED]: 'secondary',
-      [MemberStatus.WITHDRAWN]: 'outline',
-      [MemberStatus.FORCE_WITHDRAWN]: 'destructive',
-    };
+  const { member } = data;
 
   // Mock alerts - in real app, these would come from API
   const has_unpaid = false; // TODO: Get from member data
@@ -239,11 +220,11 @@ export default function MemberDetailPage() {
                   </div>
                   <div className="mt-2 flex items-center gap-2">
                     <Badge variant={STATUS_VARIANTS[member.profile.status]}>
-                      {statusLabels[member.profile.status]}
+                      {MEMBER_STATUS_LABELS[member.profile.status]}
                     </Badge>
                     <Badge variant="outline" className="flex items-center gap-1">
                       <Building2 className="size-3" />
-                      {member.profile.brand === Brand.FIT365 ? 'FIT365' : 'JOYFIT'}
+                      {member.profile.brand === 'fit365' ? 'FIT365' : 'JOYFIT'}
                     </Badge>
                     <span className="text-muted-foreground text-sm">
                       {member.profile.store_name}

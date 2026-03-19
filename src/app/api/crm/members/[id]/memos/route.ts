@@ -10,8 +10,8 @@ import {
 } from '@/app/api/_schemas/member.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
 
-import { MemoType } from '@/types/api/member.type';
-import type { StaffMemo } from '@/types/api/member.type';
+import { MemoType } from '@/types/member.type';
+import type { StaffMemo } from '@/types/member.type';
 
 // Register OpenAPI documentation for GET route
 registerRoute({
