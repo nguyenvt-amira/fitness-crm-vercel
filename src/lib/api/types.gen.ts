@@ -3568,6 +3568,388 @@ export type CancelResponse = {
     refund_amount: number;
 };
 
+/**
+ * FamilyMember
+ *
+ * Family member list item
+ */
+export type FamilyMember = {
+    /**
+     * Child member id
+     */
+    id: string;
+    /**
+     * Member number
+     */
+    member_number: string;
+    name_kanji: string;
+    relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
+    joined_at: string;
+    status: 'active' | 'suspended' | 'withdrawn';
+    /**
+     * Monthly fee (JPY)
+     */
+    monthly_fee: number;
+    store_id: string;
+    store_name: string;
+};
+
+/**
+ * GetFamilyMembersResponse
+ *
+ * Response for getting primary member family members
+ */
+export type GetFamilyMembersResponse = {
+    members: Array<{
+        /**
+         * Child member id
+         */
+        id: string;
+        /**
+         * Member number
+         */
+        member_number: string;
+        name_kanji: string;
+        relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
+        joined_at: string;
+        status: 'active' | 'suspended' | 'withdrawn';
+        /**
+         * Monthly fee (JPY)
+         */
+        monthly_fee: number;
+        store_id: string;
+        store_name: string;
+    }>;
+    /**
+     * Brand setting family_member_limit
+     */
+    limit: number;
+};
+
+/**
+ * CheckPrimaryMemberRequest
+ *
+ * Request to check if a primary member can invite/register more family members
+ */
+export type CheckPrimaryMemberRequest = {
+    primary_member_id: string;
+};
+
+/**
+ * CheckPrimaryMemberResponse
+ *
+ * Primary member eligibility check result
+ */
+export type CheckPrimaryMemberResponse = {
+    ok: boolean;
+    /**
+     * Blocking reasons when ok=false
+     */
+    reasons: Array<string>;
+    brand: 'joyfit' | 'fit365';
+    limit: number;
+    current_count: number;
+    /**
+     * Brand setting family_member_fee (JPY)
+     */
+    fee: number;
+    payment_cycle: 'monthly' | 'yearly';
+};
+
+/**
+ * RiskEvaluationRequest
+ *
+ * Request payload for risk evaluation (mocked)
+ */
+export type RiskEvaluationRequest = {
+    primary_member_id: string;
+    /**
+     * Child applicant info
+     */
+    applicant: {
+        name: string;
+        birthday: string;
+        phone?: string;
+        email?: string;
+        relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
+    };
+};
+
+/**
+ * RiskEvaluationResponse
+ *
+ * Risk evaluation result
+ */
+export type RiskEvaluationResponse = {
+    risk_score: number;
+    reasons: Array<string>;
+    recommended_action: 'auto_approve' | 'manual_review' | 'reject';
+};
+
+/**
+ * FamilyRegistration
+ *
+ * Family registration list item
+ */
+export type FamilyRegistration = {
+    /**
+     * Family registration id
+     */
+    id: string;
+    created_at: string;
+    status: 'invited' | 'awaiting_acceptance' | 'declined' | 'expired' | 'awaiting_profile' | 'pending_review' | 'approved' | 'rejected' | 'completed';
+    primary_member_id: string;
+    primary_member_name: string;
+    applicant_name: string;
+    relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
+    invite_expires_at?: string;
+    store_id: string;
+    store_name: string;
+    monthly_fee: number;
+    risk_score?: number;
+};
+
+/**
+ * GetFamilyRegistrationsQuery
+ *
+ * Query for family registrations
+ */
+export type GetFamilyRegistrationsQuery = {
+    page?: number;
+    limit?: number;
+    status?: 'invited' | 'awaiting_acceptance' | 'declined' | 'expired' | 'awaiting_profile' | 'pending_review' | 'approved' | 'rejected' | 'completed';
+    search?: string;
+    sort_by?: 'created_at' | 'risk_score';
+    sort_order?: 'asc' | 'desc';
+};
+
+/**
+ * GetFamilyRegistrationsResponse
+ *
+ * Paginated list response for family registrations
+ */
+export type GetFamilyRegistrationsResponse = {
+    registrations: Array<{
+        /**
+         * Family registration id
+         */
+        id: string;
+        created_at: string;
+        status: 'invited' | 'awaiting_acceptance' | 'declined' | 'expired' | 'awaiting_profile' | 'pending_review' | 'approved' | 'rejected' | 'completed';
+        primary_member_id: string;
+        primary_member_name: string;
+        applicant_name: string;
+        relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
+        invite_expires_at?: string;
+        store_id: string;
+        store_name: string;
+        monthly_fee: number;
+        risk_score?: number;
+    }>;
+    pagination: {
+        total: number;
+        total_pages: number;
+        current_page: number;
+        limit: number;
+    };
+};
+
+/**
+ * GetFamilyRegistrationDetailResponse
+ *
+ * Detail response for family registration
+ */
+export type GetFamilyRegistrationDetailResponse = {
+    /**
+     * FamilyRegistration
+     *
+     * Family registration list item
+     */
+    registration: {
+        /**
+         * Family registration id
+         */
+        id: string;
+        created_at: string;
+        status: 'invited' | 'awaiting_acceptance' | 'declined' | 'expired' | 'awaiting_profile' | 'pending_review' | 'approved' | 'rejected' | 'completed';
+        primary_member_id: string;
+        primary_member_name: string;
+        applicant_name: string;
+        relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
+        invite_expires_at?: string;
+        store_id: string;
+        store_name: string;
+        monthly_fee: number;
+        risk_score?: number;
+        applicant?: {
+            birthday?: string;
+            phone?: string;
+            email?: string;
+        };
+        primary_member?: {
+            member_number?: string;
+            status?: string;
+            has_unpaid?: boolean;
+        };
+    };
+};
+
+/**
+ * CreateFamilyRegistrationRequest
+ *
+ * Request payload to create a family registration
+ */
+export type CreateFamilyRegistrationRequest = {
+    primary_member_id: string;
+    applicant: {
+        name: string;
+        birthday: string;
+        relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
+        phone?: string;
+        email?: string;
+    };
+};
+
+/**
+ * CreateFamilyRegistrationResponse
+ *
+ * Create family registration response
+ */
+export type CreateFamilyRegistrationResponse = {
+    success: boolean;
+    /**
+     * FamilyRegistration
+     *
+     * Family registration list item
+     */
+    registration: {
+        /**
+         * Family registration id
+         */
+        id: string;
+        created_at: string;
+        status: 'invited' | 'awaiting_acceptance' | 'declined' | 'expired' | 'awaiting_profile' | 'pending_review' | 'approved' | 'rejected' | 'completed';
+        primary_member_id: string;
+        primary_member_name: string;
+        applicant_name: string;
+        relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
+        invite_expires_at?: string;
+        store_id: string;
+        store_name: string;
+        monthly_fee: number;
+        risk_score?: number;
+    };
+};
+
+/**
+ * ApproveFamilyRegistrationRequest
+ *
+ * Approve family registration request
+ */
+export type ApproveFamilyRegistrationRequest = {
+    approval_reason?: string;
+    staff_id?: string;
+};
+
+/**
+ * ApproveFamilyRegistrationResponse
+ *
+ * Approve family registration response
+ */
+export type ApproveFamilyRegistrationResponse = {
+    success: boolean;
+    id: string;
+    status: 'approved';
+    approved_at: string;
+    approved_by: string;
+};
+
+/**
+ * RejectFamilyRegistrationRequest
+ *
+ * Reject family registration request
+ */
+export type RejectFamilyRegistrationRequest = {
+    rejection_reason: string;
+    staff_id?: string;
+};
+
+/**
+ * RejectFamilyRegistrationResponse
+ *
+ * Reject family registration response
+ */
+export type RejectFamilyRegistrationResponse = {
+    success: boolean;
+    id: string;
+    status: 'rejected';
+    rejected_at: string;
+    rejected_by: string;
+    rejection_reason: string;
+};
+
+/**
+ * CompleteFamilyRegistrationRequest
+ *
+ * Complete family registration request
+ */
+export type CompleteFamilyRegistrationRequest = {
+    staff_id?: string;
+};
+
+/**
+ * CompleteFamilyRegistrationResponse
+ *
+ * Complete family registration response
+ */
+export type CompleteFamilyRegistrationResponse = {
+    success: boolean;
+    id: string;
+    status: 'completed';
+    completed_at: string;
+    /**
+     * Created child member id
+     */
+    member_id: string;
+};
+
+/**
+ * GetFamilyRegistrationsSummaryResponse
+ *
+ * Summary counts for family registrations
+ */
+export type GetFamilyRegistrationsSummaryResponse = {
+    total: number;
+    by_status: {
+        invited?: number;
+        awaiting_acceptance?: number;
+        declined?: number;
+        expired?: number;
+        awaiting_profile?: number;
+        pending_review?: number;
+        approved?: number;
+        rejected?: number;
+        completed?: number;
+    };
+};
+
+/**
+ * GetFamilyRegistrationsDashboardResponse
+ *
+ * Dashboard response for family registrations (mocked)
+ */
+export type GetFamilyRegistrationsDashboardResponse = {
+    month_invites: number;
+    month_completed: number;
+    acceptance_rate: number;
+    family_member_ratio: number;
+    top_primary_members: Array<{
+        primary_member_id: string;
+        primary_member_name: string;
+        family_count: number;
+    }>;
+};
+
 export type PostAuthLoginData = {
     /**
      * LoginRequest
@@ -5171,6 +5553,67 @@ export type GetCrmMembersByIdContractsResponses = {
 };
 
 export type GetCrmMembersByIdContractsResponse = GetCrmMembersByIdContractsResponses[keyof GetCrmMembersByIdContractsResponses];
+
+export type GetCrmMembersByMemberIdFamilyMembersData = {
+    body?: never;
+    path: {
+        /**
+         * Primary member id
+         */
+        member_id: string;
+    };
+    query?: never;
+    url: '/crm/members/{member_id}/family-members';
+};
+
+export type GetCrmMembersByMemberIdFamilyMembersErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+};
+
+export type GetCrmMembersByMemberIdFamilyMembersError = GetCrmMembersByMemberIdFamilyMembersErrors[keyof GetCrmMembersByMemberIdFamilyMembersErrors];
+
+export type GetCrmMembersByMemberIdFamilyMembersResponses = {
+    /**
+     * GetFamilyMembersResponse
+     *
+     * Response for getting primary member family members
+     */
+    200: {
+        members: Array<{
+            /**
+             * Child member id
+             */
+            id: string;
+            /**
+             * Member number
+             */
+            member_number: string;
+            name_kanji: string;
+            relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
+            joined_at: string;
+            status: 'active' | 'suspended' | 'withdrawn';
+            /**
+             * Monthly fee (JPY)
+             */
+            monthly_fee: number;
+            store_id: string;
+            store_name: string;
+        }>;
+        /**
+         * Brand setting family_member_limit
+         */
+        limit: number;
+    };
+};
+
+export type GetCrmMembersByMemberIdFamilyMembersResponse = GetCrmMembersByMemberIdFamilyMembersResponses[keyof GetCrmMembersByMemberIdFamilyMembersResponses];
 
 export type PutCrmMembersByIdHealthInfoData = {
     /**
@@ -7719,3 +8162,680 @@ export type GetCrmMembershipApplicationsSummaryResponses = {
 };
 
 export type GetCrmMembershipApplicationsSummaryResponse = GetCrmMembershipApplicationsSummaryResponses[keyof GetCrmMembershipApplicationsSummaryResponses];
+
+export type GetCrmFamilyRegistrationsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        limit?: number;
+        status?: 'invited' | 'awaiting_acceptance' | 'declined' | 'expired' | 'awaiting_profile' | 'pending_review' | 'approved' | 'rejected' | 'completed';
+        search?: string;
+        sort_by?: 'created_at' | 'risk_score';
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/family-registrations';
+};
+
+export type GetCrmFamilyRegistrationsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+};
+
+export type GetCrmFamilyRegistrationsError = GetCrmFamilyRegistrationsErrors[keyof GetCrmFamilyRegistrationsErrors];
+
+export type GetCrmFamilyRegistrationsResponses = {
+    /**
+     * GetFamilyRegistrationsResponse
+     *
+     * Paginated list response for family registrations
+     */
+    200: {
+        registrations: Array<{
+            /**
+             * Family registration id
+             */
+            id: string;
+            created_at: string;
+            status: 'invited' | 'awaiting_acceptance' | 'declined' | 'expired' | 'awaiting_profile' | 'pending_review' | 'approved' | 'rejected' | 'completed';
+            primary_member_id: string;
+            primary_member_name: string;
+            applicant_name: string;
+            relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
+            invite_expires_at?: string;
+            store_id: string;
+            store_name: string;
+            monthly_fee: number;
+            risk_score?: number;
+        }>;
+        pagination: {
+            total: number;
+            total_pages: number;
+            current_page: number;
+            limit: number;
+        };
+    };
+};
+
+export type GetCrmFamilyRegistrationsResponse = GetCrmFamilyRegistrationsResponses[keyof GetCrmFamilyRegistrationsResponses];
+
+export type PostCrmFamilyRegistrationsData = {
+    /**
+     * CreateFamilyRegistrationRequest
+     *
+     * Request payload to create a family registration
+     */
+    body?: {
+        primary_member_id: string;
+        applicant: {
+            name: string;
+            birthday: string;
+            relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
+            phone?: string;
+            email?: string;
+        };
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/family-registrations';
+};
+
+export type PostCrmFamilyRegistrationsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+};
+
+export type PostCrmFamilyRegistrationsError = PostCrmFamilyRegistrationsErrors[keyof PostCrmFamilyRegistrationsErrors];
+
+export type PostCrmFamilyRegistrationsResponses = {
+    /**
+     * CreateFamilyRegistrationResponse
+     *
+     * Create family registration response
+     */
+    200: {
+        success: boolean;
+        /**
+         * FamilyRegistration
+         *
+         * Family registration list item
+         */
+        registration: {
+            /**
+             * Family registration id
+             */
+            id: string;
+            created_at: string;
+            status: 'invited' | 'awaiting_acceptance' | 'declined' | 'expired' | 'awaiting_profile' | 'pending_review' | 'approved' | 'rejected' | 'completed';
+            primary_member_id: string;
+            primary_member_name: string;
+            applicant_name: string;
+            relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
+            invite_expires_at?: string;
+            store_id: string;
+            store_name: string;
+            monthly_fee: number;
+            risk_score?: number;
+        };
+    };
+};
+
+export type PostCrmFamilyRegistrationsResponse = PostCrmFamilyRegistrationsResponses[keyof PostCrmFamilyRegistrationsResponses];
+
+export type GetCrmFamilyRegistrationsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Family registration id
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/family-registrations/{id}';
+};
+
+export type GetCrmFamilyRegistrationsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+};
+
+export type GetCrmFamilyRegistrationsByIdError = GetCrmFamilyRegistrationsByIdErrors[keyof GetCrmFamilyRegistrationsByIdErrors];
+
+export type GetCrmFamilyRegistrationsByIdResponses = {
+    /**
+     * GetFamilyRegistrationDetailResponse
+     *
+     * Detail response for family registration
+     */
+    200: {
+        /**
+         * FamilyRegistration
+         *
+         * Family registration list item
+         */
+        registration: {
+            /**
+             * Family registration id
+             */
+            id: string;
+            created_at: string;
+            status: 'invited' | 'awaiting_acceptance' | 'declined' | 'expired' | 'awaiting_profile' | 'pending_review' | 'approved' | 'rejected' | 'completed';
+            primary_member_id: string;
+            primary_member_name: string;
+            applicant_name: string;
+            relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
+            invite_expires_at?: string;
+            store_id: string;
+            store_name: string;
+            monthly_fee: number;
+            risk_score?: number;
+            applicant?: {
+                birthday?: string;
+                phone?: string;
+                email?: string;
+            };
+            primary_member?: {
+                member_number?: string;
+                status?: string;
+                has_unpaid?: boolean;
+            };
+        };
+    };
+};
+
+export type GetCrmFamilyRegistrationsByIdResponse = GetCrmFamilyRegistrationsByIdResponses[keyof GetCrmFamilyRegistrationsByIdResponses];
+
+export type PostCrmFamilyRegistrationsByIdApproveData = {
+    /**
+     * ApproveFamilyRegistrationRequest
+     *
+     * Approve family registration request
+     */
+    body?: {
+        approval_reason?: string;
+        staff_id?: string;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/crm/family-registrations/{id}/approve';
+};
+
+export type PostCrmFamilyRegistrationsByIdApproveErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+};
+
+export type PostCrmFamilyRegistrationsByIdApproveError = PostCrmFamilyRegistrationsByIdApproveErrors[keyof PostCrmFamilyRegistrationsByIdApproveErrors];
+
+export type PostCrmFamilyRegistrationsByIdApproveResponses = {
+    /**
+     * ApproveFamilyRegistrationResponse
+     *
+     * Approve family registration response
+     */
+    200: {
+        success: boolean;
+        id: string;
+        status: 'approved';
+        approved_at: string;
+        approved_by: string;
+    };
+};
+
+export type PostCrmFamilyRegistrationsByIdApproveResponse = PostCrmFamilyRegistrationsByIdApproveResponses[keyof PostCrmFamilyRegistrationsByIdApproveResponses];
+
+export type PostCrmFamilyRegistrationsByIdRejectData = {
+    /**
+     * RejectFamilyRegistrationRequest
+     *
+     * Reject family registration request
+     */
+    body?: {
+        rejection_reason: string;
+        staff_id?: string;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/crm/family-registrations/{id}/reject';
+};
+
+export type PostCrmFamilyRegistrationsByIdRejectErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+};
+
+export type PostCrmFamilyRegistrationsByIdRejectError = PostCrmFamilyRegistrationsByIdRejectErrors[keyof PostCrmFamilyRegistrationsByIdRejectErrors];
+
+export type PostCrmFamilyRegistrationsByIdRejectResponses = {
+    /**
+     * RejectFamilyRegistrationResponse
+     *
+     * Reject family registration response
+     */
+    200: {
+        success: boolean;
+        id: string;
+        status: 'rejected';
+        rejected_at: string;
+        rejected_by: string;
+        rejection_reason: string;
+    };
+};
+
+export type PostCrmFamilyRegistrationsByIdRejectResponse = PostCrmFamilyRegistrationsByIdRejectResponses[keyof PostCrmFamilyRegistrationsByIdRejectResponses];
+
+export type PostCrmFamilyRegistrationsByIdCompleteData = {
+    /**
+     * CompleteFamilyRegistrationRequest
+     *
+     * Complete family registration request
+     */
+    body?: {
+        staff_id?: string;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/crm/family-registrations/{id}/complete';
+};
+
+export type PostCrmFamilyRegistrationsByIdCompleteErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+};
+
+export type PostCrmFamilyRegistrationsByIdCompleteError = PostCrmFamilyRegistrationsByIdCompleteErrors[keyof PostCrmFamilyRegistrationsByIdCompleteErrors];
+
+export type PostCrmFamilyRegistrationsByIdCompleteResponses = {
+    /**
+     * CompleteFamilyRegistrationResponse
+     *
+     * Complete family registration response
+     */
+    200: {
+        success: boolean;
+        id: string;
+        status: 'completed';
+        completed_at: string;
+        /**
+         * Created child member id
+         */
+        member_id: string;
+    };
+};
+
+export type PostCrmFamilyRegistrationsByIdCompleteResponse = PostCrmFamilyRegistrationsByIdCompleteResponses[keyof PostCrmFamilyRegistrationsByIdCompleteResponses];
+
+export type PostCrmFamilyRegistrationsCheckPrimaryMemberData = {
+    /**
+     * CheckPrimaryMemberRequest
+     *
+     * Request to check if a primary member can invite/register more family members
+     */
+    body?: {
+        primary_member_id: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/family-registrations/check-primary-member';
+};
+
+export type PostCrmFamilyRegistrationsCheckPrimaryMemberErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+};
+
+export type PostCrmFamilyRegistrationsCheckPrimaryMemberError = PostCrmFamilyRegistrationsCheckPrimaryMemberErrors[keyof PostCrmFamilyRegistrationsCheckPrimaryMemberErrors];
+
+export type PostCrmFamilyRegistrationsCheckPrimaryMemberResponses = {
+    /**
+     * CheckPrimaryMemberResponse
+     *
+     * Primary member eligibility check result
+     */
+    200: {
+        ok: boolean;
+        /**
+         * Blocking reasons when ok=false
+         */
+        reasons: Array<string>;
+        brand: 'joyfit' | 'fit365';
+        limit: number;
+        current_count: number;
+        /**
+         * Brand setting family_member_fee (JPY)
+         */
+        fee: number;
+        payment_cycle: 'monthly' | 'yearly';
+    };
+};
+
+export type PostCrmFamilyRegistrationsCheckPrimaryMemberResponse = PostCrmFamilyRegistrationsCheckPrimaryMemberResponses[keyof PostCrmFamilyRegistrationsCheckPrimaryMemberResponses];
+
+export type PostCrmFamilyRegistrationsRiskEvaluationData = {
+    /**
+     * RiskEvaluationRequest
+     *
+     * Request payload for risk evaluation (mocked)
+     */
+    body?: {
+        primary_member_id: string;
+        /**
+         * Child applicant info
+         */
+        applicant: {
+            name: string;
+            birthday: string;
+            phone?: string;
+            email?: string;
+            relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
+        };
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/family-registrations/risk-evaluation';
+};
+
+export type PostCrmFamilyRegistrationsRiskEvaluationErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+};
+
+export type PostCrmFamilyRegistrationsRiskEvaluationError = PostCrmFamilyRegistrationsRiskEvaluationErrors[keyof PostCrmFamilyRegistrationsRiskEvaluationErrors];
+
+export type PostCrmFamilyRegistrationsRiskEvaluationResponses = {
+    /**
+     * RiskEvaluationResponse
+     *
+     * Risk evaluation result
+     */
+    200: {
+        risk_score: number;
+        reasons: Array<string>;
+        recommended_action: 'auto_approve' | 'manual_review' | 'reject';
+    };
+};
+
+export type PostCrmFamilyRegistrationsRiskEvaluationResponse = PostCrmFamilyRegistrationsRiskEvaluationResponses[keyof PostCrmFamilyRegistrationsRiskEvaluationResponses];
+
+export type GetCrmFamilyRegistrationsSummaryData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/family-registrations/summary';
+};
+
+export type GetCrmFamilyRegistrationsSummaryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type GetCrmFamilyRegistrationsSummaryError = GetCrmFamilyRegistrationsSummaryErrors[keyof GetCrmFamilyRegistrationsSummaryErrors];
+
+export type GetCrmFamilyRegistrationsSummaryResponses = {
+    /**
+     * GetFamilyRegistrationsSummaryResponse
+     *
+     * Summary counts for family registrations
+     */
+    200: {
+        total: number;
+        by_status: {
+            invited?: number;
+            awaiting_acceptance?: number;
+            declined?: number;
+            expired?: number;
+            awaiting_profile?: number;
+            pending_review?: number;
+            approved?: number;
+            rejected?: number;
+            completed?: number;
+        };
+    };
+};
+
+export type GetCrmFamilyRegistrationsSummaryResponse = GetCrmFamilyRegistrationsSummaryResponses[keyof GetCrmFamilyRegistrationsSummaryResponses];
+
+export type GetCrmFamilyRegistrationsDashboardData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/family-registrations/dashboard';
+};
+
+export type GetCrmFamilyRegistrationsDashboardErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type GetCrmFamilyRegistrationsDashboardError = GetCrmFamilyRegistrationsDashboardErrors[keyof GetCrmFamilyRegistrationsDashboardErrors];
+
+export type GetCrmFamilyRegistrationsDashboardResponses = {
+    /**
+     * GetFamilyRegistrationsDashboardResponse
+     *
+     * Dashboard response for family registrations (mocked)
+     */
+    200: {
+        month_invites: number;
+        month_completed: number;
+        acceptance_rate: number;
+        family_member_ratio: number;
+        top_primary_members: Array<{
+            primary_member_id: string;
+            primary_member_name: string;
+            family_count: number;
+        }>;
+    };
+};
+
+export type GetCrmFamilyRegistrationsDashboardResponse = GetCrmFamilyRegistrationsDashboardResponses[keyof GetCrmFamilyRegistrationsDashboardResponses];
+
+export type PostCrmFamilyRegistrationsBulkApproveData = {
+    /**
+     * BulkApproveFamilyRegistrationsRequest
+     *
+     * Bulk approve family registrations request
+     */
+    body?: {
+        ids: Array<string>;
+        approval_reason?: string;
+        staff_id?: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/family-registrations/bulk-approve';
+};
+
+export type PostCrmFamilyRegistrationsBulkApproveErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+};
+
+export type PostCrmFamilyRegistrationsBulkApproveError = PostCrmFamilyRegistrationsBulkApproveErrors[keyof PostCrmFamilyRegistrationsBulkApproveErrors];
+
+export type PostCrmFamilyRegistrationsBulkApproveResponses = {
+    /**
+     * BulkApproveFamilyRegistrationsResponse
+     *
+     * Bulk approve family registrations response
+     */
+    200: {
+        success: boolean;
+        results: Array<{
+            id: string;
+            success: boolean;
+            status?: 'approved';
+            error?: string;
+        }>;
+    };
+};
+
+export type PostCrmFamilyRegistrationsBulkApproveResponse = PostCrmFamilyRegistrationsBulkApproveResponses[keyof PostCrmFamilyRegistrationsBulkApproveResponses];
+
+export type PostCrmFamilyRegistrationsBulkRejectData = {
+    /**
+     * BulkRejectFamilyRegistrationsRequest
+     *
+     * Bulk reject family registrations request
+     */
+    body?: {
+        ids: Array<string>;
+        rejection_reason: string;
+        staff_id?: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/family-registrations/bulk-reject';
+};
+
+export type PostCrmFamilyRegistrationsBulkRejectErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+};
+
+export type PostCrmFamilyRegistrationsBulkRejectError = PostCrmFamilyRegistrationsBulkRejectErrors[keyof PostCrmFamilyRegistrationsBulkRejectErrors];
+
+export type PostCrmFamilyRegistrationsBulkRejectResponses = {
+    /**
+     * BulkRejectFamilyRegistrationsResponse
+     *
+     * Bulk reject family registrations response
+     */
+    200: {
+        success: boolean;
+        results: Array<{
+            id: string;
+            success: boolean;
+            status?: 'rejected';
+            error?: string;
+        }>;
+    };
+};
+
+export type PostCrmFamilyRegistrationsBulkRejectResponse = PostCrmFamilyRegistrationsBulkRejectResponses[keyof PostCrmFamilyRegistrationsBulkRejectResponses];
