@@ -9,6 +9,7 @@ import { ChevronRight, CircleAlert } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent } from '@/components/ui/card';
 import { DateRangePicker } from '@/components/ui/date-range-picker';
+import { Skeleton } from '@/components/ui/skeleton';
 
 import { getCrmMembershipApplicationsSummaryOptions } from '@/lib/api/@tanstack/react-query.gen';
 
@@ -81,19 +82,36 @@ export function MembershipApplicationsOverview() {
 
   if (isLoadingSummary) {
     return (
-      <div className="flex flex-1 items-center justify-center">
-        <div className="text-muted-foreground">読み込み中...</div>
+      <div>
+        <div className="p-4">
+          <Skeleton className="h-9 w-64" />
+        </div>
+        <div className="bg-muted/30 space-y-4 p-4">
+          <div className="grid gap-4 sm:grid-cols-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Card key={i} className="rounded-lg shadow-sm">
+                <CardContent className="flex flex-col gap-2 p-4">
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-7 w-28" />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          {Array.from({ length: 2 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-4 rounded-lg border p-3">
+              <Skeleton className="size-4 shrink-0 rounded-full" />
+              <div className="flex-1 space-y-1.5">
+                <Skeleton className="h-4 w-40" />
+                <Skeleton className="h-3 w-64" />
+              </div>
+              <Skeleton className="size-4 shrink-0" />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
 
-  if (summaryError || !summary) {
-    return (
-      <div className="flex flex-1 items-center justify-center">
-        <div className="text-destructive">データの読み込みに失敗しました</div>
-      </div>
-    );
-  }
   return (
     <div>
       <div className="p-4">
@@ -109,7 +127,7 @@ export function MembershipApplicationsOverview() {
             <CardContent className="flex flex-col gap-2 p-4">
               <p className="text-foreground text-sm">総申込数</p>
               <p className="text-foreground text-xl font-semibold">
-                {summary.totalApplications.toLocaleString()}件
+                {summary?.totalApplications.toLocaleString()}件
               </p>
             </CardContent>
           </Card>
@@ -118,8 +136,10 @@ export function MembershipApplicationsOverview() {
             <CardContent className="flex flex-col gap-2 p-4">
               <p className="text-foreground text-sm">自動承認率</p>
               <div className="flex items-baseline gap-2">
-                <p className="text-foreground text-xl font-semibold">{summary.autoApprovalRate}%</p>
-                <p className="text-muted-foreground text-sm">{summary.autoApprovalCount}件</p>
+                <p className="text-foreground text-xl font-semibold">
+                  {summary?.autoApprovalRate}%
+                </p>
+                <p className="text-muted-foreground text-sm">{summary?.autoApprovalCount}件</p>
               </div>
             </CardContent>
           </Card>
@@ -127,7 +147,7 @@ export function MembershipApplicationsOverview() {
           <Card className="rounded-lg shadow-sm">
             <CardContent className="flex flex-col gap-2 p-4">
               <p className="text-foreground text-sm">平均処理時間</p>
-              <p className="text-foreground text-xl font-semibold">{summary.avgProcessingTime}</p>
+              <p className="text-foreground text-xl font-semibold">{summary?.avgProcessingTime}</p>
             </CardContent>
           </Card>
         </div>

@@ -91,9 +91,9 @@ const createApplicationColumns = (args: {
   },
   {
     id: 'actions',
-    header: () => <span className="inline-flex w-full justify-end font-medium">アクション</span>,
+    header: () => <span className="font-medium">アクション</span>,
     cell: ({ row }) => (
-      <div className="flex justify-end gap-2" onClick={(e) => e.stopPropagation()}>
+      <div className="flex w-fit justify-start gap-2" onClick={(e) => e.stopPropagation()}>
         <Button
           variant="destructive"
           size="sm"
@@ -162,7 +162,7 @@ export function PendingMembershipApplicationsTab({
         sort_by: sorting?.[0]?.id as 'applied_at' | 'risk_score' | 'pending_deadline',
         sort_order: (sorting?.[0]?.desc ? 'desc' : 'asc') as 'desc' | 'asc',
       }),
-      limit: 50,
+      limit: 20,
       search: searchQuery || undefined,
     }),
     [riskReason, sorting, searchQuery],
@@ -239,7 +239,7 @@ export function PendingMembershipApplicationsTab({
         }}
       />
 
-      <Card className="overflow-hidden rounded-lg border shadow-sm">
+      <Card className="overflow-hidden rounded-lg border py-0 shadow-sm">
         <div className="flex flex-col gap-4 p-4">
           {/* Search + Filter */}
           <div className="flex flex-wrap items-center justify-between gap-4">
@@ -328,6 +328,7 @@ export function PendingMembershipApplicationsTab({
               onRowClick={(row) => {
                 router.push(navigate('/membership-applications/[id]', row.id));
               }}
+              containerClassName="h-[70vh]"
             />
           </div>
         </div>

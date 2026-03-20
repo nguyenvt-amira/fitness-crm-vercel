@@ -29,7 +29,7 @@ export function DataTableColumnHeader<TData, TValue>({
         column.toggleSorting(undefined);
       }}
       className={cn(
-        'flex h-7 w-full items-center justify-between gap-2 px-0 py-0 hover:bg-transparent',
+        'flex h-7 w-full items-center justify-start gap-2 px-0 py-0 hover:bg-transparent',
         className,
       )}
       {...props}
