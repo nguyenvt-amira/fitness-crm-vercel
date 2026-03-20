@@ -3,6 +3,7 @@
 import type { ColumnDef } from '@tanstack/react-table';
 import { AlertOctagon, Edit, MessageSquare, MoreHorizontal } from 'lucide-react';
 
+import { DataTableColumnCheckbox } from '@/components/common/data-table/data-table-column-checkbox';
 import { DataTableColumnHeader } from '@/components/common/data-table/data-table-column-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -25,54 +26,25 @@ interface MembersTableColumnsProps {
   onMemberClick: (memberId: string) => void;
   /** Navigate to member detail with コミュニケーション tab and memo modal open */
   onMemoClick: (memberId: string) => void;
-  selectedMembers: string[];
-  onSelectionChange: (ids: string[]) => void;
 }
 
 export function MembersTableColumns({
   onMemberClick,
   onMemoClick,
-  selectedMembers,
-  onSelectionChange,
 }: MembersTableColumnsProps): ColumnDef<NonNullable<GetCrmMembersResponse['members']>[0]>[] {
   return [
     {
       id: 'select',
       header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected()}
-          onCheckedChange={(checked) => {
-            table.toggleAllPageRowsSelected(checked === true);
-            if (checked === true) {
-              onSelectionChange(
-                table
-                  .getRowModel()
-                  .rows.map((row) => row.original.id || '')
-                  .filter(Boolean),
-              );
-            } else {
-              onSelectionChange([]);
-            }
-          }}
-        />
-      ),
-      cell: ({ row }) => {
-        const memberId = row.original.id || '';
-        if (!memberId) return null;
-        return (
+        <div className="w-[32px] px-2 py-2.5">
           <Checkbox
-            checked={selectedMembers.includes(memberId)}
-            onCheckedChange={(checked) => {
-              if (checked === true) {
-                onSelectionChange([...selectedMembers, memberId]);
-              } else {
-                onSelectionChange(selectedMembers.filter((id) => id !== memberId));
-              }
-            }}
-            onClick={(e) => e.stopPropagation()}
+            aria-label="Select all"
+            checked={table.getIsAllPageRowsSelected()}
+            onCheckedChange={(value) => table.toggleAllRowsSelected(!!value)}
           />
-        );
-      },
+        </div>
+      ),
+      cell: ({ row }) => <DataTableColumnCheckbox row={row} />,
       enableSorting: false,
       enableHiding: false,
     },

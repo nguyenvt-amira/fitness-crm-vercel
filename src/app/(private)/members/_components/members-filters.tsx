@@ -20,10 +20,6 @@ import { BRAND_LABELS, MEMBER_STATUS_LABELS, MEMBER_TYPE_LABELS } from '../_lib/
 
 interface MembersFiltersProps {
   onQRScan: () => void;
-  selectedCount: number;
-  totalCount: number;
-  onExport: () => void;
-  onBulkEmail: () => void;
 }
 
 // Mock stores data
@@ -48,13 +44,7 @@ const LAST_VISIT_OPTIONS = [
   { value: -1, label: '3ヶ月以上' }, // -1 means 90+ days
 ];
 
-export function MembersFilters({
-  onQRScan,
-  selectedCount,
-  totalCount,
-  onExport,
-  onBulkEmail,
-}: MembersFiltersProps) {
+export function MembersFilters({ onQRScan }: MembersFiltersProps) {
   const { filters, searchInput, setSearchInput, updateFilter, hasActiveFilters, clearFilters } =
     useMembersFiltersContext();
 
@@ -286,25 +276,6 @@ export function MembersFilters({
           </div>
         </div>
       </Card>
-
-      {/* 一括操作バー */}
-      {selectedCount > 0 && (
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-sm">
-              {selectedCount}件選択中 / 全{totalCount}件
-            </span>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={onExport}>
-                一括エクスポート
-              </Button>
-              <Button variant="outline" size="sm" onClick={onBulkEmail}>
-                一括メール送信
-              </Button>
-            </div>
-          </div>
-        </Card>
-      )}
     </div>
   );
 }
