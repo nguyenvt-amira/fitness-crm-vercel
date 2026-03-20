@@ -15,9 +15,9 @@ import {
   Package,
   Settings,
   User,
-  Users,
 } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
 import {
   Sidebar,
   SidebarContent,
@@ -204,14 +204,24 @@ export function AppSidebar() {
                       defaultOpen={isSubItemActive}
                       className="group/collapsible"
                     >
-                      <SidebarMenuItem>
-                        <CollapsibleTrigger asChild>
-                          <SidebarMenuButton isActive={isActive}>
-                            <Icon />
-                            <span>{item.label}</span>
-                            <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                      <SidebarMenuItem className="group/menu-item">
+                        <div className="flex items-center rounded-md pr-1 group-hover/menu-item:bg-[var(--sidebar-accent)] has-[[data-active=true]]:bg-[var(--sidebar-accent)]">
+                          <SidebarMenuButton asChild isActive={isActive}>
+                            <Link href={item.href}>
+                              <Icon />
+                              <span>{item.label}</span>
+                            </Link>
                           </SidebarMenuButton>
-                        </CollapsibleTrigger>
+                          <CollapsibleTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="icon-xs"
+                              className="opacity-0 group-hover/menu-item:opacity-100 group-data-[state=open]/collapsible:opacity-100"
+                            >
+                              <ChevronDown className="transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                            </Button>
+                          </CollapsibleTrigger>
+                        </div>
                         <CollapsibleContent>
                           <SidebarMenuSub>
                             {item.subItems?.map((subItem) => (
