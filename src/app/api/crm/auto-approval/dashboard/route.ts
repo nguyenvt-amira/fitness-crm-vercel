@@ -85,9 +85,9 @@ export async function GET(request: NextRequest) {
           end: now.toISOString(),
         },
         statistics: {
-          total_applications: 1234,
-          auto_approved: 1018,
-          manual_approved: 195,
+          total_applications: 200,
+          auto_approved: 163,
+          manual_approved: 21,
           rejected: 21,
           auto_approval_rate: 82.5,
           average_processing_time_minutes: 83, // 1h23m

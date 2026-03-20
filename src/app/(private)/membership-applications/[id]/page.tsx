@@ -150,11 +150,12 @@ export default function MembershipApplicationDetailPage() {
         <BasicInfoCard application={application} statusLabels={statusLabels} />
 
         {/* Risk Details Section */}
-        {application.risk_score > 0 && (
+        {(application.risk_score > 0 || application.ekyc) && (
           <RiskDetailsSection
             riskScore={application.risk_score}
             riskReason={application.risk_reason}
             riskDetails={application.risk_details}
+            ekyc={application.ekyc}
           />
         )}
 
@@ -166,13 +167,13 @@ export default function MembershipApplicationDetailPage() {
                 会員情報
               </TabsTrigger>
               <TabsTrigger value="contract" className="data-[state=active]:bg-secondary">
-                契約
+                契約情報
               </TabsTrigger>
               <TabsTrigger value="payment" className="data-[state=active]:bg-secondary">
-                支払い
+                決済情報
               </TabsTrigger>
               <TabsTrigger value="history" className="data-[state=active]:bg-secondary">
-                利用履歴
+                履歴
               </TabsTrigger>
             </TabsList>
 
@@ -184,10 +185,10 @@ export default function MembershipApplicationDetailPage() {
                 <ContractInfoTab application={application} />
               </TabsContent>
               <TabsContent value="payment" className="mt-4 flex-1">
-                <PaymentInfoTab application={application} />
+                <PaymentInfoTab application={application} paymentStatusLabels={statusLabels} />
               </TabsContent>
               <TabsContent value="history" className="mt-4 flex-1">
-                <HistoryTab application={application} />
+                <HistoryTab application={application} statusLabels={statusLabels} />
               </TabsContent>
             </div>
           </Tabs>
