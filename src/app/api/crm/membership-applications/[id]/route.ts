@@ -124,6 +124,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           contract_period: 12,
           option_ids: details?.contract_details?.option_ids ?? [],
         } as any,
+        ekyc: (details as any)?.ekyc,
       },
     };
     return NextResponse.json(response);

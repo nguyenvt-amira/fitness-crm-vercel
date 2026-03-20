@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { formatDateYYYYMM_HHMMSS } from '@/utils/date.util';
+import { formatDateYYYYMM_HHMMSS, formatElapsedTime } from '@/utils/date.util';
 import { Edit } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -22,7 +22,7 @@ export function BasicInfoCard({ application, statusLabels }: BasicInfoCardProps)
   const [editOpen, setEditOpen] = useState(false);
 
   return (
-    <Card>
+    <Card className="py-0">
       <CardContent className="p-4">
         <EditMembershipApplicationModal
           open={editOpen}
@@ -65,9 +65,9 @@ export function BasicInfoCard({ application, statusLabels }: BasicInfoCardProps)
               <span className="text-muted-foreground">
                 ステータス：{statusLabels[application.status] || application.status}
               </span>
-              {application.elapsed_time && (
-                <span className="text-muted-foreground">経過時間：{application.elapsed_time}</span>
-              )}
+              <span className="text-muted-foreground">
+                経過時間：{formatElapsedTime(application.applied_at)}
+              </span>
             </div>
           </div>
         </div>

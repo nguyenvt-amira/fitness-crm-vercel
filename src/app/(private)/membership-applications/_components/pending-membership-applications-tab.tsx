@@ -4,8 +4,8 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { formatDateYYYYMM_HHMMSS } from '@/utils/date.util';
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { formatDateYYYYMM_HHMMSS, formatElapsedTime } from '@/utils/date.util';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import type { ColumnDef, RowSelectionState } from '@tanstack/react-table';
 import { type SortingState } from '@tanstack/react-table';
 import { Search } from 'lucide-react';
@@ -38,6 +38,7 @@ import { RejectApplicationModal } from './reject-application-modal';
 const createApplicationColumns = (args: {
   onApprove: (row: MembershipApplication) => void;
   onReject?: (row: MembershipApplication) => void;
+  onView: (row: MembershipApplication) => void;
 }): ColumnDef<MembershipApplication>[] => [
   {
     id: 'select',
@@ -65,7 +66,9 @@ const createApplicationColumns = (args: {
     cell: ({ row }) => (
       <div className="flex flex-col">
         <span className="text-sm">{formatDateYYYYMM_HHMMSS(row.original.applied_at)}</span>
-        <span className="text-muted-foreground text-xs">{row.original.elapsed_time ?? ''}</span>
+        <span className="text-muted-foreground text-xs">
+          {formatElapsedTime(row.original.applied_at)}
+        </span>
       </div>
     ),
   },
@@ -105,6 +108,14 @@ const createApplicationColumns = (args: {
         <Button size="sm" className="h-8" onClick={() => args.onApprove(row.original)}>
           承認
         </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          className="h-8"
+          onClick={() => args.onView(row.original)}
+        >
+          詳細
+        </Button>
       </div>
     ),
     enableSorting: false,
@@ -114,7 +125,6 @@ const createApplicationColumns = (args: {
 export function PendingMembershipApplicationsTab({
   enabled = true,
 }: Readonly<{ enabled?: boolean }> = {}) {
-  const queryClient = useQueryClient();
   const router = useRouter();
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -151,8 +161,11 @@ export function PendingMembershipApplicationsTab({
         setTargetApplication(row);
         setRejectModalState({ status: true, type: 'single' });
       },
+      onView: (row) => {
+        router.push(navigate('/membership-applications/[id]', row.id));
+      },
     });
-  }, []);
+  }, [router]);
 
   const listQuery = useMemo(
     () => ({

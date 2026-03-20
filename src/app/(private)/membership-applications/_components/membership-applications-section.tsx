@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useQueryState } from 'nuqs';
 
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -16,21 +16,28 @@ const STATUS_TABS = [
   { value: 'pending', label: '要確認', count: 12 },
   { value: 'auto_approved', label: '自動承認済み', count: 163 },
   { value: 'manual_approved', label: '手動承認済み', count: 21 },
-  { value: 'rejected', label: '却下', count: 1 },
-  { value: 'all', label: '全件', count: 200 },
+  { value: 'rejected', label: '却下', count: 21 },
+  // { value: 'all', label: '全件', count: 200 },
 ] as const;
 
+const VALID_TAB_VALUES = STATUS_TABS.map((t) => t.value) as string[];
+
 export function MembershipApplicationsListSection() {
-  const [selectedStatus, setSelectedStatus] = useState<MembershipApplicationStatus | 'all'>(
-    'pending',
-  );
+  const [tabParam, setTabParam] = useQueryState('tab');
+
+  const selectedStatus = (
+    tabParam && VALID_TAB_VALUES.includes(tabParam) ? tabParam : 'pending'
+  ) as MembershipApplicationStatus | 'all';
+
+  const setSelectedStatus = (value: MembershipApplicationStatus | 'all') => {
+    setTabParam(value === 'pending' ? null : value);
+  };
 
   return (
     <div className="flex flex-col gap-4 p-4">
       <Tabs
         value={selectedStatus}
         onValueChange={(status) => setSelectedStatus(status as MembershipApplicationStatus | 'all')}
-        defaultValue="pending"
         className="w-full"
       >
         <TabsList className="bg-muted inline-flex h-9 w-fit rounded-lg p-[3px]">

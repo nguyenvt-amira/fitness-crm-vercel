@@ -1,6 +1,8 @@
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 
+import { EkycResultSchema } from './family-registration.schema';
+
 // Extend Zod with OpenAPI support
 extendZodWithOpenApi(z);
 
@@ -700,6 +702,9 @@ export const GetApplicationDetailResponseSchema = z
         .openapi({
           description: 'Contract details',
         }),
+      ekyc: EkycResultSchema.optional().openapi({
+        description: 'eKYC verification result',
+      }),
     }).openapi({
       description: 'Application detail information',
     }),
