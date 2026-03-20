@@ -108,6 +108,48 @@ export const RiskEvaluationResponseSchema = z
   })
   .openapi({ title: 'RiskEvaluationResponse', description: 'Risk evaluation result' });
 
+export const EkycResultSchema = z
+  .object({
+    verified: z.boolean().openapi({ example: true, description: 'eKYC総合判定' }),
+    verified_at: z.string().datetime().optional().openapi({
+      example: '2024-01-15T10:30:00Z',
+      description: '検証日時',
+    }),
+    face_photo_url: z.string().url().optional().openapi({
+      example: 'https://example.com/photos/face_001.jpg',
+      description: '顔写真（申請者撮影）URL',
+    }),
+    id_document_url: z.string().url().optional().openapi({
+      example: 'https://example.com/photos/id_001.jpg',
+      description: '本人確認書類アップロード画像URL',
+    }),
+    document_type: z.string().optional().openapi({
+      example: '運転免許証',
+      description: '本人確認書類種別',
+    }),
+    face_match: z
+      .object({
+        similarity: z.number().min(0).max(100).openapi({
+          example: 92.5,
+          description: '顔認証類似度（%）',
+        }),
+        passed: z.boolean().openapi({ example: true, description: '顔認証判定結果' }),
+      })
+      .optional()
+      .openapi({ description: '顔認証結果' }),
+    blacklist_check: z
+      .object({
+        matched: z.boolean().openapi({ example: false, description: 'ブラックリスト一致有無' }),
+        reason: z.string().optional().openapi({
+          example: '過去に不正利用の記録あり',
+          description: '一致理由',
+        }),
+      })
+      .optional()
+      .openapi({ description: 'ブラックリストチェック結果' }),
+  })
+  .openapi({ title: 'EkycResult', description: 'eKYC検証結果' });
+
 export const FamilyRegistrationSchema = z
   .object({
     id: z.string().openapi({ example: 'FR-00001', description: 'Family registration id' }),
@@ -124,6 +166,11 @@ export const FamilyRegistrationSchema = z
     store_name: z.string().openapi({ example: 'Fit365八潮店' }),
     monthly_fee: z.number().openapi({ example: 0 }),
     risk_score: z.number().optional().openapi({ example: 20 }),
+    risk_reason: z.string().optional().openapi({
+      example: 'ブラックリスト一致',
+      description: 'リスク主要理由',
+    }),
+    ekyc: EkycResultSchema.optional(),
   })
   .openapi({ title: 'FamilyRegistration', description: 'Family registration list item' });
 
@@ -371,6 +418,7 @@ export const ErrorResponseSchema = z
 
 export type FamilyRegistrationStatus = z.infer<typeof FamilyRegistrationStatusSchema>;
 export type FamilyRelationship = z.infer<typeof FamilyRelationshipSchema>;
+export type EkycResult = z.infer<typeof EkycResultSchema>;
 export type FamilyMember = z.infer<typeof FamilyMemberSchema>;
 export type GetFamilyMembersResponse = z.infer<typeof GetFamilyMembersResponseSchema>;
 export type CheckPrimaryMemberRequest = z.infer<typeof CheckPrimaryMemberRequestSchema>;

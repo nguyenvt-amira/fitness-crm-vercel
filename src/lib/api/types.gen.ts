@@ -4271,6 +4271,63 @@ export type FamilyRegistration = {
     store_name: string;
     monthly_fee: number;
     risk_score?: number;
+    /**
+     * リスク主要理由
+     */
+    risk_reason?: string;
+    /**
+     * EkycResult
+     *
+     * eKYC検証結果
+     */
+    ekyc?: {
+        /**
+         * eKYC総合判定
+         */
+        verified: boolean;
+        /**
+         * 検証日時
+         */
+        verified_at?: string;
+        /**
+         * 顔写真（申請者撮影）URL
+         */
+        face_photo_url?: string;
+        /**
+         * 本人確認書類アップロード画像URL
+         */
+        id_document_url?: string;
+        /**
+         * 本人確認書類種別
+         */
+        document_type?: string;
+        /**
+         * 顔認証結果
+         */
+        face_match?: {
+            /**
+             * 顔認証類似度（%）
+             */
+            similarity: number;
+            /**
+             * 顔認証判定結果
+             */
+            passed: boolean;
+        };
+        /**
+         * ブラックリストチェック結果
+         */
+        blacklist_check?: {
+            /**
+             * ブラックリスト一致有無
+             */
+            matched: boolean;
+            /**
+             * 一致理由
+             */
+            reason?: string;
+        };
+    };
 };
 
 /**
@@ -4309,6 +4366,63 @@ export type GetFamilyRegistrationsResponse = {
         store_name: string;
         monthly_fee: number;
         risk_score?: number;
+        /**
+         * リスク主要理由
+         */
+        risk_reason?: string;
+        /**
+         * EkycResult
+         *
+         * eKYC検証結果
+         */
+        ekyc?: {
+            /**
+             * eKYC総合判定
+             */
+            verified: boolean;
+            /**
+             * 検証日時
+             */
+            verified_at?: string;
+            /**
+             * 顔写真（申請者撮影）URL
+             */
+            face_photo_url?: string;
+            /**
+             * 本人確認書類アップロード画像URL
+             */
+            id_document_url?: string;
+            /**
+             * 本人確認書類種別
+             */
+            document_type?: string;
+            /**
+             * 顔認証結果
+             */
+            face_match?: {
+                /**
+                 * 顔認証類似度（%）
+                 */
+                similarity: number;
+                /**
+                 * 顔認証判定結果
+                 */
+                passed: boolean;
+            };
+            /**
+             * ブラックリストチェック結果
+             */
+            blacklist_check?: {
+                /**
+                 * ブラックリスト一致有無
+                 */
+                matched: boolean;
+                /**
+                 * 一致理由
+                 */
+                reason?: string;
+            };
+        };
     }>;
     pagination: {
         total: number;
@@ -4345,6 +4459,63 @@ export type GetFamilyRegistrationDetailResponse = {
         store_name: string;
         monthly_fee: number;
         risk_score?: number;
+        /**
+         * リスク主要理由
+         */
+        risk_reason?: string;
+        /**
+         * EkycResult
+         *
+         * eKYC検証結果
+         */
+        ekyc?: {
+            /**
+             * eKYC総合判定
+             */
+            verified: boolean;
+            /**
+             * 検証日時
+             */
+            verified_at?: string;
+            /**
+             * 顔写真（申請者撮影）URL
+             */
+            face_photo_url?: string;
+            /**
+             * 本人確認書類アップロード画像URL
+             */
+            id_document_url?: string;
+            /**
+             * 本人確認書類種別
+             */
+            document_type?: string;
+            /**
+             * 顔認証結果
+             */
+            face_match?: {
+                /**
+                 * 顔認証類似度（%）
+                 */
+                similarity: number;
+                /**
+                 * 顔認証判定結果
+                 */
+                passed: boolean;
+            };
+            /**
+             * ブラックリストチェック結果
+             */
+            blacklist_check?: {
+                /**
+                 * ブラックリスト一致有無
+                 */
+                matched: boolean;
+                /**
+                 * 一致理由
+                 */
+                reason?: string;
+            };
+        };
         applicant?: {
             birthday?: string;
             phone?: string;
@@ -4402,6 +4573,63 @@ export type CreateFamilyRegistrationResponse = {
         store_name: string;
         monthly_fee: number;
         risk_score?: number;
+        /**
+         * リスク主要理由
+         */
+        risk_reason?: string;
+        /**
+         * EkycResult
+         *
+         * eKYC検証結果
+         */
+        ekyc?: {
+            /**
+             * eKYC総合判定
+             */
+            verified: boolean;
+            /**
+             * 検証日時
+             */
+            verified_at?: string;
+            /**
+             * 顔写真（申請者撮影）URL
+             */
+            face_photo_url?: string;
+            /**
+             * 本人確認書類アップロード画像URL
+             */
+            id_document_url?: string;
+            /**
+             * 本人確認書類種別
+             */
+            document_type?: string;
+            /**
+             * 顔認証結果
+             */
+            face_match?: {
+                /**
+                 * 顔認証類似度（%）
+                 */
+                similarity: number;
+                /**
+                 * 顔認証判定結果
+                 */
+                passed: boolean;
+            };
+            /**
+             * ブラックリストチェック結果
+             */
+            blacklist_check?: {
+                /**
+                 * ブラックリスト一致有無
+                 */
+                matched: boolean;
+                /**
+                 * 一致理由
+                 */
+                reason?: string;
+            };
+        };
     };
 };
 
@@ -5434,6 +5662,63 @@ export type GetCrmFamilyRegistrationsByIdResponses = {
             store_name: string;
             monthly_fee: number;
             risk_score?: number;
+            /**
+             * リスク主要理由
+             */
+            risk_reason?: string;
+            /**
+             * EkycResult
+             *
+             * eKYC検証結果
+             */
+            ekyc?: {
+                /**
+                 * eKYC総合判定
+                 */
+                verified: boolean;
+                /**
+                 * 検証日時
+                 */
+                verified_at?: string;
+                /**
+                 * 顔写真（申請者撮影）URL
+                 */
+                face_photo_url?: string;
+                /**
+                 * 本人確認書類アップロード画像URL
+                 */
+                id_document_url?: string;
+                /**
+                 * 本人確認書類種別
+                 */
+                document_type?: string;
+                /**
+                 * 顔認証結果
+                 */
+                face_match?: {
+                    /**
+                     * 顔認証類似度（%）
+                     */
+                    similarity: number;
+                    /**
+                     * 顔認証判定結果
+                     */
+                    passed: boolean;
+                };
+                /**
+                 * ブラックリストチェック結果
+                 */
+                blacklist_check?: {
+                    /**
+                     * ブラックリスト一致有無
+                     */
+                    matched: boolean;
+                    /**
+                     * 一致理由
+                     */
+                    reason?: string;
+                };
+            };
             applicant?: {
                 birthday?: string;
                 phone?: string;
@@ -5757,6 +6042,63 @@ export type GetCrmFamilyRegistrationsResponses = {
             store_name: string;
             monthly_fee: number;
             risk_score?: number;
+            /**
+             * リスク主要理由
+             */
+            risk_reason?: string;
+            /**
+             * EkycResult
+             *
+             * eKYC検証結果
+             */
+            ekyc?: {
+                /**
+                 * eKYC総合判定
+                 */
+                verified: boolean;
+                /**
+                 * 検証日時
+                 */
+                verified_at?: string;
+                /**
+                 * 顔写真（申請者撮影）URL
+                 */
+                face_photo_url?: string;
+                /**
+                 * 本人確認書類アップロード画像URL
+                 */
+                id_document_url?: string;
+                /**
+                 * 本人確認書類種別
+                 */
+                document_type?: string;
+                /**
+                 * 顔認証結果
+                 */
+                face_match?: {
+                    /**
+                     * 顔認証類似度（%）
+                     */
+                    similarity: number;
+                    /**
+                     * 顔認証判定結果
+                     */
+                    passed: boolean;
+                };
+                /**
+                 * ブラックリストチェック結果
+                 */
+                blacklist_check?: {
+                    /**
+                     * ブラックリスト一致有無
+                     */
+                    matched: boolean;
+                    /**
+                     * 一致理由
+                     */
+                    reason?: string;
+                };
+            };
         }>;
         pagination: {
             total: number;
@@ -5840,6 +6182,63 @@ export type PostCrmFamilyRegistrationsResponses = {
             store_name: string;
             monthly_fee: number;
             risk_score?: number;
+            /**
+             * リスク主要理由
+             */
+            risk_reason?: string;
+            /**
+             * EkycResult
+             *
+             * eKYC検証結果
+             */
+            ekyc?: {
+                /**
+                 * eKYC総合判定
+                 */
+                verified: boolean;
+                /**
+                 * 検証日時
+                 */
+                verified_at?: string;
+                /**
+                 * 顔写真（申請者撮影）URL
+                 */
+                face_photo_url?: string;
+                /**
+                 * 本人確認書類アップロード画像URL
+                 */
+                id_document_url?: string;
+                /**
+                 * 本人確認書類種別
+                 */
+                document_type?: string;
+                /**
+                 * 顔認証結果
+                 */
+                face_match?: {
+                    /**
+                     * 顔認証類似度（%）
+                     */
+                    similarity: number;
+                    /**
+                     * 顔認証判定結果
+                     */
+                    passed: boolean;
+                };
+                /**
+                 * ブラックリストチェック結果
+                 */
+                blacklist_check?: {
+                    /**
+                     * ブラックリスト一致有無
+                     */
+                    matched: boolean;
+                    /**
+                     * 一致理由
+                     */
+                    reason?: string;
+                };
+            };
         };
     };
 };

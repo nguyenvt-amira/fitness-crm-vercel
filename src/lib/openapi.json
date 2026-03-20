@@ -6073,6 +6073,83 @@
           "risk_score": {
             "type": "number",
             "example": 20
+          },
+          "risk_reason": {
+            "type": "string",
+            "example": "ブラックリスト一致",
+            "description": "リスク主要理由"
+          },
+          "ekyc": {
+            "type": "object",
+            "properties": {
+              "verified": {
+                "type": "boolean",
+                "example": true,
+                "description": "eKYC総合判定"
+              },
+              "verified_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2024-01-15T10:30:00Z",
+                "description": "検証日時"
+              },
+              "face_photo_url": {
+                "type": "string",
+                "format": "uri",
+                "example": "https://example.com/photos/face_001.jpg",
+                "description": "顔写真（申請者撮影）URL"
+              },
+              "id_document_url": {
+                "type": "string",
+                "format": "uri",
+                "example": "https://example.com/photos/id_001.jpg",
+                "description": "本人確認書類アップロード画像URL"
+              },
+              "document_type": {
+                "type": "string",
+                "example": "運転免許証",
+                "description": "本人確認書類種別"
+              },
+              "face_match": {
+                "type": "object",
+                "properties": {
+                  "similarity": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "example": 92.5,
+                    "description": "顔認証類似度（%）"
+                  },
+                  "passed": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "顔認証判定結果"
+                  }
+                },
+                "required": ["similarity", "passed"],
+                "description": "顔認証結果"
+              },
+              "blacklist_check": {
+                "type": "object",
+                "properties": {
+                  "matched": {
+                    "type": "boolean",
+                    "example": false,
+                    "description": "ブラックリスト一致有無"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "example": "過去に不正利用の記録あり",
+                    "description": "一致理由"
+                  }
+                },
+                "required": ["matched"],
+                "description": "ブラックリストチェック結果"
+              }
+            },
+            "required": ["verified"],
+            "title": "EkycResult",
+            "description": "eKYC検証結果"
           }
         },
         "required": [
@@ -6207,6 +6284,83 @@
                 "risk_score": {
                   "type": "number",
                   "example": 20
+                },
+                "risk_reason": {
+                  "type": "string",
+                  "example": "ブラックリスト一致",
+                  "description": "リスク主要理由"
+                },
+                "ekyc": {
+                  "type": "object",
+                  "properties": {
+                    "verified": {
+                      "type": "boolean",
+                      "example": true,
+                      "description": "eKYC総合判定"
+                    },
+                    "verified_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2024-01-15T10:30:00Z",
+                      "description": "検証日時"
+                    },
+                    "face_photo_url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://example.com/photos/face_001.jpg",
+                      "description": "顔写真（申請者撮影）URL"
+                    },
+                    "id_document_url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://example.com/photos/id_001.jpg",
+                      "description": "本人確認書類アップロード画像URL"
+                    },
+                    "document_type": {
+                      "type": "string",
+                      "example": "運転免許証",
+                      "description": "本人確認書類種別"
+                    },
+                    "face_match": {
+                      "type": "object",
+                      "properties": {
+                        "similarity": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100,
+                          "example": 92.5,
+                          "description": "顔認証類似度（%）"
+                        },
+                        "passed": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "顔認証判定結果"
+                        }
+                      },
+                      "required": ["similarity", "passed"],
+                      "description": "顔認証結果"
+                    },
+                    "blacklist_check": {
+                      "type": "object",
+                      "properties": {
+                        "matched": {
+                          "type": "boolean",
+                          "example": false,
+                          "description": "ブラックリスト一致有無"
+                        },
+                        "reason": {
+                          "type": "string",
+                          "example": "過去に不正利用の記録あり",
+                          "description": "一致理由"
+                        }
+                      },
+                      "required": ["matched"],
+                      "description": "ブラックリストチェック結果"
+                    }
+                  },
+                  "required": ["verified"],
+                  "title": "EkycResult",
+                  "description": "eKYC検証結果"
                 }
               },
               "required": [
@@ -6316,6 +6470,83 @@
               "risk_score": {
                 "type": "number",
                 "example": 20
+              },
+              "risk_reason": {
+                "type": "string",
+                "example": "ブラックリスト一致",
+                "description": "リスク主要理由"
+              },
+              "ekyc": {
+                "type": "object",
+                "properties": {
+                  "verified": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "eKYC総合判定"
+                  },
+                  "verified_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2024-01-15T10:30:00Z",
+                    "description": "検証日時"
+                  },
+                  "face_photo_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://example.com/photos/face_001.jpg",
+                    "description": "顔写真（申請者撮影）URL"
+                  },
+                  "id_document_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://example.com/photos/id_001.jpg",
+                    "description": "本人確認書類アップロード画像URL"
+                  },
+                  "document_type": {
+                    "type": "string",
+                    "example": "運転免許証",
+                    "description": "本人確認書類種別"
+                  },
+                  "face_match": {
+                    "type": "object",
+                    "properties": {
+                      "similarity": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "example": 92.5,
+                        "description": "顔認証類似度（%）"
+                      },
+                      "passed": {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "顔認証判定結果"
+                      }
+                    },
+                    "required": ["similarity", "passed"],
+                    "description": "顔認証結果"
+                  },
+                  "blacklist_check": {
+                    "type": "object",
+                    "properties": {
+                      "matched": {
+                        "type": "boolean",
+                        "example": false,
+                        "description": "ブラックリスト一致有無"
+                      },
+                      "reason": {
+                        "type": "string",
+                        "example": "過去に不正利用の記録あり",
+                        "description": "一致理由"
+                      }
+                    },
+                    "required": ["matched"],
+                    "description": "ブラックリストチェック結果"
+                  }
+                },
+                "required": ["verified"],
+                "title": "EkycResult",
+                "description": "eKYC検証結果"
               },
               "applicant": {
                 "type": "object",
@@ -6476,6 +6707,83 @@
               "risk_score": {
                 "type": "number",
                 "example": 20
+              },
+              "risk_reason": {
+                "type": "string",
+                "example": "ブラックリスト一致",
+                "description": "リスク主要理由"
+              },
+              "ekyc": {
+                "type": "object",
+                "properties": {
+                  "verified": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "eKYC総合判定"
+                  },
+                  "verified_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2024-01-15T10:30:00Z",
+                    "description": "検証日時"
+                  },
+                  "face_photo_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://example.com/photos/face_001.jpg",
+                    "description": "顔写真（申請者撮影）URL"
+                  },
+                  "id_document_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://example.com/photos/id_001.jpg",
+                    "description": "本人確認書類アップロード画像URL"
+                  },
+                  "document_type": {
+                    "type": "string",
+                    "example": "運転免許証",
+                    "description": "本人確認書類種別"
+                  },
+                  "face_match": {
+                    "type": "object",
+                    "properties": {
+                      "similarity": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 100,
+                        "example": 92.5,
+                        "description": "顔認証類似度（%）"
+                      },
+                      "passed": {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "顔認証判定結果"
+                      }
+                    },
+                    "required": ["similarity", "passed"],
+                    "description": "顔認証結果"
+                  },
+                  "blacklist_check": {
+                    "type": "object",
+                    "properties": {
+                      "matched": {
+                        "type": "boolean",
+                        "example": false,
+                        "description": "ブラックリスト一致有無"
+                      },
+                      "reason": {
+                        "type": "string",
+                        "example": "過去に不正利用の記録あり",
+                        "description": "一致理由"
+                      }
+                    },
+                    "required": ["matched"],
+                    "description": "ブラックリストチェック結果"
+                  }
+                },
+                "required": ["verified"],
+                "title": "EkycResult",
+                "description": "eKYC検証結果"
               }
             },
             "required": [
@@ -8187,6 +8495,83 @@
                           "type": "number",
                           "example": 20
                         },
+                        "risk_reason": {
+                          "type": "string",
+                          "example": "ブラックリスト一致",
+                          "description": "リスク主要理由"
+                        },
+                        "ekyc": {
+                          "type": "object",
+                          "properties": {
+                            "verified": {
+                              "type": "boolean",
+                              "example": true,
+                              "description": "eKYC総合判定"
+                            },
+                            "verified_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "example": "2024-01-15T10:30:00Z",
+                              "description": "検証日時"
+                            },
+                            "face_photo_url": {
+                              "type": "string",
+                              "format": "uri",
+                              "example": "https://example.com/photos/face_001.jpg",
+                              "description": "顔写真（申請者撮影）URL"
+                            },
+                            "id_document_url": {
+                              "type": "string",
+                              "format": "uri",
+                              "example": "https://example.com/photos/id_001.jpg",
+                              "description": "本人確認書類アップロード画像URL"
+                            },
+                            "document_type": {
+                              "type": "string",
+                              "example": "運転免許証",
+                              "description": "本人確認書類種別"
+                            },
+                            "face_match": {
+                              "type": "object",
+                              "properties": {
+                                "similarity": {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 100,
+                                  "example": 92.5,
+                                  "description": "顔認証類似度（%）"
+                                },
+                                "passed": {
+                                  "type": "boolean",
+                                  "example": true,
+                                  "description": "顔認証判定結果"
+                                }
+                              },
+                              "required": ["similarity", "passed"],
+                              "description": "顔認証結果"
+                            },
+                            "blacklist_check": {
+                              "type": "object",
+                              "properties": {
+                                "matched": {
+                                  "type": "boolean",
+                                  "example": false,
+                                  "description": "ブラックリスト一致有無"
+                                },
+                                "reason": {
+                                  "type": "string",
+                                  "example": "過去に不正利用の記録あり",
+                                  "description": "一致理由"
+                                }
+                              },
+                              "required": ["matched"],
+                              "description": "ブラックリストチェック結果"
+                            }
+                          },
+                          "required": ["verified"],
+                          "title": "EkycResult",
+                          "description": "eKYC検証結果"
+                        },
                         "applicant": {
                           "type": "object",
                           "properties": {
@@ -8954,6 +9339,83 @@
                           "risk_score": {
                             "type": "number",
                             "example": 20
+                          },
+                          "risk_reason": {
+                            "type": "string",
+                            "example": "ブラックリスト一致",
+                            "description": "リスク主要理由"
+                          },
+                          "ekyc": {
+                            "type": "object",
+                            "properties": {
+                              "verified": {
+                                "type": "boolean",
+                                "example": true,
+                                "description": "eKYC総合判定"
+                              },
+                              "verified_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2024-01-15T10:30:00Z",
+                                "description": "検証日時"
+                              },
+                              "face_photo_url": {
+                                "type": "string",
+                                "format": "uri",
+                                "example": "https://example.com/photos/face_001.jpg",
+                                "description": "顔写真（申請者撮影）URL"
+                              },
+                              "id_document_url": {
+                                "type": "string",
+                                "format": "uri",
+                                "example": "https://example.com/photos/id_001.jpg",
+                                "description": "本人確認書類アップロード画像URL"
+                              },
+                              "document_type": {
+                                "type": "string",
+                                "example": "運転免許証",
+                                "description": "本人確認書類種別"
+                              },
+                              "face_match": {
+                                "type": "object",
+                                "properties": {
+                                  "similarity": {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 100,
+                                    "example": 92.5,
+                                    "description": "顔認証類似度（%）"
+                                  },
+                                  "passed": {
+                                    "type": "boolean",
+                                    "example": true,
+                                    "description": "顔認証判定結果"
+                                  }
+                                },
+                                "required": ["similarity", "passed"],
+                                "description": "顔認証結果"
+                              },
+                              "blacklist_check": {
+                                "type": "object",
+                                "properties": {
+                                  "matched": {
+                                    "type": "boolean",
+                                    "example": false,
+                                    "description": "ブラックリスト一致有無"
+                                  },
+                                  "reason": {
+                                    "type": "string",
+                                    "example": "過去に不正利用の記録あり",
+                                    "description": "一致理由"
+                                  }
+                                },
+                                "required": ["matched"],
+                                "description": "ブラックリストチェック結果"
+                              }
+                            },
+                            "required": ["verified"],
+                            "title": "EkycResult",
+                            "description": "eKYC検証結果"
                           }
                         },
                         "required": [
@@ -9156,6 +9618,83 @@
                         "risk_score": {
                           "type": "number",
                           "example": 20
+                        },
+                        "risk_reason": {
+                          "type": "string",
+                          "example": "ブラックリスト一致",
+                          "description": "リスク主要理由"
+                        },
+                        "ekyc": {
+                          "type": "object",
+                          "properties": {
+                            "verified": {
+                              "type": "boolean",
+                              "example": true,
+                              "description": "eKYC総合判定"
+                            },
+                            "verified_at": {
+                              "type": "string",
+                              "format": "date-time",
+                              "example": "2024-01-15T10:30:00Z",
+                              "description": "検証日時"
+                            },
+                            "face_photo_url": {
+                              "type": "string",
+                              "format": "uri",
+                              "example": "https://example.com/photos/face_001.jpg",
+                              "description": "顔写真（申請者撮影）URL"
+                            },
+                            "id_document_url": {
+                              "type": "string",
+                              "format": "uri",
+                              "example": "https://example.com/photos/id_001.jpg",
+                              "description": "本人確認書類アップロード画像URL"
+                            },
+                            "document_type": {
+                              "type": "string",
+                              "example": "運転免許証",
+                              "description": "本人確認書類種別"
+                            },
+                            "face_match": {
+                              "type": "object",
+                              "properties": {
+                                "similarity": {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 100,
+                                  "example": 92.5,
+                                  "description": "顔認証類似度（%）"
+                                },
+                                "passed": {
+                                  "type": "boolean",
+                                  "example": true,
+                                  "description": "顔認証判定結果"
+                                }
+                              },
+                              "required": ["similarity", "passed"],
+                              "description": "顔認証結果"
+                            },
+                            "blacklist_check": {
+                              "type": "object",
+                              "properties": {
+                                "matched": {
+                                  "type": "boolean",
+                                  "example": false,
+                                  "description": "ブラックリスト一致有無"
+                                },
+                                "reason": {
+                                  "type": "string",
+                                  "example": "過去に不正利用の記録あり",
+                                  "description": "一致理由"
+                                }
+                              },
+                              "required": ["matched"],
+                              "description": "ブラックリストチェック結果"
+                            }
+                          },
+                          "required": ["verified"],
+                          "title": "EkycResult",
+                          "description": "eKYC検証結果"
                         }
                       },
                       "required": [

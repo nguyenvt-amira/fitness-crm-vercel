@@ -26,6 +26,7 @@ import {
 
 import { getCrmFamilyRegistrationsInfiniteOptions } from '@/lib/api/@tanstack/react-query.gen';
 import type { FamilyRegistration, GetCrmFamilyRegistrationsResponse } from '@/lib/api/types.gen';
+import { navigate } from '@/lib/routes/routes.util';
 
 import {
   ApproveFamilyRegistrationModal,
@@ -33,28 +34,10 @@ import {
 } from './approve-family-registration-modal';
 import { RejectFamilyRegistrationModal } from './reject-family-registration-modal';
 
-const relationshipLabel = (rel?: FamilyRegistration['relationship']) => {
-  switch (rel) {
-    case 'spouse':
-      return '配偶者';
-    case 'child':
-      return '子';
-    case 'parent':
-      return '親';
-    case 'sibling':
-      return '兄弟';
-    case 'grandparent':
-      return '祖父母';
-    case 'grandchild':
-      return '孫';
-    default:
-      return '—';
-  }
-};
-
 const createColumns = (args: {
   onApprove: (row: FamilyRegistration) => void;
   onReject: (row: FamilyRegistration) => void;
+  onView: (row: FamilyRegistration) => void;
 }): ColumnDef<FamilyRegistration>[] => [
   {
     id: 'select',
@@ -74,12 +57,15 @@ const createColumns = (args: {
   {
     accessorKey: 'applicant_name',
     header: () => <span className="flex items-center gap-1 font-medium">申請者</span>,
+    cell: ({ row }) => <span className="text-sm font-medium">{row.original.applicant_name}</span>,
+  },
+  {
+    accessorKey: 'primary_member_name',
+    header: () => <span className="flex items-center gap-1 font-medium">主会員氏名</span>,
     cell: ({ row }) => (
       <div className="flex flex-col">
-        <span className="py-2 text-sm font-medium">{row.original.applicant_name}</span>
-        <span className="text-muted-foreground text-xs">
-          主会員: {row.original.primary_member_name}（{row.original.primary_member_id}）
-        </span>
+        <span className="text-sm font-medium">{row.original.primary_member_name}</span>
+        <span className="text-muted-foreground text-xs">{row.original.primary_member_id}</span>
       </div>
     ),
   },
@@ -104,44 +90,50 @@ const createColumns = (args: {
     ),
   },
   {
-    accessorKey: 'relationship',
-    header: () => <span className="font-medium">続柄</span>,
-    cell: ({ row }) => (
-      <span className="text-sm">{relationshipLabel(row.original.relationship)}</span>
-    ),
-  },
-  {
-    accessorKey: 'store_name',
-    header: () => <span className="font-medium">店舗</span>,
-    cell: ({ row }) => <span className="text-sm">{row.original.store_name ?? '—'}</span>,
-  },
-  {
-    accessorKey: 'invite_expires_at',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="招待期限" />,
-    cell: ({ row }) => (
-      <span className="text-sm">
-        {row.original.invite_expires_at
-          ? formatDateYYYYMM_HHMMSS(row.original.invite_expires_at)
-          : '—'}
-      </span>
-    ),
-  },
-  {
-    accessorKey: 'monthly_fee',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="月会費" />,
-    cell: ({ row }) => (
-      <span className="text-sm">
-        {typeof row.original.monthly_fee === 'number'
-          ? `${row.original.monthly_fee.toLocaleString()}円`
-          : '—'}
-      </span>
-    ),
+    accessorKey: 'ekyc',
+    header: () => <span className="font-medium">eKYC検証結果</span>,
+    cell: ({ row }) => {
+      const ekyc = row.original.ekyc;
+      if (!ekyc) return <span className="text-muted-foreground text-sm">—</span>;
+      return (
+        <div className="flex items-center gap-2">
+          <span
+            className={`inline-flex w-fit items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+              ekyc.verified ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'
+            }`}
+          >
+            {ekyc.verified ? '検証済' : '未検証'}
+          </span>
+          <div className="flex flex-col gap-1">
+            {/* 総合判定 */}
+            {/* 顔認証結果 */}
+            {ekyc.face_match && (
+              <span
+                className={`text-xs ${ekyc.face_match.passed ? 'text-green-600' : 'text-destructive'}`}
+              >
+                顔認証: {ekyc.face_match.similarity.toFixed(1)}%{' '}
+                {ekyc.face_match.passed ? '✓' : '✗'}
+              </span>
+            )}
+            {/* ブラックリスト */}
+            {ekyc.blacklist_check && (
+              <span
+                className={`text-xs ${ekyc.blacklist_check.matched ? 'text-destructive' : 'text-muted-foreground'}`}
+              >
+                BL: {ekyc.blacklist_check.matched ? '一致' : '問題なし'}
+              </span>
+            )}
+          </div>
+        </div>
+      );
+    },
+    enableSorting: false,
   },
   {
     id: 'actions',
-    header: () => <span className="inline-flex w-full justify-end font-medium">アクション</span>,
+    header: () => <span className="font-medium">アクション</span>,
     cell: ({ row }) => (
-      <div className="flex justify-end gap-2" onClick={(e) => e.stopPropagation()}>
+      <div className="flex justify-start gap-2" onClick={(e) => e.stopPropagation()}>
         <Button
           variant="destructive"
           size="sm"
@@ -152,6 +144,14 @@ const createColumns = (args: {
         </Button>
         <Button size="sm" className="h-8" onClick={() => args.onApprove(row.original)}>
           承認
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          className="h-8"
+          onClick={() => args.onView(row.original)}
+        >
+          詳細
         </Button>
       </div>
     ),
@@ -201,15 +201,18 @@ export function PendingFamilyRegistrationsTab({
         setTarget(row);
         setRejectModalState({ status: true, type: 'single' });
       },
+      onView: (row) => {
+        router.push(navigate('/family-registrations/[id]', row.id));
+      },
     });
-  }, []);
+  }, [router]);
 
   const listQuery = useMemo(
     () => ({
       status: 'pending_review' as const,
       sort_by: (sorting?.[0]?.id as 'created_at' | 'risk_score' | undefined) ?? sortBy,
       sort_order: (sorting?.[0]?.desc ? 'desc' : 'asc') as 'desc' | 'asc',
-      limit: 50,
+      limit: 20,
       search: searchQuery || undefined,
     }),
     [sortBy, sorting, searchQuery],
@@ -275,7 +278,7 @@ export function PendingFamilyRegistrationsTab({
         }}
       />
 
-      <Card className="overflow-hidden rounded-lg border shadow-sm">
+      <Card className="overflow-hidden rounded-lg border py-0 shadow-sm">
         <div className="flex flex-col gap-4 p-4">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="relative w-full max-w-[360px]">
@@ -352,8 +355,9 @@ export function PendingFamilyRegistrationsTab({
                 onRowSelectionChange: setRowSelection,
               }}
               onRowClick={(row) => {
-                router.push(`/family-registrations/${row.id}`);
+                router.push(navigate('/family-registrations/[id]', row.id));
               }}
+              containerClassName="h-[70vh] overflow-y-auto"
             />
           </div>
         </div>
