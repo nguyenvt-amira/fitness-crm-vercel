@@ -103,12 +103,12 @@ function MembersPageContent() {
   return (
     <div className="flex flex-1 flex-col">
       {/* Header Section */}
-      <div className="flex items-center justify-between border-b px-4 py-4">
+      <div className="flex flex-col gap-3 border-b px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
           <User className="text-foreground size-6" />
           <BreadcrumbNav items={BREADCRUMB_ITEMS} variant="section" />
         </div>
-        <Button variant="outline" className="gap-2">
+        <Button variant="outline" className="w-full gap-2 sm:w-auto">
           <Download className="size-4" />
           あんしんサポート契約状況の出力
         </Button>
@@ -126,13 +126,13 @@ function MembersPageContent() {
         </MembersFiltersProvider>
 
         {/* Total Count */}
-        <div className="flex justify-between border-t px-4 py-4">
-          <p className="text-lg font-medium">総件数: {total}人</p>
+        <div className="flex flex-col gap-3 border-t px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-base font-medium sm:text-lg">総件数: {total}人</p>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
-                Columns
+              <Button variant="outline" className="w-full sm:ml-auto sm:w-auto">
+                列の表示/非表示
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -181,6 +181,7 @@ function MembersPageContent() {
               }
             }}
             onTableReady={setTable}
+            containerClassName="max-h-[calc(100vh-372px)]"
           />
         </div>
       </div>

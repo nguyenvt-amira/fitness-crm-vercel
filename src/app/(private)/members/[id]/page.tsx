@@ -200,8 +200,8 @@ export default function MemberDetailPage() {
       <div className="bg-card border-b p-4">
         <Card>
           <CardHeader>
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-4">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div className="flex items-start gap-4">
                 <Avatar className="size-16">
                   <AvatarImage src={member.ekyc?.photoUrl} alt={member.basic_info.name_kanji} />
                   <AvatarFallback>
@@ -211,14 +211,16 @@ export default function MemberDetailPage() {
                       .join('')}
                   </AvatarFallback>
                 </Avatar>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <CardTitle className="text-xl">{member.basic_info.name_kanji}</CardTitle>
-                    <span className="text-muted-foreground text-base font-normal">
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <CardTitle className="text-lg sm:text-xl">
+                      {member.basic_info.name_kanji}
+                    </CardTitle>
+                    <span className="text-muted-foreground text-sm font-normal sm:text-base">
                       {member.basic_info.name_kana}
                     </span>
                   </div>
-                  <div className="mt-2 flex items-center gap-2">
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
                     <Badge variant={STATUS_VARIANTS[member.profile.status]}>
                       {MEMBER_STATUS_LABELS[member.profile.status]}
                     </Badge>
@@ -235,13 +237,13 @@ export default function MemberDetailPage() {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Link href={navigate('/members')}>
-                  <Button variant="outline" size="sm">
+              <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
+                <Button asChild variant="outline" size="sm">
+                  <Link href={navigate('/members')}>
                     <ArrowLeft className="mr-2 size-4" />
                     一覧に戻る
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
                 <Button variant="outline" size="sm" onClick={handlePrint}>
                   <Printer className="mr-2 size-4" />
                   印刷
@@ -289,17 +291,19 @@ export default function MemberDetailPage() {
       {/* Tabs */}
       <div className="flex-1 overflow-auto p-4">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-9">
-            <TabsTrigger value="basic">基本情報</TabsTrigger>
-            <TabsTrigger value="contracts">契約情報</TabsTrigger>
-            <TabsTrigger value="points">ポイント</TabsTrigger>
-            <TabsTrigger value="usage">利用履歴</TabsTrigger>
-            <TabsTrigger value="training">トレーニング記録</TabsTrigger>
-            <TabsTrigger value="service">サービス利用</TabsTrigger>
-            <TabsTrigger value="communications">コミュニケーション</TabsTrigger>
-            <TabsTrigger value="history">変更履歴</TabsTrigger>
-            <TabsTrigger value="relationships">関係性</TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto overflow-y-hidden">
+            <TabsList className="inline-flex w-full min-w-max">
+              <TabsTrigger value="basic">基本情報</TabsTrigger>
+              <TabsTrigger value="contracts">契約情報</TabsTrigger>
+              <TabsTrigger value="points">ポイント</TabsTrigger>
+              <TabsTrigger value="usage">利用履歴</TabsTrigger>
+              <TabsTrigger value="training">トレーニング記録</TabsTrigger>
+              <TabsTrigger value="service">サービス利用</TabsTrigger>
+              <TabsTrigger value="communications">コミュニケーション</TabsTrigger>
+              <TabsTrigger value="history">変更履歴</TabsTrigger>
+              <TabsTrigger value="relationships">関係性</TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="basic" className="mt-4">
             <BasicInfoTab memberId={memberId} />
