@@ -1,20 +1,20 @@
 # Fitness CRM
 
-fitnessのCRM(会員管理) WEBアプリ
+フィットネス向けCRM（会員管理）Webアプリケーションです。
 
 # 技術スタック
 
-| カテゴリ       | 採用技術                 | 備考                                                       |
-| :------------- | :----------------------- | :--------------------------------------------------------- |
-| 実行環境       | Node.js                  | v24以上を推奨                                              |
-| 言語           | TypeScript               | 全域での型安全性の担保                                     |
-| フレームワーク | Next.js                  | App Router採用                                             |
-| UIライブラリ   | shadcn/ui                | Tailwind CSSベースのコンポーネント                         |
-| 構文チェック   | ESLint                   | コード品質の自動チェック                                   |
-| 自動整形       | Prettier                 | チーム間でのコードスタイルの統一 <br> import順の自動ソート |
-| コミット制御   | husky <br /> lint-staged | コミット時のLint/Formatterの自動実行                       |
+| カテゴリ       | 技術                     | 備考                                                             |
+| :------------- | :----------------------- | :--------------------------------------------------------------- |
+| ランタイム     | Node.js                  | v24以上を推奨                                                    |
+| 言語           | TypeScript               | 全体にわたる型安全性の確保                                       |
+| フレームワーク | Next.js                  | App Routerを使用                                                 |
+| UIライブラリ   | shadcn/ui                | Tailwind CSSベースのコンポーネント                               |
+| リンター       | ESLint                   | コード品質の自動チェック                                         |
+| フォーマッター | Prettier                 | チーム全体での統一されたコードスタイル <br> インポートの自動整列 |
+| コミット管理   | husky <br /> lint-staged | コミット時にLint/フォーマッターを自動実行                        |
 
-# Getting Started
+# はじめに
 
 ## インストール
 
@@ -22,48 +22,95 @@ fitnessのCRM(会員管理) WEBアプリ
 npm install
 ```
 
-`npm install` 時にhusky(Git hooks)も自動でセットアップされます。
+`npm install` 実行時に husky（Gitフック）も自動的にセットアップされます。
 
-## 開発サーバの起動
+## 環境変数の設定
+
+サンプルの環境ファイルをコピーし、必要に応じて値を更新してください：
+
+```bash
+cp .env.example .env
+```
+
+## 開発サーバーの起動
 
 ```bash
 npm run dev
 ```
 
-起動後、 [http://localhost:3000](http://localhost:3000) にアクセスしてください。
+起動後、[http://localhost:3000](http://localhost:3000) にアクセスしてください。
 
-# Linter / Formatter
+## リンター / フォーマッター
 
-LinterとFormatterはcommit時に自動実行されます。
-プロジェクト全体に適用したい場合は手動で実行してください。
+リンターとフォーマッターはコミット時に自動実行されます。
+プロジェクト全体に手動で適用する場合は、必要に応じて以下のコマンドを実行してください。
+プロジェクトインストール時に生成されたデフォルト設定（eslint-config-next/core-web-vitals）を使用しています。
 
 - ESLint
-  - 設定ファイル: [eslint.config.mjs](./eslint.config.mjs)
-  - 手動実行: `npm run lint`
+  - 設定ファイル：[eslint.config.mjs](./eslint.config.mjs)
+  - 手動実行：`npm run lint`
 - Prettier
-  - 設定ファイル: [prettier.config.mjs](./prettier.config.mjs)
-  - 手動実行: `npm run format`
+  - 設定ファイル：[prettier.config.mjs](./prettier.config.mjs)
+  - 手動実行：`npm run format`
 
-# Codebase Overview
+# コードベース概要
 
-## 1. Operating Modes
+## 1. フォルダ構成
 
-- **`npm run dev`**: Start development mode with automatic route generation and file watching
-- **`npm run build`**: Build the application (includes automatic route generation)
-- **`npm run start`**: Start the production server
-- **`npm run generate-routes`**: Manually generate routes configuration
-- **`npm run generate-api`**: Generate API client from backend OpenAPI spec
-- **`npm run generate-client`**: Generate API client from remote API endpoint
+```text
+src/
+├── app/                          # 【ルーティング & ドメインロジック】
+│   ├── (public)/                 # パブリックアクセス（ログイン、登録、パスワードリセット）
+│   ├── (shared)/                 # 共通ルート（ホーム、アバウト）
+│   ├── (private)/                # 認証が必要なルート（ダッシュボード、プロフィール）
+│   │   └── (dashboard)/          # メインアプリケーションシェル
+│   │       ├── customers/        # 顧客ドメイン
+│   │       │   ├── _components/  # ローカルUI（CustomerTable、CustomerModal）
+│   │       │   ├── _hooks/       # ローカルロジック（useCustomerSort、useStats）
+│   │       │   ├── _types/       # ローカルビューモデル / インターフェース
+│   │       │   ├── actions.ts    # サーバーアクション
+│   │       │   └── page.tsx      # /customers のエントリポイント
+│   │       └── training/         # トレーニングドメイン
+│   │           ├── _components/
+│   │           └── page.tsx
+│   ├── layout.tsx                # グローバルルートレイアウト
+│   └── error.tsx                 # グローバルエラーバウンダリ
+├── components/                   # 【共通UIコンポーネント】
+│   ├── ui/                       # プリミティブパーツ（@heroui/react）
+│   └── layout/                   # グローバル構造（サイドバー、ナビゲーションバー）
+├── configs/                      # 【外部ライブラリ設定】
+├── constants/                    # 【グローバル定数】
+├── hooks/                        # 【グローバル共通フック】
+├── lib/                          # 【コアライブラリ & 自動生成】
+│   ├── api/                      # @hey-api によって生成
+│   ├── routes/                   # 型安全なナビゲーション
+│   └── utils.ts                  # ヘルパー関数
+├── providers/                    # 【コンテキスト & 状態注入】
+├── services/                     # 【サービスレイヤー】
+├── stores/                       # 【グローバル状態管理】
+├── styles/                       # 【スタイリング】（TailwindCSS v4）
+├── types/                        # 【グローバル共通型】
+└── utils/                        # 【ヘルパー関数】
+```
 
-## 2. OpenAPI
+## 2. 動作モード
 
-- First, get familiar with the `hey-api` library being used ([documents](https://heyapi.dev/openapi-ts/get-started)).
+- **`npm run dev`**：ルート自動生成とファイル監視を有効にした開発モードで起動
+- **`npm run build`**：アプリケーションのビルド（ルート自動生成を含む）
+- **`npm run start`**：本番サーバーの起動
+- **`npm run generate-routes`**：ルート設定を手動で生成
+- **`npm run generate-api`**：バックエンドの OpenAPI スペックから API クライアントを生成
+- **`npm run generate-client`**：リモート API エンドポイントから API クライアントを生成
 
-- To generate API definition files from `hey-api`, we have two methods:
-  - Use the command **`npm run generate-api`**: This command will call your backend server to connect to the `openapi.json` file.
-  - Use the command **`npm run generate-client`**: Before using this, ensure that you have the **`openapi.json`** file saved in **`src/lib/`**. This command will take the schemas in the `openapi.json` file to generate API definition files.
+## 3. OpenAPI
 
-- Usage:
+- まず、使用している `hey-api` ライブラリに慣れてください（[ドキュメント](https://heyapi.dev/openapi-ts/get-started)）。
+
+- `hey-api` から API 定義ファイルを生成する方法は2つあります：
+  - **`npm run generate-api`** コマンドを使用：バックエンドサーバーに接続して `openapi.json` ファイルを取得します。
+  - **`npm run generate-client`** コマンドを使用：事前に **`openapi.json`** ファイルを **`src/lib/`** に保存しておく必要があります。このコマンドは `openapi.json` 内のスキーマを元に API 定義ファイルを生成します。
+
+- 使用例：
 
 ```ts
 const { data, error } = useQuery({
@@ -95,121 +142,449 @@ addPet.mutate({
 });
 ```
 
-## 3. Route Generation
+## 4. ルート自動生成
 
-This project uses an automatic route generation system that scans your app directory and creates type-safe route configurations. This eliminates the need for manual route definitions and provides full TypeScript support.
+このプロジェクトでは、アプリディレクトリをスキャンして型安全なルート設定を自動生成するシステムを採用しています。手動でのルート定義が不要になり、TypeScript の完全なサポートが提供されます。
 
-### Features
+### 機能
 
-- **Type-Safe Navigation**: Full IntelliSense and compile-time checking
-- **Auto-Detection**: Automatically detects pages in your app directory
-- **Route Groups Support**: Supports Next.js route groups `(public)`, `(private)`, `(shared)`
-- **Dynamic Routes**: Handles static, dynamic, and catch-all routes
-- **Development Watching**: Automatically regenerates routes when you add/remove pages
+- **型安全なナビゲーション**：IntelliSense によるコンパイル時チェック
+- **自動検出**：アプリディレクトリ内のページを自動検出
+- **ルートグループ対応**：Next.js のルートグループ `(public)`、`(private)`、`(shared)` をサポート
+- **動的ルート対応**：静的・動的・キャッチオールルートに対応
+- **開発時の監視**：ページの追加・削除時にルートを自動再生成
 
-### Route Groups
+### ルートグループ
 
-- **`(public)`**: Public routes accessible without authentication
-- **`(private)`**: Private routes requiring authentication
-- **`(shared)`**: Routes accessible in any authentication state
+- **`(public)`**：認証なしでアクセス可能なパブリックルート
+- **`(private)`**：認証が必要なプライベートルート
+- **`(shared)`**：認証状態に関わらずアクセス可能な共通ルート
 
-### Usage Example
+### 使用例
 
 ```typescript
 import { isPrivateRoute, navigate } from '@/lib/routes/routes.util';
 
-// Type-safe navigation
+// 型安全なナビゲーション
 const profileUrl = navigate('/profile'); // '/profile'
 const isPrivate = isPrivateRoute('/profile'); // true
 ```
 
-### Generated Files
+### 生成ファイル
 
-The system generates 3 files in `src/lib/routes/`:
+システムは `src/lib/routes/` に3つのファイルを生成します：
 
-- `routes.config.ts`: Route configuration object
-- `routes.type.ts`: TypeScript type definitions
-- `routes.util.ts`: Utility functions for navigation
+- `routes.config.ts`：ルート設定オブジェクト
+- `routes.type.ts`：TypeScript 型定義
+- `routes.util.ts`：ナビゲーション用ユーティリティ関数
 
-> 📖 **Detailed Documentation**: See [Route Generator README](src/lib/routes/README.md) for complete usage guide and API reference.
+> 📖 **詳細ドキュメント**：完全な使用ガイドと API リファレンスは [ルートジェネレーター README](src/lib/routes/README.md) を参照してください。
 
-## 4. How to Declare a New Page
+## 5. 新規ページの追加方法
 
-With the automatic route generation system, creating new pages is simplified. Just create the page file in the appropriate route group directory, and the routes will be automatically generated.
+ルート自動生成システムにより、新規ページの作成が簡略化されています。適切なルートグループディレクトリにページファイルを作成するだけで、ルートが自動的に生成されます。
 
-### Route Groups Structure
+### ルートグループ構成
 
-- **`(public)`**: For public pages (login, signup, landing pages)
-- **`(private)`**: For authenticated user pages (dashboard, profile, settings)
-- **`(shared)`**: For pages accessible in any authentication state (home, about)
+- **`(public)`**：公開ページ（ログイン、サインアップ、ランディングページ）
+- **`(private)`**：認証済みユーザー向けページ（ダッシュボード、プロフィール、設定）
+- **`(shared)`**：認証状態に関わらずアクセス可能なページ（ホーム、アバウト）
 
-### Steps to Create a New Page
+### 新規ページの作成手順
 
-1. **Choose the appropriate route group** based on authentication requirements:
-   - Public routes → `src/app/(public)/`
-   - Private routes → `src/app/(private)/`
-   - Shared routes → `src/app/(shared)/`
+1. **認証要件に応じて適切なルートグループを選択**：
+   - パブリックルート → `src/app/(public)/`
+   - プライベートルート → `src/app/(private)/`
+   - 共通ルート → `src/app/(shared)/`
 
-2. **Create the page directory and file** following Next.js conventions:
+2. **Next.js の規約に従ってページディレクトリとファイルを作成**：
 
    ```bash
-   # For a private user profile page
+   # プライベートなユーザープロフィールページの場合
    mkdir -p src/app/\(private\)/profile
    touch src/app/\(private\)/profile/page.tsx
 
-   # For a public login page
+   # パブリックなログインページの場合
    mkdir -p src/app/\(public\)/login
    touch src/app/\(public\)/login/page.tsx
    ```
 
-3. **Implement your page component**:
+3. **ページコンポーネントを実装**：
 
    ```tsx
    // src/app/(private)/profile/page.tsx
    export default function ProfilePage() {
      return (
        <div>
-         <h1>Profile Page</h1>
-         {/* Your page content */}
+         <h1>プロフィールページ</h1>
+         {/* ページのコンテンツ */}
        </div>
      );
    }
    ```
 
-4. **Routes are automatically generated** - the system will detect your new page and update:
+4. **ルートは自動的に生成されます** — 新規ページが検出され、以下のファイルが更新されます：
    - `src/lib/routes/routes.config.ts`
    - `src/lib/routes/routes.type.ts`
    - `src/lib/routes/routes.util.ts`
 
-### Dynamic Routes
+### 動的ルート
 
-Create dynamic routes using Next.js standard patterns:
+Next.js の標準パターンを使って動的ルートを作成します：
 
 ```bash
-# Dynamic route: /users/[id]
+# 動的ルート：/users/[id]
 mkdir -p src/app/\(private\)/users/[id]
 touch src/app/\(private\)/users/[id]/page.tsx
 
-# Catch-all route: /blog/[...slug]
+# キャッチオールルート：/blog/[...slug]
 mkdir -p src/app/\(shared\)/blog/[...slug]
 touch src/app/\(shared\)/blog/[...slug]/page.tsx
 ```
 
-### Navigation
+### ナビゲーション
 
-Use the type-safe `navigate` function for programmatic navigation:
+プログラムによるナビゲーションには、型安全な `navigate` 関数を使用してください：
 
 ```typescript
 import { navigate } from '@/lib/routes/routes.util';
 
-// Static routes
+// 静的ルート
 const homeUrl = navigate('/'); // '/'
 
-// Dynamic routes with parameters
+// パラメーター付き動的ルート
 const userUrl = navigate('/users/[id]', '123'); // '/users/123'
 
-// In components with Next.js Link or router.push
-<Link href={navigate('/profile')}>Profile</Link>
+// Next.js の Link やrouter.push との組み合わせ
+<Link href={navigate('/profile')}>プロフィール</Link>
 ```
 
-> **Note**: Routes are automatically regenerated when you start the dev server or run `npm run generate-routes`. No manual configuration needed!
+> **注意**：ルートは開発サーバー起動時または `npm run generate-routes` 実行時に自動再生成されます。手動での設定は不要です。
+
+# Git フロー
+
+```mermaid
+%%{init: { 'theme': 'dark', 'themeVariables': {
+    'git0': '#f8f9fa',
+    'git1': '#00d4ff',
+    'git2': '#ccff00',
+    'git3': '#ffcc00',
+    'git4': '#ff0055',
+    'git5': '#ff0000',
+    'gitBranchLabel0': '#000000',
+    'gitBranchLabel1': '#000000',
+    'gitBranchLabel2': '#000000',
+    'gitBranchLabel3': '#000000',
+    'gitBranchLabel4': '#ffffff',
+    'gitBranchLabel5': '#ffffff',
+    'commitLabelColor': '#ffffff'
+} } }%%
+gitGraph
+    commit id: "Init project"
+
+    branch dev
+    checkout dev
+    commit id: "Init base"
+
+    checkout dev
+    branch feat/xxx
+    checkout feat/xxx
+    commit id: "feat: implement xxx"
+
+    checkout dev
+    merge feat/xxx
+
+    branch stg
+    checkout stg
+    commit id: "Merge dev to stg"
+
+    branch prod
+    checkout prod
+    commit id: "Merge stg to prod" tag: "v1.0.0"
+
+    checkout prod
+    %% hotfixブランチはgit5（赤）の色が適用される
+    branch hotfix/xxx
+    checkout hotfix/xxx
+    commit id: "CRITICAL FIX" type: REVERSE
+
+    checkout prod
+    merge hotfix/xxx tag: "v1.0.1"
+
+    checkout stg
+    merge prod
+
+    checkout dev
+    merge prod
+```
+
+---
+
+### 1. 環境ブランチ
+
+| ブランチ | 目的               |
+| -------- | ------------------ |
+| `dev`    | 開発環境           |
+| `stg`    | 本番前のテスト環境 |
+| `prod`   | 本番環境           |
+
+---
+
+### 2. 環境への昇格フロー
+
+コードはマージリクエスト（MR）を通じて各環境へ昇格されます。
+
+```
+dev → stg → prod
+```
+
+- devへの反映
+  - ローカルで動作確認
+  - devに対するMR作成
+- stgへの反映
+  - devで動作確認
+  - 承認プロセス
+  - dev→stgのMR作成
+- prodへの反映
+  - stgで動作確認
+  - 承認プロセス
+  - stg→prodのMR作成
+
+---
+
+### 3. 開発フロー
+
+機能開発は以下の手順で行います：
+
+1. `dev` から新しいブランチを作成
+2. 機能を実装
+3. `dev` へのマージリクエスト（MR）を作成
+4. MR作成時にCIパイプラインが自動実行
+5. コードレビュー後、`dev` にマージ
+
+フロー：
+
+```
+feat/* → dev
+```
+
+---
+
+### 4. ブランチ命名規則
+
+| タイプ   | 説明               |
+| -------- | ------------------ |
+| `feat`   | 新機能             |
+| `fix`    | バグ修正           |
+| `hotfix` | 本番環境の緊急修正 |
+
+例：
+
+```
+feat/member-search
+fix/login-error
+```
+
+---
+
+### 5. コミットメッセージ規則
+
+| タイプ  | 説明               |
+| ------- | ------------------ |
+| `feat`  | 新機能             |
+| `fix`   | バグ修正           |
+| `test`  | テストの追加・更新 |
+| `chore` | メンテナンス作業   |
+
+例：
+
+```
+feat: add member search feature
+```
+
+### 6. マージリクエストテンプレート
+
+#### 概要
+
+- 会員一覧画面
+
+---
+
+#### 変更内容
+
+##### 🛠 ワークフローの更新
+
+- DataTableの追加
+- tanstack の useInfiniteQuery を使用した無限スクロールの実装
+
+---
+
+#### ユーザへの影響
+
+- [x] 影響なし
+- [ ] 影響あり（詳細は以下に記載）
+
+**具体的な影響内容：**
+
+---
+
+#### 確認項目
+
+- [ ] **Unit Test**：単体テストを実施済み。
+- [ ] **Document**：必要に応じてドキュメントを更新済み。
+- [ ] **Review**：影響内容をレビュアーと共有・議論済み。
+- [ ] **Performance**：システムの処理速度に影響がないことを確認済み。
+
+---
+
+#### 関連Issue / PR
+
+- #
+
+---
+
+# CI/CD
+
+マージリクエストの作成・更新時にCIパイプラインが自動実行されます。
+
+### 1. パイプライン概要
+
+```mermaid
+flowchart LR
+    %% フェーズ1：開発
+    subgraph Phase1 [開発 & ブランチ作成]
+        A1((開始)) --> A2[新しいブランチを作成]
+        A2 --> A3[コードをプッシュ]
+    end
+
+    %% フェーズ2：CI（自動ビルド）
+    subgraph CI [自動ビルド]
+        direction TB
+        B1[依存関係のインストール] --> B2[コード品質チェック]
+        B2 --> B3[ビルド]
+    end
+
+    %% フェーズ3：レビュー & フィードバック
+    subgraph ReviewPhase [レビュー & フィードバック]
+        C1[修正コードをプッシュ]
+        C2{レビューと承認}
+    end
+
+    %% フェーズ4：CD（自動ビルド）
+    subgraph CD [自動ビルド]
+        direction TB
+        D1[マージ] --> D2[依存関係のインストール]
+        D2 --> D3[コード品質チェック]
+        D3 --> D4[ビルド]
+        D4 --> D5[デプロイ]
+    end
+
+    %% 接続
+    A3 --> B1
+    B3 --> C2
+    C2 --> C3
+
+    %% レビュー失敗時のループバック
+    C3 -- "修正が必要" --> C1
+    C1 --> B1
+
+    %% 成功フロー
+    C3 -- "承認済み" --> D1
+    D5 --> End((完了))
+
+    %% スタイリング
+    style CI fill:#f9f,stroke:#333,stroke-width:2px
+    style CD fill:#bbf,stroke:#333,stroke-width:2px
+    style ReviewPhase fill:#dfd,stroke:#333
+```
+
+### 2. ステージ
+
+| #   | ステージ   | ステップ         | コマンド                     | 説明                                                   |
+| --- | ---------- | ---------------- | ---------------------------- | ------------------------------------------------------ |
+| 1   | **ビルド** | —                | `npm ci`                     | `package-lock.json` から正確なバージョンをインストール |
+| 2   |            | 型チェック       | `npx tsc --noEmit`           | コードベース全体の TypeScript 型を検証                 |
+| 2   |            | リント           | `npm run lint`               | ESLint を実行してコード品質をチェック                  |
+| 2   |            | フォーマット確認 | `npx prettier --check ./src` | Prettier でコードフォーマットを検証                    |
+| 3   |            | —                | `npm run build`              | ルートを生成し、Next.js の本番ビルドを実行             |
+
+> すべてのステージが通過しない限り、マージリクエストの承認・マージはできません。
+
+---
+
+# リリースフロー
+
+### 1. 概要
+
+リリースフローは、開発環境から本番環境へコードの変更を段階的に昇格させるプロセスを定義します。
+
+このシステムでは**マルチ環境昇格モデル**を採用しています：
+
+```
+開発（Development）→ ステージング（Staging）→ 本番（Production）
+```
+
+コードの変更は各環境を段階的に経由することで、本番環境への到達前に安定性と品質が確保されます。
+
+---
+
+### 2. リリースフロー図
+
+```mermaid
+flowchart LR
+    A([feat ブランチ]) -->|マージ| B([dev])
+    B -->|マージ| C([stg])
+    C -->|マージ| D([prod])
+
+    B --> B1[dev へデプロイ]
+    C --> C1[ステージングへデプロイ - 結合テスト / UAT]
+    D --> D1[本番へデプロイ]
+```
+
+---
+
+### 3. リリースバージョニング
+
+本番リリースはセマンティックバージョニングを使用してタグ付けします：
+
+```
+MAJOR.MINOR.PATCH
+```
+
+例：
+
+```
+v1.0.0
+v1.1.0
+v1.1.1
+```
+
+タグの作成例：
+
+```bash
+git tag v1.2.0
+git push origin v1.2.0
+```
+
+---
+
+### 4. リリースチェックリスト
+
+本番リリース前の確認事項：
+
+- [ ] コードレビュー承認済み
+- [ ] CIパイプライン通過済み
+- [ ] QAテスト完了
+- [ ] 重大な問題がないこと
+- [ ] ロールバック計画の準備完了
+
+---
+
+### 5. ロールバック戦略
+
+デプロイ後に問題が発生した場合：
+
+1. 最後の安定バージョンを特定する
+2. 前のバージョンにデプロイをロールバックする
+3. 根本原因を調査する
+4. 必要に応じてホットフィックスを作成する
