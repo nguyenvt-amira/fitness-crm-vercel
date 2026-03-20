@@ -98,6 +98,8 @@ export async function GET(request: NextRequest) {
       store_name: primary?.profile.store_name ?? '—',
       monthly_fee: settings.family_member_fee,
       risk_score: r.risk_score,
+      risk_reason: r.risk_reason,
+      ekyc: r.ekyc,
     };
   });
 
@@ -139,6 +141,8 @@ export async function POST(request: NextRequest) {
       store_name: primary.profile.store_name,
       monthly_fee: settings.family_member_fee,
       risk_score: created.risk_score,
+      risk_reason: created.risk_reason,
+      ekyc: created.ekyc,
     },
   });
 }

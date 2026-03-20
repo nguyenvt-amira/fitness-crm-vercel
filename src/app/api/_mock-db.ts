@@ -3,6 +3,7 @@
  * All APIs should read/update data through this module so list and detail stay in sync.
  */
 import type {
+  EkycResult,
   FamilyRegistrationStatus,
   FamilyRelationship,
 } from '@/app/api/_schemas/family-registration.schema';
@@ -689,6 +690,8 @@ export const db = {
       relationship: FamilyRelationship;
       invite_expires_at?: string;
       risk_score?: number;
+      risk_reason?: string;
+      ekyc?: EkycResult;
       applicant?: {
         birthday?: string;
         phone?: string;
@@ -747,8 +750,17 @@ export const db = {
         'invited',
       ];
 
+      const riskReasons = [
+        'ブラックリスト一致',
+        '重複申込',
+        '顔認証失敗',
+        '本人確認書類不備',
+        '過去に不正利用の記録あり',
+      ];
+      const documentTypes = ['運転免許証', 'マイナンバーカード', 'パスポート', '健康保険証'];
+
       const now = new Date();
-      for (let i = 1; i <= 80; i++) {
+      for (let i = 1; i <= 200; i++) {
         const created = new Date(now);
         created.setDate(created.getDate() - (i % 20));
         created.setHours(10 + (i % 8), (i * 7) % 60, 0, 0);
@@ -758,12 +770,40 @@ export const db = {
         const inviteExpires = new Date(created);
         inviteExpires.setDate(inviteExpires.getDate() + 7);
 
-        const riskScore =
-          status === 'pending_review' || status === 'rejected'
-            ? 70 + (i % 30)
-            : status === 'approved' || status === 'completed'
-              ? 10 + (i % 40)
-              : undefined;
+        const hasRisk = status === 'pending_review' || status === 'rejected';
+        const riskScore = hasRisk
+          ? 70 + (i % 30)
+          : status === 'approved' || status === 'completed'
+            ? 10 + (i % 40)
+            : undefined;
+        const riskReason = hasRisk ? riskReasons[i % riskReasons.length] : undefined;
+
+        // eKYC: present for pending_review, approved, rejected, completed
+        const hasEkyc = ['pending_review', 'approved', 'rejected', 'completed'].includes(status);
+        const ekycVerified = status === 'approved' || status === 'completed';
+        const verifiedAt = new Date(created);
+        verifiedAt.setMinutes(verifiedAt.getMinutes() + 30);
+        const faceSimilarity = ekycVerified ? 88 + (i % 12) : 40 + (i % 30);
+        const ekyc: EkycResult | undefined = hasEkyc
+          ? {
+              verified: ekycVerified,
+              verified_at: verifiedAt.toISOString(),
+              face_photo_url: `https://example.com/ekyc/face/FR-${String(i).padStart(5, '0')}.jpg`,
+              id_document_url: `https://example.com/ekyc/id/FR-${String(i).padStart(5, '0')}.jpg`,
+              document_type: documentTypes[i % documentTypes.length],
+              face_match: {
+                similarity: faceSimilarity,
+                passed: faceSimilarity >= 80,
+              },
+              blacklist_check: {
+                matched: hasRisk && riskReason === 'ブラックリスト一致',
+                reason:
+                  hasRisk && riskReason === 'ブラックリスト一致'
+                    ? '過去に不正利用の記録あり'
+                    : undefined,
+              },
+            }
+          : undefined;
 
         this._registrations.push({
           id: `FR-${String(i).padStart(5, '0')}`,
@@ -779,6 +819,8 @@ export const db = {
               ? new Date(created.getTime() + 2 * 24 * 3600 * 1000).toISOString()
               : inviteExpires.toISOString(),
           risk_score: riskScore,
+          risk_reason: riskReason,
+          ekyc,
           applicant: {
             birthday: `199${i % 10}-0${(i % 9) + 1}-15`,
             phone: `090${String(1000 + (i % 9000)).slice(-4)}${String(2000 + (i % 8000)).slice(-4)}`,
@@ -856,6 +898,8 @@ export const db = {
         relationship: input.applicant.relationship,
         invite_expires_at: inviteExpiresAt,
         risk_score: undefined as number | undefined,
+        risk_reason: undefined as string | undefined,
+        ekyc: undefined as EkycResult | undefined,
         applicant: {
           birthday: input.applicant.birthday,
           phone: input.applicant.phone,
