@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Table as TableInstance } from '@tanstack/react-table';
-import type { ColumnDef, SortingState } from '@tanstack/react-table';
+import type { ColumnDef, RowSelectionState, SortingState } from '@tanstack/react-table';
 import type { VisibilityState } from '@tanstack/react-table';
 import { Download, User } from 'lucide-react';
 
@@ -34,9 +34,9 @@ const BREADCRUMB_ITEMS = [{ url: '/', label: '会員管理' }, { label: '会員�
 function MembersPageContent() {
   const router = useRouter();
   const [limit] = useState(50);
-  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
   const [table, setTable] = useState<TableInstance<any> | null>(null);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   // Use custom hook for filters/sort management
   const filtersHook = useMembersFilters();
@@ -91,18 +91,18 @@ function MembersPageContent() {
       onMemoClick: (memberId) => {
         router.push(navigate('/members/[id]', memberId) + '?tab=communications&memo=add');
       },
-      selectedMembers,
-      onSelectionChange: setSelectedMembers,
     });
+
+  const selectedMemberIds = Object.keys(rowSelection);
 
   const handleExport = () => {
     // TODO: Implement export functionality
-    console.log('Export selected:', selectedMembers);
+    console.log('Export selected:', selectedMemberIds);
   };
 
   const handleBulkEmail = () => {
     // TODO: Implement bulk email functionality
-    console.log('Bulk email to:', selectedMembers);
+    console.log('Bulk email to:', selectedMemberIds);
   };
 
   const handleQRScan = () => {
@@ -126,13 +126,7 @@ function MembersPageContent() {
 
       <div className="flex flex-1 flex-col gap-2 p-4">
         <MembersFiltersProvider value={filtersHook}>
-          <MembersFilters
-            onQRScan={handleQRScan}
-            selectedCount={selectedMembers.length}
-            totalCount={total}
-            onExport={handleExport}
-            onBulkEmail={handleBulkEmail}
-          />
+          <MembersFilters onQRScan={handleQRScan} />
         </MembersFiltersProvider>
 
         {/* Total Count */}
@@ -142,7 +136,7 @@ function MembersPageContent() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="w-full sm:ml-auto sm:w-auto">
-                列の表示/非表示
+                一覧のカラム設定
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -167,32 +161,59 @@ function MembersPageContent() {
           </DropdownMenu>
         </div>
 
-        <DataTable
-          columns={columns}
-          data={members}
-          isLoading={isLoading}
-          isFetching={isFetching}
-          variant="default"
-          totalRows={total}
-          filterRows={total}
-          totalRowsFetched={totalFetched}
-          fetchNextPage={fetchNextPage}
-          hasNextPage={hasNextPage}
-          tableOptions={{
-            onColumnVisibilityChange: setColumnVisibility,
-            onSortingChange: handleSortingChange,
-            manualSorting: true,
-            state: {
-              columnVisibility,
-              sorting,
-            },
-          }}
-          onRowClick={(row) => {
-            router.push(navigate('/members/[id]', row.id));
-          }}
-          onTableReady={setTable}
-          containerClassName="h-[70vh]"
-        />
+        {/* Table */}
+        <div className="relative [&_tbody_tr:last-child]:hidden">
+          {selectedMemberIds.length > 0 ? (
+            <div className="absolute top-[44px] left-9 z-50 px-4">
+              <div className="bg-background flex items-center gap-2 rounded-lg border px-3 py-2 shadow-lg">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8"
+                  onClick={() => setRowSelection({})}
+                >
+                  {selectedMemberIds.length}件選択中
+                </Button>
+
+                <Button variant="destructive" size="sm" className="h-8" onClick={handleExport}>
+                  一括エクスポート
+                </Button>
+                <Button size="sm" className="h-8" onClick={handleBulkEmail}>
+                  一括メール送信
+                </Button>
+              </div>
+            </div>
+          ) : null}
+
+          <DataTable
+            columns={columns}
+            data={members}
+            isLoading={isLoading}
+            isFetching={isFetching}
+            variant="default"
+            totalRows={total}
+            filterRows={total}
+            totalRowsFetched={totalFetched}
+            fetchNextPage={fetchNextPage}
+            hasNextPage={hasNextPage}
+            tableOptions={{
+              onColumnVisibilityChange: setColumnVisibility,
+              onSortingChange: handleSortingChange,
+              manualSorting: true,
+              state: {
+                columnVisibility,
+                sorting,
+                rowSelection,
+              },
+              onRowSelectionChange: setRowSelection,
+            }}
+            onRowClick={(row) => {
+              router.push(navigate('/members/[id]', row.id));
+            }}
+            onTableReady={setTable}
+            containerClassName="h-[70vh]"
+          />
+        </div>
       </div>
     </div>
   );
