@@ -7,9 +7,10 @@ type PaymentInfoTabProps = {
     payment_method?: string;
     payment_status?: string;
   };
+  paymentStatusLabels: Record<string, string>;
 };
 
-export function PaymentInfoTab({ application }: PaymentInfoTabProps) {
+export function PaymentInfoTab({ application, paymentStatusLabels }: PaymentInfoTabProps) {
   return (
     <Card>
       <CardHeader>
@@ -26,7 +27,7 @@ export function PaymentInfoTab({ application }: PaymentInfoTabProps) {
           {application.payment_status && (
             <div>
               <label className="text-muted-foreground text-sm font-medium">決済ステータス</label>
-              <p className="mt-1">{application.payment_status}</p>
+              <p className="mt-1">{paymentStatusLabels[application.payment_status]}</p>
             </div>
           )}
         </div>

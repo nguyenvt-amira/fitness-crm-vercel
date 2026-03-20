@@ -538,6 +538,8 @@ export const db = {
           start_date: string; // YYYY-MM-DD
           option_ids?: string[];
         };
+        // eKYC
+        ekyc: EkycResult;
       }>
     >,
     _seeded: false,
@@ -591,6 +593,9 @@ export const db = {
         });
 
         const id = `APP-${String(i).padStart(5, '0')}`;
+        const ekycVerified =
+          status === 'auto_approved' || status === 'manual_approved' || i % 3 !== 0;
+        const faceSimilarity = ekycVerified ? 88 + (i % 12) : 40 + (i % 30);
         // Seed editable detail fields (used by detail/edit screen)
         this._details[id] = {
           gender: i % 2 === 0 ? 'male' : 'female',
@@ -608,6 +613,23 @@ export const db = {
             start_date: scheduledStart.toISOString().split('T')[0],
             option_ids: [],
           },
+          ekyc: {
+            verified: ekycVerified,
+            verified_at: appliedDate.toISOString(),
+            face_photo_url: `https://example.com/ekyc/face/APP-${String(i).padStart(5, '0')}.jpg`,
+            id_document_url: `https://example.com/ekyc/id/APP-${String(i).padStart(5, '0')}.jpg`,
+            document_type: (
+              ['運転免許証', 'マイナンバーカード', 'パスポート', '健康保険証'] as const
+            )[i % 4],
+            face_match: {
+              similarity: faceSimilarity,
+              passed: faceSimilarity >= 80,
+            },
+            blacklist_check: {
+              matched: !ekycVerified && i % 5 === 0,
+              reason: !ekycVerified && i % 5 === 0 ? '過去に不正利用の記録あり' : undefined,
+            },
+          } satisfies EkycResult,
         };
       }
     },

@@ -85,7 +85,7 @@ export async function GET(request: NextRequest) {
     // Mock summary data
     const response: GetSummaryResponse = {
       summary: {
-        total_applications: 1234,
+        total_applications: 200,
         auto_approval_rate: 82.5,
         auto_approval_count: 678,
         avg_processing_time: '1h23m',

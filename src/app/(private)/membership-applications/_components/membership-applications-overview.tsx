@@ -5,6 +5,7 @@ import { type DateRange } from 'react-day-picker';
 
 import { useQuery } from '@tanstack/react-query';
 import { ChevronRight, CircleAlert } from 'lucide-react';
+import { useQueryState } from 'nuqs';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent } from '@/components/ui/card';
@@ -13,13 +14,30 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 import { getCrmMembershipApplicationsSummaryOptions } from '@/lib/api/@tanstack/react-query.gen';
 
+import type { MembershipApplicationStatus } from '@/types/api/membership-application.type';
+
+export type MembershipApplicationsAlertType = 'payment_failed' | 'pending' | 'high_risk' | 'all';
+
 export type MembershipApplicationsAlert = {
   title: string;
   description: string;
+  type: MembershipApplicationsAlertType;
+};
+
+/** Map alert type → tab value in MembershipApplicationsListSection */
+const ALERT_TYPE_TO_TAB: Record<
+  MembershipApplicationsAlertType,
+  MembershipApplicationStatus | 'all'
+> = {
+  payment_failed: 'payment_failed',
+  pending: 'pending',
+  high_risk: 'pending',
+  all: 'all',
 };
 
 export function MembershipApplicationsOverview() {
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+  const [, setActiveTab] = useQueryState('tab');
 
   const queryOptions = useMemo(() => {
     const query: { start_date?: string; end_date?: string } = {};
@@ -67,6 +85,7 @@ export function MembershipApplicationsOverview() {
     return summaryData.alerts.map((alert) => ({
       title: alert.title,
       description: alert.description,
+      type: alert.type as MembershipApplicationsAlertType,
     }));
   }, [summaryData]);
 
@@ -157,6 +176,7 @@ export function MembershipApplicationsOverview() {
             key={index}
             variant="destructive"
             className="flex cursor-pointer items-center gap-4 rounded-lg border py-3"
+            onClick={() => setActiveTab(ALERT_TYPE_TO_TAB[alert.type])}
           >
             <CircleAlert className="size-4 shrink-0" />
             <div className="flex-1 space-y-0.5">

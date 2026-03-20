@@ -1,4 +1,4 @@
-'use client';
+import { Suspense } from 'react';
 
 import { BreadcrumbItemType } from '@/components/common/breadcrumb-nav';
 
@@ -16,9 +16,11 @@ export default function MembershipApplicationsPage() {
     <div className="flex flex-1 flex-col">
       <MembershipApplicationsHeader breadcrumbItems={BREADCRUMB_ITEMS} />
 
-      <MembershipApplicationsOverview />
+      <Suspense>
+        <MembershipApplicationsOverview />
 
-      <MembershipApplicationsListSection />
+        <MembershipApplicationsListSection />
+      </Suspense>
     </div>
   );
 }

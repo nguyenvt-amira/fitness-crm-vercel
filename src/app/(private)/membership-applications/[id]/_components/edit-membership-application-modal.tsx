@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { formatDateYYYYMM_HHMMSS, formatElapsedTime } from '@/utils/date.util';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
@@ -40,15 +41,21 @@ import {
   getCrmMembershipApplicationsInfiniteQueryKey,
   patchCrmMembershipApplicationsByIdMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
-import type {
-  GetCrmMembershipApplicationsByIdResponse,
-  MembershipApplication,
-} from '@/lib/api/types.gen';
+import type { GetCrmMembershipApplicationsByIdResponse } from '@/lib/api/types.gen';
 
 import {
   type EditMembershipApplicationFormSchema as EditForm,
   EditMembershipApplicationFormSchema,
 } from '../_schemas/edit-membership-application-form.schema';
+
+const STATUS_LABELS: Record<string, string> = {
+  pending: '審査待ち',
+  auto_approved: '自動承認',
+  manual_approved: '手動承認',
+  rejected: '却下',
+  cancelled: 'キャンセル',
+  payment_failed: '決済失敗',
+};
 
 export function EditMembershipApplicationModal({
   open,
@@ -146,7 +153,37 @@ export function EditMembershipApplicationModal({
             <div className="min-h-0 flex-1 overflow-y-auto px-6 py-4">
               <div className="space-y-6">
                 <div className="space-y-4">
-                  <div className="text-sm font-semibold">会員基本情報</div>
+                  <div className="text-sm font-semibold">基本情報</div>
+                  {/* 読み取り専用フィールド */}
+                  <div className="bg-muted/40 grid grid-cols-1 gap-4 rounded-lg border p-4 md:grid-cols-2">
+                    <div>
+                      <label className="text-muted-foreground mb-1.5 block text-xs font-medium">
+                        申込ID
+                      </label>
+                      <Input disabled value={application.id} className="text-xs" />
+                    </div>
+                    <div>
+                      <label className="text-muted-foreground mb-1.5 block text-xs font-medium">
+                        ステータス
+                      </label>
+                      <Input
+                        disabled
+                        value={STATUS_LABELS[application.status] ?? application.status}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-muted-foreground mb-1.5 block text-xs font-medium">
+                        申込日時
+                      </label>
+                      <Input disabled value={formatDateYYYYMM_HHMMSS(application.applied_at)} />
+                    </div>
+                    <div>
+                      <label className="text-muted-foreground mb-1.5 block text-xs font-medium">
+                        経過時間
+                      </label>
+                      <Input disabled value={formatElapsedTime(application.applied_at)} />
+                    </div>
+                  </div>
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <FormField
                       control={form.control}
@@ -339,14 +376,21 @@ export function EditMembershipApplicationModal({
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="text-sm font-semibold">契約情報</div>
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => toast.info('料金を再計算しました（モック）')}
-                    >
-                      料金再計算
-                    </Button>
+                    <div className="flex items-center gap-3">
+                      {application.contract_details?.monthly_fee != null && (
+                        <span className="text-muted-foreground text-sm">
+                          料金：¥{application.contract_details.monthly_fee.toLocaleString()}
+                        </span>
+                      )}
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => toast.info('料金を再計算しました（モック）')}
+                      >
+                        料金再計算
+                      </Button>
+                    </div>
                   </div>
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <FormField
@@ -383,7 +427,7 @@ export function EditMembershipApplicationModal({
                     />
                     <FormField
                       control={form.control}
-                      name="plan_id"
+                      name="option_ids"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>プランID</FormLabel>

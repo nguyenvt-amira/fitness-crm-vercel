@@ -1,6 +1,6 @@
 'use client';
 
-import { formatDateYYYYMM_HHMMSS } from '@/utils/date.util';
+import { formatDateYYYYMM_HHMMSS, formatElapsedTime } from '@/utils/date.util';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -10,9 +10,10 @@ type HistoryTabProps = {
     elapsed_time?: string;
     status: string;
   };
+  statusLabels: Record<string, string>;
 };
 
-export function HistoryTab({ application }: HistoryTabProps) {
+export function HistoryTab({ application, statusLabels }: HistoryTabProps) {
   return (
     <Card>
       <CardHeader>
@@ -26,15 +27,17 @@ export function HistoryTab({ application }: HistoryTabProps) {
               {formatDateYYYYMM_HHMMSS(application.applied_at)}
             </span>
           </div>
-          {application.elapsed_time && (
-            <div className="flex items-center justify-between border-b pb-2">
-              <span className="text-sm font-medium">経過時間</span>
-              <span className="text-muted-foreground text-sm">{application.elapsed_time}</span>
-            </div>
-          )}
+          <div className="flex items-center justify-between border-b pb-2">
+            <span className="text-sm font-medium">経過時間</span>
+            <span className="text-muted-foreground text-sm">
+              {formatElapsedTime(application.applied_at)}
+            </span>
+          </div>
           <div className="flex items-center justify-between border-b pb-2">
             <span className="text-sm font-medium">ステータス</span>
-            <span className="text-muted-foreground text-sm">{application.status}</span>
+            <span className="text-muted-foreground text-sm">
+              {statusLabels[application.status] || application.status}
+            </span>
           </div>
         </div>
       </CardContent>

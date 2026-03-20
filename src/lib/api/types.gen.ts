@@ -3868,6 +3868,59 @@ export type GetApplicationDetailResponse = {
             contract_period: number;
             option_ids?: Array<string>;
         };
+        /**
+         * EkycResult
+         *
+         * eKYC verification result
+         */
+        ekyc?: {
+            /**
+             * eKYC総合判定
+             */
+            verified: boolean;
+            /**
+             * 検証日時
+             */
+            verified_at?: string;
+            /**
+             * 顔写真（申請者撮影）URL
+             */
+            face_photo_url?: string;
+            /**
+             * 本人確認書類アップロード画像URL
+             */
+            id_document_url?: string;
+            /**
+             * 本人確認書類種別
+             */
+            document_type?: string;
+            /**
+             * 顔認証結果
+             */
+            face_match?: {
+                /**
+                 * 顔認証類似度（%）
+                 */
+                similarity: number;
+                /**
+                 * 顔認証判定結果
+                 */
+                passed: boolean;
+            };
+            /**
+             * ブラックリストチェック結果
+             */
+            blacklist_check?: {
+                /**
+                 * ブラックリスト一致有無
+                 */
+                matched: boolean;
+                /**
+                 * 一致理由
+                 */
+                reason?: string;
+            };
+        };
     };
 };
 
@@ -10128,6 +10181,59 @@ export type GetCrmMembershipApplicationsByIdResponses = {
                 monthly_fee: number;
                 contract_period: number;
                 option_ids?: Array<string>;
+            };
+            /**
+             * EkycResult
+             *
+             * eKYC verification result
+             */
+            ekyc?: {
+                /**
+                 * eKYC総合判定
+                 */
+                verified: boolean;
+                /**
+                 * 検証日時
+                 */
+                verified_at?: string;
+                /**
+                 * 顔写真（申請者撮影）URL
+                 */
+                face_photo_url?: string;
+                /**
+                 * 本人確認書類アップロード画像URL
+                 */
+                id_document_url?: string;
+                /**
+                 * 本人確認書類種別
+                 */
+                document_type?: string;
+                /**
+                 * 顔認証結果
+                 */
+                face_match?: {
+                    /**
+                     * 顔認証類似度（%）
+                     */
+                    similarity: number;
+                    /**
+                     * 顔認証判定結果
+                     */
+                    passed: boolean;
+                };
+                /**
+                 * ブラックリストチェック結果
+                 */
+                blacklist_check?: {
+                    /**
+                     * ブラックリスト一致有無
+                     */
+                    matched: boolean;
+                    /**
+                     * 一致理由
+                     */
+                    reason?: string;
+                };
             };
         };
     };
