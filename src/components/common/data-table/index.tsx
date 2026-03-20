@@ -11,14 +11,13 @@ import {
   ColumnDef,
   Table as TableInstance,
   TableOptions,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
-  getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
 import { LoaderCircle } from 'lucide-react';
 
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -84,15 +83,14 @@ export function DataTable<TData, TValue>({
   const tableRef = React.useRef<HTMLTableElement>(null);
   const onScroll = React.useCallback(
     (e: React.UIEvent<HTMLElement>) => {
-      const onPageBottom =
-        Math.ceil(e.currentTarget.scrollTop + e.currentTarget.clientHeight) >=
-        e.currentTarget.scrollHeight;
+      const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
+      const onPageBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight - 5;
 
-      if (onPageBottom && !isFetching && totalRowsFetched < filterRows) {
+      if (onPageBottom && !isFetching && hasNextPage) {
         fetchNextPage?.();
       }
     },
-    [fetchNextPage, isFetching, filterRows, totalRowsFetched],
+    [fetchNextPage, isFetching, hasNextPage],
   );
 
   React.useEffect(() => {
@@ -122,7 +120,17 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {isLoading ? (
+              Array.from({ length: 20 }).map((_, i) => (
+                <TableRow key={`skeleton-${i}`} className="h-12">
+                  {columns.map((_, j) => (
+                    <TableCell key={j} className="px-4">
+                      <Skeleton className="h-4 w-full" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -156,7 +164,7 @@ export function DataTable<TData, TValue>({
       <Table
         ref={tableRef}
         onScroll={onScroll}
-        containerClassName={cn('rounded-md border', containerClassName)}
+        containerClassName={cn('rounded-md border overflow-y-auto', containerClassName)}
       >
         <TableHeader className={cn('bg-background sticky top-0 z-20')}>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -177,49 +185,59 @@ export function DataTable<TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && 'selected'}
-                onClick={() => onRowClick?.(row.original)}
-                className={onRowClick ? 'cursor-pointer' : ''}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          {isLoading ? (
+            Array.from({ length: 20 }).map((_, i) => (
+              <TableRow key={`skeleton-${i}`}>
+                {columns.map((_, j) => (
+                  <TableCell key={j}>
+                    <Skeleton className="h-4 w-full" />
                   </TableCell>
                 ))}
               </TableRow>
             ))
           ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                データがありません
-              </TableCell>
-            </TableRow>
+            <>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}
+                    onClick={() => onRowClick?.(row.original)}
+                    className={onRowClick ? 'cursor-pointer' : ''}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                    データがありません
+                  </TableCell>
+                </TableRow>
+              )}
+              <TableRow className="hover:bg-transparent data-[state=selected]:bg-transparent">
+                <TableCell colSpan={columns.length} className="py-3 text-center">
+                  {isFetching ? (
+                    <LoaderCircle className="text-muted-foreground mx-auto h-5 w-5 animate-spin" />
+                  ) : hasNextPage ? (
+                    <Button onClick={() => fetchNextPage?.()} size="sm" variant="outline">
+                      もっと見る
+                    </Button>
+                  ) : totalRowsFetched > 50 && table.getRowModel().rows.length > 0 ? (
+                    <p className="text-muted-foreground text-sm">
+                      これ以上のデータはありません ({' '}
+                      <span className="font-mono font-medium">{filterRows}</span> 件中{' '}
+                      <span className="font-mono font-medium">{totalRows}</span> 件)
+                    </p>
+                  ) : null}
+                </TableCell>
+              </TableRow>
+            </>
           )}
-          <TableRow className="hover:bg-transparent data-[state=selected]:bg-transparent">
-            <TableCell colSpan={columns.length} className="text-center">
-              {hasNextPage || isFetching || isLoading ? (
-                <Button
-                  disabled={isFetching || isLoading}
-                  onClick={() => fetchNextPage?.()}
-                  size="sm"
-                  variant="outline"
-                >
-                  {isFetching ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : null}
-                  もっと見る
-                </Button>
-              ) : totalRowsFetched > 50 && table.getRowModel().rows.length > 0 ? (
-                <p className="text-muted-foreground text-sm">
-                  これ以上のデータはありません ({' '}
-                  <span className="font-mono font-medium">{filterRows}</span> 件中{' '}
-                  <span className="font-mono font-medium">{totalRows}</span> 件)
-                </p>
-              ) : null}
-            </TableCell>
-          </TableRow>
         </TableBody>
       </Table>
     </div>

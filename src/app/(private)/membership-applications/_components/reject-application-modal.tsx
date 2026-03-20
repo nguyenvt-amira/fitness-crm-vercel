@@ -166,6 +166,7 @@ export function RejectApplicationModal({
                   (!form.formState.isValid && form.formState.isSubmitted)
                 }
                 onClick={form.handleSubmit(onSubmit)}
+                variant="destructive"
               >
                 {rejectMutation.isPending
                   ? '却下中...'
