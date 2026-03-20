@@ -4,32 +4,8 @@
 export const routes = {
   '/': {
     router: '/',
-    filePath: '(private)/(dashboard)',
+    filePath: '(private)',
     pattern: '/',
-    private: true,
-  },
-  '/checkin': {
-    router: '/checkin',
-    filePath: '(private)/checkin',
-    pattern: '/checkin',
-    private: true,
-  },
-  '/checkin/histories': {
-    router: '/checkin/histories',
-    filePath: '(private)/checkin/histories',
-    pattern: '/checkin/histories',
-    private: true,
-  },
-  '/family-registrations': {
-    router: '/family-registrations',
-    filePath: '(private)/family-registrations',
-    pattern: '/family-registrations',
-    private: true,
-  },
-  '/family-registrations/[id]': {
-    router: (id: string | number) => `/family-registrations/${id}`,
-    filePath: '(private)/family-registrations/[id]',
-    pattern: '/family-registrations/:id',
     private: true,
   },
   '/members': {
@@ -73,10 +49,6 @@ export const routes = {
 // List of all route keys
 export const routeKeys = [
   '/',
-  '/checkin',
-  '/checkin/histories',
-  '/family-registrations',
-  '/family-registrations/[id]',
   '/members',
   '/members/[id]',
   '/membership-applications',
@@ -88,10 +60,6 @@ export const routeKeys = [
 // List of all route patterns
 export const routePatterns = [
   '/',
-  '/checkin',
-  '/checkin/histories',
-  '/family-registrations',
-  '/family-registrations/:id',
   '/members',
   '/members/:id',
   '/membership-applications',
