@@ -1,16 +1,9 @@
 'use client';
 
 import type { ColumnDef } from '@tanstack/react-table';
-import {
-  AlertOctagon,
-  ArrowDown,
-  ArrowUp,
-  ArrowUpDown,
-  Edit,
-  MessageSquare,
-  MoreHorizontal,
-} from 'lucide-react';
+import { AlertOctagon, Edit, MessageSquare, MoreHorizontal } from 'lucide-react';
 
+import { DataTableColumnHeader } from '@/components/common/data-table/data-table-column-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -28,60 +21,12 @@ import { Brand, MemberStatus, MemberType } from '@/types/member.type';
 import { STATUS_VARIANTS } from '../_lib/constants';
 import { MEMBER_STATUS_LABELS, MEMBER_TYPE_LABELS } from '../_lib/constants';
 
-/** API sort field names */
-const SORT_FIELD_MEMBER_NUMBER = 'member_number';
-const SORT_FIELD_JOINED_AT = 'joined_at';
-const SORT_FIELD_LAST_VISIT = 'last_visit';
-const SORT_FIELD_NAME = 'name';
-
-interface SortableHeaderProps {
-  label: string;
-  sortKey: string;
-  sort_by: string;
-  sort_order: 'asc' | 'desc';
-  onSort: (field: string, order: 'asc' | 'desc') => void;
-}
-
-function SortableHeader({ label, sortKey, sort_by, sort_order, onSort }: SortableHeaderProps) {
-  const isActive = sort_by === sortKey;
-  const handleClick = () => {
-    if (isActive) {
-      onSort(sortKey, sort_order === 'asc' ? 'desc' : 'asc');
-    } else {
-      onSort(sortKey, 'asc');
-    }
-  };
-  return (
-    <div className="inline-flex items-center gap-1.5">
-      <span>{label}</span>
-      {isActive ? (
-        sort_order === 'asc' ? (
-          <ArrowUp className="text-muted-foreground size-4 cursor-pointer" onClick={handleClick} />
-        ) : (
-          <ArrowDown
-            className="text-muted-foreground size-4 cursor-pointer"
-            onClick={handleClick}
-          />
-        )
-      ) : (
-        <ArrowUpDown
-          className="text-muted-foreground size-4 cursor-pointer opacity-50"
-          onClick={handleClick}
-        />
-      )}
-    </div>
-  );
-}
-
 interface MembersTableColumnsProps {
   onMemberClick: (memberId: string) => void;
   /** Navigate to member detail with コミュニケーション tab and memo modal open */
   onMemoClick: (memberId: string) => void;
   selectedMembers: string[];
   onSelectionChange: (ids: string[]) => void;
-  sort_by: string;
-  sort_order: 'asc' | 'desc';
-  onSortChange: (field: string, order: 'asc' | 'desc') => void;
 }
 
 export function MembersTableColumns({
@@ -89,9 +34,6 @@ export function MembersTableColumns({
   onMemoClick,
   selectedMembers,
   onSelectionChange,
-  sort_by,
-  sort_order,
-  onSortChange,
 }: MembersTableColumnsProps): ColumnDef<NonNullable<GetCrmMembersResponse['members']>[0]>[] {
   return [
     {
@@ -136,31 +78,15 @@ export function MembersTableColumns({
     },
     {
       accessorKey: 'member_number',
-      header: () => (
-        <SortableHeader
-          label="会員番号"
-          sortKey={SORT_FIELD_MEMBER_NUMBER}
-          sort_by={sort_by}
-          sort_order={sort_order}
-          onSort={onSortChange}
-        />
-      ),
+      header: ({ column }) => <DataTableColumnHeader column={column} title="会員番号" />,
       cell: ({ row }) => row.original.member_number || '-',
       meta: {
         label: '会員番号',
       },
     },
     {
-      accessorKey: 'name_kanji',
-      header: () => (
-        <SortableHeader
-          label="氏名"
-          sortKey={SORT_FIELD_NAME}
-          sort_by={sort_by}
-          sort_order={sort_order}
-          onSort={onSortChange}
-        />
-      ),
+      accessorKey: 'name',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="氏名" />,
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <span>{row.original.name_kanji || '-'}</span>
@@ -221,15 +147,7 @@ export function MembersTableColumns({
     },
     {
       accessorKey: 'joined_at',
-      header: () => (
-        <SortableHeader
-          label="入会日"
-          sortKey={SORT_FIELD_JOINED_AT}
-          sort_by={sort_by}
-          sort_order={sort_order}
-          onSort={onSortChange}
-        />
-      ),
+      header: ({ column }) => <DataTableColumnHeader column={column} title="入会日" />,
       cell: ({ row }) => {
         if (!row.original.joined_at) return '-';
         const date = new Date(row.original.joined_at);
@@ -241,15 +159,7 @@ export function MembersTableColumns({
     },
     {
       accessorKey: 'last_visit_date',
-      header: () => (
-        <SortableHeader
-          label="最終来館日"
-          sortKey={SORT_FIELD_LAST_VISIT}
-          sort_by={sort_by}
-          sort_order={sort_order}
-          onSort={onSortChange}
-        />
-      ),
+      header: ({ column }) => <DataTableColumnHeader column={column} title="最終来館日" />,
       cell: ({ row }) => {
         if (!row.original.last_visit_date) return '-';
         const date = new Date(row.original.last_visit_date);

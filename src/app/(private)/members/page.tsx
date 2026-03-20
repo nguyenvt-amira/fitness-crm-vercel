@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Table as TableInstance } from '@tanstack/react-table';
-import type { ColumnDef } from '@tanstack/react-table';
+import type { ColumnDef, SortingState } from '@tanstack/react-table';
 import type { VisibilityState } from '@tanstack/react-table';
 import { Download, User } from 'lucide-react';
 
@@ -40,8 +40,21 @@ function MembersPageContent() {
 
   // Use custom hook for filters/sort management
   const filtersHook = useMembersFilters();
-  const { queryParams, filters, handleSortChange } = filtersHook;
-  const { sort_by, sort_order } = filters;
+  const { queryParams, filters, setFilters } = filtersHook;
+
+  // Sync TanStack Table sorting state with URL params
+  const sorting: SortingState = filters.sort_by
+    ? [{ id: filters.sort_by, desc: filters.sort_order === 'desc' }]
+    : [];
+
+  const handleSortingChange = (updater: SortingState | ((prev: SortingState) => SortingState)) => {
+    const next = typeof updater === 'function' ? updater(sorting) : updater;
+    if (next.length === 0) {
+      setFilters({ sort_by: null, sort_order: null });
+    } else {
+      setFilters({ sort_by: next[0].id, sort_order: next[0].desc ? 'desc' : 'asc' });
+    }
+  };
 
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage } = useInfiniteQuery({
     ...getCrmMembersInfiniteOptions({
@@ -80,9 +93,6 @@ function MembersPageContent() {
       },
       selectedMembers,
       onSelectionChange: setSelectedMembers,
-      sort_by,
-      sort_order,
-      onSortChange: handleSortChange,
     });
 
   const handleExport = () => {
@@ -101,7 +111,7 @@ function MembersPageContent() {
   };
 
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="">
       {/* Header Section */}
       <div className="flex flex-col gap-3 border-b px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
@@ -157,33 +167,32 @@ function MembersPageContent() {
           </DropdownMenu>
         </div>
 
-        <div className="flex-1">
-          <DataTable
-            columns={columns}
-            data={members}
-            isLoading={isLoading}
-            isFetching={isFetching}
-            variant="default"
-            totalRows={total}
-            filterRows={total}
-            totalRowsFetched={totalFetched}
-            fetchNextPage={fetchNextPage}
-            hasNextPage={hasNextPage}
-            tableOptions={{
-              onColumnVisibilityChange: setColumnVisibility,
-              state: {
-                columnVisibility,
-              },
-            }}
-            onRowClick={(row) => {
-              if (row.id) {
-                window.location.href = `/members/${row.id}`;
-              }
-            }}
-            onTableReady={setTable}
-            containerClassName="max-h-[calc(100vh-372px)]"
-          />
-        </div>
+        <DataTable
+          columns={columns}
+          data={members}
+          isLoading={isLoading}
+          isFetching={isFetching}
+          variant="default"
+          totalRows={total}
+          filterRows={total}
+          totalRowsFetched={totalFetched}
+          fetchNextPage={fetchNextPage}
+          hasNextPage={hasNextPage}
+          tableOptions={{
+            onColumnVisibilityChange: setColumnVisibility,
+            onSortingChange: handleSortingChange,
+            manualSorting: true,
+            state: {
+              columnVisibility,
+              sorting,
+            },
+          }}
+          onRowClick={(row) => {
+            router.push(navigate('/members/[id]', row.id));
+          }}
+          onTableReady={setTable}
+          containerClassName="h-[70vh]"
+        />
       </div>
     </div>
   );
