@@ -44,7 +44,7 @@ npm run dev
 
 | メールアドレス    | パスワード  |
 | ----------------- | ----------- |
-| admin@amira.vn    | password123 |
+| admin@example.com | password123 |
 | staff@example.com | password123 |
 | user@example.com  | password123 |
 
