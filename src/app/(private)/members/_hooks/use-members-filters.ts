@@ -1,0 +1,151 @@
+import { useEffect, useState } from 'react';
+
+import {
+  parseAsArrayOf,
+  parseAsBoolean,
+  parseAsInteger,
+  parseAsString,
+  parseAsStringEnum,
+  useQueryStates,
+} from 'nuqs';
+
+import { Brand, MemberStatus, MemberType } from '@/types/member.type';
+
+export type MembersFilters = {
+  search: string;
+  member_type: MemberType[];
+  status: MemberStatus[];
+  brand: Brand[];
+  store_id: string[];
+  contract_plan_id: string[];
+  last_visit_days: number | null;
+  has_unpaid: boolean | null;
+  sort_by: string;
+  sort_order: 'asc' | 'desc';
+};
+
+export function useMembersFilters() {
+  const [searchInput, setSearchInput] = useState('');
+
+  // Use nuqs for URL query parameters
+  const [filters, setFilters] = useQueryStates(
+    {
+      search: parseAsString.withDefault(''),
+      member_type: parseAsArrayOf(
+        parseAsStringEnum<MemberType>(Object.values(MemberType)),
+      ).withDefault([]),
+      status: parseAsArrayOf(
+        parseAsStringEnum<MemberStatus>(Object.values(MemberStatus)),
+      ).withDefault([]),
+      brand: parseAsArrayOf(parseAsStringEnum<Brand>(Object.values(Brand))).withDefault([]),
+      store_id: parseAsArrayOf(parseAsString).withDefault([]),
+      contract_plan_id: parseAsArrayOf(parseAsString).withDefault([]),
+      last_visit_days: parseAsInteger,
+      has_unpaid: parseAsBoolean,
+      sort_by: parseAsString.withDefault('member_number'),
+      sort_order: parseAsStringEnum<'asc' | 'desc'>(['asc', 'desc']).withDefault('asc'),
+    },
+    {
+      history: 'push',
+      shallow: false,
+    },
+  );
+
+  // Sync searchInput with URL on mount
+  useEffect(() => {
+    if (filters.search && searchInput !== filters.search) {
+      setSearchInput(filters.search);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only on mount
+
+  // Debounce search input (500ms)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchInput !== filters.search) {
+        setFilters({ search: searchInput || null });
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchInput, filters.search, setFilters]);
+
+  const updateFilter = <K extends keyof MembersFilters>(key: K, value: MembersFilters[K]) => {
+    if (
+      key === 'member_type' ||
+      key === 'status' ||
+      key === 'brand' ||
+      key === 'store_id' ||
+      key === 'contract_plan_id'
+    ) {
+      const arrValue = value as string[];
+      setFilters({ [key]: arrValue.length > 0 ? arrValue : null } as any);
+    } else if (key === 'last_visit_days' || key === 'has_unpaid') {
+      setFilters({ [key]: value ?? null } as any);
+    } else {
+      setFilters({ [key]: value } as any);
+    }
+  };
+
+  const clearFilters = () => {
+    setSearchInput('');
+    setFilters({
+      search: null,
+      member_type: null,
+      status: null,
+      brand: null,
+      store_id: null,
+      contract_plan_id: null,
+      last_visit_days: null,
+      has_unpaid: null,
+      sort_by: 'member_number',
+      sort_order: 'asc',
+    });
+  };
+
+  const hasActiveFilters: boolean =
+    filters.member_type.length > 0 ||
+    filters.status.length > 0 ||
+    filters.brand.length > 0 ||
+    filters.store_id.length > 0 ||
+    filters.contract_plan_id.length > 0 ||
+    filters.last_visit_days !== null ||
+    filters.has_unpaid !== null ||
+    filters.search.length > 0;
+
+  // Prepare query params for API
+  const queryParams = {
+    search: filters.search || undefined,
+    member_type: filters.member_type.length > 0 ? filters.member_type : undefined,
+    status: filters.status.length > 0 ? filters.status : undefined,
+    brand: filters.brand.length > 0 ? filters.brand : undefined,
+    store_id: filters.store_id.length > 0 ? filters.store_id : undefined,
+    contract_plan_id: filters.contract_plan_id.length > 0 ? filters.contract_plan_id : undefined,
+    last_visit_days: filters.last_visit_days ?? undefined,
+    has_unpaid: filters.has_unpaid ?? undefined,
+    sort_by: filters.sort_by as 'member_number' | 'joined_at' | 'last_visit' | 'name',
+    sort_order: filters.sort_order,
+  };
+
+  return {
+    // Search input (local state for debouncing)
+    searchInput,
+    setSearchInput,
+    // Filters from URL
+    filters,
+    // Update functions
+    updateFilter,
+    setFilters,
+    clearFilters,
+    // Computed
+    hasActiveFilters,
+    queryParams,
+    // Sort helpers
+    handleSortChange: (field: string, order: 'asc' | 'desc') => {
+      setFilters({ sort_by: field, sort_order: order });
+    },
+    handleSearchExecute: () => {
+      setFilters({ search: searchInput || null });
+    },
+  };
+}

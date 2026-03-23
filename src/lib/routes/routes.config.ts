@@ -4,8 +4,32 @@
 export const routes = {
   '/': {
     router: '/',
-    filePath: '(private)/(dashboard)',
+    filePath: '(private)',
     pattern: '/',
+    private: true,
+  },
+  '/members': {
+    router: '/members',
+    filePath: '(private)/members',
+    pattern: '/members',
+    private: true,
+  },
+  '/members/[id]': {
+    router: (id: string | number) => `/members/${id}`,
+    filePath: '(private)/members/[id]',
+    pattern: '/members/:id',
+    private: true,
+  },
+  '/membership-applications': {
+    router: '/membership-applications',
+    filePath: '(private)/membership-applications',
+    pattern: '/membership-applications',
+    private: true,
+  },
+  '/membership-applications/[id]': {
+    router: (id: string | number) => `/membership-applications/${id}`,
+    filePath: '(private)/membership-applications/[id]',
+    pattern: '/membership-applications/:id',
     private: true,
   },
   '/403': {
@@ -23,7 +47,23 @@ export const routes = {
 } as const;
 
 // List of all route keys
-export const routeKeys = ['/', '/403', '/login'] as const;
+export const routeKeys = [
+  '/',
+  '/members',
+  '/members/[id]',
+  '/membership-applications',
+  '/membership-applications/[id]',
+  '/403',
+  '/login',
+] as const;
 
 // List of all route patterns
-export const routePatterns = ['/', '/403', '/login'] as const;
+export const routePatterns = [
+  '/',
+  '/members',
+  '/members/:id',
+  '/membership-applications',
+  '/membership-applications/:id',
+  '/403',
+  '/login',
+] as const;

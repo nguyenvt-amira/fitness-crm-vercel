@@ -28,7 +28,7 @@ function Calendar({
   buttonVariant?: React.ComponentProps<typeof Button>["variant"]
 }) {
   const defaultClassNames = getDefaultClassNames()
-
+  console.log('data in calendar', props);
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}

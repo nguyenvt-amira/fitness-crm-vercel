@@ -32,14 +32,16 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
-    remotePatterns:
-      IMAGE_DOMAINS?.split(',')
-        .map((item) => item.trim())
-        .filter(Boolean)
-        .map((domain) => ({
-          protocol: 'https' as const,
-          hostname: domain,
-        })) ?? [],
+    domains: IMAGE_DOMAINS?.split(',').map((item) => item.trim()) ?? [],
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'api.dicebear.com',
+      },
+    ],
   },
 };
 

@@ -40,6 +40,14 @@ npm run dev
 
 起動後、[http://localhost:3000](http://localhost:3000) にアクセスしてください。
 
+## テスト用アカウント
+
+| メールアドレス    | パスワード  |
+| ----------------- | ----------- |
+| admin@example.com | password123 |
+| staff@example.com | password123 |
+| user@example.com  | password123 |
+
 ## リンター / フォーマッター
 
 リンターとフォーマッターはコミット時に自動実行されます。

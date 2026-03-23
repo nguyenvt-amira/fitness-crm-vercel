@@ -4,20 +4,30 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-function Table({ className, ...props }: React.ComponentProps<"table">) {
-  return (
-    <div
-      data-slot="table-container"
-      className="relative w-full overflow-x-auto"
-    >
-      <table
-        data-slot="table"
-        className={cn("w-full caption-bottom text-sm", className)}
-        {...props}
-      />
-    </div>
-  )
+interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
+  containerClassName?: string;
 }
+const Table = React.forwardRef<HTMLTableElement, TableProps>(
+  ({ className, containerClassName, onScroll, ...props }, ref) => {
+    return (
+      <div
+        data-slot="table-container"
+        className={cn("relative w-full overflow-x-auto", containerClassName)}
+        {...{ onScroll }}
+      >
+        <table
+          data-slot="table"
+          ref={ref}
+          className={cn("w-full caption-bottom text-sm", className)}
+          {...props}
+        />
+      </div>
+    )
+  }
+)
+
+Table.displayName = "Table"
+
 
 function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
   return (

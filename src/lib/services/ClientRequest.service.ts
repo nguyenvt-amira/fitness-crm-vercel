@@ -2,7 +2,7 @@ import { getTokenExpiration } from '@/utils/auth.util';
 import { handleLogout } from '@/utils/global.util';
 import Cookies from 'universal-cookie';
 
-import { Auth } from '@/lib/api';
+import { Authentication as Auth } from '@/lib/api';
 import { Client, ResolvedRequestOptions } from '@/lib/api/client';
 
 import { CookieNames } from '@/types/global.enum';
@@ -85,7 +85,7 @@ export default class ClientRequestService {
         reject = rej;
       });
       const cookies = new Cookies();
-      const sessionResponse = (await Auth.authControllerRefresh({
+      const sessionResponse = (await Auth.postAuthRefresh({
         headers: {
           Authorization: request.headers.get('Authorization') as string,
         },
