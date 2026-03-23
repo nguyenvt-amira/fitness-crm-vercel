@@ -49,7 +49,7 @@ registerRoute({
 // Mock user database
 const MOCK_USERS = [
   {
-    email: 'admin@amira.vn',
+    email: 'admin@example.com',
     password: 'password123',
     companyId: 1,
   },
