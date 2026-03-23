@@ -1266,6 +1266,94 @@ export const ErrorResponseSchema = z
     description: 'Error response',
   });
 
+export const GetRelationshipsResponseSchema = z
+  .object({
+    family: z
+      .object({
+        role: z.enum(['primary', 'family_child']),
+        children: z
+          .array(
+            z.object({
+              id: z.string(),
+              member_number: z.string(),
+              name: z.string(),
+              relationship: z.string(),
+              status: MemberStatusSchema,
+            }),
+          )
+          .optional(),
+        current_count: z.number().optional(),
+        max_count: z.number().optional(),
+        parent: z
+          .object({
+            id: z.string(),
+            member_number: z.string(),
+            name: z.string(),
+            relationship: z.string(),
+            status: MemberStatusSchema,
+          })
+          .optional(),
+      })
+      .openapi({
+        description: 'Family relationships',
+      }),
+    corporate: z
+      .object({
+        corporate_detail_member_id: z.string(),
+        corporate_name: z.string(),
+        corporate_number: z.string(),
+        contract_type: z.string(),
+        company_discount: z.object({
+          applied: z.boolean(),
+          rate_percent: z.number().nullable(),
+        }),
+        contact_department: z.string(),
+        contact_name: z.string(),
+      })
+      .nullable()
+      .openapi({
+        description: 'Corporate relationships',
+      }),
+    referral: z
+      .object({
+        as_referrer: z.object({
+          referrals: z.array(
+            z.object({
+              id: z.string(),
+              member_number: z.string(),
+              name: z.string(),
+              referred_at: z.string(),
+              membership_status: z.string(),
+              points_status: z.string(),
+              points_earned: z.number().nullable(),
+            }),
+          ),
+          summary: z.object({
+            total_referrals: z.number(),
+            total_points: z.number(),
+          }),
+        }),
+        as_referee: z
+          .object({
+            referrer: z.object({
+              id: z.string(),
+              member_number: z.string(),
+              name: z.string(),
+              referred_at: z.string(),
+              referral_benefit: z.string(),
+            }),
+          })
+          .nullable(),
+      })
+      .openapi({
+        description: 'Referral relationships',
+      }),
+  })
+  .openapi({
+    title: 'GetRelationshipsResponse',
+    description: 'Response for getting relationships',
+  });
+
 // Type exports for use in route handlers
 export type MemberType = z.infer<typeof MemberTypeSchema>;
 export type MemberStatus = z.infer<typeof MemberStatusSchema>;

@@ -4573,7 +4573,15 @@ export type GetFamilyRegistrationDetailResponse = {
         primary_member?: {
             member_number?: string;
             status?: string;
+            member_type?: string;
+            joined_at?: string;
+            tenure_months?: number;
+            family_member_count?: number;
+            family_member_limit?: number;
             has_unpaid?: boolean;
+            has_past_unpaid?: boolean;
+            has_forced_withdrawal?: boolean;
+            monthly_usage_count?: number;
         };
         risk_details?: Array<{
             reason: string;
@@ -8555,15 +8563,69 @@ export type GetCrmMembersByIdRelationshipsResponses = {
         /**
          * Family relationships
          */
-        family?: unknown;
+        family: {
+            role: 'primary' | 'family_child';
+            children?: Array<{
+                id: string;
+                member_number: string;
+                name: string;
+                relationship: string;
+                status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
+            }>;
+            current_count?: number;
+            max_count?: number;
+            parent?: {
+                id: string;
+                member_number: string;
+                name: string;
+                relationship: string;
+                status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
+            };
+        };
         /**
          * Corporate relationships
          */
-        corporate?: unknown;
+        corporate: {
+            corporate_detail_member_id: string;
+            corporate_name: string;
+            corporate_number: string;
+            contract_type: string;
+            company_discount: {
+                applied: boolean;
+                rate_percent: number | null;
+            };
+            contact_department: string;
+            contact_name: string;
+        } | null;
         /**
          * Referral relationships
          */
-        referral?: unknown;
+        referral: {
+            as_referrer: {
+                referrals: Array<{
+                    id: string;
+                    member_number: string;
+                    name: string;
+                    referred_at: string;
+                    membership_status: string;
+                    points_status: string;
+                    points_earned: number | null;
+                }>;
+                summary: {
+                    total_referrals: number;
+                    total_points: number;
+                };
+            };
+            as_referee: {
+                referrer: {
+                    id: string;
+                    member_number: string;
+                    name: string;
+                    referred_at: string;
+                    referral_benefit: string;
+                };
+            } | null;
+        };
     };
 };
 
