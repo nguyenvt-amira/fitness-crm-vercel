@@ -36,7 +36,7 @@ import { navigate } from '@/lib/routes/routes.util';
 
 import type { StaffMemo } from '@/types/member.type';
 
-import { STATUS_VARIANTS } from '../_lib/constants';
+import { MEMBER_STATUS_CLASSES } from '../_lib/constants';
 import { MEMBER_STATUS_LABELS } from '../_lib/constants';
 import { EditMemberModal } from './_components/edit-member-modal';
 import { MemoModal } from './_components/memo-modal';
@@ -221,7 +221,7 @@ export default function MemberDetailPage() {
                     </span>
                   </div>
                   <div className="mt-2 flex flex-wrap items-center gap-2">
-                    <Badge variant={STATUS_VARIANTS[member.profile.status]}>
+                    <Badge className={MEMBER_STATUS_CLASSES[member.profile.status]}>
                       {MEMBER_STATUS_LABELS[member.profile.status]}
                     </Badge>
                     <Badge variant="outline" className="flex items-center gap-1">
