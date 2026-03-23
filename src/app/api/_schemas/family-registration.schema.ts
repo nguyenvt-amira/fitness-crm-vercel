@@ -214,8 +214,25 @@ export const GetFamilyRegistrationDetailResponseSchema = z
         .object({
           member_number: z.string().optional(),
           status: z.string().optional(),
+          member_type: z.string().optional(),
+          joined_at: z.string().optional(),
+          tenure_months: z.number().optional(),
+          family_member_count: z.number().optional(),
+          family_member_limit: z.number().optional(),
           has_unpaid: z.boolean().optional(),
+          has_past_unpaid: z.boolean().optional(),
+          has_forced_withdrawal: z.boolean().optional(),
+          monthly_usage_count: z.number().optional(),
         })
+        .optional(),
+      risk_details: z
+        .array(
+          z.object({
+            reason: z.string(),
+            score: z.number(),
+            description: z.string(),
+          }),
+        )
         .optional(),
     }),
   })

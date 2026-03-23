@@ -110,7 +110,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         payment_method: 'クレジットカード',
         payment_status: 'pending',
         risk_details: [
-          { reason: application.risk_reason, score: application.risk_score, description: '' },
+          {
+            reason: application.risk_reason,
+            score: application.risk_score,
+            description: 'リスク詳細の説明',
+          },
         ],
         documents: [
           { type: '身分証明書', url: '/documents/identity.jpg', verified: true },
