@@ -12,7 +12,7 @@ import { navigate } from '@/lib/routes/routes.util';
 
 import { MemberStatus } from '@/types/member.type';
 
-import { MEMBER_STATUS_LABELS, STATUS_VARIANTS } from '../../../_lib/constants';
+import { MEMBER_STATUS_CLASSES, MEMBER_STATUS_LABELS } from '../../../_lib/constants';
 
 type FamilyChildRow = NonNullable<
   NonNullable<GetCrmMembersByIdRelationshipsResponse['family']>['children']
@@ -45,7 +45,7 @@ export const FAMILY_CHILD_COLUMNS: ColumnDef<FamilyChildRow>[] = [
     accessorKey: 'status',
     header: 'ステータス',
     cell: ({ row }) => (
-      <Badge variant={STATUS_VARIANTS[row.original.status as MemberStatus]}>
+      <Badge className={MEMBER_STATUS_CLASSES[row.original.status as MemberStatus]}>
         {MEMBER_STATUS_LABELS[row.original.status as MemberStatus]}
       </Badge>
     ),
@@ -71,7 +71,7 @@ export const FAMILY_PARENT_COLUMNS: ColumnDef<FamilyParentRow>[] = [
     accessorKey: 'status',
     header: 'ステータス',
     cell: ({ row }) => (
-      <Badge variant={STATUS_VARIANTS[row.original.status as MemberStatus]}>
+      <Badge className={MEMBER_STATUS_CLASSES[row.original.status as MemberStatus]}>
         {MEMBER_STATUS_LABELS[row.original.status as MemberStatus]}
       </Badge>
     ),
