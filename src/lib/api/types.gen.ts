@@ -4575,6 +4575,11 @@ export type GetFamilyRegistrationDetailResponse = {
             status?: string;
             has_unpaid?: boolean;
         };
+        risk_details?: Array<{
+            reason: string;
+            score: number;
+            description: string;
+        }>;
     };
 };
 
@@ -5776,8 +5781,21 @@ export type GetCrmFamilyRegistrationsByIdResponses = {
             primary_member?: {
                 member_number?: string;
                 status?: string;
+                member_type?: string;
+                joined_at?: string;
+                tenure_months?: number;
+                family_member_count?: number;
+                family_member_limit?: number;
                 has_unpaid?: boolean;
+                has_past_unpaid?: boolean;
+                has_forced_withdrawal?: boolean;
+                monthly_usage_count?: number;
             };
+            risk_details?: Array<{
+                reason: string;
+                score: number;
+                description: string;
+            }>;
         };
     };
 };

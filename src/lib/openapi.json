@@ -5,12 +5,7 @@
     "version": "1.0.0",
     "description": "API documentation for Fitness CRM system"
   },
-  "servers": [
-    {
-      "url": "/api",
-      "description": "Local development server"
-    }
-  ],
+  "servers": [{ "url": "/api", "description": "Local development server" }],
   "components": {
     "schemas": {
       "LoginRequest": {
@@ -49,11 +44,7 @@
                 "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
                 "description": "JWT refresh token"
               },
-              "token_type": {
-                "type": "string",
-                "example": "Bearer",
-                "description": "Token type"
-              },
+              "token_type": { "type": "string", "example": "Bearer", "description": "Token type" },
               "company_id": {
                 "type": "number",
                 "nullable": true,
@@ -83,11 +74,7 @@
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
             "description": "JWT refresh token"
           },
-          "token_type": {
-            "type": "string",
-            "example": "Bearer",
-            "description": "Token type"
-          },
+          "token_type": { "type": "string", "example": "Bearer", "description": "Token type" },
           "company_id": {
             "type": "number",
             "nullable": true,
@@ -126,11 +113,7 @@
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
             "description": "New JWT refresh token"
           },
-          "token_type": {
-            "type": "string",
-            "example": "Bearer",
-            "description": "Token type"
-          },
+          "token_type": { "type": "string", "example": "Bearer", "description": "Token type" },
           "company_id": {
             "type": "number",
             "nullable": true,
@@ -220,10 +203,7 @@
               },
               "email_recipients": {
                 "type": "array",
-                "items": {
-                  "type": "string",
-                  "format": "email"
-                },
+                "items": { "type": "string", "format": "email" },
                 "example": ["admin@example.com"],
                 "description": "Email recipients for notifications"
               }
@@ -333,10 +313,7 @@
                   },
                   "email_recipients": {
                     "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "email"
-                    },
+                    "items": { "type": "string", "format": "email" },
                     "example": ["admin@example.com"],
                     "description": "Email recipients for notifications"
                   }
@@ -448,10 +425,7 @@
               },
               "email_recipients": {
                 "type": "array",
-                "items": {
-                  "type": "string",
-                  "format": "email"
-                },
+                "items": { "type": "string", "format": "email" },
                 "example": ["admin@example.com"],
                 "description": "Email recipients for notifications"
               }
@@ -554,10 +528,7 @@
                   },
                   "email_recipients": {
                     "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "email"
-                    },
+                    "items": { "type": "string", "format": "email" },
                     "example": ["admin@example.com"],
                     "description": "Email recipients for notifications"
                   }
@@ -624,11 +595,7 @@
           "dashboard": {
             "type": "object",
             "properties": {
-              "period": {
-                "type": "string",
-                "example": "month",
-                "description": "Time period"
-              },
+              "period": { "type": "string", "example": "month", "description": "Time period" },
               "date_range": {
                 "type": "object",
                 "properties": {
@@ -751,11 +718,7 @@
                     "example": 1,
                     "description": "Document issue count"
                   },
-                  "other": {
-                    "type": "number",
-                    "example": 0,
-                    "description": "Other reasons count"
-                  }
+                  "other": { "type": "number", "example": 0, "description": "Other reasons count" }
                 },
                 "required": [
                   "blacklist_match",
@@ -811,11 +774,7 @@
                 "items": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string",
-                      "example": "ACT-001",
-                      "description": "Activity ID"
-                    },
+                    "id": { "type": "string", "example": "ACT-001", "description": "Activity ID" },
                     "type": {
                       "type": "string",
                       "enum": ["auto_approved", "manual_approved", "rejected"],
@@ -832,11 +791,7 @@
                       "example": "山田太郎",
                       "description": "Applicant name"
                     },
-                    "risk_score": {
-                      "type": "number",
-                      "example": 45,
-                      "description": "Risk score"
-                    },
+                    "risk_score": { "type": "number", "example": 45, "description": "Risk score" },
                     "timestamp": {
                       "type": "string",
                       "format": "date-time",
@@ -893,11 +848,7 @@
       "Dashboard": {
         "type": "object",
         "properties": {
-          "period": {
-            "type": "string",
-            "example": "month",
-            "description": "Time period"
-          },
+          "period": { "type": "string", "example": "month", "description": "Time period" },
           "date_range": {
             "type": "object",
             "properties": {
@@ -1020,11 +971,7 @@
                 "example": 1,
                 "description": "Document issue count"
               },
-              "other": {
-                "type": "number",
-                "example": 0,
-                "description": "Other reasons count"
-              }
+              "other": { "type": "number", "example": 0, "description": "Other reasons count" }
             },
             "required": [
               "blacklist_match",
@@ -1048,11 +995,7 @@
                   "example": "2024-01-15",
                   "description": "Date"
                 },
-                "total": {
-                  "type": "number",
-                  "example": 45,
-                  "description": "Total applications"
-                },
+                "total": { "type": "number", "example": 45, "description": "Total applications" },
                 "auto_approved": {
                   "type": "number",
                   "example": 35,
@@ -1080,11 +1023,7 @@
             "items": {
               "type": "object",
               "properties": {
-                "id": {
-                  "type": "string",
-                  "example": "ACT-001",
-                  "description": "Activity ID"
-                },
+                "id": { "type": "string", "example": "ACT-001", "description": "Activity ID" },
                 "type": {
                   "type": "string",
                   "enum": ["auto_approved", "manual_approved", "rejected"],
@@ -1101,11 +1040,7 @@
                   "example": "山田太郎",
                   "description": "Applicant name"
                 },
-                "risk_score": {
-                  "type": "number",
-                  "example": 45,
-                  "description": "Risk score"
-                },
+                "risk_score": { "type": "number", "example": 45, "description": "Risk score" },
                 "timestamp": {
                   "type": "string",
                   "format": "date-time",
@@ -1174,10 +1109,7 @@
           },
           "email_recipients": {
             "type": "array",
-            "items": {
-              "type": "string",
-              "format": "email"
-            },
+            "items": { "type": "string", "format": "email" },
             "example": ["admin@example.com"],
             "description": "Email recipients for notifications"
           }
@@ -1313,11 +1245,7 @@
             "example": 1,
             "description": "Document issue count"
           },
-          "other": {
-            "type": "number",
-            "example": 0,
-            "description": "Other reasons count"
-          }
+          "other": { "type": "number", "example": 0, "description": "Other reasons count" }
         },
         "required": [
           "blacklist_match",
@@ -1339,11 +1267,7 @@
             "example": "2024-01-15",
             "description": "Date"
           },
-          "total": {
-            "type": "number",
-            "example": 45,
-            "description": "Total applications"
-          },
+          "total": { "type": "number", "example": 45, "description": "Total applications" },
           "auto_approved": {
             "type": "number",
             "example": 35,
@@ -1354,11 +1278,7 @@
             "example": 8,
             "description": "Manually approved applications"
           },
-          "rejected": {
-            "type": "number",
-            "example": 2,
-            "description": "Rejected applications"
-          }
+          "rejected": { "type": "number", "example": 2, "description": "Rejected applications" }
         },
         "required": ["date", "total", "auto_approved", "manual_approved", "rejected"],
         "title": "DailyTrend",
@@ -1367,11 +1287,7 @@
       "RecentActivity": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "example": "ACT-001",
-            "description": "Activity ID"
-          },
+          "id": { "type": "string", "example": "ACT-001", "description": "Activity ID" },
           "type": {
             "type": "string",
             "enum": ["auto_approved", "manual_approved", "rejected"],
@@ -1388,11 +1304,7 @@
             "example": "山田太郎",
             "description": "Applicant name"
           },
-          "risk_score": {
-            "type": "number",
-            "example": 45,
-            "description": "Risk score"
-          },
+          "risk_score": { "type": "number", "example": 45, "description": "Risk score" },
           "timestamp": {
             "type": "string",
             "format": "date-time",
@@ -1422,11 +1334,7 @@
       "MemberListItem": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "example": "M-00001",
-            "description": "Member ID"
-          },
+          "id": { "type": "string", "example": "M-00001", "description": "Member ID" },
           "member_number": {
             "type": "string",
             "example": "M-00001",
@@ -1459,11 +1367,7 @@
             "example": "Fit365八潮店",
             "description": "Store name"
           },
-          "store_id": {
-            "type": "string",
-            "example": "store-001",
-            "description": "Store ID"
-          },
+          "store_id": { "type": "string", "example": "store-001", "description": "Store ID" },
           "brand": {
             "type": "string",
             "enum": ["joyfit", "fit365"],
@@ -1497,11 +1401,7 @@
             "example": false,
             "description": "Whether member has unpaid fees"
           },
-          "phone": {
-            "type": "string",
-            "example": "090-1234-5678",
-            "description": "Phone number"
-          },
+          "phone": { "type": "string", "example": "090-1234-5678", "description": "Phone number" },
           "email": {
             "type": "string",
             "format": "email",
@@ -1532,26 +1432,10 @@
       "Pagination": {
         "type": "object",
         "properties": {
-          "page": {
-            "type": "number",
-            "example": 1,
-            "description": "Current page number"
-          },
-          "limit": {
-            "type": "number",
-            "example": 50,
-            "description": "Items per page"
-          },
-          "total": {
-            "type": "number",
-            "example": 200,
-            "description": "Total number of items"
-          },
-          "total_pages": {
-            "type": "number",
-            "example": 4,
-            "description": "Total number of pages"
-          }
+          "page": { "type": "number", "example": 1, "description": "Current page number" },
+          "limit": { "type": "number", "example": 50, "description": "Items per page" },
+          "total": { "type": "number", "example": 200, "description": "Total number of items" },
+          "total_pages": { "type": "number", "example": 4, "description": "Total number of pages" }
         },
         "required": ["page", "limit", "total", "total_pages"],
         "title": "Pagination",
@@ -1604,28 +1488,21 @@
           "brand": {
             "type": "array",
             "nullable": true,
-            "items": {
-              "type": "string",
-              "enum": ["joyfit", "fit365"]
-            },
+            "items": { "type": "string", "enum": ["joyfit", "fit365"] },
             "example": ["joyfit", "fit365"],
             "description": "Filter by brand (array)"
           },
           "store_id": {
             "type": "array",
             "nullable": true,
-            "items": {
-              "type": "string"
-            },
+            "items": { "type": "string" },
             "example": ["store-001", "store-002"],
             "description": "Filter by store ID (array)"
           },
           "contract_plan_id": {
             "type": "array",
             "nullable": true,
-            "items": {
-              "type": "string"
-            },
+            "items": { "type": "string" },
             "example": ["plan-001", "plan-002"],
             "description": "Filter by contract plan ID (array)"
           },
@@ -1667,11 +1544,7 @@
             "items": {
               "type": "object",
               "properties": {
-                "id": {
-                  "type": "string",
-                  "example": "M-00001",
-                  "description": "Member ID"
-                },
+                "id": { "type": "string", "example": "M-00001", "description": "Member ID" },
                 "member_number": {
                   "type": "string",
                   "example": "M-00001",
@@ -1704,11 +1577,7 @@
                   "example": "Fit365八潮店",
                   "description": "Store name"
                 },
-                "store_id": {
-                  "type": "string",
-                  "example": "store-001",
-                  "description": "Store ID"
-                },
+                "store_id": { "type": "string", "example": "store-001", "description": "Store ID" },
                 "brand": {
                   "type": "string",
                   "enum": ["joyfit", "fit365"],
@@ -1779,21 +1648,9 @@
           "pagination": {
             "type": "object",
             "properties": {
-              "page": {
-                "type": "number",
-                "example": 1,
-                "description": "Current page number"
-              },
-              "limit": {
-                "type": "number",
-                "example": 50,
-                "description": "Items per page"
-              },
-              "total": {
-                "type": "number",
-                "example": 200,
-                "description": "Total number of items"
-              },
+              "page": { "type": "number", "example": 1, "description": "Current page number" },
+              "limit": { "type": "number", "example": 50, "description": "Items per page" },
+              "total": { "type": "number", "example": 200, "description": "Total number of items" },
               "total_pages": {
                 "type": "number",
                 "example": 4,
@@ -1818,11 +1675,7 @@
               "basic_info": {
                 "type": "object",
                 "properties": {
-                  "id": {
-                    "type": "string",
-                    "example": "M-00001",
-                    "description": "Member ID"
-                  },
+                  "id": { "type": "string", "example": "M-00001", "description": "Member ID" },
                   "member_number": {
                     "type": "string",
                     "example": "M-00001",
@@ -1843,11 +1696,7 @@
                     "example": "1990-01-01",
                     "description": "Birthday (ISO date)"
                   },
-                  "age": {
-                    "type": "integer",
-                    "example": 35,
-                    "description": "Age"
-                  },
+                  "age": { "type": "integer", "example": 35, "description": "Age" },
                   "gender": {
                     "type": "string",
                     "enum": ["male", "female", "other"],
@@ -1864,16 +1713,8 @@
                     "example": "東京都",
                     "description": "Prefecture"
                   },
-                  "city": {
-                    "type": "string",
-                    "example": "渋谷区",
-                    "description": "City"
-                  },
-                  "address": {
-                    "type": "string",
-                    "example": "渋谷1-2-3",
-                    "description": "Address"
-                  },
+                  "city": { "type": "string", "example": "渋谷区", "description": "City" },
+                  "address": { "type": "string", "example": "渋谷1-2-3", "description": "Address" },
                   "building": {
                     "type": "string",
                     "example": "サンプルマンション101",
@@ -2602,37 +2443,22 @@
               "points": {
                 "type": "object",
                 "properties": {
-                  "fit365": {
-                    "nullable": true,
-                    "description": "FIT365 points information"
-                  },
-                  "joyfit": {
-                    "nullable": true,
-                    "description": "JOYFIT points information"
-                  },
-                  "rank": {
-                    "nullable": true,
-                    "description": "Rank information"
-                  },
+                  "fit365": { "nullable": true, "description": "FIT365 points information" },
+                  "joyfit": { "nullable": true, "description": "JOYFIT points information" },
+                  "rank": { "nullable": true, "description": "Rank information" },
                   "earn_history": {
                     "type": "array",
-                    "items": {
-                      "nullable": true
-                    },
+                    "items": { "nullable": true },
                     "description": "Earn history"
                   },
                   "spend_history": {
                     "type": "array",
-                    "items": {
-                      "nullable": true
-                    },
+                    "items": { "nullable": true },
                     "description": "Spend history"
                   },
                   "adjustment_history": {
                     "type": "array",
-                    "items": {
-                      "nullable": true
-                    },
+                    "items": { "nullable": true },
                     "description": "Adjustment history"
                   }
                 },
@@ -2645,9 +2471,7 @@
                 "properties": {
                   "memos": {
                     "type": "array",
-                    "items": {
-                      "nullable": true
-                    },
+                    "items": { "nullable": true },
                     "description": "List of memos"
                   }
                 },
@@ -2677,36 +2501,16 @@
             "example": "サトウ ハナコ",
             "description": "Name in kana"
           },
-          "postal_code": {
-            "type": "string",
-            "example": "1500002",
-            "description": "Postal code"
-          },
-          "prefecture": {
-            "type": "string",
-            "example": "東京都",
-            "description": "Prefecture"
-          },
-          "city": {
-            "type": "string",
-            "example": "渋谷区",
-            "description": "City"
-          },
-          "address": {
-            "type": "string",
-            "example": "渋谷1-2-3",
-            "description": "Address"
-          },
+          "postal_code": { "type": "string", "example": "1500002", "description": "Postal code" },
+          "prefecture": { "type": "string", "example": "東京都", "description": "Prefecture" },
+          "city": { "type": "string", "example": "渋谷区", "description": "City" },
+          "address": { "type": "string", "example": "渋谷1-2-3", "description": "Address" },
           "building": {
             "type": "string",
             "example": "サンプルマンション 101",
             "description": "Building name"
           },
-          "phone": {
-            "type": "string",
-            "example": "09012345678",
-            "description": "Phone number"
-          },
+          "phone": { "type": "string", "example": "09012345678", "description": "Phone number" },
           "email": {
             "type": "string",
             "format": "email",
@@ -2716,15 +2520,9 @@
           "emergency_contact": {
             "type": "object",
             "properties": {
-              "name": {
-                "type": "string"
-              },
-              "relationship": {
-                "type": "string"
-              },
-              "phone": {
-                "type": "string"
-              }
+              "name": { "type": "string" },
+              "relationship": { "type": "string" },
+              "phone": { "type": "string" }
             },
             "required": ["name", "relationship", "phone"],
             "description": "Emergency contact information"
@@ -2741,10 +2539,7 @@
             "example": true,
             "description": "Whether the update was successful"
           },
-          "member": {
-            "nullable": true,
-            "description": "Updated member information"
-          }
+          "member": { "nullable": true, "description": "Updated member information" }
         },
         "required": ["success"],
         "title": "UpdateBasicInfoResponse",
@@ -2753,21 +2548,13 @@
       "UpdateHealthInfoRequest": {
         "type": "object",
         "properties": {
-          "health_status": {
-            "type": "string",
-            "example": "良好",
-            "description": "Health status"
-          },
+          "health_status": { "type": "string", "example": "良好", "description": "Health status" },
           "medical_history": {
             "type": "string",
             "example": "特になし",
             "description": "Medical history"
           },
-          "allergies": {
-            "type": "string",
-            "example": "なし",
-            "description": "Allergies"
-          },
+          "allergies": { "type": "string", "example": "なし", "description": "Allergies" },
           "exercise_restrictions": {
             "type": "string",
             "example": "特になし",
@@ -2790,10 +2577,7 @@
             "example": true,
             "description": "Whether the update was successful"
           },
-          "member": {
-            "nullable": true,
-            "description": "Updated member information"
-          }
+          "member": { "nullable": true, "description": "Updated member information" }
         },
         "required": ["success"],
         "title": "UpdateHealthInfoResponse",
@@ -2802,21 +2586,9 @@
       "UpdateMarketingConsentRequest": {
         "type": "object",
         "properties": {
-          "email": {
-            "type": "boolean",
-            "example": true,
-            "description": "Email marketing consent"
-          },
-          "sms": {
-            "type": "boolean",
-            "example": false,
-            "description": "SMS marketing consent"
-          },
-          "push": {
-            "type": "boolean",
-            "example": true,
-            "description": "Push notification consent"
-          }
+          "email": { "type": "boolean", "example": true, "description": "Email marketing consent" },
+          "sms": { "type": "boolean", "example": false, "description": "SMS marketing consent" },
+          "push": { "type": "boolean", "example": true, "description": "Push notification consent" }
         },
         "title": "UpdateMarketingConsentRequest",
         "description": "Request payload for updating marketing consent"
@@ -2829,10 +2601,7 @@
             "example": true,
             "description": "Whether the update was successful"
           },
-          "member": {
-            "nullable": true,
-            "description": "Updated member information"
-          }
+          "member": { "nullable": true, "description": "Updated member information" }
         },
         "required": ["success"],
         "title": "UpdateMarketingConsentResponse",
@@ -2874,11 +2643,7 @@
             "example": true,
             "description": "Whether the adjustment was successful"
           },
-          "id": {
-            "type": "string",
-            "example": "M-00001",
-            "description": "Member ID"
-          },
+          "id": { "type": "string", "example": "M-00001", "description": "Member ID" },
           "adjustment": {
             "type": "object",
             "properties": {
@@ -2915,37 +2680,22 @@
       "GetPointsResponse": {
         "type": "object",
         "properties": {
-          "fit365": {
-            "nullable": true,
-            "description": "FIT365 points information"
-          },
-          "joyfit": {
-            "nullable": true,
-            "description": "JOYFIT points information"
-          },
-          "rank": {
-            "nullable": true,
-            "description": "Rank information"
-          },
+          "fit365": { "nullable": true, "description": "FIT365 points information" },
+          "joyfit": { "nullable": true, "description": "JOYFIT points information" },
+          "rank": { "nullable": true, "description": "Rank information" },
           "earn_history": {
             "type": "array",
-            "items": {
-              "nullable": true
-            },
+            "items": { "nullable": true },
             "description": "Earn history"
           },
           "spend_history": {
             "type": "array",
-            "items": {
-              "nullable": true
-            },
+            "items": { "nullable": true },
             "description": "Spend history"
           },
           "adjustment_history": {
             "type": "array",
-            "items": {
-              "nullable": true
-            },
+            "items": { "nullable": true },
             "description": "Adjustment history"
           }
         },
@@ -2969,11 +2719,7 @@
             "example": "注意事項があります",
             "description": "Memo content (1-1000 characters)"
           },
-          "created_by": {
-            "type": "string",
-            "example": "山田 花子",
-            "description": "Creator name"
-          }
+          "created_by": { "type": "string", "example": "山田 花子", "description": "Creator name" }
         },
         "required": ["type", "content"],
         "title": "CreateMemoRequest",
@@ -2987,10 +2733,7 @@
             "example": true,
             "description": "Whether the creation was successful"
           },
-          "memo": {
-            "nullable": true,
-            "description": "Created memo"
-          }
+          "memo": { "nullable": true, "description": "Created memo" }
         },
         "required": ["success"],
         "title": "CreateMemoResponse",
@@ -3023,10 +2766,7 @@
             "example": true,
             "description": "Whether the update was successful"
           },
-          "memo": {
-            "nullable": true,
-            "description": "Updated memo"
-          }
+          "memo": { "nullable": true, "description": "Updated memo" }
         },
         "required": ["success"],
         "title": "UpdateMemoResponse",
@@ -3037,9 +2777,7 @@
         "properties": {
           "memos": {
             "type": "array",
-            "items": {
-              "nullable": true
-            },
+            "items": { "nullable": true },
             "description": "List of memos"
           }
         },
@@ -3064,17 +2802,13 @@
           },
           "member_ids": {
             "type": "array",
-            "items": {
-              "type": "string"
-            },
+            "items": { "type": "string" },
             "example": ["M-00001", "M-00002"],
             "description": "Member IDs (for selected target)"
           },
           "fields": {
             "type": "array",
-            "items": {
-              "type": "string"
-            },
+            "items": { "type": "string" },
             "minItems": 1,
             "example": ["member_number", "name_kanji", "email"],
             "description": "Fields to export"
@@ -3103,11 +2837,7 @@
             "example": "csv",
             "description": "Export format"
           },
-          "status": {
-            "type": "string",
-            "example": "processing",
-            "description": "Export status"
-          }
+          "status": { "type": "string", "example": "processing", "description": "Export status" }
         },
         "required": ["success", "exportId", "format", "status"],
         "title": "ExportMembersResponse",
@@ -3204,26 +2934,14 @@
       "OptionContract": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "example": "opt-001",
-            "description": "Option contract ID"
-          },
+          "id": { "type": "string", "example": "opt-001", "description": "Option contract ID" },
           "name": {
             "type": "string",
             "example": "パーソナルトレーニング",
             "description": "Option name"
           },
-          "monthly_fee": {
-            "type": "number",
-            "example": 11000,
-            "description": "Monthly fee"
-          },
-          "start_date": {
-            "type": "string",
-            "example": "2024-02-01",
-            "description": "Start date"
-          },
+          "monthly_fee": { "type": "number", "example": 11000, "description": "Monthly fee" },
+          "start_date": { "type": "string", "example": "2024-02-01", "description": "Start date" },
           "next_billing_date": {
             "type": "string",
             "example": "2025-03-01",
@@ -3253,11 +2971,7 @@
             "example": "add",
             "description": "Action type"
           },
-          "notes": {
-            "type": "string",
-            "example": "オプション追加",
-            "description": "Notes"
-          }
+          "notes": { "type": "string", "example": "オプション追加", "description": "Notes" }
         },
         "required": ["changed_at", "option_name", "action_type"],
         "title": "OptionChangeHistory",
@@ -3266,16 +2980,8 @@
       "SpecialContractItem": {
         "type": "object",
         "properties": {
-          "enrolled": {
-            "type": "boolean",
-            "example": true,
-            "description": "Whether enrolled"
-          },
-          "start_date": {
-            "type": "string",
-            "example": "2024-01-15",
-            "description": "Start date"
-          },
+          "enrolled": { "type": "boolean", "example": true, "description": "Whether enrolled" },
+          "start_date": { "type": "string", "example": "2024-01-15", "description": "Start date" },
           "applied_month": {
             "type": "string",
             "example": "2025-03",
@@ -3292,11 +2998,7 @@
           "anshin_support": {
             "type": "object",
             "properties": {
-              "enrolled": {
-                "type": "boolean",
-                "example": true,
-                "description": "Whether enrolled"
-              },
+              "enrolled": { "type": "boolean", "example": true, "description": "Whether enrolled" },
               "start_date": {
                 "type": "string",
                 "example": "2024-01-15",
@@ -3315,11 +3017,7 @@
           "mutual_use": {
             "type": "object",
             "properties": {
-              "enrolled": {
-                "type": "boolean",
-                "example": true,
-                "description": "Whether enrolled"
-              },
+              "enrolled": { "type": "boolean", "example": true, "description": "Whether enrolled" },
               "start_date": {
                 "type": "string",
                 "example": "2024-01-15",
@@ -3338,11 +3036,7 @@
           "security_fee": {
             "type": "object",
             "properties": {
-              "enrolled": {
-                "type": "boolean",
-                "example": true,
-                "description": "Whether enrolled"
-              },
+              "enrolled": { "type": "boolean", "example": true, "description": "Whether enrolled" },
               "start_date": {
                 "type": "string",
                 "example": "2024-01-15",
@@ -3361,11 +3055,7 @@
           "maintenance_fee": {
             "type": "object",
             "properties": {
-              "enrolled": {
-                "type": "boolean",
-                "example": true,
-                "description": "Whether enrolled"
-              },
+              "enrolled": { "type": "boolean", "example": true, "description": "Whether enrolled" },
               "start_date": {
                 "type": "string",
                 "example": "2024-01-15",
@@ -3388,16 +3078,8 @@
       "PaymentRecord": {
         "type": "object",
         "properties": {
-          "date": {
-            "type": "string",
-            "example": "2025-02-27",
-            "description": "Payment date"
-          },
-          "amount": {
-            "type": "number",
-            "example": 9680,
-            "description": "Payment amount"
-          },
+          "date": { "type": "string", "example": "2025-02-27", "description": "Payment date" },
+          "amount": { "type": "number", "example": 9680, "description": "Payment amount" },
           "breakdown": {
             "type": "string",
             "example": "月会費 8,580円 + オプション 1,100円",
@@ -3409,11 +3091,7 @@
             "example": "success",
             "description": "Payment status"
           },
-          "notes": {
-            "type": "string",
-            "example": "",
-            "description": "Additional notes"
-          }
+          "notes": { "type": "string", "example": "", "description": "Additional notes" }
         },
         "required": ["date", "amount", "breakdown", "status"],
         "title": "PaymentRecord",
@@ -3476,11 +3154,7 @@
                   "example": "2025-02-27",
                   "description": "Payment date"
                 },
-                "amount": {
-                  "type": "number",
-                  "example": 9680,
-                  "description": "Payment amount"
-                },
+                "amount": { "type": "number", "example": 9680, "description": "Payment amount" },
                 "breakdown": {
                   "type": "string",
                   "example": "月会費 8,580円 + オプション 1,100円",
@@ -3492,11 +3166,7 @@
                   "example": "success",
                   "description": "Payment status"
                 },
-                "notes": {
-                  "type": "string",
-                  "example": "",
-                  "description": "Additional notes"
-                }
+                "notes": { "type": "string", "example": "", "description": "Additional notes" }
               },
               "required": ["date", "amount", "breakdown", "status"],
               "title": "PaymentRecord",
@@ -3512,16 +3182,8 @@
       "UnpaidInfo": {
         "type": "object",
         "properties": {
-          "amount": {
-            "type": "number",
-            "example": 5000,
-            "description": "Unpaid amount"
-          },
-          "due_date": {
-            "type": "string",
-            "example": "2025-03-15",
-            "description": "Due date"
-          },
+          "amount": { "type": "number", "example": 5000, "description": "Unpaid amount" },
+          "due_date": { "type": "string", "example": "2025-03-15", "description": "Due date" },
           "reason": {
             "type": "string",
             "example": "Payment failed",
@@ -3555,11 +3217,7 @@
             "example": "入会金50%OFF",
             "description": "Discount content"
           },
-          "remaining_days": {
-            "type": "number",
-            "example": 15,
-            "description": "Remaining days"
-          },
+          "remaining_days": { "type": "number", "example": 15, "description": "Remaining days" },
           "applied_at": {
             "type": "string",
             "example": "2024-01-15",
@@ -3570,11 +3228,7 @@
             "example": "初月月会費無料",
             "description": "Campaign content"
           },
-          "status": {
-            "type": "string",
-            "example": "expired",
-            "description": "Campaign status"
-          }
+          "status": { "type": "string", "example": "expired", "description": "Campaign status" }
         },
         "required": ["campaign_name"],
         "title": "Campaign",
@@ -3770,11 +3424,7 @@
                   "example": "パーソナルトレーニング",
                   "description": "Option name"
                 },
-                "monthly_fee": {
-                  "type": "number",
-                  "example": 11000,
-                  "description": "Monthly fee"
-                },
+                "monthly_fee": { "type": "number", "example": 11000, "description": "Monthly fee" },
                 "start_date": {
                   "type": "string",
                   "example": "2024-02-01",
@@ -3813,11 +3463,7 @@
                   "example": "add",
                   "description": "Action type"
                 },
-                "notes": {
-                  "type": "string",
-                  "example": "オプション追加",
-                  "description": "Notes"
-                }
+                "notes": { "type": "string", "example": "オプション追加", "description": "Notes" }
               },
               "required": ["changed_at", "option_name", "action_type"],
               "title": "OptionChangeHistory",
@@ -3997,11 +3643,7 @@
                       "example": "success",
                       "description": "Payment status"
                     },
-                    "notes": {
-                      "type": "string",
-                      "example": "",
-                      "description": "Additional notes"
-                    }
+                    "notes": { "type": "string", "example": "", "description": "Additional notes" }
                   },
                   "required": ["date", "amount", "breakdown", "status"],
                   "title": "PaymentRecord",
@@ -4018,16 +3660,8 @@
             "type": "object",
             "nullable": true,
             "properties": {
-              "amount": {
-                "type": "number",
-                "example": 5000,
-                "description": "Unpaid amount"
-              },
-              "due_date": {
-                "type": "string",
-                "example": "2025-03-15",
-                "description": "Due date"
-              },
+              "amount": { "type": "number", "example": 5000, "description": "Unpaid amount" },
+              "due_date": { "type": "string", "example": "2025-03-15", "description": "Due date" },
               "reason": {
                 "type": "string",
                 "example": "Payment failed",
@@ -4166,11 +3800,7 @@
       "MembershipApplication": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "example": "APP-00001",
-            "description": "Application ID"
-          },
+          "id": { "type": "string", "example": "APP-00001", "description": "Application ID" },
           "applicant_name": {
             "type": "string",
             "example": "山田太郎",
@@ -4199,11 +3829,7 @@
             "example": "ブラックリスト一致",
             "description": "Risk reason"
           },
-          "plan_name": {
-            "type": "string",
-            "example": "通常会員",
-            "description": "Plan name"
-          },
+          "plan_name": { "type": "string", "example": "通常会員", "description": "Plan name" },
           "scheduled_start_date": {
             "type": "string",
             "format": "date",
@@ -4300,11 +3926,7 @@
             "example": "desc",
             "description": "Sort order"
           },
-          "search": {
-            "type": "string",
-            "example": "山田",
-            "description": "Search query"
-          }
+          "search": { "type": "string", "example": "山田", "description": "Search query" }
         },
         "title": "GetMembershipApplicationsQuery",
         "description": "Query parameters for getting membership applications"
@@ -4317,11 +3939,7 @@
             "items": {
               "type": "object",
               "properties": {
-                "id": {
-                  "type": "string",
-                  "example": "APP-00001",
-                  "description": "Application ID"
-                },
+                "id": { "type": "string", "example": "APP-00001", "description": "Application ID" },
                 "applicant_name": {
                   "type": "string",
                   "example": "山田太郎",
@@ -4405,11 +4023,7 @@
           "pagination": {
             "type": "object",
             "properties": {
-              "total": {
-                "type": "number",
-                "example": 200,
-                "description": "Total number of items"
-              },
+              "total": { "type": "number", "example": 200, "description": "Total number of items" },
               "total_pages": {
                 "type": "number",
                 "example": 4,
@@ -4420,11 +4034,7 @@
                 "example": 1,
                 "description": "Current page number"
               },
-              "limit": {
-                "type": "number",
-                "example": 50,
-                "description": "Items per page"
-              }
+              "limit": { "type": "number", "example": 50, "description": "Items per page" }
             },
             "required": ["total", "total_pages", "current_page", "limit"],
             "title": "Pagination",
@@ -4440,9 +4050,7 @@
         "properties": {
           "application_ids": {
             "type": "array",
-            "items": {
-              "type": "string"
-            },
+            "items": { "type": "string" },
             "minItems": 1,
             "example": ["APP-00001", "APP-00002"],
             "description": "List of application IDs to auto-judge"
@@ -4719,11 +4327,7 @@
                   "example": "pending",
                   "description": "Alert type"
                 },
-                "count": {
-                  "type": "number",
-                  "example": 12,
-                  "description": "Number of items"
-                },
+                "count": { "type": "number", "example": 12, "description": "Number of items" },
                 "deadline": {
                   "type": "string",
                   "format": "date-time",
@@ -4815,11 +4419,7 @@
                 "example": 0,
                 "description": "Document issue count"
               },
-              "other": {
-                "type": "number",
-                "example": 0,
-                "description": "Other risk reasons count"
-              }
+              "other": { "type": "number", "example": 0, "description": "Other risk reasons count" }
             },
             "required": [
               "blacklist_match",
@@ -4914,11 +4514,7 @@
             "example": "pending",
             "description": "Alert type"
           },
-          "count": {
-            "type": "number",
-            "example": 12,
-            "description": "Number of items"
-          },
+          "count": { "type": "number", "example": 12, "description": "Number of items" },
           "deadline": {
             "type": "string",
             "format": "date-time",
@@ -4958,11 +4554,7 @@
             "example": 0,
             "description": "Document issue count"
           },
-          "other": {
-            "type": "number",
-            "example": 0,
-            "description": "Other risk reasons count"
-          }
+          "other": { "type": "number", "example": 0, "description": "Other risk reasons count" }
         },
         "required": [
           "blacklist_match",
@@ -4980,9 +4572,7 @@
         "properties": {
           "application_ids": {
             "type": "array",
-            "items": {
-              "type": "string"
-            },
+            "items": { "type": "string" },
             "minItems": 1,
             "example": ["APP-00001", "APP-00002"],
             "description": "List of application IDs to approve"
@@ -5070,9 +4660,7 @@
         "properties": {
           "application_ids": {
             "type": "array",
-            "items": {
-              "type": "string"
-            },
+            "items": { "type": "string" },
             "minItems": 1,
             "example": ["APP-00001", "APP-00002"],
             "description": "List of application IDs to reject"
@@ -5177,11 +4765,7 @@
           "application": {
             "type": "object",
             "properties": {
-              "id": {
-                "type": "string",
-                "example": "APP-00001",
-                "description": "Application ID"
-              },
+              "id": { "type": "string", "example": "APP-00001", "description": "Application ID" },
               "applicant_name": {
                 "type": "string",
                 "example": "山田太郎",
@@ -5210,11 +4794,7 @@
                 "example": "ブラックリスト一致",
                 "description": "Risk reason"
               },
-              "plan_name": {
-                "type": "string",
-                "example": "通常会員",
-                "description": "Plan name"
-              },
+              "plan_name": { "type": "string", "example": "通常会員", "description": "Plan name" },
               "scheduled_start_date": {
                 "type": "string",
                 "format": "date",
@@ -5310,15 +4890,9 @@
                 "items": {
                   "type": "object",
                   "properties": {
-                    "reason": {
-                      "type": "string"
-                    },
-                    "score": {
-                      "type": "number"
-                    },
-                    "description": {
-                      "type": "string"
-                    }
+                    "reason": { "type": "string" },
+                    "score": { "type": "number" },
+                    "description": { "type": "string" }
                   },
                   "required": ["reason", "score", "description"]
                 },
@@ -5329,15 +4903,9 @@
                 "items": {
                   "type": "object",
                   "properties": {
-                    "type": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string"
-                    },
-                    "verified": {
-                      "type": "boolean"
-                    }
+                    "type": { "type": "string" },
+                    "url": { "type": "string" },
+                    "verified": { "type": "boolean" }
                   },
                   "required": ["type", "url", "verified"]
                 },
@@ -5346,28 +4914,12 @@
               "contract_details": {
                 "type": "object",
                 "properties": {
-                  "plan_id": {
-                    "type": "string"
-                  },
-                  "plan_name": {
-                    "type": "string"
-                  },
-                  "start_date": {
-                    "type": "string",
-                    "format": "date"
-                  },
-                  "monthly_fee": {
-                    "type": "number"
-                  },
-                  "contract_period": {
-                    "type": "number"
-                  },
-                  "option_ids": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  }
+                  "plan_id": { "type": "string" },
+                  "plan_name": { "type": "string" },
+                  "start_date": { "type": "string", "format": "date" },
+                  "monthly_fee": { "type": "number" },
+                  "contract_period": { "type": "number" },
+                  "option_ids": { "type": "array", "items": { "type": "string" } }
                 },
                 "required": [
                   "plan_id",
@@ -5381,11 +4933,7 @@
               "ekyc": {
                 "type": "object",
                 "properties": {
-                  "verified": {
-                    "type": "boolean",
-                    "example": true,
-                    "description": "eKYC総合判定"
-                  },
+                  "verified": { "type": "boolean", "example": true, "description": "eKYC総合判定" },
                   "verified_at": {
                     "type": "string",
                     "format": "date-time",
@@ -5548,21 +5096,11 @@
                 "example": "2024-01-20",
                 "description": "Scheduled start date (YYYY-MM-DD)"
               },
-              "plan_id": {
-                "type": "string",
-                "example": "plan-001",
-                "description": "Plan ID"
-              },
-              "plan_name": {
-                "type": "string",
-                "example": "通常会員",
-                "description": "Plan name"
-              },
+              "plan_id": { "type": "string", "example": "plan-001", "description": "Plan ID" },
+              "plan_name": { "type": "string", "example": "通常会員", "description": "Plan name" },
               "option_ids": {
                 "type": "array",
-                "items": {
-                  "type": "string"
-                },
+                "items": { "type": "string" },
                 "example": ["opt-001", "opt-002"],
                 "description": "Option IDs"
               },
@@ -5588,9 +5126,7 @@
           },
           "application": {
             "type": "object",
-            "additionalProperties": {
-              "nullable": true
-            },
+            "additionalProperties": { "nullable": true },
             "description": "Updated application (shape follows detail response)"
           }
         },
@@ -5793,11 +5329,7 @@
             "example": true,
             "description": "Whether refund was processed"
           },
-          "refund_amount": {
-            "type": "number",
-            "example": 5000,
-            "description": "Refund amount"
-          }
+          "refund_amount": { "type": "number", "example": 5000, "description": "Refund amount" }
         },
         "required": [
           "success",
@@ -5815,48 +5347,27 @@
       "FamilyMember": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "example": "M-00010",
-            "description": "Child member id"
-          },
+          "id": { "type": "string", "example": "M-00010", "description": "Child member id" },
           "member_number": {
             "type": "string",
             "example": "M-00010",
             "description": "Member number"
           },
-          "name_kanji": {
-            "type": "string",
-            "example": "山田 花子"
-          },
+          "name_kanji": { "type": "string", "example": "山田 花子" },
           "relationship": {
             "type": "string",
             "enum": ["spouse", "child", "parent", "sibling", "grandparent", "grandchild"],
             "example": "child"
           },
-          "joined_at": {
-            "type": "string",
-            "format": "date",
-            "example": "2024-01-15"
-          },
+          "joined_at": { "type": "string", "format": "date", "example": "2024-01-15" },
           "status": {
             "type": "string",
             "enum": ["active", "suspended", "withdrawn"],
             "example": "active"
           },
-          "monthly_fee": {
-            "type": "number",
-            "example": 0,
-            "description": "Monthly fee (JPY)"
-          },
-          "store_id": {
-            "type": "string",
-            "example": "store-001"
-          },
-          "store_name": {
-            "type": "string",
-            "example": "Fit365八潮店"
-          }
+          "monthly_fee": { "type": "number", "example": 0, "description": "Monthly fee (JPY)" },
+          "store_id": { "type": "string", "example": "store-001" },
+          "store_name": { "type": "string", "example": "Fit365八潮店" }
         },
         "required": [
           "id",
@@ -5880,30 +5391,19 @@
             "items": {
               "type": "object",
               "properties": {
-                "id": {
-                  "type": "string",
-                  "example": "M-00010",
-                  "description": "Child member id"
-                },
+                "id": { "type": "string", "example": "M-00010", "description": "Child member id" },
                 "member_number": {
                   "type": "string",
                   "example": "M-00010",
                   "description": "Member number"
                 },
-                "name_kanji": {
-                  "type": "string",
-                  "example": "山田 花子"
-                },
+                "name_kanji": { "type": "string", "example": "山田 花子" },
                 "relationship": {
                   "type": "string",
                   "enum": ["spouse", "child", "parent", "sibling", "grandparent", "grandchild"],
                   "example": "child"
                 },
-                "joined_at": {
-                  "type": "string",
-                  "format": "date",
-                  "example": "2024-01-15"
-                },
+                "joined_at": { "type": "string", "format": "date", "example": "2024-01-15" },
                 "status": {
                   "type": "string",
                   "enum": ["active", "suspended", "withdrawn"],
@@ -5914,14 +5414,8 @@
                   "example": 0,
                   "description": "Monthly fee (JPY)"
                 },
-                "store_id": {
-                  "type": "string",
-                  "example": "store-001"
-                },
-                "store_name": {
-                  "type": "string",
-                  "example": "Fit365八潮店"
-                }
+                "store_id": { "type": "string", "example": "store-001" },
+                "store_name": { "type": "string", "example": "Fit365八潮店" }
               },
               "required": [
                 "id",
@@ -5951,11 +5445,7 @@
       "CheckPrimaryMemberRequest": {
         "type": "object",
         "properties": {
-          "primary_member_id": {
-            "type": "string",
-            "minLength": 1,
-            "example": "M-00001"
-          }
+          "primary_member_id": { "type": "string", "minLength": 1, "example": "M-00001" }
         },
         "required": ["primary_member_id"],
         "title": "CheckPrimaryMemberRequest",
@@ -5964,41 +5454,22 @@
       "CheckPrimaryMemberResponse": {
         "type": "object",
         "properties": {
-          "ok": {
-            "type": "boolean",
-            "example": true
-          },
+          "ok": { "type": "boolean", "example": true },
           "reasons": {
             "type": "array",
-            "items": {
-              "type": "string"
-            },
+            "items": { "type": "string" },
             "example": [],
             "description": "Blocking reasons when ok=false"
           },
-          "brand": {
-            "type": "string",
-            "enum": ["joyfit", "fit365"],
-            "example": "fit365"
-          },
-          "limit": {
-            "type": "number",
-            "example": 3
-          },
-          "current_count": {
-            "type": "number",
-            "example": 2
-          },
+          "brand": { "type": "string", "enum": ["joyfit", "fit365"], "example": "fit365" },
+          "limit": { "type": "number", "example": 3 },
+          "current_count": { "type": "number", "example": 2 },
           "fee": {
             "type": "number",
             "example": 0,
             "description": "Brand setting family_member_fee (JPY)"
           },
-          "payment_cycle": {
-            "type": "string",
-            "enum": ["monthly", "yearly"],
-            "example": "monthly"
-          }
+          "payment_cycle": { "type": "string", "enum": ["monthly", "yearly"], "example": "monthly" }
         },
         "required": ["ok", "reasons", "brand", "limit", "current_count", "fee", "payment_cycle"],
         "title": "CheckPrimaryMemberResponse",
@@ -6007,33 +5478,14 @@
       "RiskEvaluationRequest": {
         "type": "object",
         "properties": {
-          "primary_member_id": {
-            "type": "string",
-            "minLength": 1,
-            "example": "M-00001"
-          },
+          "primary_member_id": { "type": "string", "minLength": 1, "example": "M-00001" },
           "applicant": {
             "type": "object",
             "properties": {
-              "name": {
-                "type": "string",
-                "minLength": 1,
-                "example": "山田 花子"
-              },
-              "birthday": {
-                "type": "string",
-                "format": "date",
-                "example": "2000-01-01"
-              },
-              "phone": {
-                "type": "string",
-                "example": "09012345678"
-              },
-              "email": {
-                "type": "string",
-                "format": "email",
-                "example": "hanako@example.jp"
-              },
+              "name": { "type": "string", "minLength": 1, "example": "山田 花子" },
+              "birthday": { "type": "string", "format": "date", "example": "2000-01-01" },
+              "phone": { "type": "string", "example": "09012345678" },
+              "email": { "type": "string", "format": "email", "example": "hanako@example.jp" },
               "relationship": {
                 "type": "string",
                 "enum": ["spouse", "child", "parent", "sibling", "grandparent", "grandchild"],
@@ -6051,17 +5503,10 @@
       "RiskEvaluationResponse": {
         "type": "object",
         "properties": {
-          "risk_score": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 100,
-            "example": 35
-          },
+          "risk_score": { "type": "number", "minimum": 0, "maximum": 100, "example": 35 },
           "reasons": {
             "type": "array",
-            "items": {
-              "type": "string"
-            },
+            "items": { "type": "string" },
             "example": ["duplicate_check: ok"]
           },
           "recommended_action": {
@@ -6102,18 +5547,9 @@
             ],
             "example": "awaiting_profile"
           },
-          "primary_member_id": {
-            "type": "string",
-            "example": "M-00001"
-          },
-          "primary_member_name": {
-            "type": "string",
-            "example": "山田 太郎"
-          },
-          "applicant_name": {
-            "type": "string",
-            "example": "山田 花子"
-          },
+          "primary_member_id": { "type": "string", "example": "M-00001" },
+          "primary_member_name": { "type": "string", "example": "山田 太郎" },
+          "applicant_name": { "type": "string", "example": "山田 花子" },
           "relationship": {
             "type": "string",
             "enum": ["spouse", "child", "parent", "sibling", "grandparent", "grandchild"],
@@ -6124,22 +5560,10 @@
             "format": "date-time",
             "example": "2024-01-22T12:30:00Z"
           },
-          "store_id": {
-            "type": "string",
-            "example": "store-001"
-          },
-          "store_name": {
-            "type": "string",
-            "example": "Fit365八潮店"
-          },
-          "monthly_fee": {
-            "type": "number",
-            "example": 0
-          },
-          "risk_score": {
-            "type": "number",
-            "example": 20
-          },
+          "store_id": { "type": "string", "example": "store-001" },
+          "store_name": { "type": "string", "example": "Fit365八潮店" },
+          "monthly_fee": { "type": "number", "example": 0 },
+          "risk_score": { "type": "number", "example": 20 },
           "risk_reason": {
             "type": "string",
             "example": "ブラックリスト一致",
@@ -6148,11 +5572,7 @@
           "ekyc": {
             "type": "object",
             "properties": {
-              "verified": {
-                "type": "boolean",
-                "example": true,
-                "description": "eKYC総合判定"
-              },
+              "verified": { "type": "boolean", "example": true, "description": "eKYC総合判定" },
               "verified_at": {
                 "type": "string",
                 "format": "date-time",
@@ -6186,11 +5606,7 @@
                     "example": 92.5,
                     "description": "顔認証類似度（%）"
                   },
-                  "passed": {
-                    "type": "boolean",
-                    "example": true,
-                    "description": "顔認証判定結果"
-                  }
+                  "passed": { "type": "boolean", "example": true, "description": "顔認証判定結果" }
                 },
                 "required": ["similarity", "passed"],
                 "description": "顔認証結果"
@@ -6236,18 +5652,8 @@
       "GetFamilyRegistrationsQuery": {
         "type": "object",
         "properties": {
-          "page": {
-            "type": "integer",
-            "minimum": 0,
-            "exclusiveMinimum": true,
-            "default": 1
-          },
-          "limit": {
-            "type": "integer",
-            "minimum": 0,
-            "exclusiveMinimum": true,
-            "default": 50
-          },
+          "page": { "type": "integer", "minimum": 0, "exclusiveMinimum": true, "default": 1 },
+          "limit": { "type": "integer", "minimum": 0, "exclusiveMinimum": true, "default": 50 },
           "status": {
             "type": "string",
             "enum": [
@@ -6262,20 +5668,13 @@
               "completed"
             ]
           },
-          "search": {
-            "type": "string",
-            "example": "山田"
-          },
+          "search": { "type": "string", "example": "山田" },
           "sort_by": {
             "type": "string",
             "enum": ["created_at", "risk_score"],
             "default": "created_at"
           },
-          "sort_order": {
-            "type": "string",
-            "enum": ["asc", "desc"],
-            "default": "desc"
-          }
+          "sort_order": { "type": "string", "enum": ["asc", "desc"], "default": "desc" }
         },
         "title": "GetFamilyRegistrationsQuery",
         "description": "Query for family registrations"
@@ -6313,18 +5712,9 @@
                   ],
                   "example": "awaiting_profile"
                 },
-                "primary_member_id": {
-                  "type": "string",
-                  "example": "M-00001"
-                },
-                "primary_member_name": {
-                  "type": "string",
-                  "example": "山田 太郎"
-                },
-                "applicant_name": {
-                  "type": "string",
-                  "example": "山田 花子"
-                },
+                "primary_member_id": { "type": "string", "example": "M-00001" },
+                "primary_member_name": { "type": "string", "example": "山田 太郎" },
+                "applicant_name": { "type": "string", "example": "山田 花子" },
                 "relationship": {
                   "type": "string",
                   "enum": ["spouse", "child", "parent", "sibling", "grandparent", "grandchild"],
@@ -6335,22 +5725,10 @@
                   "format": "date-time",
                   "example": "2024-01-22T12:30:00Z"
                 },
-                "store_id": {
-                  "type": "string",
-                  "example": "store-001"
-                },
-                "store_name": {
-                  "type": "string",
-                  "example": "Fit365八潮店"
-                },
-                "monthly_fee": {
-                  "type": "number",
-                  "example": 0
-                },
-                "risk_score": {
-                  "type": "number",
-                  "example": 20
-                },
+                "store_id": { "type": "string", "example": "store-001" },
+                "store_name": { "type": "string", "example": "Fit365八潮店" },
+                "monthly_fee": { "type": "number", "example": 0 },
+                "risk_score": { "type": "number", "example": 20 },
                 "risk_reason": {
                   "type": "string",
                   "example": "ブラックリスト一致",
@@ -6448,18 +5826,10 @@
           "pagination": {
             "type": "object",
             "properties": {
-              "total": {
-                "type": "number"
-              },
-              "total_pages": {
-                "type": "number"
-              },
-              "current_page": {
-                "type": "number"
-              },
-              "limit": {
-                "type": "number"
-              }
+              "total": { "type": "number" },
+              "total_pages": { "type": "number" },
+              "current_page": { "type": "number" },
+              "limit": { "type": "number" }
             },
             "required": ["total", "total_pages", "current_page", "limit"]
           }
@@ -6499,18 +5869,9 @@
                 ],
                 "example": "awaiting_profile"
               },
-              "primary_member_id": {
-                "type": "string",
-                "example": "M-00001"
-              },
-              "primary_member_name": {
-                "type": "string",
-                "example": "山田 太郎"
-              },
-              "applicant_name": {
-                "type": "string",
-                "example": "山田 花子"
-              },
+              "primary_member_id": { "type": "string", "example": "M-00001" },
+              "primary_member_name": { "type": "string", "example": "山田 太郎" },
+              "applicant_name": { "type": "string", "example": "山田 花子" },
               "relationship": {
                 "type": "string",
                 "enum": ["spouse", "child", "parent", "sibling", "grandparent", "grandchild"],
@@ -6521,22 +5882,10 @@
                 "format": "date-time",
                 "example": "2024-01-22T12:30:00Z"
               },
-              "store_id": {
-                "type": "string",
-                "example": "store-001"
-              },
-              "store_name": {
-                "type": "string",
-                "example": "Fit365八潮店"
-              },
-              "monthly_fee": {
-                "type": "number",
-                "example": 0
-              },
-              "risk_score": {
-                "type": "number",
-                "example": 20
-              },
+              "store_id": { "type": "string", "example": "store-001" },
+              "store_name": { "type": "string", "example": "Fit365八潮店" },
+              "monthly_fee": { "type": "number", "example": 0 },
+              "risk_score": { "type": "number", "example": 20 },
               "risk_reason": {
                 "type": "string",
                 "example": "ブラックリスト一致",
@@ -6545,11 +5894,7 @@
               "ekyc": {
                 "type": "object",
                 "properties": {
-                  "verified": {
-                    "type": "boolean",
-                    "example": true,
-                    "description": "eKYC総合判定"
-                  },
+                  "verified": { "type": "boolean", "example": true, "description": "eKYC総合判定" },
                   "verified_at": {
                     "type": "string",
                     "format": "date-time",
@@ -6617,31 +5962,29 @@
               "applicant": {
                 "type": "object",
                 "properties": {
-                  "birthday": {
-                    "type": "string",
-                    "format": "date"
-                  },
-                  "phone": {
-                    "type": "string"
-                  },
-                  "email": {
-                    "type": "string",
-                    "format": "email"
-                  }
+                  "birthday": { "type": "string", "format": "date" },
+                  "phone": { "type": "string" },
+                  "email": { "type": "string", "format": "email" }
                 }
               },
               "primary_member": {
                 "type": "object",
                 "properties": {
-                  "member_number": {
-                    "type": "string"
+                  "member_number": { "type": "string" },
+                  "status": { "type": "string" },
+                  "has_unpaid": { "type": "boolean" }
+                }
+              },
+              "risk_details": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "reason": { "type": "string" },
+                    "score": { "type": "number" },
+                    "description": { "type": "string" }
                   },
-                  "status": {
-                    "type": "string"
-                  },
-                  "has_unpaid": {
-                    "type": "boolean"
-                  }
+                  "required": ["reason", "score", "description"]
                 }
               }
             },
@@ -6668,32 +6011,18 @@
       "CreateFamilyRegistrationRequest": {
         "type": "object",
         "properties": {
-          "primary_member_id": {
-            "type": "string",
-            "minLength": 1
-          },
+          "primary_member_id": { "type": "string", "minLength": 1 },
           "applicant": {
             "type": "object",
             "properties": {
-              "name": {
-                "type": "string",
-                "minLength": 1
-              },
-              "birthday": {
-                "type": "string",
-                "format": "date"
-              },
+              "name": { "type": "string", "minLength": 1 },
+              "birthday": { "type": "string", "format": "date" },
               "relationship": {
                 "type": "string",
                 "enum": ["spouse", "child", "parent", "sibling", "grandparent", "grandchild"]
               },
-              "phone": {
-                "type": "string"
-              },
-              "email": {
-                "type": "string",
-                "format": "email"
-              }
+              "phone": { "type": "string" },
+              "email": { "type": "string", "format": "email" }
             },
             "required": ["name", "birthday", "relationship"]
           }
@@ -6705,9 +6034,7 @@
       "CreateFamilyRegistrationResponse": {
         "type": "object",
         "properties": {
-          "success": {
-            "type": "boolean"
-          },
+          "success": { "type": "boolean" },
           "registration": {
             "type": "object",
             "properties": {
@@ -6736,18 +6063,9 @@
                 ],
                 "example": "awaiting_profile"
               },
-              "primary_member_id": {
-                "type": "string",
-                "example": "M-00001"
-              },
-              "primary_member_name": {
-                "type": "string",
-                "example": "山田 太郎"
-              },
-              "applicant_name": {
-                "type": "string",
-                "example": "山田 花子"
-              },
+              "primary_member_id": { "type": "string", "example": "M-00001" },
+              "primary_member_name": { "type": "string", "example": "山田 太郎" },
+              "applicant_name": { "type": "string", "example": "山田 花子" },
               "relationship": {
                 "type": "string",
                 "enum": ["spouse", "child", "parent", "sibling", "grandparent", "grandchild"],
@@ -6758,22 +6076,10 @@
                 "format": "date-time",
                 "example": "2024-01-22T12:30:00Z"
               },
-              "store_id": {
-                "type": "string",
-                "example": "store-001"
-              },
-              "store_name": {
-                "type": "string",
-                "example": "Fit365八潮店"
-              },
-              "monthly_fee": {
-                "type": "number",
-                "example": 0
-              },
-              "risk_score": {
-                "type": "number",
-                "example": 20
-              },
+              "store_id": { "type": "string", "example": "store-001" },
+              "store_name": { "type": "string", "example": "Fit365八潮店" },
+              "monthly_fee": { "type": "number", "example": 0 },
+              "risk_score": { "type": "number", "example": 20 },
               "risk_reason": {
                 "type": "string",
                 "example": "ブラックリスト一致",
@@ -6782,11 +6088,7 @@
               "ekyc": {
                 "type": "object",
                 "properties": {
-                  "verified": {
-                    "type": "boolean",
-                    "example": true,
-                    "description": "eKYC総合判定"
-                  },
+                  "verified": { "type": "boolean", "example": true, "description": "eKYC総合判定" },
                   "verified_at": {
                     "type": "string",
                     "format": "date-time",
@@ -6874,37 +6176,18 @@
       },
       "ApproveFamilyRegistrationRequest": {
         "type": "object",
-        "properties": {
-          "approval_reason": {
-            "type": "string"
-          },
-          "staff_id": {
-            "type": "string"
-          }
-        },
+        "properties": { "approval_reason": { "type": "string" }, "staff_id": { "type": "string" } },
         "title": "ApproveFamilyRegistrationRequest",
         "description": "Approve family registration request"
       },
       "ApproveFamilyRegistrationResponse": {
         "type": "object",
         "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "id": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string",
-            "enum": ["approved"]
-          },
-          "approved_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "approved_by": {
-            "type": "string"
-          }
+          "success": { "type": "boolean" },
+          "id": { "type": "string" },
+          "status": { "type": "string", "enum": ["approved"] },
+          "approved_at": { "type": "string", "format": "date-time" },
+          "approved_by": { "type": "string" }
         },
         "required": ["success", "id", "status", "approved_at", "approved_by"],
         "title": "ApproveFamilyRegistrationResponse",
@@ -6913,13 +6196,8 @@
       "RejectFamilyRegistrationRequest": {
         "type": "object",
         "properties": {
-          "rejection_reason": {
-            "type": "string",
-            "minLength": 1
-          },
-          "staff_id": {
-            "type": "string"
-          }
+          "rejection_reason": { "type": "string", "minLength": 1 },
+          "staff_id": { "type": "string" }
         },
         "required": ["rejection_reason"],
         "title": "RejectFamilyRegistrationRequest",
@@ -6928,26 +6206,12 @@
       "RejectFamilyRegistrationResponse": {
         "type": "object",
         "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "id": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string",
-            "enum": ["rejected"]
-          },
-          "rejected_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "rejected_by": {
-            "type": "string"
-          },
-          "rejection_reason": {
-            "type": "string"
-          }
+          "success": { "type": "boolean" },
+          "id": { "type": "string" },
+          "status": { "type": "string", "enum": ["rejected"] },
+          "rejected_at": { "type": "string", "format": "date-time" },
+          "rejected_by": { "type": "string" },
+          "rejection_reason": { "type": "string" }
         },
         "required": ["success", "id", "status", "rejected_at", "rejected_by", "rejection_reason"],
         "title": "RejectFamilyRegistrationResponse",
@@ -6955,31 +6219,17 @@
       },
       "CompleteFamilyRegistrationRequest": {
         "type": "object",
-        "properties": {
-          "staff_id": {
-            "type": "string"
-          }
-        },
+        "properties": { "staff_id": { "type": "string" } },
         "title": "CompleteFamilyRegistrationRequest",
         "description": "Complete family registration request"
       },
       "CompleteFamilyRegistrationResponse": {
         "type": "object",
         "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "id": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string",
-            "enum": ["completed"]
-          },
-          "completed_at": {
-            "type": "string",
-            "format": "date-time"
-          },
+          "success": { "type": "boolean" },
+          "id": { "type": "string" },
+          "status": { "type": "string", "enum": ["completed"] },
+          "completed_at": { "type": "string", "format": "date-time" },
           "member_id": {
             "type": "string",
             "example": "M-00123",
@@ -6993,39 +6243,19 @@
       "GetFamilyRegistrationsSummaryResponse": {
         "type": "object",
         "properties": {
-          "total": {
-            "type": "number"
-          },
+          "total": { "type": "number" },
           "by_status": {
             "type": "object",
             "properties": {
-              "invited": {
-                "type": "number"
-              },
-              "awaiting_acceptance": {
-                "type": "number"
-              },
-              "declined": {
-                "type": "number"
-              },
-              "expired": {
-                "type": "number"
-              },
-              "awaiting_profile": {
-                "type": "number"
-              },
-              "pending_review": {
-                "type": "number"
-              },
-              "approved": {
-                "type": "number"
-              },
-              "rejected": {
-                "type": "number"
-              },
-              "completed": {
-                "type": "number"
-              }
+              "invited": { "type": "number" },
+              "awaiting_acceptance": { "type": "number" },
+              "declined": { "type": "number" },
+              "expired": { "type": "number" },
+              "awaiting_profile": { "type": "number" },
+              "pending_review": { "type": "number" },
+              "approved": { "type": "number" },
+              "rejected": { "type": "number" },
+              "completed": { "type": "number" }
             }
           }
         },
@@ -7036,32 +6266,18 @@
       "GetFamilyRegistrationsDashboardResponse": {
         "type": "object",
         "properties": {
-          "month_invites": {
-            "type": "number"
-          },
-          "month_completed": {
-            "type": "number"
-          },
-          "acceptance_rate": {
-            "type": "number"
-          },
-          "family_member_ratio": {
-            "type": "number"
-          },
+          "month_invites": { "type": "number" },
+          "month_completed": { "type": "number" },
+          "acceptance_rate": { "type": "number" },
+          "family_member_ratio": { "type": "number" },
           "top_primary_members": {
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
-                "primary_member_id": {
-                  "type": "string"
-                },
-                "primary_member_name": {
-                  "type": "string"
-                },
-                "family_count": {
-                  "type": "number"
-                }
+                "primary_member_id": { "type": "string" },
+                "primary_member_name": { "type": "string" },
+                "family_count": { "type": "number" }
               },
               "required": ["primary_member_id", "primary_member_name", "family_count"]
             }
@@ -7774,10 +6990,7 @@
                             },
                             "email_recipients": {
                               "type": "array",
-                              "items": {
-                                "type": "string",
-                                "format": "email"
-                              },
+                              "items": { "type": "string", "format": "email" },
                               "example": ["admin@example.com"],
                               "description": "Email recipients for notifications"
                             }
@@ -7922,10 +7135,7 @@
                       },
                       "email_recipients": {
                         "type": "array",
-                        "items": {
-                          "type": "string",
-                          "format": "email"
-                        },
+                        "items": { "type": "string", "format": "email" },
                         "example": ["admin@example.com"],
                         "description": "Email recipients for notifications"
                       }
@@ -8036,10 +7246,7 @@
                             },
                             "email_recipients": {
                               "type": "array",
-                              "items": {
-                                "type": "string",
-                                "format": "email"
-                              },
+                              "items": { "type": "string", "format": "email" },
                               "example": ["admin@example.com"],
                               "description": "Email recipients for notifications"
                             }
@@ -8137,14 +7344,7 @@
         "summary": "Approve family registration",
         "tags": ["Family Registrations"],
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
         ],
         "requestBody": {
           "content": {
@@ -8152,12 +7352,8 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "approval_reason": {
-                    "type": "string"
-                  },
-                  "staff_id": {
-                    "type": "string"
-                  }
+                  "approval_reason": { "type": "string" },
+                  "staff_id": { "type": "string" }
                 },
                 "title": "ApproveFamilyRegistrationRequest",
                 "description": "Approve family registration request"
@@ -8173,23 +7369,11 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "id": {
-                      "type": "string"
-                    },
-                    "status": {
-                      "type": "string",
-                      "enum": ["approved"]
-                    },
-                    "approved_at": {
-                      "type": "string",
-                      "format": "date-time"
-                    },
-                    "approved_by": {
-                      "type": "string"
-                    }
+                    "success": { "type": "boolean" },
+                    "id": { "type": "string" },
+                    "status": { "type": "string", "enum": ["approved"] },
+                    "approved_at": { "type": "string", "format": "date-time" },
+                    "approved_by": { "type": "string" }
                   },
                   "required": ["success", "id", "status", "approved_at", "approved_by"],
                   "title": "ApproveFamilyRegistrationResponse",
@@ -8205,10 +7389,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request"
-                    }
+                    "error": { "type": "string", "example": "Failed to process request" }
                   },
                   "required": ["error"],
                   "title": "ErrorResponse",
@@ -8224,10 +7405,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request"
-                    }
+                    "error": { "type": "string", "example": "Failed to process request" }
                   },
                   "required": ["error"],
                   "title": "ErrorResponse",
@@ -8245,25 +7423,14 @@
         "description": "Finalize family registration and create child member (mocked)",
         "tags": ["Family Registrations"],
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
         ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": {
-                  "staff_id": {
-                    "type": "string"
-                  }
-                },
+                "properties": { "staff_id": { "type": "string" } },
                 "title": "CompleteFamilyRegistrationRequest",
                 "description": "Complete family registration request"
               }
@@ -8278,20 +7445,10 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "id": {
-                      "type": "string"
-                    },
-                    "status": {
-                      "type": "string",
-                      "enum": ["completed"]
-                    },
-                    "completed_at": {
-                      "type": "string",
-                      "format": "date-time"
-                    },
+                    "success": { "type": "boolean" },
+                    "id": { "type": "string" },
+                    "status": { "type": "string", "enum": ["completed"] },
+                    "completed_at": { "type": "string", "format": "date-time" },
                     "member_id": {
                       "type": "string",
                       "example": "M-00123",
@@ -8312,10 +7469,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request"
-                    }
+                    "error": { "type": "string", "example": "Failed to process request" }
                   },
                   "required": ["error"],
                   "title": "ErrorResponse",
@@ -8331,10 +7485,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request"
-                    }
+                    "error": { "type": "string", "example": "Failed to process request" }
                   },
                   "required": ["error"],
                   "title": "ErrorResponse",
@@ -8351,14 +7502,7 @@
         "summary": "Reject family registration",
         "tags": ["Family Registrations"],
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
         ],
         "requestBody": {
           "content": {
@@ -8366,13 +7510,8 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "rejection_reason": {
-                    "type": "string",
-                    "minLength": 1
-                  },
-                  "staff_id": {
-                    "type": "string"
-                  }
+                  "rejection_reason": { "type": "string", "minLength": 1 },
+                  "staff_id": { "type": "string" }
                 },
                 "required": ["rejection_reason"],
                 "title": "RejectFamilyRegistrationRequest",
@@ -8389,26 +7528,12 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "id": {
-                      "type": "string"
-                    },
-                    "status": {
-                      "type": "string",
-                      "enum": ["rejected"]
-                    },
-                    "rejected_at": {
-                      "type": "string",
-                      "format": "date-time"
-                    },
-                    "rejected_by": {
-                      "type": "string"
-                    },
-                    "rejection_reason": {
-                      "type": "string"
-                    }
+                    "success": { "type": "boolean" },
+                    "id": { "type": "string" },
+                    "status": { "type": "string", "enum": ["rejected"] },
+                    "rejected_at": { "type": "string", "format": "date-time" },
+                    "rejected_by": { "type": "string" },
+                    "rejection_reason": { "type": "string" }
                   },
                   "required": [
                     "success",
@@ -8431,10 +7556,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request"
-                    }
+                    "error": { "type": "string", "example": "Failed to process request" }
                   },
                   "required": ["error"],
                   "title": "ErrorResponse",
@@ -8450,10 +7572,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request"
-                    }
+                    "error": { "type": "string", "example": "Failed to process request" }
                   },
                   "required": ["error"],
                   "title": "ErrorResponse",
@@ -8475,9 +7594,7 @@
             "in": "path",
             "required": true,
             "description": "Family registration id",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -8516,18 +7633,9 @@
                           ],
                           "example": "awaiting_profile"
                         },
-                        "primary_member_id": {
-                          "type": "string",
-                          "example": "M-00001"
-                        },
-                        "primary_member_name": {
-                          "type": "string",
-                          "example": "山田 太郎"
-                        },
-                        "applicant_name": {
-                          "type": "string",
-                          "example": "山田 花子"
-                        },
+                        "primary_member_id": { "type": "string", "example": "M-00001" },
+                        "primary_member_name": { "type": "string", "example": "山田 太郎" },
+                        "applicant_name": { "type": "string", "example": "山田 花子" },
                         "relationship": {
                           "type": "string",
                           "enum": [
@@ -8545,22 +7653,10 @@
                           "format": "date-time",
                           "example": "2024-01-22T12:30:00Z"
                         },
-                        "store_id": {
-                          "type": "string",
-                          "example": "store-001"
-                        },
-                        "store_name": {
-                          "type": "string",
-                          "example": "Fit365八潮店"
-                        },
-                        "monthly_fee": {
-                          "type": "number",
-                          "example": 0
-                        },
-                        "risk_score": {
-                          "type": "number",
-                          "example": 20
-                        },
+                        "store_id": { "type": "string", "example": "store-001" },
+                        "store_name": { "type": "string", "example": "Fit365八潮店" },
+                        "monthly_fee": { "type": "number", "example": 0 },
+                        "risk_score": { "type": "number", "example": 20 },
                         "risk_reason": {
                           "type": "string",
                           "example": "ブラックリスト一致",
@@ -8641,31 +7737,29 @@
                         "applicant": {
                           "type": "object",
                           "properties": {
-                            "birthday": {
-                              "type": "string",
-                              "format": "date"
-                            },
-                            "phone": {
-                              "type": "string"
-                            },
-                            "email": {
-                              "type": "string",
-                              "format": "email"
-                            }
+                            "birthday": { "type": "string", "format": "date" },
+                            "phone": { "type": "string" },
+                            "email": { "type": "string", "format": "email" }
                           }
                         },
                         "primary_member": {
                           "type": "object",
                           "properties": {
-                            "member_number": {
-                              "type": "string"
+                            "member_number": { "type": "string" },
+                            "status": { "type": "string" },
+                            "has_unpaid": { "type": "boolean" }
+                          }
+                        },
+                        "risk_details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "reason": { "type": "string" },
+                              "score": { "type": "number" },
+                              "description": { "type": "string" }
                             },
-                            "status": {
-                              "type": "string"
-                            },
-                            "has_unpaid": {
-                              "type": "boolean"
-                            }
+                            "required": ["reason", "score", "description"]
                           }
                         }
                       },
@@ -8699,10 +7793,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request"
-                    }
+                    "error": { "type": "string", "example": "Failed to process request" }
                   },
                   "required": ["error"],
                   "title": "ErrorResponse",
@@ -8726,19 +7817,12 @@
                 "properties": {
                   "ids": {
                     "type": "array",
-                    "items": {
-                      "type": "string",
-                      "minLength": 1
-                    },
+                    "items": { "type": "string", "minLength": 1 },
                     "minItems": 1,
                     "example": ["FR-00001", "FR-00002"]
                   },
-                  "approval_reason": {
-                    "type": "string"
-                  },
-                  "staff_id": {
-                    "type": "string"
-                  }
+                  "approval_reason": { "type": "string" },
+                  "staff_id": { "type": "string" }
                 },
                 "required": ["ids"],
                 "title": "BulkApproveFamilyRegistrationsRequest",
@@ -8755,28 +7839,16 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": true
-                    },
+                    "success": { "type": "boolean", "example": true },
                     "results": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "success": {
-                            "type": "boolean"
-                          },
-                          "status": {
-                            "type": "string",
-                            "enum": ["approved"]
-                          },
-                          "error": {
-                            "type": "string"
-                          }
+                          "id": { "type": "string" },
+                          "success": { "type": "boolean" },
+                          "status": { "type": "string", "enum": ["approved"] },
+                          "error": { "type": "string" }
                         },
                         "required": ["id", "success"]
                       }
@@ -8796,10 +7868,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request"
-                    }
+                    "error": { "type": "string", "example": "Failed to process request" }
                   },
                   "required": ["error"],
                   "title": "ErrorResponse",
@@ -8823,20 +7892,12 @@
                 "properties": {
                   "ids": {
                     "type": "array",
-                    "items": {
-                      "type": "string",
-                      "minLength": 1
-                    },
+                    "items": { "type": "string", "minLength": 1 },
                     "minItems": 1,
                     "example": ["FR-00001", "FR-00002"]
                   },
-                  "rejection_reason": {
-                    "type": "string",
-                    "minLength": 1
-                  },
-                  "staff_id": {
-                    "type": "string"
-                  }
+                  "rejection_reason": { "type": "string", "minLength": 1 },
+                  "staff_id": { "type": "string" }
                 },
                 "required": ["ids", "rejection_reason"],
                 "title": "BulkRejectFamilyRegistrationsRequest",
@@ -8853,28 +7914,16 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": true
-                    },
+                    "success": { "type": "boolean", "example": true },
                     "results": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "success": {
-                            "type": "boolean"
-                          },
-                          "status": {
-                            "type": "string",
-                            "enum": ["rejected"]
-                          },
-                          "error": {
-                            "type": "string"
-                          }
+                          "id": { "type": "string" },
+                          "success": { "type": "boolean" },
+                          "status": { "type": "string", "enum": ["rejected"] },
+                          "error": { "type": "string" }
                         },
                         "required": ["id", "success"]
                       }
@@ -8894,10 +7943,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request"
-                    }
+                    "error": { "type": "string", "example": "Failed to process request" }
                   },
                   "required": ["error"],
                   "title": "ErrorResponse",
@@ -8919,11 +7965,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "primary_member_id": {
-                    "type": "string",
-                    "minLength": 1,
-                    "example": "M-00001"
-                  }
+                  "primary_member_id": { "type": "string", "minLength": 1, "example": "M-00001" }
                 },
                 "required": ["primary_member_id"],
                 "title": "CheckPrimaryMemberRequest",
@@ -8940,15 +7982,10 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "ok": {
-                      "type": "boolean",
-                      "example": true
-                    },
+                    "ok": { "type": "boolean", "example": true },
                     "reasons": {
                       "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
+                      "items": { "type": "string" },
                       "example": [],
                       "description": "Blocking reasons when ok=false"
                     },
@@ -8957,14 +7994,8 @@
                       "enum": ["joyfit", "fit365"],
                       "example": "fit365"
                     },
-                    "limit": {
-                      "type": "number",
-                      "example": 3
-                    },
-                    "current_count": {
-                      "type": "number",
-                      "example": 2
-                    },
+                    "limit": { "type": "number", "example": 3 },
+                    "current_count": { "type": "number", "example": 2 },
                     "fee": {
                       "type": "number",
                       "example": 0,
@@ -8998,10 +8029,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request"
-                    }
+                    "error": { "type": "string", "example": "Failed to process request" }
                   },
                   "required": ["error"],
                   "title": "ErrorResponse",
@@ -9017,10 +8045,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request"
-                    }
+                    "error": { "type": "string", "example": "Failed to process request" }
                   },
                   "required": ["error"],
                   "title": "ErrorResponse",
@@ -9044,32 +8069,18 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "month_invites": {
-                      "type": "number"
-                    },
-                    "month_completed": {
-                      "type": "number"
-                    },
-                    "acceptance_rate": {
-                      "type": "number"
-                    },
-                    "family_member_ratio": {
-                      "type": "number"
-                    },
+                    "month_invites": { "type": "number" },
+                    "month_completed": { "type": "number" },
+                    "acceptance_rate": { "type": "number" },
+                    "family_member_ratio": { "type": "number" },
                     "top_primary_members": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "properties": {
-                          "primary_member_id": {
-                            "type": "string"
-                          },
-                          "primary_member_name": {
-                            "type": "string"
-                          },
-                          "family_count": {
-                            "type": "number"
-                          }
+                          "primary_member_id": { "type": "string" },
+                          "primary_member_name": { "type": "string" },
+                          "family_count": { "type": "number" }
                         },
                         "required": ["primary_member_id", "primary_member_name", "family_count"]
                       }
@@ -9095,10 +8106,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request"
-                    }
+                    "error": { "type": "string", "example": "Failed to process request" }
                   },
                   "required": ["error"],
                   "title": "ErrorResponse",
@@ -9120,28 +8128,13 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "primary_member_id": {
-                    "type": "string",
-                    "minLength": 1,
-                    "example": "M-00001"
-                  },
+                  "primary_member_id": { "type": "string", "minLength": 1, "example": "M-00001" },
                   "applicant": {
                     "type": "object",
                     "properties": {
-                      "name": {
-                        "type": "string",
-                        "minLength": 1,
-                        "example": "山田 花子"
-                      },
-                      "birthday": {
-                        "type": "string",
-                        "format": "date",
-                        "example": "2000-01-01"
-                      },
-                      "phone": {
-                        "type": "string",
-                        "example": "09012345678"
-                      },
+                      "name": { "type": "string", "minLength": 1, "example": "山田 花子" },
+                      "birthday": { "type": "string", "format": "date", "example": "2000-01-01" },
+                      "phone": { "type": "string", "example": "09012345678" },
                       "email": {
                         "type": "string",
                         "format": "email",
@@ -9179,17 +8172,10 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "risk_score": {
-                      "type": "number",
-                      "minimum": 0,
-                      "maximum": 100,
-                      "example": 35
-                    },
+                    "risk_score": { "type": "number", "minimum": 0, "maximum": 100, "example": 35 },
                     "reasons": {
                       "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
+                      "items": { "type": "string" },
                       "example": ["duplicate_check: ok"]
                     },
                     "recommended_action": {
@@ -9212,10 +8198,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request"
-                    }
+                    "error": { "type": "string", "example": "Failed to process request" }
                   },
                   "required": ["error"],
                   "title": "ErrorResponse",
@@ -9231,10 +8214,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request"
-                    }
+                    "error": { "type": "string", "example": "Failed to process request" }
                   },
                   "required": ["error"],
                   "title": "ErrorResponse",
@@ -9253,23 +8233,13 @@
         "tags": ["Family Registrations"],
         "parameters": [
           {
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "exclusiveMinimum": true,
-              "default": 1
-            },
+            "schema": { "type": "integer", "minimum": 0, "exclusiveMinimum": true, "default": 1 },
             "required": false,
             "name": "page",
             "in": "query"
           },
           {
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "exclusiveMinimum": true,
-              "default": 50
-            },
+            "schema": { "type": "integer", "minimum": 0, "exclusiveMinimum": true, "default": 50 },
             "required": false,
             "name": "limit",
             "in": "query"
@@ -9294,10 +8264,7 @@
             "in": "query"
           },
           {
-            "schema": {
-              "type": "string",
-              "example": "山田"
-            },
+            "schema": { "type": "string", "example": "山田" },
             "required": false,
             "name": "search",
             "in": "query"
@@ -9313,11 +8280,7 @@
             "in": "query"
           },
           {
-            "schema": {
-              "type": "string",
-              "enum": ["asc", "desc"],
-              "default": "desc"
-            },
+            "schema": { "type": "string", "enum": ["asc", "desc"], "default": "desc" },
             "required": false,
             "name": "sort_order",
             "in": "query"
@@ -9361,18 +8324,9 @@
                             ],
                             "example": "awaiting_profile"
                           },
-                          "primary_member_id": {
-                            "type": "string",
-                            "example": "M-00001"
-                          },
-                          "primary_member_name": {
-                            "type": "string",
-                            "example": "山田 太郎"
-                          },
-                          "applicant_name": {
-                            "type": "string",
-                            "example": "山田 花子"
-                          },
+                          "primary_member_id": { "type": "string", "example": "M-00001" },
+                          "primary_member_name": { "type": "string", "example": "山田 太郎" },
+                          "applicant_name": { "type": "string", "example": "山田 花子" },
                           "relationship": {
                             "type": "string",
                             "enum": [
@@ -9390,22 +8344,10 @@
                             "format": "date-time",
                             "example": "2024-01-22T12:30:00Z"
                           },
-                          "store_id": {
-                            "type": "string",
-                            "example": "store-001"
-                          },
-                          "store_name": {
-                            "type": "string",
-                            "example": "Fit365八潮店"
-                          },
-                          "monthly_fee": {
-                            "type": "number",
-                            "example": 0
-                          },
-                          "risk_score": {
-                            "type": "number",
-                            "example": 20
-                          },
+                          "store_id": { "type": "string", "example": "store-001" },
+                          "store_name": { "type": "string", "example": "Fit365八潮店" },
+                          "monthly_fee": { "type": "number", "example": 0 },
+                          "risk_score": { "type": "number", "example": 20 },
                           "risk_reason": {
                             "type": "string",
                             "example": "ブラックリスト一致",
@@ -9503,18 +8445,10 @@
                     "pagination": {
                       "type": "object",
                       "properties": {
-                        "total": {
-                          "type": "number"
-                        },
-                        "total_pages": {
-                          "type": "number"
-                        },
-                        "current_page": {
-                          "type": "number"
-                        },
-                        "limit": {
-                          "type": "number"
-                        }
+                        "total": { "type": "number" },
+                        "total_pages": { "type": "number" },
+                        "current_page": { "type": "number" },
+                        "limit": { "type": "number" }
                       },
                       "required": ["total", "total_pages", "current_page", "limit"]
                     }
@@ -9533,10 +8467,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request"
-                    }
+                    "error": { "type": "string", "example": "Failed to process request" }
                   },
                   "required": ["error"],
                   "title": "ErrorResponse",
@@ -9557,21 +8488,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "primary_member_id": {
-                    "type": "string",
-                    "minLength": 1
-                  },
+                  "primary_member_id": { "type": "string", "minLength": 1 },
                   "applicant": {
                     "type": "object",
                     "properties": {
-                      "name": {
-                        "type": "string",
-                        "minLength": 1
-                      },
-                      "birthday": {
-                        "type": "string",
-                        "format": "date"
-                      },
+                      "name": { "type": "string", "minLength": 1 },
+                      "birthday": { "type": "string", "format": "date" },
                       "relationship": {
                         "type": "string",
                         "enum": [
@@ -9583,13 +8505,8 @@
                           "grandchild"
                         ]
                       },
-                      "phone": {
-                        "type": "string"
-                      },
-                      "email": {
-                        "type": "string",
-                        "format": "email"
-                      }
+                      "phone": { "type": "string" },
+                      "email": { "type": "string", "format": "email" }
                     },
                     "required": ["name", "birthday", "relationship"]
                   }
@@ -9609,9 +8526,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
+                    "success": { "type": "boolean" },
                     "registration": {
                       "type": "object",
                       "properties": {
@@ -9640,18 +8555,9 @@
                           ],
                           "example": "awaiting_profile"
                         },
-                        "primary_member_id": {
-                          "type": "string",
-                          "example": "M-00001"
-                        },
-                        "primary_member_name": {
-                          "type": "string",
-                          "example": "山田 太郎"
-                        },
-                        "applicant_name": {
-                          "type": "string",
-                          "example": "山田 花子"
-                        },
+                        "primary_member_id": { "type": "string", "example": "M-00001" },
+                        "primary_member_name": { "type": "string", "example": "山田 太郎" },
+                        "applicant_name": { "type": "string", "example": "山田 花子" },
                         "relationship": {
                           "type": "string",
                           "enum": [
@@ -9669,22 +8575,10 @@
                           "format": "date-time",
                           "example": "2024-01-22T12:30:00Z"
                         },
-                        "store_id": {
-                          "type": "string",
-                          "example": "store-001"
-                        },
-                        "store_name": {
-                          "type": "string",
-                          "example": "Fit365八潮店"
-                        },
-                        "monthly_fee": {
-                          "type": "number",
-                          "example": 0
-                        },
-                        "risk_score": {
-                          "type": "number",
-                          "example": 20
-                        },
+                        "store_id": { "type": "string", "example": "store-001" },
+                        "store_name": { "type": "string", "example": "Fit365八潮店" },
+                        "monthly_fee": { "type": "number", "example": 0 },
+                        "risk_score": { "type": "number", "example": 20 },
                         "risk_reason": {
                           "type": "string",
                           "example": "ブラックリスト一致",
@@ -9793,10 +8687,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request"
-                    }
+                    "error": { "type": "string", "example": "Failed to process request" }
                   },
                   "required": ["error"],
                   "title": "ErrorResponse",
@@ -9812,10 +8703,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request"
-                    }
+                    "error": { "type": "string", "example": "Failed to process request" }
                   },
                   "required": ["error"],
                   "title": "ErrorResponse",
@@ -9839,39 +8727,19 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "total": {
-                      "type": "number"
-                    },
+                    "total": { "type": "number" },
                     "by_status": {
                       "type": "object",
                       "properties": {
-                        "invited": {
-                          "type": "number"
-                        },
-                        "awaiting_acceptance": {
-                          "type": "number"
-                        },
-                        "declined": {
-                          "type": "number"
-                        },
-                        "expired": {
-                          "type": "number"
-                        },
-                        "awaiting_profile": {
-                          "type": "number"
-                        },
-                        "pending_review": {
-                          "type": "number"
-                        },
-                        "approved": {
-                          "type": "number"
-                        },
-                        "rejected": {
-                          "type": "number"
-                        },
-                        "completed": {
-                          "type": "number"
-                        }
+                        "invited": { "type": "number" },
+                        "awaiting_acceptance": { "type": "number" },
+                        "declined": { "type": "number" },
+                        "expired": { "type": "number" },
+                        "awaiting_profile": { "type": "number" },
+                        "pending_review": { "type": "number" },
+                        "approved": { "type": "number" },
+                        "rejected": { "type": "number" },
+                        "completed": { "type": "number" }
                       }
                     }
                   },
@@ -9889,10 +8757,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request"
-                    }
+                    "error": { "type": "string", "example": "Failed to process request" }
                   },
                   "required": ["error"],
                   "title": "ErrorResponse",
@@ -9915,9 +8780,7 @@
             "in": "path",
             "required": true,
             "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -9959,11 +8822,7 @@
                               "example": "1990-01-01",
                               "description": "Birthday (ISO date)"
                             },
-                            "age": {
-                              "type": "integer",
-                              "example": 35,
-                              "description": "Age"
-                            },
+                            "age": { "type": "integer", "example": 35, "description": "Age" },
                             "gender": {
                               "type": "string",
                               "enum": ["male", "female", "other"],
@@ -10737,29 +9596,20 @@
                               "nullable": true,
                               "description": "JOYFIT points information"
                             },
-                            "rank": {
-                              "nullable": true,
-                              "description": "Rank information"
-                            },
+                            "rank": { "nullable": true, "description": "Rank information" },
                             "earn_history": {
                               "type": "array",
-                              "items": {
-                                "nullable": true
-                              },
+                              "items": { "nullable": true },
                               "description": "Earn history"
                             },
                             "spend_history": {
                               "type": "array",
-                              "items": {
-                                "nullable": true
-                              },
+                              "items": { "nullable": true },
                               "description": "Spend history"
                             },
                             "adjustment_history": {
                               "type": "array",
-                              "items": {
-                                "nullable": true
-                              },
+                              "items": { "nullable": true },
                               "description": "Adjustment history"
                             }
                           },
@@ -10772,9 +9622,7 @@
                           "properties": {
                             "memos": {
                               "type": "array",
-                              "items": {
-                                "nullable": true
-                              },
+                              "items": { "nullable": true },
                               "description": "List of memos"
                             }
                           },
@@ -10846,9 +9694,7 @@
             "in": "path",
             "required": true,
             "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "requestBody": {
@@ -10878,16 +9724,8 @@
                     "example": "東京都",
                     "description": "Prefecture"
                   },
-                  "city": {
-                    "type": "string",
-                    "example": "渋谷区",
-                    "description": "City"
-                  },
-                  "address": {
-                    "type": "string",
-                    "example": "渋谷1-2-3",
-                    "description": "Address"
-                  },
+                  "city": { "type": "string", "example": "渋谷区", "description": "City" },
+                  "address": { "type": "string", "example": "渋谷1-2-3", "description": "Address" },
                   "building": {
                     "type": "string",
                     "example": "サンプルマンション 101",
@@ -10907,15 +9745,9 @@
                   "emergency_contact": {
                     "type": "object",
                     "properties": {
-                      "name": {
-                        "type": "string"
-                      },
-                      "relationship": {
-                        "type": "string"
-                      },
-                      "phone": {
-                        "type": "string"
-                      }
+                      "name": { "type": "string" },
+                      "relationship": { "type": "string" },
+                      "phone": { "type": "string" }
                     },
                     "required": ["name", "relationship", "phone"],
                     "description": "Emergency contact information"
@@ -10940,10 +9772,7 @@
                       "example": true,
                       "description": "Whether the update was successful"
                     },
-                    "member": {
-                      "nullable": true,
-                      "description": "Updated member information"
-                    }
+                    "member": { "nullable": true, "description": "Updated member information" }
                   },
                   "required": ["success"],
                   "title": "UpdateBasicInfoResponse",
@@ -11026,9 +9855,7 @@
             "in": "path",
             "required": true,
             "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -11041,41 +9868,28 @@
                   "properties": {
                     "timeline": {
                       "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
+                      "items": { "nullable": true },
                       "description": "Timeline of changes"
                     },
-                    "membershipHistory": {
-                      "nullable": true,
-                      "description": "Membership history"
-                    },
+                    "membershipHistory": { "nullable": true, "description": "Membership history" },
                     "transferHistory": {
                       "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
+                      "items": { "nullable": true },
                       "description": "Transfer history"
                     },
                     "suspensionHistory": {
                       "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
+                      "items": { "nullable": true },
                       "description": "Suspension history"
                     },
                     "withdrawalHistory": {
                       "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
+                      "items": { "nullable": true },
                       "description": "Withdrawal history"
                     },
                     "editHistory": {
                       "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
+                      "items": { "nullable": true },
                       "description": "Edit history"
                     }
                   },
@@ -11146,9 +9960,7 @@
             "in": "path",
             "required": true,
             "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -11161,9 +9973,7 @@
                   "properties": {
                     "memos": {
                       "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
+                      "items": { "nullable": true },
                       "description": "List of memos"
                     }
                   },
@@ -11226,9 +10036,7 @@
             "in": "path",
             "required": true,
             "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "requestBody": {
@@ -11277,10 +10085,7 @@
                       "example": true,
                       "description": "Whether the creation was successful"
                     },
-                    "memo": {
-                      "nullable": true,
-                      "description": "Created memo"
-                    }
+                    "memo": { "nullable": true, "description": "Created memo" }
                   },
                   "required": ["success"],
                   "title": "CreateMemoResponse",
@@ -11363,9 +10168,7 @@
             "in": "path",
             "required": true,
             "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -11378,27 +10181,18 @@
                   "properties": {
                     "inquiries": {
                       "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
+                      "items": { "nullable": true },
                       "description": "Inquiry records"
                     },
                     "memos": {
                       "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
+                      "items": { "nullable": true },
                       "description": "Staff memos"
                     },
-                    "notifications": {
-                      "nullable": true,
-                      "description": "Notification history"
-                    },
+                    "notifications": { "nullable": true, "description": "Notification history" },
                     "phoneRecords": {
                       "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
+                      "items": { "nullable": true },
                       "description": "Phone records"
                     }
                   },
@@ -11463,9 +10257,7 @@
             "in": "path",
             "required": true,
             "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -12007,9 +10799,7 @@
             "in": "path",
             "required": true,
             "description": "Primary member id",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -12035,10 +10825,7 @@
                             "example": "M-00010",
                             "description": "Member number"
                           },
-                          "name_kanji": {
-                            "type": "string",
-                            "example": "山田 花子"
-                          },
+                          "name_kanji": { "type": "string", "example": "山田 花子" },
                           "relationship": {
                             "type": "string",
                             "enum": [
@@ -12066,14 +10853,8 @@
                             "example": 0,
                             "description": "Monthly fee (JPY)"
                           },
-                          "store_id": {
-                            "type": "string",
-                            "example": "store-001"
-                          },
-                          "store_name": {
-                            "type": "string",
-                            "example": "Fit365八潮店"
-                          }
+                          "store_id": { "type": "string", "example": "store-001" },
+                          "store_name": { "type": "string", "example": "Fit365八潮店" }
                         },
                         "required": [
                           "id",
@@ -12110,10 +10891,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request"
-                    }
+                    "error": { "type": "string", "example": "Failed to process request" }
                   },
                   "required": ["error"],
                   "title": "ErrorResponse",
@@ -12136,9 +10914,7 @@
             "in": "path",
             "required": true,
             "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "requestBody": {
@@ -12158,11 +10934,7 @@
                     "example": "特になし",
                     "description": "Medical history"
                   },
-                  "allergies": {
-                    "type": "string",
-                    "example": "なし",
-                    "description": "Allergies"
-                  },
+                  "allergies": { "type": "string", "example": "なし", "description": "Allergies" },
                   "exercise_restrictions": {
                     "type": "string",
                     "example": "特になし",
@@ -12193,10 +10965,7 @@
                       "example": true,
                       "description": "Whether the update was successful"
                     },
-                    "member": {
-                      "nullable": true,
-                      "description": "Updated member information"
-                    }
+                    "member": { "nullable": true, "description": "Updated member information" }
                   },
                   "required": ["success"],
                   "title": "UpdateHealthInfoResponse",
@@ -12279,9 +11048,7 @@
             "in": "path",
             "required": true,
             "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "requestBody": {
@@ -12326,10 +11093,7 @@
                       "example": true,
                       "description": "Whether the update was successful"
                     },
-                    "member": {
-                      "nullable": true,
-                      "description": "Updated member information"
-                    }
+                    "member": { "nullable": true, "description": "Updated member information" }
                   },
                   "required": ["success"],
                   "title": "UpdateMarketingConsentResponse",
@@ -12412,18 +11176,14 @@
             "in": "path",
             "required": true,
             "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           },
           {
             "name": "memoId",
             "in": "path",
             "required": true,
             "description": "Memo ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "requestBody": {
@@ -12465,10 +11225,7 @@
                       "example": true,
                       "description": "Whether the update was successful"
                     },
-                    "memo": {
-                      "nullable": true,
-                      "description": "Updated memo"
-                    }
+                    "memo": { "nullable": true, "description": "Updated memo" }
                   },
                   "required": ["success"],
                   "title": "UpdateMemoResponse",
@@ -12549,18 +11306,14 @@
             "in": "path",
             "required": true,
             "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           },
           {
             "name": "memoId",
             "in": "path",
             "required": true,
             "description": "Memo ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -12638,9 +11391,7 @@
             "in": "path",
             "required": true,
             "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "requestBody": {
@@ -12691,11 +11442,7 @@
                       "example": true,
                       "description": "Whether the adjustment was successful"
                     },
-                    "id": {
-                      "type": "string",
-                      "example": "M-00001",
-                      "description": "Member ID"
-                    },
+                    "id": { "type": "string", "example": "M-00001", "description": "Member ID" },
                     "adjustment": {
                       "type": "object",
                       "properties": {
@@ -12806,9 +11553,7 @@
             "in": "path",
             "required": true,
             "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -12819,37 +11564,22 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "fit365": {
-                      "nullable": true,
-                      "description": "FIT365 points information"
-                    },
-                    "joyfit": {
-                      "nullable": true,
-                      "description": "JOYFIT points information"
-                    },
-                    "rank": {
-                      "nullable": true,
-                      "description": "Rank information"
-                    },
+                    "fit365": { "nullable": true, "description": "FIT365 points information" },
+                    "joyfit": { "nullable": true, "description": "JOYFIT points information" },
+                    "rank": { "nullable": true, "description": "Rank information" },
                     "earn_history": {
                       "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
+                      "items": { "nullable": true },
                       "description": "Earn history"
                     },
                     "spend_history": {
                       "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
+                      "items": { "nullable": true },
                       "description": "Spend history"
                     },
                     "adjustment_history": {
                       "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
+                      "items": { "nullable": true },
                       "description": "Adjustment history"
                     }
                   },
@@ -12912,9 +11642,7 @@
             "in": "path",
             "required": true,
             "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "requestBody": {
@@ -12965,11 +11693,7 @@
                       "example": true,
                       "description": "Whether the adjustment was successful"
                     },
-                    "id": {
-                      "type": "string",
-                      "example": "M-00001",
-                      "description": "Member ID"
-                    },
+                    "id": { "type": "string", "example": "M-00001", "description": "Member ID" },
                     "adjustment": {
                       "type": "object",
                       "properties": {
@@ -13080,9 +11804,7 @@
             "in": "path",
             "required": true,
             "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -13093,18 +11815,9 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "family": {
-                      "nullable": true,
-                      "description": "Family relationships"
-                    },
-                    "corporate": {
-                      "nullable": true,
-                      "description": "Corporate relationships"
-                    },
-                    "referral": {
-                      "nullable": true,
-                      "description": "Referral relationships"
-                    }
+                    "family": { "nullable": true, "description": "Family relationships" },
+                    "corporate": { "nullable": true, "description": "Corporate relationships" },
+                    "referral": { "nullable": true, "description": "Referral relationships" }
                   },
                   "title": "GetRelationshipsResponse",
                   "description": "Response for getting relationships"
@@ -13166,9 +11879,7 @@
             "in": "path",
             "required": true,
             "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -13210,11 +11921,7 @@
                               "example": "1990-01-01",
                               "description": "Birthday (ISO date)"
                             },
-                            "age": {
-                              "type": "integer",
-                              "example": 35,
-                              "description": "Age"
-                            },
+                            "age": { "type": "integer", "example": 35, "description": "Age" },
                             "gender": {
                               "type": "string",
                               "enum": ["male", "female", "other"],
@@ -13988,29 +12695,20 @@
                               "nullable": true,
                               "description": "JOYFIT points information"
                             },
-                            "rank": {
-                              "nullable": true,
-                              "description": "Rank information"
-                            },
+                            "rank": { "nullable": true, "description": "Rank information" },
                             "earn_history": {
                               "type": "array",
-                              "items": {
-                                "nullable": true
-                              },
+                              "items": { "nullable": true },
                               "description": "Earn history"
                             },
                             "spend_history": {
                               "type": "array",
-                              "items": {
-                                "nullable": true
-                              },
+                              "items": { "nullable": true },
                               "description": "Spend history"
                             },
                             "adjustment_history": {
                               "type": "array",
-                              "items": {
-                                "nullable": true
-                              },
+                              "items": { "nullable": true },
                               "description": "Adjustment history"
                             }
                           },
@@ -14023,9 +12721,7 @@
                           "properties": {
                             "memos": {
                               "type": "array",
-                              "items": {
-                                "nullable": true
-                              },
+                              "items": { "nullable": true },
                               "description": "List of memos"
                             }
                           },
@@ -14099,9 +12795,7 @@
             "in": "path",
             "required": true,
             "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -14120,10 +12814,7 @@
                       "nullable": true,
                       "description": "Studio program information"
                     },
-                    "otherServices": {
-                      "nullable": true,
-                      "description": "Other services usage"
-                    }
+                    "otherServices": { "nullable": true, "description": "Other services usage" }
                   },
                   "title": "GetServiceUsageResponse",
                   "description": "Response for getting service usage"
@@ -14185,9 +12876,7 @@
             "in": "path",
             "required": true,
             "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -14198,36 +12887,25 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "summary": {
-                      "nullable": true,
-                      "description": "Training summary"
-                    },
+                    "summary": { "nullable": true, "description": "Training summary" },
                     "strengthRecords": {
                       "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
+                      "items": { "nullable": true },
                       "description": "Strength training records"
                     },
                     "cardioRecords": {
                       "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
+                      "items": { "nullable": true },
                       "description": "Cardio records"
                     },
                     "bodyRecords": {
                       "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
+                      "items": { "nullable": true },
                       "description": "Body measurement records"
                     },
                     "trainingMenus": {
                       "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
+                      "items": { "nullable": true },
                       "description": "Training menus"
                     }
                   },
@@ -14292,9 +12970,7 @@
             "in": "path",
             "required": true,
             "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -14305,22 +12981,15 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "summary": {
-                      "nullable": true,
-                      "description": "Usage summary"
-                    },
+                    "summary": { "nullable": true, "description": "Usage summary" },
                     "storeUsage": {
                       "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
+                      "items": { "nullable": true },
                       "description": "Store usage statistics"
                     },
                     "visitRecords": {
                       "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
+                      "items": { "nullable": true },
                       "description": "Visit records"
                     }
                   },
@@ -14400,17 +13069,13 @@
                   },
                   "member_ids": {
                     "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
+                    "items": { "type": "string" },
                     "example": ["M-00001", "M-00002"],
                     "description": "Member IDs (for selected target)"
                   },
                   "fields": {
                     "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
+                    "items": { "type": "string" },
                     "minItems": 1,
                     "example": ["member_number", "name_kanji", "email"],
                     "description": "Fields to export"
@@ -14584,10 +13249,7 @@
             "schema": {
               "type": "array",
               "nullable": true,
-              "items": {
-                "type": "string",
-                "enum": ["joyfit", "fit365"]
-              },
+              "items": { "type": "string", "enum": ["joyfit", "fit365"] },
               "example": ["joyfit", "fit365"],
               "description": "Filter by brand (array)"
             },
@@ -14600,9 +13262,7 @@
             "schema": {
               "type": "array",
               "nullable": true,
-              "items": {
-                "type": "string"
-              },
+              "items": { "type": "string" },
               "example": ["store-001", "store-002"],
               "description": "Filter by store ID (array)"
             },
@@ -14615,9 +13275,7 @@
             "schema": {
               "type": "array",
               "nullable": true,
-              "items": {
-                "type": "string"
-              },
+              "items": { "type": "string" },
               "example": ["plan-001", "plan-002"],
               "description": "Filter by contract plan ID (array)"
             },
@@ -14889,9 +13547,7 @@
             "in": "path",
             "required": true,
             "description": "Membership application ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "requestBody": {
@@ -15053,9 +13709,7 @@
             "in": "path",
             "required": true,
             "description": "Membership application ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "requestBody": {
@@ -15225,9 +13879,7 @@
             "in": "path",
             "required": true,
             "description": "Membership application ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "requestBody": {
@@ -15385,9 +14037,7 @@
             "in": "path",
             "required": true,
             "description": "Membership application ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -15534,15 +14184,9 @@
                           "items": {
                             "type": "object",
                             "properties": {
-                              "reason": {
-                                "type": "string"
-                              },
-                              "score": {
-                                "type": "number"
-                              },
-                              "description": {
-                                "type": "string"
-                              }
+                              "reason": { "type": "string" },
+                              "score": { "type": "number" },
+                              "description": { "type": "string" }
                             },
                             "required": ["reason", "score", "description"]
                           },
@@ -15553,15 +14197,9 @@
                           "items": {
                             "type": "object",
                             "properties": {
-                              "type": {
-                                "type": "string"
-                              },
-                              "url": {
-                                "type": "string"
-                              },
-                              "verified": {
-                                "type": "boolean"
-                              }
+                              "type": { "type": "string" },
+                              "url": { "type": "string" },
+                              "verified": { "type": "boolean" }
                             },
                             "required": ["type", "url", "verified"]
                           },
@@ -15570,28 +14208,12 @@
                         "contract_details": {
                           "type": "object",
                           "properties": {
-                            "plan_id": {
-                              "type": "string"
-                            },
-                            "plan_name": {
-                              "type": "string"
-                            },
-                            "start_date": {
-                              "type": "string",
-                              "format": "date"
-                            },
-                            "monthly_fee": {
-                              "type": "number"
-                            },
-                            "contract_period": {
-                              "type": "number"
-                            },
-                            "option_ids": {
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              }
-                            }
+                            "plan_id": { "type": "string" },
+                            "plan_name": { "type": "string" },
+                            "start_date": { "type": "string", "format": "date" },
+                            "monthly_fee": { "type": "number" },
+                            "contract_period": { "type": "number" },
+                            "option_ids": { "type": "array", "items": { "type": "string" } }
                           },
                           "required": [
                             "plan_id",
@@ -15748,9 +14370,7 @@
             "in": "path",
             "required": true,
             "description": "Membership application ID",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" }
           }
         ],
         "requestBody": {
@@ -15848,9 +14468,7 @@
                       },
                       "option_ids": {
                         "type": "array",
-                        "items": {
-                          "type": "string"
-                        },
+                        "items": { "type": "string" },
                         "example": ["opt-001", "opt-002"],
                         "description": "Option IDs"
                       },
@@ -15884,9 +14502,7 @@
                     },
                     "application": {
                       "type": "object",
-                      "additionalProperties": {
-                        "nullable": true
-                      },
+                      "additionalProperties": { "nullable": true },
                       "description": "Updated application (shape follows detail response)"
                     }
                   },
@@ -15974,9 +14590,7 @@
                 "properties": {
                   "application_ids": {
                     "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
+                    "items": { "type": "string" },
                     "minItems": 1,
                     "example": ["APP-00001", "APP-00002"],
                     "description": "List of application IDs to approve"
@@ -16127,9 +14741,7 @@
                 "properties": {
                   "application_ids": {
                     "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
+                    "items": { "type": "string" },
                     "minItems": 1,
                     "example": ["APP-00001", "APP-00002"],
                     "description": "List of application IDs to reject"
@@ -16373,11 +14985,7 @@
             "in": "query"
           },
           {
-            "schema": {
-              "type": "string",
-              "example": "山田",
-              "description": "Search query"
-            },
+            "schema": { "type": "string", "example": "山田", "description": "Search query" },
             "required": false,
             "description": "Search query",
             "name": "search",
@@ -16573,9 +15181,7 @@
                 "properties": {
                   "application_ids": {
                     "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
+                    "items": { "type": "string" },
                     "minItems": 1,
                     "example": ["APP-00001", "APP-00002"],
                     "description": "List of application IDs to auto-judge"
