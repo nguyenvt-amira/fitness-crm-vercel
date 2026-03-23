@@ -22,6 +22,18 @@ import type {
 } from '@/types/api/membership-application.type';
 import { Brand, MemberStatus, MemberType } from '@/types/member.type';
 
+function familyRelationshipToJa(rel: FamilyRelationship): string {
+  const labels: Record<FamilyRelationship, string> = {
+    spouse: '配偶者',
+    child: '子',
+    parent: '親',
+    sibling: '兄弟',
+    grandparent: '祖父母',
+    grandchild: '孫',
+  };
+  return labels[rel] ?? rel;
+}
+
 interface GetMembersResponseMember {
   id: string;
   member_number: string;
@@ -279,9 +291,14 @@ export const db = {
             name_kana: name.kana,
             phone,
             email,
-            member_type: (['regular', 'family', 'corporate'] as MemberProfile['member_type'][])[
-              i % 3
-            ],
+            member_type: (
+              [
+                'regular',
+                'family',
+                'corporate',
+                'company_discount',
+              ] as MemberProfile['member_type'][]
+            )[i % 4],
             status: (['active', 'suspended', 'withdrawn'] as MemberProfile['status'][])[i % 3],
             store_name: store.name,
             store_id: store.id,
@@ -887,6 +904,26 @@ export const db = {
       return { brand, settings, members };
     },
 
+    /** Primary member id when this member is registered as a family child, if any. */
+    getPrimaryMemberIdForChild(child_member_id: string): string | undefined {
+      this._seed();
+      for (const [primaryId, rels] of this._relationships) {
+        if (rels.some((r) => r.child_member_id === child_member_id)) return primaryId;
+      }
+      return undefined;
+    },
+
+    getRelationshipToPrimary(child_member_id: string, primary_member_id: string) {
+      this._seed();
+      const rels = this._relationships.get(primary_member_id) ?? [];
+      return rels.find((r) => r.child_member_id === child_member_id)?.relationship;
+    },
+
+    listChildRelationships(primary_member_id: string) {
+      this._seed();
+      return [...(this._relationships.get(primary_member_id) ?? [])];
+    },
+
     listRegistrations() {
       this._seed();
       return [...this._registrations];
@@ -943,6 +980,268 @@ export const db = {
       this._registrations[idx] = { ...this._registrations[idx], status, ...(patch ?? {}) };
       return this._registrations[idx];
     },
+  },
+
+  referrals: {
+    _seeded: false,
+
+    _byReferrer: new Map<
+      string,
+      Array<{
+        referee_member_id: string;
+        referred_at: string;
+        points_earned: number | null;
+        points_status_ja: string;
+      }>
+    >(),
+
+    _refereeToReferrer: new Map<
+      string,
+      {
+        referrer_member_id: string;
+        referred_at: string;
+        benefit_description: string;
+      }
+    >(),
+
+    _seed(): void {
+      if (this._seeded) return;
+      this._seeded = true;
+      db.members._seed();
+      const members = db.members._members;
+      for (let i = 0; i < members.length - 2; i++) {
+        if (i % 11 !== 0) continue;
+        const referrer = members[i]!;
+        const batch: Array<{
+          referee_member_id: string;
+          referred_at: string;
+          points_earned: number | null;
+          points_status_ja: string;
+        }> = [];
+        const referredAt = `2024-06-${String((i % 27) + 1).padStart(2, '0')}`;
+        for (let k = 1; k <= 2; k++) {
+          const referee = members[i + k];
+          if (!referee) break;
+          const joined =
+            referee.profile.status === MemberStatus.ACTIVE ||
+            referee.profile.status === MemberStatus.SUSPENDED;
+          const withdrew =
+            referee.profile.status === MemberStatus.WITHDRAWN ||
+            referee.profile.status === MemberStatus.FORCE_WITHDRAWN;
+          const points = joined ? 300 * k : null;
+          const points_status_ja = joined
+            ? `付与済み（${points}P）`
+            : withdrew
+              ? '退会により対象外'
+              : '未付与';
+          batch.push({
+            referee_member_id: referee.basic_info.id,
+            referred_at: referredAt,
+            points_earned: points,
+            points_status_ja,
+          });
+          if (!this._refereeToReferrer.has(referee.basic_info.id)) {
+            this._refereeToReferrer.set(referee.basic_info.id, {
+              referrer_member_id: referrer.basic_info.id,
+              referred_at: referredAt,
+              benefit_description: '初月会費50%オフ（紹介特典）',
+            });
+          }
+        }
+        if (batch.length) this._byReferrer.set(referrer.basic_info.id, batch);
+      }
+    },
+
+    getForMember(memberId: string) {
+      this._seed();
+      return {
+        asReferrerRows: this._byReferrer.get(memberId) ?? [],
+        asRefereeRow: this._refereeToReferrer.get(memberId),
+      };
+    },
+  },
+
+  getMemberRelationships(memberId: string) {
+    db.members._seed();
+    db.family._seed();
+    db.referrals._seed();
+
+    const member = db.members.get(memberId);
+    if (!member) return null;
+
+    const memberType = member.profile.member_type;
+
+    let family:
+      | {
+          role: 'primary';
+          children: Array<{
+            id: string;
+            member_number: string;
+            name: string;
+            relationship: string;
+            status: MemberProfile['status'];
+          }>;
+          current_count: number;
+          max_count: number;
+        }
+      | {
+          role: 'family_child';
+          parent: {
+            id: string;
+            member_number: string;
+            name: string;
+            relationship: string;
+            status: MemberProfile['status'];
+          };
+        }
+      | null = null;
+
+    const childRows = db.family.listChildRelationships(memberId);
+    // member is primary member
+    if (childRows.length > 0) {
+      const { settings } = db.family.getBrandSettingsByPrimaryMemberId(memberId);
+      family = {
+        role: 'primary',
+        current_count: childRows.length,
+        max_count: settings.family_member_limit,
+        children: childRows
+          .map((r) => {
+            const child = db.members.get(r.child_member_id);
+            if (!child) return undefined;
+            return {
+              id: child.basic_info.id,
+              member_number: child.basic_info.member_number,
+              name: child.basic_info.name_kanji,
+              relationship: familyRelationshipToJa(r.relationship),
+              status: child.profile.status,
+            };
+          })
+          .filter((x): x is NonNullable<typeof x> => Boolean(x)),
+      };
+    }
+    // member is child member
+    else if (memberType === MemberType.FAMILY) {
+      const primaryId = db.family.getPrimaryMemberIdForChild(memberId);
+      if (primaryId) {
+        const parent = db.members.get(primaryId);
+        const relEnum = db.family.getRelationshipToPrimary(memberId, primaryId);
+        if (parent) {
+          family = {
+            role: 'family_child',
+            parent: {
+              id: parent.basic_info.id,
+              member_number: parent.basic_info.member_number,
+              name: parent.basic_info.name_kanji,
+              relationship: relEnum ? familyRelationshipToJa(relEnum) : '—',
+              status: parent.profile.status,
+            },
+          };
+        }
+      }
+    }
+
+    let corporate: {
+      corporate_detail_member_id: string;
+      corporate_name: string;
+      corporate_number: string;
+      contract_type: string;
+      company_discount: { applied: boolean; rate_percent: number | null };
+      contact_department: string;
+      contact_name: string;
+    } | null = null;
+
+    if (memberType === MemberType.CORPORATE) {
+      corporate = {
+        corporate_detail_member_id: member.basic_info.id,
+        corporate_name: `${member.basic_info.name_kanji}（法人契約）`,
+        corporate_number: `7${String(member.basic_info.id.replace(/\D/g, '') || '0')
+          .padStart(12, '0')
+          .slice(0, 12)}`,
+        contract_type: '法人団体契約（標準）',
+        company_discount: { applied: true, rate_percent: 20 },
+        contact_department: '総務・人事部',
+        contact_name: '営業 一郎',
+      };
+    } else if (memberType === MemberType.COMPANY_DISCOUNT) {
+      const corpMember = db.members._members.find(
+        (m) => m.profile.member_type === MemberType.CORPORATE,
+      );
+      if (corpMember) {
+        corporate = {
+          corporate_detail_member_id: corpMember.basic_info.id,
+          corporate_name: 'サンプル株式会社（社割提携法人）',
+          corporate_number: '7010001056789',
+          contract_type: '社員優待（法人付帯）',
+          company_discount: { applied: true, rate_percent: 15 },
+          contact_department: '人事部',
+          contact_name: corpMember.basic_info.name_kanji,
+        };
+      }
+    }
+
+    const { asReferrerRows, asRefereeRow } = db.referrals.getForMember(memberId);
+    const referralsMapped = asReferrerRows
+      .map((r) => {
+        const refMember = db.members.get(r.referee_member_id);
+        if (!refMember) return undefined;
+        const st = refMember.profile.status;
+        let membership_status_ja = '未入会';
+        if (st === MemberStatus.ACTIVE) membership_status_ja = '入会済み（利用中）';
+        else if (st === MemberStatus.SUSPENDED) membership_status_ja = '入会済み（休会中）';
+        else if (st === MemberStatus.WITHDRAWN || st === MemberStatus.FORCE_WITHDRAWN) {
+          membership_status_ja = '退会済み';
+        }
+        return {
+          id: refMember.basic_info.id,
+          member_number: refMember.basic_info.member_number,
+          name: refMember.basic_info.name_kanji,
+          referred_at: r.referred_at,
+          membership_status: membership_status_ja,
+          points_status: r.points_status_ja,
+          points_earned: r.points_earned,
+        };
+      })
+      .filter((x): x is NonNullable<typeof x> => Boolean(x));
+
+    const totalPoints = referralsMapped.reduce((acc, r) => acc + (r.points_earned ?? 0), 0);
+
+    let as_referee: {
+      referrer: {
+        id: string;
+        member_number: string;
+        name: string;
+        referred_at: string;
+        referral_benefit: string;
+      };
+    } | null = null;
+    if (asRefereeRow) {
+      const ref = db.members.get(asRefereeRow.referrer_member_id);
+      if (ref) {
+        as_referee = {
+          referrer: {
+            id: ref.basic_info.id,
+            member_number: ref.basic_info.member_number,
+            name: ref.basic_info.name_kanji,
+            referred_at: asRefereeRow.referred_at,
+            referral_benefit: asRefereeRow.benefit_description,
+          },
+        };
+      }
+    }
+    return {
+      family,
+      corporate,
+      referral: {
+        as_referrer: {
+          referrals: referralsMapped,
+          summary: {
+            total_referrals: referralsMapped.length,
+            total_points: totalPoints,
+          },
+        },
+        as_referee,
+      },
+    };
   },
 };
 
