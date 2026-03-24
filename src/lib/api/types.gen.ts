@@ -4777,7 +4777,29 @@ export type CompleteFamilyRegistrationResponse = {
  * Summary counts for family registrations
  */
 export type GetFamilyRegistrationsSummaryResponse = {
-    total: number;
+    /**
+     * 集計期間（今月/今週/全期間）
+     */
+    period: 'this_month' | 'this_week' | 'all';
+    /**
+     * 総招待数
+     */
+    total_invites: number;
+    /**
+     * 総入会件数（家族会員のみ）
+     */
+    total_completed: number;
+    /**
+     * 家族会員比率（全会員に占める割合）
+     */
+    family_member_ratio: number;
+    /**
+     * 招待承諾率
+     */
+    acceptance_rate: number;
+    /**
+     * ステータス別件数（期間フィルタ適用）
+     */
     by_status: {
         invited?: number;
         awaiting_acceptance?: number;
@@ -4789,6 +4811,22 @@ export type GetFamilyRegistrationsSummaryResponse = {
         rejected?: number;
         completed?: number;
     };
+    /**
+     * 子会員数が多い親会員TOP10
+     */
+    top_primary_members: Array<{
+        primary_member_id: string;
+        primary_member_name: string;
+        family_count: number;
+    }>;
+    /**
+     * 子会員の平均人数
+     */
+    avg_children_per_primary: number;
+    /**
+     * 総件数（全期間）
+     */
+    total: number;
 };
 
 /**
@@ -6327,7 +6365,9 @@ export type PostCrmFamilyRegistrationsResponse = PostCrmFamilyRegistrationsRespo
 export type GetCrmFamilyRegistrationsSummaryData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        period?: 'this_month' | 'this_week' | 'all';
+    };
     url: '/crm/family-registrations/summary';
 };
 
@@ -6351,7 +6391,29 @@ export type GetCrmFamilyRegistrationsSummaryResponses = {
      * Summary counts for family registrations
      */
     200: {
-        total: number;
+        /**
+         * 集計期間（今月/今週/全期間）
+         */
+        period: 'this_month' | 'this_week' | 'all';
+        /**
+         * 総招待数
+         */
+        total_invites: number;
+        /**
+         * 総入会件数（家族会員のみ）
+         */
+        total_completed: number;
+        /**
+         * 家族会員比率（全会員に占める割合）
+         */
+        family_member_ratio: number;
+        /**
+         * 招待承諾率
+         */
+        acceptance_rate: number;
+        /**
+         * ステータス別件数（期間フィルタ適用）
+         */
         by_status: {
             invited?: number;
             awaiting_acceptance?: number;
@@ -6363,6 +6425,22 @@ export type GetCrmFamilyRegistrationsSummaryResponses = {
             rejected?: number;
             completed?: number;
         };
+        /**
+         * 子会員数が多い親会員TOP10
+         */
+        top_primary_members: Array<{
+            primary_member_id: string;
+            primary_member_name: string;
+            family_count: number;
+        }>;
+        /**
+         * 子会員の平均人数
+         */
+        avg_children_per_primary: number;
+        /**
+         * 総件数（全期間）
+         */
+        total: number;
     };
 };
 

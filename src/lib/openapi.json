@@ -7041,8 +7041,31 @@
       "GetFamilyRegistrationsSummaryResponse": {
         "type": "object",
         "properties": {
-          "total": {
-            "type": "number"
+          "period": {
+            "type": "string",
+            "enum": ["this_month", "this_week", "all"],
+            "example": "this_month",
+            "description": "集計期間（今月/今週/全期間）"
+          },
+          "total_invites": {
+            "type": "number",
+            "example": 42,
+            "description": "総招待数"
+          },
+          "total_completed": {
+            "type": "number",
+            "example": 15,
+            "description": "総入会件数（家族会員のみ）"
+          },
+          "family_member_ratio": {
+            "type": "number",
+            "example": 0.28,
+            "description": "家族会員比率（全会員に占める割合）"
+          },
+          "acceptance_rate": {
+            "type": "number",
+            "example": 0.72,
+            "description": "招待承諾率"
           },
           "by_status": {
             "type": "object",
@@ -7074,10 +7097,53 @@
               "completed": {
                 "type": "number"
               }
-            }
+            },
+            "description": "ステータス別件数（期間フィルタ適用）"
+          },
+          "top_primary_members": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "primary_member_id": {
+                  "type": "string",
+                  "example": "M-00001"
+                },
+                "primary_member_name": {
+                  "type": "string",
+                  "example": "山田 太郎"
+                },
+                "family_count": {
+                  "type": "number",
+                  "example": 3
+                }
+              },
+              "required": ["primary_member_id", "primary_member_name", "family_count"]
+            },
+            "description": "子会員数が多い親会員TOP10"
+          },
+          "avg_children_per_primary": {
+            "type": "number",
+            "example": 1.5,
+            "description": "子会員の平均人数"
+          },
+          "total": {
+            "type": "number",
+            "example": 200,
+            "description": "総件数（全期間）"
           }
         },
-        "required": ["total", "by_status"],
+        "required": [
+          "period",
+          "total_invites",
+          "total_completed",
+          "family_member_ratio",
+          "acceptance_rate",
+          "by_status",
+          "top_primary_members",
+          "avg_children_per_primary",
+          "total"
+        ],
         "title": "GetFamilyRegistrationsSummaryResponse",
         "description": "Summary counts for family registrations"
       },
@@ -9921,6 +9987,18 @@
       "get": {
         "summary": "Get family registrations summary",
         "tags": ["Family Registrations"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["this_month", "this_week", "all"],
+              "default": "this_month"
+            },
+            "required": false,
+            "name": "period",
+            "in": "query"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Summary response",
@@ -9929,8 +10007,31 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "total": {
-                      "type": "number"
+                    "period": {
+                      "type": "string",
+                      "enum": ["this_month", "this_week", "all"],
+                      "example": "this_month",
+                      "description": "集計期間（今月/今週/全期間）"
+                    },
+                    "total_invites": {
+                      "type": "number",
+                      "example": 42,
+                      "description": "総招待数"
+                    },
+                    "total_completed": {
+                      "type": "number",
+                      "example": 15,
+                      "description": "総入会件数（家族会員のみ）"
+                    },
+                    "family_member_ratio": {
+                      "type": "number",
+                      "example": 0.28,
+                      "description": "家族会員比率（全会員に占める割合）"
+                    },
+                    "acceptance_rate": {
+                      "type": "number",
+                      "example": 0.72,
+                      "description": "招待承諾率"
                     },
                     "by_status": {
                       "type": "object",
@@ -9962,10 +10063,53 @@
                         "completed": {
                           "type": "number"
                         }
-                      }
+                      },
+                      "description": "ステータス別件数（期間フィルタ適用）"
+                    },
+                    "top_primary_members": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "primary_member_id": {
+                            "type": "string",
+                            "example": "M-00001"
+                          },
+                          "primary_member_name": {
+                            "type": "string",
+                            "example": "山田 太郎"
+                          },
+                          "family_count": {
+                            "type": "number",
+                            "example": 3
+                          }
+                        },
+                        "required": ["primary_member_id", "primary_member_name", "family_count"]
+                      },
+                      "description": "子会員数が多い親会員TOP10"
+                    },
+                    "avg_children_per_primary": {
+                      "type": "number",
+                      "example": 1.5,
+                      "description": "子会員の平均人数"
+                    },
+                    "total": {
+                      "type": "number",
+                      "example": 200,
+                      "description": "総件数（全期間）"
                     }
                   },
-                  "required": ["total", "by_status"],
+                  "required": [
+                    "period",
+                    "total_invites",
+                    "total_completed",
+                    "family_member_ratio",
+                    "acceptance_rate",
+                    "by_status",
+                    "top_primary_members",
+                    "avg_children_per_primary",
+                    "total"
+                  ],
                   "title": "GetFamilyRegistrationsSummaryResponse",
                   "description": "Summary counts for family registrations"
                 }
