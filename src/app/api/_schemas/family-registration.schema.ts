@@ -398,10 +398,49 @@ export const BulkRejectFamilyRegistrationsResponseSchema = z
     description: 'Bulk reject family registrations response',
   });
 
+export const GetFamilyRegistrationsSummaryQuerySchema = z
+  .object({
+    period: z.enum(['this_month', 'this_week', 'all']).optional().default('this_month'),
+  })
+  .openapi({
+    title: 'GetFamilyRegistrationsSummaryQuery',
+    description: 'Query for summary period',
+  });
+
 export const GetFamilyRegistrationsSummaryResponseSchema = z
   .object({
-    total: z.number(),
-    by_status: z.record(FamilyRegistrationStatusSchema, z.number()),
+    period: z.enum(['this_month', 'this_week', 'all']).openapi({
+      example: 'this_month',
+      description: '集計期間（今月/今週/全期間）',
+    }),
+    // ── 今月のサマリ ─────────────────────────────────────────
+    total_invites: z.number().openapi({ example: 42, description: '総招待数' }),
+    total_completed: z.number().openapi({ example: 15, description: '総入会件数（家族会員のみ）' }),
+    family_member_ratio: z.number().openapi({
+      example: 0.28,
+      description: '家族会員比率（全会員に占める割合）',
+    }),
+    acceptance_rate: z.number().openapi({ example: 0.72, description: '招待承諾率' }),
+    // ── ステータス別カード ────────────────────────────────────
+    by_status: z
+      .record(FamilyRegistrationStatusSchema, z.number())
+      .openapi({ description: 'ステータス別件数（期間フィルタ適用）' }),
+    // ── 親会員別統計 ──────────────────────────────────────────
+    top_primary_members: z
+      .array(
+        z.object({
+          primary_member_id: z.string().openapi({ example: 'M-00001' }),
+          primary_member_name: z.string().openapi({ example: '山田 太郎' }),
+          family_count: z.number().openapi({ example: 3 }),
+        }),
+      )
+      .openapi({ description: '子会員数が多い親会員TOP10' }),
+    avg_children_per_primary: z.number().openapi({
+      example: 1.5,
+      description: '子会員の平均人数',
+    }),
+    // ── 全件合計（UI表示用）──────────────────────────────────
+    total: z.number().openapi({ example: 200, description: '総件数（全期間）' }),
   })
   .openapi({
     title: 'GetFamilyRegistrationsSummaryResponse',
@@ -479,6 +518,9 @@ export type BulkRejectFamilyRegistrationsRequest = z.infer<
 >;
 export type BulkRejectFamilyRegistrationsResponse = z.infer<
   typeof BulkRejectFamilyRegistrationsResponseSchema
+>;
+export type GetFamilyRegistrationsSummaryQuery = z.infer<
+  typeof GetFamilyRegistrationsSummaryQuerySchema
 >;
 export type GetFamilyRegistrationsSummaryResponse = z.infer<
   typeof GetFamilyRegistrationsSummaryResponseSchema
