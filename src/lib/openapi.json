@@ -7150,17 +7150,117 @@
       "GetFamilyRegistrationsDashboardResponse": {
         "type": "object",
         "properties": {
-          "month_invites": {
-            "type": "number"
+          "period": {
+            "type": "string",
+            "enum": ["this_month", "last_3_months", "last_year"],
+            "example": "this_month",
+            "description": "集計期間"
           },
           "month_completed": {
-            "type": "number"
-          },
-          "acceptance_rate": {
-            "type": "number"
+            "type": "number",
+            "example": 18,
+            "description": "期間内の家族会員入会件数"
           },
           "family_member_ratio": {
-            "type": "number"
+            "type": "number",
+            "example": 0.28,
+            "description": "家族会員比率（全会員比）"
+          },
+          "avg_children_per_primary": {
+            "type": "number",
+            "example": 1.5,
+            "description": "家族会員の平均人数（主会員1人あたり）"
+          },
+          "auto_approval_rate": {
+            "type": "number",
+            "example": 0.72,
+            "description": "自動承認率（auto_approve / 全完了件数）"
+          },
+          "monthly_trend": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "month": {
+                  "type": "string",
+                  "example": "2024-01",
+                  "description": "YYYY-MM"
+                },
+                "count": {
+                  "type": "number",
+                  "example": 12
+                }
+              },
+              "required": ["month", "count"]
+            },
+            "description": "家族会員入会数の推移（月次）"
+          },
+          "by_member_type": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "member_type": {
+                  "type": "string",
+                  "example": "regular"
+                },
+                "label": {
+                  "type": "string",
+                  "example": "通常会員"
+                },
+                "count": {
+                  "type": "number",
+                  "example": 35
+                },
+                "ratio": {
+                  "type": "number",
+                  "example": 0.7
+                }
+              },
+              "required": ["member_type", "label", "count", "ratio"]
+            },
+            "description": "主会員種別別の家族会員比率"
+          },
+          "family_size_distribution": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string",
+                  "example": "1名"
+                },
+                "count": {
+                  "type": "number",
+                  "example": 20
+                }
+              },
+              "required": ["label", "count"]
+            },
+            "description": "家族会員数の分布（1名 / 2名 / 3名以上）"
+          },
+          "by_relationship": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "relationship": {
+                  "type": "string",
+                  "enum": ["spouse", "child", "parent", "sibling", "grandparent", "grandchild"],
+                  "example": "spouse"
+                },
+                "label": {
+                  "type": "string",
+                  "example": "配偶者"
+                },
+                "count": {
+                  "type": "number",
+                  "example": 15
+                }
+              },
+              "required": ["relationship", "label", "count"]
+            },
+            "description": "関係性別の入会内訳（配偶者・子供・親など）"
           },
           "top_primary_members": {
             "type": "array",
@@ -7168,28 +7268,55 @@
               "type": "object",
               "properties": {
                 "primary_member_id": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "M-00001"
                 },
                 "primary_member_name": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "山田 太郎"
                 },
                 "family_count": {
-                  "type": "number"
+                  "type": "number",
+                  "example": 3
                 }
               },
               "required": ["primary_member_id", "primary_member_name", "family_count"]
-            }
+            },
+            "description": "家族会員が多い主会員TOP10"
+          },
+          "avg_usage_comparison": {
+            "type": "object",
+            "properties": {
+              "family_member": {
+                "type": "number",
+                "example": 8.2,
+                "description": "家族会員の平均利用回数/月"
+              },
+              "regular_member": {
+                "type": "number",
+                "example": 6.5,
+                "description": "通常会員の平均利用回数/月"
+              }
+            },
+            "required": ["family_member", "regular_member"],
+            "description": "家族会員 vs 通常会員の平均利用回数比較"
           }
         },
         "required": [
-          "month_invites",
+          "period",
           "month_completed",
-          "acceptance_rate",
           "family_member_ratio",
-          "top_primary_members"
+          "avg_children_per_primary",
+          "auto_approval_rate",
+          "monthly_trend",
+          "by_member_type",
+          "family_size_distribution",
+          "by_relationship",
+          "top_primary_members",
+          "avg_usage_comparison"
         ],
         "title": "GetFamilyRegistrationsDashboardResponse",
-        "description": "Dashboard response for family registrations (mocked)"
+        "description": "Dashboard data for family registrations (A-02-02-08)"
       }
     },
     "parameters": {}
@@ -9190,8 +9317,22 @@
     },
     "/crm/family-registrations/dashboard": {
       "get": {
-        "summary": "Get family registrations dashboard",
+        "summary": "Get family registrations dashboard (A-02-02-08)",
         "tags": ["Family Registrations"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["this_month", "last_3_months", "last_year"],
+              "default": "this_month",
+              "description": "集計期間（今月/過去3ヶ月/過去1年）"
+            },
+            "required": false,
+            "description": "集計期間（今月/過去3ヶ月/過去1年）",
+            "name": "period",
+            "in": "query"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Dashboard response",
@@ -9200,17 +9341,124 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "month_invites": {
-                      "type": "number"
+                    "period": {
+                      "type": "string",
+                      "enum": ["this_month", "last_3_months", "last_year"],
+                      "example": "this_month",
+                      "description": "集計期間"
                     },
                     "month_completed": {
-                      "type": "number"
-                    },
-                    "acceptance_rate": {
-                      "type": "number"
+                      "type": "number",
+                      "example": 18,
+                      "description": "期間内の家族会員入会件数"
                     },
                     "family_member_ratio": {
-                      "type": "number"
+                      "type": "number",
+                      "example": 0.28,
+                      "description": "家族会員比率（全会員比）"
+                    },
+                    "avg_children_per_primary": {
+                      "type": "number",
+                      "example": 1.5,
+                      "description": "家族会員の平均人数（主会員1人あたり）"
+                    },
+                    "auto_approval_rate": {
+                      "type": "number",
+                      "example": 0.72,
+                      "description": "自動承認率（auto_approve / 全完了件数）"
+                    },
+                    "monthly_trend": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "month": {
+                            "type": "string",
+                            "example": "2024-01",
+                            "description": "YYYY-MM"
+                          },
+                          "count": {
+                            "type": "number",
+                            "example": 12
+                          }
+                        },
+                        "required": ["month", "count"]
+                      },
+                      "description": "家族会員入会数の推移（月次）"
+                    },
+                    "by_member_type": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "member_type": {
+                            "type": "string",
+                            "example": "regular"
+                          },
+                          "label": {
+                            "type": "string",
+                            "example": "通常会員"
+                          },
+                          "count": {
+                            "type": "number",
+                            "example": 35
+                          },
+                          "ratio": {
+                            "type": "number",
+                            "example": 0.7
+                          }
+                        },
+                        "required": ["member_type", "label", "count", "ratio"]
+                      },
+                      "description": "主会員種別別の家族会員比率"
+                    },
+                    "family_size_distribution": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "label": {
+                            "type": "string",
+                            "example": "1名"
+                          },
+                          "count": {
+                            "type": "number",
+                            "example": 20
+                          }
+                        },
+                        "required": ["label", "count"]
+                      },
+                      "description": "家族会員数の分布（1名 / 2名 / 3名以上）"
+                    },
+                    "by_relationship": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "relationship": {
+                            "type": "string",
+                            "enum": [
+                              "spouse",
+                              "child",
+                              "parent",
+                              "sibling",
+                              "grandparent",
+                              "grandchild"
+                            ],
+                            "example": "spouse"
+                          },
+                          "label": {
+                            "type": "string",
+                            "example": "配偶者"
+                          },
+                          "count": {
+                            "type": "number",
+                            "example": 15
+                          }
+                        },
+                        "required": ["relationship", "label", "count"]
+                      },
+                      "description": "関係性別の入会内訳（配偶者・子供・親など）"
                     },
                     "top_primary_members": {
                       "type": "array",
@@ -9218,28 +9466,55 @@
                         "type": "object",
                         "properties": {
                           "primary_member_id": {
-                            "type": "string"
+                            "type": "string",
+                            "example": "M-00001"
                           },
                           "primary_member_name": {
-                            "type": "string"
+                            "type": "string",
+                            "example": "山田 太郎"
                           },
                           "family_count": {
-                            "type": "number"
+                            "type": "number",
+                            "example": 3
                           }
                         },
                         "required": ["primary_member_id", "primary_member_name", "family_count"]
-                      }
+                      },
+                      "description": "家族会員が多い主会員TOP10"
+                    },
+                    "avg_usage_comparison": {
+                      "type": "object",
+                      "properties": {
+                        "family_member": {
+                          "type": "number",
+                          "example": 8.2,
+                          "description": "家族会員の平均利用回数/月"
+                        },
+                        "regular_member": {
+                          "type": "number",
+                          "example": 6.5,
+                          "description": "通常会員の平均利用回数/月"
+                        }
+                      },
+                      "required": ["family_member", "regular_member"],
+                      "description": "家族会員 vs 通常会員の平均利用回数比較"
                     }
                   },
                   "required": [
-                    "month_invites",
+                    "period",
                     "month_completed",
-                    "acceptance_rate",
                     "family_member_ratio",
-                    "top_primary_members"
+                    "avg_children_per_primary",
+                    "auto_approval_rate",
+                    "monthly_trend",
+                    "by_member_type",
+                    "family_size_distribution",
+                    "by_relationship",
+                    "top_primary_members",
+                    "avg_usage_comparison"
                   ],
                   "title": "GetFamilyRegistrationsDashboardResponse",
-                  "description": "Dashboard response for family registrations (mocked)"
+                  "description": "Dashboard data for family registrations (A-02-02-08)"
                 }
               }
             }
