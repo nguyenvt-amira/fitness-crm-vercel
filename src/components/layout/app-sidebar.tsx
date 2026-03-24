@@ -64,11 +64,17 @@ const menuItems: MenuItem[] = [
     icon: UserPlus,
     href: getRoutePattern('/membership-applications'),
   },
-  // {
-  //   label: '家族入会',
-  //   icon: BookUser,
-  //   href: getRoutePattern('/family-registrations'),
-  // },
+  {
+    label: '家族入会',
+    icon: BookUser,
+    href: getRoutePattern('/family-registrations'),
+    subItems: [
+      {
+        label: 'ダッシュボード',
+        href: '/family-registrations/dashboard',
+      },
+    ],
+  },
   // {
   //   label: '入退館',
   //   icon: DoorOpen,

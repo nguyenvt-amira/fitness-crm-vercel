@@ -261,7 +261,7 @@ export const postCrmFamilyRegistrationsCheckPrimaryMemberMutation = (options?: P
 export const getCrmFamilyRegistrationsDashboardQueryKey = (options?: Options<GetCrmFamilyRegistrationsDashboardData>) => createQueryKey('getCrmFamilyRegistrationsDashboard', options);
 
 /**
- * Get family registrations dashboard
+ * Get family registrations dashboard (A-02-02-08)
  */
 export const getCrmFamilyRegistrationsDashboardOptions = (options?: Options<GetCrmFamilyRegistrationsDashboardData>) => queryOptions<GetCrmFamilyRegistrationsDashboardResponse, GetCrmFamilyRegistrationsDashboardError, GetCrmFamilyRegistrationsDashboardResponse, ReturnType<typeof getCrmFamilyRegistrationsDashboardQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {

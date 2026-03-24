@@ -20,6 +20,12 @@ export const routes = {
     pattern: '/family-registrations/:id',
     private: true,
   },
+  '/family-registrations/dashboard': {
+    router: '/family-registrations/dashboard',
+    filePath: '(private)/family-registrations/dashboard',
+    pattern: '/family-registrations/dashboard',
+    private: true,
+  },
   '/members': {
     router: '/members',
     filePath: '(private)/members',
@@ -63,6 +69,7 @@ export const routeKeys = [
   '/',
   '/family-registrations',
   '/family-registrations/[id]',
+  '/family-registrations/dashboard',
   '/members',
   '/members/[id]',
   '/membership-applications',
@@ -76,6 +83,7 @@ export const routePatterns = [
   '/',
   '/family-registrations',
   '/family-registrations/:id',
+  '/family-registrations/dashboard',
   '/members',
   '/members/:id',
   '/membership-applications',

@@ -4828,18 +4828,84 @@ export type GetFamilyRegistrationsSummaryResponse = {
 /**
  * GetFamilyRegistrationsDashboardResponse
  *
- * Dashboard response for family registrations (mocked)
+ * Dashboard data for family registrations (A-02-02-08)
  */
 export type GetFamilyRegistrationsDashboardResponse = {
-    month_invites: number;
+    /**
+     * 集計期間
+     */
+    period: 'this_month' | 'last_3_months' | 'last_year';
+    /**
+     * 期間内の家族会員入会件数
+     */
     month_completed: number;
-    acceptance_rate: number;
+    /**
+     * 家族会員比率（全会員比）
+     */
     family_member_ratio: number;
+    /**
+     * 家族会員の平均人数（主会員1人あたり）
+     */
+    avg_children_per_primary: number;
+    /**
+     * 自動承認率（auto_approve / 全完了件数）
+     */
+    auto_approval_rate: number;
+    /**
+     * 家族会員入会数の推移（月次）
+     */
+    monthly_trend: Array<{
+        /**
+         * YYYY-MM
+         */
+        month: string;
+        count: number;
+    }>;
+    /**
+     * 主会員種別別の家族会員比率
+     */
+    by_member_type: Array<{
+        member_type: string;
+        label: string;
+        count: number;
+        ratio: number;
+    }>;
+    /**
+     * 家族会員数の分布（1名 / 2名 / 3名以上）
+     */
+    family_size_distribution: Array<{
+        label: string;
+        count: number;
+    }>;
+    /**
+     * 関係性別の入会内訳（配偶者・子供・親など）
+     */
+    by_relationship: Array<{
+        relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
+        label: string;
+        count: number;
+    }>;
+    /**
+     * 家族会員が多い主会員TOP10
+     */
     top_primary_members: Array<{
         primary_member_id: string;
         primary_member_name: string;
         family_count: number;
     }>;
+    /**
+     * 家族会員 vs 通常会員の平均利用回数比較
+     */
+    avg_usage_comparison: {
+        /**
+         * 家族会員の平均利用回数/月
+         */
+        family_member: number;
+        /**
+         * 通常会員の平均利用回数/月
+         */
+        regular_member: number;
+    };
 };
 
 export type PostAuthLoginData = {
@@ -6007,7 +6073,12 @@ export type PostCrmFamilyRegistrationsCheckPrimaryMemberResponse = PostCrmFamily
 export type GetCrmFamilyRegistrationsDashboardData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * 集計期間（今月/過去3ヶ月/過去1年）
+         */
+        period?: 'this_month' | 'last_3_months' | 'last_year';
+    };
     url: '/crm/family-registrations/dashboard';
 };
 
@@ -6028,18 +6099,84 @@ export type GetCrmFamilyRegistrationsDashboardResponses = {
     /**
      * GetFamilyRegistrationsDashboardResponse
      *
-     * Dashboard response for family registrations (mocked)
+     * Dashboard data for family registrations (A-02-02-08)
      */
     200: {
-        month_invites: number;
+        /**
+         * 集計期間
+         */
+        period: 'this_month' | 'last_3_months' | 'last_year';
+        /**
+         * 期間内の家族会員入会件数
+         */
         month_completed: number;
-        acceptance_rate: number;
+        /**
+         * 家族会員比率（全会員比）
+         */
         family_member_ratio: number;
+        /**
+         * 家族会員の平均人数（主会員1人あたり）
+         */
+        avg_children_per_primary: number;
+        /**
+         * 自動承認率（auto_approve / 全完了件数）
+         */
+        auto_approval_rate: number;
+        /**
+         * 家族会員入会数の推移（月次）
+         */
+        monthly_trend: Array<{
+            /**
+             * YYYY-MM
+             */
+            month: string;
+            count: number;
+        }>;
+        /**
+         * 主会員種別別の家族会員比率
+         */
+        by_member_type: Array<{
+            member_type: string;
+            label: string;
+            count: number;
+            ratio: number;
+        }>;
+        /**
+         * 家族会員数の分布（1名 / 2名 / 3名以上）
+         */
+        family_size_distribution: Array<{
+            label: string;
+            count: number;
+        }>;
+        /**
+         * 関係性別の入会内訳（配偶者・子供・親など）
+         */
+        by_relationship: Array<{
+            relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
+            label: string;
+            count: number;
+        }>;
+        /**
+         * 家族会員が多い主会員TOP10
+         */
         top_primary_members: Array<{
             primary_member_id: string;
             primary_member_name: string;
             family_count: number;
         }>;
+        /**
+         * 家族会員 vs 通常会員の平均利用回数比較
+         */
+        avg_usage_comparison: {
+            /**
+             * 家族会員の平均利用回数/月
+             */
+            family_member: number;
+            /**
+             * 通常会員の平均利用回数/月
+             */
+            regular_member: number;
+        };
     };
 };
 

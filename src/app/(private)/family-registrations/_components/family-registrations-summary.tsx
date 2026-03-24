@@ -118,24 +118,10 @@ export const FamilyRegistrationsSummary = () => {
           <h2 className="text-foreground text-base font-semibold">家族入会サマリ</h2>
           <p className="text-muted-foreground text-xs">期間別の申請状況を確認できます</p>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="gap-1.5">
-              <Download className="size-3.5" />
-              エクスポート
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => handleExport('csv')} className="gap-2">
-              <FileText className="size-4" />
-              CSVでダウンロード
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleExport('excel')} className="gap-2">
-              <FileSpreadsheet className="size-4" />
-              Excelでダウンロード
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Button variant="outline" size="default" className="gap-2">
+          <Download className="size-4" />
+          エクスポート
+        </Button>
       </div>
 
       {/* ── 期間切替タブ ── */}
