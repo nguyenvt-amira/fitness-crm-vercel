@@ -4,8 +4,8 @@ import { useState } from 'react';
 
 import { useParams, useSearchParams } from 'next/navigation';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ChevronDown, Clock, Download, FileText, Printer } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { ChevronDown, Clock, Download, Printer } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { BreadcrumbNav } from '@/components/common/breadcrumb-nav';
@@ -18,13 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import {
-  getCrmMembershipApplicationsByIdOptions,
-  getCrmMembershipApplicationsInfiniteQueryKey,
-  postCrmMembershipApplicationsByIdApproveMutation,
-  postCrmMembershipApplicationsByIdRejectMutation,
-} from '@/lib/api/@tanstack/react-query.gen';
-import { navigate } from '@/lib/routes/routes.util';
+import { getCrmMembershipApplicationsByIdOptions } from '@/lib/api/@tanstack/react-query.gen';
 
 import ApplicationDetailFooter from './_components/application-detail-footer';
 import { BasicInfoCard } from './_components/basic-info-card';
@@ -45,7 +39,6 @@ export default function MembershipApplicationDetailPage() {
   const searchParams = useSearchParams();
   const tab = searchParams.get('tab');
   const applicationId = params.id as string;
-  const queryClient = useQueryClient();
 
   const [activeTab, setActiveTab] = useState(() => tab || 'member-info');
 
@@ -54,43 +47,6 @@ export default function MembershipApplicationDetailPage() {
       path: { id: applicationId },
     }),
   );
-
-  const approveMutation = useMutation(postCrmMembershipApplicationsByIdApproveMutation());
-  const rejectMutation = useMutation(postCrmMembershipApplicationsByIdRejectMutation());
-
-  const handleApprove = async () => {
-    try {
-      await approveMutation.mutateAsync({
-        path: { id: applicationId },
-      });
-      toast.success('承認しました');
-      // Invalidate list query to refresh
-      queryClient.invalidateQueries({
-        queryKey: getCrmMembershipApplicationsInfiniteQueryKey({ query: {} }),
-      });
-      // Navigate back to list
-      navigate('/membership-applications');
-    } catch (err: any) {
-      const message = err?.error ?? err?.message ?? '承認に失敗しました';
-      toast.error(message);
-    }
-  };
-
-  const handleReject = async () => {
-    try {
-      await rejectMutation.mutateAsync({
-        path: { id: applicationId },
-      });
-      toast.success('却下しました');
-      queryClient.invalidateQueries({
-        queryKey: getCrmMembershipApplicationsInfiniteQueryKey({ query: {} }),
-      });
-      navigate('/membership-applications');
-    } catch (err: any) {
-      const message = err?.error ?? err?.message ?? '却下に失敗しました';
-      toast.error(message);
-    }
-  };
 
   if (isLoading) {
     return <MembershipApplicationDetailSkeleton />;
