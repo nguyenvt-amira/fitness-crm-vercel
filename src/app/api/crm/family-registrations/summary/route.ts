@@ -54,15 +54,31 @@ export async function GET(request: NextRequest) {
     return allRows.filter((r) => new Date(r.created_at) >= startOf);
   })();
 
-  // ── ステータス別件数（期間フィルタ適用）────────────────────
-  const by_status: Record<string, number> = {};
-  for (const r of periodRows) {
+  // ── ステータス別件数（全件・タブ表示用）────────────────────
+  // by_status counts ALL registrations regardless of period so tab badges
+  // always reflect the real totals. Period filter only affects summary KPIs.
+  const ALL_STATUSES = [
+    'awaiting_acceptance',
+    'awaiting_profile',
+    'pending_review',
+    'approved',
+    'rejected',
+    'completed',
+    'declined',
+    'expired',
+    'invited',
+  ] as const;
+
+  const by_status: Record<string, number> = Object.fromEntries(ALL_STATUSES.map((s) => [s, 0]));
+  for (const r of allRows) {
     by_status[r.status] = (by_status[r.status] ?? 0) + 1;
   }
 
-  // ── 今月のサマリ指標 ─────────────────────────────────────
+  // ── 今月のサマリ指標（期間フィルタ適用）─────────────────
   const total_invites = periodRows.length;
-  const total_completed = by_status['completed'] ?? 0;
+  const total_completed = periodRows.filter(
+    (r) => r.status === 'completed' || r.status === 'approved',
+  ).length;
 
   // 家族会員比率 = 有効な家族会員数 / 有効な全会員数
   db.members._seed();
@@ -82,11 +98,12 @@ export async function GET(request: NextRequest) {
   const acceptance_rate =
     total_invites > 0 ? Math.round((acceptedCount / total_invites) * 1000) / 1000 : 0;
 
-  // ── 親会員別統計: 入会完了済みの子会員数をカウント ──────────
+  // ── 親会員別統計: _relationships から実際の家族会員数をカウント ──────────
+  db.family._seed();
   const primaryCountMap = new Map<string, number>();
-  for (const r of allRows) {
-    if (r.status === 'completed') {
-      primaryCountMap.set(r.primary_member_id, (primaryCountMap.get(r.primary_member_id) ?? 0) + 1);
+  for (const [primaryId, rels] of db.family._relationships) {
+    if (rels.length > 0) {
+      primaryCountMap.set(primaryId, rels.length);
     }
   }
 

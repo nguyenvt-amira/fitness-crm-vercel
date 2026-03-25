@@ -15,15 +15,11 @@ import { PendingFamilyRegistrationsTab } from './pending-family-registrations-ta
 
 const STATUS_TABS: { value: FamilyRegistrationStatus['status'] | 'all'; label: string }[] = [
   { value: 'pending_review', label: '要確認' },
-  { value: 'awaiting_profile', label: '入力待ち' },
-  { value: 'awaiting_acceptance', label: '承諾待ち' },
-  { value: 'invited', label: '招待済み' },
-  { value: 'approved', label: '承認済み' },
+  { value: 'awaiting_acceptance', label: '招待承諾待ち' },
+  { value: 'awaiting_profile', label: '個人情報入力待ち' },
   { value: 'completed', label: '入会完了' },
-  { value: 'rejected', label: '却下' },
-  { value: 'expired', label: '期限切れ' },
-  { value: 'declined', label: '辞退' },
-  { value: 'all', label: '全件' },
+  { value: 'declined', label: '招待辞退' },
+  { value: 'expired', label: '招待期限切れ' },
 ];
 
 export function FamilyRegistrationsListSection() {

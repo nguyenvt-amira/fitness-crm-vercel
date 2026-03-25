@@ -45,13 +45,34 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     return NextResponse.json({ error: 'Family registration not found' }, { status: 404 });
 
   const staff = validation.data.staff_id || 'staff-001';
-  db.family.updateRegistrationStatus(id, 'approved', { staff_id: staff });
+
+  // Create a new member record with member_type = 'family'
+  const newMember = db.members.createFromFamilyRegistration({
+    applicant_name: existing.applicant_name,
+    relationship: existing.relationship,
+    applicant: existing.applicant,
+    primary_member_id: existing.primary_member_id,
+  });
+
+  // Link the new member as a family child of the primary member
+  db.family.linkChildRelationship(
+    existing.primary_member_id,
+    newMember.basic_info.id,
+    existing.relationship,
+  );
+
+  // Update registration status and store the generated child_member_id
+  db.family.updateRegistrationStatus(id, 'completed', {
+    staff_id: staff,
+    child_member_id: newMember.basic_info.id,
+  });
 
   return NextResponse.json({
     success: true,
     id,
-    status: 'approved',
+    status: 'completed',
     approved_at: new Date().toISOString(),
     approved_by: staff,
+    member_id: newMember.basic_info.id,
   });
 }
