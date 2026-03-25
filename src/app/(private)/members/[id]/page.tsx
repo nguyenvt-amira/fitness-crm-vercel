@@ -23,6 +23,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import {
@@ -188,7 +189,7 @@ export default function MemberDetailPage() {
   };
 
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex items-center gap-2 border-b px-4 py-4">
         <div className="text-muted-foreground flex size-6 items-center justify-center">
           <User className="size-6" />
@@ -289,9 +290,13 @@ export default function MemberDetailPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex-1 overflow-auto p-4">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <div className="overflow-x-auto overflow-y-hidden">
+      <div className="flex min-h-0 flex-1 flex-col p-4 pt-0">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="flex min-h-0 w-full flex-1 flex-col"
+        >
+          <div className="shrink-0 overflow-x-auto overflow-y-hidden pt-4 pb-2">
             <TabsList className="inline-flex w-full min-w-max">
               <TabsTrigger value="basic">基本情報</TabsTrigger>
               <TabsTrigger value="contracts">契約情報</TabsTrigger>
@@ -305,46 +310,48 @@ export default function MemberDetailPage() {
             </TabsList>
           </div>
 
-          <TabsContent value="basic" className="mt-4">
-            <BasicInfoTab memberId={memberId} />
-          </TabsContent>
+          <ScrollArea className="mt-2 min-h-0 min-w-0 flex-1 pr-2">
+            <TabsContent value="basic">
+              <BasicInfoTab memberId={memberId} />
+            </TabsContent>
 
-          <TabsContent value="contracts" className="mt-4">
-            <ContractsTab memberId={memberId} />
-          </TabsContent>
+            <TabsContent value="contracts">
+              <ContractsTab memberId={memberId} />
+            </TabsContent>
 
-          <TabsContent value="points" className="mt-4">
-            <PointsTab memberId={memberId} brand={member.profile.brand} />
-          </TabsContent>
+            <TabsContent value="points">
+              <PointsTab memberId={memberId} brand={member.profile.brand} />
+            </TabsContent>
 
-          <TabsContent value="usage" className="mt-4">
-            <UsageHistoryTab memberId={memberId} />
-          </TabsContent>
+            <TabsContent value="usage">
+              <UsageHistoryTab memberId={memberId} />
+            </TabsContent>
 
-          <TabsContent value="training" className="mt-4">
-            <TrainingRecordsTab memberId={memberId} />
-          </TabsContent>
+            <TabsContent value="training">
+              <TrainingRecordsTab memberId={memberId} />
+            </TabsContent>
 
-          <TabsContent value="service" className="mt-4">
-            <ServiceUsageTab memberId={memberId} />
-          </TabsContent>
+            <TabsContent value="service">
+              <ServiceUsageTab memberId={memberId} />
+            </TabsContent>
 
-          <TabsContent value="communications" className="mt-4">
-            <CommunicationsTab
-              memberId={memberId}
-              onAddMemo={handleAddMemo}
-              onEditMemo={handleEditMemo}
-              onDeleteMemo={handleDeleteMemo}
-            />
-          </TabsContent>
+            <TabsContent value="communications">
+              <CommunicationsTab
+                memberId={memberId}
+                onAddMemo={handleAddMemo}
+                onEditMemo={handleEditMemo}
+                onDeleteMemo={handleDeleteMemo}
+              />
+            </TabsContent>
 
-          <TabsContent value="history" className="mt-4">
-            <ChangeHistoryTab memberId={memberId} />
-          </TabsContent>
+            <TabsContent value="history">
+              <ChangeHistoryTab memberId={memberId} />
+            </TabsContent>
 
-          <TabsContent value="relationships" className="mt-4">
-            <RelationshipsTab memberId={memberId} />
-          </TabsContent>
+            <TabsContent value="relationships">
+              <RelationshipsTab memberId={memberId} />
+            </TabsContent>
+          </ScrollArea>
         </Tabs>
       </div>
 

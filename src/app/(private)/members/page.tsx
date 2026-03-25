@@ -211,7 +211,7 @@ function MembersPageContent() {
               router.push(navigate('/members/[id]', row.id));
             }}
             onTableReady={setTable}
-            containerClassName="h-[70vh]"
+            containerClassName="max-h-[calc(100vh-372px)]"
           />
         </div>
       </div>
