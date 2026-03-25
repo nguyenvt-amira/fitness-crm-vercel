@@ -24,99 +24,32 @@ registerRoute({
   ],
 });
 
-// ── Static mock shapes per period ────────────────────────────
 type Period = 'this_month' | 'last_3_months' | 'last_year';
 
-const STATIC: Record<
-  Period,
-  {
-    month_completed: number;
-    auto_approval_rate: number;
-    monthlyCounts: number[]; // newest last, length = months shown
-    by_member_type: { member_type: string; label: string; count: number; ratio: number }[];
-    family_size_distribution: { label: string; count: number }[];
-    by_relationship: { relationship: string; label: string; count: number }[];
-  }
-> = {
-  this_month: {
-    month_completed: 18,
-    auto_approval_rate: 0.72,
-    monthlyCounts: [9, 12, 15, 10, 17, 18], // 6ヶ月 (newest = this month)
-    by_member_type: [
-      { member_type: 'regular', label: '通常会員', count: 42, ratio: 0.7 },
-      { member_type: 'corporate', label: '法人会員', count: 12, ratio: 0.2 },
-      { member_type: 'company_discount', label: '社割会員', count: 6, ratio: 0.1 },
-    ],
-    family_size_distribution: [
-      { label: '1名', count: 28 },
-      { label: '2名', count: 15 },
-      { label: '3名以上', count: 7 },
-    ],
-    by_relationship: [
-      { relationship: 'spouse', label: '配偶者', count: 20 },
-      { relationship: 'child', label: '子', count: 14 },
-      { relationship: 'parent', label: '親', count: 8 },
-      { relationship: 'sibling', label: '兄弟', count: 5 },
-      { relationship: 'grandparent', label: '祖父母', count: 3 },
-      { relationship: 'grandchild', label: '孫', count: 2 },
-    ],
-  },
-  last_3_months: {
-    month_completed: 52,
-    auto_approval_rate: 0.68,
-    monthlyCounts: [9, 12, 15, 10, 17, 18], // 6ヶ月
-    by_member_type: [
-      { member_type: 'regular', label: '通常会員', count: 118, ratio: 0.68 },
-      { member_type: 'corporate', label: '法人会員', count: 35, ratio: 0.2 },
-      { member_type: 'company_discount', label: '社割会員', count: 21, ratio: 0.12 },
-    ],
-    family_size_distribution: [
-      { label: '1名', count: 72 },
-      { label: '2名', count: 38 },
-      { label: '3名以上', count: 18 },
-    ],
-    by_relationship: [
-      { relationship: 'spouse', label: '配偶者', count: 58 },
-      { relationship: 'child', label: '子', count: 42 },
-      { relationship: 'parent', label: '親', count: 22 },
-      { relationship: 'sibling', label: '兄弟', count: 14 },
-      { relationship: 'grandparent', label: '祖父母', count: 8 },
-      { relationship: 'grandchild', label: '孫', count: 5 },
-    ],
-  },
-  last_year: {
-    month_completed: 198,
-    auto_approval_rate: 0.74,
-    monthlyCounts: [12, 14, 18, 22, 16, 20, 15, 19, 24, 21, 17, 18], // 12ヶ月
-    by_member_type: [
-      { member_type: 'regular', label: '通常会員', count: 430, ratio: 0.65 },
-      { member_type: 'corporate', label: '法人会員', count: 145, ratio: 0.22 },
-      { member_type: 'company_discount', label: '社割会員', count: 85, ratio: 0.13 },
-    ],
-    family_size_distribution: [
-      { label: '1名', count: 260 },
-      { label: '2名', count: 130 },
-      { label: '3名以上', count: 70 },
-    ],
-    by_relationship: [
-      { relationship: 'spouse', label: '配偶者', count: 210 },
-      { relationship: 'child', label: '子', count: 165 },
-      { relationship: 'parent', label: '親', count: 85 },
-      { relationship: 'sibling', label: '兄弟', count: 52 },
-      { relationship: 'grandparent', label: '祖父母', count: 28 },
-      { relationship: 'grandchild', label: '孫', count: 18 },
-    ],
-  },
+const MEMBER_TYPE_LABELS: Record<string, string> = {
+  regular: '通常会員',
+  corporate: '法人会員',
+  company_discount: '社割会員',
+  family: '家族会員',
+};
+const RELATIONSHIP_LABELS: Record<string, string> = {
+  spouse: '配偶者',
+  child: '子',
+  parent: '親',
+  sibling: '兄弟',
+  grandparent: '祖父母',
+  grandchild: '孫',
 };
 
-// ── Helper: build monthly_trend labels relative to now ───────
-function buildMonthlyTrend(counts: number[]): { month: string; count: number }[] {
-  const now = new Date();
-  return counts.map((count, i) => {
-    const d = new Date(now.getFullYear(), now.getMonth() - (counts.length - 1 - i), 1);
-    const month = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-    return { month, count };
-  });
+function getPeriodStart(period: Period, now: Date): Date {
+  const d = new Date(now);
+  if (period === 'this_month') {
+    return new Date(d.getFullYear(), d.getMonth(), 1);
+  } else if (period === 'last_3_months') {
+    return new Date(d.getFullYear(), d.getMonth() - 3, 1);
+  } else {
+    return new Date(d.getFullYear() - 1, d.getMonth(), 1);
+  }
 }
 
 // GET /api/crm/family-registrations/dashboard
@@ -126,11 +59,22 @@ export async function GET(request: NextRequest) {
     period: searchParams.get('period') ?? undefined,
   });
   const period: Period = parsed.success ? parsed.data.period : 'this_month';
+  const now = new Date();
+  const periodStart = getPeriodStart(period, now);
 
-  const static_ = STATIC[period];
-
-  // ── Dynamic: family_member_ratio & avg_children_per_primary ──
+  // ── Seed ────────────────────────────────────────────────────
   db.members._seed();
+  db.family._seed();
+
+  const allRows = db.family.listRegistrations();
+  const periodRows = allRows.filter((r) => new Date(r.created_at) >= periodStart);
+
+  // ── サマリカード: month_completed ───────────────────────────
+  const month_completed = periodRows.filter(
+    (r) => r.status === 'completed' || r.status === 'approved',
+  ).length;
+
+  // ── サマリカード: family_member_ratio ────────────────────────
   const activeMembers = db.members._members.filter((m) => m.profile.status === 'active');
   const totalActiveMembers = activeMembers.length;
   const familyActiveMembers = activeMembers.filter(
@@ -141,21 +85,89 @@ export async function GET(request: NextRequest) {
       ? Math.round((familyActiveMembers / totalActiveMembers) * 1000) / 1000
       : 0.25;
 
-  // ── Dynamic: avg_children_per_primary from all completed registrations ──
-  const allRows = db.family.listRegistrations();
+  // ── サマリカード: avg_children_per_primary ───────────────────
+  // Read from _relationships (actual linked members), not registration rows.
   const primaryCountMap = new Map<string, number>();
-  for (const r of allRows) {
-    if (r.status === 'completed') {
-      primaryCountMap.set(r.primary_member_id, (primaryCountMap.get(r.primary_member_id) ?? 0) + 1);
-    }
+  for (const [primaryId, rels] of db.family._relationships) {
+    if (rels.length > 0) primaryCountMap.set(primaryId, rels.length);
   }
   const totalChildren = [...primaryCountMap.values()].reduce((s, v) => s + v, 0);
   const avg_children_per_primary =
-    primaryCountMap.size > 0
-      ? Math.round((totalChildren / primaryCountMap.size) * 100) / 100
-      : 1.38;
+    primaryCountMap.size > 0 ? Math.round((totalChildren / primaryCountMap.size) * 100) / 100 : 0;
 
-  // ── Dynamic: top_primary_members (all-time, not period-filtered) ──
+  // ── サマリカード: auto_approval_rate ─────────────────────────
+  // Registrations without a risk_reason are considered auto-approved.
+  const closedRows = periodRows.filter((r) =>
+    ['approved', 'completed', 'rejected'].includes(r.status),
+  );
+  const autoApprovedCount = closedRows.filter((r) => !r.risk_reason).length;
+  const auto_approval_rate =
+    closedRows.length > 0 ? Math.round((autoApprovedCount / closedRows.length) * 1000) / 1000 : 0;
+
+  // ── グラフ: monthly_trend (completed + approved per month) ───
+  const numMonths = period === 'last_year' ? 12 : 6;
+  const monthly_trend = Array.from({ length: numMonths }, (_, i) => {
+    const monthStart = new Date(now.getFullYear(), now.getMonth() - (numMonths - 1 - i), 1);
+    const monthEnd = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 1);
+    const monthKey = `${monthStart.getFullYear()}-${String(monthStart.getMonth() + 1).padStart(2, '0')}`;
+    const count = allRows.filter((r) => {
+      const rd = new Date(r.created_at);
+      return (
+        rd >= monthStart && rd < monthEnd && (r.status === 'completed' || r.status === 'approved')
+      );
+    }).length;
+    return { month: monthKey, count };
+  });
+
+  // ── グラフ: by_member_type ────────────────────────────────────
+  // Count family members grouped by primary member's member_type.
+  const memberTypeCounts: Record<string, number> = {};
+  for (const [primaryId, rels] of db.family._relationships) {
+    if (rels.length === 0) continue;
+    const primary = db.members.get(primaryId);
+    const mt = primary?.profile.member_type ?? 'regular';
+    memberTypeCounts[mt] = (memberTypeCounts[mt] ?? 0) + rels.length;
+  }
+  const totalTyped = Object.values(memberTypeCounts).reduce((s, v) => s + v, 0);
+  const by_member_type = Object.entries(memberTypeCounts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([mt, count]) => ({
+      member_type: mt,
+      label: MEMBER_TYPE_LABELS[mt] ?? mt,
+      count,
+      ratio: totalTyped > 0 ? Math.round((count / totalTyped) * 1000) / 1000 : 0,
+    }));
+
+  // ── グラフ: family_size_distribution ─────────────────────────
+  // Distribution of primaries by how many family members they have.
+  const sizeDist: Record<string, number> = { '1名': 0, '2名': 0, '3名以上': 0 };
+  for (const rels of db.family._relationships.values()) {
+    if (rels.length === 1) sizeDist['1名']++;
+    else if (rels.length === 2) sizeDist['2名']++;
+    else if (rels.length >= 3) sizeDist['3名以上']++;
+  }
+  const family_size_distribution = Object.entries(sizeDist).map(([label, count]) => ({
+    label,
+    count,
+  }));
+
+  // ── グラフ: by_relationship ───────────────────────────────────
+  // Count each relationship type across all linked family members.
+  const relCounts: Record<string, number> = {};
+  for (const rels of db.family._relationships.values()) {
+    for (const r of rels) {
+      relCounts[r.relationship] = (relCounts[r.relationship] ?? 0) + 1;
+    }
+  }
+  const by_relationship = Object.entries(relCounts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([rel, count]) => ({
+      relationship: rel,
+      label: RELATIONSHIP_LABELS[rel] ?? rel,
+      count,
+    }));
+
+  // ── 主会員分析: top_primary_members ──────────────────────────
   const top_primary_members = [...primaryCountMap.entries()]
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10)
@@ -168,23 +180,7 @@ export async function GET(request: NextRequest) {
       };
     });
 
-  // Fallback: if DB didn't produce enough members, pad with static names
-  const STATIC_TOP10 = [
-    { primary_member_id: 'M-00001', primary_member_name: '田中 美咲', family_count: 3 },
-    { primary_member_id: 'M-00006', primary_member_name: '佐藤 花子', family_count: 3 },
-    { primary_member_id: 'M-00011', primary_member_name: '鈴木 太郎', family_count: 3 },
-    { primary_member_id: 'M-00016', primary_member_name: '田中 美咲', family_count: 3 },
-    { primary_member_id: 'M-00021', primary_member_name: '佐藤 花子', family_count: 3 },
-    { primary_member_id: 'M-00026', primary_member_name: '鈴木 太郎', family_count: 2 },
-    { primary_member_id: 'M-00031', primary_member_name: '中村 由美', family_count: 2 },
-    { primary_member_id: 'M-00036', primary_member_name: '山田 健太', family_count: 2 },
-    { primary_member_id: 'M-00041', primary_member_name: '佐藤 花子', family_count: 1 },
-    { primary_member_id: 'M-00046', primary_member_name: '中村 由美', family_count: 1 },
-  ];
-  const finalTopMembers =
-    top_primary_members.length >= 10 ? top_primary_members.slice(0, 10) : STATIC_TOP10;
-
-  // ── Dynamic: avg_usage_comparison (deterministic from member counts) ──
+  // ── 主会員分析: avg_usage_comparison ─────────────────────────
   const avg_usage_comparison = {
     family_member: Math.round((7 + (familyActiveMembers % 4)) * 10) / 10,
     regular_member: Math.round((5 + (totalActiveMembers % 3)) * 10) / 10,
@@ -193,17 +189,17 @@ export async function GET(request: NextRequest) {
   return NextResponse.json({
     period,
     // サマリカード
-    month_completed: static_.month_completed,
+    month_completed,
     family_member_ratio,
     avg_children_per_primary,
-    auto_approval_rate: static_.auto_approval_rate,
+    auto_approval_rate,
     // グラフ
-    monthly_trend: buildMonthlyTrend(static_.monthlyCounts),
-    by_member_type: static_.by_member_type,
-    family_size_distribution: static_.family_size_distribution,
-    by_relationship: static_.by_relationship,
+    monthly_trend,
+    by_member_type,
+    family_size_distribution,
+    by_relationship,
     // 主会員分析
-    top_primary_members: finalTopMembers,
+    top_primary_members,
     avg_usage_comparison,
   });
 }

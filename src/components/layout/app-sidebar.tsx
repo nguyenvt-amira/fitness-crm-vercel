@@ -66,7 +66,7 @@ const menuItems: MenuItem[] = [
   },
   {
     label: '家族入会',
-    icon: BookUser,
+    icon: UserPlus,
     href: getRoutePattern('/family-registrations'),
     subItems: [
       {
