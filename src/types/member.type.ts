@@ -35,3 +35,15 @@ export interface StaffMemo {
   content: string;
   created_by: string;
 }
+
+export enum Gender {
+  MALE = 'male',
+  FEMALE = 'female',
+  OTHER = 'other',
+}
+
+export const GENDER_LABELS: Record<Gender, string> = {
+  [Gender.MALE]: '男性',
+  [Gender.FEMALE]: '女性',
+  [Gender.OTHER]: 'その他',
+};

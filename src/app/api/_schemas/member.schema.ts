@@ -259,7 +259,7 @@ export const GetMembersQuerySchema = z
       }),
     ),
     sort_by: z
-      .enum(['member_number', 'joined_at', 'last_visit', 'name'])
+      .enum(['member_number', 'joined_at', 'last_visit_date', 'name'])
       .optional()
       .default('member_number')
       .openapi({

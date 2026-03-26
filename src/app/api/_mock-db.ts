@@ -22,6 +22,32 @@ import type {
 } from '@/types/api/membership-application.type';
 import { Brand, MemberStatus, MemberType } from '@/types/member.type';
 
+export type MembershipApplicationContractDetails = {
+  plan_id: string;
+  plan_name: string;
+  start_date: string; // YYYY-MM-DD
+  option_ids?: string[];
+};
+
+export type MembershipApplicationDetails = Partial<{
+  // Basic info
+  applicant_name: string;
+  gender: 'male' | 'female' | 'other';
+  blood_type: 'A' | 'B' | 'O' | 'AB' | 'unknown';
+  birthday: string; // YYYY-MM-DD
+  // Contact
+  applicant_email: string;
+  applicant_phone: string;
+  applicant_address: string;
+  emergency_contact_name: string;
+  emergency_contact_relationship: string;
+  emergency_contact_phone: string;
+  // Contract
+  contract_details: MembershipApplicationContractDetails;
+  // eKYC
+  ekyc: EkycResult;
+}>;
+
 function familyRelationshipToJa(rel: FamilyRelationship): string {
   const labels: Record<FamilyRelationship, string> = {
     spouse: '配偶者',
@@ -96,6 +122,8 @@ function createMember(
     name_kana: string;
     phone: string;
     email: string;
+    birthday: string;
+    gender: 'male' | 'female' | 'other';
     member_type: MemberProfile['member_type'];
     status: MemberProfile['status'];
     store_id: string;
@@ -106,6 +134,9 @@ function createMember(
     contract_plan_name: string;
     last_visit_date?: string;
     has_unpaid: boolean;
+    emergency_contact_name: string;
+    emergency_contact_relationship: string;
+    emergency_contact_phone: string;
   },
 ): MemberRow {
   return {
@@ -116,7 +147,7 @@ function createMember(
       name_kana: listMeta.name_kana,
       birthday: '1990-05-15',
       age: 34,
-      gender: 'female',
+      gender: listMeta.gender,
       postal_code: '1500002',
       prefecture: '東京都',
       city: '渋谷区',
@@ -125,9 +156,9 @@ function createMember(
       phone: listMeta.phone,
       email: listMeta.email,
       emergency_contact: {
-        name: '佐藤 太郎',
-        relationship: '夫',
-        phone: '09087654321',
+        name: listMeta.emergency_contact_name,
+        relationship: listMeta.emergency_contact_relationship,
+        phone: listMeta.emergency_contact_phone,
       },
     },
     profile: {
@@ -270,7 +301,7 @@ type DbType = {
     _seed(): void;
     get(id: string): Member | undefined;
     getList(): GetMembersResponseMember[];
-    createFromApplication(application: MembershipApplication): Member;
+    createFromApplication(application: MembershipApplicationDetails): Member;
     createFromFamilyRegistration(registration: {
       applicant_name: string;
       relationship: FamilyRelationship;
@@ -285,6 +316,7 @@ type DbType = {
     _seeded: boolean;
     _seed(): void;
     getByMemberId(memberId: string): GetContractsResponse | undefined;
+    getByApplicationId(applicationId: string): ContractRow | undefined;
     create(input: {
       contract_id: string;
       member_id: string;
@@ -301,25 +333,7 @@ type DbType = {
     _seed(): void;
     getAll(): MembershipApplication[];
     getById(id: string): MembershipApplication | undefined;
-    getDetails(id: string): Partial<{
-      applicant_name: string;
-      gender: 'male' | 'female' | 'other' | 'unknown';
-      blood_type: 'A' | 'B' | 'O' | 'AB' | 'unknown';
-      birthday: string;
-      applicant_email: string;
-      applicant_phone: string;
-      applicant_address: string;
-      emergency_contact_name: string;
-      emergency_contact_relationship: string;
-      emergency_contact_phone: string;
-      contract_details: {
-        plan_id: string;
-        plan_name: string;
-        start_date: string;
-        option_ids?: string[];
-      };
-      ekyc: EkycResult;
-    }>;
+    getDetails(id: string): MembershipApplicationDetails;
     updateDetails(id: string, patch: Record<string, unknown>): unknown;
     updateStatus(
       id: string,
@@ -508,6 +522,8 @@ function createDb() {
               name_kana: name.kana,
               phone,
               email,
+              birthday: `199${i % 10}-0${(i % 9) + 1}-15`,
+              gender: i % 2 === 0 ? 'male' : 'female',
               member_type: (
                 [
                   'regular',
@@ -526,6 +542,9 @@ function createDb() {
               last_visit_date:
                 i % 5 === 0 ? undefined : `2024-12-${String((i % 28) + 1).padStart(2, '0')}`,
               has_unpaid: i % 7 === 0,
+              emergency_contact_name: name.kanji,
+              emergency_contact_relationship: '夫',
+              emergency_contact_phone: '09087654321',
             }),
           );
         }
@@ -541,18 +560,19 @@ function createDb() {
         return this._members.map(memberToListItem);
       },
 
-      createFromApplication(application: MembershipApplication): Member {
+      createFromApplication(application: MembershipApplicationDetails): Member {
         this._seed();
         const nextNumber = this._members.length + 1;
         const id = `M-${String(nextNumber).padStart(5, '0')}`;
         const store = MOCK_STORES[nextNumber % MOCK_STORES.length]!;
-        const plan = MOCK_PLANS[nextNumber % MOCK_PLANS.length]!;
         const now = new Date();
         const row = createMember(id, {
-          name_kanji: application.applicant_name,
-          name_kana: application.applicant_name,
-          phone: `090${String(1000 + (nextNumber % 9000)).slice(-4)}${String(1000 + (nextNumber % 9000)).slice(-4)}`,
-          email: `applicant${String(nextNumber).padStart(5, '0')}@example.jp`,
+          name_kanji: application.applicant_name || '',
+          name_kana: application.applicant_name || '',
+          phone: application.applicant_phone || '',
+          email: application.applicant_email || '',
+          birthday: application.birthday || '',
+          gender: application.gender || 'other',
           member_type: (['regular', 'family', 'corporate'] as MemberProfile['member_type'][])[
             nextNumber % 3
           ]!,
@@ -561,10 +581,13 @@ function createDb() {
           store_id: store.id,
           brand: nextNumber % 2 === 0 ? 'fit365' : 'joyfit',
           joined_at: toIsoDate(now),
-          contract_plan_name: application.plan_name || plan.name,
-          contract_plan_id: plan.id,
-          last_visit_date: undefined,
+          contract_plan_name: application.contract_details?.plan_name || '-',
+          contract_plan_id: application.contract_details?.plan_id || '-',
+          last_visit_date: toIsoDate(new Date(application.contract_details?.start_date ?? now)),
           has_unpaid: false,
+          emergency_contact_name: application.emergency_contact_name || '',
+          emergency_contact_relationship: application.emergency_contact_relationship || '',
+          emergency_contact_phone: application.emergency_contact_phone || '',
         });
         this._members.push(row);
         return row;
@@ -594,6 +617,8 @@ function createDb() {
           email:
             registration.applicant?.email ??
             `family${String(nextNumber).padStart(5, '0')}@example.jp`,
+          birthday: registration.applicant?.birthday ?? '',
+          gender: 'male',
           member_type: 'family' as MemberProfile['member_type'],
           status: 'active' as MemberProfile['status'],
           store_name: store.name,
@@ -604,10 +629,10 @@ function createDb() {
           contract_plan_id: plan.id,
           last_visit_date: undefined,
           has_unpaid: false,
+          emergency_contact_name: registration.applicant_name,
+          emergency_contact_relationship: registration.relationship,
+          emergency_contact_phone: registration.applicant?.phone ?? '',
         });
-        if (registration.applicant?.birthday) {
-          row.basic_info = { ...row.basic_info, birthday: registration.applicant.birthday };
-        }
         this._members.push(row);
         return row;
       },
@@ -734,6 +759,11 @@ function createDb() {
         return row?.data;
       },
 
+      getByApplicationId(applicationId: string): ContractRow | undefined {
+        this._seed();
+        return this._contracts.find((c) => c.application_id === applicationId);
+      },
+
       create(input: {
         contract_id: string;
         member_id: string;
@@ -792,38 +822,12 @@ function createDb() {
 
     membershipApplications: {
       _applications: [] as MembershipApplication[],
-      _details: {} as Record<
-        string,
-        Partial<{
-          // Basic info
-          applicant_name: string;
-          gender: 'male' | 'female' | 'other' | 'unknown';
-          blood_type: 'A' | 'B' | 'O' | 'AB' | 'unknown';
-          birthday: string; // YYYY-MM-DD
-          // Contact
-          applicant_email: string;
-          applicant_phone: string;
-          applicant_address: string;
-          emergency_contact_name: string;
-          emergency_contact_relationship: string;
-          emergency_contact_phone: string;
-          // Contract
-          contract_details: {
-            plan_id: string;
-            plan_name: string;
-            start_date: string; // YYYY-MM-DD
-            option_ids?: string[];
-          };
-          // eKYC
-          ekyc: EkycResult;
-        }>
-      >,
+      _details: {} as Record<string, MembershipApplicationDetails>,
       _seeded: false,
 
       _seed(): void {
         if (this._seeded) return;
         this._seeded = true;
-        const names = ['山田太郎', '佐藤花子', '鈴木一郎', '田中次郎', '中村三郎'];
         const plans = ['通常会員', 'プレミアム会員', 'ベーシックプラン'];
         const riskReasons = [
           'ブラックリスト一致',
@@ -843,7 +847,12 @@ function createDb() {
         for (let i = 1; i <= 200; i++) {
           const appliedDate = new Date(now);
           appliedDate.setDate(appliedDate.getDate() - (i % 10));
-          appliedDate.setHours(12 - (i % 12), i % 60, 0);
+          appliedDate.setHours(12 - (i % 12), i % 60, 0, 0);
+          // Same calendar day + setHours can land *after* `now` (e.g. today 02:00 when now is 01:00).
+          // Membership applications must not have applied_at in the future.
+          if (appliedDate.getTime() > now.getTime()) {
+            appliedDate.setTime(now.getTime() - (i % 1440) * 60 * 1000 - 1000);
+          }
           const scheduledStart = new Date(appliedDate);
           scheduledStart.setDate(scheduledStart.getDate() + 5);
           const elapsedHours = Math.floor(
@@ -860,7 +869,7 @@ function createDb() {
           deadline.setDate(deadline.getDate() + 7);
           this._applications.push({
             id: `APP-${String(i).padStart(5, '0')}`,
-            applicant_name: names[i % names.length],
+            applicant_name: `会員登録${String(i).padStart(3, '0')}`,
             applied_at: appliedDate.toISOString(),
             elapsed_time: elapsedTime,
             risk_score: 30 + (i % 70),
@@ -878,6 +887,7 @@ function createDb() {
           const faceSimilarity = ekycVerified ? 88 + (i % 12) : 40 + (i % 30);
           // Seed editable detail fields (used by detail/edit screen)
           this._details[id] = {
+            applicant_name: `会員登録${String(i).padStart(3, '0')}`,
             gender: i % 2 === 0 ? 'male' : 'female',
             blood_type: (['A', 'B', 'O', 'AB'] as const)[i % 4],
             birthday: `199${i % 10}-0${(i % 9) + 1}-15`,

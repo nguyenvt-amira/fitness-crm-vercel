@@ -1643,7 +1643,7 @@
           },
           "sort_by": {
             "type": "string",
-            "enum": ["member_number", "joined_at", "last_visit", "name"],
+            "enum": ["member_number", "joined_at", "last_visit_date", "name"],
             "default": "member_number",
             "example": "member_number",
             "description": "Sort field"
@@ -5248,7 +5248,7 @@
               },
               "gender": {
                 "type": "string",
-                "enum": ["male", "female", "other", "unknown"],
+                "enum": ["male", "female", "other"],
                 "example": "male",
                 "description": "Gender"
               },
@@ -5650,15 +5650,10 @@
             "example": "手動承認",
             "description": "Approval reason"
           },
-          "contract_created": {
-            "type": "boolean",
-            "example": true,
-            "description": "Whether contract was created"
-          },
-          "contract_id": {
+          "member_id": {
             "type": "string",
-            "example": "CONTRACT-APP-00001",
-            "description": "Contract ID"
+            "example": "MEMBER-00001",
+            "description": "Member ID"
           }
         },
         "required": [
@@ -5668,8 +5663,7 @@
           "approved_at",
           "approved_by",
           "approval_reason",
-          "contract_created",
-          "contract_id"
+          "member_id"
         ],
         "title": "ApproveResponse",
         "description": "Response for approving an application"
@@ -15360,7 +15354,7 @@
           {
             "schema": {
               "type": "string",
-              "enum": ["member_number", "joined_at", "last_visit", "name"],
+              "enum": ["member_number", "joined_at", "last_visit_date", "name"],
               "default": "member_number",
               "example": "member_number",
               "description": "Sort field"
@@ -15665,15 +15659,10 @@
                       "example": "手動承認",
                       "description": "Approval reason"
                     },
-                    "contract_created": {
-                      "type": "boolean",
-                      "example": true,
-                      "description": "Whether contract was created"
-                    },
-                    "contract_id": {
+                    "member_id": {
                       "type": "string",
-                      "example": "CONTRACT-APP-00001",
-                      "description": "Contract ID"
+                      "example": "MEMBER-00001",
+                      "description": "Member ID"
                     }
                   },
                   "required": [
@@ -15683,8 +15672,7 @@
                     "approved_at",
                     "approved_by",
                     "approval_reason",
-                    "contract_created",
-                    "contract_id"
+                    "member_id"
                   ],
                   "title": "ApproveResponse",
                   "description": "Response for approving an application"
@@ -16185,7 +16173,7 @@
                         },
                         "gender": {
                           "type": "string",
-                          "enum": ["male", "female", "other", "unknown"],
+                          "enum": ["male", "female", "other"],
                           "example": "male",
                           "description": "Gender"
                         },

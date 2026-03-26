@@ -621,7 +621,7 @@ export const BulkRejectResponseSchema = z
 export const GetApplicationDetailResponseSchema = z
   .object({
     application: MembershipApplicationSchema.extend({
-      gender: z.enum(['male', 'female', 'other', 'unknown']).optional().openapi({
+      gender: z.enum(['male', 'female', 'other']).optional().openapi({
         example: 'male',
         description: 'Gender',
       }),
@@ -869,13 +869,9 @@ export const ApproveResponseSchema = z
       example: '手動承認',
       description: 'Approval reason',
     }),
-    contract_created: z.boolean().openapi({
-      example: true,
-      description: 'Whether contract was created',
-    }),
-    contract_id: z.string().openapi({
-      example: 'CONTRACT-APP-00001',
-      description: 'Contract ID',
+    member_id: z.string().openapi({
+      example: 'MEMBER-00001',
+      description: 'Member ID',
     }),
   })
   .openapi({

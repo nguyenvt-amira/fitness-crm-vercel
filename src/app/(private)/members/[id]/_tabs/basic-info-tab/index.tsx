@@ -11,6 +11,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { getCrmMembersByIdBasicInfoOptions } from '@/lib/api/@tanstack/react-query.gen';
 
+import { GENDER_LABELS } from '@/types/member.type';
+
 import { BRAND_LABELS, MEMBER_STATUS_LABELS, MEMBER_TYPE_LABELS } from '../../../_lib/constants';
 import InfoRow from '../../_components/info-row';
 
@@ -53,15 +55,7 @@ export function BasicInfoTab({ memberId }: { memberId: string }) {
               />
               <InfoRow
                 label="性別"
-                value={
-                  basic?.gender === 'male'
-                    ? '男性'
-                    : basic?.gender === 'female'
-                      ? '女性'
-                      : basic?.gender === 'other'
-                        ? 'その他'
-                        : undefined
-                }
+                value={basic?.gender ? GENDER_LABELS[basic.gender] : undefined}
               />
               <InfoRow label="郵便番号" value={basic?.postal_code} />
               <InfoRow label="都道府県" value={basic?.prefecture} />

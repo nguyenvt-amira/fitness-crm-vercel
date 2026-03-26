@@ -1145,7 +1145,7 @@ export type GetMembersQuery = {
     /**
      * Sort field
      */
-    sort_by?: 'member_number' | 'joined_at' | 'last_visit' | 'name';
+    sort_by?: 'member_number' | 'joined_at' | 'last_visit_date' | 'name';
     /**
      * Sort order
      */
@@ -3800,7 +3800,7 @@ export type GetApplicationDetailResponse = {
         /**
          * Gender
          */
-        gender?: 'male' | 'female' | 'other' | 'unknown';
+        gender?: 'male' | 'female' | 'other';
         /**
          * Blood type
          */
@@ -4072,13 +4072,9 @@ export type ApproveResponse = {
      */
     approval_reason: string;
     /**
-     * Whether contract was created
+     * Member ID
      */
-    contract_created: boolean;
-    /**
-     * Contract ID
-     */
-    contract_id: string;
+    member_id: string;
 };
 
 /**
@@ -9854,7 +9850,7 @@ export type GetCrmMembersData = {
         /**
          * Sort field
          */
-        sort_by?: 'member_number' | 'joined_at' | 'last_visit' | 'name';
+        sort_by?: 'member_number' | 'joined_at' | 'last_visit_date' | 'name';
         /**
          * Sort order
          */
@@ -10090,13 +10086,9 @@ export type PostCrmMembershipApplicationsByIdApproveResponses = {
          */
         approval_reason: string;
         /**
-         * Whether contract was created
+         * Member ID
          */
-        contract_created: boolean;
-        /**
-         * Contract ID
-         */
-        contract_id: string;
+        member_id: string;
     };
 };
 
@@ -10409,7 +10401,7 @@ export type GetCrmMembershipApplicationsByIdResponses = {
             /**
              * Gender
              */
-            gender?: 'male' | 'female' | 'other' | 'unknown';
+            gender?: 'male' | 'female' | 'other';
             /**
              * Blood type
              */
