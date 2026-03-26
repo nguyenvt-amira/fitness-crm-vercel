@@ -2,9 +2,12 @@
 
 import { useState } from 'react';
 
+import { useRouter } from 'next/navigation';
+
 import { Button } from '@/components/ui/button';
 
 import type { GetCrmFamilyRegistrationsByIdResponse } from '@/lib/api/types.gen';
+import { navigate } from '@/lib/routes/routes.util';
 
 import {
   ApproveFamilyRegistrationModal,
@@ -29,6 +32,8 @@ export function FamilyRegistrationDetailFooter({
     type: undefined,
   });
 
+  const router = useRouter();
+
   const canReview = ['pending_review'].includes(registration.status);
 
   if (!canReview) return null;
@@ -41,7 +46,10 @@ export function FamilyRegistrationDetailFooter({
         registration={target}
         selectedIDs={[]}
         onOpenChange={(open) => setApproveModalState({ status: open, type: 'single' })}
-        onSuccess={() => setApproveModalState({ status: false, type: 'single' })}
+        onSuccess={() => {
+          setApproveModalState({ status: false, type: 'single' });
+          router.push(navigate('/family-registrations'));
+        }}
       />
       <RejectFamilyRegistrationModal
         modalState={rejectModalState}
@@ -49,7 +57,10 @@ export function FamilyRegistrationDetailFooter({
         registration={target}
         selectedIDs={[]}
         onOpenChange={(open) => setRejectModalState({ status: open, type: 'single' })}
-        onSuccess={() => setRejectModalState({ status: false, type: 'single' })}
+        onSuccess={() => {
+          setRejectModalState({ status: false, type: 'single' });
+          router.push(navigate('/family-registrations'));
+        }}
       />
 
       <div className="bg-background fixed right-0 bottom-0 left-0 border-t">
