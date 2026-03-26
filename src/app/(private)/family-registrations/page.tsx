@@ -4,7 +4,7 @@ import { FamilyRegistrationsHeader } from './_components/family-registrations-he
 import { FamilyRegistrationsListSection } from './_components/family-registrations-section';
 import { FamilyRegistrationsSummary } from './_components/family-registrations-summary';
 
-const BREADCRUMB_ITEMS = [{ url: '/', label: '会員管理' }, { label: '家族入会' }] as const;
+const BREADCRUMB_ITEMS = [{ url: '/members', label: '会員管理' }, { label: '家族入会' }] as const;
 
 export default function FamilyRegistrationsPage() {
   return (

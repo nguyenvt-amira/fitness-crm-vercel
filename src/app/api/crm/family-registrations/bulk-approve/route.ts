@@ -48,6 +48,34 @@ export async function POST(request: NextRequest) {
       primary_member_id: existing.primary_member_id,
     });
 
+    // Copy contract information from the primary member
+    const primaryContract = db.contracts.getByMemberId(existing.primary_member_id);
+    if (primaryContract) {
+      const now = new Date().toISOString();
+      const today = now.slice(0, 10);
+      db.contracts.create({
+        contract_id: `CONTRACT-${newMember.basic_info.id}`,
+        member_id: newMember.basic_info.id,
+        data: {
+          ...primaryContract,
+          main_contract: {
+            ...primaryContract.main_contract,
+            start_date: today,
+            change_history: [
+              {
+                changed_at: now,
+                previous_plan: '—',
+                new_plan: primaryContract.main_contract.plan_name,
+                reason: '家族会員入会',
+              },
+            ],
+          },
+          option_contracts: [],
+          option_change_history: [],
+        },
+      });
+    }
+
     // Link the new member as a family child of the primary member
     db.family.linkChildRelationship(
       existing.primary_member_id,
