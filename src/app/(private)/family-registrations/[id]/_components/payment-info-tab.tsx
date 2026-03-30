@@ -14,9 +14,6 @@ function InfoRow({ label, value }: { label: string; value?: string | null }) {
 export function PaymentInfoTab() {
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>決済情報</CardTitle>
-      </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid gap-4 sm:grid-cols-2">
           <InfoRow label="決済方法" value={null} />

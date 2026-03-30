@@ -78,15 +78,12 @@ const createColumns = (args: {
   },
   {
     accessorKey: 'risk_score',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="リスク" />,
+    header: ({ column }) => <DataTableColumnHeader column={column} title="リスクスコア" />,
     cell: ({ row }) => (
-      <span
-        className={
-          row.original.risk_score ? 'text-destructive text-sm' : 'text-muted-foreground text-sm'
-        }
-      >
-        {row.original.risk_score ?? '—'}
-      </span>
+      <div className="flex flex-col">
+        <span className="text-destructive text-sm">{row.original.risk_score}</span>
+        <span className="text-muted-foreground text-xs">{row.original.risk_reason}</span>
+      </div>
     ),
   },
   {
