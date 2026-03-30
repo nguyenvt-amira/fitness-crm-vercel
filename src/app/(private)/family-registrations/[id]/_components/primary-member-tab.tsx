@@ -69,7 +69,7 @@ export function PrimaryMemberTab({
             <InfoRow label="氏名" value={registration.primary_member_name} />
             <InfoRow label="会員番号" value={pm?.member_number} />
             <InfoRow label="会員種別" value={memberTypeLabel(pm?.member_type)} />
-            <InfoRow label="ステータス" value={statusLabel(pm?.status)} />
+            {/* <InfoRow label="ステータス" value={statusLabel(pm?.status)} /> */}
           </div>
         </div>
 

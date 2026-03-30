@@ -16,33 +16,25 @@ export type RiskReason =
   | 'document_issue'
   | 'other';
 
-export interface MembershipApplicationSummary {
-  total_applications: number;
-  auto_approval_rate: number;
-  auto_approval_count: number;
-  avg_processing_time: string; // Format: "1h23m"
-  payment_failed_count: number;
-  payment_failed_deadline?: string;
-  pending_count: number;
-  pending_deadline?: string;
-  risk_reasons_breakdown?: Record<RiskReason, number>;
-  auto_approved_today_count: number;
-  auto_approved_today_rate: number;
-  manual_approved_count: number;
-  rejected_count: number;
-  rejected_auto_count: number;
-  rejected_manual_count: number;
-  date_range_start: string;
-  date_range_end: string;
-}
-
-export interface MembershipApplicationAlert {
-  title: string;
-  description: string;
-  type: 'payment_failed' | 'pending' | 'high_risk';
-  count: number;
-  deadline?: string;
-}
+// export interface MembershipApplicationSummary {
+//   total_applications: number;
+//   auto_approval_rate: number;
+//   auto_approval_count: number;
+//   avg_processing_time: string; // Format: "1h23m"
+//   payment_failed_count: number;
+//   payment_failed_deadline?: string;
+//   pending_count: number;
+//   pending_deadline?: string;
+//   risk_reasons_breakdown?: Record<RiskReason, number>;
+//   auto_approved_today_count: number;
+//   auto_approved_today_rate: number;
+//   manual_approved_count: number;
+//   rejected_count: number;
+//   rejected_auto_count: number;
+//   rejected_manual_count: number;
+//   date_range_start: string;
+//   date_range_end: string;
+// }
 
 export interface MembershipApplication {
   id: string;
@@ -56,29 +48,4 @@ export interface MembershipApplication {
   status: MembershipApplicationStatus;
   payment_failed_deadline?: string;
   pending_deadline?: string;
-}
-
-export interface GetMembershipApplicationsSummaryResponse {
-  summary: MembershipApplicationSummary;
-  alerts: MembershipApplicationAlert[];
-}
-
-export interface GetMembershipApplicationsResponse {
-  applications: MembershipApplication[];
-  pagination?: {
-    total: number;
-    total_pages: number;
-    current_page: number;
-    limit: number;
-  };
-}
-
-export interface GetMembershipApplicationsQueryParams {
-  status?: MembershipApplicationStatus;
-  risk_reason?: RiskReason;
-  sort_by?: 'applied_at' | 'risk_score' | 'deadline';
-  sort_order?: 'asc' | 'desc';
-  limit?: number;
-  page?: number;
-  search?: string;
 }
