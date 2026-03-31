@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { formatDateYYYYMM_HHMMSS } from '@/utils/date.util';
+import { getRiskReasonLabelJa } from '@/utils/risk-reason.util';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import type { ColumnDef, RowSelectionState, SortingState } from '@tanstack/react-table';
 import { Search } from 'lucide-react';
@@ -82,7 +83,9 @@ const createColumns = (args: {
     cell: ({ row }) => (
       <div className="flex flex-col">
         <span className="text-destructive text-sm">{row.original.risk_score}</span>
-        <span className="text-muted-foreground text-xs">{row.original.risk_reason}</span>
+        <span className="text-muted-foreground text-xs">
+          {getRiskReasonLabelJa(row.original.risk_reason)}
+        </span>
       </div>
     ),
   },
