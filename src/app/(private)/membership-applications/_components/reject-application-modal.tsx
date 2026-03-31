@@ -30,6 +30,7 @@ import { Textarea } from '@/components/ui/textarea';
 
 import {
   getCrmMembershipApplicationsInfiniteQueryKey,
+  getCrmMembershipApplicationsSummaryQueryKey,
   postCrmMembershipApplicationsBulkRejectMutation,
   postCrmMembershipApplicationsByIdRejectMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
@@ -92,6 +93,10 @@ export function RejectApplicationModal({
             queryClient.invalidateQueries({
               queryKey: getCrmMembershipApplicationsInfiniteQueryKey(),
             });
+            queryClient.invalidateQueries({
+              queryKey: getCrmMembershipApplicationsSummaryQueryKey(),
+            });
+
             onSuccess();
           },
         },
@@ -111,6 +116,9 @@ export function RejectApplicationModal({
           toast.success(`${selectedIDs.length}件の却下に成功しました`);
           queryClient.invalidateQueries({
             queryKey: getCrmMembershipApplicationsInfiniteQueryKey(),
+          });
+          queryClient.invalidateQueries({
+            queryKey: getCrmMembershipApplicationsSummaryQueryKey(),
           });
           onSuccess();
         },

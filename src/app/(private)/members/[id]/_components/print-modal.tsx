@@ -12,10 +12,12 @@ import {
 
 import type { GetMemberDetailResponse } from '@/lib/api/types.gen';
 
+import { GENDER_LABELS } from '../../_lib/constants';
+
 interface PrintModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  member: GetMemberDetailResponse['member'];
+  member: GetMemberDetailResponse;
 }
 
 export function PrintModal({ open, onOpenChange, member }: PrintModalProps) {
@@ -67,11 +69,7 @@ export function PrintModal({ open, onOpenChange, member }: PrintModalProps) {
               </div>
               <div>
                 <span className="text-muted-foreground">性別:</span>{' '}
-                {member.basic_info.gender === 'male'
-                  ? '男性'
-                  : member.basic_info.gender === 'female'
-                    ? '女性'
-                    : 'その他'}
+                {GENDER_LABELS[member.basic_info.gender]}
               </div>
               <div className="col-span-2">
                 <span className="text-muted-foreground">住所:</span>{' '}

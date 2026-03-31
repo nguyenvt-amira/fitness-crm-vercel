@@ -45,27 +45,33 @@ const menuItems = [
     label: '会員管理',
     icon: User,
     href: '/members',
-    subItems: [
-      {
-        label: '移籍',
-        href: '/members/transfer',
-      },
-      {
-        label: '休会・退会',
-        href: '/members/leave-withdrawal',
-      },
-    ],
+    // subItems: [
+    //   {
+    //     label: '移籍',
+    //     href: '/members/transfer',
+    //   },
+    //   {
+    //     label: '休会・退会',
+    //     href: '/members/leave-withdrawal',
+    //   },
+    // ],
   },
   {
     label: '入会処理',
     icon: FileText,
     href: getRoutePattern('/membership-applications'),
   },
-  // {
-  //   label: '家族入会',
-  //   icon: BookUser,
-  //   href: getRoutePattern('/family-registrations'),
-  // },
+  {
+    label: '家族入会',
+    icon: BookUser,
+    href: getRoutePattern('/family-registrations'),
+    subItems: [
+      {
+        label: 'ダッシュボード',
+        href: '/family-registrations/dashboard',
+      },
+    ],
+  },
   // {
   //   label: '入退館',
   //   icon: DoorOpen,
@@ -213,11 +219,7 @@ export function AppSidebar() {
                             </Link>
                           </SidebarMenuButton>
                           <CollapsibleTrigger asChild>
-                            <Button
-                              variant="outline"
-                              size="icon-xs"
-                              className="opacity-0 group-hover/menu-item:opacity-100 group-data-[state=open]/collapsible:opacity-100"
-                            >
+                            <Button variant="outline" size="icon-xs">
                               <ChevronDown className="transition-transform group-data-[state=open]/collapsible:rotate-180" />
                             </Button>
                           </CollapsibleTrigger>

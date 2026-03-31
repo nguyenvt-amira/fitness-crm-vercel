@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { formatDateYYYYMM_HHMMSS, formatElapsedTime } from '@/utils/date.util';
+import { getRiskReasonLabelJa } from '@/utils/risk-reason.util';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import type { ColumnDef, RowSelectionState } from '@tanstack/react-table';
 import { type SortingState } from '@tanstack/react-table';
@@ -26,6 +27,7 @@ import {
 } from '@/components/ui/select';
 
 import { getCrmMembershipApplicationsInfiniteOptions } from '@/lib/api/@tanstack/react-query.gen';
+import { RiskReason } from '@/lib/api/types.gen';
 import type {
   GetCrmMembershipApplicationsResponse,
   MembershipApplication,
@@ -78,7 +80,9 @@ const createApplicationColumns = (args: {
     cell: ({ row }) => (
       <div className="flex flex-col">
         <span className="text-destructive text-sm">{row.original.risk_score}</span>
-        <span className="text-muted-foreground text-xs">{row.original.risk_reason}</span>
+        <span className="text-muted-foreground text-xs">
+          {getRiskReasonLabelJa(row.original.risk_reason)}
+        </span>
       </div>
     ),
   },
@@ -128,7 +132,7 @@ export function PendingMembershipApplicationsTab({
   const router = useRouter();
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [riskReason, setRiskReason] = useState<string>('all');
+  const [riskReason, setRiskReason] = useState<'all' | RiskReason>('all');
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({}); //manage your own row selection state
 
@@ -265,19 +269,22 @@ export function PendingMembershipApplicationsTab({
                 onChange={(e) => setSearchInput(e.target.value)}
               />
             </div>
-            <Select value={riskReason} onValueChange={setRiskReason}>
+            <Select
+              value={riskReason}
+              onValueChange={(v) => setRiskReason(v as 'all' | RiskReason)}
+            >
               <SelectTrigger className="h-9 w-[178px]">
                 <span className="text-muted-foreground">リスク理由:</span>
                 <SelectValue placeholder="All" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All</SelectItem>
-                <SelectItem value="blacklist_match">ブラックリスト一致</SelectItem>
-                <SelectItem value="duplicate_application">重複申込</SelectItem>
-                <SelectItem value="payment_failure">決済失敗</SelectItem>
-                <SelectItem value="high_risk_score">高リスクスコア</SelectItem>
-                <SelectItem value="document_issue">書類問題</SelectItem>
-                <SelectItem value="other">その他</SelectItem>
+                <SelectItem value={RiskReason.BLACKLIST_MATCH}>ブラックリスト一致</SelectItem>
+                <SelectItem value={RiskReason.DUPLICATE_APPLICATION}>重複申込</SelectItem>
+                <SelectItem value={RiskReason.PAYMENT_FAILURE}>決済失敗</SelectItem>
+                <SelectItem value={RiskReason.HIGH_RISK_SCORE}>高リスクスコア</SelectItem>
+                <SelectItem value={RiskReason.DOCUMENT_ISSUE}>書類問題</SelectItem>
+                <SelectItem value={RiskReason.OTHER}>その他</SelectItem>
               </SelectContent>
             </Select>
           </div>

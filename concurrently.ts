@@ -16,7 +16,7 @@ const scripts = concurrently(
   {
     prefix: 'name',
     handleInput: true,
-    killOthersOn: ['failure'],
+    killOthersOn: ['failure', 'success'],
   },
 );
 

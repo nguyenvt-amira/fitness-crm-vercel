@@ -4,36 +4,26 @@ import Image from 'next/image';
 
 import { formatDate } from '@/utils/format.util';
 import { formatDateTime } from '@/utils/format.util';
-import { useQuery } from '@tanstack/react-query';
 
-import { DataStateBoundary } from '@/components/common/data-state-boundary';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { getCrmMembersByIdBasicInfoOptions } from '@/lib/api/@tanstack/react-query.gen';
+import { GetMemberDetailResponse } from '@/lib/api/types.gen';
 
-import { BRAND_LABELS, MEMBER_STATUS_LABELS, MEMBER_TYPE_LABELS } from '../../../_lib/constants';
+import {
+  BRAND_LABELS,
+  GENDER_LABELS,
+  MEMBER_STATUS_LABELS,
+  MEMBER_TYPE_LABELS,
+} from '../../../_lib/constants';
 import InfoRow from '../../_components/info-row';
 
-export function BasicInfoTab({ memberId }: { memberId: string }) {
-  const { data, isLoading, isError, refetch } = useQuery(
-    getCrmMembersByIdBasicInfoOptions({
-      path: {
-        id: memberId,
-      },
-    }),
-  );
-  const member = data?.member;
+export function BasicInfoTab({ member }: { member: GetMemberDetailResponse }) {
   const basic = member?.basic_info;
   const profile = member?.profile;
 
   return (
-    <DataStateBoundary
-      isLoading={isLoading}
-      isError={isError}
-      isEmpty={!data}
-      onRetry={() => refetch()}
-    >
-      {member ? (
+    <>
+      {basic && profile ? (
         <div className="space-y-4">
           <Card>
             <CardHeader>
@@ -53,15 +43,7 @@ export function BasicInfoTab({ memberId }: { memberId: string }) {
               />
               <InfoRow
                 label="性別"
-                value={
-                  basic?.gender === 'male'
-                    ? '男性'
-                    : basic?.gender === 'female'
-                      ? '女性'
-                      : basic?.gender === 'other'
-                        ? 'その他'
-                        : undefined
-                }
+                value={basic?.gender ? GENDER_LABELS[basic.gender] : undefined}
               />
               <InfoRow label="郵便番号" value={basic?.postal_code} />
               <InfoRow label="都道府県" value={basic?.prefecture} />
@@ -231,6 +213,6 @@ export function BasicInfoTab({ memberId }: { memberId: string }) {
           </Card>
         </div>
       ) : null}
-    </DataStateBoundary>
+    </>
   );
 }

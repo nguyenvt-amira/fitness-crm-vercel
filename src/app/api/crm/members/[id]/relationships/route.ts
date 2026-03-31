@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { db } from '@/app/api/_mock-db';
 import { ErrorResponseSchema } from '@/app/api/_schemas/member.schema';
+import { GetRelationshipsResponseSchema } from '@/app/api/_schemas/member.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
-import { z } from 'zod';
-
-import { MemberStatus } from '@/types/member.type';
 
 // Register OpenAPI documentation for this route
 registerRoute({
@@ -25,22 +24,7 @@ registerRoute({
   responses: [
     {
       status: 200,
-      schema: z
-        .object({
-          family: z.any().nullable().openapi({
-            description: 'Family relationships',
-          }),
-          corporate: z.any().nullable().openapi({
-            description: 'Corporate relationships',
-          }),
-          referral: z.any().openapi({
-            description: 'Referral relationships',
-          }),
-        })
-        .openapi({
-          title: 'GetRelationshipsResponse',
-          description: 'Response for getting relationships',
-        }),
+      schema: GetRelationshipsResponseSchema,
       description: 'Relationship information',
     },
     {
@@ -56,47 +40,17 @@ registerRoute({
   ],
 });
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
 
-    const mockData = {
-      family: {
-        children: [
-          {
-            id: 'M-00002',
-            member_number: 'M-00002',
-            name: '佐藤 太郎',
-            relationship: '子',
-            status: MemberStatus.ACTIVE,
-          },
-        ],
-        current_count: 1,
-        max_count: 3,
-      },
-      corporate: null,
-      referral: {
-        as_referrer: {
-          referrals: [
-            {
-              id: 'M-00010',
-              member_number: 'M-00010',
-              name: '鈴木 花子',
-              referred_at: '2024-06-01',
-              joined: true,
-              points_earned: 500,
-            },
-          ],
-          summary: {
-            total_referrals: 1,
-            total_points: 500,
-          },
-        },
-      },
-    };
+    const data = db.getMemberRelationships(id);
+    if (!data) {
+      return NextResponse.json({ error: 'Member not found' }, { status: 404 });
+    }
 
-    return NextResponse.json(mockData);
-  } catch (error) {
+    return NextResponse.json(data);
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch relationships' }, { status: 500 });
   }
 }
