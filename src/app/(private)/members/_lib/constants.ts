@@ -1,4 +1,4 @@
-import { Brand, MemberStatus, MemberType } from '@/types/member.type';
+import { Brand, Gender, MemberStatus, MemberType, MemoType } from '@/lib/api/types.gen';
 
 export const MEMBER_TYPE_LABELS: Record<MemberType, string> = {
   [MemberType.REGULAR]: '通常会員',
@@ -29,4 +29,16 @@ export const MEMBER_STATUS_CLASSES: Record<MemberStatus, string> = {
 export const BRAND_CLASSES: Record<Brand, string> = {
   [Brand.JOYFIT]: 'bg-blue-100 text-blue-600',
   [Brand.FIT365]: 'bg-green-100 text-green-600',
+};
+
+export const GENDER_LABELS: Record<Gender, string> = {
+  [Gender.MALE]: '男性',
+  [Gender.FEMALE]: '女性',
+  [Gender.OTHER]: 'その他',
+};
+
+export const MEMO_TYPE_LABELS: Record<MemoType, string> = {
+  [MemoType.CAUTION]: '要注意',
+  [MemoType.VIP]: 'VIP',
+  [MemoType.OTHER]: 'その他',
 };

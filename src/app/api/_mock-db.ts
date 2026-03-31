@@ -15,12 +15,13 @@ import type {
   UpdateHealthInfoRequest,
   UpdateMarketingConsentRequest,
 } from '@/lib/api/types.gen';
+import { Brand, MemberStatus, MemberType } from '@/lib/api/types.gen';
 
 import type {
   MembershipApplication,
   MembershipApplicationStatus,
+  RiskReason,
 } from '@/types/api/membership-application.type';
-import { Brand, MemberStatus, MemberType } from '@/types/member.type';
 
 export type MembershipApplicationContractDetails = {
   plan_id: string;
@@ -65,11 +66,11 @@ interface GetMembersResponseMember {
   member_number: string;
   name_kanji: string;
   name_kana: string;
-  member_type: NonNullable<GetMemberDetailResponse['member']['profile']>['member_type'];
-  status: NonNullable<GetMemberDetailResponse['member']['profile']>['status'];
+  member_type: NonNullable<GetMemberDetailResponse['profile']>['member_type'];
+  status: NonNullable<GetMemberDetailResponse['profile']>['status'];
   store_name: string;
   store_id: string;
-  brand: NonNullable<GetMemberDetailResponse['member']['profile']>['brand'];
+  brand: NonNullable<GetMemberDetailResponse['profile']>['brand'];
   contract_plan_name: string;
   contract_plan_id: string;
   joined_at: string;
@@ -86,7 +87,7 @@ interface MemberListMeta {
   last_visit_date?: string;
   has_unpaid: boolean;
 }
-type Member = GetMemberDetailResponse['member'];
+type Member = GetMemberDetailResponse;
 type MemberRow = Member & { _listMeta?: MemberListMeta };
 
 const MOCK_STORES = [
@@ -113,7 +114,7 @@ type ContractRow = {
   data: GetContractsResponse;
 };
 
-type MemberProfile = NonNullable<GetMemberDetailResponse['member']['profile']>;
+type MemberProfile = NonNullable<GetMemberDetailResponse['profile']>;
 
 function createMember(
   id: string,
@@ -829,12 +830,12 @@ function createDb() {
         if (this._seeded) return;
         this._seeded = true;
         const plans = ['通常会員', 'プレミアム会員', 'ベーシックプラン'];
-        const riskReasons = [
-          'ブラックリスト一致',
-          '重複申込',
-          '決済失敗',
-          '高リスクスコア',
-          '書類問題',
+        const riskReasons: RiskReason[] = [
+          'blacklist_match',
+          'duplicate_application',
+          'payment_failure',
+          'high_risk_score',
+          'document_issue',
         ];
         const statuses: MembershipApplicationStatus[] = [
           'pending',

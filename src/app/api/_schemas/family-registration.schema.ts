@@ -29,6 +29,18 @@ export const FamilyRelationshipSchema = z.enum([
   'grandchild',
 ]);
 
+export const FamilyRegistrationRiskReasonSchema = z
+  .enum(['blacklist_match', 'duplicate_application', 'payment_failure', 'high_risk_score', 'other'])
+  .openapi({ title: 'FamilyRegistrationRiskReason', description: 'Risk reason' });
+
+export const PrimaryMemberStatusSchema = z
+  .enum(['active', 'suspended', 'withdrawn'])
+  .openapi({ title: 'PrimaryMemberStatus', description: 'Primary member status' });
+
+export const PrimaryMemberTypeSchema = z
+  .enum(['regular', 'family', 'corporate', 'company_discount'])
+  .openapi({ title: 'PrimaryMemberType', description: 'Primary member type' });
+
 export const FamilyMemberSchema = z
   .object({
     id: z.string().openapi({ example: 'M-00010', description: 'Child member id' }),
@@ -166,8 +178,8 @@ export const FamilyRegistrationSchema = z
     store_name: z.string().openapi({ example: 'Fit365八潮店' }),
     monthly_fee: z.number().openapi({ example: 0 }),
     risk_score: z.number().optional().openapi({ example: 20 }),
-    risk_reason: z.string().optional().openapi({
-      example: 'ブラックリスト一致',
+    risk_reason: FamilyRegistrationRiskReasonSchema.optional().openapi({
+      example: 'blacklist_match',
       description: 'リスク主要理由',
     }),
     ekyc: EkycResultSchema.optional(),
@@ -213,8 +225,8 @@ export const GetFamilyRegistrationDetailResponseSchema = z
       primary_member: z
         .object({
           member_number: z.string().optional(),
-          status: z.string().optional(),
-          member_type: z.string().optional(),
+          status: PrimaryMemberStatusSchema.optional(),
+          member_type: PrimaryMemberTypeSchema.optional(),
           joined_at: z.string().optional(),
           tenure_months: z.number().optional(),
           family_member_count: z.number().optional(),

@@ -8,9 +8,8 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { Badge } from '@/components/ui/badge';
 
 import type { GetCrmMembersByIdRelationshipsResponse } from '@/lib/api/types.gen';
+import { MemberStatus } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
-
-import { MemberStatus } from '@/types/member.type';
 
 import { MEMBER_STATUS_CLASSES, MEMBER_STATUS_LABELS } from '../../../_lib/constants';
 

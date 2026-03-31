@@ -20,6 +20,18 @@ export const MemberStatusSchema = z.enum(['active', 'suspended', 'withdrawn', 'f
 export const BrandSchema = z.enum(['joyfit', 'fit365']);
 
 /**
+ * Gender Schema
+ */
+export const GenderSchema = z.enum(['male', 'female', 'other']).openapi({
+  title: 'Gender',
+  description: 'Gender',
+});
+
+export const CampaignStatusSchema = z
+  .enum(['active', 'expired', 'upcoming'])
+  .openapi({ title: 'CampaignStatus', description: 'Campaign status' });
+
+/**
  * Member List Item Schema (simplified for list view)
  */
 export const MemberListItemSchema = z
@@ -315,9 +327,7 @@ export const MemberBasicInfoSchema = z
     name_kana: z.string().openapi({ example: 'サトウ ハナコ', description: 'Name in kana' }),
     birthday: z.string().openapi({ example: '1990-01-01', description: 'Birthday (ISO date)' }),
     age: z.number().int().openapi({ example: 35, description: 'Age' }),
-    gender: z
-      .enum(['male', 'female', 'other'])
-      .openapi({ example: 'female', description: 'Gender' }),
+    gender: GenderSchema.openapi({ example: 'female', description: 'Gender' }),
     postal_code: z.string().optional().openapi({ example: '1500002', description: 'Postal code' }),
     prefecture: z.string().optional().openapi({ example: '東京都', description: 'Prefecture' }),
     city: z.string().optional().openapi({ example: '渋谷区', description: 'City' }),
@@ -447,31 +457,13 @@ export const MemberHealthInfoSchema = z
 
 export const GetMemberDetailResponseSchema = z
   .object({
-    member: z
-      .object({
-        basic_info: MemberBasicInfoSchema.openapi({ description: 'Basic member information' }),
-        profile: MemberProfileSchema.openapi({ description: 'Member profile' }),
-        ekyc: MemberEKYCSchema.optional().openapi({ description: 'eKYC information' }),
-        consent: MemberConsentSchema.optional().openapi({ description: 'Consent information' }),
-        health_info: MemberHealthInfoSchema.optional().openapi({
-          description: 'Health information',
-        }),
-        contracts: z
-          .lazy(() => GetContractsResponseSchema)
-          .optional()
-          .openapi({ description: 'Contract information' }),
-        points: z
-          .lazy(() => GetPointsResponseSchema)
-          .optional()
-          .openapi({ description: 'Points information' }),
-        memos: z
-          .lazy(() => GetMemosResponseSchema)
-          .optional()
-          .openapi({ description: 'Staff memos' }),
-      })
-      .openapi({
-        description: 'Complete member information',
-      }),
+    basic_info: MemberBasicInfoSchema.openapi({ description: 'Basic member information' }),
+    profile: MemberProfileSchema.openapi({ description: 'Member profile' }),
+    ekyc: MemberEKYCSchema.optional().openapi({ description: 'eKYC information' }),
+    consent: MemberConsentSchema.optional().openapi({ description: 'Consent information' }),
+    health_info: MemberHealthInfoSchema.optional().openapi({
+      description: 'Health information',
+    }),
   })
   .openapi({
     title: 'GetMemberDetailResponse',
@@ -538,20 +530,10 @@ export const UpdateBasicInfoRequestSchema = z
 /**
  * Update Basic Info Response Schema
  */
-export const UpdateBasicInfoResponseSchema = z
-  .object({
-    success: z.boolean().openapi({
-      example: true,
-      description: 'Whether the update was successful',
-    }),
-    member: z.any().openapi({
-      description: 'Updated member information',
-    }),
-  })
-  .openapi({
-    title: 'UpdateBasicInfoResponse',
-    description: 'Response for updating basic info',
-  });
+export const UpdateBasicInfoResponseSchema = MemberBasicInfoSchema.openapi({
+  title: 'UpdateBasicInfoResponse',
+  description: 'Response for updating basic info',
+});
 
 /**
  * Update Health Info Request Schema
@@ -587,20 +569,10 @@ export const UpdateHealthInfoRequestSchema = z
 /**
  * Update Health Info Response Schema
  */
-export const UpdateHealthInfoResponseSchema = z
-  .object({
-    success: z.boolean().openapi({
-      example: true,
-      description: 'Whether the update was successful',
-    }),
-    member: z.any().openapi({
-      description: 'Updated member information',
-    }),
-  })
-  .openapi({
-    title: 'UpdateHealthInfoResponse',
-    description: 'Response for updating health info',
-  });
+export const UpdateHealthInfoResponseSchema = MemberHealthInfoSchema.openapi({
+  title: 'UpdateHealthInfoResponse',
+  description: 'Response for updating health info',
+});
 
 /**
  * Update Marketing Consent Request Schema
@@ -628,17 +600,8 @@ export const UpdateMarketingConsentRequestSchema = z
 /**
  * Update Marketing Consent Response Schema
  */
-export const UpdateMarketingConsentResponseSchema = z
-  .object({
-    success: z.boolean().openapi({
-      example: true,
-      description: 'Whether the update was successful',
-    }),
-    member: z.any().openapi({
-      description: 'Updated member information',
-    }),
-  })
-  .openapi({
+export const UpdateMarketingConsentResponseSchema =
+  MemberConsentSchema.shape.marketing_consent.openapi({
     title: 'UpdateMarketingConsentResponse',
     description: 'Response for updating marketing consent',
   });
@@ -646,7 +609,10 @@ export const UpdateMarketingConsentResponseSchema = z
 /**
  * Point Adjustment Type Schema
  */
-export const PointAdjustmentTypeSchema = z.enum(['add', 'subtract']);
+export const PointAdjustmentTypeSchema = z.enum(['add', 'subtract']).openapi({
+  title: 'PointAdjustmentType',
+  description: 'Adjustment type',
+});
 
 /**
  * Point Adjustment Request Schema
@@ -680,10 +646,6 @@ export const PointAdjustmentRequestSchema = z
  */
 export const PointAdjustmentResponseSchema = z
   .object({
-    success: z.boolean().openapi({
-      example: true,
-      description: 'Whether the adjustment was successful',
-    }),
     id: z.string().openapi({
       example: 'M-00001',
       description: 'Member ID',
@@ -729,7 +691,28 @@ export const GetPointsResponseSchema = z
 /**
  * Memo Type Schema
  */
-export const MemoTypeSchema = z.enum(['caution', 'vip', 'other']);
+export const MemoTypeSchema = z.enum(['caution', 'vip', 'other']).openapi({
+  title: 'MemoType',
+  description: 'Staff memo type',
+});
+
+/**
+ * Staff Memo Schema
+ */
+export const StaffMemoSchema = z
+  .object({
+    id: z.string().openapi({ example: 'memo-001', description: 'Memo ID' }),
+    date: z
+      .string()
+      .openapi({ example: '2024-11-15T10:00:00Z', description: 'Created date (ISO)' }),
+    type: MemoTypeSchema.openapi({ example: 'caution', description: 'Memo type' }),
+    content: z.string().openapi({ example: '注意事項があります', description: 'Memo content' }),
+    created_by: z.string().openapi({ example: '山田 花子', description: 'Creator name' }),
+  })
+  .openapi({
+    title: 'StaffMemo',
+    description: 'Staff memo',
+  });
 
 /**
  * Create Memo Request Schema
@@ -761,20 +744,10 @@ export const CreateMemoRequestSchema = z
 /**
  * Create Memo Response Schema
  */
-export const CreateMemoResponseSchema = z
-  .object({
-    success: z.boolean().openapi({
-      example: true,
-      description: 'Whether the creation was successful',
-    }),
-    memo: z.any().openapi({
-      description: 'Created memo',
-    }),
-  })
-  .openapi({
-    title: 'CreateMemoResponse',
-    description: 'Response for creating a memo',
-  });
+export const CreateMemoResponseSchema = StaffMemoSchema.openapi({
+  title: 'CreateMemoResponse',
+  description: 'Response for creating a memo',
+});
 
 /**
  * Update Memo Request Schema
@@ -798,27 +771,17 @@ export const UpdateMemoRequestSchema = z
 /**
  * Update Memo Response Schema
  */
-export const UpdateMemoResponseSchema = z
-  .object({
-    success: z.boolean().openapi({
-      example: true,
-      description: 'Whether the update was successful',
-    }),
-    memo: z.any().openapi({
-      description: 'Updated memo',
-    }),
-  })
-  .openapi({
-    title: 'UpdateMemoResponse',
-    description: 'Response for updating a memo',
-  });
+export const UpdateMemoResponseSchema = StaffMemoSchema.openapi({
+  title: 'UpdateMemoResponse',
+  description: 'Response for updating a memo',
+});
 
 /**
  * Get Memos Response Schema
  */
 export const GetMemosResponseSchema = z
   .object({
-    memos: z.array(z.any()).openapi({
+    memos: z.array(StaffMemoSchema).openapi({
       description: 'List of memos',
     }),
   })
@@ -871,15 +834,15 @@ export const ExportMembersRequestSchema = z
     description: 'Request payload for exporting members',
   });
 
+export const ExportMembersStatusSchema = z
+  .enum(['processing', 'completed', 'failed'])
+  .openapi({ title: 'ExportMembersStatus', description: 'Export job status' });
+
 /**
  * Export Members Response Schema
  */
 export const ExportMembersResponseSchema = z
   .object({
-    success: z.boolean().openapi({
-      example: true,
-      description: 'Whether the export was successful',
-    }),
     exportId: z.string().openapi({
       example: 'export-1234567890',
       description: 'Export ID',
@@ -888,7 +851,7 @@ export const ExportMembersResponseSchema = z
       example: 'csv',
       description: 'Export format',
     }),
-    status: z.string().openapi({
+    status: ExportMembersStatusSchema.openapi({
       example: 'processing',
       description: 'Export status',
     }),
@@ -1192,7 +1155,7 @@ export const CampaignSchema = z
       example: '初月月会費無料',
       description: 'Campaign content',
     }),
-    status: z.string().optional().openapi({
+    status: CampaignStatusSchema.optional().openapi({
       example: 'expired',
       description: 'Campaign status',
     }),
@@ -1323,8 +1286,11 @@ export const GetRelationshipsResponseSchema = z
               member_number: z.string(),
               name: z.string(),
               referred_at: z.string(),
-              membership_status: z.string(),
-              points_status: z.string(),
+              membership_status: MemberStatusSchema,
+              points_status: z.enum(['normal', 'blocked', 'none']).openapi({
+                title: 'ReferralPointsStatus',
+                description: 'Referral points status',
+              }),
               points_earned: z.number().nullable(),
             }),
           ),
@@ -1358,6 +1324,7 @@ export const GetRelationshipsResponseSchema = z
 export type MemberType = z.infer<typeof MemberTypeSchema>;
 export type MemberStatus = z.infer<typeof MemberStatusSchema>;
 export type Brand = z.infer<typeof BrandSchema>;
+export type Gender = z.infer<typeof GenderSchema>;
 export type MemberListItem = z.infer<typeof MemberListItemSchema>;
 export type Pagination = z.infer<typeof PaginationSchema>;
 export type GetMembersQuery = z.infer<typeof GetMembersQuerySchema>;
@@ -1374,6 +1341,7 @@ export type PointAdjustmentRequest = z.infer<typeof PointAdjustmentRequestSchema
 export type PointAdjustmentResponse = z.infer<typeof PointAdjustmentResponseSchema>;
 export type GetPointsResponse = z.infer<typeof GetPointsResponseSchema>;
 export type MemoType = z.infer<typeof MemoTypeSchema>;
+export type StaffMemo = z.infer<typeof StaffMemoSchema>;
 export type CreateMemoRequest = z.infer<typeof CreateMemoRequestSchema>;
 export type CreateMemoResponse = z.infer<typeof CreateMemoResponseSchema>;
 export type UpdateMemoRequest = z.infer<typeof UpdateMemoRequestSchema>;

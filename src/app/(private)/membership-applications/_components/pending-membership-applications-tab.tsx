@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/select';
 
 import { getCrmMembershipApplicationsInfiniteOptions } from '@/lib/api/@tanstack/react-query.gen';
+import { RiskReason } from '@/lib/api/types.gen';
 import type {
   GetCrmMembershipApplicationsResponse,
   MembershipApplication,
@@ -128,7 +129,7 @@ export function PendingMembershipApplicationsTab({
   const router = useRouter();
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [riskReason, setRiskReason] = useState<string>('all');
+  const [riskReason, setRiskReason] = useState<'all' | RiskReason>('all');
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({}); //manage your own row selection state
 
@@ -265,19 +266,22 @@ export function PendingMembershipApplicationsTab({
                 onChange={(e) => setSearchInput(e.target.value)}
               />
             </div>
-            <Select value={riskReason} onValueChange={setRiskReason}>
+            <Select
+              value={riskReason}
+              onValueChange={(v) => setRiskReason(v as 'all' | RiskReason)}
+            >
               <SelectTrigger className="h-9 w-[178px]">
                 <span className="text-muted-foreground">リスク理由:</span>
                 <SelectValue placeholder="All" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All</SelectItem>
-                <SelectItem value="blacklist_match">ブラックリスト一致</SelectItem>
-                <SelectItem value="duplicate_application">重複申込</SelectItem>
-                <SelectItem value="payment_failure">決済失敗</SelectItem>
-                <SelectItem value="high_risk_score">高リスクスコア</SelectItem>
-                <SelectItem value="document_issue">書類問題</SelectItem>
-                <SelectItem value="other">その他</SelectItem>
+                <SelectItem value={RiskReason.BLACKLIST_MATCH}>ブラックリスト一致</SelectItem>
+                <SelectItem value={RiskReason.DUPLICATE_APPLICATION}>重複申込</SelectItem>
+                <SelectItem value={RiskReason.PAYMENT_FAILURE}>決済失敗</SelectItem>
+                <SelectItem value={RiskReason.HIGH_RISK_SCORE}>高リスクスコア</SelectItem>
+                <SelectItem value={RiskReason.DOCUMENT_ISSUE}>書類問題</SelectItem>
+                <SelectItem value={RiskReason.OTHER}>その他</SelectItem>
               </SelectContent>
             </Select>
           </div>
