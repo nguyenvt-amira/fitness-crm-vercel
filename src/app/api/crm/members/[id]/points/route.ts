@@ -205,6 +205,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     const validatedBody: PointAdjustmentRequest = validationResult.data;
     const response: PointAdjustmentResponse = {
+      success: true,
       id,
       adjustment: validatedBody,
     };

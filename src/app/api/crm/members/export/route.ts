@@ -54,6 +54,7 @@ export async function POST(request: NextRequest) {
 
     // Mock export response
     const response: ExportMembersResponse = {
+      success: true,
       exportId: `export-${Date.now()}`,
       format: validatedBody.format,
       status: 'processing',

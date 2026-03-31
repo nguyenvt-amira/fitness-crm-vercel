@@ -19,7 +19,6 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 import {
   getCrmMembershipApplicationsInfiniteQueryKey,
-  getCrmMembershipApplicationsSummaryQueryKey,
   postCrmMembershipApplicationsBulkApproveMutation,
   postCrmMembershipApplicationsByIdApproveMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
@@ -65,9 +64,6 @@ export function ApproveApplicationModal({
             queryClient.invalidateQueries({
               queryKey: getCrmMembershipApplicationsInfiniteQueryKey(),
             });
-            queryClient.invalidateQueries({
-              queryKey: getCrmMembershipApplicationsSummaryQueryKey(),
-            });
             onSuccess();
           },
         },
@@ -85,9 +81,6 @@ export function ApproveApplicationModal({
           toast.success(`${selectedIDs.length}件の承認に成功しました`);
           queryClient.invalidateQueries({
             queryKey: getCrmMembershipApplicationsInfiniteQueryKey(),
-          });
-          queryClient.invalidateQueries({
-            queryKey: getCrmMembershipApplicationsSummaryQueryKey(),
           });
           onSuccess();
         },

@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const EditMembershipApplicationFormSchema = z.object({
   // Basic
   applicant_name: z.string().min(1, { message: '氏名は必須です' }).max(255).optional(),
-  gender: z.enum(['male', 'female', 'other']).optional(),
+  gender: z.enum(['male', 'female', 'other', 'unknown']).optional(),
   blood_type: z.enum(['A', 'B', 'O', 'AB', 'unknown']).optional(),
   birthday: z.string().optional(), // UI provides YYYY-MM-DD (set undefined when empty)
 

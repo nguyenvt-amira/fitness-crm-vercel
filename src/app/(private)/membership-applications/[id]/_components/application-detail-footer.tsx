@@ -3,14 +3,11 @@
 import { useState } from 'react';
 import { Fragment } from 'react/jsx-runtime';
 
-import { useRouter } from 'next/navigation';
-
 import { FileText } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 
 import { MembershipApplication } from '@/lib/api';
-import { navigate } from '@/lib/routes/routes.util';
 
 import { ApproveApplicationModal, SelectType } from '../../_components/approve-application-modal';
 import { RejectApplicationModal } from '../../_components/reject-application-modal';
@@ -27,8 +24,6 @@ export default function ApplicationDetailFooter({
     type: undefined as SelectType | undefined,
   });
 
-  const router = useRouter();
-
   return (
     <Fragment>
       <ApproveApplicationModal
@@ -40,7 +35,6 @@ export default function ApplicationDetailFooter({
         application={application}
         onSuccess={() => {
           setModalState({ status: false, type: modalState.type });
-          router.push(navigate('/membership-applications'));
         }}
       />
       <RejectApplicationModal
@@ -52,7 +46,6 @@ export default function ApplicationDetailFooter({
         application={application}
         onSuccess={() => {
           setRejectModalState({ status: false, type: rejectModalState.type });
-          router.push(navigate('/membership-applications'));
         }}
       />
       <div className="bg-sidebar fixed right-0 bottom-0 left-0 border-t px-4 py-4">

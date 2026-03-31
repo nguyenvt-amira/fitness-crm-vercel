@@ -108,21 +108,6 @@ export function registerAllSchemas() {
     registry.register('MemberListItem', memberSchemas.MemberListItemSchema),
   );
   registeredSchemaMap.set(
-    'MemberType',
-    registry.register('MemberType', memberSchemas.MemberTypeSchema),
-  );
-  registeredSchemaMap.set(
-    'MemberStatus',
-    registry.register('MemberStatus', memberSchemas.MemberStatusSchema),
-  );
-  registeredSchemaMap.set('Brand', registry.register('Brand', memberSchemas.BrandSchema));
-  registeredSchemaMap.set('Gender', registry.register('Gender', memberSchemas.GenderSchema));
-  registeredSchemaMap.set('MemoType', registry.register('MemoType', memberSchemas.MemoTypeSchema));
-  registeredSchemaMap.set(
-    'PointAdjustmentType',
-    registry.register('PointAdjustmentType', memberSchemas.PointAdjustmentTypeSchema),
-  );
-  registeredSchemaMap.set(
     'Pagination',
     registry.register('Pagination', memberSchemas.PaginationSchema),
   );
@@ -185,10 +170,6 @@ export function registerAllSchemas() {
     registry.register('CreateMemoRequest', memberSchemas.CreateMemoRequestSchema),
   );
   registeredSchemaMap.set(
-    'StaffMemo',
-    registry.register('StaffMemo', memberSchemas.StaffMemoSchema),
-  );
-  registeredSchemaMap.set(
     'CreateMemoResponse',
     registry.register('CreateMemoResponse', memberSchemas.CreateMemoResponseSchema),
   );
@@ -207,10 +188,6 @@ export function registerAllSchemas() {
   registeredSchemaMap.set(
     'ExportMembersRequest',
     registry.register('ExportMembersRequest', memberSchemas.ExportMembersRequestSchema),
-  );
-  registeredSchemaMap.set(
-    'ExportMembersStatus',
-    registry.register('ExportMembersStatus', memberSchemas.ExportMembersStatusSchema),
   );
   registeredSchemaMap.set(
     'ExportMembersResponse',
@@ -258,10 +235,6 @@ export function registerAllSchemas() {
     registry.register('Campaigns', memberSchemas.CampaignsSchema),
   );
   registeredSchemaMap.set(
-    'CampaignStatus',
-    registry.register('CampaignStatus', memberSchemas.CampaignStatusSchema),
-  );
-  registeredSchemaMap.set(
     'GetContractsResponse',
     registry.register('GetContractsResponse', memberSchemas.GetContractsResponseSchema),
   );
@@ -273,31 +246,6 @@ export function registerAllSchemas() {
       'MembershipApplication',
       membershipApplicationSchemas.MembershipApplicationSchema,
     ),
-  );
-  registeredSchemaMap.set(
-    'MembershipApplicationPaymentMethod',
-    registry.register(
-      'MembershipApplicationPaymentMethod',
-      membershipApplicationSchemas.MembershipApplicationPaymentMethodSchema,
-    ),
-  );
-  registeredSchemaMap.set(
-    'MembershipApplicationPaymentStatus',
-    registry.register(
-      'MembershipApplicationPaymentStatus',
-      membershipApplicationSchemas.MembershipApplicationPaymentStatusSchema,
-    ),
-  );
-  registeredSchemaMap.set(
-    'MembershipApplicationStatus',
-    registry.register(
-      'MembershipApplicationStatus',
-      membershipApplicationSchemas.MembershipApplicationStatusSchema,
-    ),
-  );
-  registeredSchemaMap.set(
-    'RiskReason',
-    registry.register('RiskReason', membershipApplicationSchemas.RiskReasonSchema),
   );
   registeredSchemaMap.set(
     'GetMembershipApplicationsQuery',
@@ -419,21 +367,6 @@ export function registerAllSchemas() {
   registeredSchemaMap.set(
     'FamilyMember',
     registry.register('FamilyMember', familyRegistrationSchemas.FamilyMemberSchema),
-  );
-  registeredSchemaMap.set(
-    'PrimaryMemberStatus',
-    registry.register('PrimaryMemberStatus', familyRegistrationSchemas.PrimaryMemberStatusSchema),
-  );
-  registeredSchemaMap.set(
-    'PrimaryMemberType',
-    registry.register('PrimaryMemberType', familyRegistrationSchemas.PrimaryMemberTypeSchema),
-  );
-  registeredSchemaMap.set(
-    'FamilyRegistrationRiskReason',
-    registry.register(
-      'FamilyRegistrationRiskReason',
-      familyRegistrationSchemas.FamilyRegistrationRiskReasonSchema,
-    ),
   );
   registeredSchemaMap.set(
     'GetFamilyMembersResponse',

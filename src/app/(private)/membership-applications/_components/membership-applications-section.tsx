@@ -1,14 +1,10 @@
 'use client';
 
-import { useMemo } from 'react';
-
-import { useQuery } from '@tanstack/react-query';
 import { useQueryState } from 'nuqs';
 
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import { getCrmMembershipApplicationsSummaryOptions } from '@/lib/api/@tanstack/react-query.gen';
 import { cn } from '@/lib/utils';
 
 import type { MembershipApplicationStatus } from '@/types/api/membership-application.type';
@@ -16,11 +12,12 @@ import type { MembershipApplicationStatus } from '@/types/api/membership-applica
 import { PendingMembershipApplicationsTab } from './pending-membership-applications-tab';
 
 const STATUS_TABS = [
-  { value: 'pending', label: '要確認' },
-  { value: 'payment_failed', label: '決済失敗' },
-  { value: 'auto_approved', label: '自動承認済み' },
-  { value: 'manual_approved', label: '手動承認済み' },
-  { value: 'rejected', label: '却下' },
+  { value: 'payment_failed', label: '決済失敗', count: 3 },
+  { value: 'pending', label: '要確認', count: 12 },
+  { value: 'auto_approved', label: '自動承認済み', count: 163 },
+  { value: 'manual_approved', label: '手動承認済み', count: 21 },
+  { value: 'rejected', label: '却下', count: 21 },
+  // { value: 'all', label: '全件', count: 200 },
 ] as const;
 
 const VALID_TAB_VALUES = STATUS_TABS.map((t) => t.value) as string[];
@@ -36,33 +33,6 @@ export function MembershipApplicationsListSection() {
     setTabParam(value === 'pending' ? null : value);
   };
 
-  const { data: summaryData } = useQuery(getCrmMembershipApplicationsSummaryOptions());
-
-  const tabs = useMemo(
-    () =>
-      STATUS_TABS.map((tab) => {
-        const summary = summaryData?.summary;
-        const count =
-          tab.value === 'payment_failed'
-            ? summary?.payment_failed_count
-            : tab.value === 'pending'
-              ? summary?.pending_count
-              : tab.value === 'auto_approved'
-                ? summary?.auto_approval_count
-                : tab.value === 'manual_approved'
-                  ? summary?.manual_approved_count
-                  : tab.value === 'rejected'
-                    ? summary?.rejected_count
-                    : 0;
-
-        return {
-          ...tab,
-          count: count ?? 0,
-        };
-      }),
-    [summaryData],
-  );
-
   return (
     <div className="flex flex-col gap-4 p-4">
       <Tabs
@@ -71,7 +41,7 @@ export function MembershipApplicationsListSection() {
         className="w-full"
       >
         <TabsList className="bg-muted inline-flex h-9 w-fit rounded-lg p-[3px]">
-          {tabs.map((tab) => (
+          {STATUS_TABS.map((tab) => (
             <TabsTrigger
               key={tab.value}
               value={tab.value}
@@ -94,17 +64,15 @@ export function MembershipApplicationsListSection() {
           <PendingMembershipApplicationsTab enabled={selectedStatus === 'pending'} />
         </TabsContent>
 
-        {tabs
-          .filter((tab) => tab.value !== 'pending')
-          .map((tab) => (
-            <TabsContent key={tab.value} value={tab.value}>
-              <Card className="rounded-lg border p-4 shadow-sm">
-                <p className="text-muted-foreground text-sm">
-                  {tab.label} — {tab.count}件
-                </p>
-              </Card>
-            </TabsContent>
-          ))}
+        {STATUS_TABS.filter((tab) => tab.value !== 'pending').map((tab) => (
+          <TabsContent key={tab.value} value={tab.value}>
+            <Card className="rounded-lg border p-4 shadow-sm">
+              <p className="text-muted-foreground text-sm">
+                {tab.label} — {tab.count}件（モック）
+              </p>
+            </Card>
+          </TabsContent>
+        ))}
       </Tabs>
     </div>
   );

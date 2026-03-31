@@ -32,10 +32,11 @@ import {
   postCrmMembersByIdMemosMutation,
   putCrmMembersByIdMemosByMemoIdMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
-import type { StaffMemo } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
-import { MEMBER_STATUS_CLASSES } from '../_lib/constants';
+import type { StaffMemo } from '@/types/member.type';
+
+import { STATUS_VARIANTS } from '../_lib/constants';
 import { MEMBER_STATUS_LABELS } from '../_lib/constants';
 import { EditMemberModal } from './_components/edit-member-modal';
 import { MemoModal } from './_components/memo-modal';
@@ -87,12 +88,7 @@ export default function MemberDetailPage() {
     onSuccess: invalidateCommunications,
   });
 
-  const {
-    data: member,
-    isLoading,
-    isError,
-    refetch,
-  } = useQuery(
+  const { data, isLoading, isError, refetch } = useQuery(
     getCrmMembersByIdOptions({
       path: {
         id: memberId,
@@ -100,16 +96,18 @@ export default function MemberDetailPage() {
     }),
   );
 
-  if (isLoading || isError || !member) {
+  if (isLoading || isError || !data?.member) {
     return (
       <DataStateBoundary
         isLoading={isLoading}
         isError={isError}
-        isEmpty={!member}
+        isEmpty={!data?.member}
         onRetry={() => refetch()}
       />
     );
   }
+
+  const { member } = data;
 
   // Mock alerts - in real app, these would come from API
   const has_unpaid = false; // TODO: Get from member data
@@ -223,7 +221,7 @@ export default function MemberDetailPage() {
                     </span>
                   </div>
                   <div className="mt-2 flex flex-wrap items-center gap-2">
-                    <Badge className={MEMBER_STATUS_CLASSES[member.profile.status]}>
+                    <Badge variant={STATUS_VARIANTS[member.profile.status]}>
                       {MEMBER_STATUS_LABELS[member.profile.status]}
                     </Badge>
                     <Badge variant="outline" className="flex items-center gap-1">
@@ -308,7 +306,7 @@ export default function MemberDetailPage() {
           </div>
 
           <TabsContent value="basic" className="mt-4">
-            <BasicInfoTab member={member} />
+            <BasicInfoTab memberId={memberId} />
           </TabsContent>
 
           <TabsContent value="contracts" className="mt-4">

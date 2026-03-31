@@ -7,8 +7,7 @@ import { DataTable } from '@/components/common/data-table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { getCrmMembersByIdPointsOptions } from '@/lib/api/@tanstack/react-query.gen';
-import type { GetPointsResponse } from '@/lib/api/types.gen';
-import { Brand } from '@/lib/api/types.gen';
+import type { GetMemberDetailResponse, GetPointsResponse } from '@/lib/api/types.gen';
 
 import {
   ADJUSTMENT_COLUMNS,
@@ -109,7 +108,9 @@ function PointsBalanceCard({
   );
 }
 
-export function PointsTab({ memberId, brand }: { memberId: string; brand: Brand }) {
+type MemberBrand = NonNullable<GetMemberDetailResponse['member']['profile']>['brand'];
+
+export function PointsTab({ memberId, brand }: { memberId: string; brand: MemberBrand }) {
   const { data, isLoading, isError, refetch } = useQuery(
     getCrmMembersByIdPointsOptions({
       path: { id: memberId },

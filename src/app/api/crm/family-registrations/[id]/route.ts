@@ -29,17 +29,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
   }
 
   const primary = db.members.get(row.primary_member_id);
-  const { settings, members: familyMembers } = db.family.getFamilyMembers(row.primary_member_id);
-
-  // 在籍期間（月数）
-  const tenureMonths = primary?.profile.joined_at
-    ? Math.floor(
-        (Date.now() - new Date(primary.profile.joined_at).getTime()) / (1000 * 60 * 60 * 24 * 30),
-      )
-    : undefined;
-
-  // 主会員IDの末尾数字でモック値を決定論的に生成
-  const memberIndex = parseInt(row.primary_member_id.replace(/\D/g, '') || '0', 10);
+  const { settings } = db.family.getBrandSettingsByPrimaryMemberId(row.primary_member_id);
 
   return NextResponse.json({
     registration: {
@@ -55,31 +45,12 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
       store_name: primary?.profile.store_name ?? '—',
       monthly_fee: settings.family_member_fee,
       risk_score: row.risk_score,
-      risk_reason: row.risk_reason,
-      risk_details: row.risk_score
-        ? [
-            {
-              reason: row.risk_reason ?? '',
-              score: row.risk_score,
-              description: 'リスク詳細の説明',
-            },
-          ]
-        : [],
-      ekyc: row.ekyc,
       applicant: row.applicant,
       primary_member: primary
         ? {
             member_number: primary.basic_info.member_number,
             status: primary.profile.status,
-            member_type: primary.profile.member_type,
-            joined_at: primary.profile.joined_at,
-            tenure_months: tenureMonths,
-            family_member_count: familyMembers.length,
-            family_member_limit: settings.family_member_limit,
             has_unpaid: (primary as any)._listMeta?.has_unpaid ?? false,
-            has_past_unpaid: memberIndex % 4 === 0,
-            has_forced_withdrawal: memberIndex % 10 === 0,
-            monthly_usage_count: (memberIndex % 20) + 1,
           }
         : undefined,
     },

@@ -31,9 +31,8 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
-import { MemoType, StaffMemo } from '@/lib/api/types.gen';
-
-import { MEMO_TYPE_LABELS } from '../../_lib/constants';
+import type { StaffMemo } from '@/types/member.type';
+import { MemoType } from '@/types/member.type';
 
 const memoFormSchema = z.object({
   type: z.enum(['caution', 'vip', 'other']),
@@ -41,6 +40,12 @@ const memoFormSchema = z.object({
 });
 
 type MemoFormValues = z.infer<typeof memoFormSchema>;
+
+const MEMO_TYPE_LABELS: Record<MemoType, string> = {
+  [MemoType.CAUTION]: '要注意',
+  [MemoType.VIP]: 'VIP',
+  [MemoType.OTHER]: 'その他',
+};
 
 interface MemoModalProps {
   open: boolean;

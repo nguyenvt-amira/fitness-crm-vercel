@@ -8,9 +8,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { getCrmMembersByIdCommunicationsOptions } from '@/lib/api/@tanstack/react-query.gen';
-import { MemoType, StaffMemo } from '@/lib/api/types.gen';
 
-import { MEMO_TYPE_LABELS } from '../../../_lib/constants';
+import type { StaffMemo } from '@/types/member.type';
+import { MemoType } from '@/types/member.type';
+
+const MEMO_TYPE_LABELS: Record<MemoType, string> = {
+  [MemoType.CAUTION]: '要注意',
+  [MemoType.VIP]: 'VIP',
+  [MemoType.OTHER]: 'その他',
+};
 
 interface CommunicationsTabProps {
   memberId: string;

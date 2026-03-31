@@ -452,7 +452,7 @@ export type GetDashboardResponse = {
         /**
          * Time period
          */
-        period: 'day' | 'week' | 'month';
+        period: string;
         /**
          * DateRange
          *
@@ -631,7 +631,7 @@ export type Dashboard = {
     /**
      * Time period
      */
-    period: 'day' | 'week' | 'month';
+    period: string;
     /**
      * DateRange
      *
@@ -1072,78 +1072,6 @@ export type MemberListItem = {
     email: string;
 };
 
-export const MemberType = {
-    REGULAR: 'regular',
-    FAMILY: 'family',
-    CORPORATE: 'corporate',
-    COMPANY_DISCOUNT: 'company_discount'
-} as const;
-
-export type MemberType = typeof MemberType[keyof typeof MemberType];
-
-export const MemberStatus = {
-    ACTIVE: 'active',
-    SUSPENDED: 'suspended',
-    WITHDRAWN: 'withdrawn',
-    FORCE_WITHDRAWN: 'force_withdrawn'
-} as const;
-
-export type MemberStatus = typeof MemberStatus[keyof typeof MemberStatus];
-
-export const Brand = { JOYFIT: 'joyfit', FIT365: 'fit365' } as const;
-
-export type Brand = typeof Brand[keyof typeof Brand];
-
-/**
- * Gender
- *
- * Gender
- */
-export const Gender = {
-    MALE: 'male',
-    FEMALE: 'female',
-    OTHER: 'other'
-} as const;
-
-/**
- * Gender
- *
- * Gender
- */
-export type Gender = typeof Gender[keyof typeof Gender];
-
-/**
- * MemoType
- *
- * Staff memo type
- */
-export const MemoType = {
-    CAUTION: 'caution',
-    VIP: 'vip',
-    OTHER: 'other'
-} as const;
-
-/**
- * MemoType
- *
- * Staff memo type
- */
-export type MemoType = typeof MemoType[keyof typeof MemoType];
-
-/**
- * PointAdjustmentType
- *
- * Adjustment type
- */
-export const PointAdjustmentType = { ADD: 'add', SUBTRACT: 'subtract' } as const;
-
-/**
- * PointAdjustmentType
- *
- * Adjustment type
- */
-export type PointAdjustmentType = typeof PointAdjustmentType[keyof typeof PointAdjustmentType];
-
 /**
  * Pagination
  *
@@ -1217,7 +1145,7 @@ export type GetMembersQuery = {
     /**
      * Sort field
      */
-    sort_by?: 'member_number' | 'joined_at' | 'last_visit_date' | 'name';
+    sort_by?: 'member_number' | 'joined_at' | 'last_visit' | 'name';
     /**
      * Sort order
      */
@@ -1331,653 +1259,629 @@ export type GetMembersResponse = {
  */
 export type GetMemberDetailResponse = {
     /**
-     * MemberBasicInfo
-     *
-     * Basic member information
+     * Complete member information
      */
-    basic_info: {
+    member: {
         /**
-         * Member ID
-         */
-        id: string;
-        /**
-         * Member number
-         */
-        member_number: string;
-        /**
-         * Name in kanji
-         */
-        name_kanji: string;
-        /**
-         * Name in kana
-         */
-        name_kana: string;
-        /**
-         * Birthday (ISO date)
-         */
-        birthday: string;
-        /**
-         * Age
-         */
-        age: number;
-        /**
-         * Gender
+         * MemberBasicInfo
          *
-         * Gender
+         * Basic member information
          */
-        gender: 'male' | 'female' | 'other';
-        /**
-         * Postal code
-         */
-        postal_code?: string;
-        /**
-         * Prefecture
-         */
-        prefecture?: string;
-        /**
-         * City
-         */
-        city?: string;
-        /**
-         * Address
-         */
-        address?: string;
-        /**
-         * Building
-         */
-        building?: string;
-        /**
-         * Phone number
-         */
-        phone: string;
-        /**
-         * Email address
-         */
-        email: string;
-        /**
-         * MemberEmergencyContact
-         *
-         * Emergency contact information
-         */
-        emergency_contact?: {
+        basic_info: {
             /**
-             * Emergency contact name
+             * Member ID
              */
-            name: string;
+            id: string;
             /**
-             * Relationship to member
+             * Member number
              */
-            relationship: string;
+            member_number: string;
             /**
-             * Emergency contact phone
+             * Name in kanji
+             */
+            name_kanji: string;
+            /**
+             * Name in kana
+             */
+            name_kana: string;
+            /**
+             * Birthday (ISO date)
+             */
+            birthday: string;
+            /**
+             * Age
+             */
+            age: number;
+            /**
+             * Gender
+             */
+            gender: 'male' | 'female' | 'other';
+            /**
+             * Postal code
+             */
+            postal_code?: string;
+            /**
+             * Prefecture
+             */
+            prefecture?: string;
+            /**
+             * City
+             */
+            city?: string;
+            /**
+             * Address
+             */
+            address?: string;
+            /**
+             * Building
+             */
+            building?: string;
+            /**
+             * Phone number
              */
             phone: string;
-        };
-    };
-    /**
-     * MemberProfile
-     *
-     * Member profile
-     */
-    profile: {
-        /**
-         * Member type
-         */
-        member_type: 'regular' | 'family' | 'corporate' | 'company_discount';
-        /**
-         * Member status
-         */
-        status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
-        /**
-         * Store ID
-         */
-        store_id: string;
-        /**
-         * Store name
-         */
-        store_name: string;
-        /**
-         * Brand
-         */
-        brand: 'joyfit' | 'fit365';
-        /**
-         * Join date (ISO date)
-         */
-        joined_at: string;
-        /**
-         * Withdrawal date (ISO date)
-         */
-        withdrawn_at?: string;
-        /**
-         * Blacklisted status
-         */
-        is_black_listed: boolean;
-    };
-    /**
-     * MemberEKYC
-     *
-     * eKYC information
-     */
-    ekyc?: {
-        /**
-         * Whether eKYC is verified
-         */
-        verified: boolean;
-        /**
-         * Verification datetime (ISO)
-         */
-        verified_at?: string;
-        /**
-         * Document type
-         */
-        document_type?: string;
-        /**
-         * Photo URL
-         */
-        photoUrl?: string;
-    };
-    /**
-     * MemberConsent
-     *
-     * Consent information
-     */
-    consent?: {
-        /**
-         * Member agreement consent
-         */
-        member_agreement: {
             /**
-             * Agreement version
+             * Email address
              */
-            version: string;
+            email: string;
             /**
-             * Agreed datetime (ISO)
+             * MemberEmergencyContact
+             *
+             * Emergency contact information
              */
-            agreed_at: string;
+            emergency_contact?: {
+                /**
+                 * Emergency contact name
+                 */
+                name: string;
+                /**
+                 * Relationship to member
+                 */
+                relationship: string;
+                /**
+                 * Emergency contact phone
+                 */
+                phone: string;
+            };
         };
         /**
-         * Privacy policy consent
-         */
-        privacy_policy: {
-            /**
-             * Policy version
-             */
-            version: string;
-            /**
-             * Agreed datetime (ISO)
-             */
-            agreed_at: string;
-        };
-        /**
-         * Optional agreement consent
-         */
-        optional_agreement?: {
-            /**
-             * Optional agreement version
-             */
-            version: string;
-            /**
-             * Agreed datetime (ISO)
-             */
-            agreed_at: string;
-        };
-        /**
-         * Marketing consent
-         */
-        marketing_consent: {
-            /**
-             * Email marketing consent
-             */
-            email: boolean;
-            /**
-             * SMS marketing consent
-             */
-            sms: boolean;
-            /**
-             * Push marketing consent
-             */
-            push: boolean;
-        };
-    };
-    /**
-     * MemberHealthInfo
-     *
-     * Health information
-     */
-    health_info?: {
-        /**
-         * Health status
-         */
-        health_status?: string;
-        /**
-         * Medical history
-         */
-        medical_history?: string;
-        /**
-         * Allergies
-         */
-        allergies?: string;
-        /**
-         * Exercise restrictions
-         */
-        exercise_restrictions?: string;
-        /**
-         * Other notes
-         */
-        other_notes?: string;
-    };
-    /**
-     * GetContractsResponse
-     *
-     * Contract information
-     */
-    contracts?: {
-        /**
-         * MainContract
+         * MemberProfile
          *
-         * Main contract information
+         * Member profile
          */
-        main_contract: {
+        profile: {
             /**
-             * Plan name
+             * Member type
              */
-            plan_name: string;
+            member_type: 'regular' | 'family' | 'corporate' | 'company_discount';
             /**
-             * Monthly fee (tax included)
+             * Member status
              */
-            monthly_fee: number;
+            status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
             /**
-             * Contract start date
+             * Store ID
              */
-            start_date: string;
+            store_id: string;
             /**
-             * Penalty period end date
+             * Store name
              */
-            penalty_period_end?: string;
+            store_name: string;
             /**
-             * Contract change history
+             * Brand
              */
-            change_history: Array<{
+            brand: 'joyfit' | 'fit365';
+            /**
+             * Join date (ISO date)
+             */
+            joined_at: string;
+            /**
+             * Withdrawal date (ISO date)
+             */
+            withdrawn_at?: string;
+            /**
+             * Blacklisted status
+             */
+            is_black_listed: boolean;
+        };
+        /**
+         * MemberEKYC
+         *
+         * eKYC information
+         */
+        ekyc?: {
+            /**
+             * Whether eKYC is verified
+             */
+            verified: boolean;
+            /**
+             * Verification datetime (ISO)
+             */
+            verified_at?: string;
+            /**
+             * Document type
+             */
+            document_type?: string;
+            /**
+             * Photo URL
+             */
+            photoUrl?: string;
+        };
+        /**
+         * MemberConsent
+         *
+         * Consent information
+         */
+        consent?: {
+            /**
+             * Member agreement consent
+             */
+            member_agreement: {
+                /**
+                 * Agreement version
+                 */
+                version: string;
+                /**
+                 * Agreed datetime (ISO)
+                 */
+                agreed_at: string;
+            };
+            /**
+             * Privacy policy consent
+             */
+            privacy_policy: {
+                /**
+                 * Policy version
+                 */
+                version: string;
+                /**
+                 * Agreed datetime (ISO)
+                 */
+                agreed_at: string;
+            };
+            /**
+             * Optional agreement consent
+             */
+            optional_agreement?: {
+                /**
+                 * Optional agreement version
+                 */
+                version: string;
+                /**
+                 * Agreed datetime (ISO)
+                 */
+                agreed_at: string;
+            };
+            /**
+             * Marketing consent
+             */
+            marketing_consent: {
+                /**
+                 * Email marketing consent
+                 */
+                email: boolean;
+                /**
+                 * SMS marketing consent
+                 */
+                sms: boolean;
+                /**
+                 * Push marketing consent
+                 */
+                push: boolean;
+            };
+        };
+        /**
+         * MemberHealthInfo
+         *
+         * Health information
+         */
+        health_info?: {
+            /**
+             * Health status
+             */
+            health_status?: string;
+            /**
+             * Medical history
+             */
+            medical_history?: string;
+            /**
+             * Allergies
+             */
+            allergies?: string;
+            /**
+             * Exercise restrictions
+             */
+            exercise_restrictions?: string;
+            /**
+             * Other notes
+             */
+            other_notes?: string;
+        };
+        /**
+         * GetContractsResponse
+         *
+         * Contract information
+         */
+        contracts?: {
+            /**
+             * MainContract
+             *
+             * Main contract information
+             */
+            main_contract: {
+                /**
+                 * Plan name
+                 */
+                plan_name: string;
+                /**
+                 * Monthly fee (tax included)
+                 */
+                monthly_fee: number;
+                /**
+                 * Contract start date
+                 */
+                start_date: string;
+                /**
+                 * Penalty period end date
+                 */
+                penalty_period_end?: string;
+                /**
+                 * Contract change history
+                 */
+                change_history: Array<{
+                    /**
+                     * Change date and time
+                     */
+                    changed_at: string;
+                    /**
+                     * Previous plan name
+                     */
+                    previous_plan: string;
+                    /**
+                     * New plan name
+                     */
+                    new_plan: string;
+                    /**
+                     * Reason for change
+                     */
+                    reason?: string;
+                }>;
+            };
+            /**
+             * Option contracts
+             */
+            option_contracts: Array<{
+                /**
+                 * Option contract ID
+                 */
+                id: string;
+                /**
+                 * Option name
+                 */
+                name: string;
+                /**
+                 * Monthly fee
+                 */
+                monthly_fee: number;
+                /**
+                 * Start date
+                 */
+                start_date: string;
+                /**
+                 * Next billing date
+                 */
+                next_billing_date: string;
+            }>;
+            /**
+             * Option change history
+             */
+            option_change_history: Array<{
                 /**
                  * Change date and time
                  */
                 changed_at: string;
                 /**
-                 * Previous plan name
+                 * Option name
                  */
-                previous_plan: string;
+                option_name: string;
                 /**
-                 * New plan name
+                 * Action type
                  */
-                new_plan: string;
+                action_type: 'add' | 'remove';
                 /**
-                 * Reason for change
-                 */
-                reason?: string;
-            }>;
-        };
-        /**
-         * Option contracts
-         */
-        option_contracts: Array<{
-            /**
-             * Option contract ID
-             */
-            id: string;
-            /**
-             * Option name
-             */
-            name: string;
-            /**
-             * Monthly fee
-             */
-            monthly_fee: number;
-            /**
-             * Start date
-             */
-            start_date: string;
-            /**
-             * Next billing date
-             */
-            next_billing_date: string;
-        }>;
-        /**
-         * Option change history
-         */
-        option_change_history: Array<{
-            /**
-             * Change date and time
-             */
-            changed_at: string;
-            /**
-             * Option name
-             */
-            option_name: string;
-            /**
-             * Action type
-             */
-            action_type: 'add' | 'remove';
-            /**
-             * Notes
-             */
-            notes?: string;
-        }>;
-        /**
-         * SpecialContracts
-         *
-         * Special contracts
-         */
-        special_contracts: {
-            /**
-             * SpecialContractItem
-             *
-             * Anshin support contract
-             */
-            anshin_support?: {
-                /**
-                 * Whether enrolled
-                 */
-                enrolled: boolean;
-                /**
-                 * Start date
-                 */
-                start_date?: string;
-                /**
-                 * Applied month (YYYY-MM format)
-                 */
-                applied_month?: string;
-            };
-            /**
-             * SpecialContractItem
-             *
-             * Mutual use contract
-             */
-            mutual_use?: {
-                /**
-                 * Whether enrolled
-                 */
-                enrolled: boolean;
-                /**
-                 * Start date
-                 */
-                start_date?: string;
-                /**
-                 * Applied month (YYYY-MM format)
-                 */
-                applied_month?: string;
-            };
-            /**
-             * SpecialContractItem
-             *
-             * Security fee contract
-             */
-            security_fee?: {
-                /**
-                 * Whether enrolled
-                 */
-                enrolled: boolean;
-                /**
-                 * Start date
-                 */
-                start_date?: string;
-                /**
-                 * Applied month (YYYY-MM format)
-                 */
-                applied_month?: string;
-            };
-            /**
-             * SpecialContractItem
-             *
-             * Maintenance fee contract
-             */
-            maintenance_fee?: {
-                /**
-                 * Whether enrolled
-                 */
-                enrolled: boolean;
-                /**
-                 * Start date
-                 */
-                start_date?: string;
-                /**
-                 * Applied month (YYYY-MM format)
-                 */
-                applied_month?: string;
-            };
-        };
-        /**
-         * PaymentInfo
-         *
-         * Payment information
-         */
-        payment_info: {
-            /**
-             * Payment method
-             */
-            method: 'credit_card' | 'bank_transfer';
-            /**
-             * Masked card number (last 4 digits only)
-             */
-            card_number?: string;
-            /**
-             * Cardholder name
-             */
-            cardholder_name?: string;
-            /**
-             * Card expiry date
-             */
-            expiry_date?: string;
-            /**
-             * Billing day of month
-             */
-            billing_day: number;
-            /**
-             * Last payment date
-             */
-            last_payment_date?: string;
-            /**
-             * Last payment amount
-             */
-            last_payment_amount?: number;
-            /**
-             * Payment status
-             */
-            status: 'normal' | 'error';
-            /**
-             * Payment history
-             */
-            payment_history: Array<{
-                /**
-                 * Payment date
-                 */
-                date: string;
-                /**
-                 * Payment amount
-                 */
-                amount: number;
-                /**
-                 * Payment breakdown
-                 */
-                breakdown: string;
-                /**
-                 * Payment status
-                 */
-                status: 'success' | 'failed';
-                /**
-                 * Additional notes
+                 * Notes
                  */
                 notes?: string;
             }>;
-        };
-        /**
-         * UnpaidInfo
-         *
-         * Unpaid information
-         */
-        unpaid_info: {
             /**
-             * Unpaid amount
-             */
-            amount: number;
-            /**
-             * Due date
-             */
-            due_date: string;
-            /**
-             * Reason for unpaid
-             */
-            reason?: string;
-        } | null;
-        /**
-         * Campaigns
-         *
-         * Campaign information
-         */
-        campaigns: {
-            /**
-             * Active campaigns
-             */
-            active: Array<{
-                /**
-                 * Campaign name
-                 */
-                campaign_name: string;
-                /**
-                 * Campaign period start date
-                 */
-                period_start?: string;
-                /**
-                 * Campaign period end date
-                 */
-                period_end?: string;
-                /**
-                 * Discount content
-                 */
-                discount_content?: string;
-                /**
-                 * Remaining days
-                 */
-                remaining_days?: number;
-                /**
-                 * Applied date
-                 */
-                applied_at?: string;
-                /**
-                 * Campaign content
-                 */
-                content?: string;
-                /**
-                 * CampaignStatus
-                 *
-                 * Campaign status
-                 */
-                status?: 'active' | 'expired' | 'upcoming';
-            }>;
-            /**
-             * Campaign history
-             */
-            history: Array<{
-                /**
-                 * Campaign name
-                 */
-                campaign_name: string;
-                /**
-                 * Campaign period start date
-                 */
-                period_start?: string;
-                /**
-                 * Campaign period end date
-                 */
-                period_end?: string;
-                /**
-                 * Discount content
-                 */
-                discount_content?: string;
-                /**
-                 * Remaining days
-                 */
-                remaining_days?: number;
-                /**
-                 * Applied date
-                 */
-                applied_at?: string;
-                /**
-                 * Campaign content
-                 */
-                content?: string;
-                /**
-                 * CampaignStatus
-                 *
-                 * Campaign status
-                 */
-                status?: 'active' | 'expired' | 'upcoming';
-            }>;
-        };
-    };
-    /**
-     * GetPointsResponse
-     *
-     * Points information
-     */
-    points?: {
-        /**
-         * FIT365 points information
-         */
-        fit365?: unknown;
-        /**
-         * JOYFIT points information
-         */
-        joyfit?: unknown;
-        /**
-         * Rank information
-         */
-        rank?: unknown;
-        /**
-         * Earn history
-         */
-        earn_history: Array<unknown>;
-        /**
-         * Spend history
-         */
-        spend_history: Array<unknown>;
-        /**
-         * Adjustment history
-         */
-        adjustment_history: Array<unknown>;
-    };
-    /**
-     * GetMemosResponse
-     *
-     * Staff memos
-     */
-    memos?: {
-        /**
-         * List of memos
-         */
-        memos: Array<{
-            /**
-             * Memo ID
-             */
-            id: string;
-            /**
-             * Created date (ISO)
-             */
-            date: string;
-            /**
-             * MemoType
+             * SpecialContracts
              *
-             * Memo type
+             * Special contracts
              */
-            type: 'caution' | 'vip' | 'other';
+            special_contracts: {
+                /**
+                 * SpecialContractItem
+                 *
+                 * Anshin support contract
+                 */
+                anshin_support?: {
+                    /**
+                     * Whether enrolled
+                     */
+                    enrolled: boolean;
+                    /**
+                     * Start date
+                     */
+                    start_date?: string;
+                    /**
+                     * Applied month (YYYY-MM format)
+                     */
+                    applied_month?: string;
+                };
+                /**
+                 * SpecialContractItem
+                 *
+                 * Mutual use contract
+                 */
+                mutual_use?: {
+                    /**
+                     * Whether enrolled
+                     */
+                    enrolled: boolean;
+                    /**
+                     * Start date
+                     */
+                    start_date?: string;
+                    /**
+                     * Applied month (YYYY-MM format)
+                     */
+                    applied_month?: string;
+                };
+                /**
+                 * SpecialContractItem
+                 *
+                 * Security fee contract
+                 */
+                security_fee?: {
+                    /**
+                     * Whether enrolled
+                     */
+                    enrolled: boolean;
+                    /**
+                     * Start date
+                     */
+                    start_date?: string;
+                    /**
+                     * Applied month (YYYY-MM format)
+                     */
+                    applied_month?: string;
+                };
+                /**
+                 * SpecialContractItem
+                 *
+                 * Maintenance fee contract
+                 */
+                maintenance_fee?: {
+                    /**
+                     * Whether enrolled
+                     */
+                    enrolled: boolean;
+                    /**
+                     * Start date
+                     */
+                    start_date?: string;
+                    /**
+                     * Applied month (YYYY-MM format)
+                     */
+                    applied_month?: string;
+                };
+            };
             /**
-             * Memo content
+             * PaymentInfo
+             *
+             * Payment information
              */
-            content: string;
+            payment_info: {
+                /**
+                 * Payment method
+                 */
+                method: 'credit_card' | 'bank_transfer';
+                /**
+                 * Masked card number (last 4 digits only)
+                 */
+                card_number?: string;
+                /**
+                 * Cardholder name
+                 */
+                cardholder_name?: string;
+                /**
+                 * Card expiry date
+                 */
+                expiry_date?: string;
+                /**
+                 * Billing day of month
+                 */
+                billing_day: number;
+                /**
+                 * Last payment date
+                 */
+                last_payment_date?: string;
+                /**
+                 * Last payment amount
+                 */
+                last_payment_amount?: number;
+                /**
+                 * Payment status
+                 */
+                status: 'normal' | 'error';
+                /**
+                 * Payment history
+                 */
+                payment_history: Array<{
+                    /**
+                     * Payment date
+                     */
+                    date: string;
+                    /**
+                     * Payment amount
+                     */
+                    amount: number;
+                    /**
+                     * Payment breakdown
+                     */
+                    breakdown: string;
+                    /**
+                     * Payment status
+                     */
+                    status: 'success' | 'failed';
+                    /**
+                     * Additional notes
+                     */
+                    notes?: string;
+                }>;
+            };
             /**
-             * Creator name
+             * UnpaidInfo
+             *
+             * Unpaid information
              */
-            created_by: string;
-        }>;
+            unpaid_info: {
+                /**
+                 * Unpaid amount
+                 */
+                amount: number;
+                /**
+                 * Due date
+                 */
+                due_date: string;
+                /**
+                 * Reason for unpaid
+                 */
+                reason?: string;
+            } | null;
+            /**
+             * Campaigns
+             *
+             * Campaign information
+             */
+            campaigns: {
+                /**
+                 * Active campaigns
+                 */
+                active: Array<{
+                    /**
+                     * Campaign name
+                     */
+                    campaign_name: string;
+                    /**
+                     * Campaign period start date
+                     */
+                    period_start?: string;
+                    /**
+                     * Campaign period end date
+                     */
+                    period_end?: string;
+                    /**
+                     * Discount content
+                     */
+                    discount_content?: string;
+                    /**
+                     * Remaining days
+                     */
+                    remaining_days?: number;
+                    /**
+                     * Applied date
+                     */
+                    applied_at?: string;
+                    /**
+                     * Campaign content
+                     */
+                    content?: string;
+                    /**
+                     * Campaign status
+                     */
+                    status?: string;
+                }>;
+                /**
+                 * Campaign history
+                 */
+                history: Array<{
+                    /**
+                     * Campaign name
+                     */
+                    campaign_name: string;
+                    /**
+                     * Campaign period start date
+                     */
+                    period_start?: string;
+                    /**
+                     * Campaign period end date
+                     */
+                    period_end?: string;
+                    /**
+                     * Discount content
+                     */
+                    discount_content?: string;
+                    /**
+                     * Remaining days
+                     */
+                    remaining_days?: number;
+                    /**
+                     * Applied date
+                     */
+                    applied_at?: string;
+                    /**
+                     * Campaign content
+                     */
+                    content?: string;
+                    /**
+                     * Campaign status
+                     */
+                    status?: string;
+                }>;
+            };
+        };
+        /**
+         * GetPointsResponse
+         *
+         * Points information
+         */
+        points?: {
+            /**
+             * FIT365 points information
+             */
+            fit365?: unknown;
+            /**
+             * JOYFIT points information
+             */
+            joyfit?: unknown;
+            /**
+             * Rank information
+             */
+            rank?: unknown;
+            /**
+             * Earn history
+             */
+            earn_history: Array<unknown>;
+            /**
+             * Spend history
+             */
+            spend_history: Array<unknown>;
+            /**
+             * Adjustment history
+             */
+            adjustment_history: Array<unknown>;
+        };
+        /**
+         * GetMemosResponse
+         *
+         * Staff memos
+         */
+        memos?: {
+            /**
+             * List of memos
+             */
+            memos: Array<unknown>;
+        };
     };
 };
 
@@ -2040,82 +1944,13 @@ export type UpdateBasicInfoRequest = {
  */
 export type UpdateBasicInfoResponse = {
     /**
-     * Member ID
+     * Whether the update was successful
      */
-    id: string;
+    success: boolean;
     /**
-     * Member number
+     * Updated member information
      */
-    member_number: string;
-    /**
-     * Name in kanji
-     */
-    name_kanji: string;
-    /**
-     * Name in kana
-     */
-    name_kana: string;
-    /**
-     * Birthday (ISO date)
-     */
-    birthday: string;
-    /**
-     * Age
-     */
-    age: number;
-    /**
-     * Gender
-     *
-     * Gender
-     */
-    gender: 'male' | 'female' | 'other';
-    /**
-     * Postal code
-     */
-    postal_code?: string;
-    /**
-     * Prefecture
-     */
-    prefecture?: string;
-    /**
-     * City
-     */
-    city?: string;
-    /**
-     * Address
-     */
-    address?: string;
-    /**
-     * Building
-     */
-    building?: string;
-    /**
-     * Phone number
-     */
-    phone: string;
-    /**
-     * Email address
-     */
-    email: string;
-    /**
-     * MemberEmergencyContact
-     *
-     * Emergency contact information
-     */
-    emergency_contact?: {
-        /**
-         * Emergency contact name
-         */
-        name: string;
-        /**
-         * Relationship to member
-         */
-        relationship: string;
-        /**
-         * Emergency contact phone
-         */
-        phone: string;
-    };
+    member?: unknown;
 };
 
 /**
@@ -2153,25 +1988,13 @@ export type UpdateHealthInfoRequest = {
  */
 export type UpdateHealthInfoResponse = {
     /**
-     * Health status
+     * Whether the update was successful
      */
-    health_status?: string;
+    success: boolean;
     /**
-     * Medical history
+     * Updated member information
      */
-    medical_history?: string;
-    /**
-     * Allergies
-     */
-    allergies?: string;
-    /**
-     * Exercise restrictions
-     */
-    exercise_restrictions?: string;
-    /**
-     * Other notes
-     */
-    other_notes?: string;
+    member?: unknown;
 };
 
 /**
@@ -2201,17 +2024,13 @@ export type UpdateMarketingConsentRequest = {
  */
 export type UpdateMarketingConsentResponse = {
     /**
-     * Email marketing consent
+     * Whether the update was successful
      */
-    email: boolean;
+    success: boolean;
     /**
-     * SMS marketing consent
+     * Updated member information
      */
-    sms: boolean;
-    /**
-     * Push marketing consent
-     */
-    push: boolean;
+    member?: unknown;
 };
 
 /**
@@ -2221,8 +2040,6 @@ export type UpdateMarketingConsentResponse = {
  */
 export type PointAdjustmentRequest = {
     /**
-     * PointAdjustmentType
-     *
      * Adjustment type
      */
     type: 'add' | 'subtract';
@@ -2243,6 +2060,10 @@ export type PointAdjustmentRequest = {
  */
 export type PointAdjustmentResponse = {
     /**
+     * Whether the adjustment was successful
+     */
+    success: boolean;
+    /**
      * Member ID
      */
     id: string;
@@ -2253,8 +2074,6 @@ export type PointAdjustmentResponse = {
      */
     adjustment: {
         /**
-         * PointAdjustmentType
-         *
          * Adjustment type
          */
         type: 'add' | 'subtract';
@@ -2308,8 +2127,6 @@ export type GetPointsResponse = {
  */
 export type CreateMemoRequest = {
     /**
-     * MemoType
-     *
      * Memo type
      */
     type: 'caution' | 'vip' | 'other';
@@ -2324,63 +2141,19 @@ export type CreateMemoRequest = {
 };
 
 /**
- * StaffMemo
- *
- * Staff memo
- */
-export type StaffMemo = {
-    /**
-     * Memo ID
-     */
-    id: string;
-    /**
-     * Created date (ISO)
-     */
-    date: string;
-    /**
-     * MemoType
-     *
-     * Memo type
-     */
-    type: 'caution' | 'vip' | 'other';
-    /**
-     * Memo content
-     */
-    content: string;
-    /**
-     * Creator name
-     */
-    created_by: string;
-};
-
-/**
  * CreateMemoResponse
  *
  * Response for creating a memo
  */
 export type CreateMemoResponse = {
     /**
-     * Memo ID
+     * Whether the creation was successful
      */
-    id: string;
+    success: boolean;
     /**
-     * Created date (ISO)
+     * Created memo
      */
-    date: string;
-    /**
-     * MemoType
-     *
-     * Memo type
-     */
-    type: 'caution' | 'vip' | 'other';
-    /**
-     * Memo content
-     */
-    content: string;
-    /**
-     * Creator name
-     */
-    created_by: string;
+    memo?: unknown;
 };
 
 /**
@@ -2390,8 +2163,6 @@ export type CreateMemoResponse = {
  */
 export type UpdateMemoRequest = {
     /**
-     * MemoType
-     *
      * Memo type
      */
     type?: 'caution' | 'vip' | 'other';
@@ -2408,27 +2179,13 @@ export type UpdateMemoRequest = {
  */
 export type UpdateMemoResponse = {
     /**
-     * Memo ID
+     * Whether the update was successful
      */
-    id: string;
+    success: boolean;
     /**
-     * Created date (ISO)
+     * Updated memo
      */
-    date: string;
-    /**
-     * MemoType
-     *
-     * Memo type
-     */
-    type: 'caution' | 'vip' | 'other';
-    /**
-     * Memo content
-     */
-    content: string;
-    /**
-     * Creator name
-     */
-    created_by: string;
+    memo?: unknown;
 };
 
 /**
@@ -2440,30 +2197,7 @@ export type GetMemosResponse = {
     /**
      * List of memos
      */
-    memos: Array<{
-        /**
-         * Memo ID
-         */
-        id: string;
-        /**
-         * Created date (ISO)
-         */
-        date: string;
-        /**
-         * MemoType
-         *
-         * Memo type
-         */
-        type: 'caution' | 'vip' | 'other';
-        /**
-         * Memo content
-         */
-        content: string;
-        /**
-         * Creator name
-         */
-        created_by: string;
-    }>;
+    memos: Array<unknown>;
 };
 
 /**
@@ -2491,29 +2225,15 @@ export type ExportMembersRequest = {
 };
 
 /**
- * ExportMembersStatus
- *
- * Export job status
- */
-export const ExportMembersStatus = {
-    PROCESSING: 'processing',
-    COMPLETED: 'completed',
-    FAILED: 'failed'
-} as const;
-
-/**
- * ExportMembersStatus
- *
- * Export job status
- */
-export type ExportMembersStatus = typeof ExportMembersStatus[keyof typeof ExportMembersStatus];
-
-/**
  * ExportMembersResponse
  *
  * Response for exporting members
  */
 export type ExportMembersResponse = {
+    /**
+     * Whether the export was successful
+     */
+    success: boolean;
     /**
      * Export ID
      */
@@ -2523,11 +2243,9 @@ export type ExportMembersResponse = {
      */
     format: 'csv' | 'excel';
     /**
-     * ExportMembersStatus
-     *
      * Export status
      */
-    status: 'processing' | 'completed' | 'failed';
+    status: string;
 };
 
 /**
@@ -2903,11 +2621,9 @@ export type Campaign = {
      */
     content?: string;
     /**
-     * CampaignStatus
-     *
      * Campaign status
      */
-    status?: 'active' | 'expired' | 'upcoming';
+    status?: string;
 };
 
 /**
@@ -2949,11 +2665,9 @@ export type Campaigns = {
          */
         content?: string;
         /**
-         * CampaignStatus
-         *
          * Campaign status
          */
-        status?: 'active' | 'expired' | 'upcoming';
+        status?: string;
     }>;
     /**
      * Campaign history
@@ -2988,31 +2702,11 @@ export type Campaigns = {
          */
         content?: string;
         /**
-         * CampaignStatus
-         *
          * Campaign status
          */
-        status?: 'active' | 'expired' | 'upcoming';
+        status?: string;
     }>;
 };
-
-/**
- * CampaignStatus
- *
- * Campaign status
- */
-export const CampaignStatus = {
-    ACTIVE: 'active',
-    EXPIRED: 'expired',
-    UPCOMING: 'upcoming'
-} as const;
-
-/**
- * CampaignStatus
- *
- * Campaign status
- */
-export type CampaignStatus = typeof CampaignStatus[keyof typeof CampaignStatus];
 
 /**
  * GetContractsResponse
@@ -3315,11 +3009,9 @@ export type GetContractsResponse = {
              */
             content?: string;
             /**
-             * CampaignStatus
-             *
              * Campaign status
              */
-            status?: 'active' | 'expired' | 'upcoming';
+            status?: string;
         }>;
         /**
          * Campaign history
@@ -3354,11 +3046,9 @@ export type GetContractsResponse = {
              */
             content?: string;
             /**
-             * CampaignStatus
-             *
              * Campaign status
              */
-            status?: 'active' | 'expired' | 'upcoming';
+            status?: string;
         }>;
     };
 };
@@ -3392,7 +3082,7 @@ export type MembershipApplication = {
     /**
      * Risk reason
      */
-    risk_reason: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'document_issue' | 'other';
+    risk_reason: string;
     /**
      * Plan name
      */
@@ -3416,60 +3106,6 @@ export type MembershipApplication = {
 };
 
 /**
- * MembershipApplicationPaymentMethod
- *
- * Payment method
- */
-export const MembershipApplicationPaymentMethod = { CREDIT_CARD: 'credit_card', BANK_TRANSFER: 'bank_transfer' } as const;
-
-/**
- * MembershipApplicationPaymentMethod
- *
- * Payment method
- */
-export type MembershipApplicationPaymentMethod = typeof MembershipApplicationPaymentMethod[keyof typeof MembershipApplicationPaymentMethod];
-
-/**
- * MembershipApplicationPaymentStatus
- *
- * Payment status
- */
-export const MembershipApplicationPaymentStatus = {
-    PENDING: 'pending',
-    PAID: 'paid',
-    FAILED: 'failed'
-} as const;
-
-/**
- * MembershipApplicationPaymentStatus
- *
- * Payment status
- */
-export type MembershipApplicationPaymentStatus = typeof MembershipApplicationPaymentStatus[keyof typeof MembershipApplicationPaymentStatus];
-
-export const MembershipApplicationStatus = {
-    PAYMENT_FAILED: 'payment_failed',
-    PENDING: 'pending',
-    AUTO_APPROVED: 'auto_approved',
-    MANUAL_APPROVED: 'manual_approved',
-    REJECTED: 'rejected',
-    CANCELLED: 'cancelled'
-} as const;
-
-export type MembershipApplicationStatus = typeof MembershipApplicationStatus[keyof typeof MembershipApplicationStatus];
-
-export const RiskReason = {
-    BLACKLIST_MATCH: 'blacklist_match',
-    DUPLICATE_APPLICATION: 'duplicate_application',
-    PAYMENT_FAILURE: 'payment_failure',
-    HIGH_RISK_SCORE: 'high_risk_score',
-    DOCUMENT_ISSUE: 'document_issue',
-    OTHER: 'other'
-} as const;
-
-export type RiskReason = typeof RiskReason[keyof typeof RiskReason];
-
-/**
  * GetMembershipApplicationsQuery
  *
  * Query parameters for getting membership applications
@@ -3490,7 +3126,7 @@ export type GetMembershipApplicationsQuery = {
     /**
      * Filter by risk reason
      */
-    risk_reason?: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'document_issue' | 'other';
+    risk_reason?: string;
     /**
      * Sort field
      */
@@ -3538,7 +3174,7 @@ export type GetMembershipApplicationsResponse = {
         /**
          * Risk reason
          */
-        risk_reason: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'document_issue' | 'other';
+        risk_reason: string;
         /**
          * Plan name
          */
@@ -4140,7 +3776,7 @@ export type GetApplicationDetailResponse = {
         /**
          * Risk reason
          */
-        risk_reason: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'document_issue' | 'other';
+        risk_reason: string;
         /**
          * Plan name
          */
@@ -4164,7 +3800,7 @@ export type GetApplicationDetailResponse = {
         /**
          * Gender
          */
-        gender?: 'male' | 'female' | 'other';
+        gender?: 'male' | 'female' | 'other' | 'unknown';
         /**
          * Blood type
          */
@@ -4198,17 +3834,13 @@ export type GetApplicationDetailResponse = {
          */
         emergency_contact_phone?: string;
         /**
-         * MembershipApplicationPaymentMethod
-         *
          * Payment method
          */
-        payment_method?: 'credit_card' | 'bank_transfer';
+        payment_method?: string;
         /**
-         * MembershipApplicationPaymentStatus
-         *
          * Payment status
          */
-        payment_status?: 'pending' | 'paid' | 'failed';
+        payment_status?: string;
         /**
          * Detailed risk information
          */
@@ -4440,9 +4072,13 @@ export type ApproveResponse = {
      */
     approval_reason: string;
     /**
-     * Member ID
+     * Whether contract was created
      */
-    member_id: string;
+    contract_created: boolean;
+    /**
+     * Contract ID
+     */
+    contract_id: string;
 };
 
 /**
@@ -4576,63 +4212,6 @@ export type FamilyMember = {
 };
 
 /**
- * PrimaryMemberStatus
- *
- * Primary member status
- */
-export const PrimaryMemberStatus = {
-    ACTIVE: 'active',
-    SUSPENDED: 'suspended',
-    WITHDRAWN: 'withdrawn'
-} as const;
-
-/**
- * PrimaryMemberStatus
- *
- * Primary member status
- */
-export type PrimaryMemberStatus = typeof PrimaryMemberStatus[keyof typeof PrimaryMemberStatus];
-
-/**
- * PrimaryMemberType
- *
- * Primary member type
- */
-export const PrimaryMemberType = {
-    REGULAR: 'regular',
-    FAMILY: 'family',
-    CORPORATE: 'corporate',
-    COMPANY_DISCOUNT: 'company_discount'
-} as const;
-
-/**
- * PrimaryMemberType
- *
- * Primary member type
- */
-export type PrimaryMemberType = typeof PrimaryMemberType[keyof typeof PrimaryMemberType];
-
-/**
- * FamilyRegistrationRiskReason
- *
- * Risk reason
- */
-export const FamilyRegistrationRiskReason = {
-    BLACKLIST_MATCH: 'blacklist_match',
-    DUPLICATE_APPLICATION: 'duplicate_application',
-    PAYMENT_FAILURE: 'payment_failure',
-    HIGH_RISK_SCORE: 'high_risk_score',
-    OTHER: 'other'
-} as const;
-
-/**
- * FamilyRegistrationRiskReason
- *
- * Risk reason
- */
-export type FamilyRegistrationRiskReason = typeof FamilyRegistrationRiskReason[keyof typeof FamilyRegistrationRiskReason];
-
-/**
  * GetFamilyMembersResponse
  *
  * Response for getting primary member family members
@@ -4746,11 +4325,9 @@ export type FamilyRegistration = {
     monthly_fee: number;
     risk_score?: number;
     /**
-     * FamilyRegistrationRiskReason
-     *
      * リスク主要理由
      */
-    risk_reason?: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'other';
+    risk_reason?: string;
     /**
      * EkycResult
      *
@@ -4843,11 +4420,9 @@ export type GetFamilyRegistrationsResponse = {
         monthly_fee: number;
         risk_score?: number;
         /**
-         * FamilyRegistrationRiskReason
-         *
          * リスク主要理由
          */
-        risk_reason?: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'other';
+        risk_reason?: string;
         /**
          * EkycResult
          *
@@ -4938,11 +4513,9 @@ export type GetFamilyRegistrationDetailResponse = {
         monthly_fee: number;
         risk_score?: number;
         /**
-         * FamilyRegistrationRiskReason
-         *
          * リスク主要理由
          */
-        risk_reason?: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'other';
+        risk_reason?: string;
         /**
          * EkycResult
          *
@@ -5003,32 +4576,9 @@ export type GetFamilyRegistrationDetailResponse = {
         };
         primary_member?: {
             member_number?: string;
-            /**
-             * PrimaryMemberStatus
-             *
-             * Primary member status
-             */
-            status?: 'active' | 'suspended' | 'withdrawn';
-            /**
-             * PrimaryMemberType
-             *
-             * Primary member type
-             */
-            member_type?: 'regular' | 'family' | 'corporate' | 'company_discount';
-            joined_at?: string;
-            tenure_months?: number;
-            family_member_count?: number;
-            family_member_limit?: number;
+            status?: string;
             has_unpaid?: boolean;
-            has_past_unpaid?: boolean;
-            has_forced_withdrawal?: boolean;
-            monthly_usage_count?: number;
         };
-        risk_details?: Array<{
-            reason: string;
-            score: number;
-            description: string;
-        }>;
     };
 };
 
@@ -5077,11 +4627,9 @@ export type CreateFamilyRegistrationResponse = {
         monthly_fee: number;
         risk_score?: number;
         /**
-         * FamilyRegistrationRiskReason
-         *
          * リスク主要理由
          */
-        risk_reason?: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'other';
+        risk_reason?: string;
         /**
          * EkycResult
          *
@@ -5216,29 +4764,7 @@ export type CompleteFamilyRegistrationResponse = {
  * Summary counts for family registrations
  */
 export type GetFamilyRegistrationsSummaryResponse = {
-    /**
-     * 集計期間（今月/今週/全期間）
-     */
-    period: 'this_month' | 'this_week' | 'all';
-    /**
-     * 総招待数
-     */
-    total_invites: number;
-    /**
-     * 総入会件数（家族会員のみ）
-     */
-    total_completed: number;
-    /**
-     * 家族会員比率（全会員に占める割合）
-     */
-    family_member_ratio: number;
-    /**
-     * 招待承諾率
-     */
-    acceptance_rate: number;
-    /**
-     * ステータス別件数（期間フィルタ適用）
-     */
+    total: number;
     by_status: {
         invited?: number;
         awaiting_acceptance?: number;
@@ -5250,105 +4776,23 @@ export type GetFamilyRegistrationsSummaryResponse = {
         rejected?: number;
         completed?: number;
     };
-    /**
-     * 子会員数が多い親会員TOP10
-     */
-    top_primary_members: Array<{
-        primary_member_id: string;
-        primary_member_name: string;
-        family_count: number;
-    }>;
-    /**
-     * 子会員の平均人数
-     */
-    avg_children_per_primary: number;
-    /**
-     * 総件数（全期間）
-     */
-    total: number;
 };
 
 /**
  * GetFamilyRegistrationsDashboardResponse
  *
- * Dashboard data for family registrations (A-02-02-08)
+ * Dashboard response for family registrations (mocked)
  */
 export type GetFamilyRegistrationsDashboardResponse = {
-    /**
-     * 集計期間
-     */
-    period: 'this_month' | 'last_3_months' | 'last_year';
-    /**
-     * 期間内の家族会員入会件数
-     */
+    month_invites: number;
     month_completed: number;
-    /**
-     * 家族会員比率（全会員比）
-     */
+    acceptance_rate: number;
     family_member_ratio: number;
-    /**
-     * 家族会員の平均人数（主会員1人あたり）
-     */
-    avg_children_per_primary: number;
-    /**
-     * 自動承認率（auto_approve / 全完了件数）
-     */
-    auto_approval_rate: number;
-    /**
-     * 家族会員入会数の推移（月次）
-     */
-    monthly_trend: Array<{
-        /**
-         * YYYY-MM
-         */
-        month: string;
-        count: number;
-    }>;
-    /**
-     * 主会員種別別の家族会員比率
-     */
-    by_member_type: Array<{
-        member_type: string;
-        label: string;
-        count: number;
-        ratio: number;
-    }>;
-    /**
-     * 家族会員数の分布（1名 / 2名 / 3名以上）
-     */
-    family_size_distribution: Array<{
-        label: string;
-        count: number;
-    }>;
-    /**
-     * 関係性別の入会内訳（配偶者・子供・親など）
-     */
-    by_relationship: Array<{
-        relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
-        label: string;
-        count: number;
-    }>;
-    /**
-     * 家族会員が多い主会員TOP10
-     */
     top_primary_members: Array<{
         primary_member_id: string;
         primary_member_name: string;
         family_count: number;
     }>;
-    /**
-     * 家族会員 vs 通常会員の平均利用回数比較
-     */
-    avg_usage_comparison: {
-        /**
-         * 家族会員の平均利用回数/月
-         */
-        family_member: number;
-        /**
-         * 通常会員の平均利用回数/月
-         */
-        regular_member: number;
-    };
 };
 
 export type PostAuthLoginData = {
@@ -5583,7 +5027,7 @@ export type GetCrmAutoApprovalDashboardResponses = {
             /**
              * Time period
              */
-            period: 'day' | 'week' | 'month';
+            period: string;
             /**
              * DateRange
              *
@@ -6272,11 +5716,9 @@ export type GetCrmFamilyRegistrationsByIdResponses = {
             monthly_fee: number;
             risk_score?: number;
             /**
-             * FamilyRegistrationRiskReason
-             *
              * リスク主要理由
              */
-            risk_reason?: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'other';
+            risk_reason?: string;
             /**
              * EkycResult
              *
@@ -6337,32 +5779,9 @@ export type GetCrmFamilyRegistrationsByIdResponses = {
             };
             primary_member?: {
                 member_number?: string;
-                /**
-                 * PrimaryMemberStatus
-                 *
-                 * Primary member status
-                 */
-                status?: 'active' | 'suspended' | 'withdrawn';
-                /**
-                 * PrimaryMemberType
-                 *
-                 * Primary member type
-                 */
-                member_type?: 'regular' | 'family' | 'corporate' | 'company_discount';
-                joined_at?: string;
-                tenure_months?: number;
-                family_member_count?: number;
-                family_member_limit?: number;
+                status?: string;
                 has_unpaid?: boolean;
-                has_past_unpaid?: boolean;
-                has_forced_withdrawal?: boolean;
-                monthly_usage_count?: number;
             };
-            risk_details?: Array<{
-                reason: string;
-                score: number;
-                description: string;
-            }>;
         };
     };
 };
@@ -6528,12 +5947,7 @@ export type PostCrmFamilyRegistrationsCheckPrimaryMemberResponse = PostCrmFamily
 export type GetCrmFamilyRegistrationsDashboardData = {
     body?: never;
     path?: never;
-    query?: {
-        /**
-         * 集計期間（今月/過去3ヶ月/過去1年）
-         */
-        period?: 'this_month' | 'last_3_months' | 'last_year';
-    };
+    query?: never;
     url: '/crm/family-registrations/dashboard';
 };
 
@@ -6554,84 +5968,18 @@ export type GetCrmFamilyRegistrationsDashboardResponses = {
     /**
      * GetFamilyRegistrationsDashboardResponse
      *
-     * Dashboard data for family registrations (A-02-02-08)
+     * Dashboard response for family registrations (mocked)
      */
     200: {
-        /**
-         * 集計期間
-         */
-        period: 'this_month' | 'last_3_months' | 'last_year';
-        /**
-         * 期間内の家族会員入会件数
-         */
+        month_invites: number;
         month_completed: number;
-        /**
-         * 家族会員比率（全会員比）
-         */
+        acceptance_rate: number;
         family_member_ratio: number;
-        /**
-         * 家族会員の平均人数（主会員1人あたり）
-         */
-        avg_children_per_primary: number;
-        /**
-         * 自動承認率（auto_approve / 全完了件数）
-         */
-        auto_approval_rate: number;
-        /**
-         * 家族会員入会数の推移（月次）
-         */
-        monthly_trend: Array<{
-            /**
-             * YYYY-MM
-             */
-            month: string;
-            count: number;
-        }>;
-        /**
-         * 主会員種別別の家族会員比率
-         */
-        by_member_type: Array<{
-            member_type: string;
-            label: string;
-            count: number;
-            ratio: number;
-        }>;
-        /**
-         * 家族会員数の分布（1名 / 2名 / 3名以上）
-         */
-        family_size_distribution: Array<{
-            label: string;
-            count: number;
-        }>;
-        /**
-         * 関係性別の入会内訳（配偶者・子供・親など）
-         */
-        by_relationship: Array<{
-            relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
-            label: string;
-            count: number;
-        }>;
-        /**
-         * 家族会員が多い主会員TOP10
-         */
         top_primary_members: Array<{
             primary_member_id: string;
             primary_member_name: string;
             family_count: number;
         }>;
-        /**
-         * 家族会員 vs 通常会員の平均利用回数比較
-         */
-        avg_usage_comparison: {
-            /**
-             * 家族会員の平均利用回数/月
-             */
-            family_member: number;
-            /**
-             * 通常会員の平均利用回数/月
-             */
-            regular_member: number;
-        };
     };
 };
 
@@ -6748,11 +6096,9 @@ export type GetCrmFamilyRegistrationsResponses = {
             monthly_fee: number;
             risk_score?: number;
             /**
-             * FamilyRegistrationRiskReason
-             *
              * リスク主要理由
              */
-            risk_reason?: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'other';
+            risk_reason?: string;
             /**
              * EkycResult
              *
@@ -6890,11 +6236,9 @@ export type PostCrmFamilyRegistrationsResponses = {
             monthly_fee: number;
             risk_score?: number;
             /**
-             * FamilyRegistrationRiskReason
-             *
              * リスク主要理由
              */
-            risk_reason?: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'other';
+            risk_reason?: string;
             /**
              * EkycResult
              *
@@ -6957,9 +6301,7 @@ export type PostCrmFamilyRegistrationsResponse = PostCrmFamilyRegistrationsRespo
 export type GetCrmFamilyRegistrationsSummaryData = {
     body?: never;
     path?: never;
-    query?: {
-        period?: 'this_month' | 'this_week' | 'all';
-    };
+    query?: never;
     url: '/crm/family-registrations/summary';
 };
 
@@ -6983,29 +6325,7 @@ export type GetCrmFamilyRegistrationsSummaryResponses = {
      * Summary counts for family registrations
      */
     200: {
-        /**
-         * 集計期間（今月/今週/全期間）
-         */
-        period: 'this_month' | 'this_week' | 'all';
-        /**
-         * 総招待数
-         */
-        total_invites: number;
-        /**
-         * 総入会件数（家族会員のみ）
-         */
-        total_completed: number;
-        /**
-         * 家族会員比率（全会員に占める割合）
-         */
-        family_member_ratio: number;
-        /**
-         * 招待承諾率
-         */
-        acceptance_rate: number;
-        /**
-         * ステータス別件数（期間フィルタ適用）
-         */
+        total: number;
         by_status: {
             invited?: number;
             awaiting_acceptance?: number;
@@ -7017,22 +6337,6 @@ export type GetCrmFamilyRegistrationsSummaryResponses = {
             rejected?: number;
             completed?: number;
         };
-        /**
-         * 子会員数が多い親会員TOP10
-         */
-        top_primary_members: Array<{
-            primary_member_id: string;
-            primary_member_name: string;
-            family_count: number;
-        }>;
-        /**
-         * 子会員の平均人数
-         */
-        avg_children_per_primary: number;
-        /**
-         * 総件数（全期間）
-         */
-        total: number;
     };
 };
 
@@ -7079,87 +6383,635 @@ export type GetCrmMembersByIdBasicInfoError = GetCrmMembersByIdBasicInfoErrors[k
 
 export type GetCrmMembersByIdBasicInfoResponses = {
     /**
-     * MemberBasicInfo
+     * GetMemberDetailResponse
      *
-     * Basic member information
+     * Response for getting member detail
      */
     200: {
         /**
-         * Member ID
+         * Complete member information
          */
-        id: string;
-        /**
-         * Member number
-         */
-        member_number: string;
-        /**
-         * Name in kanji
-         */
-        name_kanji: string;
-        /**
-         * Name in kana
-         */
-        name_kana: string;
-        /**
-         * Birthday (ISO date)
-         */
-        birthday: string;
-        /**
-         * Age
-         */
-        age: number;
-        /**
-         * Gender
-         *
-         * Gender
-         */
-        gender: 'male' | 'female' | 'other';
-        /**
-         * Postal code
-         */
-        postal_code?: string;
-        /**
-         * Prefecture
-         */
-        prefecture?: string;
-        /**
-         * City
-         */
-        city?: string;
-        /**
-         * Address
-         */
-        address?: string;
-        /**
-         * Building
-         */
-        building?: string;
-        /**
-         * Phone number
-         */
-        phone: string;
-        /**
-         * Email address
-         */
-        email: string;
-        /**
-         * MemberEmergencyContact
-         *
-         * Emergency contact information
-         */
-        emergency_contact?: {
+        member: {
             /**
-             * Emergency contact name
+             * MemberBasicInfo
+             *
+             * Basic member information
              */
-            name: string;
+            basic_info: {
+                /**
+                 * Member ID
+                 */
+                id: string;
+                /**
+                 * Member number
+                 */
+                member_number: string;
+                /**
+                 * Name in kanji
+                 */
+                name_kanji: string;
+                /**
+                 * Name in kana
+                 */
+                name_kana: string;
+                /**
+                 * Birthday (ISO date)
+                 */
+                birthday: string;
+                /**
+                 * Age
+                 */
+                age: number;
+                /**
+                 * Gender
+                 */
+                gender: 'male' | 'female' | 'other';
+                /**
+                 * Postal code
+                 */
+                postal_code?: string;
+                /**
+                 * Prefecture
+                 */
+                prefecture?: string;
+                /**
+                 * City
+                 */
+                city?: string;
+                /**
+                 * Address
+                 */
+                address?: string;
+                /**
+                 * Building
+                 */
+                building?: string;
+                /**
+                 * Phone number
+                 */
+                phone: string;
+                /**
+                 * Email address
+                 */
+                email: string;
+                /**
+                 * MemberEmergencyContact
+                 *
+                 * Emergency contact information
+                 */
+                emergency_contact?: {
+                    /**
+                     * Emergency contact name
+                     */
+                    name: string;
+                    /**
+                     * Relationship to member
+                     */
+                    relationship: string;
+                    /**
+                     * Emergency contact phone
+                     */
+                    phone: string;
+                };
+            };
             /**
-             * Relationship to member
+             * MemberProfile
+             *
+             * Member profile
              */
-            relationship: string;
+            profile: {
+                /**
+                 * Member type
+                 */
+                member_type: 'regular' | 'family' | 'corporate' | 'company_discount';
+                /**
+                 * Member status
+                 */
+                status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
+                /**
+                 * Store ID
+                 */
+                store_id: string;
+                /**
+                 * Store name
+                 */
+                store_name: string;
+                /**
+                 * Brand
+                 */
+                brand: 'joyfit' | 'fit365';
+                /**
+                 * Join date (ISO date)
+                 */
+                joined_at: string;
+                /**
+                 * Withdrawal date (ISO date)
+                 */
+                withdrawn_at?: string;
+                /**
+                 * Blacklisted status
+                 */
+                is_black_listed: boolean;
+            };
             /**
-             * Emergency contact phone
+             * MemberEKYC
+             *
+             * eKYC information
              */
-            phone: string;
+            ekyc?: {
+                /**
+                 * Whether eKYC is verified
+                 */
+                verified: boolean;
+                /**
+                 * Verification datetime (ISO)
+                 */
+                verified_at?: string;
+                /**
+                 * Document type
+                 */
+                document_type?: string;
+                /**
+                 * Photo URL
+                 */
+                photoUrl?: string;
+            };
+            /**
+             * MemberConsent
+             *
+             * Consent information
+             */
+            consent?: {
+                /**
+                 * Member agreement consent
+                 */
+                member_agreement: {
+                    /**
+                     * Agreement version
+                     */
+                    version: string;
+                    /**
+                     * Agreed datetime (ISO)
+                     */
+                    agreed_at: string;
+                };
+                /**
+                 * Privacy policy consent
+                 */
+                privacy_policy: {
+                    /**
+                     * Policy version
+                     */
+                    version: string;
+                    /**
+                     * Agreed datetime (ISO)
+                     */
+                    agreed_at: string;
+                };
+                /**
+                 * Optional agreement consent
+                 */
+                optional_agreement?: {
+                    /**
+                     * Optional agreement version
+                     */
+                    version: string;
+                    /**
+                     * Agreed datetime (ISO)
+                     */
+                    agreed_at: string;
+                };
+                /**
+                 * Marketing consent
+                 */
+                marketing_consent: {
+                    /**
+                     * Email marketing consent
+                     */
+                    email: boolean;
+                    /**
+                     * SMS marketing consent
+                     */
+                    sms: boolean;
+                    /**
+                     * Push marketing consent
+                     */
+                    push: boolean;
+                };
+            };
+            /**
+             * MemberHealthInfo
+             *
+             * Health information
+             */
+            health_info?: {
+                /**
+                 * Health status
+                 */
+                health_status?: string;
+                /**
+                 * Medical history
+                 */
+                medical_history?: string;
+                /**
+                 * Allergies
+                 */
+                allergies?: string;
+                /**
+                 * Exercise restrictions
+                 */
+                exercise_restrictions?: string;
+                /**
+                 * Other notes
+                 */
+                other_notes?: string;
+            };
+            /**
+             * GetContractsResponse
+             *
+             * Contract information
+             */
+            contracts?: {
+                /**
+                 * MainContract
+                 *
+                 * Main contract information
+                 */
+                main_contract: {
+                    /**
+                     * Plan name
+                     */
+                    plan_name: string;
+                    /**
+                     * Monthly fee (tax included)
+                     */
+                    monthly_fee: number;
+                    /**
+                     * Contract start date
+                     */
+                    start_date: string;
+                    /**
+                     * Penalty period end date
+                     */
+                    penalty_period_end?: string;
+                    /**
+                     * Contract change history
+                     */
+                    change_history: Array<{
+                        /**
+                         * Change date and time
+                         */
+                        changed_at: string;
+                        /**
+                         * Previous plan name
+                         */
+                        previous_plan: string;
+                        /**
+                         * New plan name
+                         */
+                        new_plan: string;
+                        /**
+                         * Reason for change
+                         */
+                        reason?: string;
+                    }>;
+                };
+                /**
+                 * Option contracts
+                 */
+                option_contracts: Array<{
+                    /**
+                     * Option contract ID
+                     */
+                    id: string;
+                    /**
+                     * Option name
+                     */
+                    name: string;
+                    /**
+                     * Monthly fee
+                     */
+                    monthly_fee: number;
+                    /**
+                     * Start date
+                     */
+                    start_date: string;
+                    /**
+                     * Next billing date
+                     */
+                    next_billing_date: string;
+                }>;
+                /**
+                 * Option change history
+                 */
+                option_change_history: Array<{
+                    /**
+                     * Change date and time
+                     */
+                    changed_at: string;
+                    /**
+                     * Option name
+                     */
+                    option_name: string;
+                    /**
+                     * Action type
+                     */
+                    action_type: 'add' | 'remove';
+                    /**
+                     * Notes
+                     */
+                    notes?: string;
+                }>;
+                /**
+                 * SpecialContracts
+                 *
+                 * Special contracts
+                 */
+                special_contracts: {
+                    /**
+                     * SpecialContractItem
+                     *
+                     * Anshin support contract
+                     */
+                    anshin_support?: {
+                        /**
+                         * Whether enrolled
+                         */
+                        enrolled: boolean;
+                        /**
+                         * Start date
+                         */
+                        start_date?: string;
+                        /**
+                         * Applied month (YYYY-MM format)
+                         */
+                        applied_month?: string;
+                    };
+                    /**
+                     * SpecialContractItem
+                     *
+                     * Mutual use contract
+                     */
+                    mutual_use?: {
+                        /**
+                         * Whether enrolled
+                         */
+                        enrolled: boolean;
+                        /**
+                         * Start date
+                         */
+                        start_date?: string;
+                        /**
+                         * Applied month (YYYY-MM format)
+                         */
+                        applied_month?: string;
+                    };
+                    /**
+                     * SpecialContractItem
+                     *
+                     * Security fee contract
+                     */
+                    security_fee?: {
+                        /**
+                         * Whether enrolled
+                         */
+                        enrolled: boolean;
+                        /**
+                         * Start date
+                         */
+                        start_date?: string;
+                        /**
+                         * Applied month (YYYY-MM format)
+                         */
+                        applied_month?: string;
+                    };
+                    /**
+                     * SpecialContractItem
+                     *
+                     * Maintenance fee contract
+                     */
+                    maintenance_fee?: {
+                        /**
+                         * Whether enrolled
+                         */
+                        enrolled: boolean;
+                        /**
+                         * Start date
+                         */
+                        start_date?: string;
+                        /**
+                         * Applied month (YYYY-MM format)
+                         */
+                        applied_month?: string;
+                    };
+                };
+                /**
+                 * PaymentInfo
+                 *
+                 * Payment information
+                 */
+                payment_info: {
+                    /**
+                     * Payment method
+                     */
+                    method: 'credit_card' | 'bank_transfer';
+                    /**
+                     * Masked card number (last 4 digits only)
+                     */
+                    card_number?: string;
+                    /**
+                     * Cardholder name
+                     */
+                    cardholder_name?: string;
+                    /**
+                     * Card expiry date
+                     */
+                    expiry_date?: string;
+                    /**
+                     * Billing day of month
+                     */
+                    billing_day: number;
+                    /**
+                     * Last payment date
+                     */
+                    last_payment_date?: string;
+                    /**
+                     * Last payment amount
+                     */
+                    last_payment_amount?: number;
+                    /**
+                     * Payment status
+                     */
+                    status: 'normal' | 'error';
+                    /**
+                     * Payment history
+                     */
+                    payment_history: Array<{
+                        /**
+                         * Payment date
+                         */
+                        date: string;
+                        /**
+                         * Payment amount
+                         */
+                        amount: number;
+                        /**
+                         * Payment breakdown
+                         */
+                        breakdown: string;
+                        /**
+                         * Payment status
+                         */
+                        status: 'success' | 'failed';
+                        /**
+                         * Additional notes
+                         */
+                        notes?: string;
+                    }>;
+                };
+                /**
+                 * UnpaidInfo
+                 *
+                 * Unpaid information
+                 */
+                unpaid_info: {
+                    /**
+                     * Unpaid amount
+                     */
+                    amount: number;
+                    /**
+                     * Due date
+                     */
+                    due_date: string;
+                    /**
+                     * Reason for unpaid
+                     */
+                    reason?: string;
+                } | null;
+                /**
+                 * Campaigns
+                 *
+                 * Campaign information
+                 */
+                campaigns: {
+                    /**
+                     * Active campaigns
+                     */
+                    active: Array<{
+                        /**
+                         * Campaign name
+                         */
+                        campaign_name: string;
+                        /**
+                         * Campaign period start date
+                         */
+                        period_start?: string;
+                        /**
+                         * Campaign period end date
+                         */
+                        period_end?: string;
+                        /**
+                         * Discount content
+                         */
+                        discount_content?: string;
+                        /**
+                         * Remaining days
+                         */
+                        remaining_days?: number;
+                        /**
+                         * Applied date
+                         */
+                        applied_at?: string;
+                        /**
+                         * Campaign content
+                         */
+                        content?: string;
+                        /**
+                         * Campaign status
+                         */
+                        status?: string;
+                    }>;
+                    /**
+                     * Campaign history
+                     */
+                    history: Array<{
+                        /**
+                         * Campaign name
+                         */
+                        campaign_name: string;
+                        /**
+                         * Campaign period start date
+                         */
+                        period_start?: string;
+                        /**
+                         * Campaign period end date
+                         */
+                        period_end?: string;
+                        /**
+                         * Discount content
+                         */
+                        discount_content?: string;
+                        /**
+                         * Remaining days
+                         */
+                        remaining_days?: number;
+                        /**
+                         * Applied date
+                         */
+                        applied_at?: string;
+                        /**
+                         * Campaign content
+                         */
+                        content?: string;
+                        /**
+                         * Campaign status
+                         */
+                        status?: string;
+                    }>;
+                };
+            };
+            /**
+             * GetPointsResponse
+             *
+             * Points information
+             */
+            points?: {
+                /**
+                 * FIT365 points information
+                 */
+                fit365?: unknown;
+                /**
+                 * JOYFIT points information
+                 */
+                joyfit?: unknown;
+                /**
+                 * Rank information
+                 */
+                rank?: unknown;
+                /**
+                 * Earn history
+                 */
+                earn_history: Array<unknown>;
+                /**
+                 * Spend history
+                 */
+                spend_history: Array<unknown>;
+                /**
+                 * Adjustment history
+                 */
+                adjustment_history: Array<unknown>;
+            };
+            /**
+             * GetMemosResponse
+             *
+             * Staff memos
+             */
+            memos?: {
+                /**
+                 * List of memos
+                 */
+                memos: Array<unknown>;
+            };
         };
     };
 };
@@ -7274,82 +7126,13 @@ export type PutCrmMembersByIdBasicInfoResponses = {
      */
     200: {
         /**
-         * Member ID
+         * Whether the update was successful
          */
-        id: string;
+        success: boolean;
         /**
-         * Member number
+         * Updated member information
          */
-        member_number: string;
-        /**
-         * Name in kanji
-         */
-        name_kanji: string;
-        /**
-         * Name in kana
-         */
-        name_kana: string;
-        /**
-         * Birthday (ISO date)
-         */
-        birthday: string;
-        /**
-         * Age
-         */
-        age: number;
-        /**
-         * Gender
-         *
-         * Gender
-         */
-        gender: 'male' | 'female' | 'other';
-        /**
-         * Postal code
-         */
-        postal_code?: string;
-        /**
-         * Prefecture
-         */
-        prefecture?: string;
-        /**
-         * City
-         */
-        city?: string;
-        /**
-         * Address
-         */
-        address?: string;
-        /**
-         * Building
-         */
-        building?: string;
-        /**
-         * Phone number
-         */
-        phone: string;
-        /**
-         * Email address
-         */
-        email: string;
-        /**
-         * MemberEmergencyContact
-         *
-         * Emergency contact information
-         */
-        emergency_contact?: {
-            /**
-             * Emergency contact name
-             */
-            name: string;
-            /**
-             * Relationship to member
-             */
-            relationship: string;
-            /**
-             * Emergency contact phone
-             */
-            phone: string;
-        };
+        member?: unknown;
     };
 };
 
@@ -7479,30 +7262,7 @@ export type GetCrmMembersByIdMemosResponses = {
         /**
          * List of memos
          */
-        memos: Array<{
-            /**
-             * Memo ID
-             */
-            id: string;
-            /**
-             * Created date (ISO)
-             */
-            date: string;
-            /**
-             * MemoType
-             *
-             * Memo type
-             */
-            type: 'caution' | 'vip' | 'other';
-            /**
-             * Memo content
-             */
-            content: string;
-            /**
-             * Creator name
-             */
-            created_by: string;
-        }>;
+        memos: Array<unknown>;
     };
 };
 
@@ -7516,8 +7276,6 @@ export type PostCrmMembersByIdMemosData = {
      */
     body?: {
         /**
-         * MemoType
-         *
          * Memo type
          */
         type: 'caution' | 'vip' | 'other';
@@ -7586,27 +7344,13 @@ export type PostCrmMembersByIdMemosResponses = {
      */
     200: {
         /**
-         * Memo ID
+         * Whether the creation was successful
          */
-        id: string;
+        success: boolean;
         /**
-         * Created date (ISO)
+         * Created memo
          */
-        date: string;
-        /**
-         * MemoType
-         *
-         * Memo type
-         */
-        type: 'caution' | 'vip' | 'other';
-        /**
-         * Memo content
-         */
-        content: string;
-        /**
-         * Creator name
-         */
-        created_by: string;
+        memo?: unknown;
     };
 };
 
@@ -8020,11 +7764,9 @@ export type GetCrmMembersByIdContractsResponses = {
                  */
                 content?: string;
                 /**
-                 * CampaignStatus
-                 *
                  * Campaign status
                  */
-                status?: 'active' | 'expired' | 'upcoming';
+                status?: string;
             }>;
             /**
              * Campaign history
@@ -8059,11 +7801,9 @@ export type GetCrmMembersByIdContractsResponses = {
                  */
                 content?: string;
                 /**
-                 * CampaignStatus
-                 *
                  * Campaign status
                  */
-                status?: 'active' | 'expired' | 'upcoming';
+                status?: string;
             }>;
         };
     };
@@ -8216,25 +7956,13 @@ export type PutCrmMembersByIdHealthInfoResponses = {
      */
     200: {
         /**
-         * Health status
+         * Whether the update was successful
          */
-        health_status?: string;
+        success: boolean;
         /**
-         * Medical history
+         * Updated member information
          */
-        medical_history?: string;
-        /**
-         * Allergies
-         */
-        allergies?: string;
-        /**
-         * Exercise restrictions
-         */
-        exercise_restrictions?: string;
-        /**
-         * Other notes
-         */
-        other_notes?: string;
+        member?: unknown;
     };
 };
 
@@ -8316,17 +8044,13 @@ export type PutCrmMembersByIdMarketingConsentResponses = {
      */
     200: {
         /**
-         * Email marketing consent
+         * Whether the update was successful
          */
-        email: boolean;
+        success: boolean;
         /**
-         * SMS marketing consent
+         * Updated member information
          */
-        sms: boolean;
-        /**
-         * Push marketing consent
-         */
-        push: boolean;
+        member?: unknown;
     };
 };
 
@@ -8379,10 +8103,13 @@ export type DeleteCrmMembersByIdMemosByMemoIdResponses = {
     /**
      * DeleteMemoResponse
      *
-     * Empty response on successful delete
+     * Response for deleting a memo
      */
     200: {
-        id: string;
+        /**
+         * Whether the deletion was successful
+         */
+        success: boolean;
     };
 };
 
@@ -8396,8 +8123,6 @@ export type PutCrmMembersByIdMemosByMemoIdData = {
      */
     body?: {
         /**
-         * MemoType
-         *
          * Memo type
          */
         type?: 'caution' | 'vip' | 'other';
@@ -8466,27 +8191,13 @@ export type PutCrmMembersByIdMemosByMemoIdResponses = {
      */
     200: {
         /**
-         * Memo ID
+         * Whether the update was successful
          */
-        id: string;
+        success: boolean;
         /**
-         * Created date (ISO)
+         * Updated memo
          */
-        date: string;
-        /**
-         * MemoType
-         *
-         * Memo type
-         */
-        type: 'caution' | 'vip' | 'other';
-        /**
-         * Memo content
-         */
-        content: string;
-        /**
-         * Creator name
-         */
-        created_by: string;
+        memo?: unknown;
     };
 };
 
@@ -8500,8 +8211,6 @@ export type PostCrmMembersByIdPointsAdjustData = {
      */
     body?: {
         /**
-         * PointAdjustmentType
-         *
          * Adjustment type
          */
         type: 'add' | 'subtract';
@@ -8570,6 +8279,10 @@ export type PostCrmMembersByIdPointsAdjustResponses = {
      */
     200: {
         /**
+         * Whether the adjustment was successful
+         */
+        success: boolean;
+        /**
          * Member ID
          */
         id: string;
@@ -8580,8 +8293,6 @@ export type PostCrmMembersByIdPointsAdjustResponses = {
          */
         adjustment: {
             /**
-             * PointAdjustmentType
-             *
              * Adjustment type
              */
             type: 'add' | 'subtract';
@@ -8682,8 +8393,6 @@ export type PostCrmMembersByIdPointsData = {
      */
     body?: {
         /**
-         * PointAdjustmentType
-         *
          * Adjustment type
          */
         type: 'add' | 'subtract';
@@ -8752,6 +8461,10 @@ export type PostCrmMembersByIdPointsResponses = {
      */
     200: {
         /**
+         * Whether the adjustment was successful
+         */
+        success: boolean;
+        /**
          * Member ID
          */
         id: string;
@@ -8762,8 +8475,6 @@ export type PostCrmMembersByIdPointsResponses = {
          */
         adjustment: {
             /**
-             * PointAdjustmentType
-             *
              * Adjustment type
              */
             type: 'add' | 'subtract';
@@ -8830,74 +8541,15 @@ export type GetCrmMembersByIdRelationshipsResponses = {
         /**
          * Family relationships
          */
-        family: {
-            role: 'primary' | 'family_child';
-            children?: Array<{
-                id: string;
-                member_number: string;
-                name: string;
-                relationship: string;
-                status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
-            }>;
-            current_count?: number;
-            max_count?: number;
-            parent?: {
-                id: string;
-                member_number: string;
-                name: string;
-                relationship: string;
-                status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
-            };
-        };
+        family?: unknown;
         /**
          * Corporate relationships
          */
-        corporate: {
-            corporate_detail_member_id: string;
-            corporate_name: string;
-            corporate_number: string;
-            contract_type: string;
-            company_discount: {
-                applied: boolean;
-                rate_percent: number | null;
-            };
-            contact_department: string;
-            contact_name: string;
-        } | null;
+        corporate?: unknown;
         /**
          * Referral relationships
          */
-        referral: {
-            as_referrer: {
-                referrals: Array<{
-                    id: string;
-                    member_number: string;
-                    name: string;
-                    referred_at: string;
-                    membership_status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
-                    /**
-                     * ReferralPointsStatus
-                     *
-                     * Referral points status
-                     */
-                    points_status: 'normal' | 'blocked' | 'none';
-                    points_earned: number | null;
-                }>;
-                summary: {
-                    total_referrals: number;
-                    total_points: number;
-                };
-            };
-            as_referee: {
-                referrer: {
-                    id: string;
-                    member_number: string;
-                    name: string;
-                    referred_at: string;
-                    referral_benefit: string;
-                };
-            } | null;
-        };
+        referral?: unknown;
     };
 };
 
@@ -8950,653 +8602,629 @@ export type GetCrmMembersByIdResponses = {
      */
     200: {
         /**
-         * MemberBasicInfo
-         *
-         * Basic member information
+         * Complete member information
          */
-        basic_info: {
+        member: {
             /**
-             * Member ID
-             */
-            id: string;
-            /**
-             * Member number
-             */
-            member_number: string;
-            /**
-             * Name in kanji
-             */
-            name_kanji: string;
-            /**
-             * Name in kana
-             */
-            name_kana: string;
-            /**
-             * Birthday (ISO date)
-             */
-            birthday: string;
-            /**
-             * Age
-             */
-            age: number;
-            /**
-             * Gender
+             * MemberBasicInfo
              *
-             * Gender
+             * Basic member information
              */
-            gender: 'male' | 'female' | 'other';
-            /**
-             * Postal code
-             */
-            postal_code?: string;
-            /**
-             * Prefecture
-             */
-            prefecture?: string;
-            /**
-             * City
-             */
-            city?: string;
-            /**
-             * Address
-             */
-            address?: string;
-            /**
-             * Building
-             */
-            building?: string;
-            /**
-             * Phone number
-             */
-            phone: string;
-            /**
-             * Email address
-             */
-            email: string;
-            /**
-             * MemberEmergencyContact
-             *
-             * Emergency contact information
-             */
-            emergency_contact?: {
+            basic_info: {
                 /**
-                 * Emergency contact name
+                 * Member ID
                  */
-                name: string;
+                id: string;
                 /**
-                 * Relationship to member
+                 * Member number
                  */
-                relationship: string;
+                member_number: string;
                 /**
-                 * Emergency contact phone
+                 * Name in kanji
+                 */
+                name_kanji: string;
+                /**
+                 * Name in kana
+                 */
+                name_kana: string;
+                /**
+                 * Birthday (ISO date)
+                 */
+                birthday: string;
+                /**
+                 * Age
+                 */
+                age: number;
+                /**
+                 * Gender
+                 */
+                gender: 'male' | 'female' | 'other';
+                /**
+                 * Postal code
+                 */
+                postal_code?: string;
+                /**
+                 * Prefecture
+                 */
+                prefecture?: string;
+                /**
+                 * City
+                 */
+                city?: string;
+                /**
+                 * Address
+                 */
+                address?: string;
+                /**
+                 * Building
+                 */
+                building?: string;
+                /**
+                 * Phone number
                  */
                 phone: string;
-            };
-        };
-        /**
-         * MemberProfile
-         *
-         * Member profile
-         */
-        profile: {
-            /**
-             * Member type
-             */
-            member_type: 'regular' | 'family' | 'corporate' | 'company_discount';
-            /**
-             * Member status
-             */
-            status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
-            /**
-             * Store ID
-             */
-            store_id: string;
-            /**
-             * Store name
-             */
-            store_name: string;
-            /**
-             * Brand
-             */
-            brand: 'joyfit' | 'fit365';
-            /**
-             * Join date (ISO date)
-             */
-            joined_at: string;
-            /**
-             * Withdrawal date (ISO date)
-             */
-            withdrawn_at?: string;
-            /**
-             * Blacklisted status
-             */
-            is_black_listed: boolean;
-        };
-        /**
-         * MemberEKYC
-         *
-         * eKYC information
-         */
-        ekyc?: {
-            /**
-             * Whether eKYC is verified
-             */
-            verified: boolean;
-            /**
-             * Verification datetime (ISO)
-             */
-            verified_at?: string;
-            /**
-             * Document type
-             */
-            document_type?: string;
-            /**
-             * Photo URL
-             */
-            photoUrl?: string;
-        };
-        /**
-         * MemberConsent
-         *
-         * Consent information
-         */
-        consent?: {
-            /**
-             * Member agreement consent
-             */
-            member_agreement: {
                 /**
-                 * Agreement version
+                 * Email address
                  */
-                version: string;
+                email: string;
                 /**
-                 * Agreed datetime (ISO)
+                 * MemberEmergencyContact
+                 *
+                 * Emergency contact information
                  */
-                agreed_at: string;
+                emergency_contact?: {
+                    /**
+                     * Emergency contact name
+                     */
+                    name: string;
+                    /**
+                     * Relationship to member
+                     */
+                    relationship: string;
+                    /**
+                     * Emergency contact phone
+                     */
+                    phone: string;
+                };
             };
             /**
-             * Privacy policy consent
-             */
-            privacy_policy: {
-                /**
-                 * Policy version
-                 */
-                version: string;
-                /**
-                 * Agreed datetime (ISO)
-                 */
-                agreed_at: string;
-            };
-            /**
-             * Optional agreement consent
-             */
-            optional_agreement?: {
-                /**
-                 * Optional agreement version
-                 */
-                version: string;
-                /**
-                 * Agreed datetime (ISO)
-                 */
-                agreed_at: string;
-            };
-            /**
-             * Marketing consent
-             */
-            marketing_consent: {
-                /**
-                 * Email marketing consent
-                 */
-                email: boolean;
-                /**
-                 * SMS marketing consent
-                 */
-                sms: boolean;
-                /**
-                 * Push marketing consent
-                 */
-                push: boolean;
-            };
-        };
-        /**
-         * MemberHealthInfo
-         *
-         * Health information
-         */
-        health_info?: {
-            /**
-             * Health status
-             */
-            health_status?: string;
-            /**
-             * Medical history
-             */
-            medical_history?: string;
-            /**
-             * Allergies
-             */
-            allergies?: string;
-            /**
-             * Exercise restrictions
-             */
-            exercise_restrictions?: string;
-            /**
-             * Other notes
-             */
-            other_notes?: string;
-        };
-        /**
-         * GetContractsResponse
-         *
-         * Contract information
-         */
-        contracts?: {
-            /**
-             * MainContract
+             * MemberProfile
              *
-             * Main contract information
+             * Member profile
              */
-            main_contract: {
+            profile: {
                 /**
-                 * Plan name
+                 * Member type
                  */
-                plan_name: string;
+                member_type: 'regular' | 'family' | 'corporate' | 'company_discount';
                 /**
-                 * Monthly fee (tax included)
+                 * Member status
                  */
-                monthly_fee: number;
+                status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
                 /**
-                 * Contract start date
+                 * Store ID
                  */
-                start_date: string;
+                store_id: string;
                 /**
-                 * Penalty period end date
+                 * Store name
                  */
-                penalty_period_end?: string;
+                store_name: string;
                 /**
-                 * Contract change history
+                 * Brand
                  */
-                change_history: Array<{
+                brand: 'joyfit' | 'fit365';
+                /**
+                 * Join date (ISO date)
+                 */
+                joined_at: string;
+                /**
+                 * Withdrawal date (ISO date)
+                 */
+                withdrawn_at?: string;
+                /**
+                 * Blacklisted status
+                 */
+                is_black_listed: boolean;
+            };
+            /**
+             * MemberEKYC
+             *
+             * eKYC information
+             */
+            ekyc?: {
+                /**
+                 * Whether eKYC is verified
+                 */
+                verified: boolean;
+                /**
+                 * Verification datetime (ISO)
+                 */
+                verified_at?: string;
+                /**
+                 * Document type
+                 */
+                document_type?: string;
+                /**
+                 * Photo URL
+                 */
+                photoUrl?: string;
+            };
+            /**
+             * MemberConsent
+             *
+             * Consent information
+             */
+            consent?: {
+                /**
+                 * Member agreement consent
+                 */
+                member_agreement: {
+                    /**
+                     * Agreement version
+                     */
+                    version: string;
+                    /**
+                     * Agreed datetime (ISO)
+                     */
+                    agreed_at: string;
+                };
+                /**
+                 * Privacy policy consent
+                 */
+                privacy_policy: {
+                    /**
+                     * Policy version
+                     */
+                    version: string;
+                    /**
+                     * Agreed datetime (ISO)
+                     */
+                    agreed_at: string;
+                };
+                /**
+                 * Optional agreement consent
+                 */
+                optional_agreement?: {
+                    /**
+                     * Optional agreement version
+                     */
+                    version: string;
+                    /**
+                     * Agreed datetime (ISO)
+                     */
+                    agreed_at: string;
+                };
+                /**
+                 * Marketing consent
+                 */
+                marketing_consent: {
+                    /**
+                     * Email marketing consent
+                     */
+                    email: boolean;
+                    /**
+                     * SMS marketing consent
+                     */
+                    sms: boolean;
+                    /**
+                     * Push marketing consent
+                     */
+                    push: boolean;
+                };
+            };
+            /**
+             * MemberHealthInfo
+             *
+             * Health information
+             */
+            health_info?: {
+                /**
+                 * Health status
+                 */
+                health_status?: string;
+                /**
+                 * Medical history
+                 */
+                medical_history?: string;
+                /**
+                 * Allergies
+                 */
+                allergies?: string;
+                /**
+                 * Exercise restrictions
+                 */
+                exercise_restrictions?: string;
+                /**
+                 * Other notes
+                 */
+                other_notes?: string;
+            };
+            /**
+             * GetContractsResponse
+             *
+             * Contract information
+             */
+            contracts?: {
+                /**
+                 * MainContract
+                 *
+                 * Main contract information
+                 */
+                main_contract: {
+                    /**
+                     * Plan name
+                     */
+                    plan_name: string;
+                    /**
+                     * Monthly fee (tax included)
+                     */
+                    monthly_fee: number;
+                    /**
+                     * Contract start date
+                     */
+                    start_date: string;
+                    /**
+                     * Penalty period end date
+                     */
+                    penalty_period_end?: string;
+                    /**
+                     * Contract change history
+                     */
+                    change_history: Array<{
+                        /**
+                         * Change date and time
+                         */
+                        changed_at: string;
+                        /**
+                         * Previous plan name
+                         */
+                        previous_plan: string;
+                        /**
+                         * New plan name
+                         */
+                        new_plan: string;
+                        /**
+                         * Reason for change
+                         */
+                        reason?: string;
+                    }>;
+                };
+                /**
+                 * Option contracts
+                 */
+                option_contracts: Array<{
+                    /**
+                     * Option contract ID
+                     */
+                    id: string;
+                    /**
+                     * Option name
+                     */
+                    name: string;
+                    /**
+                     * Monthly fee
+                     */
+                    monthly_fee: number;
+                    /**
+                     * Start date
+                     */
+                    start_date: string;
+                    /**
+                     * Next billing date
+                     */
+                    next_billing_date: string;
+                }>;
+                /**
+                 * Option change history
+                 */
+                option_change_history: Array<{
                     /**
                      * Change date and time
                      */
                     changed_at: string;
                     /**
-                     * Previous plan name
+                     * Option name
                      */
-                    previous_plan: string;
+                    option_name: string;
                     /**
-                     * New plan name
+                     * Action type
                      */
-                    new_plan: string;
+                    action_type: 'add' | 'remove';
                     /**
-                     * Reason for change
-                     */
-                    reason?: string;
-                }>;
-            };
-            /**
-             * Option contracts
-             */
-            option_contracts: Array<{
-                /**
-                 * Option contract ID
-                 */
-                id: string;
-                /**
-                 * Option name
-                 */
-                name: string;
-                /**
-                 * Monthly fee
-                 */
-                monthly_fee: number;
-                /**
-                 * Start date
-                 */
-                start_date: string;
-                /**
-                 * Next billing date
-                 */
-                next_billing_date: string;
-            }>;
-            /**
-             * Option change history
-             */
-            option_change_history: Array<{
-                /**
-                 * Change date and time
-                 */
-                changed_at: string;
-                /**
-                 * Option name
-                 */
-                option_name: string;
-                /**
-                 * Action type
-                 */
-                action_type: 'add' | 'remove';
-                /**
-                 * Notes
-                 */
-                notes?: string;
-            }>;
-            /**
-             * SpecialContracts
-             *
-             * Special contracts
-             */
-            special_contracts: {
-                /**
-                 * SpecialContractItem
-                 *
-                 * Anshin support contract
-                 */
-                anshin_support?: {
-                    /**
-                     * Whether enrolled
-                     */
-                    enrolled: boolean;
-                    /**
-                     * Start date
-                     */
-                    start_date?: string;
-                    /**
-                     * Applied month (YYYY-MM format)
-                     */
-                    applied_month?: string;
-                };
-                /**
-                 * SpecialContractItem
-                 *
-                 * Mutual use contract
-                 */
-                mutual_use?: {
-                    /**
-                     * Whether enrolled
-                     */
-                    enrolled: boolean;
-                    /**
-                     * Start date
-                     */
-                    start_date?: string;
-                    /**
-                     * Applied month (YYYY-MM format)
-                     */
-                    applied_month?: string;
-                };
-                /**
-                 * SpecialContractItem
-                 *
-                 * Security fee contract
-                 */
-                security_fee?: {
-                    /**
-                     * Whether enrolled
-                     */
-                    enrolled: boolean;
-                    /**
-                     * Start date
-                     */
-                    start_date?: string;
-                    /**
-                     * Applied month (YYYY-MM format)
-                     */
-                    applied_month?: string;
-                };
-                /**
-                 * SpecialContractItem
-                 *
-                 * Maintenance fee contract
-                 */
-                maintenance_fee?: {
-                    /**
-                     * Whether enrolled
-                     */
-                    enrolled: boolean;
-                    /**
-                     * Start date
-                     */
-                    start_date?: string;
-                    /**
-                     * Applied month (YYYY-MM format)
-                     */
-                    applied_month?: string;
-                };
-            };
-            /**
-             * PaymentInfo
-             *
-             * Payment information
-             */
-            payment_info: {
-                /**
-                 * Payment method
-                 */
-                method: 'credit_card' | 'bank_transfer';
-                /**
-                 * Masked card number (last 4 digits only)
-                 */
-                card_number?: string;
-                /**
-                 * Cardholder name
-                 */
-                cardholder_name?: string;
-                /**
-                 * Card expiry date
-                 */
-                expiry_date?: string;
-                /**
-                 * Billing day of month
-                 */
-                billing_day: number;
-                /**
-                 * Last payment date
-                 */
-                last_payment_date?: string;
-                /**
-                 * Last payment amount
-                 */
-                last_payment_amount?: number;
-                /**
-                 * Payment status
-                 */
-                status: 'normal' | 'error';
-                /**
-                 * Payment history
-                 */
-                payment_history: Array<{
-                    /**
-                     * Payment date
-                     */
-                    date: string;
-                    /**
-                     * Payment amount
-                     */
-                    amount: number;
-                    /**
-                     * Payment breakdown
-                     */
-                    breakdown: string;
-                    /**
-                     * Payment status
-                     */
-                    status: 'success' | 'failed';
-                    /**
-                     * Additional notes
+                     * Notes
                      */
                     notes?: string;
                 }>;
-            };
-            /**
-             * UnpaidInfo
-             *
-             * Unpaid information
-             */
-            unpaid_info: {
                 /**
-                 * Unpaid amount
-                 */
-                amount: number;
-                /**
-                 * Due date
-                 */
-                due_date: string;
-                /**
-                 * Reason for unpaid
-                 */
-                reason?: string;
-            } | null;
-            /**
-             * Campaigns
-             *
-             * Campaign information
-             */
-            campaigns: {
-                /**
-                 * Active campaigns
-                 */
-                active: Array<{
-                    /**
-                     * Campaign name
-                     */
-                    campaign_name: string;
-                    /**
-                     * Campaign period start date
-                     */
-                    period_start?: string;
-                    /**
-                     * Campaign period end date
-                     */
-                    period_end?: string;
-                    /**
-                     * Discount content
-                     */
-                    discount_content?: string;
-                    /**
-                     * Remaining days
-                     */
-                    remaining_days?: number;
-                    /**
-                     * Applied date
-                     */
-                    applied_at?: string;
-                    /**
-                     * Campaign content
-                     */
-                    content?: string;
-                    /**
-                     * CampaignStatus
-                     *
-                     * Campaign status
-                     */
-                    status?: 'active' | 'expired' | 'upcoming';
-                }>;
-                /**
-                 * Campaign history
-                 */
-                history: Array<{
-                    /**
-                     * Campaign name
-                     */
-                    campaign_name: string;
-                    /**
-                     * Campaign period start date
-                     */
-                    period_start?: string;
-                    /**
-                     * Campaign period end date
-                     */
-                    period_end?: string;
-                    /**
-                     * Discount content
-                     */
-                    discount_content?: string;
-                    /**
-                     * Remaining days
-                     */
-                    remaining_days?: number;
-                    /**
-                     * Applied date
-                     */
-                    applied_at?: string;
-                    /**
-                     * Campaign content
-                     */
-                    content?: string;
-                    /**
-                     * CampaignStatus
-                     *
-                     * Campaign status
-                     */
-                    status?: 'active' | 'expired' | 'upcoming';
-                }>;
-            };
-        };
-        /**
-         * GetPointsResponse
-         *
-         * Points information
-         */
-        points?: {
-            /**
-             * FIT365 points information
-             */
-            fit365?: unknown;
-            /**
-             * JOYFIT points information
-             */
-            joyfit?: unknown;
-            /**
-             * Rank information
-             */
-            rank?: unknown;
-            /**
-             * Earn history
-             */
-            earn_history: Array<unknown>;
-            /**
-             * Spend history
-             */
-            spend_history: Array<unknown>;
-            /**
-             * Adjustment history
-             */
-            adjustment_history: Array<unknown>;
-        };
-        /**
-         * GetMemosResponse
-         *
-         * Staff memos
-         */
-        memos?: {
-            /**
-             * List of memos
-             */
-            memos: Array<{
-                /**
-                 * Memo ID
-                 */
-                id: string;
-                /**
-                 * Created date (ISO)
-                 */
-                date: string;
-                /**
-                 * MemoType
+                 * SpecialContracts
                  *
-                 * Memo type
+                 * Special contracts
                  */
-                type: 'caution' | 'vip' | 'other';
+                special_contracts: {
+                    /**
+                     * SpecialContractItem
+                     *
+                     * Anshin support contract
+                     */
+                    anshin_support?: {
+                        /**
+                         * Whether enrolled
+                         */
+                        enrolled: boolean;
+                        /**
+                         * Start date
+                         */
+                        start_date?: string;
+                        /**
+                         * Applied month (YYYY-MM format)
+                         */
+                        applied_month?: string;
+                    };
+                    /**
+                     * SpecialContractItem
+                     *
+                     * Mutual use contract
+                     */
+                    mutual_use?: {
+                        /**
+                         * Whether enrolled
+                         */
+                        enrolled: boolean;
+                        /**
+                         * Start date
+                         */
+                        start_date?: string;
+                        /**
+                         * Applied month (YYYY-MM format)
+                         */
+                        applied_month?: string;
+                    };
+                    /**
+                     * SpecialContractItem
+                     *
+                     * Security fee contract
+                     */
+                    security_fee?: {
+                        /**
+                         * Whether enrolled
+                         */
+                        enrolled: boolean;
+                        /**
+                         * Start date
+                         */
+                        start_date?: string;
+                        /**
+                         * Applied month (YYYY-MM format)
+                         */
+                        applied_month?: string;
+                    };
+                    /**
+                     * SpecialContractItem
+                     *
+                     * Maintenance fee contract
+                     */
+                    maintenance_fee?: {
+                        /**
+                         * Whether enrolled
+                         */
+                        enrolled: boolean;
+                        /**
+                         * Start date
+                         */
+                        start_date?: string;
+                        /**
+                         * Applied month (YYYY-MM format)
+                         */
+                        applied_month?: string;
+                    };
+                };
                 /**
-                 * Memo content
+                 * PaymentInfo
+                 *
+                 * Payment information
                  */
-                content: string;
+                payment_info: {
+                    /**
+                     * Payment method
+                     */
+                    method: 'credit_card' | 'bank_transfer';
+                    /**
+                     * Masked card number (last 4 digits only)
+                     */
+                    card_number?: string;
+                    /**
+                     * Cardholder name
+                     */
+                    cardholder_name?: string;
+                    /**
+                     * Card expiry date
+                     */
+                    expiry_date?: string;
+                    /**
+                     * Billing day of month
+                     */
+                    billing_day: number;
+                    /**
+                     * Last payment date
+                     */
+                    last_payment_date?: string;
+                    /**
+                     * Last payment amount
+                     */
+                    last_payment_amount?: number;
+                    /**
+                     * Payment status
+                     */
+                    status: 'normal' | 'error';
+                    /**
+                     * Payment history
+                     */
+                    payment_history: Array<{
+                        /**
+                         * Payment date
+                         */
+                        date: string;
+                        /**
+                         * Payment amount
+                         */
+                        amount: number;
+                        /**
+                         * Payment breakdown
+                         */
+                        breakdown: string;
+                        /**
+                         * Payment status
+                         */
+                        status: 'success' | 'failed';
+                        /**
+                         * Additional notes
+                         */
+                        notes?: string;
+                    }>;
+                };
                 /**
-                 * Creator name
+                 * UnpaidInfo
+                 *
+                 * Unpaid information
                  */
-                created_by: string;
-            }>;
+                unpaid_info: {
+                    /**
+                     * Unpaid amount
+                     */
+                    amount: number;
+                    /**
+                     * Due date
+                     */
+                    due_date: string;
+                    /**
+                     * Reason for unpaid
+                     */
+                    reason?: string;
+                } | null;
+                /**
+                 * Campaigns
+                 *
+                 * Campaign information
+                 */
+                campaigns: {
+                    /**
+                     * Active campaigns
+                     */
+                    active: Array<{
+                        /**
+                         * Campaign name
+                         */
+                        campaign_name: string;
+                        /**
+                         * Campaign period start date
+                         */
+                        period_start?: string;
+                        /**
+                         * Campaign period end date
+                         */
+                        period_end?: string;
+                        /**
+                         * Discount content
+                         */
+                        discount_content?: string;
+                        /**
+                         * Remaining days
+                         */
+                        remaining_days?: number;
+                        /**
+                         * Applied date
+                         */
+                        applied_at?: string;
+                        /**
+                         * Campaign content
+                         */
+                        content?: string;
+                        /**
+                         * Campaign status
+                         */
+                        status?: string;
+                    }>;
+                    /**
+                     * Campaign history
+                     */
+                    history: Array<{
+                        /**
+                         * Campaign name
+                         */
+                        campaign_name: string;
+                        /**
+                         * Campaign period start date
+                         */
+                        period_start?: string;
+                        /**
+                         * Campaign period end date
+                         */
+                        period_end?: string;
+                        /**
+                         * Discount content
+                         */
+                        discount_content?: string;
+                        /**
+                         * Remaining days
+                         */
+                        remaining_days?: number;
+                        /**
+                         * Applied date
+                         */
+                        applied_at?: string;
+                        /**
+                         * Campaign content
+                         */
+                        content?: string;
+                        /**
+                         * Campaign status
+                         */
+                        status?: string;
+                    }>;
+                };
+            };
+            /**
+             * GetPointsResponse
+             *
+             * Points information
+             */
+            points?: {
+                /**
+                 * FIT365 points information
+                 */
+                fit365?: unknown;
+                /**
+                 * JOYFIT points information
+                 */
+                joyfit?: unknown;
+                /**
+                 * Rank information
+                 */
+                rank?: unknown;
+                /**
+                 * Earn history
+                 */
+                earn_history: Array<unknown>;
+                /**
+                 * Spend history
+                 */
+                spend_history: Array<unknown>;
+                /**
+                 * Adjustment history
+                 */
+                adjustment_history: Array<unknown>;
+            };
+            /**
+             * GetMemosResponse
+             *
+             * Staff memos
+             */
+            memos?: {
+                /**
+                 * List of memos
+                 */
+                memos: Array<unknown>;
+            };
         };
     };
 };
@@ -9864,6 +9492,10 @@ export type PostCrmMembersExportResponses = {
      */
     200: {
         /**
+         * Whether the export was successful
+         */
+        success: boolean;
+        /**
          * Export ID
          */
         exportId: string;
@@ -9872,11 +9504,9 @@ export type PostCrmMembersExportResponses = {
          */
         format: 'csv' | 'excel';
         /**
-         * ExportMembersStatus
-         *
          * Export status
          */
-        status: 'processing' | 'completed' | 'failed';
+        status: string;
     };
 };
 
@@ -9929,7 +9559,7 @@ export type GetCrmMembersData = {
         /**
          * Sort field
          */
-        sort_by?: 'member_number' | 'joined_at' | 'last_visit_date' | 'name';
+        sort_by?: 'member_number' | 'joined_at' | 'last_visit' | 'name';
         /**
          * Sort order
          */
@@ -10165,9 +9795,13 @@ export type PostCrmMembershipApplicationsByIdApproveResponses = {
          */
         approval_reason: string;
         /**
-         * Member ID
+         * Whether contract was created
          */
-        member_id: string;
+        contract_created: boolean;
+        /**
+         * Contract ID
+         */
+        contract_id: string;
     };
 };
 
@@ -10456,7 +10090,7 @@ export type GetCrmMembershipApplicationsByIdResponses = {
             /**
              * Risk reason
              */
-            risk_reason: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'document_issue' | 'other';
+            risk_reason: string;
             /**
              * Plan name
              */
@@ -10480,7 +10114,7 @@ export type GetCrmMembershipApplicationsByIdResponses = {
             /**
              * Gender
              */
-            gender?: 'male' | 'female' | 'other';
+            gender?: 'male' | 'female' | 'other' | 'unknown';
             /**
              * Blood type
              */
@@ -10514,17 +10148,13 @@ export type GetCrmMembershipApplicationsByIdResponses = {
              */
             emergency_contact_phone?: string;
             /**
-             * MembershipApplicationPaymentMethod
-             *
              * Payment method
              */
-            payment_method?: 'credit_card' | 'bank_transfer';
+            payment_method?: string;
             /**
-             * MembershipApplicationPaymentStatus
-             *
              * Payment status
              */
-            payment_status?: 'pending' | 'paid' | 'failed';
+            payment_status?: string;
             /**
              * Detailed risk information
              */
@@ -10999,7 +10629,7 @@ export type GetCrmMembershipApplicationsData = {
         /**
          * Filter by risk reason
          */
-        risk_reason?: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'document_issue' | 'other';
+        risk_reason?: string;
         /**
          * Sort field
          */
@@ -11077,7 +10707,7 @@ export type GetCrmMembershipApplicationsResponses = {
             /**
              * Risk reason
              */
-            risk_reason: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'document_issue' | 'other';
+            risk_reason: string;
             /**
              * Plan name
              */
