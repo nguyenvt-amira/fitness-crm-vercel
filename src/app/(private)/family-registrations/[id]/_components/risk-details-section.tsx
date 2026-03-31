@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 
 import { formatDateYYYYMM_HHMMSS } from '@/utils/date.util';
+import { getRiskReasonLabelJa } from '@/utils/risk-reason.util';
 import {
   AlertTriangle,
   CheckCircle2,
@@ -78,7 +79,9 @@ export function FamilyRegistrationRiskDetailsSection({
                 <span className="font-medium">リスクスコア合計</span>
                 <span className="text-destructive text-2xl font-bold">{riskScore}</span>
               </div>
-              <div className="text-muted-foreground mt-2 text-sm">理由：{riskReason}</div>
+              <div className="text-muted-foreground mt-2 text-sm">
+                理由：{getRiskReasonLabelJa(riskReason)}
+              </div>
             </div>
 
             {/* Risk Factors Breakdown */}
@@ -93,7 +96,7 @@ export function FamilyRegistrationRiskDetailsSection({
                       onClick={() => toggleExpand(index)}
                     >
                       <div className="flex items-center gap-4">
-                        <span className="font-medium">{detail.reason}</span>
+                        <span className="font-medium">{getRiskReasonLabelJa(detail.reason)}</span>
                         <span className="text-muted-foreground text-sm">{detail.score}</span>
                       </div>
                       {expandedItems.has(index) ? (
