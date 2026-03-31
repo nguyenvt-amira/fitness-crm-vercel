@@ -16,8 +16,8 @@
     "generate-routes": "tsx src/lib/routes/scripts/generate-routes.ts",
     "generate-openapi": "tsx src/app/api/_scripts/generate-openapi-from-zod.ts",
     "openapi-ts": "openapi-ts",
-    "generate-api": "dotenv -e .env -- openapi-ts --output src/lib/api",
-    "generate-client": "openapi-ts --input ./src/lib/openapi.json --output src/lib/api"
+    "generate-api": "dotenv -e .env -- openapi-ts -f ./openapi-ts.config.ts",
+    "generate-client": "openapi-ts -f ./openapi-ts.config.ts"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

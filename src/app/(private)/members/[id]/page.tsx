@@ -33,9 +33,8 @@ import {
   postCrmMembersByIdMemosMutation,
   putCrmMembersByIdMemosByMemoIdMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
+import type { StaffMemo } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
-
-import type { StaffMemo } from '@/types/member.type';
 
 import { MEMBER_STATUS_CLASSES } from '../_lib/constants';
 import { MEMBER_STATUS_LABELS } from '../_lib/constants';
@@ -89,7 +88,12 @@ export default function MemberDetailPage() {
     onSuccess: invalidateCommunications,
   });
 
-  const { data, isLoading, isError, refetch } = useQuery(
+  const {
+    data: member,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery(
     getCrmMembersByIdOptions({
       path: {
         id: memberId,
@@ -97,18 +101,16 @@ export default function MemberDetailPage() {
     }),
   );
 
-  if (isLoading || isError || !data?.member) {
+  if (isLoading || isError || !member) {
     return (
       <DataStateBoundary
         isLoading={isLoading}
         isError={isError}
-        isEmpty={!data?.member}
+        isEmpty={!member}
         onRetry={() => refetch()}
       />
     );
   }
-
-  const { member } = data;
 
   // Mock alerts - in real app, these would come from API
   const has_unpaid = false; // TODO: Get from member data
@@ -312,7 +314,7 @@ export default function MemberDetailPage() {
 
           <ScrollArea className="mt-2 min-h-0 min-w-0 flex-1 pr-2">
             <TabsContent value="basic">
-              <BasicInfoTab memberId={memberId} />
+              <BasicInfoTab member={member} />
             </TabsContent>
 
             <TabsContent value="contracts">

@@ -16,9 +16,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import type { GetCrmMembersResponse } from '@/lib/api/types.gen';
+import { Brand, MemberStatus, MemberType } from '@/lib/api/types.gen';
 import { cn } from '@/lib/utils';
-
-import { Brand, MemberStatus, MemberType } from '@/types/member.type';
 
 import { BRAND_CLASSES, BRAND_LABELS, MEMBER_STATUS_CLASSES } from '../_lib/constants';
 import { MEMBER_STATUS_LABELS, MEMBER_TYPE_LABELS } from '../_lib/constants';

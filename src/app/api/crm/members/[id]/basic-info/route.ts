@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/app/api/_mock-db';
 import {
   ErrorResponseSchema,
-  GetMemberDetailResponseSchema,
+  MemberBasicInfoSchema,
   type UpdateBasicInfoRequest,
   UpdateBasicInfoRequestSchema,
   type UpdateBasicInfoResponse,
@@ -30,7 +30,7 @@ registerRoute({
   responses: [
     {
       status: 200,
-      schema: GetMemberDetailResponseSchema,
+      schema: MemberBasicInfoSchema,
       description: 'Member basic info',
     },
     {
@@ -92,14 +92,13 @@ registerRoute({
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    // throw new Error('test');
     const { id } = await params;
     const member = db.members.get(id);
     if (!member) {
       return NextResponse.json({ error: 'Member not found' }, { status: 404 });
     }
-    return NextResponse.json({ member });
-  } catch (error) {
+    return NextResponse.json(member.basic_info);
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch basic info' }, { status: 500 });
   }
 }
@@ -122,13 +121,9 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'Member not found' }, { status: 404 });
     }
 
-    const response: UpdateBasicInfoResponse = {
-      success: true,
-      member: updatedMember as any,
-    };
-
+    const response: UpdateBasicInfoResponse = updatedMember.basic_info as any;
     return NextResponse.json(response);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to update basic info' }, { status: 500 });
   }
 }
