@@ -16,10 +16,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import type { GetCrmMembersResponse } from '@/lib/api/types.gen';
-import { Brand, MemberStatus, MemberType } from '@/lib/api/types.gen';
-import { cn } from '@/lib/utils';
 
-import { BRAND_CLASSES, BRAND_LABELS, MEMBER_STATUS_CLASSES } from '../_lib/constants';
+import { Brand, MemberStatus, MemberType } from '@/types/member.type';
+
+import { STATUS_VARIANTS } from '../_lib/constants';
 import { MEMBER_STATUS_LABELS, MEMBER_TYPE_LABELS } from '../_lib/constants';
 
 interface MembersTableColumnsProps {
@@ -86,7 +86,7 @@ export function MembersTableColumns({
       accessorKey: 'status',
       header: 'ステータス',
       cell: ({ row }) => (
-        <Badge className={MEMBER_STATUS_CLASSES[row.original.status as MemberStatus]}>
+        <Badge variant={STATUS_VARIANTS[row.original.status as MemberStatus]}>
           {row.original.status ? MEMBER_STATUS_LABELS[row.original.status as MemberStatus] : '-'}
         </Badge>
       ),
@@ -100,14 +100,16 @@ export function MembersTableColumns({
       accessorKey: 'brand',
       header: 'ブランド',
       cell: ({ row }) => (
-        <Badge
-          className={cn(
-            'rounded-md',
-            row.original.brand ? BRAND_CLASSES[row.original.brand as Brand] : '',
-          )}
-        >
-          {row.original.brand ? BRAND_LABELS[row.original.brand as Brand] : '-'}
-        </Badge>
+        <div className="flex items-center gap-1">
+          {/* TODO: Add brand icon */}
+          <span>
+            {row.original.brand === Brand.FIT365
+              ? 'FIT365'
+              : row.original.brand === Brand.JOYFIT
+                ? 'JOYFIT'
+                : '-'}
+          </span>
+        </div>
       ),
     },
     {

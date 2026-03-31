@@ -146,7 +146,7 @@ export async function GET(request: NextRequest) {
         case 'joined_at':
           comparison = new Date(a.joined_at).getTime() - new Date(b.joined_at).getTime();
           break;
-        case 'last_visit_date':
+        case 'last_visit':
           const aDate = a.last_visit_date ? new Date(a.last_visit_date).getTime() : 0;
           const bDate = b.last_visit_date ? new Date(b.last_visit_date).getTime() : 0;
           comparison = aDate - bDate;

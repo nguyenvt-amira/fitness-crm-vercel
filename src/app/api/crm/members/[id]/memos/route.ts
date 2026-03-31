@@ -10,7 +10,8 @@ import {
 } from '@/app/api/_schemas/member.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
 
-import { MemoType, type StaffMemo } from '@/lib/api/types.gen';
+import { MemoType } from '@/types/member.type';
+import type { StaffMemo } from '@/types/member.type';
 
 // Register OpenAPI documentation for GET route
 registerRoute({
@@ -194,8 +195,13 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       created_by: validatedBody.created_by,
     });
 
-    return NextResponse.json(newMemo);
-  } catch {
+    const response: CreateMemoResponse = {
+      success: true,
+      memo: newMemo as any,
+    };
+
+    return NextResponse.json(response);
+  } catch (error) {
     return NextResponse.json({ error: 'Failed to create memo' }, { status: 500 });
   }
 }

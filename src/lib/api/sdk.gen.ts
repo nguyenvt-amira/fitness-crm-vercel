@@ -183,7 +183,7 @@ export class FamilyRegistrations {
     }
     
     /**
-     * Get family registrations dashboard (A-02-02-08)
+     * Get family registrations dashboard
      */
     public static getCrmFamilyRegistrationsDashboard<ThrowOnError extends boolean = false>(options?: Options<GetCrmFamilyRegistrationsDashboardData, ThrowOnError>) {
         return (options?.client ?? client).get<GetCrmFamilyRegistrationsDashboardResponses, GetCrmFamilyRegistrationsDashboardErrors, ThrowOnError>({ url: '/crm/family-registrations/dashboard', ...options });

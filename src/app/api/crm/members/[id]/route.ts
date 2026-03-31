@@ -52,7 +52,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'Member not found' }, { status: 404 });
     }
 
-    return NextResponse.json(member as GetMemberDetailResponse);
+    const response: GetMemberDetailResponse = {
+      member: member as any, // Member type is complex, using any for OpenAPI
+    };
+
+    return NextResponse.json(response);
   } catch (error) {
     console.error('Error fetching member detail:', error);
     return NextResponse.json({ error: 'Failed to fetch member detail' }, { status: 500 });

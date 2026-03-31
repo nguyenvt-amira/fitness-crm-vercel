@@ -74,19 +74,6 @@ registerRoute({
 // GET /api/crm/membership-applications - 一覧取得
 export async function GET(request: NextRequest) {
   try {
-    const RISK_REASONS = [
-      'blacklist_match',
-      'duplicate_application',
-      'payment_failure',
-      'high_risk_score',
-      'document_issue',
-      'other',
-    ] as const;
-    const isRiskReason = (
-      value: string,
-    ): value is GetMembershipApplicationsResponse['applications'][number]['risk_reason'] =>
-      (RISK_REASONS as readonly string[]).includes(value);
-
     const searchParams = request.nextUrl.searchParams;
 
     // Build query object from searchParams
@@ -151,12 +138,7 @@ export async function GET(request: NextRequest) {
     const total_pages = Math.ceil(total / limit);
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
-    const paginated: GetMembershipApplicationsResponse['applications'] = filtered
-      .slice(startIndex, endIndex)
-      .map((app) => ({
-        ...app,
-        risk_reason: isRiskReason(app.risk_reason) ? app.risk_reason : 'other',
-      }));
+    const paginated = filtered.slice(startIndex, endIndex);
 
     const response: GetMembershipApplicationsResponse = {
       applications: paginated,
@@ -193,66 +175,8 @@ export async function POST(request: NextRequest) {
     const results = application_ids.map((id: string) => {
       const riskScore = Math.floor(Math.random() * 100);
       const approved = riskScore < 70;
-
-      const application = db.membershipApplications.getById(id);
-      if (!application) {
-        return {
-          application_id: id,
-          approved: false,
-          risk_score: riskScore,
-          reason: 'Application not found',
-        };
-      }
-
-      // Idempotency: never downgrade an already approved application.
-      if (application.status === 'manual_approved' || application.status === 'auto_approved') {
-        return {
-          application_id: id,
-          approved: true,
-          risk_score: riskScore,
-          reason: '既に承認済み',
-        };
-      }
-
-      if (approved) {
-        const updatedApplication = db.membershipApplications.updateStatus(id, 'auto_approved');
-        if (!updatedApplication) {
-          return {
-            application_id: id,
-            approved: false,
-            risk_score: riskScore,
-            reason: 'Failed to update status',
-          };
-        }
-
-        // Prefer edited detail fields (plan/start_date) when creating contract.
-        const details = db.membershipApplications.getDetails(id);
-        const applicationForContract = {
-          ...updatedApplication,
-          ...(details?.applicant_name ? { applicant_name: details.applicant_name } : {}),
-          ...(details?.contract_details?.plan_name
-            ? { plan_name: details.contract_details.plan_name }
-            : {}),
-          ...(details?.contract_details?.start_date
-            ? { scheduled_start_date: details.contract_details.start_date }
-            : {}),
-        };
-
-        const existingContractRow = db.contracts.getByApplicationId(id);
-        if (!existingContractRow) {
-          const member = db.members.createFromApplication(applicationForContract);
-          db.contracts.createFromApprovedApplication({
-            application: applicationForContract,
-            member_id: member.basic_info.id,
-          });
-        }
-      } else {
-        // Rejection: only status update is required.
-        if (application.status !== 'rejected') {
-          db.membershipApplications.updateStatus(id, 'rejected');
-        }
-      }
-
+      const newStatus = approved ? 'auto_approved' : 'rejected';
+      db.membershipApplications.updateStatus(id, newStatus);
       return {
         application_id: id,
         approved,

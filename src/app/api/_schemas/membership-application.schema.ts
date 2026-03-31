@@ -30,14 +30,6 @@ export const RiskReasonSchema = z.enum([
   'other',
 ]);
 
-export const MembershipApplicationPaymentMethodSchema = z
-  .enum(['credit_card', 'bank_transfer'])
-  .openapi({ title: 'MembershipApplicationPaymentMethod', description: 'Payment method' });
-
-export const MembershipApplicationPaymentStatusSchema = z
-  .enum(['pending', 'paid', 'failed'])
-  .openapi({ title: 'MembershipApplicationPaymentStatus', description: 'Payment status' });
-
 /**
  * Membership Application Schema
  */
@@ -63,8 +55,8 @@ export const MembershipApplicationSchema = z
       example: 61,
       description: 'Risk score (0-100)',
     }),
-    risk_reason: RiskReasonSchema.openapi({
-      example: 'blacklist_match',
+    risk_reason: z.string().openapi({
+      example: 'ブラックリスト一致',
       description: 'Risk reason',
     }),
     plan_name: z.string().openapi({
@@ -137,8 +129,8 @@ export const GetMembershipApplicationsQuerySchema = z
       example: 'pending',
       description: 'Filter by status',
     }),
-    risk_reason: RiskReasonSchema.optional().openapi({
-      example: 'blacklist_match',
+    risk_reason: z.string().optional().openapi({
+      example: 'ブラックリスト一致',
       description: 'Filter by risk reason',
     }),
     sort_by: z
@@ -629,7 +621,7 @@ export const BulkRejectResponseSchema = z
 export const GetApplicationDetailResponseSchema = z
   .object({
     application: MembershipApplicationSchema.extend({
-      gender: z.enum(['male', 'female', 'other']).optional().openapi({
+      gender: z.enum(['male', 'female', 'other', 'unknown']).optional().openapi({
         example: 'male',
         description: 'Gender',
       }),
@@ -665,11 +657,11 @@ export const GetApplicationDetailResponseSchema = z
         example: '090-8765-4321',
         description: 'Emergency contact phone',
       }),
-      payment_method: MembershipApplicationPaymentMethodSchema.optional().openapi({
-        example: 'credit_card',
+      payment_method: z.string().optional().openapi({
+        example: 'クレジットカード',
         description: 'Payment method',
       }),
-      payment_status: MembershipApplicationPaymentStatusSchema.optional().openapi({
+      payment_status: z.string().optional().openapi({
         example: 'pending',
         description: 'Payment status',
       }),
@@ -877,9 +869,13 @@ export const ApproveResponseSchema = z
       example: '手動承認',
       description: 'Approval reason',
     }),
-    member_id: z.string().openapi({
-      example: 'MEMBER-00001',
-      description: 'Member ID',
+    contract_created: z.boolean().openapi({
+      example: true,
+      description: 'Whether contract was created',
+    }),
+    contract_id: z.string().openapi({
+      example: 'CONTRACT-APP-00001',
+      description: 'Contract ID',
     }),
   })
   .openapi({

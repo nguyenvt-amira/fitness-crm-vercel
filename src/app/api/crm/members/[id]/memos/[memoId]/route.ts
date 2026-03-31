@@ -91,11 +91,14 @@ registerRoute({
       status: 200,
       schema: z
         .object({
-          id: z.string(),
+          success: z.boolean().openapi({
+            example: true,
+            description: 'Whether the deletion was successful',
+          }),
         })
         .openapi({
           title: 'DeleteMemoResponse',
-          description: 'Empty response on successful delete',
+          description: 'Response for deleting a memo',
         }),
       description: 'Memo deleted successfully',
     },
@@ -139,8 +142,13 @@ export async function PUT(
       return NextResponse.json({ error: 'Memo not found' }, { status: 404 });
     }
 
-    return NextResponse.json(memo);
-  } catch {
+    const response: UpdateMemoResponse = {
+      success: true,
+      memo: memo as any,
+    };
+
+    return NextResponse.json(response);
+  } catch (error) {
     return NextResponse.json({ error: 'Failed to update memo' }, { status: 500 });
   }
 }
@@ -155,8 +163,8 @@ export async function DELETE(
     if (!deleted) {
       return NextResponse.json({ error: 'Memo not found' }, { status: 404 });
     }
-    return NextResponse.json({ id: memoId });
-  } catch {
+    return NextResponse.json({ success: true });
+  } catch (error) {
     return NextResponse.json({ error: 'Failed to delete memo' }, { status: 500 });
   }
 }
