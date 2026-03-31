@@ -9,7 +9,7 @@ import {
   useQueryStates,
 } from 'nuqs';
 
-import { Brand, MemberStatus, MemberType } from '@/types/member.type';
+import { Brand, MemberStatus, MemberType } from '@/lib/api/types.gen';
 
 export type MembersFilters = {
   search: string;

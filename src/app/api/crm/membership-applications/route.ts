@@ -74,6 +74,19 @@ registerRoute({
 // GET /api/crm/membership-applications - 一覧取得
 export async function GET(request: NextRequest) {
   try {
+    const RISK_REASONS = [
+      'blacklist_match',
+      'duplicate_application',
+      'payment_failure',
+      'high_risk_score',
+      'document_issue',
+      'other',
+    ] as const;
+    const isRiskReason = (
+      value: string,
+    ): value is GetMembershipApplicationsResponse['applications'][number]['risk_reason'] =>
+      (RISK_REASONS as readonly string[]).includes(value);
+
     const searchParams = request.nextUrl.searchParams;
 
     // Build query object from searchParams
@@ -138,7 +151,12 @@ export async function GET(request: NextRequest) {
     const total_pages = Math.ceil(total / limit);
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
-    const paginated = filtered.slice(startIndex, endIndex);
+    const paginated: GetMembershipApplicationsResponse['applications'] = filtered
+      .slice(startIndex, endIndex)
+      .map((app) => ({
+        ...app,
+        risk_reason: isRiskReason(app.risk_reason) ? app.risk_reason : 'other',
+      }));
 
     const response: GetMembershipApplicationsResponse = {
       applications: paginated,

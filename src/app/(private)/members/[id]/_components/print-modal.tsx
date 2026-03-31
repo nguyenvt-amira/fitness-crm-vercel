@@ -12,12 +12,12 @@ import {
 
 import type { GetMemberDetailResponse } from '@/lib/api/types.gen';
 
-import { GENDER_LABELS } from '@/types/member.type';
+import { GENDER_LABELS } from '../../_lib/constants';
 
 interface PrintModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  member: GetMemberDetailResponse['member'];
+  member: GetMemberDetailResponse;
 }
 
 export function PrintModal({ open, onOpenChange, member }: PrintModalProps) {

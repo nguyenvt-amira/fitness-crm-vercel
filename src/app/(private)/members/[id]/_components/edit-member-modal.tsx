@@ -103,7 +103,7 @@ type EditMemberFormValues = z.infer<typeof editMemberSchema>;
 interface EditMemberModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  member: GetMemberDetailResponse['member'];
+  member: GetMemberDetailResponse;
 }
 
 export function EditMemberModal({ open, onOpenChange, member }: EditMemberModalProps) {
