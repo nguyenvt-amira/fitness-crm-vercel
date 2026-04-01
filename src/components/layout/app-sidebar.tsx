@@ -1,28 +1,30 @@
 'use client';
 
+import { useState } from 'react';
+
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import {
   BookUser,
   Calendar,
-  ChevronDown,
   CircleDollarSign,
   DoorOpen,
   FileText,
   Home,
   Image,
+  type LucideIcon,
   Package,
   Settings,
   User,
 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -32,10 +34,23 @@ import {
 } from '@/components/ui/sidebar';
 
 import { getRoutePattern } from '@/lib/routes/routes.util';
+import { cn } from '@/lib/utils';
 
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
+import { Collapsible, CollapsibleContent } from '../ui/collapsible';
 
-const menuItems = [
+type SubItem = {
+  label: string;
+  href: string;
+};
+
+type MenuItem = {
+  label: string;
+  icon: LucideIcon;
+  href?: string;
+  subItems?: SubItem[];
+};
+
+const menuItems: MenuItem[] = [
   {
     label: 'ダッシュボード',
     icon: Home,
@@ -144,95 +159,173 @@ const menuItems = [
   //     },
   //   ],
   // },
-  // {
-  //   label: 'システム設定',
-  //   icon: Settings,
-  //   href: '/settings',
-  //   subItems: [
-  //     {
-  //       label: 'スタッフ・権限',
-  //       href: '/settings/staff-permissions',
-  //     },
-  //     {
-  //       label: '店舗',
-  //       href: '/settings/stores',
-  //     },
-  //     {
-  //       label: 'ブランド',
-  //       href: '/settings/brands',
-  //     },
-  //     {
-  //       label: 'FC企業',
-  //       href: '/settings/fc-companies',
-  //     },
-  //     {
-  //       label: '規約文書',
-  //       href: '/settings/terms-documents',
-  //     },
-  //     {
-  //       label: 'アプリ配信バージョン',
-  //       href: '/settings/app-distribution',
-  //     },
-  //     {
-  //       label: 'アプリメンテナンス',
-  //       href: '/settings/app-maintenance',
-  //     },
-  //   ],
-  // },
+  {
+    label: 'システム設定',
+    icon: Settings,
+    // href: '/settings',
+    subItems: [
+      {
+        label: 'スタッフ・権限',
+        href: '/settings/staff-permissions',
+      },
+      {
+        label: '店舗',
+        href: '/settings/stores',
+      },
+      {
+        label: 'ブランド',
+        href: '/settings/brands',
+      },
+      {
+        label: 'FC企業',
+        href: '/settings/fc-companies',
+      },
+      {
+        label: '規約文書',
+        href: '/settings/terms-documents',
+      },
+      {
+        label: 'アプリ配信バージョン',
+        href: '/settings/app-distribution',
+      },
+      {
+        label: 'アプリメンテナンス',
+        href: '/settings/app-maintenance',
+      },
+    ],
+  },
 ];
+
+/**
+ * Check if a pathname matches a menu item's href or any of its sub-items' hrefs.
+ * Uses segment-aware matching to support breadcrumb navigation
+ * (e.g., /members/123 keeps /members active) while avoiding false positives
+ * (e.g., /membership-applications should NOT match /members).
+ */
+function checkItemActive(pathname: string, item: MenuItem): boolean {
+  if (item.href) {
+    if (item.href === '/') return pathname === '/';
+    if (pathname === item.href || pathname.startsWith(item.href + '/')) return true;
+  }
+  return (
+    item.subItems?.some((sub) => pathname === sub.href || pathname.startsWith(sub.href + '/')) ??
+    false
+  );
+}
 
 export function AppSidebar() {
   const pathname = usePathname();
 
+  // Controlled accordion state — only one item can be open at a time
+  const [openIndex, setOpenIndex] = useState<number | null>(() => {
+    const idx = menuItems.findIndex(
+      (item) => !!item.subItems?.length && checkItemActive(pathname, item),
+    );
+    return idx >= 0 ? idx : null;
+  });
+
+  // Sync open state when pathname changes (adjusting state during render)
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
+    const activeIdx = menuItems.findIndex(
+      (item) => !!item.subItems?.length && checkItemActive(pathname, item),
+    );
+    setOpenIndex(activeIdx >= 0 ? activeIdx : null);
+  }
+
+  /**
+   * Handle menu item click:
+   * - Items with subitems → always open (accordion switches)
+   * - Items without subitems → close any open accordion
+   */
+  const handleMenuItemClick = (index: number, hasSubItems: boolean) => {
+    if (hasSubItems) {
+      setOpenIndex(index);
+    } else {
+      setOpenIndex(null);
+    }
+  };
+
   return (
-    <Sidebar className="mt-16">
+    <Sidebar>
+      <SidebarHeader className="py-5 pr-0 pl-6">
+        <span className="text-sidebar-foreground text-xl leading-7 font-bold tracking-[0.025em]">
+          LOGO
+        </span>
+        <span className="text-sidebar-foreground/50 text-xs leading-4">CRM Management</span>
+      </SidebarHeader>
+
       <SidebarContent>
-        <SidebarGroup>
+        <SidebarGroup className="px-0 py-2 pl-2">
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => {
+              {menuItems.map((item, index) => {
                 const Icon = item.icon;
-                const isActive =
-                  pathname === item.href || item.subItems?.some((sub) => pathname === sub.href);
-                const hasSubItems = item.subItems && item.subItems.length > 0;
+                const active = checkItemActive(pathname, item);
+                const hasSubItems = !!(item.subItems && item.subItems.length > 0);
+                const isOpen = openIndex === index;
 
                 if (hasSubItems) {
-                  const isSubItemActive = item.subItems?.some((sub) => pathname === sub.href);
+                  const anySubActive =
+                    item.subItems?.some(
+                      (sub) => pathname === sub.href || pathname.startsWith(sub.href + '/'),
+                    ) ?? false;
+                  const focused = active || isOpen;
+                  // Parent gets accent bg only when focused AND no subitem is active
+                  const parentActive = focused && !anySubActive;
                   return (
-                    <Collapsible
-                      key={item.href}
-                      defaultOpen={isSubItemActive}
-                      className="group/collapsible"
-                    >
-                      <SidebarMenuItem className="group/menu-item">
-                        <div className="flex items-center rounded-md pr-1 group-hover/menu-item:bg-[var(--sidebar-accent)] has-[[data-active=true]]:bg-[var(--sidebar-accent)]">
-                          <SidebarMenuButton asChild isActive={isActive}>
-                            <Link href={item.href}>
+                    <Collapsible key={item.label} open={isOpen}>
+                      <SidebarMenuItem>
+                        {item.href ? (
+                          <SidebarMenuButton
+                            asChild
+                            isActive={parentActive}
+                            className={cn(
+                              focused ? 'opacity-100' : 'opacity-40',
+                              'hover:opacity-100',
+                            )}
+                          >
+                            <Link href={item.href} onClick={() => handleMenuItemClick(index, true)}>
                               <Icon />
                               <span>{item.label}</span>
                             </Link>
                           </SidebarMenuButton>
-                          <CollapsibleTrigger asChild>
-                            <Button
-                              variant="outline"
-                              size="icon-xs"
-                              className="opacity-0 group-hover/menu-item:opacity-100 group-data-[state=open]/collapsible:opacity-100"
+                        ) : (
+                          <SidebarMenuButton
+                            asChild
+                            isActive={parentActive}
+                            className={cn(
+                              focused ? 'opacity-100' : 'opacity-40',
+                              'hover:opacity-100',
+                            )}
+                          >
+                            <Link
+                              href={item.subItems![0].href}
+                              onClick={() => handleMenuItemClick(index, true)}
                             >
-                              <ChevronDown className="transition-transform group-data-[state=open]/collapsible:rotate-180" />
-                            </Button>
-                          </CollapsibleTrigger>
-                        </div>
+                              <Icon />
+                              <span>{item.label}</span>
+                            </Link>
+                          </SidebarMenuButton>
+                        )}
+
                         <CollapsibleContent>
                           <SidebarMenuSub>
-                            {item.subItems?.map((subItem) => (
-                              <SidebarMenuSubItem key={subItem.href}>
-                                <SidebarMenuSubButton asChild isActive={pathname === subItem.href}>
-                                  <Link href={subItem.href}>
-                                    <span>{subItem.label}</span>
-                                  </Link>
-                                </SidebarMenuSubButton>
-                              </SidebarMenuSubItem>
-                            ))}
+                            {item.subItems?.map((subItem) => {
+                              const subActive =
+                                pathname === subItem.href ||
+                                pathname.startsWith(subItem.href + '/');
+                              return (
+                                <SidebarMenuSubItem key={subItem.href}>
+                                  <SidebarMenuSubButton asChild isActive={subActive}>
+                                    <Link href={subItem.href}>
+                                      <span>{subItem.label}</span>
+                                    </Link>
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                              );
+                            })}
                           </SidebarMenuSub>
                         </CollapsibleContent>
                       </SidebarMenuItem>
@@ -241,13 +334,28 @@ export function AppSidebar() {
                 }
 
                 return (
-                  <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton asChild isActive={isActive}>
-                      <Link href={item.href}>
+                  <SidebarMenuItem key={item.label}>
+                    {item.href ? (
+                      <SidebarMenuButton
+                        asChild
+                        isActive={active}
+                        className={cn(active ? 'opacity-100' : 'opacity-40', 'hover:opacity-100')}
+                      >
+                        <Link href={item.href} onClick={() => handleMenuItemClick(index, false)}>
+                          <Icon />
+                          <span>{item.label}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    ) : (
+                      <SidebarMenuButton
+                        isActive={active}
+                        className={cn(active ? 'opacity-100' : 'opacity-40', 'hover:opacity-100')}
+                        onClick={() => handleMenuItemClick(index, false)}
+                      >
                         <Icon />
                         <span>{item.label}</span>
-                      </Link>
-                    </SidebarMenuButton>
+                      </SidebarMenuButton>
+                    )}
                   </SidebarMenuItem>
                 );
               })}
