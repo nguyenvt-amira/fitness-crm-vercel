@@ -5,19 +5,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import {
-  BookUser,
-  Calendar,
-  CircleDollarSign,
-  DoorOpen,
-  FileText,
-  Home,
-  Image,
-  type LucideIcon,
-  Package,
-  Settings,
-  User,
-} from 'lucide-react';
+import { Home, type LucideIcon, Settings, UserPlus, Users } from 'lucide-react';
 
 import {
   Sidebar,
@@ -58,7 +46,7 @@ const menuItems: MenuItem[] = [
   },
   {
     label: '会員管理',
-    icon: User,
+    icon: Users,
     href: '/members',
     subItems: [
       {
@@ -73,7 +61,7 @@ const menuItems: MenuItem[] = [
   },
   {
     label: '入会処理',
-    icon: FileText,
+    icon: UserPlus,
     href: getRoutePattern('/membership-applications'),
   },
   // {
@@ -160,37 +148,13 @@ const menuItems: MenuItem[] = [
   //   ],
   // },
   {
-    label: 'システム設定',
+    href: '/staff-list',
     icon: Settings,
-    // href: '/settings',
+    label: 'スタッフ管理',
     subItems: [
       {
-        label: 'スタッフ・権限',
-        href: '/settings/staff-permissions',
-      },
-      {
-        label: '店舗',
-        href: '/settings/stores',
-      },
-      {
-        label: 'ブランド',
-        href: '/settings/brands',
-      },
-      {
-        label: 'FC企業',
-        href: '/settings/fc-companies',
-      },
-      {
-        label: '規約文書',
-        href: '/settings/terms-documents',
-      },
-      {
-        label: 'アプリ配信バージョン',
-        href: '/settings/app-distribution',
-      },
-      {
-        label: 'アプリメンテナンス',
-        href: '/settings/app-maintenance',
+        label: 'スタッフ管理',
+        href: '/staff-list',
       },
     ],
   },
@@ -257,7 +221,7 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup className="px-0 py-2 pl-2">
+        <SidebarGroup className="p-2">
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item, index) => {

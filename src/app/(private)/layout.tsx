@@ -6,7 +6,7 @@ export default function Layout({ children }: Readonly<{ children: React.ReactNod
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset className="flex h-screen flex-col overflow-hidden">
+      <SidebarInset className="flex h-screen min-w-[375px] flex-col overflow-hidden">
         <AppHeader />
         <main className="flex-1 overflow-y-auto bg-neutral-100/40">{children}</main>
       </SidebarInset>
