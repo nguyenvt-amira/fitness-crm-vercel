@@ -5786,6 +5786,1128 @@ export type UpdateStoreBusinessHoursResponse = {
     };
 };
 
+/**
+ * StaffListItem
+ *
+ * Staff list item for table view
+ */
+export type StaffListItem = {
+    /**
+     * Staff internal ID
+     */
+    id: string;
+    /**
+     * Staff display ID
+     */
+    staff_id: string;
+    /**
+     * Staff full name (姓 + 名)
+     */
+    name: string;
+    /**
+     * Staff email address
+     */
+    email: string;
+    /**
+     * StaffRole
+     *
+     * Staff role/permission
+     */
+    role: 'headquarters' | 'store_staff' | 'viewer';
+    /**
+     * StaffBrand
+     *
+     * Assigned brand
+     */
+    brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * StaffStatus
+     *
+     * Account status
+     */
+    status: 'active' | 'inactive';
+    /**
+     * Last login datetime
+     */
+    last_login: string;
+};
+
+/**
+ * StaffPersonalInfo
+ *
+ * Staff personal information (個人情報)
+ */
+export type StaffPersonalInfo = {
+    /**
+     * 名前（姓）
+     */
+    last_name: string;
+    /**
+     * 名前（名）
+     */
+    first_name: string;
+    /**
+     * カタカナ（姓）
+     */
+    last_name_kana?: string;
+    /**
+     * カタカナ（名）
+     */
+    first_name_kana?: string;
+    /**
+     * StaffGender
+     *
+     * 性別
+     */
+    gender?: 'male' | 'female' | 'other';
+    /**
+     * 生年月日 (ISO date)
+     */
+    birthday?: string;
+    /**
+     * 携帯電話番号
+     */
+    phone?: string;
+    /**
+     * メールアドレス
+     */
+    email: string;
+    /**
+     * 郵便番号
+     */
+    postal_code?: string;
+    /**
+     * 都道府県
+     */
+    prefecture?: string;
+    /**
+     * 市区町村
+     */
+    city?: string;
+    /**
+     * 番地
+     */
+    address?: string;
+    /**
+     * 建物名
+     */
+    building?: string;
+};
+
+/**
+ * StaffLoginSettings
+ *
+ * Staff login settings (ログイン設定)
+ */
+export type StaffLoginSettings = {
+    /**
+     * StaffLoginMethod
+     *
+     * ログイン元
+     */
+    login_method: 'email' | 'social';
+    /**
+     * ソーシャルID
+     */
+    social_id?: string;
+};
+
+/**
+ * StaffAdditionalPermissions
+ *
+ * Staff additional permissions (追加権限)
+ */
+export type StaffAdditionalPermissions = {
+    /**
+     * 確定請求訂正
+     */
+    billing_correction: boolean;
+    /**
+     * 返金申請
+     */
+    refund_request: boolean;
+    /**
+     * 移籍申請・否認
+     */
+    transfer_request: boolean;
+};
+
+/**
+ * StaffPermissionSettings
+ *
+ * Staff permission settings (権限設定)
+ */
+export type StaffPermissionSettings = {
+    /**
+     * StaffRole
+     *
+     * 編集権限
+     */
+    role: 'headquarters' | 'store_staff' | 'viewer';
+    /**
+     * StaffAdditionalPermissions
+     *
+     * 追加権限
+     */
+    additional_permissions: {
+        /**
+         * 確定請求訂正
+         */
+        billing_correction: boolean;
+        /**
+         * 返金申請
+         */
+        refund_request: boolean;
+        /**
+         * 移籍申請・否認
+         */
+        transfer_request: boolean;
+    };
+};
+
+/**
+ * StaffEditableScope
+ *
+ * Staff editable scope row (編集可能情報)
+ */
+export type StaffEditableScope = {
+    /**
+     * StaffBrand
+     *
+     * ブランド
+     */
+    brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * StaffScopeTarget
+     *
+     * 対象
+     */
+    target: 'all_stores' | 'specific_store';
+    /**
+     * Specific store ID (when target = specific_store)
+     */
+    store_id?: string;
+    /**
+     * Specific store name (when target = specific_store)
+     */
+    store_name?: string;
+    /**
+     * 有効開始日 (ISO date)
+     */
+    start_date: string;
+    /**
+     * 有効終了日 (ISO date, empty if indefinite)
+     */
+    end_date?: string;
+};
+
+/**
+ * StaffDetail
+ *
+ * Full staff detail for edit screen (スタッフ編集)
+ */
+export type StaffDetail = {
+    /**
+     * Staff internal ID
+     */
+    id: string;
+    /**
+     * Staff display ID
+     */
+    staff_id: string;
+    /**
+     * StaffStatus
+     *
+     * Account status
+     */
+    status: 'active' | 'inactive';
+    /**
+     * StaffPersonalInfo
+     *
+     * 個人情報
+     */
+    personal_info: {
+        /**
+         * 名前（姓）
+         */
+        last_name: string;
+        /**
+         * 名前（名）
+         */
+        first_name: string;
+        /**
+         * カタカナ（姓）
+         */
+        last_name_kana?: string;
+        /**
+         * カタカナ（名）
+         */
+        first_name_kana?: string;
+        /**
+         * StaffGender
+         *
+         * 性別
+         */
+        gender?: 'male' | 'female' | 'other';
+        /**
+         * 生年月日 (ISO date)
+         */
+        birthday?: string;
+        /**
+         * 携帯電話番号
+         */
+        phone?: string;
+        /**
+         * メールアドレス
+         */
+        email: string;
+        /**
+         * 郵便番号
+         */
+        postal_code?: string;
+        /**
+         * 都道府県
+         */
+        prefecture?: string;
+        /**
+         * 市区町村
+         */
+        city?: string;
+        /**
+         * 番地
+         */
+        address?: string;
+        /**
+         * 建物名
+         */
+        building?: string;
+    };
+    /**
+     * StaffLoginSettings
+     *
+     * ログイン設定
+     */
+    login_settings: {
+        /**
+         * StaffLoginMethod
+         *
+         * ログイン元
+         */
+        login_method: 'email' | 'social';
+        /**
+         * ソーシャルID
+         */
+        social_id?: string;
+    };
+    /**
+     * StaffPermissionSettings
+     *
+     * 権限設定
+     */
+    permission_settings: {
+        /**
+         * StaffRole
+         *
+         * 編集権限
+         */
+        role: 'headquarters' | 'store_staff' | 'viewer';
+        /**
+         * StaffAdditionalPermissions
+         *
+         * 追加権限
+         */
+        additional_permissions: {
+            /**
+             * 確定請求訂正
+             */
+            billing_correction: boolean;
+            /**
+             * 返金申請
+             */
+            refund_request: boolean;
+            /**
+             * 移籍申請・否認
+             */
+            transfer_request: boolean;
+        };
+    };
+    /**
+     * 編集可能情報
+     */
+    editable_scopes: Array<{
+        /**
+         * StaffBrand
+         *
+         * ブランド
+         */
+        brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * StaffScopeTarget
+         *
+         * 対象
+         */
+        target: 'all_stores' | 'specific_store';
+        /**
+         * Specific store ID (when target = specific_store)
+         */
+        store_id?: string;
+        /**
+         * Specific store name (when target = specific_store)
+         */
+        store_name?: string;
+        /**
+         * 有効開始日 (ISO date)
+         */
+        start_date: string;
+        /**
+         * 有効終了日 (ISO date, empty if indefinite)
+         */
+        end_date?: string;
+    }>;
+    /**
+     * Last login datetime
+     */
+    last_login: string;
+    /**
+     * Account creation timestamp
+     */
+    created_at: string;
+    /**
+     * Last update timestamp
+     */
+    updated_at: string;
+};
+
+/**
+ * GetStaffsQuery
+ *
+ * Query parameters for staff list
+ */
+export type GetStaffsQuery = {
+    /**
+     * Page number
+     */
+    page?: number;
+    /**
+     * Items per page
+     */
+    limit?: number;
+    /**
+     * Search by name or email
+     */
+    search?: string;
+    /**
+     * StaffRole
+     *
+     * Filter by role
+     */
+    role?: 'headquarters' | 'store_staff' | 'viewer';
+    /**
+     * StaffBrand
+     *
+     * Filter by brand
+     */
+    brand?: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * StaffStatus
+     *
+     * Filter by status
+     */
+    status?: 'active' | 'inactive';
+    /**
+     * Sort field
+     */
+    sort_by?: 'staff_id' | 'name' | 'role' | 'status' | 'last_login';
+    /**
+     * Sort order
+     */
+    sort_order?: 'asc' | 'desc';
+};
+
+/**
+ * GetStaffsResponse
+ *
+ * Staff list response with pagination
+ */
+export type GetStaffsResponse = {
+    /**
+     * List of staff members
+     */
+    staffs: Array<{
+        /**
+         * Staff internal ID
+         */
+        id: string;
+        /**
+         * Staff display ID
+         */
+        staff_id: string;
+        /**
+         * Staff full name (姓 + 名)
+         */
+        name: string;
+        /**
+         * Staff email address
+         */
+        email: string;
+        /**
+         * StaffRole
+         *
+         * Staff role/permission
+         */
+        role: 'headquarters' | 'store_staff' | 'viewer';
+        /**
+         * StaffBrand
+         *
+         * Assigned brand
+         */
+        brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * StaffStatus
+         *
+         * Account status
+         */
+        status: 'active' | 'inactive';
+        /**
+         * Last login datetime
+         */
+        last_login: string;
+    }>;
+    /**
+     * StaffPagination
+     */
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        total_pages: number;
+    };
+};
+
+/**
+ * GetStaffDetailResponse
+ *
+ * Response for getting staff detail
+ */
+export type GetStaffDetailResponse = {
+    /**
+     * StaffDetail
+     *
+     * Full staff detail
+     */
+    staff: {
+        /**
+         * Staff internal ID
+         */
+        id: string;
+        /**
+         * Staff display ID
+         */
+        staff_id: string;
+        /**
+         * StaffStatus
+         *
+         * Account status
+         */
+        status: 'active' | 'inactive';
+        /**
+         * StaffPersonalInfo
+         *
+         * 個人情報
+         */
+        personal_info: {
+            /**
+             * 名前（姓）
+             */
+            last_name: string;
+            /**
+             * 名前（名）
+             */
+            first_name: string;
+            /**
+             * カタカナ（姓）
+             */
+            last_name_kana?: string;
+            /**
+             * カタカナ（名）
+             */
+            first_name_kana?: string;
+            /**
+             * StaffGender
+             *
+             * 性別
+             */
+            gender?: 'male' | 'female' | 'other';
+            /**
+             * 生年月日 (ISO date)
+             */
+            birthday?: string;
+            /**
+             * 携帯電話番号
+             */
+            phone?: string;
+            /**
+             * メールアドレス
+             */
+            email: string;
+            /**
+             * 郵便番号
+             */
+            postal_code?: string;
+            /**
+             * 都道府県
+             */
+            prefecture?: string;
+            /**
+             * 市区町村
+             */
+            city?: string;
+            /**
+             * 番地
+             */
+            address?: string;
+            /**
+             * 建物名
+             */
+            building?: string;
+        };
+        /**
+         * StaffLoginSettings
+         *
+         * ログイン設定
+         */
+        login_settings: {
+            /**
+             * StaffLoginMethod
+             *
+             * ログイン元
+             */
+            login_method: 'email' | 'social';
+            /**
+             * ソーシャルID
+             */
+            social_id?: string;
+        };
+        /**
+         * StaffPermissionSettings
+         *
+         * 権限設定
+         */
+        permission_settings: {
+            /**
+             * StaffRole
+             *
+             * 編集権限
+             */
+            role: 'headquarters' | 'store_staff' | 'viewer';
+            /**
+             * StaffAdditionalPermissions
+             *
+             * 追加権限
+             */
+            additional_permissions: {
+                /**
+                 * 確定請求訂正
+                 */
+                billing_correction: boolean;
+                /**
+                 * 返金申請
+                 */
+                refund_request: boolean;
+                /**
+                 * 移籍申請・否認
+                 */
+                transfer_request: boolean;
+            };
+        };
+        /**
+         * 編集可能情報
+         */
+        editable_scopes: Array<{
+            /**
+             * StaffBrand
+             *
+             * ブランド
+             */
+            brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * StaffScopeTarget
+             *
+             * 対象
+             */
+            target: 'all_stores' | 'specific_store';
+            /**
+             * Specific store ID (when target = specific_store)
+             */
+            store_id?: string;
+            /**
+             * Specific store name (when target = specific_store)
+             */
+            store_name?: string;
+            /**
+             * 有効開始日 (ISO date)
+             */
+            start_date: string;
+            /**
+             * 有効終了日 (ISO date, empty if indefinite)
+             */
+            end_date?: string;
+        }>;
+        /**
+         * Last login datetime
+         */
+        last_login: string;
+        /**
+         * Account creation timestamp
+         */
+        created_at: string;
+        /**
+         * Last update timestamp
+         */
+        updated_at: string;
+    };
+};
+
+/**
+ * UpdateStaffRequest
+ *
+ * Request body to update staff (スタッフ編集)
+ */
+export type UpdateStaffRequest = {
+    /**
+     * StaffPersonalInfo
+     *
+     * 個人情報 (partial update)
+     */
+    personal_info?: {
+        /**
+         * 名前（姓）
+         */
+        last_name: string;
+        /**
+         * 名前（名）
+         */
+        first_name: string;
+        /**
+         * カタカナ（姓）
+         */
+        last_name_kana?: string;
+        /**
+         * カタカナ（名）
+         */
+        first_name_kana?: string;
+        /**
+         * StaffGender
+         *
+         * 性別
+         */
+        gender?: 'male' | 'female' | 'other';
+        /**
+         * 生年月日 (ISO date)
+         */
+        birthday?: string;
+        /**
+         * 携帯電話番号
+         */
+        phone?: string;
+        /**
+         * メールアドレス
+         */
+        email: string;
+        /**
+         * 郵便番号
+         */
+        postal_code?: string;
+        /**
+         * 都道府県
+         */
+        prefecture?: string;
+        /**
+         * 市区町村
+         */
+        city?: string;
+        /**
+         * 番地
+         */
+        address?: string;
+        /**
+         * 建物名
+         */
+        building?: string;
+    };
+    /**
+     * StaffLoginSettings
+     *
+     * ログイン設定 (partial update)
+     */
+    login_settings?: {
+        /**
+         * StaffLoginMethod
+         *
+         * ログイン元
+         */
+        login_method: 'email' | 'social';
+        /**
+         * ソーシャルID
+         */
+        social_id?: string;
+    };
+    /**
+     * StaffPermissionSettings
+     *
+     * 権限設定 (partial update)
+     */
+    permission_settings?: {
+        /**
+         * StaffRole
+         *
+         * 編集権限
+         */
+        role: 'headquarters' | 'store_staff' | 'viewer';
+        /**
+         * StaffAdditionalPermissions
+         *
+         * 追加権限
+         */
+        additional_permissions: {
+            /**
+             * 確定請求訂正
+             */
+            billing_correction: boolean;
+            /**
+             * 返金申請
+             */
+            refund_request: boolean;
+            /**
+             * 移籍申請・否認
+             */
+            transfer_request: boolean;
+        };
+    };
+    /**
+     * 編集可能情報 (full replacement)
+     */
+    editable_scopes?: Array<{
+        /**
+         * StaffBrand
+         *
+         * ブランド
+         */
+        brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * StaffScopeTarget
+         *
+         * 対象
+         */
+        target: 'all_stores' | 'specific_store';
+        /**
+         * Specific store ID (when target = specific_store)
+         */
+        store_id?: string;
+        /**
+         * Specific store name (when target = specific_store)
+         */
+        store_name?: string;
+        /**
+         * 有効開始日 (ISO date)
+         */
+        start_date: string;
+        /**
+         * 有効終了日 (ISO date, empty if indefinite)
+         */
+        end_date?: string;
+    }>;
+    /**
+     * StaffStatus
+     *
+     * Account status
+     */
+    status?: 'active' | 'inactive';
+};
+
+/**
+ * UpdateStaffResponse
+ *
+ * Response after updating staff
+ */
+export type UpdateStaffResponse = {
+    /**
+     * Success message
+     */
+    message: string;
+    /**
+     * StaffDetail
+     *
+     * Updated staff detail
+     */
+    staff: {
+        /**
+         * Staff internal ID
+         */
+        id: string;
+        /**
+         * Staff display ID
+         */
+        staff_id: string;
+        /**
+         * StaffStatus
+         *
+         * Account status
+         */
+        status: 'active' | 'inactive';
+        /**
+         * StaffPersonalInfo
+         *
+         * 個人情報
+         */
+        personal_info: {
+            /**
+             * 名前（姓）
+             */
+            last_name: string;
+            /**
+             * 名前（名）
+             */
+            first_name: string;
+            /**
+             * カタカナ（姓）
+             */
+            last_name_kana?: string;
+            /**
+             * カタカナ（名）
+             */
+            first_name_kana?: string;
+            /**
+             * StaffGender
+             *
+             * 性別
+             */
+            gender?: 'male' | 'female' | 'other';
+            /**
+             * 生年月日 (ISO date)
+             */
+            birthday?: string;
+            /**
+             * 携帯電話番号
+             */
+            phone?: string;
+            /**
+             * メールアドレス
+             */
+            email: string;
+            /**
+             * 郵便番号
+             */
+            postal_code?: string;
+            /**
+             * 都道府県
+             */
+            prefecture?: string;
+            /**
+             * 市区町村
+             */
+            city?: string;
+            /**
+             * 番地
+             */
+            address?: string;
+            /**
+             * 建物名
+             */
+            building?: string;
+        };
+        /**
+         * StaffLoginSettings
+         *
+         * ログイン設定
+         */
+        login_settings: {
+            /**
+             * StaffLoginMethod
+             *
+             * ログイン元
+             */
+            login_method: 'email' | 'social';
+            /**
+             * ソーシャルID
+             */
+            social_id?: string;
+        };
+        /**
+         * StaffPermissionSettings
+         *
+         * 権限設定
+         */
+        permission_settings: {
+            /**
+             * StaffRole
+             *
+             * 編集権限
+             */
+            role: 'headquarters' | 'store_staff' | 'viewer';
+            /**
+             * StaffAdditionalPermissions
+             *
+             * 追加権限
+             */
+            additional_permissions: {
+                /**
+                 * 確定請求訂正
+                 */
+                billing_correction: boolean;
+                /**
+                 * 返金申請
+                 */
+                refund_request: boolean;
+                /**
+                 * 移籍申請・否認
+                 */
+                transfer_request: boolean;
+            };
+        };
+        /**
+         * 編集可能情報
+         */
+        editable_scopes: Array<{
+            /**
+             * StaffBrand
+             *
+             * ブランド
+             */
+            brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * StaffScopeTarget
+             *
+             * 対象
+             */
+            target: 'all_stores' | 'specific_store';
+            /**
+             * Specific store ID (when target = specific_store)
+             */
+            store_id?: string;
+            /**
+             * Specific store name (when target = specific_store)
+             */
+            store_name?: string;
+            /**
+             * 有効開始日 (ISO date)
+             */
+            start_date: string;
+            /**
+             * 有効終了日 (ISO date, empty if indefinite)
+             */
+            end_date?: string;
+        }>;
+        /**
+         * Last login datetime
+         */
+        last_login: string;
+        /**
+         * Account creation timestamp
+         */
+        created_at: string;
+        /**
+         * Last update timestamp
+         */
+        updated_at: string;
+    };
+};
+
+/**
+ * InviteStaffRequest
+ *
+ * Request body to invite staff
+ */
+export type InviteStaffRequest = {
+    /**
+     * Email addresses to invite
+     */
+    emails: Array<string>;
+    /**
+     * StaffRole
+     *
+     * Role to assign
+     */
+    role: 'headquarters' | 'store_staff' | 'viewer';
+    /**
+     * StaffBrand
+     *
+     * Brand to assign (optional)
+     */
+    brand?: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+};
+
+/**
+ * InviteStaffResponse
+ *
+ * Response after inviting staff
+ */
+export type InviteStaffResponse = {
+    /**
+     * Success message
+     */
+    message: string;
+    /**
+     * Number of invitations sent
+     */
+    invited_count: number;
+    /**
+     * Newly created staff entries
+     */
+    staffs: Array<{
+        /**
+         * Staff internal ID
+         */
+        id: string;
+        /**
+         * Staff display ID
+         */
+        staff_id: string;
+        /**
+         * Staff full name (姓 + 名)
+         */
+        name: string;
+        /**
+         * Staff email address
+         */
+        email: string;
+        /**
+         * StaffRole
+         *
+         * Staff role/permission
+         */
+        role: 'headquarters' | 'store_staff' | 'viewer';
+        /**
+         * StaffBrand
+         *
+         * Assigned brand
+         */
+        brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * StaffStatus
+         *
+         * Account status
+         */
+        status: 'active' | 'inactive';
+        /**
+         * Last login datetime
+         */
+        last_login: string;
+    }>;
+};
+
+/**
+ * DeleteStaffResponse
+ *
+ * Response after deleting a staff member
+ */
+export type DeleteStaffResponse = {
+    /**
+     * Success message
+     */
+    message: string;
+};
+
 export type PostAuthLoginData = {
     /**
      * LoginRequest
@@ -12439,6 +13561,941 @@ export type GetCrmOptionsResponses = {
 };
 
 export type GetCrmOptionsResponse = GetCrmOptionsResponses[keyof GetCrmOptionsResponses];
+
+export type DeleteCrmStaffsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Staff ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/staffs/{id}';
+};
+
+export type DeleteCrmStaffsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type DeleteCrmStaffsByIdError = DeleteCrmStaffsByIdErrors[keyof DeleteCrmStaffsByIdErrors];
+
+export type DeleteCrmStaffsByIdResponses = {
+    /**
+     * DeleteStaffResponse
+     *
+     * Response after deleting a staff member
+     */
+    200: {
+        /**
+         * Success message
+         */
+        message: string;
+    };
+};
+
+export type DeleteCrmStaffsByIdResponse = DeleteCrmStaffsByIdResponses[keyof DeleteCrmStaffsByIdResponses];
+
+export type GetCrmStaffsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Staff ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/staffs/{id}';
+};
+
+export type GetCrmStaffsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmStaffsByIdError = GetCrmStaffsByIdErrors[keyof GetCrmStaffsByIdErrors];
+
+export type GetCrmStaffsByIdResponses = {
+    /**
+     * GetStaffDetailResponse
+     *
+     * Response for getting staff detail
+     */
+    200: {
+        /**
+         * StaffDetail
+         *
+         * Full staff detail
+         */
+        staff: {
+            /**
+             * Staff internal ID
+             */
+            id: string;
+            /**
+             * Staff display ID
+             */
+            staff_id: string;
+            /**
+             * StaffStatus
+             *
+             * Account status
+             */
+            status: 'active' | 'inactive';
+            /**
+             * StaffPersonalInfo
+             *
+             * 個人情報
+             */
+            personal_info: {
+                /**
+                 * 名前（姓）
+                 */
+                last_name: string;
+                /**
+                 * 名前（名）
+                 */
+                first_name: string;
+                /**
+                 * カタカナ（姓）
+                 */
+                last_name_kana?: string;
+                /**
+                 * カタカナ（名）
+                 */
+                first_name_kana?: string;
+                /**
+                 * StaffGender
+                 *
+                 * 性別
+                 */
+                gender?: 'male' | 'female' | 'other';
+                /**
+                 * 生年月日 (ISO date)
+                 */
+                birthday?: string;
+                /**
+                 * 携帯電話番号
+                 */
+                phone?: string;
+                /**
+                 * メールアドレス
+                 */
+                email: string;
+                /**
+                 * 郵便番号
+                 */
+                postal_code?: string;
+                /**
+                 * 都道府県
+                 */
+                prefecture?: string;
+                /**
+                 * 市区町村
+                 */
+                city?: string;
+                /**
+                 * 番地
+                 */
+                address?: string;
+                /**
+                 * 建物名
+                 */
+                building?: string;
+            };
+            /**
+             * StaffLoginSettings
+             *
+             * ログイン設定
+             */
+            login_settings: {
+                /**
+                 * StaffLoginMethod
+                 *
+                 * ログイン元
+                 */
+                login_method: 'email' | 'social';
+                /**
+                 * ソーシャルID
+                 */
+                social_id?: string;
+            };
+            /**
+             * StaffPermissionSettings
+             *
+             * 権限設定
+             */
+            permission_settings: {
+                /**
+                 * StaffRole
+                 *
+                 * 編集権限
+                 */
+                role: 'headquarters' | 'store_staff' | 'viewer';
+                /**
+                 * StaffAdditionalPermissions
+                 *
+                 * 追加権限
+                 */
+                additional_permissions: {
+                    /**
+                     * 確定請求訂正
+                     */
+                    billing_correction: boolean;
+                    /**
+                     * 返金申請
+                     */
+                    refund_request: boolean;
+                    /**
+                     * 移籍申請・否認
+                     */
+                    transfer_request: boolean;
+                };
+            };
+            /**
+             * 編集可能情報
+             */
+            editable_scopes: Array<{
+                /**
+                 * StaffBrand
+                 *
+                 * ブランド
+                 */
+                brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+                /**
+                 * StaffScopeTarget
+                 *
+                 * 対象
+                 */
+                target: 'all_stores' | 'specific_store';
+                /**
+                 * Specific store ID (when target = specific_store)
+                 */
+                store_id?: string;
+                /**
+                 * Specific store name (when target = specific_store)
+                 */
+                store_name?: string;
+                /**
+                 * 有効開始日 (ISO date)
+                 */
+                start_date: string;
+                /**
+                 * 有効終了日 (ISO date, empty if indefinite)
+                 */
+                end_date?: string;
+            }>;
+            /**
+             * Last login datetime
+             */
+            last_login: string;
+            /**
+             * Account creation timestamp
+             */
+            created_at: string;
+            /**
+             * Last update timestamp
+             */
+            updated_at: string;
+        };
+    };
+};
+
+export type GetCrmStaffsByIdResponse = GetCrmStaffsByIdResponses[keyof GetCrmStaffsByIdResponses];
+
+export type PatchCrmStaffsByIdData = {
+    /**
+     * UpdateStaffRequest
+     *
+     * Request body to update staff (スタッフ編集)
+     */
+    body?: {
+        /**
+         * StaffPersonalInfo
+         *
+         * 個人情報 (partial update)
+         */
+        personal_info?: {
+            /**
+             * 名前（姓）
+             */
+            last_name: string;
+            /**
+             * 名前（名）
+             */
+            first_name: string;
+            /**
+             * カタカナ（姓）
+             */
+            last_name_kana?: string;
+            /**
+             * カタカナ（名）
+             */
+            first_name_kana?: string;
+            /**
+             * StaffGender
+             *
+             * 性別
+             */
+            gender?: 'male' | 'female' | 'other';
+            /**
+             * 生年月日 (ISO date)
+             */
+            birthday?: string;
+            /**
+             * 携帯電話番号
+             */
+            phone?: string;
+            /**
+             * メールアドレス
+             */
+            email: string;
+            /**
+             * 郵便番号
+             */
+            postal_code?: string;
+            /**
+             * 都道府県
+             */
+            prefecture?: string;
+            /**
+             * 市区町村
+             */
+            city?: string;
+            /**
+             * 番地
+             */
+            address?: string;
+            /**
+             * 建物名
+             */
+            building?: string;
+        };
+        /**
+         * StaffLoginSettings
+         *
+         * ログイン設定 (partial update)
+         */
+        login_settings?: {
+            /**
+             * StaffLoginMethod
+             *
+             * ログイン元
+             */
+            login_method: 'email' | 'social';
+            /**
+             * ソーシャルID
+             */
+            social_id?: string;
+        };
+        /**
+         * StaffPermissionSettings
+         *
+         * 権限設定 (partial update)
+         */
+        permission_settings?: {
+            /**
+             * StaffRole
+             *
+             * 編集権限
+             */
+            role: 'headquarters' | 'store_staff' | 'viewer';
+            /**
+             * StaffAdditionalPermissions
+             *
+             * 追加権限
+             */
+            additional_permissions: {
+                /**
+                 * 確定請求訂正
+                 */
+                billing_correction: boolean;
+                /**
+                 * 返金申請
+                 */
+                refund_request: boolean;
+                /**
+                 * 移籍申請・否認
+                 */
+                transfer_request: boolean;
+            };
+        };
+        /**
+         * 編集可能情報 (full replacement)
+         */
+        editable_scopes?: Array<{
+            /**
+             * StaffBrand
+             *
+             * ブランド
+             */
+            brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * StaffScopeTarget
+             *
+             * 対象
+             */
+            target: 'all_stores' | 'specific_store';
+            /**
+             * Specific store ID (when target = specific_store)
+             */
+            store_id?: string;
+            /**
+             * Specific store name (when target = specific_store)
+             */
+            store_name?: string;
+            /**
+             * 有効開始日 (ISO date)
+             */
+            start_date: string;
+            /**
+             * 有効終了日 (ISO date, empty if indefinite)
+             */
+            end_date?: string;
+        }>;
+        /**
+         * StaffStatus
+         *
+         * Account status
+         */
+        status?: 'active' | 'inactive';
+    };
+    path: {
+        /**
+         * Staff ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/staffs/{id}';
+};
+
+export type PatchCrmStaffsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PatchCrmStaffsByIdError = PatchCrmStaffsByIdErrors[keyof PatchCrmStaffsByIdErrors];
+
+export type PatchCrmStaffsByIdResponses = {
+    /**
+     * UpdateStaffResponse
+     *
+     * Response after updating staff
+     */
+    200: {
+        /**
+         * Success message
+         */
+        message: string;
+        /**
+         * StaffDetail
+         *
+         * Updated staff detail
+         */
+        staff: {
+            /**
+             * Staff internal ID
+             */
+            id: string;
+            /**
+             * Staff display ID
+             */
+            staff_id: string;
+            /**
+             * StaffStatus
+             *
+             * Account status
+             */
+            status: 'active' | 'inactive';
+            /**
+             * StaffPersonalInfo
+             *
+             * 個人情報
+             */
+            personal_info: {
+                /**
+                 * 名前（姓）
+                 */
+                last_name: string;
+                /**
+                 * 名前（名）
+                 */
+                first_name: string;
+                /**
+                 * カタカナ（姓）
+                 */
+                last_name_kana?: string;
+                /**
+                 * カタカナ（名）
+                 */
+                first_name_kana?: string;
+                /**
+                 * StaffGender
+                 *
+                 * 性別
+                 */
+                gender?: 'male' | 'female' | 'other';
+                /**
+                 * 生年月日 (ISO date)
+                 */
+                birthday?: string;
+                /**
+                 * 携帯電話番号
+                 */
+                phone?: string;
+                /**
+                 * メールアドレス
+                 */
+                email: string;
+                /**
+                 * 郵便番号
+                 */
+                postal_code?: string;
+                /**
+                 * 都道府県
+                 */
+                prefecture?: string;
+                /**
+                 * 市区町村
+                 */
+                city?: string;
+                /**
+                 * 番地
+                 */
+                address?: string;
+                /**
+                 * 建物名
+                 */
+                building?: string;
+            };
+            /**
+             * StaffLoginSettings
+             *
+             * ログイン設定
+             */
+            login_settings: {
+                /**
+                 * StaffLoginMethod
+                 *
+                 * ログイン元
+                 */
+                login_method: 'email' | 'social';
+                /**
+                 * ソーシャルID
+                 */
+                social_id?: string;
+            };
+            /**
+             * StaffPermissionSettings
+             *
+             * 権限設定
+             */
+            permission_settings: {
+                /**
+                 * StaffRole
+                 *
+                 * 編集権限
+                 */
+                role: 'headquarters' | 'store_staff' | 'viewer';
+                /**
+                 * StaffAdditionalPermissions
+                 *
+                 * 追加権限
+                 */
+                additional_permissions: {
+                    /**
+                     * 確定請求訂正
+                     */
+                    billing_correction: boolean;
+                    /**
+                     * 返金申請
+                     */
+                    refund_request: boolean;
+                    /**
+                     * 移籍申請・否認
+                     */
+                    transfer_request: boolean;
+                };
+            };
+            /**
+             * 編集可能情報
+             */
+            editable_scopes: Array<{
+                /**
+                 * StaffBrand
+                 *
+                 * ブランド
+                 */
+                brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+                /**
+                 * StaffScopeTarget
+                 *
+                 * 対象
+                 */
+                target: 'all_stores' | 'specific_store';
+                /**
+                 * Specific store ID (when target = specific_store)
+                 */
+                store_id?: string;
+                /**
+                 * Specific store name (when target = specific_store)
+                 */
+                store_name?: string;
+                /**
+                 * 有効開始日 (ISO date)
+                 */
+                start_date: string;
+                /**
+                 * 有効終了日 (ISO date, empty if indefinite)
+                 */
+                end_date?: string;
+            }>;
+            /**
+             * Last login datetime
+             */
+            last_login: string;
+            /**
+             * Account creation timestamp
+             */
+            created_at: string;
+            /**
+             * Last update timestamp
+             */
+            updated_at: string;
+        };
+    };
+};
+
+export type PatchCrmStaffsByIdResponse = PatchCrmStaffsByIdResponses[keyof PatchCrmStaffsByIdResponses];
+
+export type PostCrmStaffsInviteData = {
+    /**
+     * InviteStaffRequest
+     *
+     * Request body to invite staff
+     */
+    body?: {
+        /**
+         * Email addresses to invite
+         */
+        emails: Array<string>;
+        /**
+         * StaffRole
+         *
+         * Role to assign
+         */
+        role: 'headquarters' | 'store_staff' | 'viewer';
+        /**
+         * StaffBrand
+         *
+         * Brand to assign (optional)
+         */
+        brand?: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/staffs/invite';
+};
+
+export type PostCrmStaffsInviteErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmStaffsInviteError = PostCrmStaffsInviteErrors[keyof PostCrmStaffsInviteErrors];
+
+export type PostCrmStaffsInviteResponses = {
+    /**
+     * InviteStaffResponse
+     *
+     * Response after inviting staff
+     */
+    200: {
+        /**
+         * Success message
+         */
+        message: string;
+        /**
+         * Number of invitations sent
+         */
+        invited_count: number;
+        /**
+         * Newly created staff entries
+         */
+        staffs: Array<{
+            /**
+             * Staff internal ID
+             */
+            id: string;
+            /**
+             * Staff display ID
+             */
+            staff_id: string;
+            /**
+             * Staff full name (姓 + 名)
+             */
+            name: string;
+            /**
+             * Staff email address
+             */
+            email: string;
+            /**
+             * StaffRole
+             *
+             * Staff role/permission
+             */
+            role: 'headquarters' | 'store_staff' | 'viewer';
+            /**
+             * StaffBrand
+             *
+             * Assigned brand
+             */
+            brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * StaffStatus
+             *
+             * Account status
+             */
+            status: 'active' | 'inactive';
+            /**
+             * Last login datetime
+             */
+            last_login: string;
+        }>;
+    };
+};
+
+export type PostCrmStaffsInviteResponse = PostCrmStaffsInviteResponses[keyof PostCrmStaffsInviteResponses];
+
+export type GetCrmStaffsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page number
+         */
+        page?: number;
+        /**
+         * Items per page
+         */
+        limit?: number;
+        /**
+         * Search by name or email
+         */
+        search?: string;
+        /**
+         * StaffRole
+         *
+         * Filter by role
+         */
+        role?: 'headquarters' | 'store_staff' | 'viewer';
+        /**
+         * StaffBrand
+         *
+         * Filter by brand
+         */
+        brand?: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * StaffStatus
+         *
+         * Filter by status
+         */
+        status?: 'active' | 'inactive';
+        /**
+         * Sort field
+         */
+        sort_by?: 'staff_id' | 'name' | 'role' | 'status' | 'last_login';
+        /**
+         * Sort order
+         */
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/staffs';
+};
+
+export type GetCrmStaffsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmStaffsError = GetCrmStaffsErrors[keyof GetCrmStaffsErrors];
+
+export type GetCrmStaffsResponses = {
+    /**
+     * GetStaffsResponse
+     *
+     * Staff list response with pagination
+     */
+    200: {
+        /**
+         * List of staff members
+         */
+        staffs: Array<{
+            /**
+             * Staff internal ID
+             */
+            id: string;
+            /**
+             * Staff display ID
+             */
+            staff_id: string;
+            /**
+             * Staff full name (姓 + 名)
+             */
+            name: string;
+            /**
+             * Staff email address
+             */
+            email: string;
+            /**
+             * StaffRole
+             *
+             * Staff role/permission
+             */
+            role: 'headquarters' | 'store_staff' | 'viewer';
+            /**
+             * StaffBrand
+             *
+             * Assigned brand
+             */
+            brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * StaffStatus
+             *
+             * Account status
+             */
+            status: 'active' | 'inactive';
+            /**
+             * Last login datetime
+             */
+            last_login: string;
+        }>;
+        /**
+         * StaffPagination
+         */
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmStaffsResponse = GetCrmStaffsResponses[keyof GetCrmStaffsResponses];
 
 export type GetCrmStoresByIdAccessSettingsData = {
     body?: never;

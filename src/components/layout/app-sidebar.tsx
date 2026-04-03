@@ -158,10 +158,11 @@ const menuItems: MenuItem[] = [
     icon: Settings,
     label: 'スタッフ管理',
     subItems: [
-      // {
-      //   label: 'スタッフ管理',
-      //   href: '/staff-list',
-      // },
+      {
+        label: 'スタッフ管理',
+        href: '/staffs',
+      },
+
       {
         label: '店舗管理',
         href: '/stores',

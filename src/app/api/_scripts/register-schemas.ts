@@ -8,6 +8,7 @@ import * as autoApprovalSchemas from '../_schemas/auto-approval.schema';
 import * as familyRegistrationSchemas from '../_schemas/family-registration.schema';
 import * as memberSchemas from '../_schemas/member.schema';
 import * as membershipApplicationSchemas from '../_schemas/membership-application.schema';
+import * as staffSchemas from '../_schemas/staff.schema';
 import * as storeAccessSettingsSchemas from '../_schemas/store-access-settings.schema';
 import * as storeSchemas from '../_schemas/store.schema';
 import { registry } from './register-route';
@@ -605,5 +606,66 @@ export function registerAllSchemas() {
       'UpdateStoreBusinessHoursResponse',
       storeSchemas.UpdateStoreBusinessHoursResponseSchema,
     ),
+  );
+  // Register staff schemas
+  registeredSchemaMap.set(
+    'StaffListItem',
+    registry.register('StaffListItem', staffSchemas.StaffListItemSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffPersonalInfo',
+    registry.register('StaffPersonalInfo', staffSchemas.StaffPersonalInfoSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffLoginSettings',
+    registry.register('StaffLoginSettings', staffSchemas.StaffLoginSettingsSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffAdditionalPermissions',
+    registry.register('StaffAdditionalPermissions', staffSchemas.StaffAdditionalPermissionsSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffPermissionSettings',
+    registry.register('StaffPermissionSettings', staffSchemas.StaffPermissionSettingsSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffEditableScope',
+    registry.register('StaffEditableScope', staffSchemas.StaffEditableScopeSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffDetail',
+    registry.register('StaffDetail', staffSchemas.StaffDetailSchema),
+  );
+  registeredSchemaMap.set(
+    'GetStaffsQuery',
+    registry.register('GetStaffsQuery', staffSchemas.GetStaffsQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'GetStaffsResponse',
+    registry.register('GetStaffsResponse', staffSchemas.GetStaffsResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'GetStaffDetailResponse',
+    registry.register('GetStaffDetailResponse', staffSchemas.GetStaffDetailResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'UpdateStaffRequest',
+    registry.register('UpdateStaffRequest', staffSchemas.UpdateStaffRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'UpdateStaffResponse',
+    registry.register('UpdateStaffResponse', staffSchemas.UpdateStaffResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'InviteStaffRequest',
+    registry.register('InviteStaffRequest', staffSchemas.InviteStaffRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'InviteStaffResponse',
+    registry.register('InviteStaffResponse', staffSchemas.InviteStaffResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'DeleteStaffResponse',
+    registry.register('DeleteStaffResponse', staffSchemas.DeleteStaffResponseSchema),
   );
 }

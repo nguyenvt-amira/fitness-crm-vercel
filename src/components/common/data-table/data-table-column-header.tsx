@@ -34,18 +34,18 @@ export function DataTableColumnHeader<TData, TValue>({
       )}
       {...props}
     >
-      <span>{title}</span>
+      <span className="text-xs font-semibold">{title}</span>
       <span className="flex items-center justify-center">
         <MoveUp
           className={cn(
-            '-mr-1',
-            column.getIsSorted() === 'asc' ? 'text-neutral-600' : 'text-neutral-400',
+            '-mr-[2px] size-[14px]',
+            column.getIsSorted() === 'asc' ? 'text-foreground' : 'text-muted-foreground',
           )}
         />
         <MoveDown
           className={cn(
-            '-ml-[5px]',
-            column.getIsSorted() === 'desc' ? 'text-neutral-600' : 'text-neutral-400',
+            '-ml-[5px] size-[14px]',
+            column.getIsSorted() === 'desc' ? 'text-foreground' : 'text-muted-foreground',
           )}
         />
       </span>
