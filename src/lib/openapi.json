@@ -8586,6 +8586,1466 @@
         },
         "required": ["message", "business_hours"],
         "title": "UpdateStoreBusinessHoursResponse"
+      },
+      "StaffListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "1",
+            "description": "Staff internal ID"
+          },
+          "staff_id": {
+            "type": "string",
+            "example": "STF-001",
+            "description": "Staff display ID"
+          },
+          "name": {
+            "type": "string",
+            "example": "田中 太郎",
+            "description": "Staff full name (姓 + 名)"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "tanaka@joyfit.co.jp",
+            "description": "Staff email address"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["headquarters", "store_staff", "viewer"],
+            "title": "StaffRole",
+            "description": "Staff role/permission",
+            "example": "headquarters"
+          },
+          "brand": {
+            "type": "string",
+            "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+            "title": "StaffBrand",
+            "description": "Assigned brand",
+            "example": "all"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive"],
+            "title": "StaffStatus",
+            "description": "Account status",
+            "example": "active"
+          },
+          "last_login": {
+            "type": "string",
+            "example": "2026-03-25 10:00",
+            "description": "Last login datetime"
+          }
+        },
+        "required": ["id", "staff_id", "name", "email", "role", "brand", "status", "last_login"],
+        "title": "StaffListItem",
+        "description": "Staff list item for table view"
+      },
+      "StaffPersonalInfo": {
+        "type": "object",
+        "properties": {
+          "last_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "田中",
+            "description": "名前（姓）"
+          },
+          "first_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "太郎",
+            "description": "名前（名）"
+          },
+          "last_name_kana": {
+            "type": "string",
+            "example": "タナカ",
+            "description": "カタカナ（姓）"
+          },
+          "first_name_kana": {
+            "type": "string",
+            "example": "タロウ",
+            "description": "カタカナ（名）"
+          },
+          "gender": {
+            "type": "string",
+            "enum": ["male", "female", "other"],
+            "title": "StaffGender",
+            "description": "性別",
+            "example": "male"
+          },
+          "birthday": {
+            "type": "string",
+            "example": "1985-04-15",
+            "description": "生年月日 (ISO date)"
+          },
+          "phone": {
+            "type": "string",
+            "example": "090-1234-5678",
+            "description": "携帯電話番号"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "tanaka@joyfit.co.jp",
+            "description": "メールアドレス"
+          },
+          "postal_code": {
+            "type": "string",
+            "example": "160-0022",
+            "description": "郵便番号"
+          },
+          "prefecture": {
+            "type": "string",
+            "example": "東京都",
+            "description": "都道府県"
+          },
+          "city": {
+            "type": "string",
+            "example": "新宿区新宿",
+            "description": "市区町村"
+          },
+          "address": {
+            "type": "string",
+            "example": "3-1-1",
+            "description": "番地"
+          },
+          "building": {
+            "type": "string",
+            "example": "新宿ビル 5F",
+            "description": "建物名"
+          }
+        },
+        "required": ["last_name", "first_name", "email"],
+        "title": "StaffPersonalInfo",
+        "description": "Staff personal information (個人情報)"
+      },
+      "StaffLoginSettings": {
+        "type": "object",
+        "properties": {
+          "login_method": {
+            "type": "string",
+            "enum": ["email", "social"],
+            "title": "StaffLoginMethod",
+            "description": "ログイン元",
+            "example": "email"
+          },
+          "social_id": {
+            "type": "string",
+            "example": "",
+            "description": "ソーシャルID"
+          }
+        },
+        "required": ["login_method"],
+        "title": "StaffLoginSettings",
+        "description": "Staff login settings (ログイン設定)"
+      },
+      "StaffAdditionalPermissions": {
+        "type": "object",
+        "properties": {
+          "billing_correction": {
+            "type": "boolean",
+            "example": true,
+            "description": "確定請求訂正"
+          },
+          "refund_request": {
+            "type": "boolean",
+            "example": true,
+            "description": "返金申請"
+          },
+          "transfer_request": {
+            "type": "boolean",
+            "example": false,
+            "description": "移籍申請・否認"
+          }
+        },
+        "required": ["billing_correction", "refund_request", "transfer_request"],
+        "title": "StaffAdditionalPermissions",
+        "description": "Staff additional permissions (追加権限)"
+      },
+      "StaffPermissionSettings": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": ["headquarters", "store_staff", "viewer"],
+            "title": "StaffRole",
+            "description": "編集権限",
+            "example": "headquarters"
+          },
+          "additional_permissions": {
+            "type": "object",
+            "properties": {
+              "billing_correction": {
+                "type": "boolean",
+                "example": true,
+                "description": "確定請求訂正"
+              },
+              "refund_request": {
+                "type": "boolean",
+                "example": true,
+                "description": "返金申請"
+              },
+              "transfer_request": {
+                "type": "boolean",
+                "example": false,
+                "description": "移籍申請・否認"
+              }
+            },
+            "required": ["billing_correction", "refund_request", "transfer_request"],
+            "title": "StaffAdditionalPermissions",
+            "description": "追加権限"
+          }
+        },
+        "required": ["role", "additional_permissions"],
+        "title": "StaffPermissionSettings",
+        "description": "Staff permission settings (権限設定)"
+      },
+      "StaffEditableScope": {
+        "type": "object",
+        "properties": {
+          "brand": {
+            "type": "string",
+            "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+            "title": "StaffBrand",
+            "description": "ブランド",
+            "example": "all"
+          },
+          "target": {
+            "type": "string",
+            "enum": ["all_stores", "specific_store"],
+            "title": "StaffScopeTarget",
+            "description": "対象",
+            "example": "all_stores"
+          },
+          "store_id": {
+            "type": "string",
+            "example": "store-001",
+            "description": "Specific store ID (when target = specific_store)"
+          },
+          "store_name": {
+            "type": "string",
+            "example": "JOYFIT渋谷店",
+            "description": "Specific store name (when target = specific_store)"
+          },
+          "start_date": {
+            "type": "string",
+            "example": "2024-04-01",
+            "description": "有効開始日 (ISO date)"
+          },
+          "end_date": {
+            "type": "string",
+            "example": "",
+            "description": "有効終了日 (ISO date, empty if indefinite)"
+          }
+        },
+        "required": ["brand", "target", "start_date"],
+        "title": "StaffEditableScope",
+        "description": "Staff editable scope row (編集可能情報)"
+      },
+      "StaffDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "1",
+            "description": "Staff internal ID"
+          },
+          "staff_id": {
+            "type": "string",
+            "example": "STF-001",
+            "description": "Staff display ID"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive"],
+            "title": "StaffStatus",
+            "description": "Account status",
+            "example": "active"
+          },
+          "personal_info": {
+            "type": "object",
+            "properties": {
+              "last_name": {
+                "type": "string",
+                "minLength": 1,
+                "example": "田中",
+                "description": "名前（姓）"
+              },
+              "first_name": {
+                "type": "string",
+                "minLength": 1,
+                "example": "太郎",
+                "description": "名前（名）"
+              },
+              "last_name_kana": {
+                "type": "string",
+                "example": "タナカ",
+                "description": "カタカナ（姓）"
+              },
+              "first_name_kana": {
+                "type": "string",
+                "example": "タロウ",
+                "description": "カタカナ（名）"
+              },
+              "gender": {
+                "type": "string",
+                "enum": ["male", "female", "other"],
+                "title": "StaffGender",
+                "description": "性別",
+                "example": "male"
+              },
+              "birthday": {
+                "type": "string",
+                "example": "1985-04-15",
+                "description": "生年月日 (ISO date)"
+              },
+              "phone": {
+                "type": "string",
+                "example": "090-1234-5678",
+                "description": "携帯電話番号"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "example": "tanaka@joyfit.co.jp",
+                "description": "メールアドレス"
+              },
+              "postal_code": {
+                "type": "string",
+                "example": "160-0022",
+                "description": "郵便番号"
+              },
+              "prefecture": {
+                "type": "string",
+                "example": "東京都",
+                "description": "都道府県"
+              },
+              "city": {
+                "type": "string",
+                "example": "新宿区新宿",
+                "description": "市区町村"
+              },
+              "address": {
+                "type": "string",
+                "example": "3-1-1",
+                "description": "番地"
+              },
+              "building": {
+                "type": "string",
+                "example": "新宿ビル 5F",
+                "description": "建物名"
+              }
+            },
+            "required": ["last_name", "first_name", "email"],
+            "title": "StaffPersonalInfo",
+            "description": "個人情報"
+          },
+          "login_settings": {
+            "type": "object",
+            "properties": {
+              "login_method": {
+                "type": "string",
+                "enum": ["email", "social"],
+                "title": "StaffLoginMethod",
+                "description": "ログイン元",
+                "example": "email"
+              },
+              "social_id": {
+                "type": "string",
+                "example": "",
+                "description": "ソーシャルID"
+              }
+            },
+            "required": ["login_method"],
+            "title": "StaffLoginSettings",
+            "description": "ログイン設定"
+          },
+          "permission_settings": {
+            "type": "object",
+            "properties": {
+              "role": {
+                "type": "string",
+                "enum": ["headquarters", "store_staff", "viewer"],
+                "title": "StaffRole",
+                "description": "編集権限",
+                "example": "headquarters"
+              },
+              "additional_permissions": {
+                "type": "object",
+                "properties": {
+                  "billing_correction": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "確定請求訂正"
+                  },
+                  "refund_request": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "返金申請"
+                  },
+                  "transfer_request": {
+                    "type": "boolean",
+                    "example": false,
+                    "description": "移籍申請・否認"
+                  }
+                },
+                "required": ["billing_correction", "refund_request", "transfer_request"],
+                "title": "StaffAdditionalPermissions",
+                "description": "追加権限"
+              }
+            },
+            "required": ["role", "additional_permissions"],
+            "title": "StaffPermissionSettings",
+            "description": "権限設定"
+          },
+          "editable_scopes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "brand": {
+                  "type": "string",
+                  "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                  "title": "StaffBrand",
+                  "description": "ブランド",
+                  "example": "all"
+                },
+                "target": {
+                  "type": "string",
+                  "enum": ["all_stores", "specific_store"],
+                  "title": "StaffScopeTarget",
+                  "description": "対象",
+                  "example": "all_stores"
+                },
+                "store_id": {
+                  "type": "string",
+                  "example": "store-001",
+                  "description": "Specific store ID (when target = specific_store)"
+                },
+                "store_name": {
+                  "type": "string",
+                  "example": "JOYFIT渋谷店",
+                  "description": "Specific store name (when target = specific_store)"
+                },
+                "start_date": {
+                  "type": "string",
+                  "example": "2024-04-01",
+                  "description": "有効開始日 (ISO date)"
+                },
+                "end_date": {
+                  "type": "string",
+                  "example": "",
+                  "description": "有効終了日 (ISO date, empty if indefinite)"
+                }
+              },
+              "required": ["brand", "target", "start_date"],
+              "title": "StaffEditableScope",
+              "description": "Staff editable scope row (編集可能情報)"
+            },
+            "description": "編集可能情報"
+          },
+          "last_login": {
+            "type": "string",
+            "example": "2026-03-25 10:00",
+            "description": "Last login datetime"
+          },
+          "created_at": {
+            "type": "string",
+            "example": "2024-01-15T10:00:00Z",
+            "description": "Account creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "example": "2026-03-20T14:30:00Z",
+            "description": "Last update timestamp"
+          }
+        },
+        "required": [
+          "id",
+          "staff_id",
+          "status",
+          "personal_info",
+          "login_settings",
+          "permission_settings",
+          "editable_scopes",
+          "last_login",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "StaffDetail",
+        "description": "Full staff detail for edit screen (スタッフ編集)"
+      },
+      "GetStaffsQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "example": 1,
+            "description": "Page number"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 30,
+            "example": 30,
+            "description": "Items per page"
+          },
+          "search": {
+            "type": "string",
+            "example": "田中",
+            "description": "Search by name or email"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["headquarters", "store_staff", "viewer"],
+            "title": "StaffRole",
+            "description": "Filter by role"
+          },
+          "brand": {
+            "type": "string",
+            "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+            "title": "StaffBrand",
+            "description": "Filter by brand"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive"],
+            "title": "StaffStatus",
+            "description": "Filter by status"
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": ["staff_id", "name", "role", "status", "last_login"],
+            "default": "staff_id",
+            "example": "staff_id",
+            "description": "Sort field"
+          },
+          "sort_order": {
+            "type": "string",
+            "enum": ["asc", "desc"],
+            "default": "asc",
+            "example": "asc",
+            "description": "Sort order"
+          }
+        },
+        "title": "GetStaffsQuery",
+        "description": "Query parameters for staff list"
+      },
+      "GetStaffsResponse": {
+        "type": "object",
+        "properties": {
+          "staffs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "1",
+                  "description": "Staff internal ID"
+                },
+                "staff_id": {
+                  "type": "string",
+                  "example": "STF-001",
+                  "description": "Staff display ID"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "田中 太郎",
+                  "description": "Staff full name (姓 + 名)"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "example": "tanaka@joyfit.co.jp",
+                  "description": "Staff email address"
+                },
+                "role": {
+                  "type": "string",
+                  "enum": ["headquarters", "store_staff", "viewer"],
+                  "title": "StaffRole",
+                  "description": "Staff role/permission",
+                  "example": "headquarters"
+                },
+                "brand": {
+                  "type": "string",
+                  "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                  "title": "StaffBrand",
+                  "description": "Assigned brand",
+                  "example": "all"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["active", "inactive"],
+                  "title": "StaffStatus",
+                  "description": "Account status",
+                  "example": "active"
+                },
+                "last_login": {
+                  "type": "string",
+                  "example": "2026-03-25 10:00",
+                  "description": "Last login datetime"
+                }
+              },
+              "required": [
+                "id",
+                "staff_id",
+                "name",
+                "email",
+                "role",
+                "brand",
+                "status",
+                "last_login"
+              ],
+              "title": "StaffListItem",
+              "description": "Staff list item for table view"
+            },
+            "description": "List of staff members"
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "number",
+                "example": 1
+              },
+              "limit": {
+                "type": "number",
+                "example": 30
+              },
+              "total": {
+                "type": "number",
+                "example": 200
+              },
+              "total_pages": {
+                "type": "number",
+                "example": 7
+              }
+            },
+            "required": ["page", "limit", "total", "total_pages"],
+            "title": "StaffPagination"
+          }
+        },
+        "required": ["staffs", "pagination"],
+        "title": "GetStaffsResponse",
+        "description": "Staff list response with pagination"
+      },
+      "GetStaffDetailResponse": {
+        "type": "object",
+        "properties": {
+          "staff": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "1",
+                "description": "Staff internal ID"
+              },
+              "staff_id": {
+                "type": "string",
+                "example": "STF-001",
+                "description": "Staff display ID"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["active", "inactive"],
+                "title": "StaffStatus",
+                "description": "Account status",
+                "example": "active"
+              },
+              "personal_info": {
+                "type": "object",
+                "properties": {
+                  "last_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "田中",
+                    "description": "名前（姓）"
+                  },
+                  "first_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "太郎",
+                    "description": "名前（名）"
+                  },
+                  "last_name_kana": {
+                    "type": "string",
+                    "example": "タナカ",
+                    "description": "カタカナ（姓）"
+                  },
+                  "first_name_kana": {
+                    "type": "string",
+                    "example": "タロウ",
+                    "description": "カタカナ（名）"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "enum": ["male", "female", "other"],
+                    "title": "StaffGender",
+                    "description": "性別",
+                    "example": "male"
+                  },
+                  "birthday": {
+                    "type": "string",
+                    "example": "1985-04-15",
+                    "description": "生年月日 (ISO date)"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "090-1234-5678",
+                    "description": "携帯電話番号"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "tanaka@joyfit.co.jp",
+                    "description": "メールアドレス"
+                  },
+                  "postal_code": {
+                    "type": "string",
+                    "example": "160-0022",
+                    "description": "郵便番号"
+                  },
+                  "prefecture": {
+                    "type": "string",
+                    "example": "東京都",
+                    "description": "都道府県"
+                  },
+                  "city": {
+                    "type": "string",
+                    "example": "新宿区新宿",
+                    "description": "市区町村"
+                  },
+                  "address": {
+                    "type": "string",
+                    "example": "3-1-1",
+                    "description": "番地"
+                  },
+                  "building": {
+                    "type": "string",
+                    "example": "新宿ビル 5F",
+                    "description": "建物名"
+                  }
+                },
+                "required": ["last_name", "first_name", "email"],
+                "title": "StaffPersonalInfo",
+                "description": "個人情報"
+              },
+              "login_settings": {
+                "type": "object",
+                "properties": {
+                  "login_method": {
+                    "type": "string",
+                    "enum": ["email", "social"],
+                    "title": "StaffLoginMethod",
+                    "description": "ログイン元",
+                    "example": "email"
+                  },
+                  "social_id": {
+                    "type": "string",
+                    "example": "",
+                    "description": "ソーシャルID"
+                  }
+                },
+                "required": ["login_method"],
+                "title": "StaffLoginSettings",
+                "description": "ログイン設定"
+              },
+              "permission_settings": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "enum": ["headquarters", "store_staff", "viewer"],
+                    "title": "StaffRole",
+                    "description": "編集権限",
+                    "example": "headquarters"
+                  },
+                  "additional_permissions": {
+                    "type": "object",
+                    "properties": {
+                      "billing_correction": {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "確定請求訂正"
+                      },
+                      "refund_request": {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "返金申請"
+                      },
+                      "transfer_request": {
+                        "type": "boolean",
+                        "example": false,
+                        "description": "移籍申請・否認"
+                      }
+                    },
+                    "required": ["billing_correction", "refund_request", "transfer_request"],
+                    "title": "StaffAdditionalPermissions",
+                    "description": "追加権限"
+                  }
+                },
+                "required": ["role", "additional_permissions"],
+                "title": "StaffPermissionSettings",
+                "description": "権限設定"
+              },
+              "editable_scopes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "brand": {
+                      "type": "string",
+                      "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                      "title": "StaffBrand",
+                      "description": "ブランド",
+                      "example": "all"
+                    },
+                    "target": {
+                      "type": "string",
+                      "enum": ["all_stores", "specific_store"],
+                      "title": "StaffScopeTarget",
+                      "description": "対象",
+                      "example": "all_stores"
+                    },
+                    "store_id": {
+                      "type": "string",
+                      "example": "store-001",
+                      "description": "Specific store ID (when target = specific_store)"
+                    },
+                    "store_name": {
+                      "type": "string",
+                      "example": "JOYFIT渋谷店",
+                      "description": "Specific store name (when target = specific_store)"
+                    },
+                    "start_date": {
+                      "type": "string",
+                      "example": "2024-04-01",
+                      "description": "有効開始日 (ISO date)"
+                    },
+                    "end_date": {
+                      "type": "string",
+                      "example": "",
+                      "description": "有効終了日 (ISO date, empty if indefinite)"
+                    }
+                  },
+                  "required": ["brand", "target", "start_date"],
+                  "title": "StaffEditableScope",
+                  "description": "Staff editable scope row (編集可能情報)"
+                },
+                "description": "編集可能情報"
+              },
+              "last_login": {
+                "type": "string",
+                "example": "2026-03-25 10:00",
+                "description": "Last login datetime"
+              },
+              "created_at": {
+                "type": "string",
+                "example": "2024-01-15T10:00:00Z",
+                "description": "Account creation timestamp"
+              },
+              "updated_at": {
+                "type": "string",
+                "example": "2026-03-20T14:30:00Z",
+                "description": "Last update timestamp"
+              }
+            },
+            "required": [
+              "id",
+              "staff_id",
+              "status",
+              "personal_info",
+              "login_settings",
+              "permission_settings",
+              "editable_scopes",
+              "last_login",
+              "created_at",
+              "updated_at"
+            ],
+            "title": "StaffDetail",
+            "description": "Full staff detail"
+          }
+        },
+        "required": ["staff"],
+        "title": "GetStaffDetailResponse",
+        "description": "Response for getting staff detail"
+      },
+      "UpdateStaffRequest": {
+        "type": "object",
+        "properties": {
+          "personal_info": {
+            "type": "object",
+            "properties": {
+              "last_name": {
+                "type": "string",
+                "minLength": 1,
+                "example": "田中",
+                "description": "名前（姓）"
+              },
+              "first_name": {
+                "type": "string",
+                "minLength": 1,
+                "example": "太郎",
+                "description": "名前（名）"
+              },
+              "last_name_kana": {
+                "type": "string",
+                "example": "タナカ",
+                "description": "カタカナ（姓）"
+              },
+              "first_name_kana": {
+                "type": "string",
+                "example": "タロウ",
+                "description": "カタカナ（名）"
+              },
+              "gender": {
+                "type": "string",
+                "enum": ["male", "female", "other"],
+                "title": "StaffGender",
+                "description": "性別",
+                "example": "male"
+              },
+              "birthday": {
+                "type": "string",
+                "example": "1985-04-15",
+                "description": "生年月日 (ISO date)"
+              },
+              "phone": {
+                "type": "string",
+                "example": "090-1234-5678",
+                "description": "携帯電話番号"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "example": "tanaka@joyfit.co.jp",
+                "description": "メールアドレス"
+              },
+              "postal_code": {
+                "type": "string",
+                "example": "160-0022",
+                "description": "郵便番号"
+              },
+              "prefecture": {
+                "type": "string",
+                "example": "東京都",
+                "description": "都道府県"
+              },
+              "city": {
+                "type": "string",
+                "example": "新宿区新宿",
+                "description": "市区町村"
+              },
+              "address": {
+                "type": "string",
+                "example": "3-1-1",
+                "description": "番地"
+              },
+              "building": {
+                "type": "string",
+                "example": "新宿ビル 5F",
+                "description": "建物名"
+              }
+            },
+            "required": ["last_name", "first_name", "email"],
+            "title": "StaffPersonalInfo",
+            "description": "個人情報 (partial update)"
+          },
+          "login_settings": {
+            "type": "object",
+            "properties": {
+              "login_method": {
+                "type": "string",
+                "enum": ["email", "social"],
+                "title": "StaffLoginMethod",
+                "description": "ログイン元",
+                "example": "email"
+              },
+              "social_id": {
+                "type": "string",
+                "example": "",
+                "description": "ソーシャルID"
+              }
+            },
+            "required": ["login_method"],
+            "title": "StaffLoginSettings",
+            "description": "ログイン設定 (partial update)"
+          },
+          "permission_settings": {
+            "type": "object",
+            "properties": {
+              "role": {
+                "type": "string",
+                "enum": ["headquarters", "store_staff", "viewer"],
+                "title": "StaffRole",
+                "description": "編集権限",
+                "example": "headquarters"
+              },
+              "additional_permissions": {
+                "type": "object",
+                "properties": {
+                  "billing_correction": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "確定請求訂正"
+                  },
+                  "refund_request": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "返金申請"
+                  },
+                  "transfer_request": {
+                    "type": "boolean",
+                    "example": false,
+                    "description": "移籍申請・否認"
+                  }
+                },
+                "required": ["billing_correction", "refund_request", "transfer_request"],
+                "title": "StaffAdditionalPermissions",
+                "description": "追加権限"
+              }
+            },
+            "required": ["role", "additional_permissions"],
+            "title": "StaffPermissionSettings",
+            "description": "権限設定 (partial update)"
+          },
+          "editable_scopes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "brand": {
+                  "type": "string",
+                  "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                  "title": "StaffBrand",
+                  "description": "ブランド",
+                  "example": "all"
+                },
+                "target": {
+                  "type": "string",
+                  "enum": ["all_stores", "specific_store"],
+                  "title": "StaffScopeTarget",
+                  "description": "対象",
+                  "example": "all_stores"
+                },
+                "store_id": {
+                  "type": "string",
+                  "example": "store-001",
+                  "description": "Specific store ID (when target = specific_store)"
+                },
+                "store_name": {
+                  "type": "string",
+                  "example": "JOYFIT渋谷店",
+                  "description": "Specific store name (when target = specific_store)"
+                },
+                "start_date": {
+                  "type": "string",
+                  "example": "2024-04-01",
+                  "description": "有効開始日 (ISO date)"
+                },
+                "end_date": {
+                  "type": "string",
+                  "example": "",
+                  "description": "有効終了日 (ISO date, empty if indefinite)"
+                }
+              },
+              "required": ["brand", "target", "start_date"],
+              "title": "StaffEditableScope",
+              "description": "Staff editable scope row (編集可能情報)"
+            },
+            "description": "編集可能情報 (full replacement)"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive"],
+            "title": "StaffStatus",
+            "description": "Account status"
+          }
+        },
+        "title": "UpdateStaffRequest",
+        "description": "Request body to update staff (スタッフ編集)"
+      },
+      "UpdateStaffResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "スタッフ情報を更新しました",
+            "description": "Success message"
+          },
+          "staff": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "1",
+                "description": "Staff internal ID"
+              },
+              "staff_id": {
+                "type": "string",
+                "example": "STF-001",
+                "description": "Staff display ID"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["active", "inactive"],
+                "title": "StaffStatus",
+                "description": "Account status",
+                "example": "active"
+              },
+              "personal_info": {
+                "type": "object",
+                "properties": {
+                  "last_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "田中",
+                    "description": "名前（姓）"
+                  },
+                  "first_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "太郎",
+                    "description": "名前（名）"
+                  },
+                  "last_name_kana": {
+                    "type": "string",
+                    "example": "タナカ",
+                    "description": "カタカナ（姓）"
+                  },
+                  "first_name_kana": {
+                    "type": "string",
+                    "example": "タロウ",
+                    "description": "カタカナ（名）"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "enum": ["male", "female", "other"],
+                    "title": "StaffGender",
+                    "description": "性別",
+                    "example": "male"
+                  },
+                  "birthday": {
+                    "type": "string",
+                    "example": "1985-04-15",
+                    "description": "生年月日 (ISO date)"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "090-1234-5678",
+                    "description": "携帯電話番号"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "tanaka@joyfit.co.jp",
+                    "description": "メールアドレス"
+                  },
+                  "postal_code": {
+                    "type": "string",
+                    "example": "160-0022",
+                    "description": "郵便番号"
+                  },
+                  "prefecture": {
+                    "type": "string",
+                    "example": "東京都",
+                    "description": "都道府県"
+                  },
+                  "city": {
+                    "type": "string",
+                    "example": "新宿区新宿",
+                    "description": "市区町村"
+                  },
+                  "address": {
+                    "type": "string",
+                    "example": "3-1-1",
+                    "description": "番地"
+                  },
+                  "building": {
+                    "type": "string",
+                    "example": "新宿ビル 5F",
+                    "description": "建物名"
+                  }
+                },
+                "required": ["last_name", "first_name", "email"],
+                "title": "StaffPersonalInfo",
+                "description": "個人情報"
+              },
+              "login_settings": {
+                "type": "object",
+                "properties": {
+                  "login_method": {
+                    "type": "string",
+                    "enum": ["email", "social"],
+                    "title": "StaffLoginMethod",
+                    "description": "ログイン元",
+                    "example": "email"
+                  },
+                  "social_id": {
+                    "type": "string",
+                    "example": "",
+                    "description": "ソーシャルID"
+                  }
+                },
+                "required": ["login_method"],
+                "title": "StaffLoginSettings",
+                "description": "ログイン設定"
+              },
+              "permission_settings": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "enum": ["headquarters", "store_staff", "viewer"],
+                    "title": "StaffRole",
+                    "description": "編集権限",
+                    "example": "headquarters"
+                  },
+                  "additional_permissions": {
+                    "type": "object",
+                    "properties": {
+                      "billing_correction": {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "確定請求訂正"
+                      },
+                      "refund_request": {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "返金申請"
+                      },
+                      "transfer_request": {
+                        "type": "boolean",
+                        "example": false,
+                        "description": "移籍申請・否認"
+                      }
+                    },
+                    "required": ["billing_correction", "refund_request", "transfer_request"],
+                    "title": "StaffAdditionalPermissions",
+                    "description": "追加権限"
+                  }
+                },
+                "required": ["role", "additional_permissions"],
+                "title": "StaffPermissionSettings",
+                "description": "権限設定"
+              },
+              "editable_scopes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "brand": {
+                      "type": "string",
+                      "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                      "title": "StaffBrand",
+                      "description": "ブランド",
+                      "example": "all"
+                    },
+                    "target": {
+                      "type": "string",
+                      "enum": ["all_stores", "specific_store"],
+                      "title": "StaffScopeTarget",
+                      "description": "対象",
+                      "example": "all_stores"
+                    },
+                    "store_id": {
+                      "type": "string",
+                      "example": "store-001",
+                      "description": "Specific store ID (when target = specific_store)"
+                    },
+                    "store_name": {
+                      "type": "string",
+                      "example": "JOYFIT渋谷店",
+                      "description": "Specific store name (when target = specific_store)"
+                    },
+                    "start_date": {
+                      "type": "string",
+                      "example": "2024-04-01",
+                      "description": "有効開始日 (ISO date)"
+                    },
+                    "end_date": {
+                      "type": "string",
+                      "example": "",
+                      "description": "有効終了日 (ISO date, empty if indefinite)"
+                    }
+                  },
+                  "required": ["brand", "target", "start_date"],
+                  "title": "StaffEditableScope",
+                  "description": "Staff editable scope row (編集可能情報)"
+                },
+                "description": "編集可能情報"
+              },
+              "last_login": {
+                "type": "string",
+                "example": "2026-03-25 10:00",
+                "description": "Last login datetime"
+              },
+              "created_at": {
+                "type": "string",
+                "example": "2024-01-15T10:00:00Z",
+                "description": "Account creation timestamp"
+              },
+              "updated_at": {
+                "type": "string",
+                "example": "2026-03-20T14:30:00Z",
+                "description": "Last update timestamp"
+              }
+            },
+            "required": [
+              "id",
+              "staff_id",
+              "status",
+              "personal_info",
+              "login_settings",
+              "permission_settings",
+              "editable_scopes",
+              "last_login",
+              "created_at",
+              "updated_at"
+            ],
+            "title": "StaffDetail",
+            "description": "Updated staff detail"
+          }
+        },
+        "required": ["message", "staff"],
+        "title": "UpdateStaffResponse",
+        "description": "Response after updating staff"
+      },
+      "InviteStaffRequest": {
+        "type": "object",
+        "properties": {
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "email"
+            },
+            "minItems": 1,
+            "example": ["staff@joyfit.co.jp"],
+            "description": "Email addresses to invite"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["headquarters", "store_staff", "viewer"],
+            "title": "StaffRole",
+            "description": "Role to assign",
+            "example": "store_staff"
+          },
+          "brand": {
+            "type": "string",
+            "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+            "title": "StaffBrand",
+            "description": "Brand to assign (optional)",
+            "example": "joyfit"
+          }
+        },
+        "required": ["emails", "role"],
+        "title": "InviteStaffRequest",
+        "description": "Request body to invite staff"
+      },
+      "InviteStaffResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "招待メールを送信しました",
+            "description": "Success message"
+          },
+          "invited_count": {
+            "type": "number",
+            "example": 2,
+            "description": "Number of invitations sent"
+          },
+          "staffs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "1",
+                  "description": "Staff internal ID"
+                },
+                "staff_id": {
+                  "type": "string",
+                  "example": "STF-001",
+                  "description": "Staff display ID"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "田中 太郎",
+                  "description": "Staff full name (姓 + 名)"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "example": "tanaka@joyfit.co.jp",
+                  "description": "Staff email address"
+                },
+                "role": {
+                  "type": "string",
+                  "enum": ["headquarters", "store_staff", "viewer"],
+                  "title": "StaffRole",
+                  "description": "Staff role/permission",
+                  "example": "headquarters"
+                },
+                "brand": {
+                  "type": "string",
+                  "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                  "title": "StaffBrand",
+                  "description": "Assigned brand",
+                  "example": "all"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["active", "inactive"],
+                  "title": "StaffStatus",
+                  "description": "Account status",
+                  "example": "active"
+                },
+                "last_login": {
+                  "type": "string",
+                  "example": "2026-03-25 10:00",
+                  "description": "Last login datetime"
+                }
+              },
+              "required": [
+                "id",
+                "staff_id",
+                "name",
+                "email",
+                "role",
+                "brand",
+                "status",
+                "last_login"
+              ],
+              "title": "StaffListItem",
+              "description": "Staff list item for table view"
+            },
+            "description": "Newly created staff entries"
+          }
+        },
+        "required": ["message", "invited_count", "staffs"],
+        "title": "InviteStaffResponse",
+        "description": "Response after inviting staff"
+      },
+      "DeleteStaffResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "スタッフを削除しました",
+            "description": "Success message"
+          }
+        },
+        "required": ["message"],
+        "title": "DeleteStaffResponse",
+        "description": "Response after deleting a staff member"
       }
     },
     "parameters": {}
@@ -19428,6 +20888,1406 @@
           },
           "400": {
             "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/staffs/{id}": {
+      "get": {
+        "summary": "Get staff detail",
+        "description": "Get full staff detail by ID (スタッフ編集画面用)",
+        "tags": ["Staffs"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Staff ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Staff detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "staff": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "1",
+                          "description": "Staff internal ID"
+                        },
+                        "staff_id": {
+                          "type": "string",
+                          "example": "STF-001",
+                          "description": "Staff display ID"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "StaffStatus",
+                          "description": "Account status",
+                          "example": "active"
+                        },
+                        "personal_info": {
+                          "type": "object",
+                          "properties": {
+                            "last_name": {
+                              "type": "string",
+                              "minLength": 1,
+                              "example": "田中",
+                              "description": "名前（姓）"
+                            },
+                            "first_name": {
+                              "type": "string",
+                              "minLength": 1,
+                              "example": "太郎",
+                              "description": "名前（名）"
+                            },
+                            "last_name_kana": {
+                              "type": "string",
+                              "example": "タナカ",
+                              "description": "カタカナ（姓）"
+                            },
+                            "first_name_kana": {
+                              "type": "string",
+                              "example": "タロウ",
+                              "description": "カタカナ（名）"
+                            },
+                            "gender": {
+                              "type": "string",
+                              "enum": ["male", "female", "other"],
+                              "title": "StaffGender",
+                              "description": "性別",
+                              "example": "male"
+                            },
+                            "birthday": {
+                              "type": "string",
+                              "example": "1985-04-15",
+                              "description": "生年月日 (ISO date)"
+                            },
+                            "phone": {
+                              "type": "string",
+                              "example": "090-1234-5678",
+                              "description": "携帯電話番号"
+                            },
+                            "email": {
+                              "type": "string",
+                              "format": "email",
+                              "example": "tanaka@joyfit.co.jp",
+                              "description": "メールアドレス"
+                            },
+                            "postal_code": {
+                              "type": "string",
+                              "example": "160-0022",
+                              "description": "郵便番号"
+                            },
+                            "prefecture": {
+                              "type": "string",
+                              "example": "東京都",
+                              "description": "都道府県"
+                            },
+                            "city": {
+                              "type": "string",
+                              "example": "新宿区新宿",
+                              "description": "市区町村"
+                            },
+                            "address": {
+                              "type": "string",
+                              "example": "3-1-1",
+                              "description": "番地"
+                            },
+                            "building": {
+                              "type": "string",
+                              "example": "新宿ビル 5F",
+                              "description": "建物名"
+                            }
+                          },
+                          "required": ["last_name", "first_name", "email"],
+                          "title": "StaffPersonalInfo",
+                          "description": "個人情報"
+                        },
+                        "login_settings": {
+                          "type": "object",
+                          "properties": {
+                            "login_method": {
+                              "type": "string",
+                              "enum": ["email", "social"],
+                              "title": "StaffLoginMethod",
+                              "description": "ログイン元",
+                              "example": "email"
+                            },
+                            "social_id": {
+                              "type": "string",
+                              "example": "",
+                              "description": "ソーシャルID"
+                            }
+                          },
+                          "required": ["login_method"],
+                          "title": "StaffLoginSettings",
+                          "description": "ログイン設定"
+                        },
+                        "permission_settings": {
+                          "type": "object",
+                          "properties": {
+                            "role": {
+                              "type": "string",
+                              "enum": ["headquarters", "store_staff", "viewer"],
+                              "title": "StaffRole",
+                              "description": "編集権限",
+                              "example": "headquarters"
+                            },
+                            "additional_permissions": {
+                              "type": "object",
+                              "properties": {
+                                "billing_correction": {
+                                  "type": "boolean",
+                                  "example": true,
+                                  "description": "確定請求訂正"
+                                },
+                                "refund_request": {
+                                  "type": "boolean",
+                                  "example": true,
+                                  "description": "返金申請"
+                                },
+                                "transfer_request": {
+                                  "type": "boolean",
+                                  "example": false,
+                                  "description": "移籍申請・否認"
+                                }
+                              },
+                              "required": [
+                                "billing_correction",
+                                "refund_request",
+                                "transfer_request"
+                              ],
+                              "title": "StaffAdditionalPermissions",
+                              "description": "追加権限"
+                            }
+                          },
+                          "required": ["role", "additional_permissions"],
+                          "title": "StaffPermissionSettings",
+                          "description": "権限設定"
+                        },
+                        "editable_scopes": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "brand": {
+                                "type": "string",
+                                "enum": [
+                                  "all",
+                                  "joyfit",
+                                  "fit365",
+                                  "joyfit24",
+                                  "joyfit_yoga",
+                                  "joyfit_plus"
+                                ],
+                                "title": "StaffBrand",
+                                "description": "ブランド",
+                                "example": "all"
+                              },
+                              "target": {
+                                "type": "string",
+                                "enum": ["all_stores", "specific_store"],
+                                "title": "StaffScopeTarget",
+                                "description": "対象",
+                                "example": "all_stores"
+                              },
+                              "store_id": {
+                                "type": "string",
+                                "example": "store-001",
+                                "description": "Specific store ID (when target = specific_store)"
+                              },
+                              "store_name": {
+                                "type": "string",
+                                "example": "JOYFIT渋谷店",
+                                "description": "Specific store name (when target = specific_store)"
+                              },
+                              "start_date": {
+                                "type": "string",
+                                "example": "2024-04-01",
+                                "description": "有効開始日 (ISO date)"
+                              },
+                              "end_date": {
+                                "type": "string",
+                                "example": "",
+                                "description": "有効終了日 (ISO date, empty if indefinite)"
+                              }
+                            },
+                            "required": ["brand", "target", "start_date"],
+                            "title": "StaffEditableScope",
+                            "description": "Staff editable scope row (編集可能情報)"
+                          },
+                          "description": "編集可能情報"
+                        },
+                        "last_login": {
+                          "type": "string",
+                          "example": "2026-03-25 10:00",
+                          "description": "Last login datetime"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2024-01-15T10:00:00Z",
+                          "description": "Account creation timestamp"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026-03-20T14:30:00Z",
+                          "description": "Last update timestamp"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "staff_id",
+                        "status",
+                        "personal_info",
+                        "login_settings",
+                        "permission_settings",
+                        "editable_scopes",
+                        "last_login",
+                        "created_at",
+                        "updated_at"
+                      ],
+                      "title": "StaffDetail",
+                      "description": "Full staff detail"
+                    }
+                  },
+                  "required": ["staff"],
+                  "title": "GetStaffDetailResponse",
+                  "description": "Response for getting staff detail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Staff not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update staff",
+        "description": "Partially update staff information (スタッフ編集)",
+        "tags": ["Staffs"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Staff ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Staff update payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "personal_info": {
+                    "type": "object",
+                    "properties": {
+                      "last_name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "example": "田中",
+                        "description": "名前（姓）"
+                      },
+                      "first_name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "example": "太郎",
+                        "description": "名前（名）"
+                      },
+                      "last_name_kana": {
+                        "type": "string",
+                        "example": "タナカ",
+                        "description": "カタカナ（姓）"
+                      },
+                      "first_name_kana": {
+                        "type": "string",
+                        "example": "タロウ",
+                        "description": "カタカナ（名）"
+                      },
+                      "gender": {
+                        "type": "string",
+                        "enum": ["male", "female", "other"],
+                        "title": "StaffGender",
+                        "description": "性別",
+                        "example": "male"
+                      },
+                      "birthday": {
+                        "type": "string",
+                        "example": "1985-04-15",
+                        "description": "生年月日 (ISO date)"
+                      },
+                      "phone": {
+                        "type": "string",
+                        "example": "090-1234-5678",
+                        "description": "携帯電話番号"
+                      },
+                      "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "tanaka@joyfit.co.jp",
+                        "description": "メールアドレス"
+                      },
+                      "postal_code": {
+                        "type": "string",
+                        "example": "160-0022",
+                        "description": "郵便番号"
+                      },
+                      "prefecture": {
+                        "type": "string",
+                        "example": "東京都",
+                        "description": "都道府県"
+                      },
+                      "city": {
+                        "type": "string",
+                        "example": "新宿区新宿",
+                        "description": "市区町村"
+                      },
+                      "address": {
+                        "type": "string",
+                        "example": "3-1-1",
+                        "description": "番地"
+                      },
+                      "building": {
+                        "type": "string",
+                        "example": "新宿ビル 5F",
+                        "description": "建物名"
+                      }
+                    },
+                    "required": ["last_name", "first_name", "email"],
+                    "title": "StaffPersonalInfo",
+                    "description": "個人情報 (partial update)"
+                  },
+                  "login_settings": {
+                    "type": "object",
+                    "properties": {
+                      "login_method": {
+                        "type": "string",
+                        "enum": ["email", "social"],
+                        "title": "StaffLoginMethod",
+                        "description": "ログイン元",
+                        "example": "email"
+                      },
+                      "social_id": {
+                        "type": "string",
+                        "example": "",
+                        "description": "ソーシャルID"
+                      }
+                    },
+                    "required": ["login_method"],
+                    "title": "StaffLoginSettings",
+                    "description": "ログイン設定 (partial update)"
+                  },
+                  "permission_settings": {
+                    "type": "object",
+                    "properties": {
+                      "role": {
+                        "type": "string",
+                        "enum": ["headquarters", "store_staff", "viewer"],
+                        "title": "StaffRole",
+                        "description": "編集権限",
+                        "example": "headquarters"
+                      },
+                      "additional_permissions": {
+                        "type": "object",
+                        "properties": {
+                          "billing_correction": {
+                            "type": "boolean",
+                            "example": true,
+                            "description": "確定請求訂正"
+                          },
+                          "refund_request": {
+                            "type": "boolean",
+                            "example": true,
+                            "description": "返金申請"
+                          },
+                          "transfer_request": {
+                            "type": "boolean",
+                            "example": false,
+                            "description": "移籍申請・否認"
+                          }
+                        },
+                        "required": ["billing_correction", "refund_request", "transfer_request"],
+                        "title": "StaffAdditionalPermissions",
+                        "description": "追加権限"
+                      }
+                    },
+                    "required": ["role", "additional_permissions"],
+                    "title": "StaffPermissionSettings",
+                    "description": "権限設定 (partial update)"
+                  },
+                  "editable_scopes": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "brand": {
+                          "type": "string",
+                          "enum": [
+                            "all",
+                            "joyfit",
+                            "fit365",
+                            "joyfit24",
+                            "joyfit_yoga",
+                            "joyfit_plus"
+                          ],
+                          "title": "StaffBrand",
+                          "description": "ブランド",
+                          "example": "all"
+                        },
+                        "target": {
+                          "type": "string",
+                          "enum": ["all_stores", "specific_store"],
+                          "title": "StaffScopeTarget",
+                          "description": "対象",
+                          "example": "all_stores"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "example": "store-001",
+                          "description": "Specific store ID (when target = specific_store)"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "example": "JOYFIT渋谷店",
+                          "description": "Specific store name (when target = specific_store)"
+                        },
+                        "start_date": {
+                          "type": "string",
+                          "example": "2024-04-01",
+                          "description": "有効開始日 (ISO date)"
+                        },
+                        "end_date": {
+                          "type": "string",
+                          "example": "",
+                          "description": "有効終了日 (ISO date, empty if indefinite)"
+                        }
+                      },
+                      "required": ["brand", "target", "start_date"],
+                      "title": "StaffEditableScope",
+                      "description": "Staff editable scope row (編集可能情報)"
+                    },
+                    "description": "編集可能情報 (full replacement)"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["active", "inactive"],
+                    "title": "StaffStatus",
+                    "description": "Account status"
+                  }
+                },
+                "title": "UpdateStaffRequest",
+                "description": "Request body to update staff (スタッフ編集)"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Staff updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "スタッフ情報を更新しました",
+                      "description": "Success message"
+                    },
+                    "staff": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "1",
+                          "description": "Staff internal ID"
+                        },
+                        "staff_id": {
+                          "type": "string",
+                          "example": "STF-001",
+                          "description": "Staff display ID"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "StaffStatus",
+                          "description": "Account status",
+                          "example": "active"
+                        },
+                        "personal_info": {
+                          "type": "object",
+                          "properties": {
+                            "last_name": {
+                              "type": "string",
+                              "minLength": 1,
+                              "example": "田中",
+                              "description": "名前（姓）"
+                            },
+                            "first_name": {
+                              "type": "string",
+                              "minLength": 1,
+                              "example": "太郎",
+                              "description": "名前（名）"
+                            },
+                            "last_name_kana": {
+                              "type": "string",
+                              "example": "タナカ",
+                              "description": "カタカナ（姓）"
+                            },
+                            "first_name_kana": {
+                              "type": "string",
+                              "example": "タロウ",
+                              "description": "カタカナ（名）"
+                            },
+                            "gender": {
+                              "type": "string",
+                              "enum": ["male", "female", "other"],
+                              "title": "StaffGender",
+                              "description": "性別",
+                              "example": "male"
+                            },
+                            "birthday": {
+                              "type": "string",
+                              "example": "1985-04-15",
+                              "description": "生年月日 (ISO date)"
+                            },
+                            "phone": {
+                              "type": "string",
+                              "example": "090-1234-5678",
+                              "description": "携帯電話番号"
+                            },
+                            "email": {
+                              "type": "string",
+                              "format": "email",
+                              "example": "tanaka@joyfit.co.jp",
+                              "description": "メールアドレス"
+                            },
+                            "postal_code": {
+                              "type": "string",
+                              "example": "160-0022",
+                              "description": "郵便番号"
+                            },
+                            "prefecture": {
+                              "type": "string",
+                              "example": "東京都",
+                              "description": "都道府県"
+                            },
+                            "city": {
+                              "type": "string",
+                              "example": "新宿区新宿",
+                              "description": "市区町村"
+                            },
+                            "address": {
+                              "type": "string",
+                              "example": "3-1-1",
+                              "description": "番地"
+                            },
+                            "building": {
+                              "type": "string",
+                              "example": "新宿ビル 5F",
+                              "description": "建物名"
+                            }
+                          },
+                          "required": ["last_name", "first_name", "email"],
+                          "title": "StaffPersonalInfo",
+                          "description": "個人情報"
+                        },
+                        "login_settings": {
+                          "type": "object",
+                          "properties": {
+                            "login_method": {
+                              "type": "string",
+                              "enum": ["email", "social"],
+                              "title": "StaffLoginMethod",
+                              "description": "ログイン元",
+                              "example": "email"
+                            },
+                            "social_id": {
+                              "type": "string",
+                              "example": "",
+                              "description": "ソーシャルID"
+                            }
+                          },
+                          "required": ["login_method"],
+                          "title": "StaffLoginSettings",
+                          "description": "ログイン設定"
+                        },
+                        "permission_settings": {
+                          "type": "object",
+                          "properties": {
+                            "role": {
+                              "type": "string",
+                              "enum": ["headquarters", "store_staff", "viewer"],
+                              "title": "StaffRole",
+                              "description": "編集権限",
+                              "example": "headquarters"
+                            },
+                            "additional_permissions": {
+                              "type": "object",
+                              "properties": {
+                                "billing_correction": {
+                                  "type": "boolean",
+                                  "example": true,
+                                  "description": "確定請求訂正"
+                                },
+                                "refund_request": {
+                                  "type": "boolean",
+                                  "example": true,
+                                  "description": "返金申請"
+                                },
+                                "transfer_request": {
+                                  "type": "boolean",
+                                  "example": false,
+                                  "description": "移籍申請・否認"
+                                }
+                              },
+                              "required": [
+                                "billing_correction",
+                                "refund_request",
+                                "transfer_request"
+                              ],
+                              "title": "StaffAdditionalPermissions",
+                              "description": "追加権限"
+                            }
+                          },
+                          "required": ["role", "additional_permissions"],
+                          "title": "StaffPermissionSettings",
+                          "description": "権限設定"
+                        },
+                        "editable_scopes": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "brand": {
+                                "type": "string",
+                                "enum": [
+                                  "all",
+                                  "joyfit",
+                                  "fit365",
+                                  "joyfit24",
+                                  "joyfit_yoga",
+                                  "joyfit_plus"
+                                ],
+                                "title": "StaffBrand",
+                                "description": "ブランド",
+                                "example": "all"
+                              },
+                              "target": {
+                                "type": "string",
+                                "enum": ["all_stores", "specific_store"],
+                                "title": "StaffScopeTarget",
+                                "description": "対象",
+                                "example": "all_stores"
+                              },
+                              "store_id": {
+                                "type": "string",
+                                "example": "store-001",
+                                "description": "Specific store ID (when target = specific_store)"
+                              },
+                              "store_name": {
+                                "type": "string",
+                                "example": "JOYFIT渋谷店",
+                                "description": "Specific store name (when target = specific_store)"
+                              },
+                              "start_date": {
+                                "type": "string",
+                                "example": "2024-04-01",
+                                "description": "有効開始日 (ISO date)"
+                              },
+                              "end_date": {
+                                "type": "string",
+                                "example": "",
+                                "description": "有効終了日 (ISO date, empty if indefinite)"
+                              }
+                            },
+                            "required": ["brand", "target", "start_date"],
+                            "title": "StaffEditableScope",
+                            "description": "Staff editable scope row (編集可能情報)"
+                          },
+                          "description": "編集可能情報"
+                        },
+                        "last_login": {
+                          "type": "string",
+                          "example": "2026-03-25 10:00",
+                          "description": "Last login datetime"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2024-01-15T10:00:00Z",
+                          "description": "Account creation timestamp"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026-03-20T14:30:00Z",
+                          "description": "Last update timestamp"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "staff_id",
+                        "status",
+                        "personal_info",
+                        "login_settings",
+                        "permission_settings",
+                        "editable_scopes",
+                        "last_login",
+                        "created_at",
+                        "updated_at"
+                      ],
+                      "title": "StaffDetail",
+                      "description": "Updated staff detail"
+                    }
+                  },
+                  "required": ["message", "staff"],
+                  "title": "UpdateStaffResponse",
+                  "description": "Response after updating staff"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Staff not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a staff member",
+        "description": "Delete a staff member by ID",
+        "tags": ["Staffs"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Staff ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Staff deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "スタッフを削除しました",
+                      "description": "Success message"
+                    }
+                  },
+                  "required": ["message"],
+                  "title": "DeleteStaffResponse",
+                  "description": "Response after deleting a staff member"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Staff not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/staffs/invite": {
+      "post": {
+        "summary": "Invite staff members",
+        "description": "Send invitation emails to new staff members",
+        "tags": ["Staffs"],
+        "requestBody": {
+          "description": "Staff invitation request body",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "emails": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "minItems": 1,
+                    "example": ["staff@joyfit.co.jp"],
+                    "description": "Email addresses to invite"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": ["headquarters", "store_staff", "viewer"],
+                    "title": "StaffRole",
+                    "description": "Role to assign",
+                    "example": "store_staff"
+                  },
+                  "brand": {
+                    "type": "string",
+                    "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                    "title": "StaffBrand",
+                    "description": "Brand to assign (optional)",
+                    "example": "joyfit"
+                  }
+                },
+                "required": ["emails", "role"],
+                "title": "InviteStaffRequest",
+                "description": "Request body to invite staff"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Invitations sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "招待メールを送信しました",
+                      "description": "Success message"
+                    },
+                    "invited_count": {
+                      "type": "number",
+                      "example": 2,
+                      "description": "Number of invitations sent"
+                    },
+                    "staffs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "1",
+                            "description": "Staff internal ID"
+                          },
+                          "staff_id": {
+                            "type": "string",
+                            "example": "STF-001",
+                            "description": "Staff display ID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "田中 太郎",
+                            "description": "Staff full name (姓 + 名)"
+                          },
+                          "email": {
+                            "type": "string",
+                            "format": "email",
+                            "example": "tanaka@joyfit.co.jp",
+                            "description": "Staff email address"
+                          },
+                          "role": {
+                            "type": "string",
+                            "enum": ["headquarters", "store_staff", "viewer"],
+                            "title": "StaffRole",
+                            "description": "Staff role/permission",
+                            "example": "headquarters"
+                          },
+                          "brand": {
+                            "type": "string",
+                            "enum": [
+                              "all",
+                              "joyfit",
+                              "fit365",
+                              "joyfit24",
+                              "joyfit_yoga",
+                              "joyfit_plus"
+                            ],
+                            "title": "StaffBrand",
+                            "description": "Assigned brand",
+                            "example": "all"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["active", "inactive"],
+                            "title": "StaffStatus",
+                            "description": "Account status",
+                            "example": "active"
+                          },
+                          "last_login": {
+                            "type": "string",
+                            "example": "2026-03-25 10:00",
+                            "description": "Last login datetime"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "staff_id",
+                          "name",
+                          "email",
+                          "role",
+                          "brand",
+                          "status",
+                          "last_login"
+                        ],
+                        "title": "StaffListItem",
+                        "description": "Staff list item for table view"
+                      },
+                      "description": "Newly created staff entries"
+                    }
+                  },
+                  "required": ["message", "invited_count", "staffs"],
+                  "title": "InviteStaffResponse",
+                  "description": "Response after inviting staff"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/staffs": {
+      "get": {
+        "summary": "Get staffs list",
+        "description": "Get paginated list of staff members with filtering and sorting",
+        "tags": ["Staffs"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "example": 1,
+              "description": "Page number"
+            },
+            "required": false,
+            "description": "Page number",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 30,
+              "example": 30,
+              "description": "Items per page"
+            },
+            "required": false,
+            "description": "Items per page",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "田中",
+              "description": "Search by name or email"
+            },
+            "required": false,
+            "description": "Search by name or email",
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["headquarters", "store_staff", "viewer"],
+              "title": "StaffRole",
+              "description": "Filter by role"
+            },
+            "required": false,
+            "description": "Filter by role",
+            "name": "role",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+              "title": "StaffBrand",
+              "description": "Filter by brand"
+            },
+            "required": false,
+            "description": "Filter by brand",
+            "name": "brand",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["active", "inactive"],
+              "title": "StaffStatus",
+              "description": "Filter by status"
+            },
+            "required": false,
+            "description": "Filter by status",
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["staff_id", "name", "role", "status", "last_login"],
+              "default": "staff_id",
+              "example": "staff_id",
+              "description": "Sort field"
+            },
+            "required": false,
+            "description": "Sort field",
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc",
+              "example": "asc",
+              "description": "Sort order"
+            },
+            "required": false,
+            "description": "Sort order",
+            "name": "sort_order",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of staff members",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "staffs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "1",
+                            "description": "Staff internal ID"
+                          },
+                          "staff_id": {
+                            "type": "string",
+                            "example": "STF-001",
+                            "description": "Staff display ID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "田中 太郎",
+                            "description": "Staff full name (姓 + 名)"
+                          },
+                          "email": {
+                            "type": "string",
+                            "format": "email",
+                            "example": "tanaka@joyfit.co.jp",
+                            "description": "Staff email address"
+                          },
+                          "role": {
+                            "type": "string",
+                            "enum": ["headquarters", "store_staff", "viewer"],
+                            "title": "StaffRole",
+                            "description": "Staff role/permission",
+                            "example": "headquarters"
+                          },
+                          "brand": {
+                            "type": "string",
+                            "enum": [
+                              "all",
+                              "joyfit",
+                              "fit365",
+                              "joyfit24",
+                              "joyfit_yoga",
+                              "joyfit_plus"
+                            ],
+                            "title": "StaffBrand",
+                            "description": "Assigned brand",
+                            "example": "all"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["active", "inactive"],
+                            "title": "StaffStatus",
+                            "description": "Account status",
+                            "example": "active"
+                          },
+                          "last_login": {
+                            "type": "string",
+                            "example": "2026-03-25 10:00",
+                            "description": "Last login datetime"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "staff_id",
+                          "name",
+                          "email",
+                          "role",
+                          "brand",
+                          "status",
+                          "last_login"
+                        ],
+                        "title": "StaffListItem",
+                        "description": "Staff list item for table view"
+                      },
+                      "description": "List of staff members"
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "number",
+                          "example": 1
+                        },
+                        "limit": {
+                          "type": "number",
+                          "example": 30
+                        },
+                        "total": {
+                          "type": "number",
+                          "example": 200
+                        },
+                        "total_pages": {
+                          "type": "number",
+                          "example": 7
+                        }
+                      },
+                      "required": ["page", "limit", "total", "total_pages"],
+                      "title": "StaffPagination"
+                    }
+                  },
+                  "required": ["staffs", "pagination"],
+                  "title": "GetStaffsResponse",
+                  "description": "Staff list response with pagination"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid query parameters",
             "content": {
               "application/json": {
                 "schema": {
