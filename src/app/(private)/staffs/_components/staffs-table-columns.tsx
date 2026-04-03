@@ -1,21 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-
 import type { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 
 import { DataTableColumnHeader } from '@/components/common/data-table/data-table-column-header';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -36,25 +24,21 @@ import {
   type StaffRole,
   StaffStatus,
 } from '../_constants/constants';
+import { StaffDeleteAction } from './staff-delete-action';
 
 type Staff = GetCrmStaffsResponse['staffs'][number];
 
 interface StaffsTableColumnsProps {
   onEditClick?: (staffId: string) => void;
-  onDeleteClick?: (staffId: string) => void;
 }
 
 function ActionsCell({
   staffId,
   onEditClick,
-  onDeleteClick,
 }: {
   staffId: string;
   onEditClick?: (staffId: string) => void;
-  onDeleteClick?: (staffId: string) => void;
 }) {
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-
   return (
     <>
       <DropdownMenu>
@@ -74,48 +58,27 @@ function ActionsCell({
             編集
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="text-destructive focus:text-destructive"
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowDeleteDialog(true);
-            }}
-          >
-            <Trash2 className="text-destructive size-4" />
-            削除
-          </DropdownMenuItem>
+          <StaffDeleteAction
+            staffId={staffId}
+            trigger={
+              <DropdownMenuItem
+                className="text-destructive focus:text-destructive"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <Trash2 className="text-destructive size-4" />
+                削除
+              </DropdownMenuItem>
+            }
+          />
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>スタッフを削除しますか？</AlertDialogTitle>
-            <AlertDialogDescription>
-              このスタッフアカウントを削除すると、ログインできなくなります。この操作は取り消せません。
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>キャンセル</AlertDialogCancel>
-            <AlertDialogAction
-              variant="destructive"
-              onClick={() => {
-                onDeleteClick?.(staffId);
-              }}
-            >
-              削除する
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </>
   );
 }
 
-export function StaffsTableColumns({
-  onEditClick,
-  onDeleteClick,
-}: StaffsTableColumnsProps): ColumnDef<Staff>[] {
+export function StaffsTableColumns({ onEditClick }: StaffsTableColumnsProps): ColumnDef<Staff>[] {
   return [
     {
       accessorKey: 'staff_id',
@@ -196,13 +159,7 @@ export function StaffsTableColumns({
     {
       id: 'actions',
       header: '',
-      cell: ({ row }) => (
-        <ActionsCell
-          staffId={row.original.id}
-          onEditClick={onEditClick}
-          onDeleteClick={onDeleteClick}
-        />
-      ),
+      cell: ({ row }) => <ActionsCell staffId={row.original.id} onEditClick={onEditClick} />,
       enableHiding: false,
       enableSorting: false,
     },

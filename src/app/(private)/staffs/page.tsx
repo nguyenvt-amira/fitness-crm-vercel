@@ -4,21 +4,16 @@ import { Suspense, useMemo, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import type { ColumnDef, SortingState } from '@tanstack/react-table';
 import { Mail } from 'lucide-react';
-import { toast } from 'sonner';
 
 import { DataTable } from '@/components/common/data-table';
 import { TablePagination } from '@/components/common/table-pagination';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
-import {
-  deleteCrmStaffsByIdMutation,
-  getCrmStaffsOptions,
-  getCrmStaffsQueryKey,
-} from '@/lib/api/@tanstack/react-query.gen';
+import { getCrmStaffsOptions } from '@/lib/api/@tanstack/react-query.gen';
 import type { GetCrmStaffsResponse } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
@@ -31,7 +26,6 @@ import { useStaffsFilters } from './_hooks/use-staffs-filters';
 type Staff = GetCrmStaffsResponse['staffs'][number];
 
 function StaffsPageContent() {
-  const queryClient = useQueryClient();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const filtersHook = useStaffsFilters();
@@ -51,19 +45,6 @@ function StaffsPageContent() {
   const totalPages = pagination?.total_pages ?? 0;
   const page = pagination?.page ?? currentPage;
   const limit = pagination?.limit ?? pageSize;
-
-  // ─── Delete mutation ───────────────────────────────────────────────────────
-
-  const deleteMutation = useMutation({
-    ...deleteCrmStaffsByIdMutation(),
-    onSuccess: () => {
-      toast.success('スタッフを削除しました');
-      queryClient.invalidateQueries({ queryKey: getCrmStaffsQueryKey() });
-    },
-    onError: () => {
-      toast.error('スタッフの削除に失敗しました');
-    },
-  });
 
   // ─── Sorting ───────────────────────────────────────────────────────────────
 
@@ -85,11 +66,8 @@ function StaffsPageContent() {
   const columns: ColumnDef<Staff>[] = useMemo(
     () =>
       StaffsTableColumns({
-        onEditClick: (staffId) => {
-          router.push(navigate('/staffs/[id]/edit', staffId));
-        },
-        onDeleteClick: (staffId) => {
-          deleteMutation.mutate({ path: { id: staffId } });
+        onEditClick: (id) => {
+          router.push(navigate('/staffs/[id]/edit', id));
         },
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -138,7 +116,7 @@ function StaffsPageContent() {
               },
             }}
             onRowClick={(row) => {
-              router.push(navigate('/staffs/[id]', row.staff_id));
+              router.push(navigate('/staffs/[id]', row.id));
             }}
           />
 
