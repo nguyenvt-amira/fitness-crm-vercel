@@ -6,32 +6,28 @@ import { Skeleton } from '@/components/ui/skeleton';
 export function StaffDetailSkeleton() {
   return (
     <div className="flex flex-1 flex-col">
+      {/* Breadcrumb */}
       <div className="flex items-center gap-2 border-b px-4 py-4">
-        <div className="text-muted-foreground flex size-6 items-center justify-center" />
-        <Skeleton className="h-4 w-48" />
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-3 w-3 rounded-full" />
+          <Skeleton className="h-4 w-28" />
+        </div>
       </div>
 
-      <div className="bg-card border-b p-4">
-        <Card>
-          <CardHeader className="pb-4">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-              <div className="flex items-start gap-4">
-                <Skeleton className="size-12 rounded-lg" />
-                <div className="min-w-0 flex-1">
-                  <Skeleton className="mb-2 h-7 w-48" />
-                  <Skeleton className="h-4 w-40" />
-                </div>
-              </div>
-              <div className="flex flex-wrap items-center gap-2 sm:justify-end">
-                <Skeleton className="h-9 w-20 rounded-md" />
-                <Skeleton className="h-9 w-20 rounded-md" />
-              </div>
-            </div>
-          </CardHeader>
-        </Card>
+      {/* Header (name + tag + actions) */}
+      <div className="flex items-center justify-between gap-4 px-4 py-3">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-6 w-40" />
+          <Skeleton className="h-6 w-16 rounded-full" />
+        </div>
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-9 w-20 rounded-md" />
+          <Skeleton className="h-9 w-20 rounded-md" />
+        </div>
       </div>
 
-      <div className="flex-1 overflow-auto p-4">
+      <div className="flex-1 overflow-auto px-4">
         <div className="grid gap-4 lg:grid-cols-2">
           <Card>
             <CardHeader>

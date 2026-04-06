@@ -1,5 +1,7 @@
 'use client';
 
+import { formatDateYYYYMMDD_HHMM } from '@/utils/date.util';
+
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -7,7 +9,6 @@ import { Separator } from '@/components/ui/separator';
 import { type GetCrmStaffsByIdResponse } from '@/lib/api/types.gen';
 
 import { STAFF_STATUS_LABELS, StaffStatus } from '../../_constants/constants';
-import { formatDateTime } from '../_lib/staff-detail.util';
 
 type Staff = GetCrmStaffsByIdResponse['staff'];
 
@@ -47,13 +48,17 @@ export function StaffStatusCard({ staff }: StaffStatusCardProps) {
           <Separator />
 
           <div className="grid gap-4 sm:grid-cols-1">
-            <div className="flex items-start justify-between gap-4">
+            <div className="items-start justify-between gap-4">
               <div className="text-muted-foreground text-xs font-medium">作成日時</div>
-              <div className="text-foreground text-sm">{formatDateTime(staff.created_at)}</div>
+              <div className="text-foreground text-sm">
+                {formatDateYYYYMMDD_HHMM(staff.created_at)}
+              </div>
             </div>
-            <div className="flex items-start justify-between gap-4">
+            <div className="items-start justify-between gap-4">
               <div className="text-muted-foreground text-xs font-medium">更新日時</div>
-              <div className="text-foreground text-sm">{formatDateTime(staff.updated_at)}</div>
+              <div className="text-foreground text-sm">
+                {formatDateYYYYMMDD_HHMM(staff.updated_at)}
+              </div>
             </div>
           </div>
         </div>

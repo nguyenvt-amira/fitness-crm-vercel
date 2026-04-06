@@ -25,7 +25,7 @@ export function StaffDetailHeader({
   const statusLabel = STAFF_STATUS_LABELS[staffStatus];
 
   return (
-    <div className="flex items-center justify-between gap-4 border-b px-4 py-4">
+    <div className="flex items-center justify-between gap-4 px-4 py-4">
       <div className="flex flex-wrap items-center gap-2">
         <CardTitle className="text-lg sm:text-xl">{fullName}</CardTitle>
         {staffStatus === StaffStatus.ACTIVE ? (
