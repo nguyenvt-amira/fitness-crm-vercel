@@ -1,19 +1,14 @@
 'use client';
 
+import { formatDate } from '@/utils/format.util';
+import type { ColumnDef } from '@tanstack/react-table';
 import { Check, Minus } from 'lucide-react';
 
+import { DataTable } from '@/components/common/data-table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 
-import { type GetCrmStaffsByIdResponse, type GetCrmStaffsByIdResponses } from '@/lib/api/types.gen';
+import { type GetCrmStaffsByIdResponse } from '@/lib/api/types.gen';
 
 import {
   STAFF_BRAND_LABELS,
@@ -21,12 +16,17 @@ import {
   type StaffBrand,
   type StaffRole,
 } from '../../_constants/constants';
-import { formatDateOnly, formatScopeTarget } from '../_lib/staff-detail.util';
 
 type Staff = GetCrmStaffsByIdResponse['staff'];
 
 interface StaffPermissionCardProps {
   staff: Staff;
+}
+
+function formatScopeTarget(target: string, storeName?: string) {
+  if (target === 'all_stores') return '全店舗';
+  if (target === 'specific_store') return storeName || '特定店舗';
+  return target;
 }
 
 export function StaffPermissionCard({ staff }: StaffPermissionCardProps) {
@@ -35,6 +35,25 @@ export function StaffPermissionCard({ staff }: StaffPermissionCardProps) {
   const billing = permission.additional_permissions.billing_correction;
   const refund = permission.additional_permissions.refund_request;
   const transfer = permission.additional_permissions.transfer_request;
+  type Row = Staff['editable_scopes'][number];
+  const columns: ColumnDef<Row>[] = [
+    {
+      header: 'ブランド',
+      cell: ({ row }) => STAFF_BRAND_LABELS[row.original.brand as StaffBrand],
+    },
+    {
+      header: '対象',
+      cell: ({ row }) => formatScopeTarget(row.original.target, row.original.store_name),
+    },
+    {
+      header: '有効開始日',
+      cell: ({ row }) => formatDate(row.original.start_date),
+    },
+    {
+      header: '有効終了日',
+      cell: ({ row }) => (row.original.end_date ? formatDate(row.original.end_date) : '—'),
+    },
+  ];
 
   return (
     <Card className="gap-2">
@@ -81,26 +100,12 @@ export function StaffPermissionCard({ staff }: StaffPermissionCardProps) {
 
           <div className="space-y-2">
             <div className="text-muted-foreground text-xs font-medium">編集可能情報</div>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ブランド</TableHead>
-                  <TableHead>対象</TableHead>
-                  <TableHead>有効開始日</TableHead>
-                  <TableHead>有効終了日</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {staff.editable_scopes.map((scope, idx) => (
-                  <TableRow key={`${scope.brand}-${idx}`}>
-                    <TableCell>{STAFF_BRAND_LABELS[scope.brand as StaffBrand]}</TableCell>
-                    <TableCell>{formatScopeTarget(scope.target, scope.store_name)}</TableCell>
-                    <TableCell>{formatDateOnly(scope.start_date)}</TableCell>
-                    <TableCell>{scope.end_date ? formatDateOnly(scope.end_date) : '—'}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <DataTable
+              variant="simple"
+              columns={columns}
+              data={staff.editable_scopes as Row[]}
+              className="text-sm"
+            />
           </div>
         </div>
       </CardContent>

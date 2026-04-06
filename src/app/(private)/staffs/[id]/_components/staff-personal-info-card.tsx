@@ -1,11 +1,13 @@
 'use client';
 
+import { formatDateYYYYMMDD } from '@/utils/date.util';
+import { formatDate } from '@/utils/format.util';
+import { formatGenderLabel } from '@/utils/global.util';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
 import { type GetCrmStaffsByIdResponse } from '@/lib/api/types.gen';
-
-import { formatDateOnly, formatGender } from '../_lib/staff-detail.util';
 
 type Staff = GetCrmStaffsByIdResponse['staff'];
 
@@ -55,11 +57,11 @@ export function StaffPersonalInfoCard({ staff }: StaffPersonalInfoCardProps) {
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <div className="text-muted-foreground text-xs font-medium">性別</div>
-              <div className="mt-1 text-sm">{formatGender(personal.gender)}</div>
+              <div className="mt-1 text-sm">{formatGenderLabel(personal.gender)}</div>
             </div>
             <div>
               <div className="text-muted-foreground text-xs font-medium">生年月日</div>
-              <div className="mt-1 text-sm">{formatDateOnly(personal.birthday)}</div>
+              <div className="mt-1 text-sm">{formatDateYYYYMMDD(personal.birthday)}</div>
             </div>
           </div>
 

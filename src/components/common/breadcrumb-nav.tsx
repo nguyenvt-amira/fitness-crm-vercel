@@ -21,7 +21,7 @@ export type BreadcrumbItemType = {
   label: string;
 };
 
-const sectionListClass = 'text-2xl font-semibold tracking-tight text-foreground gap-2 sm:gap-2.5';
+const sectionListClass = 'text-sm font-semibold tracking-tight text-foreground gap-2 sm:gap-2.5';
 const sectionLinkClass = 'text-muted-foreground hover:opacity-80 transition-opacity';
 const sectionPageClass = 'text-foreground font-semibold';
 const sectionSeparatorClass = '[&>svg]:size-4 text-foreground/50';
