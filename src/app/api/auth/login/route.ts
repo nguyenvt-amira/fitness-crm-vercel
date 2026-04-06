@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
       email: validatedBody.email,
       company_id: user.companyId,
       iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + 3600 * 24, // 1 hour
+      exp: Math.floor(Date.now() / 1000) + 86400, // 1 day
     };
 
     const refreshTokenPayload = {

@@ -1,0 +1,320 @@
+'use client';
+
+import { useFieldArray, useFormContext } from 'react-hook-form';
+
+import { format } from 'date-fns';
+import { Plus, Trash2 } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { DatePicker } from '@/components/ui/date-picker';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+
+import type { StaffEditFormValues } from '../_schemas/staff-edit-form.schema';
+
+const STORES = [
+  { id: 'store-001', name: '全店舗' },
+  { id: 'store-002', name: 'JOYFIT新宿店' },
+  { id: 'store-003', name: 'JOYFIT24梅田店' },
+  { id: 'store-004', name: 'FIT365八潮店' },
+];
+
+export function PermissionSettingsSection() {
+  const form = useFormContext<StaffEditFormValues>();
+  const { fields, append, remove } = useFieldArray({
+    name: 'editable_scopes',
+    control: form.control,
+  });
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>権限設定</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* ─── 編集権限 (required, left half) ─── */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="role"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  編集権限<span className="text-destructive ml-0.5">*</span>
+                </FormLabel>
+                <Select value={field.value ?? ''} onValueChange={field.onChange}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="選択" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="store_staff">店舗スタッフ</SelectItem>
+                    <SelectItem value="headquarters">本部</SelectItem>
+                    <SelectItem value="viewer">閲覧のみ</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {/* ─── 追加権限 checkboxes (vertical list) ─── */}
+        <div className="space-y-1">
+          <p className="text-sm leading-none font-medium">追加権限</p>
+          <div className="space-y-2 pt-2">
+            <FormField
+              control={form.control}
+              name="billing_correction"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-y-0 space-x-2">
+                  <FormControl>
+                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                  </FormControl>
+                  <FormLabel className="mt-0! font-normal">確定請求訂正</FormLabel>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="refund_request"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-y-0 space-x-2">
+                  <FormControl>
+                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                  </FormControl>
+                  <FormLabel className="mt-0! font-normal">返金申請</FormLabel>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="transfer_request"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-y-0 space-x-2">
+                  <FormControl>
+                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                  </FormControl>
+                  <FormLabel className="mt-0! font-normal">移籍申請・否認</FormLabel>
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        <Separator />
+
+        {/* ─── 編集可能情報 table ─── */}
+        <div className="space-y-3">
+          <p className="text-sm leading-none font-medium">編集可能情報</p>
+          <div className="overflow-hidden rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-neutral-50 hover:bg-neutral-100">
+                  <TableHead>
+                    <span className="text-xs font-semibold">ブランド </span>
+                  </TableHead>
+                  <TableHead>
+                    <span className="text-xs font-semibold">対象</span>
+                  </TableHead>
+                  <TableHead>
+                    <span className="text-xs font-semibold">有効開始日</span>
+                  </TableHead>
+                  <TableHead>
+                    <span className="text-xs font-semibold">有効終了日</span>
+                  </TableHead>
+                  <TableHead className="w-10" />
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {fields.map((field, index) => (
+                  <TableRow key={field.id}>
+                    {/* ブランド */}
+                    <TableCell>
+                      <FormField
+                        control={form.control}
+                        name={`editable_scopes.${index}.brand`}
+                        render={({ field, fieldState }) => (
+                          <FormItem>
+                            <Select value={field.value ?? ''} onValueChange={field.onChange}>
+                              <FormControl>
+                                <SelectTrigger aria-invalid={!!fieldState.error}>
+                                  <SelectValue placeholder="選択" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="all">全ブランド</SelectItem>
+                                <SelectItem value="joyfit">JOYFIT</SelectItem>
+                                <SelectItem value="joyfit_plus">JOYFIT+</SelectItem>
+                                <SelectItem value="joyfit_yoga">JOYFIT YOGA</SelectItem>
+                                <SelectItem value="joyfit24">JOYFIT24</SelectItem>
+                                <SelectItem value="fit365">FIT365</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormItem>
+                        )}
+                      />
+                    </TableCell>
+
+                    {/* 対象 — 全店舗 or specific store */}
+                    <TableCell>
+                      <FormField
+                        control={form.control}
+                        name={`editable_scopes.${index}.target`}
+                        render={({ field, fieldState }) => {
+                          const currentStoreId = form.getValues(
+                            `editable_scopes.${index}.store_id`,
+                          );
+                          const compositeValue =
+                            field.value === 'specific_store' && currentStoreId
+                              ? currentStoreId
+                              : 'all_stores';
+
+                          const handleChange = (val: string) => {
+                            if (val === 'all_stores') {
+                              field.onChange('all_stores');
+                              form.setValue(`editable_scopes.${index}.store_id`, '');
+                              form.setValue(`editable_scopes.${index}.store_name`, '');
+                            } else {
+                              const store = STORES.find((s) => s.id === val);
+                              field.onChange('specific_store');
+                              form.setValue(`editable_scopes.${index}.store_id`, val);
+                              form.setValue(
+                                `editable_scopes.${index}.store_name`,
+                                store?.name ?? '',
+                              );
+                            }
+                          };
+
+                          return (
+                            <FormItem>
+                              <Select value={compositeValue} onValueChange={handleChange}>
+                                <FormControl>
+                                  <SelectTrigger aria-invalid={!!fieldState.error}>
+                                    <SelectValue placeholder="選択" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="all_stores">全店舗</SelectItem>
+                                  {STORES.map((store) => (
+                                    <SelectItem key={store.id} value={store.id}>
+                                      {store.name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </FormItem>
+                          );
+                        }}
+                      />
+                    </TableCell>
+
+                    {/* 有効開始日 */}
+                    <TableCell>
+                      <FormField
+                        control={form.control}
+                        name={`editable_scopes.${index}.start_date`}
+                        render={({ field, fieldState }) => {
+                          const endDateStr = form.watch(`editable_scopes.${index}.end_date`);
+                          return (
+                            <FormItem>
+                              <DatePicker
+                                date={field.value ? new Date(field.value) : undefined}
+                                placeholder="日付を選択"
+                                hasError={!!fieldState.error}
+                                toDate={endDateStr ? new Date(endDateStr) : undefined}
+                                onDateChange={(d) =>
+                                  field.onChange(d ? format(d, 'yyyy-MM-dd') : '')
+                                }
+                              />
+                            </FormItem>
+                          );
+                        }}
+                      />
+                    </TableCell>
+
+                    {/* 有効終了日 */}
+                    <TableCell>
+                      <FormField
+                        control={form.control}
+                        name={`editable_scopes.${index}.end_date`}
+                        render={({ field, fieldState }) => {
+                          const startDateStr = form.watch(`editable_scopes.${index}.start_date`);
+                          return (
+                            <FormItem>
+                              <DatePicker
+                                date={field.value ? new Date(field.value) : undefined}
+                                placeholder="日付を選択"
+                                hasError={!!fieldState.error}
+                                fromDate={startDateStr ? new Date(startDateStr) : undefined}
+                                onDateChange={(d) =>
+                                  field.onChange(d ? format(d, 'yyyy-MM-dd') : '')
+                                }
+                              />
+                            </FormItem>
+                          );
+                        }}
+                      />
+                    </TableCell>
+
+                    {/* 削除 */}
+                    <TableCell>
+                      {fields.length >= 2 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="text-muted-foreground hover:text-destructive"
+                          onClick={() => remove(index)}
+                        >
+                          <Trash2 className="size-4" />
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              append({
+                brand: 'all',
+                target: 'all_stores',
+                store_id: '',
+                store_name: '',
+                start_date: '',
+                end_date: '',
+              })
+            }
+          >
+            <Plus className="mr-1 size-4" />
+            行を追加
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

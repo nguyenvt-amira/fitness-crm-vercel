@@ -19,6 +19,9 @@ interface DatePickerProps {
   onDateChange?: (date: Date | undefined) => void;
   disabled?: boolean;
   placeholder?: string;
+  hasError?: boolean;
+  fromDate?: Date;
+  toDate?: Date;
 }
 
 export function DatePicker({
@@ -26,21 +29,31 @@ export function DatePicker({
   onDateChange,
   disabled = false,
   placeholder = 'Pick a date',
+  hasError = false,
+  fromDate,
+  toDate,
 }: Readonly<DatePickerProps>) {
-  console.log('date', date);
+  const disabledDays = (day: Date) => {
+    if (fromDate && day <= fromDate) return true;
+    if (toDate && day >= toDate) return true;
+    return false;
+  };
+
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           className={cn(
-            'justify-start gap-2 text-left font-medium',
+            'justify-between gap-2 text-left font-medium',
             !date && 'text-muted-foreground',
+            hasError && 'border-destructive focus-visible:ring-destructive/20',
+            hasError && !date && '!text-destructive',
           )}
           disabled={disabled}
         >
+          {date ? format(date, 'yyyy/MM/dd', { locale: ja }) : placeholder}
           <CalendarIcon className="h-3 w-3" />
-          {date ? format(date, 'yyyy年MM月dd日', { locale: ja }) : placeholder}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
@@ -48,7 +61,7 @@ export function DatePicker({
           mode="single"
           selected={date}
           onSelect={onDateChange}
-          disabled={disabled}
+          disabled={fromDate || toDate ? disabledDays : disabled}
           defaultMonth={date}
           captionLayout="dropdown"
           initialFocus
