@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 import type { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 
@@ -39,42 +41,48 @@ function ActionsCell({
   staffId: string;
   onEditClick?: (staffId: string) => void;
 }) {
+  const [open, setOpen] = useState(false);
+
   return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm" onClick={(e) => e.stopPropagation()}>
-            <MoreHorizontal className="size-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
-          <DropdownMenuItem
-            onClick={(e) => {
-              e.stopPropagation();
-              onEditClick?.(staffId);
-            }}
-          >
-            <Pencil className="size-4" />
-            編集
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <StaffDeleteAction
-            staffId={staffId}
-            trigger={
-              <DropdownMenuItem
-                className="text-destructive focus:text-destructive"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                <Trash2 className="text-destructive size-4" />
-                削除
-              </DropdownMenuItem>
-            }
-          />
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="sm" onClick={(e) => e.stopPropagation()}>
+          <MoreHorizontal className="size-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+        <DropdownMenuItem
+          onClick={(e) => {
+            e.stopPropagation();
+            onEditClick?.(staffId);
+          }}
+        >
+          <Pencil className="size-4" />
+          編集
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <StaffDeleteAction
+          staffId={staffId}
+          onOpenChange={(alertOpen) => {
+            if (!alertOpen) setOpen(false);
+          }}
+          trigger={
+            <DropdownMenuItem
+              className="text-destructive focus:text-destructive"
+              onSelect={(e) => {
+                e.preventDefault();
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <Trash2 className="text-destructive size-4" />
+              削除
+            </DropdownMenuItem>
+          }
+        />
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 

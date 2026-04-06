@@ -34,9 +34,10 @@ interface StaffDeleteActionProps {
    * If not provided, renders the default destructive button.
    */
   trigger?: ReactNode;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export function StaffDeleteAction({ staffId, trigger }: StaffDeleteActionProps) {
+export function StaffDeleteAction({ staffId, trigger, onOpenChange }: StaffDeleteActionProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -53,7 +54,7 @@ export function StaffDeleteAction({ staffId, trigger }: StaffDeleteActionProps) 
   });
 
   return (
-    <AlertDialog>
+    <AlertDialog onOpenChange={onOpenChange}>
       <AlertDialogTrigger asChild>
         {trigger ?? (
           <Button variant="destructive" size="sm" disabled={deleteMutation.isPending}>
