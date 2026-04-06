@@ -13,32 +13,25 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { Matcher } from 'react-day-picker';
 
 interface DatePickerProps {
   date?: Date;
   onDateChange?: (date: Date | undefined) => void;
-  disabled?: boolean;
+  disabled?:  boolean;
+  disabledDate?:  Matcher | Matcher[] | undefined;
   placeholder?: string;
   hasError?: boolean;
-  fromDate?: Date;
-  toDate?: Date;
 }
 
 export function DatePicker({
   date,
   onDateChange,
   disabled = false,
+  disabledDate,
   placeholder = 'Pick a date',
   hasError = false,
-  fromDate,
-  toDate,
 }: Readonly<DatePickerProps>) {
-  const disabledDays = (day: Date) => {
-    if (fromDate && day <= fromDate) return true;
-    if (toDate && day >= toDate) return true;
-    return false;
-  };
-
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -47,8 +40,7 @@ export function DatePicker({
           className={cn(
             'justify-between gap-2 text-left font-medium',
             !date && 'text-muted-foreground',
-            hasError && 'border-destructive focus-visible:ring-destructive/20',
-            hasError && !date && '!text-destructive',
+            hasError && 'border-destructive text-destructive! focus-visible:ring-destructive/20',
           )}
           disabled={disabled}
         >
@@ -61,7 +53,7 @@ export function DatePicker({
           mode="single"
           selected={date}
           onSelect={onDateChange}
-          disabled={fromDate || toDate ? disabledDays : disabled}
+          disabled={disabledDate}
           defaultMonth={date}
           captionLayout="dropdown"
           initialFocus

@@ -232,22 +232,16 @@ export function PermissionSettingsSection() {
                       <FormField
                         control={form.control}
                         name={`editable_scopes.${index}.start_date`}
-                        render={({ field, fieldState }) => {
-                          const endDateStr = form.watch(`editable_scopes.${index}.end_date`);
-                          return (
-                            <FormItem>
-                              <DatePicker
-                                date={field.value ? new Date(field.value) : undefined}
-                                placeholder="日付を選択"
-                                hasError={!!fieldState.error}
-                                toDate={endDateStr ? new Date(endDateStr) : undefined}
-                                onDateChange={(d) =>
-                                  field.onChange(d ? format(d, 'yyyy-MM-dd') : '')
-                                }
-                              />
-                            </FormItem>
-                          );
-                        }}
+                        render={({ field, fieldState }) => (
+                          <FormItem>
+                            <DatePicker
+                              date={field.value ? new Date(field.value) : undefined}
+                              placeholder="日付を選択"
+                              hasError={!!fieldState.error}
+                              onDateChange={(d) => field.onChange(d ? format(d, 'yyyy-MM-dd') : '')}
+                            />
+                          </FormItem>
+                        )}
                       />
                     </TableCell>
 
@@ -264,7 +258,9 @@ export function PermissionSettingsSection() {
                                 date={field.value ? new Date(field.value) : undefined}
                                 placeholder="日付を選択"
                                 hasError={!!fieldState.error}
-                                fromDate={startDateStr ? new Date(startDateStr) : undefined}
+                                disabledDate={
+                                  startDateStr ? (date) => date < new Date(startDateStr) : undefined
+                                }
                                 onDateChange={(d) =>
                                   field.onChange(d ? format(d, 'yyyy-MM-dd') : '')
                                 }
@@ -294,7 +290,10 @@ export function PermissionSettingsSection() {
               </TableBody>
             </Table>
           </div>
-
+          {Array.isArray(form.formState.errors.editable_scopes) &&
+            form.formState.errors.editable_scopes.some(
+              (e) => e?.end_date?.message === '開始日は終了日より前にしてください',
+            ) && <p className="text-destructive text-sm">開始日は終了日より前にしてください</p>}
           <Button
             type="button"
             variant="outline"

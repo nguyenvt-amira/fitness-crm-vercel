@@ -77,6 +77,7 @@ export default function StaffEditPage() {
 
   const form = useForm<StaffEditFormValues>({
     resolver: zodResolver(staffEditFormSchema) as any,
+    mode: 'onChange',
     values: {
       ...defaultValues,
       login_method: defaultValues?.login_method ?? 'email',
