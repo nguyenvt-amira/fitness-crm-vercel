@@ -8,7 +8,9 @@ export default function Layout({ children }: Readonly<{ children: React.ReactNod
       <AppSidebar />
       <SidebarInset className="flex h-screen min-w-[375px] flex-col overflow-hidden">
         <AppHeader />
-        <main className="flex-1 overflow-y-auto bg-neutral-100/40">{children}</main>
+        <div className="bg-sidebar flex-1 overflow-hidden">
+          <main className="h-full overflow-y-auto rounded-tl-2xl bg-white">{children}</main>
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );

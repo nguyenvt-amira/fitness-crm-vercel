@@ -212,12 +212,11 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar>
+    <Sidebar className="border-none">
       <SidebarHeader className="py-5 pr-0 pl-6">
         <span className="text-sidebar-foreground text-xl leading-7 font-bold tracking-[0.025em]">
           LOGO
         </span>
-        <span className="text-sidebar-foreground/50 text-xs leading-4">CRM Management</span>
       </SidebarHeader>
 
       <SidebarContent>
@@ -242,28 +241,14 @@ export function AppSidebar() {
                     <Collapsible key={item.label} open={isOpen}>
                       <SidebarMenuItem>
                         {item.href ? (
-                          <SidebarMenuButton
-                            asChild
-                            isActive={parentActive}
-                            className={cn(
-                              focused ? 'opacity-100' : 'opacity-40',
-                              'hover:opacity-100',
-                            )}
-                          >
+                          <SidebarMenuButton asChild isActive={parentActive}>
                             <Link href={item.href} onClick={() => handleMenuItemClick(index, true)}>
                               <Icon />
                               <span>{item.label}</span>
                             </Link>
                           </SidebarMenuButton>
                         ) : (
-                          <SidebarMenuButton
-                            asChild
-                            isActive={parentActive}
-                            className={cn(
-                              focused ? 'opacity-100' : 'opacity-40',
-                              'hover:opacity-100',
-                            )}
-                          >
+                          <SidebarMenuButton asChild isActive={parentActive}>
                             <Link
                               href={item.subItems![0].href}
                               onClick={() => handleMenuItemClick(index, true)}
@@ -300,11 +285,7 @@ export function AppSidebar() {
                 return (
                   <SidebarMenuItem key={item.label}>
                     {item.href ? (
-                      <SidebarMenuButton
-                        asChild
-                        isActive={active}
-                        className={cn(active ? 'opacity-100' : 'opacity-40', 'hover:opacity-100')}
-                      >
+                      <SidebarMenuButton asChild isActive={active}>
                         <Link href={item.href} onClick={() => handleMenuItemClick(index, false)}>
                           <Icon />
                           <span>{item.label}</span>
@@ -313,7 +294,6 @@ export function AppSidebar() {
                     ) : (
                       <SidebarMenuButton
                         isActive={active}
-                        className={cn(active ? 'opacity-100' : 'opacity-40', 'hover:opacity-100')}
                         onClick={() => handleMenuItemClick(index, false)}
                       >
                         <Icon />
