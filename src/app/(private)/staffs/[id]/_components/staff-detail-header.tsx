@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { CardTitle } from '@/components/ui/card';
 
 import { StaffDeleteAction } from '../../_components/staff-delete-action';
-import { STAFF_STATUS_LABELS, StaffStatus } from '../../_constants/constants';
+import { STAFF_STATUS_CLASSES, STAFF_STATUS_LABELS, StaffStatus } from '../../_constants/constants';
 
 interface StaffDetailHeaderProps {
   staffId: string;
@@ -28,19 +28,14 @@ export function StaffDetailHeader({
     <div className="flex items-center justify-between gap-4 px-4 py-4">
       <div className="flex flex-wrap items-center gap-2">
         <CardTitle className="text-lg sm:text-xl">{fullName}</CardTitle>
-        {staffStatus === StaffStatus.ACTIVE ? (
-          <Badge className="border border-green-700/20 bg-green-50 text-green-700">
-            <span className="inline-flex items-center gap-2">
-              <span className="size-2 rounded-full bg-green-600" />
-              {statusLabel}
-            </span>
-          </Badge>
-        ) : (
-          <span className="text-muted-foreground inline-flex items-center gap-2">
-            <span className="bg-foreground/20 size-2 rounded-full" />
+        <Badge className={`border ${STAFF_STATUS_CLASSES[staffStatus]}`}>
+          <span className="inline-flex items-center gap-2">
+            <span
+              className={`size-2 rounded-full ${staffStatus === StaffStatus.ACTIVE ? 'bg-green-600' : 'bg-gray-400'}`}
+            />
             {statusLabel || '-'}
           </span>
-        )}
+        </Badge>
       </div>
 
       <div className="flex flex-wrap items-center justify-end gap-2">

@@ -1,27 +1,6 @@
-//TODO: Delete when API is ready
+import { StaffBrand, StaffRole, StaffStatus } from '@/lib/api/types.gen';
 
-// Staff permission/role types
-export enum StaffRole {
-  HEADQUARTERS = 'headquarters', // 本部
-  STORE_STAFF = 'store_staff', // 店舗スタッフ
-  VIEWER = 'viewer', // 閲覧のみ
-}
-
-// Staff status types
-export enum StaffStatus {
-  ACTIVE = 'active', // 有効
-  INACTIVE = 'inactive', // 無効
-}
-
-// Staff brand types (extended from member brands)
-export enum StaffBrand {
-  ALL = 'all', // 全ブランド
-  JOYFIT = 'joyfit',
-  FIT365 = 'fit365',
-  JOYFIT24 = 'joyfit24',
-  JOYFIT_YOGA = 'joyfit_yoga',
-  JOYFIT_PLUS = 'joyfit_plus',
-}
+export { StaffBrand, StaffRole, StaffStatus } from '@/lib/api/types.gen';
 
 export const STAFF_ROLE_LABELS: Record<StaffRole, string> = {
   [StaffRole.HEADQUARTERS]: '本部',
@@ -49,4 +28,9 @@ export const STAFF_STATUS_VARIANTS: Record<
 > = {
   [StaffStatus.ACTIVE]: 'default',
   [StaffStatus.INACTIVE]: 'outline',
+};
+
+export const STAFF_STATUS_CLASSES: Record<StaffStatus, string> = {
+  [StaffStatus.ACTIVE]: 'bg-green-100 text-green-700 border-green-200',
+  [StaffStatus.INACTIVE]: 'bg-gray-100 text-gray-500 border-gray-200',
 };

@@ -607,6 +607,20 @@ export function registerAllSchemas() {
       storeSchemas.UpdateStoreBusinessHoursResponseSchema,
     ),
   );
+  // Register staff enum schemas
+  registeredSchemaMap.set(
+    'StaffRole',
+    registry.register('StaffRole', staffSchemas.StaffRoleSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffStatus',
+    registry.register('StaffStatus', staffSchemas.StaffStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffBrand',
+    registry.register('StaffBrand', staffSchemas.StaffBrandSchema),
+  );
+
   // Register staff schemas
   registeredSchemaMap.set(
     'StaffListItem',

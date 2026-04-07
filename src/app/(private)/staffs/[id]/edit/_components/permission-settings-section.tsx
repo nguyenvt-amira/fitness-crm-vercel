@@ -27,6 +27,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
+import { STAFF_BRAND_LABELS, STAFF_ROLE_LABELS } from '../../../_constants/constants';
 import type { StaffEditFormValues } from '../_schemas/staff-edit-form.schema';
 
 const STORES = [
@@ -66,9 +67,11 @@ export function PermissionSettingsSection() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="store_staff">店舗スタッフ</SelectItem>
-                    <SelectItem value="headquarters">本部</SelectItem>
-                    <SelectItem value="viewer">閲覧のみ</SelectItem>
+                    {Object.entries(STAFF_ROLE_LABELS).map(([value, label]) => (
+                      <SelectItem key={value} value={value}>
+                        {label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -161,12 +164,11 @@ export function PermissionSettingsSection() {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="all">全ブランド</SelectItem>
-                                <SelectItem value="joyfit">JOYFIT</SelectItem>
-                                <SelectItem value="joyfit_plus">JOYFIT+</SelectItem>
-                                <SelectItem value="joyfit_yoga">JOYFIT YOGA</SelectItem>
-                                <SelectItem value="joyfit24">JOYFIT24</SelectItem>
-                                <SelectItem value="fit365">FIT365</SelectItem>
+                                {Object.entries(STAFF_BRAND_LABELS).map(([value, label]) => (
+                                  <SelectItem key={value} value={value}>
+                                    {label}
+                                  </SelectItem>
+                                ))}
                               </SelectContent>
                             </Select>
                           </FormItem>

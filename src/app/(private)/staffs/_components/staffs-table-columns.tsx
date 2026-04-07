@@ -21,6 +21,7 @@ import type { GetCrmStaffsResponse } from '@/lib/api/types.gen';
 import {
   STAFF_BRAND_LABELS,
   STAFF_ROLE_LABELS,
+  STAFF_STATUS_CLASSES,
   STAFF_STATUS_LABELS,
   type StaffBrand,
   type StaffRole,
@@ -139,17 +140,11 @@ export function StaffsTableColumns({ onEditClick }: StaffsTableColumnsProps): Co
     {
       accessorKey: 'status',
       header: ({ column }) => <DataTableColumnHeader column={column} title="ステータス" />,
-      cell: ({ row }) => {
-        const status = row.original.status as StaffStatus;
-        if (status === StaffStatus.ACTIVE) {
-          return (
-            <Badge className="border border-green-700/20 bg-green-50 text-green-700">
-              {STAFF_STATUS_LABELS[status]}
-            </Badge>
-          );
-        }
-        return <span className="text-muted-foreground">{STAFF_STATUS_LABELS[status] || '-'}</span>;
-      },
+      cell: ({ row }) => (
+        <Badge className={STAFF_STATUS_CLASSES[row.original.status as StaffStatus]}>
+          {STAFF_STATUS_LABELS[row.original.status as StaffStatus]}
+        </Badge>
+      ),
       meta: {
         label: 'ステータス',
       },

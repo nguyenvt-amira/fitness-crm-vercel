@@ -5787,6 +5787,59 @@ export type UpdateStoreBusinessHoursResponse = {
 };
 
 /**
+ * StaffRole
+ *
+ * Staff permission role: headquarters=本部, store_staff=店舗スタッフ, viewer=閲覧のみ
+ */
+export const StaffRole = {
+    HEADQUARTERS: 'headquarters',
+    STORE_STAFF: 'store_staff',
+    VIEWER: 'viewer'
+} as const;
+
+/**
+ * StaffRole
+ *
+ * Staff permission role: headquarters=本部, store_staff=店舗スタッフ, viewer=閲覧のみ
+ */
+export type StaffRole = typeof StaffRole[keyof typeof StaffRole];
+
+/**
+ * StaffStatus
+ *
+ * Staff account status: active=有効, inactive=無効
+ */
+export const StaffStatus = { ACTIVE: 'active', INACTIVE: 'inactive' } as const;
+
+/**
+ * StaffStatus
+ *
+ * Staff account status: active=有効, inactive=無効
+ */
+export type StaffStatus = typeof StaffStatus[keyof typeof StaffStatus];
+
+/**
+ * StaffBrand
+ *
+ * Staff assigned brand
+ */
+export const StaffBrand = {
+    ALL: 'all',
+    JOYFIT: 'joyfit',
+    FIT365: 'fit365',
+    JOYFIT24: 'joyfit24',
+    JOYFIT_YOGA: 'joyfit_yoga',
+    JOYFIT_PLUS: 'joyfit_plus'
+} as const;
+
+/**
+ * StaffBrand
+ *
+ * Staff assigned brand
+ */
+export type StaffBrand = typeof StaffBrand[keyof typeof StaffBrand];
+
+/**
  * StaffListItem
  *
  * Staff list item for table view

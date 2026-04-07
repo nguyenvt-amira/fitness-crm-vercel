@@ -5,6 +5,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { Check, Minus } from 'lucide-react';
 
 import { DataTable } from '@/components/common/data-table';
+import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
@@ -64,7 +65,9 @@ export function StaffPermissionCard({ staff }: StaffPermissionCardProps) {
         <div className="grid gap-4">
           <div>
             <div className="text-muted-foreground text-xs font-medium">編集権限</div>
-            <div className="mt-1 text-sm">{STAFF_ROLE_LABELS[staffRole]}</div>
+            <Badge variant="secondary" className="mt-1">
+              {STAFF_ROLE_LABELS[staffRole] || '-'}
+            </Badge>
           </div>
 
           <div className="bg-muted/20 rounded-lg border p-4">
