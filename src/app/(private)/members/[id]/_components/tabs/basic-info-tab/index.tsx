@@ -14,8 +14,8 @@ import {
   GENDER_LABELS,
   MEMBER_STATUS_LABELS,
   MEMBER_TYPE_LABELS,
-} from '../../../_lib/constants';
-import InfoRow from '../../_components/info-row';
+} from '../../../../_lib/constants';
+import InfoRow from '../../info-row';
 
 export function BasicInfoTab({ member }: { member: GetMemberDetailResponse }) {
   const basic = member?.basic_info;

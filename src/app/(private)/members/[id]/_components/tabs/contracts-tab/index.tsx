@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { getCrmMembersByIdContractsOptions } from '@/lib/api/@tanstack/react-query.gen';
 
-import InfoRow from '../../_components/info-row';
+import InfoRow from '../../info-row';
 import {
   ACTIVE_CAMPAIGN_COLUMNS,
   HISTORY_CAMPAIGN_COLUMNS,

@@ -41,15 +41,15 @@ import { MEMBER_STATUS_LABELS } from '../_lib/constants';
 import { EditMemberModal } from './_components/edit-member-modal';
 import { MemoModal } from './_components/memo-modal';
 import { PrintModal } from './_components/print-modal';
-import { BasicInfoTab } from './_tabs/basic-info-tab';
-import { ChangeHistoryTab } from './_tabs/change-history-tab';
-import { CommunicationsTab } from './_tabs/communications-tab';
-import { ContractsTab } from './_tabs/contracts-tab';
-import { PointsTab } from './_tabs/points-tab';
-import { RelationshipsTab } from './_tabs/relationships-tab';
-import { ServiceUsageTab } from './_tabs/service-usage-tab';
-import { TrainingRecordsTab } from './_tabs/training-records-tab';
-import { UsageHistoryTab } from './_tabs/usage-history-tab';
+import { BasicInfoTab } from './_components/tabs/basic-info-tab';
+import { ChangeHistoryTab } from './_components/tabs/change-history-tab';
+import { CommunicationsTab } from './_components/tabs/communications-tab';
+import { ContractsTab } from './_components/tabs/contracts-tab';
+import { PointsTab } from './_components/tabs/points-tab';
+import { RelationshipsTab } from './_components/tabs/relationships-tab';
+import { ServiceUsageTab } from './_components/tabs/service-usage-tab';
+import { TrainingRecordsTab } from './_components/tabs/training-records-tab';
+import { UsageHistoryTab } from './_components/tabs/usage-history-tab';
 
 const BREADCRUMB_ITEMS = [{ url: '/members', label: '会員一覧' }, { label: '会員詳細' }];
 
