@@ -8587,6 +8587,24 @@
         "required": ["message", "business_hours"],
         "title": "UpdateStoreBusinessHoursResponse"
       },
+      "StaffRole": {
+        "type": "string",
+        "enum": ["headquarters", "store_staff", "viewer"],
+        "title": "StaffRole",
+        "description": "Staff permission role: headquarters=本部, store_staff=店舗スタッフ, viewer=閲覧のみ"
+      },
+      "StaffStatus": {
+        "type": "string",
+        "enum": ["active", "inactive"],
+        "title": "StaffStatus",
+        "description": "Staff account status: active=有効, inactive=無効"
+      },
+      "StaffBrand": {
+        "type": "string",
+        "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+        "title": "StaffBrand",
+        "description": "Staff assigned brand"
+      },
       "StaffListItem": {
         "type": "object",
         "properties": {
