@@ -154,7 +154,7 @@ const menuItems: MenuItem[] = [
   //   ],
   // },
   {
-    href: '/stores',
+    href: '/staffs',
     icon: Settings,
     label: 'スタッフ管理',
     subItems: [
