@@ -140,13 +140,7 @@ function StaffsPageContent() {
 
 export default function StaffsPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex flex-1 items-center justify-center">
-          <div className="text-muted-foreground">読み込み中...</div>
-        </div>
-      }
-    >
+    <Suspense>
       <StaffsPageContent />
     </Suspense>
   );

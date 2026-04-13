@@ -301,8 +301,20 @@ function pickMemberStore(i: number): { id: string; name: string } {
   return { id: s.store_id, name: s.store_name };
 }
 
-/** Y-07 ブランドマスタ — 管理対象 JOYFIT / FIT365 のみ（G-01 デフォルト参照） */
+/** ブランドマスタ */
 const SEED_BRAND_ROWS: BrandItem[] = [
+  {
+    brand_id: 'brand-all',
+    code: 'all',
+    display_name: '全ブランド',
+    enrollment_fee_yen: 0,
+    handling_fee_yen: 0,
+    currency: 'JPY',
+    sort_order: 0,
+    created_at: '2024-01-01T00:00:00.000Z',
+    updated_at: '2026-03-15T10:30:00.000Z',
+    updated_by: 'STF-001',
+  },
   {
     brand_id: 'brand-joyfit',
     code: 'joyfit',
@@ -327,9 +339,45 @@ const SEED_BRAND_ROWS: BrandItem[] = [
     updated_at: '2026-03-15T10:30:00.000Z',
     updated_by: 'STF-001',
   },
+  {
+    brand_id: 'brand-joyfit24',
+    code: 'joyfit24',
+    display_name: 'JOYFIT24',
+    enrollment_fee_yen: 3300,
+    handling_fee_yen: 1100,
+    currency: 'JPY',
+    sort_order: 3,
+    created_at: '2024-01-01T00:00:00.000Z',
+    updated_at: '2026-03-15T10:30:00.000Z',
+    updated_by: 'STF-001',
+  },
+  {
+    brand_id: 'brand-joyfit-yoga',
+    code: 'joyfit_yoga',
+    display_name: 'JOYFIT YOGA',
+    enrollment_fee_yen: 3300,
+    handling_fee_yen: 1100,
+    currency: 'JPY',
+    sort_order: 4,
+    created_at: '2024-01-01T00:00:00.000Z',
+    updated_at: '2026-03-15T10:30:00.000Z',
+    updated_by: 'STF-001',
+  },
+  {
+    brand_id: 'brand-joyfit-plus',
+    code: 'joyfit_plus',
+    display_name: 'JOYFIT+',
+    enrollment_fee_yen: 3300,
+    handling_fee_yen: 1100,
+    currency: 'JPY',
+    sort_order: 5,
+    created_at: '2024-01-01T00:00:00.000Z',
+    updated_at: '2026-03-15T10:30:00.000Z',
+    updated_by: 'STF-001',
+  },
 ];
 
-/** Resolve brand label: Y-07 master (joyfit / fit365) + static labels for other StaffBrand codes */
+/** Resolve brand label from brand master with fallback */
 function staffBrandDisplayName(code: string): string {
   const y07 = SEED_BRAND_ROWS.find((b) => b.code === code);
   if (y07) return y07.display_name;
@@ -814,7 +862,7 @@ type DbType = {
     getById(id: string): StaffListItem | undefined;
     getDetailById(id: string): StaffDetail | undefined;
     updateDetail(id: string, patch: Partial<StaffDetail>): StaffDetail | undefined;
-    create(input: { email: string; role: string; brand?: string }): StaffListItem;
+    create(input: { email: string; position_id: number; brand?: string }): StaffListItem;
     delete(id: string): boolean;
   };
 };
@@ -2533,14 +2581,15 @@ function createDb() {
         return updated;
       },
 
-      create(input: { email: string; role: string; brand?: string }): StaffListItem {
+      create(input: { email: string; position_id: number; brand?: string }): StaffListItem {
         this._seed();
         db.positions._seed();
         db.stores._seed();
 
         const nextId = this._staffs.length + 1;
-        const role = input.role as StaffListItem['role'];
-        const position_id = role === 'headquarters' ? 1 : role === 'viewer' ? 13 : 6;
+        const position_id = input.position_id;
+        const position = db.positions.getById(position_id);
+        const role = (position?.role ?? 'staff') as StaffListItem['role'];
         const defaultStore = SEED_STORE_ROWS[0]!;
         const staff_linkage: StaffDetail['staff_linkage'] = {
           type: 'direct_store',

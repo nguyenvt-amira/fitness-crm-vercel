@@ -5921,14 +5921,21 @@ export type StaffBrand = typeof StaffBrand[keyof typeof StaffBrand];
 /**
  * ManagedBrandCode
  *
- * Y-07 管理対象ブランドコード（2ブランド共通運用）
+ * 管理対象ブランドコード
  */
-export const ManagedBrandCode = { JOYFIT: 'joyfit', FIT365: 'fit365' } as const;
+export const ManagedBrandCode = {
+    ALL: 'all',
+    JOYFIT: 'joyfit',
+    FIT365: 'fit365',
+    JOYFIT24: 'joyfit24',
+    JOYFIT_YOGA: 'joyfit_yoga',
+    JOYFIT_PLUS: 'joyfit_plus'
+} as const;
 
 /**
  * ManagedBrandCode
  *
- * Y-07 管理対象ブランドコード（2ブランド共通運用）
+ * 管理対象ブランドコード
  */
 export type ManagedBrandCode = typeof ManagedBrandCode[keyof typeof ManagedBrandCode];
 
@@ -5947,7 +5954,7 @@ export type BrandItem = {
      *
      * ブランドコード
      */
-    code: 'joyfit' | 'fit365';
+    code: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
     /**
      * 表示名
      */
@@ -5979,11 +5986,11 @@ export type BrandItem = {
 /**
  * GetBrandsResponse
  *
- * Y-07 ブランドマスタ一覧
+ * ブランドマスタ一覧
  */
 export type GetBrandsResponse = {
     /**
-     * 管理対象ブランド一覧（JOYFIT / FIT365）
+     * 管理対象ブランド一覧
      */
     brands: Array<{
         /**
@@ -5995,7 +6002,7 @@ export type GetBrandsResponse = {
          *
          * ブランドコード
          */
-        code: 'joyfit' | 'fit365';
+        code: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
         /**
          * 表示名
          */
@@ -6067,7 +6074,7 @@ export type UpdateBrandResponse = {
          *
          * ブランドコード
          */
-        code: 'joyfit' | 'fit365';
+        code: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
         /**
          * 表示名
          */
@@ -7423,21 +7430,24 @@ export type UpdateStaffResponse = {
  */
 export type InviteStaffRequest = {
     /**
-     * Email addresses to invite
+     * Invite list with per-email position and brand
      */
-    emails: Array<string>;
-    /**
-     * StaffRole
-     *
-     * Role to assign
-     */
-    role: 'headquarters' | 'store_staff' | 'viewer';
-    /**
-     * StaffBrand
-     *
-     * Brand to assign (optional)
-     */
-    brand?: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    invitees: Array<{
+        /**
+         * Email address to invite
+         */
+        email: string;
+        /**
+         * Position master id (positions.id) for this email
+         */
+        position_id: number;
+        /**
+         * StaffBrand
+         *
+         * Brand to assign for this email (optional)
+         */
+        brand?: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    }>;
 };
 
 /**
@@ -8263,11 +8273,11 @@ export type GetCrmBrandsResponses = {
     /**
      * GetBrandsResponse
      *
-     * Y-07 ブランドマスタ一覧
+     * ブランドマスタ一覧
      */
     200: {
         /**
-         * 管理対象ブランド一覧（JOYFIT / FIT365）
+         * 管理対象ブランド一覧
          */
         brands: Array<{
             /**
@@ -8279,7 +8289,7 @@ export type GetCrmBrandsResponses = {
              *
              * ブランドコード
              */
-            code: 'joyfit' | 'fit365';
+            code: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
             /**
              * 表示名
              */
@@ -15192,21 +15202,24 @@ export type PostCrmStaffsInviteData = {
      */
     body?: {
         /**
-         * Email addresses to invite
+         * Invite list with per-email position and brand
          */
-        emails: Array<string>;
-        /**
-         * StaffRole
-         *
-         * Role to assign
-         */
-        role: 'headquarters' | 'store_staff' | 'viewer';
-        /**
-         * StaffBrand
-         *
-         * Brand to assign (optional)
-         */
-        brand?: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        invitees: Array<{
+            /**
+             * Email address to invite
+             */
+            email: string;
+            /**
+             * Position master id (positions.id) for this email
+             */
+            position_id: number;
+            /**
+             * StaffBrand
+             *
+             * Brand to assign for this email (optional)
+             */
+            brand?: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        }>;
     };
     path?: never;
     query?: never;
