@@ -62,6 +62,7 @@ export async function GET(request: NextRequest) {
       role,
       brand,
       status,
+      position_id,
       sort_by = 'staff_id',
       sort_order = 'asc',
     } = query;
@@ -93,6 +94,10 @@ export async function GET(request: NextRequest) {
     // Apply status filter
     if (status) {
       filtered = filtered.filter((s) => s.status === status);
+    }
+
+    if (position_id != null) {
+      filtered = filtered.filter((s) => s.position_id === position_id);
     }
 
     // Apply sorting

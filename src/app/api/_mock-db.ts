@@ -2,6 +2,7 @@
  * Shared in-memory mock database for all CRM API routes.
  * All APIs should read/update data through this module so list and detail stay in sync.
  */
+import type { BrandItem } from '@/app/api/_schemas/brand.schema';
 import type {
   EkycResult,
   FamilyRegistrationStatus,
@@ -298,6 +299,47 @@ const SEED_STORE_ROWS: Store[] = [
 function pickMemberStore(i: number): { id: string; name: string } {
   const s = SEED_STORE_ROWS[i % SEED_STORE_ROWS.length]!;
   return { id: s.store_id, name: s.store_name };
+}
+
+/** Y-07 ブランドマスタ — 管理対象 JOYFIT / FIT365 のみ（G-01 デフォルト参照） */
+const SEED_BRAND_ROWS: BrandItem[] = [
+  {
+    brand_id: 'brand-joyfit',
+    code: 'joyfit',
+    display_name: 'JOYFIT',
+    enrollment_fee_yen: 3300,
+    handling_fee_yen: 1100,
+    currency: 'JPY',
+    sort_order: 1,
+    created_at: '2024-01-01T00:00:00.000Z',
+    updated_at: '2026-03-15T10:30:00.000Z',
+    updated_by: 'STF-001',
+  },
+  {
+    brand_id: 'brand-fit365',
+    code: 'fit365',
+    display_name: 'FIT365',
+    enrollment_fee_yen: 3000,
+    handling_fee_yen: 880,
+    currency: 'JPY',
+    sort_order: 2,
+    created_at: '2024-01-01T00:00:00.000Z',
+    updated_at: '2026-03-15T10:30:00.000Z',
+    updated_by: 'STF-001',
+  },
+];
+
+/** Resolve brand label: Y-07 master (joyfit / fit365) + static labels for other StaffBrand codes */
+function staffBrandDisplayName(code: string): string {
+  const y07 = SEED_BRAND_ROWS.find((b) => b.code === code);
+  if (y07) return y07.display_name;
+  const fallbacks: Record<string, string> = {
+    all: '全ブランド',
+    joyfit24: 'JOYFIT24',
+    joyfit_yoga: 'JOYFIT YOGA',
+    joyfit_plus: 'JOYFIT+',
+  };
+  return fallbacks[code] ?? code;
 }
 
 type ContractRow = {
@@ -751,6 +793,17 @@ type DbType = {
     getByStaffId(staff_id: string): StaffPermissionRecord[];
     removeForStaff(staff_id: string): void;
     replaceForStaff(staff_id: string, rows: Array<{ permission_code: string }>): void;
+  };
+  brands: {
+    _rows: BrandItem[];
+    _seeded: boolean;
+    _seed(): void;
+    getList(): BrandItem[];
+    getByCode(code: string): BrandItem | undefined;
+    update(
+      code: string,
+      patch: Partial<Pick<BrandItem, 'enrollment_fee_yen' | 'handling_fee_yen' | 'updated_by'>>,
+    ): BrandItem | undefined;
   };
   staffs: {
     _staffs: StaffListItem[];
@@ -2119,6 +2172,39 @@ function createDb() {
         }
       },
     },
+    brands: {
+      _rows: [] as BrandItem[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows.push(...SEED_BRAND_ROWS.map((b) => ({ ...b })));
+      },
+      getList(): BrandItem[] {
+        this._seed();
+        return [...this._rows].sort((a, b) => a.sort_order - b.sort_order);
+      },
+      getByCode(code: string): BrandItem | undefined {
+        this._seed();
+        return this._rows.find((r) => r.code === code);
+      },
+      update(
+        code: string,
+        patch: Partial<Pick<BrandItem, 'enrollment_fee_yen' | 'handling_fee_yen' | 'updated_by'>>,
+      ): BrandItem | undefined {
+        this._seed();
+        const idx = this._rows.findIndex((r) => r.code === code);
+        if (idx === -1) return undefined;
+        const row = this._rows[idx]!;
+        const next: BrandItem = {
+          ...row,
+          ...patch,
+          updated_at: new Date().toISOString(),
+        };
+        this._rows[idx] = next;
+        return next;
+      },
+    },
     staffs: {
       _staffs: [] as StaffListItem[],
       _details: {} as Record<string, StaffDetail>,
@@ -2130,6 +2216,7 @@ function createDb() {
 
         db.positions._seed();
         db.stores._seed();
+        db.brands._seed();
 
         const lastNames = [
           { kanji: '田中', kana: 'タナカ' },
@@ -2273,6 +2360,7 @@ function createDb() {
             position_name,
             role,
             brand,
+            brand_display_name: staffBrandDisplayName(brand),
             linkage_type: staff_linkage.type,
             linked_store_id:
               staff_linkage.type === 'direct_store' ? staff_linkage.store_id : undefined,
@@ -2308,6 +2396,8 @@ function createDb() {
             id: String(i),
             staff_id: `STF-${String(i).padStart(3, '0')}`,
             position_id,
+            brand,
+            brand_display_name: staffBrandDisplayName(brand),
             status,
             personal_info: {
               last_name: ln.kanji,
@@ -2380,6 +2470,7 @@ function createDb() {
           ? { ...existing.staff_linkage, ...patch.staff_linkage }
           : existing.staff_linkage;
         const position_id = patch.position_id ?? existing.position_id;
+        const nextBrand = (patch.brand ?? existing.brand ?? 'all') as StaffDetail['brand'];
         const staff_permissions = patch.staff_permissions
           ? permissionRows.filter((r) => r.staff_id === id)
           : existing.staff_permissions;
@@ -2388,6 +2479,8 @@ function createDb() {
           ...existing,
           ...patch,
           position_id,
+          brand: nextBrand,
+          brand_display_name: staffBrandDisplayName(nextBrand),
           personal_info: patch.personal_info
             ? { ...existing.personal_info, ...patch.personal_info }
             : existing.personal_info,
@@ -2423,6 +2516,8 @@ function createDb() {
             position_id: updated.position_id,
             position_name: positionNameById(updated.position_id),
             role: updated.permission_settings.role,
+            brand: updated.brand,
+            brand_display_name: updated.brand_display_name,
             linkage_type: updated.staff_linkage.type,
             linked_store_id:
               updated.staff_linkage.type === 'direct_store'
@@ -2456,6 +2551,7 @@ function createDb() {
         pushStaffPermissions(String(nextId), ['crm.login', 'crm.members.view']);
         const staff_permissions = permissionRows.filter((r) => r.staff_id === String(nextId));
 
+        const assignedBrand = (input.brand ?? 'all') as StaffListItem['brand'];
         const staff: StaffListItem = {
           id: String(nextId),
           staff_id: `STF-${String(nextId).padStart(3, '0')}`,
@@ -2464,7 +2560,8 @@ function createDb() {
           position_id,
           position_name: positionNameById(position_id),
           role,
-          brand: (input.brand ?? 'all') as StaffListItem['brand'],
+          brand: assignedBrand,
+          brand_display_name: staffBrandDisplayName(assignedBrand),
           linkage_type: staff_linkage.type,
           linked_store_id: staff_linkage.store_id,
           status: 'active',
@@ -2477,6 +2574,8 @@ function createDb() {
           id: String(nextId),
           staff_id: staff.staff_id,
           position_id,
+          brand: assignedBrand,
+          brand_display_name: staffBrandDisplayName(assignedBrand),
           status: 'active',
           personal_info: {
             last_name: input.email.split('@')[0] ?? '新規',

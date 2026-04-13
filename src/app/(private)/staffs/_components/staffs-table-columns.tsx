@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 
+import { formatDateYYYYMMDD_HHMM } from '@/utils/date.util';
 import type { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 
@@ -19,11 +20,9 @@ import {
 import type { GetCrmStaffsResponse } from '@/lib/api/types.gen';
 
 import {
-  STAFF_BRAND_LABELS,
   STAFF_ROLE_LABELS,
   STAFF_STATUS_CLASSES,
   STAFF_STATUS_LABELS,
-  type StaffBrand,
   type StaffRole,
   StaffStatus,
 } from '../_constants/constants';
@@ -130,9 +129,7 @@ export function StaffsTableColumns({ onEditClick }: StaffsTableColumnsProps): Co
     {
       accessorKey: 'brand',
       header: 'ブランド',
-      cell: ({ row }) => (
-        <span className="">{STAFF_BRAND_LABELS[row.original.brand as StaffBrand] || '-'}</span>
-      ),
+      cell: ({ row }) => <span className="">{row.original.brand_display_name || '-'}</span>,
       meta: {
         label: 'ブランド',
       },
@@ -153,7 +150,9 @@ export function StaffsTableColumns({ onEditClick }: StaffsTableColumnsProps): Co
       accessorKey: 'last_login',
       header: ({ column }) => <DataTableColumnHeader column={column} title="最終ログイン" />,
       cell: ({ row }) => (
-        <span className="text-muted-foreground">{row.original.last_login || '-'}</span>
+        <span className="text-muted-foreground">
+          {formatDateYYYYMMDD_HHMM(row.original.last_login)}
+        </span>
       ),
       meta: {
         label: '最終ログイン',

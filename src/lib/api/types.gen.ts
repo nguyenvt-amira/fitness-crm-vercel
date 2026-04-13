@@ -4909,6 +4909,41 @@ export type GetFamilyRegistrationsDashboardResponse = {
 };
 
 /**
+ * GetPositionsResponse
+ *
+ * List of staff positions for filters and forms
+ */
+export type GetPositionsResponse = {
+    /**
+     * All positions (職位マスター)
+     */
+    positions: Array<{
+        /**
+         * Position PK
+         */
+        id: number;
+        /**
+         * PositionRoleCategory
+         *
+         * ロール
+         */
+        role: 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
+        /**
+         * 職位名
+         */
+        position_name: string;
+        /**
+         * PositionFeatures
+         *
+         * 主な権限の特徴
+         */
+        features: {
+            [key: string]: unknown;
+        };
+    }>;
+};
+
+/**
  * StoreMainContractStatus
  *
  * Main contract lifecycle for the store
@@ -5884,6 +5919,185 @@ export const StaffBrand = {
 export type StaffBrand = typeof StaffBrand[keyof typeof StaffBrand];
 
 /**
+ * ManagedBrandCode
+ *
+ * Y-07 管理対象ブランドコード（2ブランド共通運用）
+ */
+export const ManagedBrandCode = { JOYFIT: 'joyfit', FIT365: 'fit365' } as const;
+
+/**
+ * ManagedBrandCode
+ *
+ * Y-07 管理対象ブランドコード（2ブランド共通運用）
+ */
+export type ManagedBrandCode = typeof ManagedBrandCode[keyof typeof ManagedBrandCode];
+
+/**
+ * BrandItem
+ *
+ * Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）
+ */
+export type BrandItem = {
+    /**
+     * Canonical id（店舗.brand_id 等と整合）
+     */
+    brand_id: string;
+    /**
+     * ManagedBrandCode
+     *
+     * ブランドコード
+     */
+    code: 'joyfit' | 'fit365';
+    /**
+     * 表示名
+     */
+    display_name: string;
+    /**
+     * 入会金デフォルト（円）
+     */
+    enrollment_fee_yen: number;
+    /**
+     * 手数料デフォルト（円）
+     */
+    handling_fee_yen: number;
+    /**
+     * 通貨
+     */
+    currency: 'JPY';
+    /**
+     * 一覧表示順
+     */
+    sort_order: number;
+    created_at: string;
+    updated_at: string;
+    /**
+     * 最終更新者（本部のみ編集）
+     */
+    updated_by?: string | null;
+};
+
+/**
+ * GetBrandsResponse
+ *
+ * Y-07 ブランドマスタ一覧
+ */
+export type GetBrandsResponse = {
+    /**
+     * 管理対象ブランド一覧（JOYFIT / FIT365）
+     */
+    brands: Array<{
+        /**
+         * Canonical id（店舗.brand_id 等と整合）
+         */
+        brand_id: string;
+        /**
+         * ManagedBrandCode
+         *
+         * ブランドコード
+         */
+        code: 'joyfit' | 'fit365';
+        /**
+         * 表示名
+         */
+        display_name: string;
+        /**
+         * 入会金デフォルト（円）
+         */
+        enrollment_fee_yen: number;
+        /**
+         * 手数料デフォルト（円）
+         */
+        handling_fee_yen: number;
+        /**
+         * 通貨
+         */
+        currency: 'JPY';
+        /**
+         * 一覧表示順
+         */
+        sort_order: number;
+        created_at: string;
+        updated_at: string;
+        /**
+         * 最終更新者（本部のみ編集）
+         */
+        updated_by?: string | null;
+    }>;
+};
+
+/**
+ * UpdateBrandRequest
+ *
+ * Y-07 ブランド設定の部分更新（本部のみ）
+ */
+export type UpdateBrandRequest = {
+    /**
+     * 入会金（円）
+     */
+    enrollment_fee_yen?: number;
+    /**
+     * 手数料（円）
+     */
+    handling_fee_yen?: number;
+    /**
+     * 更新者スタッフID（モック用）
+     */
+    updated_by?: string;
+};
+
+/**
+ * UpdateBrandResponse
+ *
+ * 更新後のブランド行
+ */
+export type UpdateBrandResponse = {
+    message: string;
+    /**
+     * BrandItem
+     *
+     * Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）
+     */
+    brand: {
+        /**
+         * Canonical id（店舗.brand_id 等と整合）
+         */
+        brand_id: string;
+        /**
+         * ManagedBrandCode
+         *
+         * ブランドコード
+         */
+        code: 'joyfit' | 'fit365';
+        /**
+         * 表示名
+         */
+        display_name: string;
+        /**
+         * 入会金デフォルト（円）
+         */
+        enrollment_fee_yen: number;
+        /**
+         * 手数料デフォルト（円）
+         */
+        handling_fee_yen: number;
+        /**
+         * 通貨
+         */
+        currency: 'JPY';
+        /**
+         * 一覧表示順
+         */
+        sort_order: number;
+        created_at: string;
+        updated_at: string;
+        /**
+         * 最終更新者（本部のみ編集）
+         */
+        updated_by?: string | null;
+    };
+};
+
+/**
  * StaffListItem
  *
  * Staff list item for table view
@@ -5925,6 +6139,10 @@ export type StaffListItem = {
      * Assigned brand
      */
     brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * Brand display name for UI
+     */
+    brand_display_name: string;
     /**
      * StaffLinkageType
      *
@@ -6138,6 +6356,16 @@ export type StaffDetail = {
      * FK → positions.id
      */
     position_id: number;
+    /**
+     * StaffBrand
+     *
+     * 主担当ブランド（一覧の brand と一致）
+     */
+    brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * ブランド表示名（マスタの display_name）
+     */
+    brand_display_name: string;
     /**
      * StaffStatus
      *
@@ -6384,6 +6612,10 @@ export type GetStaffsQuery = {
      */
     status?: 'active' | 'inactive';
     /**
+     * Filter by position master id (職位)
+     */
+    position_id?: number;
+    /**
      * Sort field
      */
     sort_by?: 'staff_id' | 'name' | 'role' | 'position_name' | 'status' | 'last_login';
@@ -6439,6 +6671,10 @@ export type GetStaffsResponse = {
          * Assigned brand
          */
         brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * Brand display name for UI
+         */
+        brand_display_name: string;
         /**
          * StaffLinkageType
          *
@@ -6499,6 +6735,16 @@ export type GetStaffDetailResponse = {
          * FK → positions.id
          */
         position_id: number;
+        /**
+         * StaffBrand
+         *
+         * 主担当ブランド（一覧の brand と一致）
+         */
+        brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * ブランド表示名（マスタの display_name）
+         */
+        brand_display_name: string;
         /**
          * StaffStatus
          *
@@ -6830,6 +7076,12 @@ export type UpdateStaffRequest = {
         };
     };
     /**
+     * StaffBrand
+     *
+     * 主担当ブランド
+     */
+    brand?: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
      * StaffLinkage
      *
      * 店舗/FC 紐づけ (partial merge with existing)
@@ -6944,6 +7196,16 @@ export type UpdateStaffResponse = {
          * FK → positions.id
          */
         position_id: number;
+        /**
+         * StaffBrand
+         *
+         * 主担当ブランド（一覧の brand と一致）
+         */
+        brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * ブランド表示名（マスタの display_name）
+         */
+        brand_display_name: string;
         /**
          * StaffStatus
          *
@@ -7232,6 +7494,10 @@ export type InviteStaffResponse = {
          * Assigned brand
          */
         brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * Brand display name for UI
+         */
+        brand_display_name: string;
         /**
          * StaffLinkageType
          *
@@ -7969,6 +8235,82 @@ export type PutCrmAutoApprovalSettingsResponses = {
 };
 
 export type PutCrmAutoApprovalSettingsResponse = PutCrmAutoApprovalSettingsResponses[keyof PutCrmAutoApprovalSettingsResponses];
+
+export type GetCrmBrandsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/brands';
+};
+
+export type GetCrmBrandsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmBrandsError = GetCrmBrandsErrors[keyof GetCrmBrandsErrors];
+
+export type GetCrmBrandsResponses = {
+    /**
+     * GetBrandsResponse
+     *
+     * Y-07 ブランドマスタ一覧
+     */
+    200: {
+        /**
+         * 管理対象ブランド一覧（JOYFIT / FIT365）
+         */
+        brands: Array<{
+            /**
+             * Canonical id（店舗.brand_id 等と整合）
+             */
+            brand_id: string;
+            /**
+             * ManagedBrandCode
+             *
+             * ブランドコード
+             */
+            code: 'joyfit' | 'fit365';
+            /**
+             * 表示名
+             */
+            display_name: string;
+            /**
+             * 入会金デフォルト（円）
+             */
+            enrollment_fee_yen: number;
+            /**
+             * 手数料デフォルト（円）
+             */
+            handling_fee_yen: number;
+            /**
+             * 通貨
+             */
+            currency: 'JPY';
+            /**
+             * 一覧表示順
+             */
+            sort_order: number;
+            created_at: string;
+            updated_at: string;
+            /**
+             * 最終更新者（本部のみ編集）
+             */
+            updated_by?: string | null;
+        }>;
+    };
+};
+
+export type GetCrmBrandsResponse = GetCrmBrandsResponses[keyof GetCrmBrandsResponses];
 
 export type PostCrmFamilyRegistrationsByIdApproveData = {
     /**
@@ -13925,6 +14267,68 @@ export type GetCrmOptionsResponses = {
 
 export type GetCrmOptionsResponse = GetCrmOptionsResponses[keyof GetCrmOptionsResponses];
 
+export type GetCrmPositionsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/positions';
+};
+
+export type GetCrmPositionsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmPositionsError = GetCrmPositionsErrors[keyof GetCrmPositionsErrors];
+
+export type GetCrmPositionsResponses = {
+    /**
+     * GetPositionsResponse
+     *
+     * List of staff positions for filters and forms
+     */
+    200: {
+        /**
+         * All positions (職位マスター)
+         */
+        positions: Array<{
+            /**
+             * Position PK
+             */
+            id: number;
+            /**
+             * PositionRoleCategory
+             *
+             * ロール
+             */
+            role: 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
+            /**
+             * 職位名
+             */
+            position_name: string;
+            /**
+             * PositionFeatures
+             *
+             * 主な権限の特徴
+             */
+            features: {
+                [key: string]: unknown;
+            };
+        }>;
+    };
+};
+
+export type GetCrmPositionsResponse = GetCrmPositionsResponses[keyof GetCrmPositionsResponses];
+
 export type DeleteCrmStaffsByIdData = {
     body?: never;
     path: {
@@ -14044,6 +14448,16 @@ export type GetCrmStaffsByIdResponses = {
              * FK → positions.id
              */
             position_id: number;
+            /**
+             * StaffBrand
+             *
+             * 主担当ブランド（一覧の brand と一致）
+             */
+            brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * ブランド表示名（マスタの display_name）
+             */
+            brand_display_name: string;
             /**
              * StaffStatus
              *
@@ -14379,6 +14793,12 @@ export type PatchCrmStaffsByIdData = {
             };
         };
         /**
+         * StaffBrand
+         *
+         * 主担当ブランド
+         */
+        brand?: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
          * StaffLinkage
          *
          * 店舗/FC 紐づけ (partial merge with existing)
@@ -14541,6 +14961,16 @@ export type PatchCrmStaffsByIdResponses = {
              * FK → positions.id
              */
             position_id: number;
+            /**
+             * StaffBrand
+             *
+             * 主担当ブランド（一覧の brand と一致）
+             */
+            brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * ブランド表示名（マスタの display_name）
+             */
+            brand_display_name: string;
             /**
              * StaffStatus
              *
@@ -14866,6 +15296,10 @@ export type PostCrmStaffsInviteResponses = {
              */
             brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
             /**
+             * Brand display name for UI
+             */
+            brand_display_name: string;
+            /**
              * StaffLinkageType
              *
              * 店舗直接 vs FC企業
@@ -14929,6 +15363,10 @@ export type GetCrmStaffsData = {
          * Filter by status
          */
         status?: 'active' | 'inactive';
+        /**
+         * Filter by position master id (職位)
+         */
+        position_id?: number;
         /**
          * Sort field
          */
@@ -15015,6 +15453,10 @@ export type GetCrmStaffsResponses = {
              * Assigned brand
              */
             brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * Brand display name for UI
+             */
+            brand_display_name: string;
             /**
              * StaffLinkageType
              *

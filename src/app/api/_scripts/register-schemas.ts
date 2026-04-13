@@ -5,6 +5,7 @@
 // Import all schemas
 import * as authSchemas from '../_schemas/auth.schema';
 import * as autoApprovalSchemas from '../_schemas/auto-approval.schema';
+import * as brandSchemas from '../_schemas/brand.schema';
 import * as familyRegistrationSchemas from '../_schemas/family-registration.schema';
 import * as memberSchemas from '../_schemas/member.schema';
 import * as membershipApplicationSchemas from '../_schemas/membership-application.schema';
@@ -504,6 +505,10 @@ export function registerAllSchemas() {
   );
 
   registeredSchemaMap.set(
+    'GetPositionsResponse',
+    registry.register('GetPositionsResponse', positionSchemas.GetPositionsResponseSchema),
+  );
+  registeredSchemaMap.set(
     'StoreMainContractStatus',
     registry.register('StoreMainContractStatus', storeSchemas.StoreMainContractStatusSchema),
   );
@@ -630,6 +635,26 @@ export function registerAllSchemas() {
   registeredSchemaMap.set(
     'StaffBrand',
     registry.register('StaffBrand', staffSchemas.StaffBrandSchema),
+  );
+  registeredSchemaMap.set(
+    'ManagedBrandCode',
+    registry.register('ManagedBrandCode', brandSchemas.ManagedBrandCodeSchema),
+  );
+  registeredSchemaMap.set(
+    'BrandItem',
+    registry.register('BrandItem', brandSchemas.BrandItemSchema),
+  );
+  registeredSchemaMap.set(
+    'GetBrandsResponse',
+    registry.register('GetBrandsResponse', brandSchemas.GetBrandsResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'UpdateBrandRequest',
+    registry.register('UpdateBrandRequest', brandSchemas.UpdateBrandRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'UpdateBrandResponse',
+    registry.register('UpdateBrandResponse', brandSchemas.UpdateBrandResponseSchema),
   );
 
   // Register staff schemas
