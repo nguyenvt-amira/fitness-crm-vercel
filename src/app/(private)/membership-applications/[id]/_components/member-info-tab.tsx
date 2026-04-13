@@ -1,6 +1,6 @@
 'use client';
 
-import { GENDER_LABELS } from '@/app/(private)/members/_lib/constants';
+import { GENDER_LABELS } from '@/app/(private)/members/_constants/constants';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';

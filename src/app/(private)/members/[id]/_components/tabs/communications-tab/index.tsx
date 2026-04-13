@@ -1,5 +1,6 @@
 'use client';
 
+import { MEMO_TYPE_LABELS } from '@/app/(private)/members/_constants/constants';
 import { useQuery } from '@tanstack/react-query';
 import { MessageSquare, Pencil, Trash2 } from 'lucide-react';
 
@@ -9,8 +10,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { getCrmMembersByIdCommunicationsOptions } from '@/lib/api/@tanstack/react-query.gen';
 import { MemoType, StaffMemo } from '@/lib/api/types.gen';
-
-import { MEMO_TYPE_LABELS } from '../../../_lib/constants';
 
 interface CommunicationsTabProps {
   memberId: string;

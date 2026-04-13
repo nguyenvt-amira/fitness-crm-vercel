@@ -2,6 +2,10 @@
 
 import Link from 'next/link';
 
+import {
+  MEMBER_STATUS_CLASSES,
+  MEMBER_STATUS_LABELS,
+} from '@/app/(private)/members/_constants/constants';
 import { formatDate } from '@/utils/format.util';
 import { type ColumnDef } from '@tanstack/react-table';
 
@@ -10,8 +14,6 @@ import { Badge } from '@/components/ui/badge';
 import type { GetCrmMembersByIdRelationshipsResponse } from '@/lib/api/types.gen';
 import { MemberStatus } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
-
-import { MEMBER_STATUS_CLASSES, MEMBER_STATUS_LABELS } from '../../../_lib/constants';
 
 type FamilyChildRow = NonNullable<
   NonNullable<GetCrmMembersByIdRelationshipsResponse['family']>['children']

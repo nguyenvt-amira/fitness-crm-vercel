@@ -12,7 +12,7 @@ import {
 
 import type { GetMemberDetailResponse } from '@/lib/api/types.gen';
 
-import { GENDER_LABELS } from '../../_lib/constants';
+import { GENDER_LABELS } from '../../_constants/constants';
 
 interface PrintModalProps {
   open: boolean;

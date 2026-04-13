@@ -19,8 +19,8 @@ import type { GetCrmMembersResponse } from '@/lib/api/types.gen';
 import { Brand, MemberStatus, MemberType } from '@/lib/api/types.gen';
 import { cn } from '@/lib/utils';
 
-import { BRAND_CLASSES, BRAND_LABELS, MEMBER_STATUS_CLASSES } from '../_lib/constants';
-import { MEMBER_STATUS_LABELS, MEMBER_TYPE_LABELS } from '../_lib/constants';
+import { BRAND_CLASSES, BRAND_LABELS, MEMBER_STATUS_CLASSES } from '../_constants/constants';
+import { MEMBER_STATUS_LABELS, MEMBER_TYPE_LABELS } from '../_constants/constants';
 
 interface MembersTableColumnsProps {
   onMemberClick: (memberId: string) => void;

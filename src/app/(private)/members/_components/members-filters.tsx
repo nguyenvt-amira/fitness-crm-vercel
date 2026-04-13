@@ -15,8 +15,8 @@ import {
 
 import { Brand, MemberStatus, MemberType } from '@/lib/api/types.gen';
 
+import { BRAND_LABELS, MEMBER_STATUS_LABELS, MEMBER_TYPE_LABELS } from '../_constants/constants';
 import { useMembersFiltersContext } from '../_contexts/members-filters-context';
-import { BRAND_LABELS, MEMBER_STATUS_LABELS, MEMBER_TYPE_LABELS } from '../_lib/constants';
 
 interface MembersFiltersProps {
   onQRScan: () => void;

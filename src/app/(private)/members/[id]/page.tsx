@@ -36,8 +36,8 @@ import {
 import type { StaffMemo } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
-import { MEMBER_STATUS_CLASSES } from '../_lib/constants';
-import { MEMBER_STATUS_LABELS } from '../_lib/constants';
+import { MEMBER_STATUS_CLASSES } from '../_constants/constants';
+import { MEMBER_STATUS_LABELS } from '../_constants/constants';
 import { EditMemberModal } from './_components/edit-member-modal';
 import { MemoModal } from './_components/memo-modal';
 import { PrintModal } from './_components/print-modal';
