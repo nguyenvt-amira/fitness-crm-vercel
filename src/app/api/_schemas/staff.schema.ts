@@ -1,3 +1,4 @@
+import { StaffPermissionRecordSchema } from '@/app/api/_schemas/position.schema';
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 
@@ -185,6 +186,68 @@ export const StaffPermissionSettingsSchema = z
 /**
  * Staff Editable Scope Item Schema - 編集可能情報 (row)
  */
+/**
+ * Staff ↔ store / FC linkage (店舗直接 vs FC企業) — mutually exclusive patterns
+ */
+export const StaffLinkageTypeSchema = z.enum(['direct_store', 'fc_company']).openapi({
+  title: 'StaffLinkageType',
+  description:
+    'direct_store=店舗直接紐づき (Pattern A), fc_company=FC企業紐づき (Pattern B); only one applies',
+});
+
+export const StaffLinkageSchema = z
+  .object({
+    type: StaffLinkageTypeSchema.openapi({ description: '紐づけ種別' }),
+    store_id: z.string().optional().openapi({
+      example: 'store-001',
+      description: 'Set when type=direct_store',
+    }),
+    store_name: z.string().optional().openapi({
+      description: 'Denormalized store name for display',
+    }),
+    fc_company_id: z.string().optional().openapi({
+      example: 'fc-001',
+      description: 'Set when type=fc_company',
+    }),
+    fc_company_name: z.string().optional().openapi({
+      description: 'Denormalized FC company name',
+    }),
+  })
+  .superRefine((data, ctx) => {
+    if (data.type === 'direct_store') {
+      if (!data.store_id) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'store_id is required when linkage type is direct_store',
+        });
+      }
+      if (data.fc_company_id != null && data.fc_company_id !== '') {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'fc_company_id must not be set when linkage type is direct_store',
+        });
+      }
+    }
+    if (data.type === 'fc_company') {
+      if (!data.fc_company_id) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'fc_company_id is required when linkage type is fc_company',
+        });
+      }
+      if (data.store_id != null && data.store_id !== '') {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'store_id must not be set when linkage type is fc_company',
+        });
+      }
+    }
+  })
+  .openapi({
+    title: 'StaffLinkage',
+    description: 'Staff store / FC linkage (exclusive patterns)',
+  });
+
 export const StaffEditableScopeSchema = z
   .object({
     brand: StaffBrandSchema.openapi({
@@ -240,13 +303,31 @@ export const StaffListItemSchema = z
       example: 'tanaka@joyfit.co.jp',
       description: 'Staff email address',
     }),
+    /** FK → positions.id (職位マスター) */
+    position_id: z.number().int().openapi({
+      example: 6,
+      description: 'Position master id',
+    }),
+    position_name: z.string().openapi({
+      example: '正社員スタッフ',
+      description: 'Denormalized position name',
+    }),
     role: StaffRoleSchema.openapi({
       example: 'headquarters',
-      description: 'Staff role/permission',
+      description: 'Staff role/permission (編集権限グループ)',
     }),
     brand: StaffBrandSchema.openapi({
       example: 'all',
       description: 'Assigned brand',
+    }),
+    linkage_type: StaffLinkageTypeSchema.openapi({
+      description: '店舗直接 vs FC企業',
+    }),
+    linked_store_id: z.string().optional().openapi({
+      description: 'Present when linkage_type=direct_store',
+    }),
+    linked_fc_company_id: z.string().optional().openapi({
+      description: 'Present when linkage_type=fc_company',
     }),
     status: StaffStatusSchema.openapi({
       example: 'active',
@@ -277,6 +358,10 @@ export const StaffDetailSchema = z
       example: 'STF-001',
       description: 'Staff display ID',
     }),
+    position_id: z.number().int().openapi({
+      example: 6,
+      description: 'FK → positions.id',
+    }),
     status: StaffStatusSchema.openapi({
       example: 'active',
       description: 'Account status',
@@ -289,6 +374,12 @@ export const StaffDetailSchema = z
     }),
     permission_settings: StaffPermissionSettingsSchema.openapi({
       description: '権限設定',
+    }),
+    staff_linkage: StaffLinkageSchema.openapi({
+      description: '店舗直接紐づき or FC企業紐づき (mutually exclusive)',
+    }),
+    staff_permissions: z.array(StaffPermissionRecordSchema).openapi({
+      description: 'Detailed permission rows (staff_permissions table)',
     }),
     editable_scopes: z.array(StaffEditableScopeSchema).openapi({
       description: '編集可能情報',
@@ -340,7 +431,7 @@ export const GetStaffsQuerySchema = z
       description: 'Filter by status',
     }),
     sort_by: z
-      .enum(['staff_id', 'name', 'role', 'status', 'last_login'])
+      .enum(['staff_id', 'name', 'role', 'position_name', 'status', 'last_login'])
       .default('staff_id')
       .openapi({
         example: 'staff_id',
@@ -403,8 +494,17 @@ export const UpdateStaffRequestSchema = z
     login_settings: StaffLoginSettingsSchema.optional().openapi({
       description: 'ログイン設定 (partial update)',
     }),
+    position_id: z.number().int().optional().openapi({
+      description: '職位マスター (positions.id)',
+    }),
     permission_settings: StaffPermissionSettingsSchema.optional().openapi({
       description: '権限設定 (partial update)',
+    }),
+    staff_linkage: StaffLinkageSchema.optional().openapi({
+      description: '店舗/FC 紐づけ (partial merge with existing)',
+    }),
+    staff_permissions: z.array(StaffPermissionRecordSchema).optional().openapi({
+      description: 'Replace granular permission rows',
     }),
     editable_scopes: z.array(StaffEditableScopeSchema).optional().openapi({
       description: '編集可能情報 (full replacement)',
@@ -508,6 +608,8 @@ export type StaffLoginSettings = z.infer<typeof StaffLoginSettingsSchema>;
 export type StaffAdditionalPermissions = z.infer<typeof StaffAdditionalPermissionsSchema>;
 export type StaffPermissionSettings = z.infer<typeof StaffPermissionSettingsSchema>;
 export type StaffEditableScope = z.infer<typeof StaffEditableScopeSchema>;
+export type StaffLinkage = z.infer<typeof StaffLinkageSchema>;
+export type StaffLinkageType = z.infer<typeof StaffLinkageTypeSchema>;
 export type GetStaffsQuery = z.infer<typeof GetStaffsQuerySchema>;
 export type GetStaffsResponse = z.infer<typeof GetStaffsResponseSchema>;
 export type GetStaffDetailResponse = z.infer<typeof GetStaffDetailResponseSchema>;

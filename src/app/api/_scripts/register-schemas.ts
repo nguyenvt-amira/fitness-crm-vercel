@@ -8,6 +8,7 @@ import * as autoApprovalSchemas from '../_schemas/auto-approval.schema';
 import * as familyRegistrationSchemas from '../_schemas/family-registration.schema';
 import * as memberSchemas from '../_schemas/member.schema';
 import * as membershipApplicationSchemas from '../_schemas/membership-application.schema';
+import * as positionSchemas from '../_schemas/position.schema';
 import * as staffSchemas from '../_schemas/staff.schema';
 import * as storeAccessSettingsSchemas from '../_schemas/store-access-settings.schema';
 import * as storeSchemas from '../_schemas/store.schema';
@@ -607,10 +608,20 @@ export function registerAllSchemas() {
       storeSchemas.UpdateStoreBusinessHoursResponseSchema,
     ),
   );
+  registeredSchemaMap.set('Store', registry.register('Store', storeSchemas.StoreSchema));
+
   // Register staff enum schemas
   registeredSchemaMap.set(
     'StaffRole',
     registry.register('StaffRole', staffSchemas.StaffRoleSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffLinkageType',
+    registry.register('StaffLinkageType', staffSchemas.StaffLinkageTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffLinkage',
+    registry.register('StaffLinkage', staffSchemas.StaffLinkageSchema),
   );
   registeredSchemaMap.set(
     'StaffStatus',

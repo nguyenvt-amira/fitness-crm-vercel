@@ -8593,6 +8593,44 @@
         "title": "StaffRole",
         "description": "Staff permission role: headquarters=本部, store_staff=店舗スタッフ, viewer=閲覧のみ"
       },
+      "StaffLinkageType": {
+        "type": "string",
+        "enum": ["direct_store", "fc_company"],
+        "title": "StaffLinkageType",
+        "description": "direct_store=店舗直接紐づき (Pattern A), fc_company=FC企業紐づき (Pattern B); only one applies"
+      },
+      "StaffLinkage": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["direct_store", "fc_company"],
+            "title": "StaffLinkageType",
+            "description": "紐づけ種別"
+          },
+          "store_id": {
+            "type": "string",
+            "example": "store-001",
+            "description": "Set when type=direct_store"
+          },
+          "store_name": {
+            "type": "string",
+            "description": "Denormalized store name for display"
+          },
+          "fc_company_id": {
+            "type": "string",
+            "example": "fc-001",
+            "description": "Set when type=fc_company"
+          },
+          "fc_company_name": {
+            "type": "string",
+            "description": "Denormalized FC company name"
+          }
+        },
+        "required": ["type"],
+        "title": "StaffLinkage",
+        "description": "Staff store / FC linkage (exclusive patterns)"
+      },
       "StaffStatus": {
         "type": "string",
         "enum": ["active", "inactive"],
@@ -8629,11 +8667,21 @@
             "example": "tanaka@joyfit.co.jp",
             "description": "Staff email address"
           },
+          "position_id": {
+            "type": "integer",
+            "example": 6,
+            "description": "Position master id"
+          },
+          "position_name": {
+            "type": "string",
+            "example": "正社員スタッフ",
+            "description": "Denormalized position name"
+          },
           "role": {
             "type": "string",
             "enum": ["headquarters", "store_staff", "viewer"],
             "title": "StaffRole",
-            "description": "Staff role/permission",
+            "description": "Staff role/permission (編集権限グループ)",
             "example": "headquarters"
           },
           "brand": {
@@ -8642,6 +8690,20 @@
             "title": "StaffBrand",
             "description": "Assigned brand",
             "example": "all"
+          },
+          "linkage_type": {
+            "type": "string",
+            "enum": ["direct_store", "fc_company"],
+            "title": "StaffLinkageType",
+            "description": "店舗直接 vs FC企業"
+          },
+          "linked_store_id": {
+            "type": "string",
+            "description": "Present when linkage_type=direct_store"
+          },
+          "linked_fc_company_id": {
+            "type": "string",
+            "description": "Present when linkage_type=fc_company"
           },
           "status": {
             "type": "string",
@@ -8656,7 +8718,19 @@
             "description": "Last login datetime"
           }
         },
-        "required": ["id", "staff_id", "name", "email", "role", "brand", "status", "last_login"],
+        "required": [
+          "id",
+          "staff_id",
+          "name",
+          "email",
+          "position_id",
+          "position_name",
+          "role",
+          "brand",
+          "linkage_type",
+          "status",
+          "last_login"
+        ],
         "title": "StaffListItem",
         "description": "Staff list item for table view"
       },
@@ -8874,6 +8948,11 @@
             "example": "STF-001",
             "description": "Staff display ID"
           },
+          "position_id": {
+            "type": "integer",
+            "example": 6,
+            "description": "FK → positions.id"
+          },
           "status": {
             "type": "string",
             "enum": ["active", "inactive"],
@@ -9017,6 +9096,64 @@
             "title": "StaffPermissionSettings",
             "description": "権限設定"
           },
+          "staff_linkage": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["direct_store", "fc_company"],
+                "title": "StaffLinkageType",
+                "description": "紐づけ種別"
+              },
+              "store_id": {
+                "type": "string",
+                "example": "store-001",
+                "description": "Set when type=direct_store"
+              },
+              "store_name": {
+                "type": "string",
+                "description": "Denormalized store name for display"
+              },
+              "fc_company_id": {
+                "type": "string",
+                "example": "fc-001",
+                "description": "Set when type=fc_company"
+              },
+              "fc_company_name": {
+                "type": "string",
+                "description": "Denormalized FC company name"
+              }
+            },
+            "required": ["type"],
+            "title": "StaffLinkage",
+            "description": "店舗直接紐づき or FC企業紐づき (mutually exclusive)"
+          },
+          "staff_permissions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "Permission row PK"
+                },
+                "staff_id": {
+                  "type": "string",
+                  "example": "1",
+                  "description": "Internal staff id (FK staff.id)"
+                },
+                "permission_code": {
+                  "type": "string",
+                  "example": "Y-03.view",
+                  "description": "Permission code"
+                }
+              },
+              "required": ["id", "staff_id", "permission_code"],
+              "title": "StaffPermissionRecord",
+              "description": "Staff permission detail row"
+            },
+            "description": "Detailed permission rows (staff_permissions table)"
+          },
           "editable_scopes": {
             "type": "array",
             "items": {
@@ -9082,10 +9219,13 @@
         "required": [
           "id",
           "staff_id",
+          "position_id",
           "status",
           "personal_info",
           "login_settings",
           "permission_settings",
+          "staff_linkage",
+          "staff_permissions",
           "editable_scopes",
           "last_login",
           "created_at",
@@ -9137,7 +9277,7 @@
           },
           "sort_by": {
             "type": "string",
-            "enum": ["staff_id", "name", "role", "status", "last_login"],
+            "enum": ["staff_id", "name", "role", "position_name", "status", "last_login"],
             "default": "staff_id",
             "example": "staff_id",
             "description": "Sort field"
@@ -9182,11 +9322,21 @@
                   "example": "tanaka@joyfit.co.jp",
                   "description": "Staff email address"
                 },
+                "position_id": {
+                  "type": "integer",
+                  "example": 6,
+                  "description": "Position master id"
+                },
+                "position_name": {
+                  "type": "string",
+                  "example": "正社員スタッフ",
+                  "description": "Denormalized position name"
+                },
                 "role": {
                   "type": "string",
                   "enum": ["headquarters", "store_staff", "viewer"],
                   "title": "StaffRole",
-                  "description": "Staff role/permission",
+                  "description": "Staff role/permission (編集権限グループ)",
                   "example": "headquarters"
                 },
                 "brand": {
@@ -9195,6 +9345,20 @@
                   "title": "StaffBrand",
                   "description": "Assigned brand",
                   "example": "all"
+                },
+                "linkage_type": {
+                  "type": "string",
+                  "enum": ["direct_store", "fc_company"],
+                  "title": "StaffLinkageType",
+                  "description": "店舗直接 vs FC企業"
+                },
+                "linked_store_id": {
+                  "type": "string",
+                  "description": "Present when linkage_type=direct_store"
+                },
+                "linked_fc_company_id": {
+                  "type": "string",
+                  "description": "Present when linkage_type=fc_company"
                 },
                 "status": {
                   "type": "string",
@@ -9214,8 +9378,11 @@
                 "staff_id",
                 "name",
                 "email",
+                "position_id",
+                "position_name",
                 "role",
                 "brand",
+                "linkage_type",
                 "status",
                 "last_login"
               ],
@@ -9267,6 +9434,11 @@
                 "type": "string",
                 "example": "STF-001",
                 "description": "Staff display ID"
+              },
+              "position_id": {
+                "type": "integer",
+                "example": 6,
+                "description": "FK → positions.id"
               },
               "status": {
                 "type": "string",
@@ -9411,6 +9583,64 @@
                 "title": "StaffPermissionSettings",
                 "description": "権限設定"
               },
+              "staff_linkage": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["direct_store", "fc_company"],
+                    "title": "StaffLinkageType",
+                    "description": "紐づけ種別"
+                  },
+                  "store_id": {
+                    "type": "string",
+                    "example": "store-001",
+                    "description": "Set when type=direct_store"
+                  },
+                  "store_name": {
+                    "type": "string",
+                    "description": "Denormalized store name for display"
+                  },
+                  "fc_company_id": {
+                    "type": "string",
+                    "example": "fc-001",
+                    "description": "Set when type=fc_company"
+                  },
+                  "fc_company_name": {
+                    "type": "string",
+                    "description": "Denormalized FC company name"
+                  }
+                },
+                "required": ["type"],
+                "title": "StaffLinkage",
+                "description": "店舗直接紐づき or FC企業紐づき (mutually exclusive)"
+              },
+              "staff_permissions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Permission row PK"
+                    },
+                    "staff_id": {
+                      "type": "string",
+                      "example": "1",
+                      "description": "Internal staff id (FK staff.id)"
+                    },
+                    "permission_code": {
+                      "type": "string",
+                      "example": "Y-03.view",
+                      "description": "Permission code"
+                    }
+                  },
+                  "required": ["id", "staff_id", "permission_code"],
+                  "title": "StaffPermissionRecord",
+                  "description": "Staff permission detail row"
+                },
+                "description": "Detailed permission rows (staff_permissions table)"
+              },
               "editable_scopes": {
                 "type": "array",
                 "items": {
@@ -9476,10 +9706,13 @@
             "required": [
               "id",
               "staff_id",
+              "position_id",
               "status",
               "personal_info",
               "login_settings",
               "permission_settings",
+              "staff_linkage",
+              "staff_permissions",
               "editable_scopes",
               "last_login",
               "created_at",
@@ -9594,6 +9827,10 @@
             "title": "StaffLoginSettings",
             "description": "ログイン設定 (partial update)"
           },
+          "position_id": {
+            "type": "integer",
+            "description": "職位マスター (positions.id)"
+          },
           "permission_settings": {
             "type": "object",
             "properties": {
@@ -9631,6 +9868,64 @@
             "required": ["role", "additional_permissions"],
             "title": "StaffPermissionSettings",
             "description": "権限設定 (partial update)"
+          },
+          "staff_linkage": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["direct_store", "fc_company"],
+                "title": "StaffLinkageType",
+                "description": "紐づけ種別"
+              },
+              "store_id": {
+                "type": "string",
+                "example": "store-001",
+                "description": "Set when type=direct_store"
+              },
+              "store_name": {
+                "type": "string",
+                "description": "Denormalized store name for display"
+              },
+              "fc_company_id": {
+                "type": "string",
+                "example": "fc-001",
+                "description": "Set when type=fc_company"
+              },
+              "fc_company_name": {
+                "type": "string",
+                "description": "Denormalized FC company name"
+              }
+            },
+            "required": ["type"],
+            "title": "StaffLinkage",
+            "description": "店舗/FC 紐づけ (partial merge with existing)"
+          },
+          "staff_permissions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "Permission row PK"
+                },
+                "staff_id": {
+                  "type": "string",
+                  "example": "1",
+                  "description": "Internal staff id (FK staff.id)"
+                },
+                "permission_code": {
+                  "type": "string",
+                  "example": "Y-03.view",
+                  "description": "Permission code"
+                }
+              },
+              "required": ["id", "staff_id", "permission_code"],
+              "title": "StaffPermissionRecord",
+              "description": "Staff permission detail row"
+            },
+            "description": "Replace granular permission rows"
           },
           "editable_scopes": {
             "type": "array",
@@ -9708,6 +10003,11 @@
                 "type": "string",
                 "example": "STF-001",
                 "description": "Staff display ID"
+              },
+              "position_id": {
+                "type": "integer",
+                "example": 6,
+                "description": "FK → positions.id"
               },
               "status": {
                 "type": "string",
@@ -9852,6 +10152,64 @@
                 "title": "StaffPermissionSettings",
                 "description": "権限設定"
               },
+              "staff_linkage": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["direct_store", "fc_company"],
+                    "title": "StaffLinkageType",
+                    "description": "紐づけ種別"
+                  },
+                  "store_id": {
+                    "type": "string",
+                    "example": "store-001",
+                    "description": "Set when type=direct_store"
+                  },
+                  "store_name": {
+                    "type": "string",
+                    "description": "Denormalized store name for display"
+                  },
+                  "fc_company_id": {
+                    "type": "string",
+                    "example": "fc-001",
+                    "description": "Set when type=fc_company"
+                  },
+                  "fc_company_name": {
+                    "type": "string",
+                    "description": "Denormalized FC company name"
+                  }
+                },
+                "required": ["type"],
+                "title": "StaffLinkage",
+                "description": "店舗直接紐づき or FC企業紐づき (mutually exclusive)"
+              },
+              "staff_permissions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Permission row PK"
+                    },
+                    "staff_id": {
+                      "type": "string",
+                      "example": "1",
+                      "description": "Internal staff id (FK staff.id)"
+                    },
+                    "permission_code": {
+                      "type": "string",
+                      "example": "Y-03.view",
+                      "description": "Permission code"
+                    }
+                  },
+                  "required": ["id", "staff_id", "permission_code"],
+                  "title": "StaffPermissionRecord",
+                  "description": "Staff permission detail row"
+                },
+                "description": "Detailed permission rows (staff_permissions table)"
+              },
               "editable_scopes": {
                 "type": "array",
                 "items": {
@@ -9917,10 +10275,13 @@
             "required": [
               "id",
               "staff_id",
+              "position_id",
               "status",
               "personal_info",
               "login_settings",
               "permission_settings",
+              "staff_linkage",
+              "staff_permissions",
               "editable_scopes",
               "last_login",
               "created_at",
@@ -10005,11 +10366,21 @@
                   "example": "tanaka@joyfit.co.jp",
                   "description": "Staff email address"
                 },
+                "position_id": {
+                  "type": "integer",
+                  "example": 6,
+                  "description": "Position master id"
+                },
+                "position_name": {
+                  "type": "string",
+                  "example": "正社員スタッフ",
+                  "description": "Denormalized position name"
+                },
                 "role": {
                   "type": "string",
                   "enum": ["headquarters", "store_staff", "viewer"],
                   "title": "StaffRole",
-                  "description": "Staff role/permission",
+                  "description": "Staff role/permission (編集権限グループ)",
                   "example": "headquarters"
                 },
                 "brand": {
@@ -10018,6 +10389,20 @@
                   "title": "StaffBrand",
                   "description": "Assigned brand",
                   "example": "all"
+                },
+                "linkage_type": {
+                  "type": "string",
+                  "enum": ["direct_store", "fc_company"],
+                  "title": "StaffLinkageType",
+                  "description": "店舗直接 vs FC企業"
+                },
+                "linked_store_id": {
+                  "type": "string",
+                  "description": "Present when linkage_type=direct_store"
+                },
+                "linked_fc_company_id": {
+                  "type": "string",
+                  "description": "Present when linkage_type=fc_company"
                 },
                 "status": {
                   "type": "string",
@@ -10037,8 +10422,11 @@
                 "staff_id",
                 "name",
                 "email",
+                "position_id",
+                "position_name",
                 "role",
                 "brand",
+                "linkage_type",
                 "status",
                 "last_login"
               ],
@@ -20984,6 +21372,11 @@
                           "example": "STF-001",
                           "description": "Staff display ID"
                         },
+                        "position_id": {
+                          "type": "integer",
+                          "example": 6,
+                          "description": "FK → positions.id"
+                        },
                         "status": {
                           "type": "string",
                           "enum": ["active", "inactive"],
@@ -21131,6 +21524,64 @@
                           "title": "StaffPermissionSettings",
                           "description": "権限設定"
                         },
+                        "staff_linkage": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["direct_store", "fc_company"],
+                              "title": "StaffLinkageType",
+                              "description": "紐づけ種別"
+                            },
+                            "store_id": {
+                              "type": "string",
+                              "example": "store-001",
+                              "description": "Set when type=direct_store"
+                            },
+                            "store_name": {
+                              "type": "string",
+                              "description": "Denormalized store name for display"
+                            },
+                            "fc_company_id": {
+                              "type": "string",
+                              "example": "fc-001",
+                              "description": "Set when type=fc_company"
+                            },
+                            "fc_company_name": {
+                              "type": "string",
+                              "description": "Denormalized FC company name"
+                            }
+                          },
+                          "required": ["type"],
+                          "title": "StaffLinkage",
+                          "description": "店舗直接紐づき or FC企業紐づき (mutually exclusive)"
+                        },
+                        "staff_permissions": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "description": "Permission row PK"
+                              },
+                              "staff_id": {
+                                "type": "string",
+                                "example": "1",
+                                "description": "Internal staff id (FK staff.id)"
+                              },
+                              "permission_code": {
+                                "type": "string",
+                                "example": "Y-03.view",
+                                "description": "Permission code"
+                              }
+                            },
+                            "required": ["id", "staff_id", "permission_code"],
+                            "title": "StaffPermissionRecord",
+                            "description": "Staff permission detail row"
+                          },
+                          "description": "Detailed permission rows (staff_permissions table)"
+                        },
                         "editable_scopes": {
                           "type": "array",
                           "items": {
@@ -21203,10 +21654,13 @@
                       "required": [
                         "id",
                         "staff_id",
+                        "position_id",
                         "status",
                         "personal_info",
                         "login_settings",
                         "permission_settings",
+                        "staff_linkage",
+                        "staff_permissions",
                         "editable_scopes",
                         "last_login",
                         "created_at",
@@ -21385,6 +21839,10 @@
                     "title": "StaffLoginSettings",
                     "description": "ログイン設定 (partial update)"
                   },
+                  "position_id": {
+                    "type": "integer",
+                    "description": "職位マスター (positions.id)"
+                  },
                   "permission_settings": {
                     "type": "object",
                     "properties": {
@@ -21422,6 +21880,64 @@
                     "required": ["role", "additional_permissions"],
                     "title": "StaffPermissionSettings",
                     "description": "権限設定 (partial update)"
+                  },
+                  "staff_linkage": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": ["direct_store", "fc_company"],
+                        "title": "StaffLinkageType",
+                        "description": "紐づけ種別"
+                      },
+                      "store_id": {
+                        "type": "string",
+                        "example": "store-001",
+                        "description": "Set when type=direct_store"
+                      },
+                      "store_name": {
+                        "type": "string",
+                        "description": "Denormalized store name for display"
+                      },
+                      "fc_company_id": {
+                        "type": "string",
+                        "example": "fc-001",
+                        "description": "Set when type=fc_company"
+                      },
+                      "fc_company_name": {
+                        "type": "string",
+                        "description": "Denormalized FC company name"
+                      }
+                    },
+                    "required": ["type"],
+                    "title": "StaffLinkage",
+                    "description": "店舗/FC 紐づけ (partial merge with existing)"
+                  },
+                  "staff_permissions": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "description": "Permission row PK"
+                        },
+                        "staff_id": {
+                          "type": "string",
+                          "example": "1",
+                          "description": "Internal staff id (FK staff.id)"
+                        },
+                        "permission_code": {
+                          "type": "string",
+                          "example": "Y-03.view",
+                          "description": "Permission code"
+                        }
+                      },
+                      "required": ["id", "staff_id", "permission_code"],
+                      "title": "StaffPermissionRecord",
+                      "description": "Staff permission detail row"
+                    },
+                    "description": "Replace granular permission rows"
                   },
                   "editable_scopes": {
                     "type": "array",
@@ -21514,6 +22030,11 @@
                           "type": "string",
                           "example": "STF-001",
                           "description": "Staff display ID"
+                        },
+                        "position_id": {
+                          "type": "integer",
+                          "example": 6,
+                          "description": "FK → positions.id"
                         },
                         "status": {
                           "type": "string",
@@ -21662,6 +22183,64 @@
                           "title": "StaffPermissionSettings",
                           "description": "権限設定"
                         },
+                        "staff_linkage": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": ["direct_store", "fc_company"],
+                              "title": "StaffLinkageType",
+                              "description": "紐づけ種別"
+                            },
+                            "store_id": {
+                              "type": "string",
+                              "example": "store-001",
+                              "description": "Set when type=direct_store"
+                            },
+                            "store_name": {
+                              "type": "string",
+                              "description": "Denormalized store name for display"
+                            },
+                            "fc_company_id": {
+                              "type": "string",
+                              "example": "fc-001",
+                              "description": "Set when type=fc_company"
+                            },
+                            "fc_company_name": {
+                              "type": "string",
+                              "description": "Denormalized FC company name"
+                            }
+                          },
+                          "required": ["type"],
+                          "title": "StaffLinkage",
+                          "description": "店舗直接紐づき or FC企業紐づき (mutually exclusive)"
+                        },
+                        "staff_permissions": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer",
+                                "description": "Permission row PK"
+                              },
+                              "staff_id": {
+                                "type": "string",
+                                "example": "1",
+                                "description": "Internal staff id (FK staff.id)"
+                              },
+                              "permission_code": {
+                                "type": "string",
+                                "example": "Y-03.view",
+                                "description": "Permission code"
+                              }
+                            },
+                            "required": ["id", "staff_id", "permission_code"],
+                            "title": "StaffPermissionRecord",
+                            "description": "Staff permission detail row"
+                          },
+                          "description": "Detailed permission rows (staff_permissions table)"
+                        },
                         "editable_scopes": {
                           "type": "array",
                           "items": {
@@ -21734,10 +22313,13 @@
                       "required": [
                         "id",
                         "staff_id",
+                        "position_id",
                         "status",
                         "personal_info",
                         "login_settings",
                         "permission_settings",
+                        "staff_linkage",
+                        "staff_permissions",
                         "editable_scopes",
                         "last_login",
                         "created_at",
@@ -21983,11 +22565,21 @@
                             "example": "tanaka@joyfit.co.jp",
                             "description": "Staff email address"
                           },
+                          "position_id": {
+                            "type": "integer",
+                            "example": 6,
+                            "description": "Position master id"
+                          },
+                          "position_name": {
+                            "type": "string",
+                            "example": "正社員スタッフ",
+                            "description": "Denormalized position name"
+                          },
                           "role": {
                             "type": "string",
                             "enum": ["headquarters", "store_staff", "viewer"],
                             "title": "StaffRole",
-                            "description": "Staff role/permission",
+                            "description": "Staff role/permission (編集権限グループ)",
                             "example": "headquarters"
                           },
                           "brand": {
@@ -22003,6 +22595,20 @@
                             "title": "StaffBrand",
                             "description": "Assigned brand",
                             "example": "all"
+                          },
+                          "linkage_type": {
+                            "type": "string",
+                            "enum": ["direct_store", "fc_company"],
+                            "title": "StaffLinkageType",
+                            "description": "店舗直接 vs FC企業"
+                          },
+                          "linked_store_id": {
+                            "type": "string",
+                            "description": "Present when linkage_type=direct_store"
+                          },
+                          "linked_fc_company_id": {
+                            "type": "string",
+                            "description": "Present when linkage_type=fc_company"
                           },
                           "status": {
                             "type": "string",
@@ -22022,8 +22628,11 @@
                           "staff_id",
                           "name",
                           "email",
+                          "position_id",
+                          "position_name",
                           "role",
                           "brand",
+                          "linkage_type",
                           "status",
                           "last_login"
                         ],
@@ -22166,7 +22775,7 @@
           {
             "schema": {
               "type": "string",
-              "enum": ["staff_id", "name", "role", "status", "last_login"],
+              "enum": ["staff_id", "name", "role", "position_name", "status", "last_login"],
               "default": "staff_id",
               "example": "staff_id",
               "description": "Sort field"
@@ -22224,11 +22833,21 @@
                             "example": "tanaka@joyfit.co.jp",
                             "description": "Staff email address"
                           },
+                          "position_id": {
+                            "type": "integer",
+                            "example": 6,
+                            "description": "Position master id"
+                          },
+                          "position_name": {
+                            "type": "string",
+                            "example": "正社員スタッフ",
+                            "description": "Denormalized position name"
+                          },
                           "role": {
                             "type": "string",
                             "enum": ["headquarters", "store_staff", "viewer"],
                             "title": "StaffRole",
-                            "description": "Staff role/permission",
+                            "description": "Staff role/permission (編集権限グループ)",
                             "example": "headquarters"
                           },
                           "brand": {
@@ -22244,6 +22863,20 @@
                             "title": "StaffBrand",
                             "description": "Assigned brand",
                             "example": "all"
+                          },
+                          "linkage_type": {
+                            "type": "string",
+                            "enum": ["direct_store", "fc_company"],
+                            "title": "StaffLinkageType",
+                            "description": "店舗直接 vs FC企業"
+                          },
+                          "linked_store_id": {
+                            "type": "string",
+                            "description": "Present when linkage_type=direct_store"
+                          },
+                          "linked_fc_company_id": {
+                            "type": "string",
+                            "description": "Present when linkage_type=fc_company"
                           },
                           "status": {
                             "type": "string",
@@ -22263,8 +22896,11 @@
                           "staff_id",
                           "name",
                           "email",
+                          "position_id",
+                          "position_name",
                           "role",
                           "brand",
+                          "linkage_type",
                           "status",
                           "last_login"
                         ],
