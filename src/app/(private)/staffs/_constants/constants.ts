@@ -16,10 +16,10 @@ export const STAFF_STATUS_LABELS: Record<StaffStatus, string> = {
 export const STAFF_BRAND_LABELS: Record<StaffBrand, string> = {
   [StaffBrand.ALL]: '全ブランド',
   [StaffBrand.JOYFIT]: 'JOYFIT',
-  [StaffBrand.FIT365]: 'FIT365',
-  [StaffBrand.JOYFIT24]: 'JOYFIT24',
-  [StaffBrand.JOYFIT_YOGA]: 'JOYFIT YOGA',
   [StaffBrand.JOYFIT_PLUS]: 'JOYFIT+',
+  [StaffBrand.JOYFIT_YOGA]: 'JOYFIT YOGA',
+  [StaffBrand.JOYFIT24]: 'JOYFIT24',
+  [StaffBrand.FIT365]: 'FIT365',
 };
 
 export const STAFF_STATUS_VARIANTS: Record<

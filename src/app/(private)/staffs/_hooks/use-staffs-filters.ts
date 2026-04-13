@@ -9,6 +9,7 @@ export type StaffsFilters = {
   page: number;
   search: string;
   role: StaffRole | null;
+  position_id: number | null;
   brand: StaffBrand | null;
   status: StaffStatus | null;
   sort_by: string;
@@ -24,6 +25,7 @@ export function useStaffsFilters() {
       page: parseAsInteger.withDefault(1),
       search: parseAsString.withDefault(''),
       role: parseAsStringEnum<StaffRole>(Object.values(StaffRole)),
+      position_id: parseAsInteger,
       brand: parseAsStringEnum<StaffBrand>(Object.values(StaffBrand)),
       status: parseAsStringEnum<StaffStatus>(Object.values(StaffStatus)),
       sort_by: parseAsString.withDefault('staff_id'),
@@ -64,6 +66,7 @@ export function useStaffsFilters() {
       page: 1,
       search: null,
       role: null,
+      position_id: null,
       brand: null,
       status: null,
       sort_by: 'staff_id',
@@ -73,6 +76,7 @@ export function useStaffsFilters() {
 
   const hasActiveFilters: boolean =
     filters.role !== null ||
+    filters.position_id !== null ||
     filters.brand !== null ||
     filters.status !== null ||
     filters.search.length > 0;
@@ -83,9 +87,16 @@ export function useStaffsFilters() {
     limit: PAGE_SIZE,
     search: filters.search || undefined,
     role: filters.role || undefined,
+    position_id: filters.position_id ?? undefined,
     brand: filters.brand || undefined,
     status: filters.status || undefined,
-    sort_by: filters.sort_by as 'staff_id' | 'name' | 'role' | 'status' | 'last_login',
+    sort_by: filters.sort_by as
+      | 'staff_id'
+      | 'name'
+      | 'role'
+      | 'position_name'
+      | 'status'
+      | 'last_login',
     sort_order: filters.sort_order,
   };
 

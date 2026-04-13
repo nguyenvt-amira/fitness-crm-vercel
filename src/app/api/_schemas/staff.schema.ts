@@ -320,6 +320,11 @@ export const StaffListItemSchema = z
       example: 'all',
       description: 'Assigned brand',
     }),
+    /** ブランドマスタの display_name（Y-07 と整合 / その他コードは固定ラベル） */
+    brand_display_name: z.string().openapi({
+      example: 'JOYFIT',
+      description: 'Brand display name for UI',
+    }),
     linkage_type: StaffLinkageTypeSchema.openapi({
       description: '店舗直接 vs FC企業',
     }),
@@ -361,6 +366,14 @@ export const StaffDetailSchema = z
     position_id: z.number().int().openapi({
       example: 6,
       description: 'FK → positions.id',
+    }),
+    brand: StaffBrandSchema.openapi({
+      example: 'joyfit',
+      description: '主担当ブランド（一覧の brand と一致）',
+    }),
+    brand_display_name: z.string().openapi({
+      example: 'JOYFIT',
+      description: 'ブランド表示名（マスタの display_name）',
     }),
     status: StaffStatusSchema.openapi({
       example: 'active',
@@ -429,6 +442,10 @@ export const GetStaffsQuerySchema = z
     }),
     status: StaffStatusSchema.optional().openapi({
       description: 'Filter by status',
+    }),
+    position_id: z.coerce.number().int().positive().optional().openapi({
+      example: 6,
+      description: 'Filter by position master id (職位)',
     }),
     sort_by: z
       .enum(['staff_id', 'name', 'role', 'position_name', 'status', 'last_login'])
@@ -499,6 +516,9 @@ export const UpdateStaffRequestSchema = z
     }),
     permission_settings: StaffPermissionSettingsSchema.optional().openapi({
       description: '権限設定 (partial update)',
+    }),
+    brand: StaffBrandSchema.optional().openapi({
+      description: '主担当ブランド',
     }),
     staff_linkage: StaffLinkageSchema.optional().openapi({
       description: '店舗/FC 紐づけ (partial merge with existing)',

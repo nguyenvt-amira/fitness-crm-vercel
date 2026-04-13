@@ -51,6 +51,21 @@ export const StaffPermissionRecordSchema = z
     description: 'Staff permission detail row',
   });
 
+/**
+ * GET /crm/positions — list position master rows
+ */
+export const GetPositionsResponseSchema = z
+  .object({
+    positions: z.array(PositionSchema).openapi({
+      description: 'All positions (職位マスター)',
+    }),
+  })
+  .openapi({
+    title: 'GetPositionsResponse',
+    description: 'List of staff positions for filters and forms',
+  });
+
 export type Position = z.infer<typeof PositionSchema>;
 export type StaffPermissionRecord = z.infer<typeof StaffPermissionRecordSchema>;
 export type PositionRoleCategory = z.infer<typeof PositionRoleCategorySchema>;
+export type GetPositionsResponse = z.infer<typeof GetPositionsResponseSchema>;

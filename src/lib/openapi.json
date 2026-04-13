@@ -7312,6 +7312,50 @@
         "title": "GetFamilyRegistrationsDashboardResponse",
         "description": "Dashboard data for family registrations (A-02-02-08)"
       },
+      "GetPositionsResponse": {
+        "type": "object",
+        "properties": {
+          "positions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": 1,
+                  "description": "Position PK"
+                },
+                "role": {
+                  "type": "string",
+                  "enum": ["headquarter", "manager", "staff", "trainer", "observer"],
+                  "title": "PositionRoleCategory",
+                  "description": "ロール"
+                },
+                "position_name": {
+                  "type": "string",
+                  "example": "本部管理者",
+                  "description": "職位名"
+                },
+                "features": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "nullable": true
+                  },
+                  "title": "PositionFeatures",
+                  "description": "主な権限の特徴"
+                }
+              },
+              "required": ["id", "role", "position_name", "features"],
+              "title": "Position",
+              "description": "Normalized staff position / 職位マスター"
+            },
+            "description": "All positions (職位マスター)"
+          }
+        },
+        "required": ["positions"],
+        "title": "GetPositionsResponse",
+        "description": "List of staff positions for filters and forms"
+      },
       "StoreMainContractStatus": {
         "type": "string",
         "enum": ["draft", "active", "suspended", "expired", "terminated"],
@@ -8643,6 +8687,267 @@
         "title": "StaffBrand",
         "description": "Staff assigned brand"
       },
+      "ManagedBrandCode": {
+        "type": "string",
+        "enum": ["joyfit", "fit365"],
+        "title": "ManagedBrandCode",
+        "description": "Y-07 管理対象ブランドコード（2ブランド共通運用）"
+      },
+      "BrandItem": {
+        "type": "object",
+        "properties": {
+          "brand_id": {
+            "type": "string",
+            "example": "brand-joyfit",
+            "description": "Canonical id（店舗.brand_id 等と整合）"
+          },
+          "code": {
+            "type": "string",
+            "enum": ["joyfit", "fit365"],
+            "title": "ManagedBrandCode",
+            "description": "ブランドコード"
+          },
+          "display_name": {
+            "type": "string",
+            "example": "JOYFIT",
+            "description": "表示名"
+          },
+          "enrollment_fee_yen": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 3300,
+            "description": "入会金デフォルト（円）"
+          },
+          "handling_fee_yen": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 1100,
+            "description": "手数料デフォルト（円）"
+          },
+          "currency": {
+            "type": "string",
+            "enum": ["JPY"],
+            "description": "通貨"
+          },
+          "sort_order": {
+            "type": "integer",
+            "example": 1,
+            "description": "一覧表示順"
+          },
+          "created_at": {
+            "type": "string",
+            "example": "2024-01-01T00:00:00.000Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "example": "2026-04-01T09:00:00.000Z"
+          },
+          "updated_by": {
+            "type": "string",
+            "nullable": true,
+            "example": "STF-001",
+            "description": "最終更新者（本部のみ編集）"
+          }
+        },
+        "required": [
+          "brand_id",
+          "code",
+          "display_name",
+          "enrollment_fee_yen",
+          "handling_fee_yen",
+          "currency",
+          "sort_order",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "BrandItem",
+        "description": "Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）"
+      },
+      "GetBrandsResponse": {
+        "type": "object",
+        "properties": {
+          "brands": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "brand_id": {
+                  "type": "string",
+                  "example": "brand-joyfit",
+                  "description": "Canonical id（店舗.brand_id 等と整合）"
+                },
+                "code": {
+                  "type": "string",
+                  "enum": ["joyfit", "fit365"],
+                  "title": "ManagedBrandCode",
+                  "description": "ブランドコード"
+                },
+                "display_name": {
+                  "type": "string",
+                  "example": "JOYFIT",
+                  "description": "表示名"
+                },
+                "enrollment_fee_yen": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "example": 3300,
+                  "description": "入会金デフォルト（円）"
+                },
+                "handling_fee_yen": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "example": 1100,
+                  "description": "手数料デフォルト（円）"
+                },
+                "currency": {
+                  "type": "string",
+                  "enum": ["JPY"],
+                  "description": "通貨"
+                },
+                "sort_order": {
+                  "type": "integer",
+                  "example": 1,
+                  "description": "一覧表示順"
+                },
+                "created_at": {
+                  "type": "string",
+                  "example": "2024-01-01T00:00:00.000Z"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "example": "2026-04-01T09:00:00.000Z"
+                },
+                "updated_by": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "STF-001",
+                  "description": "最終更新者（本部のみ編集）"
+                }
+              },
+              "required": [
+                "brand_id",
+                "code",
+                "display_name",
+                "enrollment_fee_yen",
+                "handling_fee_yen",
+                "currency",
+                "sort_order",
+                "created_at",
+                "updated_at"
+              ],
+              "title": "BrandItem",
+              "description": "Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）"
+            },
+            "description": "管理対象ブランド一覧（JOYFIT / FIT365）"
+          }
+        },
+        "required": ["brands"],
+        "title": "GetBrandsResponse",
+        "description": "Y-07 ブランドマスタ一覧"
+      },
+      "UpdateBrandRequest": {
+        "type": "object",
+        "properties": {
+          "enrollment_fee_yen": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "入会金（円）"
+          },
+          "handling_fee_yen": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "手数料（円）"
+          },
+          "updated_by": {
+            "type": "string",
+            "description": "更新者スタッフID（モック用）"
+          }
+        },
+        "title": "UpdateBrandRequest",
+        "description": "Y-07 ブランド設定の部分更新（本部のみ）"
+      },
+      "UpdateBrandResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "ブランド設定を保存しました"
+          },
+          "brand": {
+            "type": "object",
+            "properties": {
+              "brand_id": {
+                "type": "string",
+                "example": "brand-joyfit",
+                "description": "Canonical id（店舗.brand_id 等と整合）"
+              },
+              "code": {
+                "type": "string",
+                "enum": ["joyfit", "fit365"],
+                "title": "ManagedBrandCode",
+                "description": "ブランドコード"
+              },
+              "display_name": {
+                "type": "string",
+                "example": "JOYFIT",
+                "description": "表示名"
+              },
+              "enrollment_fee_yen": {
+                "type": "integer",
+                "minimum": 0,
+                "example": 3300,
+                "description": "入会金デフォルト（円）"
+              },
+              "handling_fee_yen": {
+                "type": "integer",
+                "minimum": 0,
+                "example": 1100,
+                "description": "手数料デフォルト（円）"
+              },
+              "currency": {
+                "type": "string",
+                "enum": ["JPY"],
+                "description": "通貨"
+              },
+              "sort_order": {
+                "type": "integer",
+                "example": 1,
+                "description": "一覧表示順"
+              },
+              "created_at": {
+                "type": "string",
+                "example": "2024-01-01T00:00:00.000Z"
+              },
+              "updated_at": {
+                "type": "string",
+                "example": "2026-04-01T09:00:00.000Z"
+              },
+              "updated_by": {
+                "type": "string",
+                "nullable": true,
+                "example": "STF-001",
+                "description": "最終更新者（本部のみ編集）"
+              }
+            },
+            "required": [
+              "brand_id",
+              "code",
+              "display_name",
+              "enrollment_fee_yen",
+              "handling_fee_yen",
+              "currency",
+              "sort_order",
+              "created_at",
+              "updated_at"
+            ],
+            "title": "BrandItem",
+            "description": "Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）"
+          }
+        },
+        "required": ["message", "brand"],
+        "title": "UpdateBrandResponse",
+        "description": "更新後のブランド行"
+      },
       "StaffListItem": {
         "type": "object",
         "properties": {
@@ -8691,6 +8996,11 @@
             "description": "Assigned brand",
             "example": "all"
           },
+          "brand_display_name": {
+            "type": "string",
+            "example": "JOYFIT",
+            "description": "Brand display name for UI"
+          },
           "linkage_type": {
             "type": "string",
             "enum": ["direct_store", "fc_company"],
@@ -8727,6 +9037,7 @@
           "position_name",
           "role",
           "brand",
+          "brand_display_name",
           "linkage_type",
           "status",
           "last_login"
@@ -8952,6 +9263,18 @@
             "type": "integer",
             "example": 6,
             "description": "FK → positions.id"
+          },
+          "brand": {
+            "type": "string",
+            "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+            "title": "StaffBrand",
+            "description": "主担当ブランド（一覧の brand と一致）",
+            "example": "joyfit"
+          },
+          "brand_display_name": {
+            "type": "string",
+            "example": "JOYFIT",
+            "description": "ブランド表示名（マスタの display_name）"
           },
           "status": {
             "type": "string",
@@ -9220,6 +9543,8 @@
           "id",
           "staff_id",
           "position_id",
+          "brand",
+          "brand_display_name",
           "status",
           "personal_info",
           "login_settings",
@@ -9274,6 +9599,13 @@
             "enum": ["active", "inactive"],
             "title": "StaffStatus",
             "description": "Filter by status"
+          },
+          "position_id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "example": 6,
+            "description": "Filter by position master id (職位)"
           },
           "sort_by": {
             "type": "string",
@@ -9346,6 +9678,11 @@
                   "description": "Assigned brand",
                   "example": "all"
                 },
+                "brand_display_name": {
+                  "type": "string",
+                  "example": "JOYFIT",
+                  "description": "Brand display name for UI"
+                },
                 "linkage_type": {
                   "type": "string",
                   "enum": ["direct_store", "fc_company"],
@@ -9382,6 +9719,7 @@
                 "position_name",
                 "role",
                 "brand",
+                "brand_display_name",
                 "linkage_type",
                 "status",
                 "last_login"
@@ -9439,6 +9777,18 @@
                 "type": "integer",
                 "example": 6,
                 "description": "FK → positions.id"
+              },
+              "brand": {
+                "type": "string",
+                "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                "title": "StaffBrand",
+                "description": "主担当ブランド（一覧の brand と一致）",
+                "example": "joyfit"
+              },
+              "brand_display_name": {
+                "type": "string",
+                "example": "JOYFIT",
+                "description": "ブランド表示名（マスタの display_name）"
               },
               "status": {
                 "type": "string",
@@ -9707,6 +10057,8 @@
               "id",
               "staff_id",
               "position_id",
+              "brand",
+              "brand_display_name",
               "status",
               "personal_info",
               "login_settings",
@@ -9869,6 +10221,12 @@
             "title": "StaffPermissionSettings",
             "description": "権限設定 (partial update)"
           },
+          "brand": {
+            "type": "string",
+            "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+            "title": "StaffBrand",
+            "description": "主担当ブランド"
+          },
           "staff_linkage": {
             "type": "object",
             "properties": {
@@ -10008,6 +10366,18 @@
                 "type": "integer",
                 "example": 6,
                 "description": "FK → positions.id"
+              },
+              "brand": {
+                "type": "string",
+                "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                "title": "StaffBrand",
+                "description": "主担当ブランド（一覧の brand と一致）",
+                "example": "joyfit"
+              },
+              "brand_display_name": {
+                "type": "string",
+                "example": "JOYFIT",
+                "description": "ブランド表示名（マスタの display_name）"
               },
               "status": {
                 "type": "string",
@@ -10276,6 +10646,8 @@
               "id",
               "staff_id",
               "position_id",
+              "brand",
+              "brand_display_name",
               "status",
               "personal_info",
               "login_settings",
@@ -10390,6 +10762,11 @@
                   "description": "Assigned brand",
                   "example": "all"
                 },
+                "brand_display_name": {
+                  "type": "string",
+                  "example": "JOYFIT",
+                  "description": "Brand display name for UI"
+                },
                 "linkage_type": {
                   "type": "string",
                   "enum": ["direct_store", "fc_company"],
@@ -10426,6 +10803,7 @@
                 "position_name",
                 "role",
                 "brand",
+                "brand_display_name",
                 "linkage_type",
                 "status",
                 "last_login"
@@ -11495,6 +11873,124 @@
                     "error": {
                       "type": "string",
                       "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/brands": {
+      "get": {
+        "summary": "List Y-07 brand master",
+        "description": "JOYFIT / FIT365 のブランド基本設定（入会金・手数料デフォルト）。G-01 主契約の参照元。",
+        "tags": ["Brands"],
+        "responses": {
+          "200": {
+            "description": "Brand list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "brands": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "brand_id": {
+                            "type": "string",
+                            "example": "brand-joyfit",
+                            "description": "Canonical id（店舗.brand_id 等と整合）"
+                          },
+                          "code": {
+                            "type": "string",
+                            "enum": ["joyfit", "fit365"],
+                            "title": "ManagedBrandCode",
+                            "description": "ブランドコード"
+                          },
+                          "display_name": {
+                            "type": "string",
+                            "example": "JOYFIT",
+                            "description": "表示名"
+                          },
+                          "enrollment_fee_yen": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "example": 3300,
+                            "description": "入会金デフォルト（円）"
+                          },
+                          "handling_fee_yen": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "example": 1100,
+                            "description": "手数料デフォルト（円）"
+                          },
+                          "currency": {
+                            "type": "string",
+                            "enum": ["JPY"],
+                            "description": "通貨"
+                          },
+                          "sort_order": {
+                            "type": "integer",
+                            "example": 1,
+                            "description": "一覧表示順"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "example": "2024-01-01T00:00:00.000Z"
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "example": "2026-04-01T09:00:00.000Z"
+                          },
+                          "updated_by": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "STF-001",
+                            "description": "最終更新者（本部のみ編集）"
+                          }
+                        },
+                        "required": [
+                          "brand_id",
+                          "code",
+                          "display_name",
+                          "enrollment_fee_yen",
+                          "handling_fee_yen",
+                          "currency",
+                          "sort_order",
+                          "created_at",
+                          "updated_at"
+                        ],
+                        "title": "BrandItem",
+                        "description": "Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）"
+                      },
+                      "description": "管理対象ブランド一覧（JOYFIT / FIT365）"
+                    }
+                  },
+                  "required": ["brands"],
+                  "title": "GetBrandsResponse",
+                  "description": "Y-07 ブランドマスタ一覧"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
                       "description": "Error message"
                     }
                   },
@@ -21335,6 +21831,86 @@
         }
       }
     },
+    "/crm/positions": {
+      "get": {
+        "summary": "List staff positions",
+        "description": "Returns the position master (職位マスター) for filters and dropdowns",
+        "tags": ["Staffs"],
+        "responses": {
+          "200": {
+            "description": "Position list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "positions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 1,
+                            "description": "Position PK"
+                          },
+                          "role": {
+                            "type": "string",
+                            "enum": ["headquarter", "manager", "staff", "trainer", "observer"],
+                            "title": "PositionRoleCategory",
+                            "description": "ロール"
+                          },
+                          "position_name": {
+                            "type": "string",
+                            "example": "本部管理者",
+                            "description": "職位名"
+                          },
+                          "features": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "nullable": true
+                            },
+                            "title": "PositionFeatures",
+                            "description": "主な権限の特徴"
+                          }
+                        },
+                        "required": ["id", "role", "position_name", "features"],
+                        "title": "Position",
+                        "description": "Normalized staff position / 職位マスター"
+                      },
+                      "description": "All positions (職位マスター)"
+                    }
+                  },
+                  "required": ["positions"],
+                  "title": "GetPositionsResponse",
+                  "description": "List of staff positions for filters and forms"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/staffs/{id}": {
       "get": {
         "summary": "Get staff detail",
@@ -21376,6 +21952,25 @@
                           "type": "integer",
                           "example": 6,
                           "description": "FK → positions.id"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "enum": [
+                            "all",
+                            "joyfit",
+                            "fit365",
+                            "joyfit24",
+                            "joyfit_yoga",
+                            "joyfit_plus"
+                          ],
+                          "title": "StaffBrand",
+                          "description": "主担当ブランド（一覧の brand と一致）",
+                          "example": "joyfit"
+                        },
+                        "brand_display_name": {
+                          "type": "string",
+                          "example": "JOYFIT",
+                          "description": "ブランド表示名（マスタの display_name）"
                         },
                         "status": {
                           "type": "string",
@@ -21655,6 +22250,8 @@
                         "id",
                         "staff_id",
                         "position_id",
+                        "brand",
+                        "brand_display_name",
                         "status",
                         "personal_info",
                         "login_settings",
@@ -21881,6 +22478,12 @@
                     "title": "StaffPermissionSettings",
                     "description": "権限設定 (partial update)"
                   },
+                  "brand": {
+                    "type": "string",
+                    "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                    "title": "StaffBrand",
+                    "description": "主担当ブランド"
+                  },
                   "staff_linkage": {
                     "type": "object",
                     "properties": {
@@ -22035,6 +22638,25 @@
                           "type": "integer",
                           "example": 6,
                           "description": "FK → positions.id"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "enum": [
+                            "all",
+                            "joyfit",
+                            "fit365",
+                            "joyfit24",
+                            "joyfit_yoga",
+                            "joyfit_plus"
+                          ],
+                          "title": "StaffBrand",
+                          "description": "主担当ブランド（一覧の brand と一致）",
+                          "example": "joyfit"
+                        },
+                        "brand_display_name": {
+                          "type": "string",
+                          "example": "JOYFIT",
+                          "description": "ブランド表示名（マスタの display_name）"
                         },
                         "status": {
                           "type": "string",
@@ -22314,6 +22936,8 @@
                         "id",
                         "staff_id",
                         "position_id",
+                        "brand",
+                        "brand_display_name",
                         "status",
                         "personal_info",
                         "login_settings",
@@ -22596,6 +23220,11 @@
                             "description": "Assigned brand",
                             "example": "all"
                           },
+                          "brand_display_name": {
+                            "type": "string",
+                            "example": "JOYFIT",
+                            "description": "Brand display name for UI"
+                          },
                           "linkage_type": {
                             "type": "string",
                             "enum": ["direct_store", "fc_company"],
@@ -22632,6 +23261,7 @@
                           "position_name",
                           "role",
                           "brand",
+                          "brand_display_name",
                           "linkage_type",
                           "status",
                           "last_login"
@@ -22774,6 +23404,19 @@
           },
           {
             "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "example": 6,
+              "description": "Filter by position master id (職位)"
+            },
+            "required": false,
+            "description": "Filter by position master id (職位)",
+            "name": "position_id",
+            "in": "query"
+          },
+          {
+            "schema": {
               "type": "string",
               "enum": ["staff_id", "name", "role", "position_name", "status", "last_login"],
               "default": "staff_id",
@@ -22864,6 +23507,11 @@
                             "description": "Assigned brand",
                             "example": "all"
                           },
+                          "brand_display_name": {
+                            "type": "string",
+                            "example": "JOYFIT",
+                            "description": "Brand display name for UI"
+                          },
                           "linkage_type": {
                             "type": "string",
                             "enum": ["direct_store", "fc_company"],
@@ -22900,6 +23548,7 @@
                           "position_name",
                           "role",
                           "brand",
+                          "brand_display_name",
                           "linkage_type",
                           "status",
                           "last_login"
