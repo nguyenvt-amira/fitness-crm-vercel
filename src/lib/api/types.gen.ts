@@ -5805,6 +5805,50 @@ export const StaffRole = {
 export type StaffRole = typeof StaffRole[keyof typeof StaffRole];
 
 /**
+ * StaffLinkageType
+ *
+ * direct_store=店舗直接紐づき (Pattern A), fc_company=FC企業紐づき (Pattern B); only one applies
+ */
+export const StaffLinkageType = { DIRECT_STORE: 'direct_store', FC_COMPANY: 'fc_company' } as const;
+
+/**
+ * StaffLinkageType
+ *
+ * direct_store=店舗直接紐づき (Pattern A), fc_company=FC企業紐づき (Pattern B); only one applies
+ */
+export type StaffLinkageType = typeof StaffLinkageType[keyof typeof StaffLinkageType];
+
+/**
+ * StaffLinkage
+ *
+ * Staff store / FC linkage (exclusive patterns)
+ */
+export type StaffLinkage = {
+    /**
+     * StaffLinkageType
+     *
+     * 紐づけ種別
+     */
+    type: 'direct_store' | 'fc_company';
+    /**
+     * Set when type=direct_store
+     */
+    store_id?: string;
+    /**
+     * Denormalized store name for display
+     */
+    store_name?: string;
+    /**
+     * Set when type=fc_company
+     */
+    fc_company_id?: string;
+    /**
+     * Denormalized FC company name
+     */
+    fc_company_name?: string;
+};
+
+/**
  * StaffStatus
  *
  * Staff account status: active=有効, inactive=無効
@@ -5862,9 +5906,17 @@ export type StaffListItem = {
      */
     email: string;
     /**
+     * Position master id
+     */
+    position_id: number;
+    /**
+     * Denormalized position name
+     */
+    position_name: string;
+    /**
      * StaffRole
      *
-     * Staff role/permission
+     * Staff role/permission (編集権限グループ)
      */
     role: 'headquarters' | 'store_staff' | 'viewer';
     /**
@@ -5873,6 +5925,20 @@ export type StaffListItem = {
      * Assigned brand
      */
     brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * StaffLinkageType
+     *
+     * 店舗直接 vs FC企業
+     */
+    linkage_type: 'direct_store' | 'fc_company';
+    /**
+     * Present when linkage_type=direct_store
+     */
+    linked_store_id?: string;
+    /**
+     * Present when linkage_type=fc_company
+     */
+    linked_fc_company_id?: string;
     /**
      * StaffStatus
      *
@@ -6069,6 +6135,10 @@ export type StaffDetail = {
      */
     staff_id: string;
     /**
+     * FK → positions.id
+     */
+    position_id: number;
+    /**
      * StaffStatus
      *
      * Account status
@@ -6185,6 +6255,52 @@ export type StaffDetail = {
         };
     };
     /**
+     * StaffLinkage
+     *
+     * 店舗直接紐づき or FC企業紐づき (mutually exclusive)
+     */
+    staff_linkage: {
+        /**
+         * StaffLinkageType
+         *
+         * 紐づけ種別
+         */
+        type: 'direct_store' | 'fc_company';
+        /**
+         * Set when type=direct_store
+         */
+        store_id?: string;
+        /**
+         * Denormalized store name for display
+         */
+        store_name?: string;
+        /**
+         * Set when type=fc_company
+         */
+        fc_company_id?: string;
+        /**
+         * Denormalized FC company name
+         */
+        fc_company_name?: string;
+    };
+    /**
+     * Detailed permission rows (staff_permissions table)
+     */
+    staff_permissions: Array<{
+        /**
+         * Permission row PK
+         */
+        id: number;
+        /**
+         * Internal staff id (FK staff.id)
+         */
+        staff_id: string;
+        /**
+         * Permission code
+         */
+        permission_code: string;
+    }>;
+    /**
      * 編集可能情報
      */
     editable_scopes: Array<{
@@ -6270,7 +6386,7 @@ export type GetStaffsQuery = {
     /**
      * Sort field
      */
-    sort_by?: 'staff_id' | 'name' | 'role' | 'status' | 'last_login';
+    sort_by?: 'staff_id' | 'name' | 'role' | 'position_name' | 'status' | 'last_login';
     /**
      * Sort order
      */
@@ -6304,9 +6420,17 @@ export type GetStaffsResponse = {
          */
         email: string;
         /**
+         * Position master id
+         */
+        position_id: number;
+        /**
+         * Denormalized position name
+         */
+        position_name: string;
+        /**
          * StaffRole
          *
-         * Staff role/permission
+         * Staff role/permission (編集権限グループ)
          */
         role: 'headquarters' | 'store_staff' | 'viewer';
         /**
@@ -6315,6 +6439,20 @@ export type GetStaffsResponse = {
          * Assigned brand
          */
         brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * StaffLinkageType
+         *
+         * 店舗直接 vs FC企業
+         */
+        linkage_type: 'direct_store' | 'fc_company';
+        /**
+         * Present when linkage_type=direct_store
+         */
+        linked_store_id?: string;
+        /**
+         * Present when linkage_type=fc_company
+         */
+        linked_fc_company_id?: string;
         /**
          * StaffStatus
          *
@@ -6357,6 +6495,10 @@ export type GetStaffDetailResponse = {
          * Staff display ID
          */
         staff_id: string;
+        /**
+         * FK → positions.id
+         */
+        position_id: number;
         /**
          * StaffStatus
          *
@@ -6473,6 +6615,52 @@ export type GetStaffDetailResponse = {
                 transfer_request: boolean;
             };
         };
+        /**
+         * StaffLinkage
+         *
+         * 店舗直接紐づき or FC企業紐づき (mutually exclusive)
+         */
+        staff_linkage: {
+            /**
+             * StaffLinkageType
+             *
+             * 紐づけ種別
+             */
+            type: 'direct_store' | 'fc_company';
+            /**
+             * Set when type=direct_store
+             */
+            store_id?: string;
+            /**
+             * Denormalized store name for display
+             */
+            store_name?: string;
+            /**
+             * Set when type=fc_company
+             */
+            fc_company_id?: string;
+            /**
+             * Denormalized FC company name
+             */
+            fc_company_name?: string;
+        };
+        /**
+         * Detailed permission rows (staff_permissions table)
+         */
+        staff_permissions: Array<{
+            /**
+             * Permission row PK
+             */
+            id: number;
+            /**
+             * Internal staff id (FK staff.id)
+             */
+            staff_id: string;
+            /**
+             * Permission code
+             */
+            permission_code: string;
+        }>;
         /**
          * 編集可能情報
          */
@@ -6606,6 +6794,10 @@ export type UpdateStaffRequest = {
         social_id?: string;
     };
     /**
+     * 職位マスター (positions.id)
+     */
+    position_id?: number;
+    /**
      * StaffPermissionSettings
      *
      * 権限設定 (partial update)
@@ -6637,6 +6829,52 @@ export type UpdateStaffRequest = {
             transfer_request: boolean;
         };
     };
+    /**
+     * StaffLinkage
+     *
+     * 店舗/FC 紐づけ (partial merge with existing)
+     */
+    staff_linkage?: {
+        /**
+         * StaffLinkageType
+         *
+         * 紐づけ種別
+         */
+        type: 'direct_store' | 'fc_company';
+        /**
+         * Set when type=direct_store
+         */
+        store_id?: string;
+        /**
+         * Denormalized store name for display
+         */
+        store_name?: string;
+        /**
+         * Set when type=fc_company
+         */
+        fc_company_id?: string;
+        /**
+         * Denormalized FC company name
+         */
+        fc_company_name?: string;
+    };
+    /**
+     * Replace granular permission rows
+     */
+    staff_permissions?: Array<{
+        /**
+         * Permission row PK
+         */
+        id: number;
+        /**
+         * Internal staff id (FK staff.id)
+         */
+        staff_id: string;
+        /**
+         * Permission code
+         */
+        permission_code: string;
+    }>;
     /**
      * 編集可能情報 (full replacement)
      */
@@ -6702,6 +6940,10 @@ export type UpdateStaffResponse = {
          * Staff display ID
          */
         staff_id: string;
+        /**
+         * FK → positions.id
+         */
+        position_id: number;
         /**
          * StaffStatus
          *
@@ -6819,6 +7061,52 @@ export type UpdateStaffResponse = {
             };
         };
         /**
+         * StaffLinkage
+         *
+         * 店舗直接紐づき or FC企業紐づき (mutually exclusive)
+         */
+        staff_linkage: {
+            /**
+             * StaffLinkageType
+             *
+             * 紐づけ種別
+             */
+            type: 'direct_store' | 'fc_company';
+            /**
+             * Set when type=direct_store
+             */
+            store_id?: string;
+            /**
+             * Denormalized store name for display
+             */
+            store_name?: string;
+            /**
+             * Set when type=fc_company
+             */
+            fc_company_id?: string;
+            /**
+             * Denormalized FC company name
+             */
+            fc_company_name?: string;
+        };
+        /**
+         * Detailed permission rows (staff_permissions table)
+         */
+        staff_permissions: Array<{
+            /**
+             * Permission row PK
+             */
+            id: number;
+            /**
+             * Internal staff id (FK staff.id)
+             */
+            staff_id: string;
+            /**
+             * Permission code
+             */
+            permission_code: string;
+        }>;
+        /**
          * 編集可能情報
          */
         editable_scopes: Array<{
@@ -6925,9 +7213,17 @@ export type InviteStaffResponse = {
          */
         email: string;
         /**
+         * Position master id
+         */
+        position_id: number;
+        /**
+         * Denormalized position name
+         */
+        position_name: string;
+        /**
          * StaffRole
          *
-         * Staff role/permission
+         * Staff role/permission (編集権限グループ)
          */
         role: 'headquarters' | 'store_staff' | 'viewer';
         /**
@@ -6936,6 +7232,20 @@ export type InviteStaffResponse = {
          * Assigned brand
          */
         brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * StaffLinkageType
+         *
+         * 店舗直接 vs FC企業
+         */
+        linkage_type: 'direct_store' | 'fc_company';
+        /**
+         * Present when linkage_type=direct_store
+         */
+        linked_store_id?: string;
+        /**
+         * Present when linkage_type=fc_company
+         */
+        linked_fc_company_id?: string;
         /**
          * StaffStatus
          *
@@ -13731,6 +14041,10 @@ export type GetCrmStaffsByIdResponses = {
              */
             staff_id: string;
             /**
+             * FK → positions.id
+             */
+            position_id: number;
+            /**
              * StaffStatus
              *
              * Account status
@@ -13846,6 +14160,52 @@ export type GetCrmStaffsByIdResponses = {
                     transfer_request: boolean;
                 };
             };
+            /**
+             * StaffLinkage
+             *
+             * 店舗直接紐づき or FC企業紐づき (mutually exclusive)
+             */
+            staff_linkage: {
+                /**
+                 * StaffLinkageType
+                 *
+                 * 紐づけ種別
+                 */
+                type: 'direct_store' | 'fc_company';
+                /**
+                 * Set when type=direct_store
+                 */
+                store_id?: string;
+                /**
+                 * Denormalized store name for display
+                 */
+                store_name?: string;
+                /**
+                 * Set when type=fc_company
+                 */
+                fc_company_id?: string;
+                /**
+                 * Denormalized FC company name
+                 */
+                fc_company_name?: string;
+            };
+            /**
+             * Detailed permission rows (staff_permissions table)
+             */
+            staff_permissions: Array<{
+                /**
+                 * Permission row PK
+                 */
+                id: number;
+                /**
+                 * Internal staff id (FK staff.id)
+                 */
+                staff_id: string;
+                /**
+                 * Permission code
+                 */
+                permission_code: string;
+            }>;
             /**
              * 編集可能情報
              */
@@ -13983,6 +14343,10 @@ export type PatchCrmStaffsByIdData = {
             social_id?: string;
         };
         /**
+         * 職位マスター (positions.id)
+         */
+        position_id?: number;
+        /**
          * StaffPermissionSettings
          *
          * 権限設定 (partial update)
@@ -14014,6 +14378,52 @@ export type PatchCrmStaffsByIdData = {
                 transfer_request: boolean;
             };
         };
+        /**
+         * StaffLinkage
+         *
+         * 店舗/FC 紐づけ (partial merge with existing)
+         */
+        staff_linkage?: {
+            /**
+             * StaffLinkageType
+             *
+             * 紐づけ種別
+             */
+            type: 'direct_store' | 'fc_company';
+            /**
+             * Set when type=direct_store
+             */
+            store_id?: string;
+            /**
+             * Denormalized store name for display
+             */
+            store_name?: string;
+            /**
+             * Set when type=fc_company
+             */
+            fc_company_id?: string;
+            /**
+             * Denormalized FC company name
+             */
+            fc_company_name?: string;
+        };
+        /**
+         * Replace granular permission rows
+         */
+        staff_permissions?: Array<{
+            /**
+             * Permission row PK
+             */
+            id: number;
+            /**
+             * Internal staff id (FK staff.id)
+             */
+            staff_id: string;
+            /**
+             * Permission code
+             */
+            permission_code: string;
+        }>;
         /**
          * 編集可能情報 (full replacement)
          */
@@ -14127,6 +14537,10 @@ export type PatchCrmStaffsByIdResponses = {
              * Staff display ID
              */
             staff_id: string;
+            /**
+             * FK → positions.id
+             */
+            position_id: number;
             /**
              * StaffStatus
              *
@@ -14243,6 +14657,52 @@ export type PatchCrmStaffsByIdResponses = {
                     transfer_request: boolean;
                 };
             };
+            /**
+             * StaffLinkage
+             *
+             * 店舗直接紐づき or FC企業紐づき (mutually exclusive)
+             */
+            staff_linkage: {
+                /**
+                 * StaffLinkageType
+                 *
+                 * 紐づけ種別
+                 */
+                type: 'direct_store' | 'fc_company';
+                /**
+                 * Set when type=direct_store
+                 */
+                store_id?: string;
+                /**
+                 * Denormalized store name for display
+                 */
+                store_name?: string;
+                /**
+                 * Set when type=fc_company
+                 */
+                fc_company_id?: string;
+                /**
+                 * Denormalized FC company name
+                 */
+                fc_company_name?: string;
+            };
+            /**
+             * Detailed permission rows (staff_permissions table)
+             */
+            staff_permissions: Array<{
+                /**
+                 * Permission row PK
+                 */
+                id: number;
+                /**
+                 * Internal staff id (FK staff.id)
+                 */
+                staff_id: string;
+                /**
+                 * Permission code
+                 */
+                permission_code: string;
+            }>;
             /**
              * 編集可能情報
              */
@@ -14386,9 +14846,17 @@ export type PostCrmStaffsInviteResponses = {
              */
             email: string;
             /**
+             * Position master id
+             */
+            position_id: number;
+            /**
+             * Denormalized position name
+             */
+            position_name: string;
+            /**
              * StaffRole
              *
-             * Staff role/permission
+             * Staff role/permission (編集権限グループ)
              */
             role: 'headquarters' | 'store_staff' | 'viewer';
             /**
@@ -14397,6 +14865,20 @@ export type PostCrmStaffsInviteResponses = {
              * Assigned brand
              */
             brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * StaffLinkageType
+             *
+             * 店舗直接 vs FC企業
+             */
+            linkage_type: 'direct_store' | 'fc_company';
+            /**
+             * Present when linkage_type=direct_store
+             */
+            linked_store_id?: string;
+            /**
+             * Present when linkage_type=fc_company
+             */
+            linked_fc_company_id?: string;
             /**
              * StaffStatus
              *
@@ -14450,7 +14932,7 @@ export type GetCrmStaffsData = {
         /**
          * Sort field
          */
-        sort_by?: 'staff_id' | 'name' | 'role' | 'status' | 'last_login';
+        sort_by?: 'staff_id' | 'name' | 'role' | 'position_name' | 'status' | 'last_login';
         /**
          * Sort order
          */
@@ -14514,9 +14996,17 @@ export type GetCrmStaffsResponses = {
              */
             email: string;
             /**
+             * Position master id
+             */
+            position_id: number;
+            /**
+             * Denormalized position name
+             */
+            position_name: string;
+            /**
              * StaffRole
              *
-             * Staff role/permission
+             * Staff role/permission (編集権限グループ)
              */
             role: 'headquarters' | 'store_staff' | 'viewer';
             /**
@@ -14525,6 +15015,20 @@ export type GetCrmStaffsResponses = {
              * Assigned brand
              */
             brand: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * StaffLinkageType
+             *
+             * 店舗直接 vs FC企業
+             */
+            linkage_type: 'direct_store' | 'fc_company';
+            /**
+             * Present when linkage_type=direct_store
+             */
+            linked_store_id?: string;
+            /**
+             * Present when linkage_type=fc_company
+             */
+            linked_fc_company_id?: string;
             /**
              * StaffStatus
              *

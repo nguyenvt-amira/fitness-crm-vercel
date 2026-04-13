@@ -9,6 +9,7 @@ import type {
 } from '@/app/api/_schemas/family-registration.schema';
 import type { MainContractListItem } from '@/app/api/_schemas/main-contract.schema';
 import type { OptionMasterListItem } from '@/app/api/_schemas/option-master.schema';
+import type { Position, StaffPermissionRecord } from '@/app/api/_schemas/position.schema';
 import type { StaffDetail, StaffListItem } from '@/app/api/_schemas/staff.schema';
 import type { StoreAccessSettings } from '@/app/api/_schemas/store-access-settings.schema';
 import type {
@@ -103,6 +104,201 @@ const MOCK_PLANS = [
   { id: 'plan-002', name: 'スタンダードプラン' },
   { id: 'plan-003', name: 'プレミアムプラン' },
 ];
+
+/** Position master seed (positions table) — mirrors 職位マスター */
+const SEED_POSITION_ROWS: Position[] = [
+  {
+    id: 1,
+    role: 'headquarter',
+    position_name: '本部管理者',
+    features: { summary_ja: '全機能・全データ', scope: 'all' },
+  },
+  {
+    id: 2,
+    role: 'manager',
+    position_name: 'ブロック長',
+    features: { summary_ja: '複数エリア横断', scope: 'multi_area' },
+  },
+  {
+    id: 3,
+    role: 'manager',
+    position_name: 'テリトリーマネージャー',
+    features: { summary_ja: '複数店舗横断', scope: 'multi_store' },
+  },
+  {
+    id: 4,
+    role: 'manager',
+    position_name: 'テリトリーMGR',
+    features: { summary_ja: 'G-04運用型アンケート作成 (v2.3)', survey: 'G-04' },
+  },
+  {
+    id: 5,
+    role: 'staff',
+    position_name: '店舗責任者',
+    features: { summary_ja: '店舗運用・一部マネージャ権限', scope: 'store_admin' },
+  },
+  {
+    id: 6,
+    role: 'staff',
+    position_name: '正社員スタッフ',
+    features: { summary_ja: '日常店舗運用', scope: 'store_daily' },
+  },
+  {
+    id: 7,
+    role: 'staff',
+    position_name: '契約社員スタッフ',
+    features: { summary_ja: '日常店舗運用', scope: 'store_daily' },
+  },
+  {
+    id: 8,
+    role: 'staff',
+    position_name: 'アルバイト（スーパー）',
+    features: { summary_ja: '店舗業務広範囲', scope: 'store_wide' },
+  },
+  {
+    id: 9,
+    role: 'staff',
+    position_name: 'アルバイト（一般）',
+    features: { summary_ja: '店舗業務限定', scope: 'store_limited' },
+  },
+  {
+    id: 10,
+    role: 'staff',
+    position_name: 'FC企業管理者',
+    features: { summary_ja: '管轄FC店舗参照・Y-03', scope: 'fc_admin' },
+  },
+  {
+    id: 11,
+    role: 'trainer',
+    position_name: '社員トレーナー',
+    features: { summary_ja: 'レッスン運用特化', scope: 'lesson' },
+  },
+  {
+    id: 12,
+    role: 'trainer',
+    position_name: '社外トレーナー',
+    features: { summary_ja: 'レッスン運用（外部認証）', scope: 'lesson_external' },
+  },
+  {
+    id: 13,
+    role: 'observer',
+    position_name: '閲覧専任',
+    features: { summary_ja: '参照のみ', scope: 'read_only' },
+  },
+];
+
+function positionNameById(id: number): string {
+  return SEED_POSITION_ROWS.find((p) => p.id === id)?.position_name ?? '';
+}
+
+/** Store master seed (store table) */
+const SEED_STORE_ROWS: Store[] = [
+  {
+    store_id: 'store-001',
+    store_code: 'STR-00001',
+    store_name: 'Fit365八潮店',
+    brand_id: 'brand-fit365',
+    fc_company_id: null,
+    manager_staff_id: null,
+    main_contract_id: 'ctr-store-001',
+    main_contract_status: 'active',
+    option_pass_price: 800,
+    mutual_use_enabled: true,
+    mutual_use_type: 'within_brand',
+    closing_date: null,
+    locker_map_id: 'locker-map-001',
+    asset_id: null,
+    created_by: 'STF-001',
+    created_at: '2024-01-10T09:00:00Z',
+    updated_by: 'STF-001',
+    updated_at: '2026-03-01T12:00:00Z',
+  },
+  {
+    store_id: 'store-002',
+    store_code: 'STR-00002',
+    store_name: 'Fit365新宿店',
+    brand_id: 'brand-fit365',
+    fc_company_id: null,
+    manager_staff_id: null,
+    main_contract_id: 'ctr-store-002',
+    main_contract_status: 'active',
+    option_pass_price: 900,
+    mutual_use_enabled: true,
+    mutual_use_type: 'cross_brand',
+    closing_date: null,
+    locker_map_id: 'locker-map-002',
+    asset_id: null,
+    created_by: 'STF-001',
+    created_at: '2024-01-11T09:00:00Z',
+    updated_by: 'STF-002',
+    updated_at: '2026-02-15T10:00:00Z',
+  },
+  {
+    store_id: 'store-003',
+    store_code: 'STR-00003',
+    store_name: 'Fit365渋谷店',
+    brand_id: 'brand-fit365',
+    fc_company_id: null,
+    manager_staff_id: null,
+    main_contract_id: 'ctr-store-003',
+    main_contract_status: 'active',
+    option_pass_price: 850,
+    mutual_use_enabled: false,
+    mutual_use_type: 'none',
+    closing_date: null,
+    locker_map_id: 'locker-map-003',
+    asset_id: null,
+    created_by: 'STF-002',
+    created_at: '2024-01-12T09:00:00Z',
+    updated_by: 'STF-002',
+    updated_at: '2026-01-20T11:00:00Z',
+  },
+  {
+    store_id: 'store-004',
+    store_code: 'STR-10004',
+    store_name: 'ジョイフィット渋谷店',
+    brand_id: 'brand-joyfit',
+    fc_company_id: null,
+    manager_staff_id: null,
+    main_contract_id: 'ctr-store-004',
+    main_contract_status: 'active',
+    option_pass_price: 1000,
+    mutual_use_enabled: true,
+    mutual_use_type: 'within_brand',
+    closing_date: null,
+    locker_map_id: 'locker-map-004',
+    asset_id: null,
+    created_by: 'STF-003',
+    created_at: '2024-02-01T09:00:00Z',
+    updated_by: 'STF-003',
+    updated_at: '2026-03-10T09:30:00Z',
+  },
+  {
+    store_id: 'store-005',
+    store_code: 'STR-10005',
+    store_name: 'JOYFIT池袋店',
+    brand_id: 'brand-joyfit',
+    fc_company_id: 'fc-001',
+    manager_staff_id: null,
+    main_contract_id: 'ctr-store-005',
+    main_contract_status: 'active',
+    option_pass_price: 950,
+    mutual_use_enabled: true,
+    mutual_use_type: 'custom',
+    closing_date: null,
+    locker_map_id: 'locker-map-005',
+    asset_id: null,
+    created_by: 'STF-004',
+    created_at: '2024-02-05T09:00:00Z',
+    updated_by: 'STF-004',
+    updated_at: '2026-02-28T08:00:00Z',
+  },
+];
+
+function pickMemberStore(i: number): { id: string; name: string } {
+  const s = SEED_STORE_ROWS[i % SEED_STORE_ROWS.length]!;
+  return { id: s.store_id, name: s.store_name };
+}
 
 type ContractRow = {
   contract_id: string;
@@ -517,6 +713,13 @@ type DbType = {
     addByStoreId(storeId: string, optionIds: string[]): StoreLinkedOption[];
     removeByStoreId(storeId: string, optionId: string): boolean;
   };
+  positions: {
+    _rows: Position[];
+    _seeded: boolean;
+    _seed(): void;
+    getList(): Position[];
+    getById(id: number): Position | undefined;
+  };
   stores: {
     _rows: Store[];
     _seeded: boolean;
@@ -544,6 +747,11 @@ type DbType = {
     getByStoreId(storeId: string): StoreAccessSettings | undefined;
     replaceForStore(storeId: string, data: StoreAccessSettings): StoreAccessSettings | undefined;
   };
+  staff_permissions: {
+    getByStaffId(staff_id: string): StaffPermissionRecord[];
+    removeForStaff(staff_id: string): void;
+    replaceForStaff(staff_id: string, rows: Array<{ permission_code: string }>): void;
+  };
   staffs: {
     _staffs: StaffListItem[];
     _details: Record<string, StaffDetail>;
@@ -563,6 +771,19 @@ declare global {
 }
 
 function createDb() {
+  const permissionRows: StaffPermissionRecord[] = [];
+  let nextStaffPermissionId = 1;
+
+  function pushStaffPermissions(staffId: string, codes: string[]): void {
+    for (const permission_code of codes) {
+      permissionRows.push({
+        id: nextStaffPermissionId++,
+        staff_id: staffId,
+        permission_code,
+      });
+    }
+  }
+
   const db = {
     members: {
       _members: [] as MemberRow[],
@@ -1658,508 +1879,21 @@ function createDb() {
         },
       };
     },
-    mainContracts: {
-      _rows: [] as MainContractListItem[],
+    positions: {
+      _rows: [] as Position[],
       _seeded: false,
       _seed(): void {
         if (this._seeded) return;
         this._seeded = true;
-        this._rows.push(
-          {
-            id: 'MC001',
-            name: 'レギュラー会員',
-            contract_type: 'general',
-            brand: 'joyfit24',
-            target_store_name: null,
-            price_including_tax: 7700,
-            companion_benefit_enabled: false,
-            status: 'active',
-          },
-          {
-            id: 'MC001-A',
-            name: 'レギュラー会員（学生）',
-            contract_type: 'student',
-            brand: 'joyfit24',
-            target_store_name: null,
-            price_including_tax: 5500,
-            companion_benefit_enabled: false,
-            status: 'active',
-          },
-          {
-            id: 'MC002',
-            name: 'ナイト会員',
-            contract_type: 'general',
-            brand: 'fit365',
-            target_store_name: null,
-            price_including_tax: 5500,
-            companion_benefit_enabled: false,
-            status: 'active',
-          },
-          {
-            id: 'MC003',
-            name: 'デイタイム会員',
-            contract_type: 'general',
-            brand: 'joyfit',
-            target_store_name: null,
-            price_including_tax: 6600,
-            companion_benefit_enabled: true,
-            status: 'active',
-          },
-          {
-            id: 'MC005',
-            name: 'シニア会員（当店限定）',
-            contract_type: 'special',
-            brand: 'joyfit',
-            target_store_name: 'JOYFIT池袋店',
-            price_including_tax: 4400,
-            companion_benefit_enabled: false,
-            status: 'active',
-          },
-          {
-            id: 'MC007',
-            name: '1Day利用',
-            contract_type: 'oneDay',
-            brand: 'joyfit24',
-            target_store_name: null,
-            price_including_tax: 1650,
-            companion_benefit_enabled: false,
-            status: 'active',
-          },
-          {
-            id: 'MC010',
-            name: 'スタッフ会員（当店限定）',
-            contract_type: 'special',
-            brand: 'joyfit24',
-            target_store_name: 'JOYFIT24新宿店',
-            price_including_tax: 0,
-            companion_benefit_enabled: true,
-            status: 'inactive',
-          },
-          {
-            id: 'MC011',
-            name: 'ファミリー会員',
-            contract_type: 'family',
-            brand: 'joyfit',
-            target_store_name: null,
-            price_including_tax: 8800,
-            companion_benefit_enabled: true,
-            status: 'active',
-          },
-          {
-            id: 'MC012',
-            name: 'キッズ会員',
-            contract_type: 'kids',
-            brand: 'fit365',
-            target_store_name: null,
-            price_including_tax: 4400,
-            companion_benefit_enabled: false,
-            status: 'active',
-          },
-          {
-            id: 'MC013',
-            name: '法人スタンダード',
-            contract_type: 'corporate',
-            brand: 'joyfit24',
-            target_store_name: null,
-            price_including_tax: 9900,
-            companion_benefit_enabled: false,
-            status: 'active',
-          },
-          {
-            id: 'MC014',
-            name: '福利厚生プラン',
-            contract_type: 'welfare',
-            brand: 'fit365',
-            target_store_name: null,
-            price_including_tax: 7150,
-            companion_benefit_enabled: false,
-            status: 'active',
-          },
-          {
-            id: 'MC015',
-            name: 'プリペイド30',
-            contract_type: 'prepaid',
-            brand: 'joyfit',
-            target_store_name: null,
-            price_including_tax: 3300,
-            companion_benefit_enabled: false,
-            status: 'active',
-          },
-          {
-            id: 'MC016',
-            name: '朝活会員',
-            contract_type: 'general',
-            brand: 'joyfit_yoga',
-            target_store_name: null,
-            price_including_tax: 6050,
-            companion_benefit_enabled: false,
-            status: 'active',
-          },
-          {
-            id: 'MC017',
-            name: '平日デイ会員',
-            contract_type: 'general',
-            brand: 'joyfit_plus',
-            target_store_name: null,
-            price_including_tax: 6600,
-            companion_benefit_enabled: false,
-            status: 'active',
-          },
-          {
-            id: 'MC018',
-            name: 'シニア午前会員',
-            contract_type: 'special',
-            brand: 'joyfit24',
-            target_store_name: 'JOYFIT24 新宿店',
-            price_including_tax: 3850,
-            companion_benefit_enabled: false,
-            status: 'active',
-          },
-          {
-            id: 'MC019',
-            name: '学生ナイト会員',
-            contract_type: 'student',
-            brand: 'joyfit',
-            target_store_name: null,
-            price_including_tax: 4950,
-            companion_benefit_enabled: false,
-            status: 'active',
-          },
-          {
-            id: 'MC020',
-            name: 'Weekend会員',
-            contract_type: 'general',
-            brand: 'fit365',
-            target_store_name: null,
-            price_including_tax: 5720,
-            companion_benefit_enabled: true,
-            status: 'active',
-          },
-        );
+        this._rows.push(...SEED_POSITION_ROWS);
       },
-      getList(): MainContractListItem[] {
+      getList(): Position[] {
         this._seed();
         return [...this._rows];
       },
-    },
-    optionMasters: {
-      _rows: [] as OptionMasterListItem[],
-      _seeded: false,
-      _seed(): void {
-        if (this._seeded) return;
-        this._seeded = true;
-        this._rows.push(
-          {
-            id: 'OP001',
-            name: 'ドリンクバー（月額）',
-            brand: 'fit365',
-            option_type: 'standard',
-            price_including_tax: 550,
-            prorated_enabled: true,
-            usage_rule: 'add_remove_change',
-            status: 'active',
-          },
-          {
-            id: 'OP002',
-            name: '水素水',
-            brand: 'joyfit24',
-            option_type: 'standard',
-            price_including_tax: 1100,
-            prorated_enabled: true,
-            usage_rule: 'add_remove',
-            status: 'active',
-          },
-          {
-            id: 'OP003',
-            name: 'タオルセット',
-            brand: 'joyfit24',
-            option_type: 'standard',
-            price_including_tax: 330,
-            prorated_enabled: true,
-            usage_rule: 'add_remove_change',
-            status: 'active',
-          },
-          {
-            id: 'OP006',
-            name: '契約ロッカー',
-            brand: 'joyfit24',
-            option_type: 'standard',
-            price_including_tax: 1100,
-            prorated_enabled: false,
-            usage_rule: 'change_remove',
-            status: 'active',
-          },
-          {
-            id: 'OP007',
-            name: 'パーソナルトレーニング（月2回）',
-            brand: 'fit365',
-            option_type: 'metered',
-            price_including_tax: 13200,
-            prorated_enabled: false,
-            usage_rule: 'add_remove_change',
-            status: 'active',
-          },
-          {
-            id: 'OP011',
-            name: 'パーソナルトレーニング（月4回）',
-            brand: 'joyfit24',
-            option_type: 'metered',
-            price_including_tax: 22000,
-            prorated_enabled: false,
-            usage_rule: 'add_remove_change',
-            status: 'active',
-          },
-          {
-            id: 'OP021',
-            name: '安心サポート（当店版）',
-            brand: 'joyfit24',
-            option_type: 'auto_attached',
-            price_including_tax: 660,
-            prorated_enabled: false,
-            usage_rule: 'disabled',
-            status: 'active',
-          },
-          {
-            id: 'OP022',
-            name: '有料駐車場チケット（当店限定）',
-            brand: 'fit365',
-            option_type: 'standard',
-            price_including_tax: 1100,
-            prorated_enabled: true,
-            usage_rule: 'add_remove',
-            status: 'inactive',
-          },
-          {
-            id: 'OP023',
-            name: 'プロテインサーバー',
-            brand: 'fit365',
-            option_type: 'metered',
-            price_including_tax: 1650,
-            prorated_enabled: false,
-            usage_rule: 'add_remove_change',
-            status: 'active',
-          },
-          {
-            id: 'OP024',
-            name: 'コラーゲンマシン',
-            brand: 'fit365',
-            option_type: 'metered',
-            price_including_tax: 2200,
-            prorated_enabled: false,
-            usage_rule: 'add_remove_change',
-            status: 'active',
-          },
-          {
-            id: 'OP025',
-            name: '契約ロッカーL',
-            brand: 'joyfit',
-            option_type: 'standard',
-            price_including_tax: 1650,
-            prorated_enabled: true,
-            usage_rule: 'change_remove',
-            status: 'active',
-          },
-          {
-            id: 'OP026',
-            name: 'タンニング',
-            brand: 'fit365',
-            option_type: 'metered',
-            price_including_tax: 3300,
-            prorated_enabled: false,
-            usage_rule: 'add_remove_change',
-            status: 'active',
-          },
-          {
-            id: 'OP027',
-            name: 'ボディプランナー',
-            brand: 'fit365',
-            option_type: 'metered',
-            price_including_tax: 1980,
-            prorated_enabled: false,
-            usage_rule: 'add_remove_change',
-            status: 'active',
-          },
-          {
-            id: 'OP028',
-            name: 'シャワー利用',
-            brand: 'joyfit24',
-            option_type: 'metered',
-            price_including_tax: 550,
-            prorated_enabled: false,
-            usage_rule: 'add_remove',
-            status: 'active',
-          },
-          {
-            id: 'OP029',
-            name: 'レンタルウェア',
-            brand: 'joyfit',
-            option_type: 'standard',
-            price_including_tax: 880,
-            prorated_enabled: true,
-            usage_rule: 'add_remove_change',
-            status: 'active',
-          },
-          {
-            id: 'OP030',
-            name: '安心サポートPLUS',
-            brand: 'joyfit_plus',
-            option_type: 'auto_attached',
-            price_including_tax: 880,
-            prorated_enabled: false,
-            usage_rule: 'disabled',
-            status: 'active',
-          },
-          {
-            id: 'OP031',
-            name: 'メンテナンス会費',
-            brand: 'fit365',
-            option_type: 'auto_attached',
-            price_including_tax: 770,
-            prorated_enabled: false,
-            usage_rule: 'disabled',
-            status: 'active',
-          },
-          {
-            id: 'OP032',
-            name: '水素水プレミアム',
-            brand: 'joyfit_yoga',
-            option_type: 'standard',
-            price_including_tax: 1430,
-            prorated_enabled: true,
-            usage_rule: 'add_remove',
-            status: 'active',
-          },
-        );
-      },
-      getList(): OptionMasterListItem[] {
+      getById(id: number): Position | undefined {
         this._seed();
-        return [...this._rows];
-      },
-    },
-    storeMainContracts: {
-      _rows: [] as Array<{ store_id: string; main_contract_id: string; linked_at: string }>,
-      _seeded: false,
-      _seed(): void {
-        if (this._seeded) return;
-        this._seeded = true;
-        db.stores._seed();
-        db.mainContracts._seed();
-        const seeds = [
-          { store_id: 'store-001', ids: ['MC001', 'MC002', 'MC003'] },
-          { store_id: 'store-002', ids: ['MC001', 'MC001-A'] },
-          { store_id: 'store-006', ids: ['MC001', 'MC005'] },
-        ];
-        for (const seed of seeds) {
-          for (const id of seed.ids) {
-            this._rows.push({
-              store_id: seed.store_id,
-              main_contract_id: id,
-              linked_at: '2024/04/01',
-            });
-          }
-        }
-      },
-      listByStoreId(storeId: string): StoreLinkedMainContract[] {
-        this._seed();
-        db.mainContracts._seed();
-        const masterMap = new Map(db.mainContracts.getList().map((item) => [item.id, item]));
-        return this._rows
-          .filter((row) => row.store_id === storeId)
-          .map((row) => {
-            const master = masterMap.get(row.main_contract_id);
-            if (!master) return undefined;
-            return {
-              id: master.id,
-              name: master.name,
-              contract_type: master.contract_type,
-              price_including_tax: master.price_including_tax,
-              linked_at: row.linked_at,
-            };
-          })
-          .filter((item): item is StoreLinkedMainContract => Boolean(item));
-      },
-      addByStoreId(storeId: string, mainContractIds: string[]): StoreLinkedMainContract[] {
-        this._seed();
-        const current = new Set(
-          this._rows.filter((row) => row.store_id === storeId).map((row) => row.main_contract_id),
-        );
-        const today = new Date().toLocaleDateString('ja-JP').replaceAll('-', '/');
-        for (const id of mainContractIds) {
-          if (current.has(id)) continue;
-          this._rows.push({ store_id: storeId, main_contract_id: id, linked_at: today });
-        }
-        return this.listByStoreId(storeId);
-      },
-      removeByStoreId(storeId: string, mainContractId: string): boolean {
-        this._seed();
-        const before = this._rows.length;
-        this._rows = this._rows.filter(
-          (row) => !(row.store_id === storeId && row.main_contract_id === mainContractId),
-        );
-        return this._rows.length < before;
-      },
-    },
-    storeOptions: {
-      _rows: [] as Array<{ store_id: string; option_id: string; linked_at: string }>,
-      _seeded: false,
-      _seed(): void {
-        if (this._seeded) return;
-        this._seeded = true;
-        db.stores._seed();
-        db.optionMasters._seed();
-        const seeds = [
-          { store_id: 'store-001', ids: ['OP002', 'OP003', 'OP006'] },
-          { store_id: 'store-002', ids: ['OP001', 'OP007'] },
-          { store_id: 'store-006', ids: ['OP021'] },
-        ];
-        for (const seed of seeds) {
-          for (const id of seed.ids) {
-            this._rows.push({ store_id: seed.store_id, option_id: id, linked_at: '2024/04/01' });
-          }
-        }
-      },
-      listByStoreId(storeId: string): StoreLinkedOption[] {
-        this._seed();
-        db.optionMasters._seed();
-        const masterMap = new Map(db.optionMasters.getList().map((item) => [item.id, item]));
-        return this._rows
-          .filter((row) => row.store_id === storeId)
-          .map((row) => {
-            const master = masterMap.get(row.option_id);
-            if (!master) return undefined;
-            return {
-              id: master.id,
-              name: master.name,
-              related_option_name:
-                master.option_type === 'metered'
-                  ? 'パーソナル'
-                  : master.option_type === 'auto_attached'
-                    ? '自動付与'
-                    : null,
-              price_including_tax: master.price_including_tax,
-            };
-          })
-          .filter((item): item is StoreLinkedOption => Boolean(item));
-      },
-      addByStoreId(storeId: string, optionIds: string[]): StoreLinkedOption[] {
-        this._seed();
-        const current = new Set(
-          this._rows.filter((row) => row.store_id === storeId).map((row) => row.option_id),
-        );
-        const today = new Date().toLocaleDateString('ja-JP').replaceAll('-', '/');
-        for (const id of optionIds) {
-          if (current.has(id)) continue;
-          this._rows.push({ store_id: storeId, option_id: id, linked_at: today });
-        }
-        return this.listByStoreId(storeId);
-      },
-      removeByStoreId(storeId: string, optionId: string): boolean {
-        this._seed();
-        const before = this._rows.length;
-        this._rows = this._rows.filter(
-          (row) => !(row.store_id === storeId && row.option_id === optionId),
-        );
-        return this._rows.length < before;
+        return this._rows.find((p) => p.id === id);
       },
     },
     stores: {
@@ -2355,176 +2089,34 @@ function createDb() {
         this._seed();
         return [...this._rows];
       },
-      getById(id: string): Store | undefined {
+      getById(store_id: string): Store | undefined {
         this._seed();
-        return this._rows.find((s) => s.id === id);
+        return this._rows.find((s) => s.store_id === store_id);
       },
-      create(input: Omit<Store, 'id' | 'store_id' | 'created_at' | 'updated_at'>): Store {
+      setManagerStaff(store_id: string, manager_staff_id: string | null): void {
         this._seed();
-        const nextNumber = this._rows.length + 1;
-        const now = new Date().toISOString();
-        const row: Store = {
-          ...input,
-          id: `store-${String(nextNumber).padStart(3, '0')}`,
-          store_id: `S-${String(nextNumber).padStart(3, '0')}`,
-          created_at: now,
-          updated_at: now,
-        };
-        this._rows.unshift(row);
-        return row;
-      },
-      updateById(id: string, patch: Partial<Store>): Store | undefined {
-        this._seed();
-        const index = this._rows.findIndex((s) => s.id === id);
-        if (index === -1) return undefined;
-        const current = this._rows[index]!;
-        const updated: Store = {
-          ...current,
-          ...patch,
-          id: current.id,
-          store_id: current.store_id,
-          created_at: current.created_at,
-          updated_at: new Date().toISOString(),
-        };
-        this._rows[index] = updated;
-        return updated;
-      },
-      setManagerStaff(storeId: string, manager_staff_id: string | null): void {
-        this._seed();
-        const row = this._rows.find((s) => s.id === storeId);
+        const row = this._rows.find((s) => s.store_id === store_id);
         if (row) row.manager_staff_id = manager_staff_id;
       },
     },
-    store_access_settings: {
-      _byStoreId: {} as Record<string, StoreAccessSettings>,
-      _seeded: false,
-      _default(): StoreAccessSettings {
-        return {
-          mutual_use_enabled: true,
-          start_date: '2024/04/01',
-          end_date: '2027/03/31',
-          under18_start_time: '10:00',
-          under18_end_time: '18:00',
-          permitted_stores: [
-            {
-              id: 'g-1',
-              store_name: 'JOYFIT24新宿店',
-              brand: 'joyfit24',
-              setup_date: '2024/04/01',
-            },
-            {
-              id: 'g-2',
-              store_name: 'JOYFIT24渋谷店',
-              brand: 'joyfit24',
-              setup_date: '2024/04/01',
-            },
-            {
-              id: 'g-3',
-              store_name: 'FIT365八潮店',
-              brand: 'fit365',
-              setup_date: '2025/01/15',
-            },
-          ],
-          joy_usage_fees: [
-            { id: 'fee-1', option_name: '1日利用券（一般）', fee: 2200 },
-            { id: 'fee-2', option_name: '1日利用券（学生）', fee: 1650 },
-          ],
-        };
+    staff_permissions: {
+      getByStaffId(staff_id: string): StaffPermissionRecord[] {
+        return permissionRows.filter((r) => r.staff_id === staff_id);
       },
-      _clone(data: StoreAccessSettings): StoreAccessSettings {
-        return JSON.parse(JSON.stringify(data)) as StoreAccessSettings;
-      },
-      _seed(): void {
-        if (this._seeded) return;
-        this._seeded = true;
-        db.stores._seed();
-        for (const store of db.stores._rows) {
-          this._byStoreId[store.id] = this._clone(this._default());
+      removeForStaff(staff_id: string): void {
+        for (let j = permissionRows.length - 1; j >= 0; j--) {
+          if (permissionRows[j]!.staff_id === staff_id) permissionRows.splice(j, 1);
         }
       },
-      getByStoreId(storeId: string): StoreAccessSettings | undefined {
-        this._seed();
-        if (!db.stores.getById(storeId)) return undefined;
-        const row = this._byStoreId[storeId];
-        return this._clone(row ?? this._default());
-      },
-      replaceForStore(storeId: string, data: StoreAccessSettings): StoreAccessSettings | undefined {
-        this._seed();
-        if (!db.stores.getById(storeId)) return undefined;
-        const next = this._clone(data);
-        this._byStoreId[storeId] = next;
-        return this._clone(next);
-      },
-    },
-    businessHours: {
-      _rows: [] as StoreBusinessHours[],
-      _seeded: false,
-      _seed(): void {
-        if (this._seeded) return;
-        this._seeded = true;
-        db.stores._seed();
-        const now = '2026-03-01T12:00:00Z';
-        for (const store of db.stores._rows) {
-          this._rows.push({
-            store_id: store.id,
-            default_hours: [
-              { day: 'mon', open_time: '10:00', close_time: '23:00', is_closed: false },
-              { day: 'tue', open_time: '10:00', close_time: '23:00', is_closed: false },
-              { day: 'wed', open_time: '10:00', close_time: '23:00', is_closed: false },
-              { day: 'thu', open_time: '10:00', close_time: '23:00', is_closed: false },
-              { day: 'fri', open_time: '10:00', close_time: '23:00', is_closed: false },
-              { day: 'sat', open_time: '10:00', close_time: '20:00', is_closed: false },
-              { day: 'sun', open_time: '10:00', close_time: '18:00', is_closed: false },
-              { day: 'holiday', open_time: '10:00', close_time: '18:00', is_closed: false },
-            ],
-            exception_hours: [
-              {
-                id: `exc-${store.id}-001`,
-                date: '2026-12-31',
-                open_time: '10:00',
-                close_time: '17:00',
-              },
-            ],
-            temporary_closures: [
-              { id: `tcl-${store.id}-001`, date: '2026-03-15', reason: '設備点検' },
-            ],
-            updated_at: now,
-            updated_by: 'STF-001',
+      replaceForStaff(staff_id: string, rows: Array<{ permission_code: string }>): void {
+        this.removeForStaff(staff_id);
+        for (const r of rows) {
+          permissionRows.push({
+            id: nextStaffPermissionId++,
+            staff_id,
+            permission_code: r.permission_code,
           });
         }
-      },
-      getByStoreId(storeId: string): StoreBusinessHours | undefined {
-        this._seed();
-        return this._rows.find((r) => r.store_id === storeId);
-      },
-      upsert(
-        storeId: string,
-        patch: Partial<Omit<StoreBusinessHours, 'store_id'>>,
-      ): StoreBusinessHours {
-        this._seed();
-        const idx = this._rows.findIndex((r) => r.store_id === storeId);
-        const now = new Date().toISOString();
-        if (idx === -1) {
-          const row: StoreBusinessHours = {
-            store_id: storeId,
-            default_hours: patch.default_hours ?? [],
-            exception_hours: patch.exception_hours ?? [],
-            temporary_closures: patch.temporary_closures ?? [],
-            updated_at: now,
-            updated_by: patch.updated_by ?? 'system',
-          };
-          this._rows.push(row);
-          return row;
-        }
-        const current = this._rows[idx]!;
-        const updated: StoreBusinessHours = {
-          ...current,
-          ...patch,
-          store_id: storeId,
-          updated_at: now,
-        };
-        this._rows[idx] = updated;
-        return updated;
       },
     },
     staffs: {
@@ -2535,6 +2127,9 @@ function createDb() {
       _seed(): void {
         if (this._seeded) return;
         this._seeded = true;
+
+        db.positions._seed();
+        db.stores._seed();
 
         const lastNames = [
           { kanji: '田中', kana: 'タナカ' },
@@ -2639,14 +2234,50 @@ function createDb() {
           // Postal code
           const postalCode = `${String(100 + (i % 900)).padStart(3, '0')}-${String(1000 + (i % 9000)).padStart(4, '0')}`;
 
+          const pickStore = SEED_STORE_ROWS[(i - 1) % SEED_STORE_ROWS.length]!;
+          const useFcLinkage = i % 5 === 0;
+          const position_id = useFcLinkage
+            ? 10
+            : role === 'headquarters'
+              ? 1
+              : role === 'viewer'
+                ? 13
+                : 5 + (i % 6);
+          const position_name = positionNameById(position_id);
+
+          const staff_linkage = useFcLinkage
+            ? ({
+                type: 'fc_company',
+                fc_company_id: 'fc-001',
+                fc_company_name: 'サンプルFC株式会社',
+              } satisfies StaffDetail['staff_linkage'])
+            : ({
+                type: 'direct_store',
+                store_id: pickStore.store_id,
+                store_name: pickStore.store_name,
+              } satisfies StaffDetail['staff_linkage']);
+
+          const permCodes = useFcLinkage
+            ? ['Y-03.view', 'crm.stores.read', 'crm.members.view', 'G-01.contracts.view']
+            : ['crm.members.view', 'crm.members.edit', 'G-01.contracts.view', 'crm.billing.view'];
+          pushStaffPermissions(String(i), permCodes);
+          const staff_permissions = permissionRows.filter((r) => r.staff_id === String(i));
+
           // List item
           this._staffs.push({
             id: String(i),
             staff_id: `STF-${String(i).padStart(3, '0')}`,
             name: fullName,
             email,
+            position_id,
+            position_name,
             role,
             brand,
+            linkage_type: staff_linkage.type,
+            linked_store_id:
+              staff_linkage.type === 'direct_store' ? staff_linkage.store_id : undefined,
+            linked_fc_company_id:
+              staff_linkage.type === 'fc_company' ? staff_linkage.fc_company_id : undefined,
             status,
             last_login: lastLogin,
           } satisfies StaffListItem);
@@ -2661,14 +2292,13 @@ function createDb() {
               role === 'headquarters' ? 'all_stores' : s === 0 ? 'all_stores' : 'specific_store';
             const startDate = new Date('2024-04-01');
             startDate.setMonth(startDate.getMonth() + s);
+            const storeIdx = (i + s) % SEED_STORE_ROWS.length;
+            const scopeStore = SEED_STORE_ROWS[storeIdx]!;
             scopes.push({
               brand: scopeBrand as StaffDetail['editable_scopes'][number]['brand'],
               target: scopeTarget as StaffDetail['editable_scopes'][number]['target'],
-              store_id:
-                scopeTarget === 'specific_store'
-                  ? `store-${String(((i + s) % 5) + 1).padStart(3, '0')}`
-                  : undefined,
-              store_name: undefined,
+              store_id: scopeTarget === 'specific_store' ? scopeStore.store_id : undefined,
+              store_name: scopeTarget === 'specific_store' ? scopeStore.store_name : undefined,
               start_date: `${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(2, '0')}-${String(startDate.getDate()).padStart(2, '0')}`,
               end_date: i % 5 === 0 ? `2025-03-31` : undefined,
             });
@@ -2677,6 +2307,7 @@ function createDb() {
           this._details[String(i)] = {
             id: String(i),
             staff_id: `STF-${String(i).padStart(3, '0')}`,
+            position_id,
             status,
             personal_info: {
               last_name: ln.kanji,
@@ -2705,12 +2336,17 @@ function createDb() {
                 transfer_request: role === 'headquarters' && i % 2 === 0,
               },
             },
+            staff_linkage,
+            staff_permissions,
             editable_scopes: scopes,
             last_login: lastLogin,
             created_at: createdDate.toISOString(),
             updated_at: updatedDate.toISOString(),
           } satisfies StaffDetail;
         }
+
+        db.stores.setManagerStaff('store-001', '1');
+        db.stores.setManagerStaff('store-005', '5');
       },
 
       getList(): StaffListItem[] {
@@ -2732,9 +2368,26 @@ function createDb() {
         this._seed();
         const existing = this._details[id];
         if (!existing) return undefined;
+
+        if (patch.staff_permissions) {
+          db.staff_permissions.replaceForStaff(
+            id,
+            patch.staff_permissions.map((p) => ({ permission_code: p.permission_code })),
+          );
+        }
+
+        const mergedLinkage = patch.staff_linkage
+          ? { ...existing.staff_linkage, ...patch.staff_linkage }
+          : existing.staff_linkage;
+        const position_id = patch.position_id ?? existing.position_id;
+        const staff_permissions = patch.staff_permissions
+          ? permissionRows.filter((r) => r.staff_id === id)
+          : existing.staff_permissions;
+
         const updated: StaffDetail = {
           ...existing,
           ...patch,
+          position_id,
           personal_info: patch.personal_info
             ? { ...existing.personal_info, ...patch.personal_info }
             : existing.personal_info,
@@ -2753,6 +2406,8 @@ function createDb() {
                   : existing.permission_settings.additional_permissions,
               }
             : existing.permission_settings,
+          staff_linkage: mergedLinkage,
+          staff_permissions,
           editable_scopes: patch.editable_scopes ?? existing.editable_scopes,
           updated_at: new Date().toISOString(),
         };
@@ -2765,7 +2420,18 @@ function createDb() {
             ...this._staffs[listIdx],
             name: `${updated.personal_info.last_name} ${updated.personal_info.first_name}`,
             email: updated.personal_info.email,
+            position_id: updated.position_id,
+            position_name: positionNameById(updated.position_id),
             role: updated.permission_settings.role,
+            linkage_type: updated.staff_linkage.type,
+            linked_store_id:
+              updated.staff_linkage.type === 'direct_store'
+                ? updated.staff_linkage.store_id
+                : undefined,
+            linked_fc_company_id:
+              updated.staff_linkage.type === 'fc_company'
+                ? updated.staff_linkage.fc_company_id
+                : undefined,
             status: updated.status,
           };
         }
@@ -2774,14 +2440,33 @@ function createDb() {
 
       create(input: { email: string; role: string; brand?: string }): StaffListItem {
         this._seed();
+        db.positions._seed();
+        db.stores._seed();
+
         const nextId = this._staffs.length + 1;
+        const role = input.role as StaffListItem['role'];
+        const position_id = role === 'headquarters' ? 1 : role === 'viewer' ? 13 : 6;
+        const defaultStore = SEED_STORE_ROWS[0]!;
+        const staff_linkage: StaffDetail['staff_linkage'] = {
+          type: 'direct_store',
+          store_id: defaultStore.store_id,
+          store_name: defaultStore.store_name,
+        };
+
+        pushStaffPermissions(String(nextId), ['crm.login', 'crm.members.view']);
+        const staff_permissions = permissionRows.filter((r) => r.staff_id === String(nextId));
+
         const staff: StaffListItem = {
           id: String(nextId),
           staff_id: `STF-${String(nextId).padStart(3, '0')}`,
           name: input.email.split('@')[0] ?? '新規スタッフ',
           email: input.email,
-          role: input.role as StaffListItem['role'],
+          position_id,
+          position_name: positionNameById(position_id),
+          role,
           brand: (input.brand ?? 'all') as StaffListItem['brand'],
+          linkage_type: staff_linkage.type,
+          linked_store_id: staff_linkage.store_id,
           status: 'active',
           last_login: '-',
         };
@@ -2791,6 +2476,7 @@ function createDb() {
         this._details[String(nextId)] = {
           id: String(nextId),
           staff_id: staff.staff_id,
+          position_id,
           status: 'active',
           personal_info: {
             last_name: input.email.split('@')[0] ?? '新規',
@@ -2801,13 +2487,15 @@ function createDb() {
             login_method: 'email',
           },
           permission_settings: {
-            role: input.role as StaffDetail['permission_settings']['role'],
+            role,
             additional_permissions: {
               billing_correction: false,
               refund_request: false,
               transfer_request: false,
             },
           },
+          staff_linkage,
+          staff_permissions,
           editable_scopes: [
             {
               brand: (input.brand ?? 'all') as StaffDetail['editable_scopes'][number]['brand'],
@@ -2829,6 +2517,7 @@ function createDb() {
         if (idx === -1) return false;
         this._staffs.splice(idx, 1);
         delete this._details[id];
+        db.staff_permissions.removeForStaff(id);
         return true;
       },
     },
