@@ -4,13 +4,14 @@ import { z } from 'zod';
 extendZodWithOpenApi(z);
 
 /**
- * Brands under Y-07 management (現在: JOYFIT / FIT365 のみ).
- * 将来ブランド追加はマスタ行の追加で対応（StaffBrand の全値とは別概念）
+ * Brands under management.
  */
-export const ManagedBrandCodeSchema = z.enum(['joyfit', 'fit365']).openapi({
-  title: 'ManagedBrandCode',
-  description: 'Y-07 管理対象ブランドコード（2ブランド共通運用）',
-});
+export const ManagedBrandCodeSchema = z
+  .enum(['all', 'joyfit', 'fit365', 'joyfit24', 'joyfit_yoga', 'joyfit_plus'])
+  .openapi({
+    title: 'ManagedBrandCode',
+    description: '管理対象ブランドコード',
+  });
 
 /**
  * Y-07 ブランドマスタ — 入会金・手数料の基本設定（G-01 主契約のデフォルト参照元）
@@ -64,12 +65,12 @@ export const BrandItemSchema = z
 export const GetBrandsResponseSchema = z
   .object({
     brands: z.array(BrandItemSchema).openapi({
-      description: '管理対象ブランド一覧（JOYFIT / FIT365）',
+      description: '管理対象ブランド一覧',
     }),
   })
   .openapi({
     title: 'GetBrandsResponse',
-    description: 'Y-07 ブランドマスタ一覧',
+    description: 'ブランドマスタ一覧',
   });
 
 export const UpdateBrandRequestSchema = z

@@ -52,10 +52,25 @@ export async function POST(request: NextRequest) {
     }
 
     const validatedBody: InviteStaffRequest = validationResult.data;
-    const { emails, role, brand } = validatedBody;
+    const { invitees } = validatedBody;
 
-    // Create staff entries for each email
-    const newStaffs = emails.map((email) => db.staffs.create({ email, role, brand }));
+    for (const invitee of invitees) {
+      if (!db.positions.getById(invitee.position_id)) {
+        return NextResponse.json(
+          { error: `Invalid position_id: ${invitee.position_id}` },
+          { status: 400 },
+        );
+      }
+    }
+
+    // Create staff entries for each invitee with position from master table
+    const newStaffs = invitees.map((invitee) =>
+      db.staffs.create({
+        email: invitee.email,
+        position_id: invitee.position_id,
+        brand: invitee.brand,
+      }),
+    );
 
     const response: InviteStaffResponse = {
       message: '招待メールを送信しました',

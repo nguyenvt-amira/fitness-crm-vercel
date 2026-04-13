@@ -559,23 +559,30 @@ export const UpdateStaffResponseSchema = z
 /**
  * Invite Staff Request Schema
  */
+export const InviteStaffItemSchema = z.object({
+  email: z.string().email().openapi({
+    example: 'staff@joyfit.co.jp',
+    description: 'Email address to invite',
+  }),
+  position_id: z.number().int().positive().openapi({
+    example: 6,
+    description: 'Position master id (positions.id) for this email',
+  }),
+  brand: StaffBrandSchema.optional().openapi({
+    example: 'joyfit',
+    description: 'Brand to assign for this email (optional)',
+  }),
+});
+
 export const InviteStaffRequestSchema = z
   .object({
-    emails: z
-      .array(z.string().email())
+    invitees: z
+      .array(InviteStaffItemSchema)
       .min(1)
       .openapi({
-        example: ['staff@joyfit.co.jp'],
-        description: 'Email addresses to invite',
+        example: [{ email: 'staff@joyfit.co.jp', position_id: 6, brand: 'joyfit' }],
+        description: 'Invite list with per-email position and brand',
       }),
-    role: StaffRoleSchema.openapi({
-      example: 'store_staff',
-      description: 'Role to assign',
-    }),
-    brand: StaffBrandSchema.optional().openapi({
-      example: 'joyfit',
-      description: 'Brand to assign (optional)',
-    }),
   })
   .openapi({
     title: 'InviteStaffRequest',

@@ -8689,9 +8689,9 @@
       },
       "ManagedBrandCode": {
         "type": "string",
-        "enum": ["joyfit", "fit365"],
+        "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
         "title": "ManagedBrandCode",
-        "description": "Y-07 管理対象ブランドコード（2ブランド共通運用）"
+        "description": "管理対象ブランドコード"
       },
       "BrandItem": {
         "type": "object",
@@ -8703,7 +8703,7 @@
           },
           "code": {
             "type": "string",
-            "enum": ["joyfit", "fit365"],
+            "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
             "title": "ManagedBrandCode",
             "description": "ブランドコード"
           },
@@ -8778,7 +8778,7 @@
                 },
                 "code": {
                   "type": "string",
-                  "enum": ["joyfit", "fit365"],
+                  "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
                   "title": "ManagedBrandCode",
                   "description": "ブランドコード"
                 },
@@ -8838,12 +8838,12 @@
               "title": "BrandItem",
               "description": "Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）"
             },
-            "description": "管理対象ブランド一覧（JOYFIT / FIT365）"
+            "description": "管理対象ブランド一覧"
           }
         },
         "required": ["brands"],
         "title": "GetBrandsResponse",
-        "description": "Y-07 ブランドマスタ一覧"
+        "description": "ブランドマスタ一覧"
       },
       "UpdateBrandRequest": {
         "type": "object",
@@ -8883,7 +8883,7 @@
               },
               "code": {
                 "type": "string",
-                "enum": ["joyfit", "fit365"],
+                "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
                 "title": "ManagedBrandCode",
                 "description": "ブランドコード"
               },
@@ -10670,32 +10670,46 @@
       "InviteStaffRequest": {
         "type": "object",
         "properties": {
-          "emails": {
+          "invitees": {
             "type": "array",
             "items": {
-              "type": "string",
-              "format": "email"
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "example": "staff@joyfit.co.jp",
+                  "description": "Email address to invite"
+                },
+                "position_id": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "exclusiveMinimum": true,
+                  "example": 6,
+                  "description": "Position master id (positions.id) for this email"
+                },
+                "brand": {
+                  "type": "string",
+                  "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                  "title": "StaffBrand",
+                  "description": "Brand to assign for this email (optional)",
+                  "example": "joyfit"
+                }
+              },
+              "required": ["email", "position_id"]
             },
             "minItems": 1,
-            "example": ["staff@joyfit.co.jp"],
-            "description": "Email addresses to invite"
-          },
-          "role": {
-            "type": "string",
-            "enum": ["headquarters", "store_staff", "viewer"],
-            "title": "StaffRole",
-            "description": "Role to assign",
-            "example": "store_staff"
-          },
-          "brand": {
-            "type": "string",
-            "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
-            "title": "StaffBrand",
-            "description": "Brand to assign (optional)",
-            "example": "joyfit"
+            "example": [
+              {
+                "email": "staff@joyfit.co.jp",
+                "position_id": 6,
+                "brand": "joyfit"
+              }
+            ],
+            "description": "Invite list with per-email position and brand"
           }
         },
-        "required": ["emails", "role"],
+        "required": ["invitees"],
         "title": "InviteStaffRequest",
         "description": "Request body to invite staff"
       },
@@ -11911,7 +11925,14 @@
                           },
                           "code": {
                             "type": "string",
-                            "enum": ["joyfit", "fit365"],
+                            "enum": [
+                              "all",
+                              "joyfit",
+                              "fit365",
+                              "joyfit24",
+                              "joyfit_yoga",
+                              "joyfit_plus"
+                            ],
                             "title": "ManagedBrandCode",
                             "description": "ブランドコード"
                           },
@@ -11971,12 +11992,12 @@
                         "title": "BrandItem",
                         "description": "Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）"
                       },
-                      "description": "管理対象ブランド一覧（JOYFIT / FIT365）"
+                      "description": "管理対象ブランド一覧"
                     }
                   },
                   "required": ["brands"],
                   "title": "GetBrandsResponse",
-                  "description": "Y-07 ブランドマスタ一覧"
+                  "description": "ブランドマスタ一覧"
                 }
               }
             }
@@ -23113,32 +23134,53 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "emails": {
+                  "invitees": {
                     "type": "array",
                     "items": {
-                      "type": "string",
-                      "format": "email"
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string",
+                          "format": "email",
+                          "example": "staff@joyfit.co.jp",
+                          "description": "Email address to invite"
+                        },
+                        "position_id": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "exclusiveMinimum": true,
+                          "example": 6,
+                          "description": "Position master id (positions.id) for this email"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "enum": [
+                            "all",
+                            "joyfit",
+                            "fit365",
+                            "joyfit24",
+                            "joyfit_yoga",
+                            "joyfit_plus"
+                          ],
+                          "title": "StaffBrand",
+                          "description": "Brand to assign for this email (optional)",
+                          "example": "joyfit"
+                        }
+                      },
+                      "required": ["email", "position_id"]
                     },
                     "minItems": 1,
-                    "example": ["staff@joyfit.co.jp"],
-                    "description": "Email addresses to invite"
-                  },
-                  "role": {
-                    "type": "string",
-                    "enum": ["headquarters", "store_staff", "viewer"],
-                    "title": "StaffRole",
-                    "description": "Role to assign",
-                    "example": "store_staff"
-                  },
-                  "brand": {
-                    "type": "string",
-                    "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
-                    "title": "StaffBrand",
-                    "description": "Brand to assign (optional)",
-                    "example": "joyfit"
+                    "example": [
+                      {
+                        "email": "staff@joyfit.co.jp",
+                        "position_id": 6,
+                        "brand": "joyfit"
+                      }
+                    ],
+                    "description": "Invite list with per-email position and brand"
                   }
                 },
-                "required": ["emails", "role"],
+                "required": ["invitees"],
                 "title": "InviteStaffRequest",
                 "description": "Request body to invite staff"
               }

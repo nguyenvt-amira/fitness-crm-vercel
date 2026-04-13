@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, Send } from 'lucide-react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Loader2, Send, Users, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -35,16 +35,13 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 
 import {
+  getCrmBrandsOptions,
+  getCrmPositionsOptions,
   getCrmStaffsQueryKey,
   postCrmStaffsInviteMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
 
-import {
-  STAFF_BRAND_LABELS,
-  STAFF_ROLE_LABELS,
-  StaffBrand,
-  StaffRole,
-} from '../_constants/constants';
+import { StaffBrand } from '../_constants/constants';
 import { type InviteStaffFormValues, inviteStaffSchema } from '../_schemas/invite-staff.schema';
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -54,155 +51,349 @@ interface InviteStaffModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
+interface InviteListItem {
+  id: string;
+  email: string;
+  position_id: number;
+  brand?: StaffBrand;
+}
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const DEFAULT_BRAND = StaffBrand.ALL;
+
 export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) {
   const queryClient = useQueryClient();
+  const [inviteList, setInviteList] = useState<InviteListItem[]>([]);
+  const [selectedPositionId, setSelectedPositionId] = useState<string>('');
+
+  const { data: positionsRes } = useQuery({
+    ...getCrmPositionsOptions(),
+    enabled: open,
+  });
+  const positionOptions = useMemo(() => positionsRes?.positions ?? [], [positionsRes]);
+  const defaultPositionId = useMemo(() => {
+    if (positionOptions.length === 0) return '';
+    const defaultPosition = positionOptions.find((position) => position.id === 6);
+    return String(defaultPosition?.id ?? positionOptions[0]!.id);
+  }, [positionOptions]);
+
+  const { data: brandsRes } = useQuery({
+    ...getCrmBrandsOptions(),
+    enabled: open,
+  });
+  const apiBrands = brandsRes?.brands ?? [];
 
   const form = useForm<InviteStaffFormValues>({
     resolver: zodResolver(inviteStaffSchema),
     defaultValues: {
       emails: '',
-      role: StaffRole.STORE_STAFF,
-      brand: StaffBrand.ALL,
+      brand: DEFAULT_BRAND,
     },
   });
 
-  // Reset form when modal opens
-  useEffect(() => {
-    if (open) {
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (nextOpen) {
+      setInviteList([]);
+      setSelectedPositionId('');
       form.reset({
         emails: '',
-        role: StaffRole.STORE_STAFF,
-        brand: StaffBrand.ALL,
+        brand: DEFAULT_BRAND,
       });
     }
-  }, [open, form]);
+    onOpenChange(nextOpen);
+  };
 
   const inviteMutation = useMutation({
     ...postCrmStaffsInviteMutation(),
-    onSuccess: (data) => {
-      toast.success(data.message || '招待メールを送信しました');
-      queryClient.invalidateQueries({ queryKey: getCrmStaffsQueryKey() });
-      onOpenChange(false);
-    },
     onError: () => {
       toast.error('招待の送信に失敗しました');
     },
   });
 
-  const onSubmit = (data: InviteStaffFormValues) => {
-    const emails = data.emails
+  const addEmailsToList = () => {
+    const emailInput = form.getValues('emails');
+    const brand = form.getValues('brand');
+    const currentPositionId = selectedPositionId || defaultPositionId;
+    const parsedPositionId = Number(currentPositionId);
+
+    if (!currentPositionId || Number.isNaN(parsedPositionId)) {
+      toast.error('職位を選択してください');
+      return;
+    }
+
+    const emails = emailInput
       .split('\n')
       .map((e) => e.trim())
       .filter((e) => e.length > 0);
 
-    inviteMutation.mutate({
-      body: {
-        emails,
-        role: data.role,
-        brand: data.brand,
-      },
-    });
+    if (emails.length === 0) {
+      form.setError('emails', {
+        type: 'manual',
+        message: 'メールアドレスを入力してください',
+      });
+      return;
+    }
+
+    const invalidEmail = emails.find((email) => !EMAIL_REGEX.test(email));
+    if (invalidEmail) {
+      form.setError('emails', {
+        type: 'manual',
+        message: '有効なメールアドレスを入力してください',
+      });
+      return;
+    }
+
+    const existingEmailSet = new Set(inviteList.map((item) => item.email.toLowerCase()));
+    const uniqueEmails = emails.filter((email) => !existingEmailSet.has(email.toLowerCase()));
+
+    if (uniqueEmails.length === 0) {
+      form.setError('emails', {
+        type: 'manual',
+        message: '入力したメールアドレスはすでに追加されています',
+      });
+      return;
+    }
+
+    const newItems: InviteListItem[] = uniqueEmails.map((email) => ({
+      id: crypto.randomUUID(),
+      email,
+      position_id: parsedPositionId,
+      brand,
+    }));
+
+    setInviteList((prev) => [...prev, ...newItems]);
+    form.clearErrors('emails');
+    form.setValue('emails', '');
+  };
+
+  const updateInviteItem = <K extends 'position_id' | 'brand'>(
+    id: string,
+    key: K,
+    value: InviteListItem[K],
+  ) => {
+    setInviteList((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, [key]: value } : item)),
+    );
+  };
+
+  const removeInviteItem = (id: string) => {
+    setInviteList((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const onSubmit = async () => {
+    if (inviteList.length === 0) {
+      form.setError('emails', {
+        type: 'manual',
+        message: '招待リストにメールアドレスを追加してください',
+      });
+      return;
+    }
+
+    try {
+      await inviteMutation.mutateAsync({
+        body: {
+          invitees: inviteList.map((invite) => ({
+            email: invite.email,
+            position_id: invite.position_id,
+            brand: invite.brand,
+          })),
+        },
+      });
+
+      toast.success('招待メールを送信しました');
+      queryClient.invalidateQueries({ queryKey: getCrmStaffsQueryKey() });
+      onOpenChange(false);
+    } catch {
+      // Error toast is handled by mutation onError
+    }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="overflow-hidden rounded-[14px] p-0 sm:max-w-[520px]">
-        <div className="space-y-4 p-6 pb-0">
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent className="max-h-[90vh] gap-0 overflow-hidden rounded-[14px] p-0 sm:max-w-[560px]">
+        <div className="p-4">
           <DialogHeader>
             <DialogTitle className="text-base font-bold">スタッフを招待</DialogTitle>
             <DialogDescription>
               招待メールを送信します。受信者がメール内のリンクからアカウントを作成します。
             </DialogDescription>
           </DialogHeader>
+        </div>
 
+        <div className="max-h-[calc(90vh-180px)] overflow-y-auto px-4 pb-0">
           <Form {...form}>
             <form
               id="invite-staff-form"
               onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-4"
+              className="space-y-5"
             >
-              {/* メールアドレス */}
-              <FormField
-                control={form.control}
-                name="emails"
-                render={({ field }) => (
+              <div className="border-border bg-muted/30 flex flex-col gap-3 rounded-md border p-3">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                   <FormItem>
-                    <FormLabel>
-                      メールアドレス <span className="text-destructive">*</span>
+                    <FormLabel className="text-muted-foreground text-xs">
+                      招待時の職位 <span className="text-destructive">*</span>
                     </FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder={
-                          'example@joyfit.co.jp\n複数人を招待する場合は改行で区切ってください'
-                        }
-                        rows={4}
-                        className="max-h-[200px]"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* 権限 */}
-              <FormField
-                control={form.control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      権限 <span className="text-destructive">*</span>
-                    </FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select
+                      value={selectedPositionId || defaultPositionId}
+                      onValueChange={setSelectedPositionId}
+                    >
                       <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="権限を選択" />
+                        <SelectTrigger className="w-full" size="sm">
+                          <SelectValue placeholder="職位を選択" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {Object.entries(STAFF_ROLE_LABELS).map(([value, label]) => (
-                          <SelectItem key={value} value={value}>
-                            {label}
+                        {positionOptions.map((option) => (
+                          <SelectItem key={option.id} value={String(option.id)}>
+                            {option.position_name}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                    <FormMessage />
                   </FormItem>
-                )}
-              />
 
-              {/* ブランド */}
-              <FormField
-                control={form.control}
-                name="brand"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>ブランド</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormField
+                    control={form.control}
+                    name="brand"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-muted-foreground text-xs">
+                          招待時のブランド
+                        </FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="w-full" size="sm">
+                              <SelectValue placeholder="ブランドを選択" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {apiBrands.map((brand) => (
+                              <SelectItem key={brand.code} value={brand.code}>
+                                {brand.display_name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="emails"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-muted-foreground text-xs">
+                        メールアドレス <span className="text-muted-foreground">*</span>
+                      </FormLabel>
                       <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="ブランドを選択" />
-                        </SelectTrigger>
+                        <Textarea
+                          placeholder={
+                            'example@joyfit.co.jp\n複数人を招待する場合は改行で区切ってください'
+                          }
+                          rows={2}
+                          className="max-h-[200px]"
+                          {...field}
+                        />
                       </FormControl>
-                      <SelectContent>
-                        {Object.entries(STAFF_BRAND_LABELS).map(([value, label]) => (
-                          <SelectItem key={value} value={value}>
-                            {label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="text-muted-foreground h-9 w-full text-xs"
+                  onClick={addEmailsToList}
+                >
+                  ＋ リストに追加
+                </Button>
+              </div>
+
+              <div className="space-y-3 pb-4">
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-semibold">招待リスト</p>
+                  {inviteList.length > 0 ? (
+                    <span className="bg-muted rounded-full px-2 py-0.5 text-xs font-medium">
+                      {inviteList.length}件
+                    </span>
+                  ) : null}
+                </div>
+
+                {inviteList.length === 0 ? (
+                  <div className="border-border flex min-h-20 flex-col items-center justify-center gap-2 rounded-lg border border-dashed px-4 py-5 text-center">
+                    <Users className="text-muted-foreground size-4" />
+                    <p className="text-muted-foreground text-xs">
+                      メールアドレスを入力して「リストに追加」を押してください
+                    </p>
+                  </div>
+                ) : (
+                  <div className="max-h-[280px] space-y-2 overflow-y-auto pr-1 md:max-h-[360px]">
+                    {inviteList.map((invite) => (
+                      <div
+                        key={invite.id}
+                        className="flex items-center gap-2 rounded-md border px-3 py-2"
+                      >
+                        <p className="max-w-[150px] flex-1 truncate text-xs">{invite.email}</p>
+                        <div className="flex items-center gap-2">
+                          <Select
+                            value={String(invite.position_id)}
+                            onValueChange={(value) =>
+                              updateInviteItem(invite.id, 'position_id', Number(value))
+                            }
+                          >
+                            <SelectTrigger className="w-[148px]" size="sm">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {positionOptions.map((option) => (
+                                <SelectItem key={option.id} value={String(option.id)}>
+                                  {option.position_name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+
+                          <Select
+                            value={invite.brand}
+                            onValueChange={(value) =>
+                              updateInviteItem(invite.id, 'brand', value as StaffBrand)
+                            }
+                          >
+                            <SelectTrigger className="w-[128px]" size="sm">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {apiBrands.map((brand) => (
+                                <SelectItem key={brand.code} value={brand.code}>
+                                  {brand.display_name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="size-8"
+                            onClick={() => removeInviteItem(invite.id)}
+                          >
+                            <X className="size-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 )}
-              />
+              </div>
             </form>
           </Form>
         </div>
 
-        <DialogFooter className="border-t border-neutral-200 bg-neutral-100/50 px-4 py-4">
+        <DialogFooter className="border-border border-t px-4 py-4">
           <Button
             type="button"
             variant="outline"
@@ -218,7 +409,7 @@ export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) 
             form="invite-staff-form"
             size="sm"
             className="gap-1.5 font-medium"
-            disabled={inviteMutation.isPending}
+            disabled={inviteMutation.isPending || inviteList.length === 0}
           >
             {inviteMutation.isPending ? (
               <Loader2 className="size-3.5 animate-spin" />
