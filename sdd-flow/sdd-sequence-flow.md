@@ -41,7 +41,7 @@ sequenceDiagram
     %% ==========================================
     %% Phase 1 – Kickoff & Handoff
     %% ==========================================
-    rect rgb(255, 243, 220)
+    rect rgb(250, 248, 244)
         Note over PO,GIT: Phase 1 – Kickoff & Handoff
 
         PO->>GIT: Commit prototype + flow screens + spec assets (Markdown)
@@ -53,41 +53,66 @@ sequenceDiagram
     %% ==========================================
     %% Phase 2 – FE: Spec Analysis & Implementation
     %% ==========================================
-    rect rgb(220, 245, 235)
-        Note over FE,GIT: Phase 2 – FE: Spec Analysis & Implementation
+    rect rgb(250, 248, 244)
+        Note over PO,GIT: Phase 2 – FE: Spec Analysis & Implementation
 
         Note right of FE: Skill: speckit.specify
-        FE->>SK: [speckit.specify] Trigger with commit ref + feature description
+        FE->>SK: [speckit.specify] With commit ref + feature description
         SK->>GIT: Pull & diff spec assets + prototype
         GIT-->>SK: Raw diff output
-        SK-->>FE: Draft spec.md (with [NEEDS CLARIFICATION] tags)
+        SK->>GIT: Generate draft spec.md (with [NEEDS CLARIFICATION] tags)
 
         Note over SK,FE: Clarification Round — speckit.clarify
-        SK->>FE: [speckit.clarify] Raise ambiguities / edge cases / constraints (up to 5 questions)
-        FE-->>SK: Resolve or escalate
+        Note right of FE: Skill: speckit.clarify
+        FE->>SK: [speckit.clarify] Trigger clarification skill on draft spec.md
+        loop Each question (max 10 rounds)
+            SK->>FE: [speckit.clarify] e.g. What is the behavior when the API returns an empty list? (A) Show empty state with placeholder (B) Hide section entirely (C) Show skeleton loader
+            FE->>PO: (Consult PO/BA if necessary)
+            FE-->>SK: Answer
+        end
+        SK->>GIT: Update docs/spec/<feature>/spec.md ( all [NEEDS CLARIFICATION] resolved)
+        %% Note over FE,PO: Dev → PO/PM Escalation
+        %% FE->>PO: Escalate unresolved items outside Dev authority
+        %% PO-->>FE: Decision / spec update
+        %% FE->>SK: Feed PO decisions → finalize spec.md
+        %% SK->>GIT: Update docs/spec/<feature>/spec.md (finalized — all [NEEDS CLARIFICATION] resolved)
 
-        Note over FE,PO: Dev → PO/PM Escalation
-        FE->>PO: Escalate unresolved items outside Dev authority
-        PO-->>FE: Decision / spec update
-        FE->>SK: Feed PO decisions → finalize spec.md
-        SK-->>FE: spec.md (finalized — all [NEEDS CLARIFICATION] resolved)
-        FE->>GIT: Commit spec.md (linked to feature branch)
+        Note over FE,PO: PO/PM Spec Review & Approval
+        FE->>PO: Request Spec Review
+        PO-->>GIT: Approved — spec.md sign-off confirmed
+        Note right of GIT: All [Pending] resolved → Spec approved
+
+        %% PO->>PO: Review spec.md (completeness, correctness, alignment)
+        %% alt Spec needs revision
+        %%     PO-->>FE: Feedback / change requests
+        %%     FE->>SK: Apply PO feedback → revise spec.md
+        %%     SK->>GIT: Update docs/spec/<feature>/spec.md (revised)
+        %%     FE->>PO: Re-submit revised spec.md
+        %% end
+        %% PO-->>FE: Approved — spec.md sign-off confirmed
+        %% SK->>GIT: Tag spec.md as approved (status: approved)
 
         Note right of FE: Skill: speckit.plan
         FE->>SK: [speckit.plan] Generate implementation plan from spec.md
-        SK-->>FE: plan.md + research.md + data-model.md + api-contracts/
+        SK->>GIT: Generate docs/spec/<feature>/plan.md + research.md + data-model.md + api-contracts/
+
+
+
+        Note right of FE: Skill: speckit.plan
+        FE->>SK: [speckit.plan] Generate implementation plan from spec.md
+        SK->>GIT: Generate docs/spec/<feature>/plan.md + research.md + data-model.md + api-contracts/
 
         Note right of FE: Skill: speckit.tasks
         FE->>SK: [speckit.tasks] Break down plan into task list
-        SK-->>FE: tasks.md (user stories + steps + priority order)
+        SK->>GIT: Generate docs/spec/<feature>/tasks.md (user stories + steps + priority order)
 
         Note right of FE: Skill: speckit.analyze
         FE->>SK: [speckit.analyze] Cross-artifact consistency check (spec / plan / tasks)
-        SK-->>FE: Analysis report (inconsistencies / gaps / constitution conflicts)
+        SK-->>FE: Analysis report (inconsistencies / gaps / conflicts)
 
         alt Issues found (CRITICAL or HIGH)
             FE->>SK: Apply approved remediations → update affected artifacts
-            SK-->>FE: Updated artifacts
+            SK->>GIT: Generate updated artifacts (overwrite affected docs)
         end
 
         Note right of FE: Skill: speckit.implement
@@ -101,8 +126,8 @@ sequenceDiagram
     %% ==========================================
     %% Phase 3 – BE Integration & FE–BE Contract QA
     %% ==========================================
-    rect rgb(220, 232, 250)
-        Note over FE,BE: Phase 3 – BE Integration & FE–BE Contract QA
+    rect rgb(250, 248, 244)
+        Note over PO,GIT: Phase 3 – BE Integration & FE–BE Contract QA
 
         FE->>BE: Handoff: api-contracts/ (mock API docs + data model)
 
@@ -122,12 +147,12 @@ sequenceDiagram
     %% ==========================================
     %% Phase 4 – FE: Real API Integration
     %% ==========================================
-    rect rgb(220, 245, 235)
-        Note over FE,GIT: Phase 4 – FE: Real API Integration
+    rect rgb(250, 248, 244)
+        Note over PO,GIT: Phase 4 – FE: Real API Integration
 
         Note right of FE: Skill: speckit.plan
         FE->>SK: [speckit.plan] Feed openapi.json → generate integration plan
-        SK-->>FE: plan-integrate-api.md + tasks-integrate-api.md
+        SK->>GIT: Commit docs/spec/<feature>/plan-integrate-api.md + tasks-integrate-api.md
 
         Note right of FE: Skill: speckit.implement
         FE->>SK: [speckit.implement] Execute tasks-integrate-api.md
@@ -140,8 +165,8 @@ sequenceDiagram
     %% ==========================================
     %% Phase 5 – QC: System Testing
     %% ==========================================
-    rect rgb(252, 230, 220)
-        Note over QC,FE: Phase 5 – QC: System Testing
+    rect rgb(250, 248, 244)
+        Note over PO,GIT: Phase 5 – QC: System Testing
 
         FE->>QC: Input: test build (integrated branch)
         PO->>QC: Input: spec.md + acceptance criteria
@@ -156,8 +181,8 @@ sequenceDiagram
     %% ==========================================
     %% Phase 6 – Bug Triage & Fix
     %% ==========================================
-    rect rgb(220, 245, 235)
-        Note over FE,GIT: Phase 6 – Bug Triage & Fix
+    rect rgb(250, 248, 244)
+        Note over PO,GIT: Phase 6 – Bug Triage & Fix
 
         Note over FE,QC: Triage – Identify Bug Ownership
         FE->>QC: Request: reproduction steps / additional evidence
@@ -170,7 +195,7 @@ sequenceDiagram
         else Bug owned by FE
             Note right of FE: Skill: speckit.specify
             FE->>SK: [speckit.specify] Feed bug report → review & update spec.md
-            SK-->>FE: spec.md (updated – bug scope identified)
+            SK->>GIT: Commit docs/spec/<feature>/spec.md (updated – bug scope identified)
 
             Note over FE,PO: Dev → PO/PM Escalation (if spec-impacting)
             FE->>PO: Report: bug requires spec change
@@ -178,7 +203,7 @@ sequenceDiagram
 
             Note right of FE: Skill: speckit.tasks
             FE->>SK: [speckit.tasks] Generate tasks-bug.md from updated spec
-            SK-->>FE: tasks-bug.md
+            SK->>GIT: Commit docs/spec/<feature>/tasks-bug.md
 
             Note right of FE: Skill: speckit.implement
             FE->>SK: [speckit.implement] Execute tasks-bug.md with full context
@@ -193,7 +218,7 @@ sequenceDiagram
     %% ==========================================
     %% Phase 7 – Verification & Release
     %% ==========================================
-    rect rgb(225, 245, 220)
+    rect rgb(250, 248, 244)
         Note over PO,GIT: Phase 7 – Verification & Release
 
         QC-->>PO: Output: re-test passed / sign-off confirmed

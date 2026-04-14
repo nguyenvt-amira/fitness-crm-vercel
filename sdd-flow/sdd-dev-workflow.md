@@ -8,7 +8,7 @@
 ## Overview
 
 ```
-PO / PM → Feature idea or Jira ticket
+PO / PM → Feature idea
     |
     v
 [Phase 1] Kickoff & Handoff ──── Commit prototype + flow screens + spec assets to feature branch
