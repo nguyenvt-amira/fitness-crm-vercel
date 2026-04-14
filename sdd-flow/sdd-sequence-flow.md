@@ -151,7 +151,7 @@ sequenceDiagram
 
         Note right of FE: Skill: speckit.plan
         FE->>SK: [speckit.plan] Feed openapi.json → generate integration plan
-        SK->>GIT: Commit docs/spec/<feature>/plan-integrate-api.md + tasks-integrate-api.md
+        SK->>GIT: Generate docs/spec/<feature>/plan-integrate-api.md + tasks-integrate-api.md <br/> ・ Schemas to be updated, scope, and impact
 
         Note right of FE: Skill: speckit.implement
         FE->>SK: [speckit.implement] Execute tasks-integrate-api.md
@@ -229,27 +229,27 @@ sequenceDiagram
 
 ## SpecKit Agent Reference
 
-| Phase               | Skill invoked       | Output                                                         |
-| ------------------- | ------------------- | -------------------------------------------------------------- |
-| Phase 2 – Spec      | `speckit.specify`   | `spec.md` (draft)                                              |
-| Phase 2 – Clarify   | `speckit.clarify`   | `spec.md` (finalized)                                          |
-| Phase 2 – Plan      | `speckit.plan`      | `plan.md` · `research.md` · `data-model.md` · `api-contracts/` |
-| Phase 2 – Tasks     | `speckit.tasks`     | `tasks.md`                                                     |
-| Phase 2 – Analyze   | `speckit.analyze`   | Analysis report (read-only)                                    |
-| Phase 2 – Implement | `speckit.implement` | Code + inline review notes                                     |
-| Phase 4 – Plan      | `speckit.plan`      | `plan-integrate-api.md` · `tasks-integrate-api.md`             |
-| Phase 4 – Implement | `speckit.implement` | Integrated code                                                |
-| Phase 6 – Specify   | `speckit.specify`   | `spec.md` (bug scope update)                                   |
-| Phase 6 – Tasks     | `speckit.tasks`     | `tasks-bug.md`                                                 |
-| Phase 6 – Implement | `speckit.implement` | Fixed code                                                     |
+| Phase               | Skill invoked       | Output                                                                                                                                           |
+| ------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Phase 2 – Spec      | `speckit.specify`   | `spec.md` (draft, with `[NEEDS CLARIFICATION]` tags) — user story, edge cases, requirements, success criteria                                    |
+| Phase 2 – Clarify   | `speckit.clarify`   | `spec.md` (all `[NEEDS CLARIFICATION]` resolved) → PO/PM sign-off confirmed                                                                      |
+| Phase 2 – Plan      | `speckit.plan`      | `plan.md` · `research.md` · `data-model.md` · `api-contracts/` — technical context, constitution check, project structure, complexity tracking   |
+| Phase 2 – Tasks     | `speckit.tasks`     | `tasks.md` — user stories + steps + priority order; path conventions, phase setup/foundational/each story/polish; dependencies & execution order |
+| Phase 2 – Analyze   | `speckit.analyze`   | Analysis report (inconsistencies / gaps / conflicts) — read-only; triggers artifact update if CRITICAL or HIGH issues found                      |
+| Phase 2 – Implement | `speckit.implement` | Code output + inline review notes → pushed as UI with mock API (commit refs spec + tasks)                                                        |
+| Phase 4 – Plan      | `speckit.plan`      | `plan-integrate-api.md` · `tasks-integrate-api.md` will be deleted after the implement API done (fed from `openapi.json`)                        |
+| Phase 4 – Implement | `speckit.implement` | Integrated code + review notes → loading / error / empty / success states verified                                                               |
+| Phase 6 – Specify   | `speckit.specify`   | `spec.md` (updated – bug scope identified)                                                                                                       |
+| Phase 6 – Tasks     | `speckit.tasks`     | `tasks-bug.md` — phase setup, phase impact; dependencies & execution order, implementation strategy                                              |
+| Phase 6 – Implement | `speckit.implement` | Fixed code + review notes → pushed as fix branch (commit refs bug ID + spec)                                                                     |
 
 ---
 
 ## Review Gates
 
-| Gate                          | Phase   | Trigger                                                 | Owner   |
-| ----------------------------- | ------- | ------------------------------------------------------- | ------- |
-| ★ Gate 1 – Spec Approved      | Phase 2 | All `[NEEDS CLARIFICATION]` resolved, spec.md committed | PO / BA |
-| ★ Gate 2 – Contract Finalized | Phase 3 | openapi.json committed, PO decisions relayed            | FE + BE |
-| ★ Gate 3 – QC Sign-off        | Phase 5 | All test cases passed                                   | QC → PO |
-| ★ Gate 4 – MR Approved        | Phase 7 | MR reviewed and merged                                  | PO / PM |
+| Gate                          | Phase   | Trigger                                                                                                                                      | Owner        |
+| ----------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| ★ Gate 1 – Spec Approved      | Phase 2 | All `[NEEDS CLARIFICATION]` resolved → FE requests PO/PM review → PO/PM sign-off confirmed on `spec.md`                                      | PO / PM      |
+| ★ Gate 2 – Contract Finalized | Phase 3 | Contract review round complete (endpoints / fields / types / auth / errors clarified) + PO/PM escalation resolved → `openapi.json` committed | FE + BE + PO |
+| ★ Gate 3 – QC Sign-off        | Phase 5 | All test cases passed (no defects found) → QC sign-off issued to PO/PM                                                                       | QC → PO      |
+| ★ Gate 4 – MR Approved        | Phase 7 | Re-test passed + QC sign-off confirmed → MR reviewed and merged to main / release branch                                                     | PO / PM      |
