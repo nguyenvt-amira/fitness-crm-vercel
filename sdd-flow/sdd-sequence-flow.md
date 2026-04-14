@@ -41,7 +41,7 @@ sequenceDiagram
     %% ==========================================
     %% Phase 1 – Kickoff & Handoff
     %% ==========================================
-    rect rgb(250, 248, 244)
+    rect rgb(255, 243, 220)
         Note over PO,GIT: Phase 1 – Kickoff & Handoff
 
         PO->>GIT: Commit prototype + flow screens + spec assets (Markdown)
@@ -53,7 +53,7 @@ sequenceDiagram
     %% ==========================================
     %% Phase 2 – FE: Spec Analysis & Implementation
     %% ==========================================
-    rect rgb(250, 248, 244)
+    rect rgb(220, 245, 235)
         Note over PO,GIT: Phase 2 – FE: Spec Analysis & Implementation
 
         Note right of FE: Skill: speckit.specify
@@ -126,7 +126,7 @@ sequenceDiagram
     %% ==========================================
     %% Phase 3 – BE Integration & FE–BE Contract QA
     %% ==========================================
-    rect rgb(250, 248, 244)
+    rect rgb(220, 232, 250)
         Note over PO,GIT: Phase 3 – BE Integration & FE–BE Contract QA
 
         FE->>BE: Handoff: api-contracts/ (mock API docs + data model)
@@ -147,7 +147,7 @@ sequenceDiagram
     %% ==========================================
     %% Phase 4 – FE: Real API Integration
     %% ==========================================
-    rect rgb(250, 248, 244)
+    rect rgb(220, 245, 235)
         Note over PO,GIT: Phase 4 – FE: Real API Integration
 
         Note right of FE: Skill: speckit.plan
@@ -165,7 +165,7 @@ sequenceDiagram
     %% ==========================================
     %% Phase 5 – QC: System Testing
     %% ==========================================
-    rect rgb(250, 248, 244)
+    rect rgb(252, 230, 220)
         Note over PO,GIT: Phase 5 – QC: System Testing
 
         FE->>QC: Input: test build (integrated branch)
@@ -181,7 +181,7 @@ sequenceDiagram
     %% ==========================================
     %% Phase 6 – Bug Triage & Fix
     %% ==========================================
-    rect rgb(250, 248, 244)
+    rect rgb(220, 245, 235)
         Note over PO,GIT: Phase 6 – Bug Triage & Fix
 
         Note over FE,QC: Triage – Identify Bug Ownership
@@ -218,7 +218,7 @@ sequenceDiagram
     %% ==========================================
     %% Phase 7 – Verification & Release
     %% ==========================================
-    rect rgb(250, 248, 244)
+    rect rgb(225, 245, 220)
         Note over PO,GIT: Phase 7 – Verification & Release
 
         QC-->>PO: Output: re-test passed / sign-off confirmed
