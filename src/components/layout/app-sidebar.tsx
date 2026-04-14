@@ -154,13 +154,17 @@ const menuItems: MenuItem[] = [
   //   ],
   // },
   {
-    href: '/staff-list',
+    href: '/stores',
     icon: Settings,
     label: 'スタッフ管理',
     subItems: [
+      // {
+      //   label: 'スタッフ管理',
+      //   href: '/staff-list',
+      // },
       {
-        label: 'スタッフ管理',
-        href: '/staff-list',
+        label: '店舗管理',
+        href: '/stores',
       },
     ],
   },

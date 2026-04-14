@@ -4908,6 +4908,357 @@ export type GetFamilyRegistrationsDashboardResponse = {
     };
 };
 
+/**
+ * StoreMainContractStatus
+ *
+ * Main contract lifecycle for the store
+ */
+export const StoreMainContractStatus = {
+    DRAFT: 'draft',
+    ACTIVE: 'active',
+    SUSPENDED: 'suspended',
+    EXPIRED: 'expired',
+    TERMINATED: 'terminated'
+} as const;
+
+/**
+ * StoreMainContractStatus
+ *
+ * Main contract lifecycle for the store
+ */
+export type StoreMainContractStatus = typeof StoreMainContractStatus[keyof typeof StoreMainContractStatus];
+
+/**
+ * MutualUseType
+ *
+ * Cơ chế sử dụng lẫn nhau / mutual use type
+ */
+export const MutualUseType = {
+    NONE: 'none',
+    WITHIN_BRAND: 'within_brand',
+    CROSS_BRAND: 'cross_brand',
+    CUSTOM: 'custom'
+} as const;
+
+/**
+ * MutualUseType
+ *
+ * Cơ chế sử dụng lẫn nhau / mutual use type
+ */
+export type MutualUseType = typeof MutualUseType[keyof typeof MutualUseType];
+
+/**
+ * StoreListBrand
+ *
+ * Store brand
+ */
+export const StoreListBrand = {
+    JOYFIT: 'joyfit',
+    FIT365: 'fit365',
+    JOYFIT24: 'joyfit24',
+    JOYFIT_YOGA: 'joyfit_yoga',
+    JOYFIT_PLUS: 'joyfit_plus'
+} as const;
+
+/**
+ * StoreListBrand
+ *
+ * Store brand
+ */
+export type StoreListBrand = typeof StoreListBrand[keyof typeof StoreListBrand];
+
+/**
+ * StoreArea
+ *
+ * Rough geographic area for filtering
+ */
+export const StoreArea = {
+    KANTO: 'kanto',
+    KANSAI: 'kansai',
+    CHUBU: 'chubu',
+    OTHER: 'other'
+} as const;
+
+/**
+ * StoreArea
+ *
+ * Rough geographic area for filtering
+ */
+export type StoreArea = typeof StoreArea[keyof typeof StoreArea];
+
+/**
+ * StoreListStatus
+ *
+ * Store operating status (list / detail)
+ */
+export const StoreListStatus = {
+    OPERATING: 'operating',
+    PREPARING: 'preparing',
+    CLOSED_TEMP: 'closed_temp',
+    CLOSED_PERM: 'closed_perm'
+} as const;
+
+/**
+ * StoreListStatus
+ *
+ * Store operating status (list / detail)
+ */
+export type StoreListStatus = typeof StoreListStatus[keyof typeof StoreListStatus];
+
+/**
+ * Store
+ *
+ * Store master row
+ */
+export type Store = {
+    /**
+     * 内部ID
+     */
+    id: string;
+    /**
+     * 店舗ID (表示)
+     */
+    store_id: string;
+    /**
+     * クラブコード
+     */
+    club_code: string;
+    /**
+     * 店舗名
+     */
+    name: string;
+    /**
+     * StoreListBrand
+     *
+     * ブランド
+     */
+    brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * StoreArea
+     *
+     * エリア
+     */
+    area: 'kanto' | 'kansai' | 'chubu' | 'other';
+    /**
+     * 運営企業
+     */
+    operating_company_name: string;
+    /**
+     * StoreListStatus
+     *
+     * ステータス
+     */
+    status: 'operating' | 'preparing' | 'closed_temp' | 'closed_perm';
+    /**
+     * FK FC company (Y-03), null for directly managed
+     */
+    fc_company_id?: string | null;
+    /**
+     * FK Staff — 店舗責任者 (Y-01)
+     */
+    manager_staff_id?: string | null;
+    /**
+     * FK G-01 main contract
+     */
+    main_contract_id?: string | null;
+    /**
+     * StoreMainContractStatus
+     *
+     * Main contract status snapshot
+     */
+    main_contract_status?: 'draft' | 'active' | 'suspended' | 'expired' | 'terminated' | null;
+    /**
+     * 1Day Pass price (staff with permission may edit)
+     */
+    option_pass_price: number;
+    /**
+     * 相互利用を有効にするか
+     */
+    mutual_use_enabled: boolean;
+    /**
+     * MutualUseType
+     *
+     * 相互利用タイプ
+     */
+    mutual_use_type: 'none' | 'within_brand' | 'cross_brand' | 'custom';
+    /**
+     * 閉店日 — null while operating
+     */
+    closing_date?: string | null;
+    /**
+     * FK E-01 locker map
+     */
+    locker_map_id?: string | null;
+    /**
+     * FK I-01 (Phase 2)
+     */
+    asset_id?: string | null;
+    /**
+     * 作成者
+     */
+    created_by: string;
+    created_at: string;
+    /**
+     * 更新者
+     */
+    updated_by: string;
+    updated_at: string;
+};
+
+/**
+ * GetStoresQuery
+ *
+ * Query parameters for store list
+ */
+export type GetStoresQuery = {
+    page?: number;
+    limit?: number;
+    /**
+     * 店舗名・クラブコードで検索
+     */
+    search?: string;
+    /**
+     * StoreListBrand
+     *
+     * ブランド
+     */
+    brand?: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * StoreArea
+     *
+     * エリア
+     */
+    area?: 'kanto' | 'kansai' | 'chubu' | 'other';
+    /**
+     * StoreListStatus
+     *
+     * ステータス
+     */
+    status?: 'operating' | 'preparing' | 'closed_temp' | 'closed_perm';
+    /**
+     * Sort field
+     */
+    sort_by?: 'id' | 'store_id' | 'name' | 'brand' | 'area' | 'club_code' | 'operating_company_name';
+    /**
+     * Sort order
+     */
+    sort_order?: 'asc' | 'desc';
+};
+
+/**
+ * GetStoresResponse
+ *
+ * Store list response with pagination
+ */
+export type GetStoresResponse = {
+    /**
+     * Stores
+     */
+    stores: Array<{
+        /**
+         * 内部ID
+         */
+        id: string;
+        /**
+         * 店舗ID (表示)
+         */
+        store_id: string;
+        /**
+         * クラブコード
+         */
+        club_code: string;
+        /**
+         * 店舗名
+         */
+        name: string;
+        /**
+         * StoreListBrand
+         *
+         * ブランド
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * StoreArea
+         *
+         * エリア
+         */
+        area: 'kanto' | 'kansai' | 'chubu' | 'other';
+        /**
+         * 運営企業
+         */
+        operating_company_name: string;
+        /**
+         * StoreListStatus
+         *
+         * ステータス
+         */
+        status: 'operating' | 'preparing' | 'closed_temp' | 'closed_perm';
+        /**
+         * FK FC company (Y-03), null for directly managed
+         */
+        fc_company_id?: string | null;
+        /**
+         * FK Staff — 店舗責任者 (Y-01)
+         */
+        manager_staff_id?: string | null;
+        /**
+         * FK G-01 main contract
+         */
+        main_contract_id?: string | null;
+        /**
+         * StoreMainContractStatus
+         *
+         * Main contract status snapshot
+         */
+        main_contract_status?: 'draft' | 'active' | 'suspended' | 'expired' | 'terminated' | null;
+        /**
+         * 1Day Pass price (staff with permission may edit)
+         */
+        option_pass_price: number;
+        /**
+         * 相互利用を有効にするか
+         */
+        mutual_use_enabled: boolean;
+        /**
+         * MutualUseType
+         *
+         * 相互利用タイプ
+         */
+        mutual_use_type: 'none' | 'within_brand' | 'cross_brand' | 'custom';
+        /**
+         * 閉店日 — null while operating
+         */
+        closing_date?: string | null;
+        /**
+         * FK E-01 locker map
+         */
+        locker_map_id?: string | null;
+        /**
+         * FK I-01 (Phase 2)
+         */
+        asset_id?: string | null;
+        /**
+         * 作成者
+         */
+        created_by: string;
+        created_at: string;
+        /**
+         * 更新者
+         */
+        updated_by: string;
+        updated_at: string;
+    }>;
+    /**
+     * StorePagination
+     */
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        total_pages: number;
+    };
+};
+
 export type PostAuthLoginData = {
     /**
      * LoginRequest
@@ -11323,3 +11674,188 @@ export type GetCrmMembershipApplicationsSummaryResponses = {
 };
 
 export type GetCrmMembershipApplicationsSummaryResponse = GetCrmMembershipApplicationsSummaryResponses[keyof GetCrmMembershipApplicationsSummaryResponses];
+
+export type GetCrmStoresData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        limit?: number;
+        /**
+         * 店舗名・クラブコードで検索
+         */
+        search?: string;
+        /**
+         * StoreListBrand
+         *
+         * ブランド
+         */
+        brand?: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * StoreArea
+         *
+         * エリア
+         */
+        area?: 'kanto' | 'kansai' | 'chubu' | 'other';
+        /**
+         * StoreListStatus
+         *
+         * ステータス
+         */
+        status?: 'operating' | 'preparing' | 'closed_temp' | 'closed_perm';
+        /**
+         * Sort field
+         */
+        sort_by?: 'id' | 'store_id' | 'name' | 'brand' | 'area' | 'club_code' | 'operating_company_name';
+        /**
+         * Sort order
+         */
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/stores';
+};
+
+export type GetCrmStoresErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmStoresError = GetCrmStoresErrors[keyof GetCrmStoresErrors];
+
+export type GetCrmStoresResponses = {
+    /**
+     * GetStoresResponse
+     *
+     * Store list response with pagination
+     */
+    200: {
+        /**
+         * Stores
+         */
+        stores: Array<{
+            /**
+             * 内部ID
+             */
+            id: string;
+            /**
+             * 店舗ID (表示)
+             */
+            store_id: string;
+            /**
+             * クラブコード
+             */
+            club_code: string;
+            /**
+             * 店舗名
+             */
+            name: string;
+            /**
+             * StoreListBrand
+             *
+             * ブランド
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * StoreArea
+             *
+             * エリア
+             */
+            area: 'kanto' | 'kansai' | 'chubu' | 'other';
+            /**
+             * 運営企業
+             */
+            operating_company_name: string;
+            /**
+             * StoreListStatus
+             *
+             * ステータス
+             */
+            status: 'operating' | 'preparing' | 'closed_temp' | 'closed_perm';
+            /**
+             * FK FC company (Y-03), null for directly managed
+             */
+            fc_company_id?: string | null;
+            /**
+             * FK Staff — 店舗責任者 (Y-01)
+             */
+            manager_staff_id?: string | null;
+            /**
+             * FK G-01 main contract
+             */
+            main_contract_id?: string | null;
+            /**
+             * StoreMainContractStatus
+             *
+             * Main contract status snapshot
+             */
+            main_contract_status?: 'draft' | 'active' | 'suspended' | 'expired' | 'terminated' | null;
+            /**
+             * 1Day Pass price (staff with permission may edit)
+             */
+            option_pass_price: number;
+            /**
+             * 相互利用を有効にするか
+             */
+            mutual_use_enabled: boolean;
+            /**
+             * MutualUseType
+             *
+             * 相互利用タイプ
+             */
+            mutual_use_type: 'none' | 'within_brand' | 'cross_brand' | 'custom';
+            /**
+             * 閉店日 — null while operating
+             */
+            closing_date?: string | null;
+            /**
+             * FK E-01 locker map
+             */
+            locker_map_id?: string | null;
+            /**
+             * FK I-01 (Phase 2)
+             */
+            asset_id?: string | null;
+            /**
+             * 作成者
+             */
+            created_by: string;
+            created_at: string;
+            /**
+             * 更新者
+             */
+            updated_by: string;
+            updated_at: string;
+        }>;
+        /**
+         * StorePagination
+         */
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmStoresResponse = GetCrmStoresResponses[keyof GetCrmStoresResponses];

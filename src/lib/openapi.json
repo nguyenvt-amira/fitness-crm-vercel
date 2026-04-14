@@ -7311,6 +7311,419 @@
         ],
         "title": "GetFamilyRegistrationsDashboardResponse",
         "description": "Dashboard data for family registrations (A-02-02-08)"
+      },
+      "StoreMainContractStatus": {
+        "type": "string",
+        "enum": ["draft", "active", "suspended", "expired", "terminated"],
+        "title": "StoreMainContractStatus",
+        "description": "Main contract lifecycle for the store"
+      },
+      "MutualUseType": {
+        "type": "string",
+        "enum": ["none", "within_brand", "cross_brand", "custom"],
+        "title": "MutualUseType",
+        "description": "Cơ chế sử dụng lẫn nhau / mutual use type"
+      },
+      "StoreListBrand": {
+        "type": "string",
+        "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+        "title": "StoreListBrand",
+        "description": "Store brand"
+      },
+      "StoreArea": {
+        "type": "string",
+        "enum": ["kanto", "kansai", "chubu", "other"],
+        "title": "StoreArea",
+        "description": "Rough geographic area for filtering"
+      },
+      "StoreListStatus": {
+        "type": "string",
+        "enum": ["operating", "preparing", "closed_temp", "closed_perm"],
+        "title": "StoreListStatus",
+        "description": "Store operating status (list / detail)"
+      },
+      "Store": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "store-001",
+            "description": "内部ID"
+          },
+          "store_id": {
+            "type": "string",
+            "example": "S-001",
+            "description": "店舗ID (表示)"
+          },
+          "club_code": {
+            "type": "string",
+            "example": "STR-00001",
+            "description": "クラブコード"
+          },
+          "name": {
+            "type": "string",
+            "example": "Fit365八潮店",
+            "description": "店舗名"
+          },
+          "brand": {
+            "type": "string",
+            "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+            "title": "StoreListBrand",
+            "description": "ブランド"
+          },
+          "area": {
+            "type": "string",
+            "enum": ["kanto", "kansai", "chubu", "other"],
+            "title": "StoreArea",
+            "description": "エリア"
+          },
+          "operating_company_name": {
+            "type": "string",
+            "example": "株式会社ウェルネスフロンティア",
+            "description": "運営企業"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["operating", "preparing", "closed_temp", "closed_perm"],
+            "title": "StoreListStatus",
+            "description": "ステータス"
+          },
+          "fc_company_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "fc-001",
+            "description": "FK FC company (Y-03), null for directly managed"
+          },
+          "manager_staff_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "12",
+            "description": "FK Staff — 店舗責任者 (Y-01)"
+          },
+          "main_contract_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "ctr-store-001",
+            "description": "FK G-01 main contract"
+          },
+          "main_contract_status": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["draft", "active", "suspended", "expired", "terminated", null],
+            "title": "StoreMainContractStatus",
+            "description": "Main contract status snapshot"
+          },
+          "option_pass_price": {
+            "type": "number",
+            "example": 800,
+            "description": "1Day Pass price (staff with permission may edit)"
+          },
+          "mutual_use_enabled": {
+            "type": "boolean",
+            "description": "相互利用を有効にするか"
+          },
+          "mutual_use_type": {
+            "type": "string",
+            "enum": ["none", "within_brand", "cross_brand", "custom"],
+            "title": "MutualUseType",
+            "description": "相互利用タイプ"
+          },
+          "closing_date": {
+            "type": "string",
+            "nullable": true,
+            "example": "2027-03-31",
+            "description": "閉店日 — null while operating"
+          },
+          "locker_map_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "locker-map-001",
+            "description": "FK E-01 locker map"
+          },
+          "asset_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "asset-ph2-001",
+            "description": "FK I-01 (Phase 2)"
+          },
+          "created_by": {
+            "type": "string",
+            "example": "STF-001",
+            "description": "作成者"
+          },
+          "created_at": {
+            "type": "string",
+            "example": "2024-01-10T09:00:00Z"
+          },
+          "updated_by": {
+            "type": "string",
+            "example": "STF-002",
+            "description": "更新者"
+          },
+          "updated_at": {
+            "type": "string",
+            "example": "2026-03-01T12:00:00Z"
+          }
+        },
+        "required": [
+          "id",
+          "store_id",
+          "club_code",
+          "name",
+          "brand",
+          "area",
+          "operating_company_name",
+          "status",
+          "option_pass_price",
+          "mutual_use_enabled",
+          "mutual_use_type",
+          "created_by",
+          "created_at",
+          "updated_by",
+          "updated_at"
+        ],
+        "title": "Store",
+        "description": "Store master row"
+      },
+      "GetStoresQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 30,
+            "example": 30
+          },
+          "search": {
+            "type": "string",
+            "description": "店舗名・クラブコードで検索"
+          },
+          "brand": {
+            "type": "string",
+            "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+            "title": "StoreListBrand",
+            "description": "ブランド"
+          },
+          "area": {
+            "type": "string",
+            "enum": ["kanto", "kansai", "chubu", "other"],
+            "title": "StoreArea",
+            "description": "エリア"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["operating", "preparing", "closed_temp", "closed_perm"],
+            "title": "StoreListStatus",
+            "description": "ステータス"
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": [
+              "id",
+              "store_id",
+              "name",
+              "brand",
+              "area",
+              "club_code",
+              "operating_company_name"
+            ],
+            "default": "store_id",
+            "description": "Sort field"
+          },
+          "sort_order": {
+            "type": "string",
+            "enum": ["asc", "desc"],
+            "default": "asc",
+            "description": "Sort order"
+          }
+        },
+        "title": "GetStoresQuery",
+        "description": "Query parameters for store list"
+      },
+      "GetStoresResponse": {
+        "type": "object",
+        "properties": {
+          "stores": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "store-001",
+                  "description": "内部ID"
+                },
+                "store_id": {
+                  "type": "string",
+                  "example": "S-001",
+                  "description": "店舗ID (表示)"
+                },
+                "club_code": {
+                  "type": "string",
+                  "example": "STR-00001",
+                  "description": "クラブコード"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Fit365八潮店",
+                  "description": "店舗名"
+                },
+                "brand": {
+                  "type": "string",
+                  "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                  "title": "StoreListBrand",
+                  "description": "ブランド"
+                },
+                "area": {
+                  "type": "string",
+                  "enum": ["kanto", "kansai", "chubu", "other"],
+                  "title": "StoreArea",
+                  "description": "エリア"
+                },
+                "operating_company_name": {
+                  "type": "string",
+                  "example": "株式会社ウェルネスフロンティア",
+                  "description": "運営企業"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["operating", "preparing", "closed_temp", "closed_perm"],
+                  "title": "StoreListStatus",
+                  "description": "ステータス"
+                },
+                "fc_company_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "fc-001",
+                  "description": "FK FC company (Y-03), null for directly managed"
+                },
+                "manager_staff_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "12",
+                  "description": "FK Staff — 店舗責任者 (Y-01)"
+                },
+                "main_contract_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "ctr-store-001",
+                  "description": "FK G-01 main contract"
+                },
+                "main_contract_status": {
+                  "type": "string",
+                  "nullable": true,
+                  "enum": ["draft", "active", "suspended", "expired", "terminated", null],
+                  "title": "StoreMainContractStatus",
+                  "description": "Main contract status snapshot"
+                },
+                "option_pass_price": {
+                  "type": "number",
+                  "example": 800,
+                  "description": "1Day Pass price (staff with permission may edit)"
+                },
+                "mutual_use_enabled": {
+                  "type": "boolean",
+                  "description": "相互利用を有効にするか"
+                },
+                "mutual_use_type": {
+                  "type": "string",
+                  "enum": ["none", "within_brand", "cross_brand", "custom"],
+                  "title": "MutualUseType",
+                  "description": "相互利用タイプ"
+                },
+                "closing_date": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "2027-03-31",
+                  "description": "閉店日 — null while operating"
+                },
+                "locker_map_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "locker-map-001",
+                  "description": "FK E-01 locker map"
+                },
+                "asset_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "asset-ph2-001",
+                  "description": "FK I-01 (Phase 2)"
+                },
+                "created_by": {
+                  "type": "string",
+                  "example": "STF-001",
+                  "description": "作成者"
+                },
+                "created_at": {
+                  "type": "string",
+                  "example": "2024-01-10T09:00:00Z"
+                },
+                "updated_by": {
+                  "type": "string",
+                  "example": "STF-002",
+                  "description": "更新者"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "example": "2026-03-01T12:00:00Z"
+                }
+              },
+              "required": [
+                "id",
+                "store_id",
+                "club_code",
+                "name",
+                "brand",
+                "area",
+                "operating_company_name",
+                "status",
+                "option_pass_price",
+                "mutual_use_enabled",
+                "mutual_use_type",
+                "created_by",
+                "created_at",
+                "updated_by",
+                "updated_at"
+              ],
+              "title": "Store",
+              "description": "Store master row"
+            },
+            "description": "Stores"
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "number",
+                "example": 1
+              },
+              "limit": {
+                "type": "number",
+                "example": 30
+              },
+              "total": {
+                "type": "number",
+                "example": 10
+              },
+              "total_pages": {
+                "type": "number",
+                "example": 1
+              }
+            },
+            "required": ["page", "limit", "total", "total_pages"],
+            "title": "StorePagination"
+          }
+        },
+        "required": ["stores", "pagination"],
+        "title": "GetStoresResponse",
+        "description": "Store list response with pagination"
       }
     },
     "parameters": {}
@@ -17686,6 +18099,343 @@
                     "error": {
                       "type": "string",
                       "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/stores": {
+      "get": {
+        "summary": "Get stores list",
+        "description": "Get paginated list of stores with filtering and sorting",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "example": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 30,
+              "example": 30
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "店舗名・クラブコードで検索"
+            },
+            "required": false,
+            "description": "店舗名・クラブコードで検索",
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+              "title": "StoreListBrand",
+              "description": "ブランド"
+            },
+            "required": false,
+            "description": "ブランド",
+            "name": "brand",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["kanto", "kansai", "chubu", "other"],
+              "title": "StoreArea",
+              "description": "エリア"
+            },
+            "required": false,
+            "description": "エリア",
+            "name": "area",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["operating", "preparing", "closed_temp", "closed_perm"],
+              "title": "StoreListStatus",
+              "description": "ステータス"
+            },
+            "required": false,
+            "description": "ステータス",
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "id",
+                "store_id",
+                "name",
+                "brand",
+                "area",
+                "club_code",
+                "operating_company_name"
+              ],
+              "default": "store_id",
+              "description": "Sort field"
+            },
+            "required": false,
+            "description": "Sort field",
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc",
+              "description": "Sort order"
+            },
+            "required": false,
+            "description": "Sort order",
+            "name": "sort_order",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of stores",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "stores": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "store-001",
+                            "description": "内部ID"
+                          },
+                          "store_id": {
+                            "type": "string",
+                            "example": "S-001",
+                            "description": "店舗ID (表示)"
+                          },
+                          "club_code": {
+                            "type": "string",
+                            "example": "STR-00001",
+                            "description": "クラブコード"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Fit365八潮店",
+                            "description": "店舗名"
+                          },
+                          "brand": {
+                            "type": "string",
+                            "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                            "title": "StoreListBrand",
+                            "description": "ブランド"
+                          },
+                          "area": {
+                            "type": "string",
+                            "enum": ["kanto", "kansai", "chubu", "other"],
+                            "title": "StoreArea",
+                            "description": "エリア"
+                          },
+                          "operating_company_name": {
+                            "type": "string",
+                            "example": "株式会社ウェルネスフロンティア",
+                            "description": "運営企業"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["operating", "preparing", "closed_temp", "closed_perm"],
+                            "title": "StoreListStatus",
+                            "description": "ステータス"
+                          },
+                          "fc_company_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "fc-001",
+                            "description": "FK FC company (Y-03), null for directly managed"
+                          },
+                          "manager_staff_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "12",
+                            "description": "FK Staff — 店舗責任者 (Y-01)"
+                          },
+                          "main_contract_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "ctr-store-001",
+                            "description": "FK G-01 main contract"
+                          },
+                          "main_contract_status": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": ["draft", "active", "suspended", "expired", "terminated", null],
+                            "title": "StoreMainContractStatus",
+                            "description": "Main contract status snapshot"
+                          },
+                          "option_pass_price": {
+                            "type": "number",
+                            "example": 800,
+                            "description": "1Day Pass price (staff with permission may edit)"
+                          },
+                          "mutual_use_enabled": {
+                            "type": "boolean",
+                            "description": "相互利用を有効にするか"
+                          },
+                          "mutual_use_type": {
+                            "type": "string",
+                            "enum": ["none", "within_brand", "cross_brand", "custom"],
+                            "title": "MutualUseType",
+                            "description": "相互利用タイプ"
+                          },
+                          "closing_date": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "2027-03-31",
+                            "description": "閉店日 — null while operating"
+                          },
+                          "locker_map_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "locker-map-001",
+                            "description": "FK E-01 locker map"
+                          },
+                          "asset_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "asset-ph2-001",
+                            "description": "FK I-01 (Phase 2)"
+                          },
+                          "created_by": {
+                            "type": "string",
+                            "example": "STF-001",
+                            "description": "作成者"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "example": "2024-01-10T09:00:00Z"
+                          },
+                          "updated_by": {
+                            "type": "string",
+                            "example": "STF-002",
+                            "description": "更新者"
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "example": "2026-03-01T12:00:00Z"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "store_id",
+                          "club_code",
+                          "name",
+                          "brand",
+                          "area",
+                          "operating_company_name",
+                          "status",
+                          "option_pass_price",
+                          "mutual_use_enabled",
+                          "mutual_use_type",
+                          "created_by",
+                          "created_at",
+                          "updated_by",
+                          "updated_at"
+                        ],
+                        "title": "Store",
+                        "description": "Store master row"
+                      },
+                      "description": "Stores"
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "number",
+                          "example": 1
+                        },
+                        "limit": {
+                          "type": "number",
+                          "example": 30
+                        },
+                        "total": {
+                          "type": "number",
+                          "example": 10
+                        },
+                        "total_pages": {
+                          "type": "number",
+                          "example": 1
+                        }
+                      },
+                      "required": ["page", "limit", "total", "total_pages"],
+                      "title": "StorePagination"
+                    }
+                  },
+                  "required": ["stores", "pagination"],
+                  "title": "GetStoresResponse",
+                  "description": "Store list response with pagination"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
                       "description": "Error message"
                     }
                   },

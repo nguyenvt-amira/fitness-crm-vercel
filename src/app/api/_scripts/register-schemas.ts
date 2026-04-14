@@ -8,6 +8,7 @@ import * as autoApprovalSchemas from '../_schemas/auto-approval.schema';
 import * as familyRegistrationSchemas from '../_schemas/family-registration.schema';
 import * as memberSchemas from '../_schemas/member.schema';
 import * as membershipApplicationSchemas from '../_schemas/membership-application.schema';
+import * as storeSchemas from '../_schemas/store.schema';
 import { registry } from './register-route';
 
 /**
@@ -497,5 +498,35 @@ export function registerAllSchemas() {
       'GetFamilyRegistrationsDashboardResponse',
       familyRegistrationSchemas.GetFamilyRegistrationsDashboardResponseSchema,
     ),
+  );
+
+  registeredSchemaMap.set(
+    'StoreMainContractStatus',
+    registry.register('StoreMainContractStatus', storeSchemas.StoreMainContractStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'MutualUseType',
+    registry.register('MutualUseType', storeSchemas.MutualUseTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'StoreListBrand',
+    registry.register('StoreListBrand', storeSchemas.StoreListBrandSchema),
+  );
+  registeredSchemaMap.set(
+    'StoreArea',
+    registry.register('StoreArea', storeSchemas.StoreAreaSchema),
+  );
+  registeredSchemaMap.set(
+    'StoreListStatus',
+    registry.register('StoreListStatus', storeSchemas.StoreListStatusSchema),
+  );
+  registeredSchemaMap.set('Store', registry.register('Store', storeSchemas.StoreSchema));
+  registeredSchemaMap.set(
+    'GetStoresQuery',
+    registry.register('GetStoresQuery', storeSchemas.GetStoresQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'GetStoresResponse',
+    registry.register('GetStoresResponse', storeSchemas.GetStoresResponseSchema),
   );
 }

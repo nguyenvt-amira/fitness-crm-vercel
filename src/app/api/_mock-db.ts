@@ -7,6 +7,7 @@ import type {
   FamilyRegistrationStatus,
   FamilyRelationship,
 } from '@/app/api/_schemas/family-registration.schema';
+import type { Store } from '@/app/api/_schemas/store.schema';
 
 import type {
   GetContractsResponse,
@@ -89,13 +90,6 @@ interface MemberListMeta {
 type Member = GetMemberDetailResponse['member'];
 type MemberRow = Member & { _listMeta?: MemberListMeta };
 
-const MOCK_STORES = [
-  { id: 'store-001', name: 'Fit365八潮店' },
-  { id: 'store-002', name: 'Fit365新宿店' },
-  { id: 'store-003', name: 'Fit365渋谷店' },
-  { id: 'store-004', name: 'ジョイフィット渋谷店' },
-  { id: 'store-005', name: 'JOYFIT池袋店' },
-];
 const MOCK_PLANS = [
   { id: 'plan-001', name: 'ベーシックプラン' },
   { id: 'plan-002', name: 'スタンダードプラン' },
@@ -487,6 +481,14 @@ type DbType = {
     getForMember(memberId: string): unknown;
   };
   getMemberRelationships(memberId: string): unknown;
+  stores: {
+    _rows: Store[];
+    _seeded: boolean;
+    _seed(): void;
+    getList(): Store[];
+    getById(id: string): Store | undefined;
+    setManagerStaff(storeId: string, manager_staff_id: string | null): void;
+  };
 };
 
 declare global {
@@ -502,6 +504,8 @@ function createDb() {
       _seed(): void {
         if (this._seeded) return;
         this._seeded = true;
+        db.stores._seed();
+        const storeRows = db.stores._rows;
         const names = [
           { kanji: '佐藤 花子', kana: 'サトウ ハナコ' },
           { kanji: '鈴木 太郎', kana: 'スズキ タロウ' },
@@ -512,7 +516,7 @@ function createDb() {
         for (let i = 1; i <= 200; i++) {
           const id = `M-${String(i).padStart(5, '0')}`;
           const name = names[i % names.length];
-          const store = MOCK_STORES[i % MOCK_STORES.length];
+          const store = storeRows[i % storeRows.length]!;
           const plan = MOCK_PLANS[i % MOCK_PLANS.length];
           const phone = `090${String(1000 + (i % 9000)).slice(-4)}${String(1000 + (i % 9000)).slice(-4)}`;
           const email = `member${String(i).padStart(5, '0')}@example.jp`;
@@ -564,7 +568,9 @@ function createDb() {
         this._seed();
         const nextNumber = this._members.length + 1;
         const id = `M-${String(nextNumber).padStart(5, '0')}`;
-        const store = MOCK_STORES[nextNumber % MOCK_STORES.length]!;
+        db.stores._seed();
+        const storeRows = db.stores._rows;
+        const store = storeRows[nextNumber % storeRows.length]!;
         const now = new Date();
         const row = createMember(id, {
           name_kanji: application.applicant_name || '',
@@ -603,9 +609,12 @@ function createDb() {
         const nextNumber = this._members.length + 1;
         const id = `M-${String(nextNumber).padStart(5, '0')}`;
         const primary = this.get(registration.primary_member_id);
+        db.stores._seed();
+        const storeRows = db.stores._rows;
+        const fallbackStore = storeRows[nextNumber % storeRows.length]!;
         const store = primary?.profile.store_id
           ? { id: primary.profile.store_id, name: primary.profile.store_name }
-          : (MOCK_STORES[nextNumber % MOCK_STORES.length] ?? MOCK_STORES[0]!);
+          : { id: fallbackStore.id, name: fallbackStore.name };
         const plan = MOCK_PLANS[nextNumber % MOCK_PLANS.length]!;
         const now = new Date();
         const row = createMember(id, {
@@ -1581,6 +1590,209 @@ function createDb() {
           as_referee,
         },
       };
+    },
+    stores: {
+      _rows: [] as Store[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+
+        type StoreSeedSpec = {
+          name: string;
+          brand: Store['brand'];
+          code: string;
+          pass: number;
+          mutualOn: boolean;
+          mutualType: Store['mutual_use_type'];
+          fc?: string | null;
+          contract?: NonNullable<Store['main_contract_status']>;
+          closing?: string | null;
+          area: Store['area'];
+          operating_company_name: string;
+          status: Store['status'];
+        };
+
+        const STORE_SEED_META: { c: string; u: string; cb: string; ub: string }[] = [
+          { c: '2024-01-10T09:00:00Z', u: '2026-03-01T12:00:00Z', cb: 'STF-001', ub: 'STF-001' },
+          { c: '2024-01-11T09:00:00Z', u: '2026-02-15T10:00:00Z', cb: 'STF-001', ub: 'STF-002' },
+          { c: '2024-01-12T09:00:00Z', u: '2026-01-20T11:00:00Z', cb: 'STF-002', ub: 'STF-002' },
+          { c: '2024-02-01T09:00:00Z', u: '2026-03-10T09:30:00Z', cb: 'STF-003', ub: 'STF-003' },
+          { c: '2024-02-05T09:00:00Z', u: '2026-02-28T08:00:00Z', cb: 'STF-004', ub: 'STF-004' },
+          { c: '2024-03-01T09:00:00Z', u: '2026-03-05T12:00:00Z', cb: 'STF-001', ub: 'STF-001' },
+          { c: '2024-03-10T09:00:00Z', u: '2026-02-10T09:00:00Z', cb: 'STF-002', ub: 'STF-002' },
+          { c: '2024-04-01T09:00:00Z', u: '2026-01-15T10:00:00Z', cb: 'STF-003', ub: 'STF-003' },
+          { c: '2025-01-10T09:00:00Z', u: '2026-04-01T15:00:00Z', cb: 'STF-001', ub: 'STF-001' },
+          { c: '2020-06-01T09:00:00Z', u: '2025-12-01T10:00:00Z', cb: 'STF-004', ub: 'STF-004' },
+        ];
+
+        const STORE_SEED_SPECS: StoreSeedSpec[] = [
+          {
+            name: 'Fit365八潮店',
+            brand: 'fit365',
+            code: 'STR-00001',
+            pass: 800,
+            mutualOn: true,
+            mutualType: 'within_brand',
+            area: 'kanto',
+            operating_company_name: '株式会社ウェルネスフロンティア',
+            status: 'operating',
+          },
+          {
+            name: 'Fit365新宿店',
+            brand: 'fit365',
+            code: 'STR-00002',
+            pass: 900,
+            mutualOn: true,
+            mutualType: 'cross_brand',
+            area: 'kanto',
+            operating_company_name: '株式会社ウェルネスフロンティア',
+            status: 'operating',
+          },
+          {
+            name: 'Fit365渋谷店',
+            brand: 'fit365',
+            code: 'STR-00003',
+            pass: 850,
+            mutualOn: false,
+            mutualType: 'none',
+            area: 'kanto',
+            operating_company_name: '株式会社フィット365',
+            status: 'operating',
+          },
+          {
+            name: 'ジョイフィット渋谷店',
+            brand: 'joyfit',
+            code: 'STR-10004',
+            pass: 1000,
+            mutualOn: true,
+            mutualType: 'within_brand',
+            area: 'kanto',
+            operating_company_name: '株式会社ジェイフィット',
+            status: 'operating',
+          },
+          {
+            name: 'JOYFIT池袋店',
+            brand: 'joyfit',
+            code: 'STR-10005',
+            pass: 950,
+            mutualOn: true,
+            mutualType: 'custom',
+            fc: 'fc-001',
+            area: 'kanto',
+            operating_company_name: 'FCワーカーズ株式会社',
+            status: 'operating',
+          },
+          {
+            name: 'JOYFIT24 新宿店',
+            brand: 'joyfit24',
+            code: 'TK-006',
+            pass: 900,
+            mutualOn: true,
+            mutualType: 'within_brand',
+            area: 'kanto',
+            operating_company_name: '株式会社ウェルネスフロンティア',
+            status: 'operating',
+          },
+          {
+            name: 'JOYFIT YOGA 心斎橋店',
+            brand: 'joyfit_yoga',
+            code: 'YG-007',
+            pass: 1100,
+            mutualOn: true,
+            mutualType: 'none',
+            area: 'kansai',
+            operating_company_name: '株式会社ウェルネスフロンティア',
+            status: 'operating',
+          },
+          {
+            name: 'JOYFIT+ 名古屋駅前店',
+            brand: 'joyfit_plus',
+            code: 'JP-008',
+            pass: 950,
+            mutualOn: false,
+            mutualType: 'none',
+            contract: 'suspended',
+            area: 'chubu',
+            operating_company_name: '株式会社JOYFITプラス',
+            status: 'closed_temp',
+          },
+          {
+            name: 'Fit365梅田店',
+            brand: 'fit365',
+            code: 'TK-009',
+            pass: 850,
+            mutualOn: true,
+            mutualType: 'cross_brand',
+            contract: 'draft',
+            area: 'kansai',
+            operating_company_name: '株式会社フィット365',
+            status: 'preparing',
+          },
+          {
+            name: 'ジョイフィット静岡店',
+            brand: 'joyfit',
+            code: 'STR-10010',
+            pass: 1000,
+            mutualOn: false,
+            mutualType: 'none',
+            contract: 'terminated',
+            closing: '2025-12-31',
+            area: 'other',
+            operating_company_name: '株式会社ジェイフィット',
+            status: 'closed_perm',
+          },
+        ];
+
+        if (STORE_SEED_SPECS.length !== STORE_SEED_META.length) {
+          throw new Error('STORE_SEED_SPECS and STORE_SEED_META must have the same length');
+        }
+
+        for (let i = 0; i < STORE_SEED_SPECS.length; i++) {
+          const spec = STORE_SEED_SPECS[i]!;
+          const meta = STORE_SEED_META[i]!;
+          const n = i + 1;
+          const storeKey = `store-${String(n).padStart(3, '0')}`;
+          const contract = spec.contract ?? 'active';
+          this._rows.push({
+            id: storeKey,
+            store_id: `S-${String(n).padStart(3, '0')}`,
+            club_code: spec.code,
+            name: spec.name,
+            brand: spec.brand,
+            area: spec.area,
+            operating_company_name: spec.operating_company_name,
+            status: spec.status,
+            fc_company_id: spec.fc ?? null,
+            manager_staff_id: null,
+            main_contract_id: `ctr-store-${String(n).padStart(3, '0')}`,
+            main_contract_status: contract,
+            option_pass_price: spec.pass,
+            mutual_use_enabled: spec.mutualOn,
+            mutual_use_type: spec.mutualType,
+            closing_date: spec.closing ?? null,
+            locker_map_id: `locker-map-${String(n).padStart(3, '0')}`,
+            asset_id: null,
+            created_by: meta.cb,
+            created_at: meta.c,
+            updated_by: meta.ub,
+            updated_at: meta.u,
+          });
+        }
+      },
+      getList(): Store[] {
+        this._seed();
+        return [...this._rows];
+      },
+      getById(id: string): Store | undefined {
+        this._seed();
+        return this._rows.find((s) => s.id === id);
+      },
+      setManagerStaff(storeId: string, manager_staff_id: string | null): void {
+        this._seed();
+        const row = this._rows.find((s) => s.id === storeId);
+        if (row) row.manager_staff_id = manager_staff_id;
+      },
     },
   };
 
