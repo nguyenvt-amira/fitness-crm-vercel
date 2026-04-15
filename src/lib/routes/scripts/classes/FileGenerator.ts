@@ -1,6 +1,7 @@
 // File generator class for creating TypeScript files
 import fs from 'fs';
 import path from 'path';
+import prettier from 'prettier';
 
 import { OUTPUT_FILES } from '../config/generator.config';
 import type { GeneratorOptions, RouteInfo } from '../types/route-generator.types';
@@ -17,14 +18,25 @@ export class FileGenerator {
   /**
    * Generate all files
    */
-  generateFiles(): void {
+  async generateFiles(): Promise<void> {
     this.ensureOutputDirectory();
 
-    const configPath = this.writeConfigFile();
-    const typePath = this.writeTypeFile();
-    const utilPath = this.writeUtilFile();
+    const configPath = await this.writeConfigFile();
+    const typePath = await this.writeTypeFile();
+    const utilPath = await this.writeUtilFile();
 
     this.logResults([configPath, typePath, utilPath]);
+  }
+
+  /**
+   * Format generated content with project Prettier config
+   */
+  private async formatContent(content: string, filePath: string): Promise<string> {
+    const prettierConfig = await prettier.resolveConfig(filePath);
+    return prettier.format(content, {
+      ...prettierConfig,
+      filepath: filePath,
+    });
   }
 
   /**
@@ -252,9 +264,9 @@ export function findPatternByPath(path: string): RoutePattern | undefined {
   /**
    * Write configuration file
    */
-  private writeConfigFile(): string {
+  private async writeConfigFile(): Promise<string> {
     const filePath = path.join(this.outputDir, OUTPUT_FILES.CONFIG);
-    const content = this.generateConfigContent();
+    const content = await this.formatContent(this.generateConfigContent(), filePath);
     fs.writeFileSync(filePath, content, 'utf8');
     return filePath;
   }
@@ -262,9 +274,9 @@ export function findPatternByPath(path: string): RoutePattern | undefined {
   /**
    * Write types file
    */
-  private writeTypeFile(): string {
+  private async writeTypeFile(): Promise<string> {
     const filePath = path.join(this.outputDir, OUTPUT_FILES.TYPES);
-    const content = this.generateTypeContent();
+    const content = await this.formatContent(this.generateTypeContent(), filePath);
     fs.writeFileSync(filePath, content, 'utf8');
     return filePath;
   }
@@ -272,9 +284,9 @@ export function findPatternByPath(path: string): RoutePattern | undefined {
   /**
    * Write utilities file
    */
-  private writeUtilFile(): string {
+  private async writeUtilFile(): Promise<string> {
     const filePath = path.join(this.outputDir, OUTPUT_FILES.UTILS);
-    const content = this.generateUtilContent();
+    const content = await this.formatContent(this.generateUtilContent(), filePath);
     fs.writeFileSync(filePath, content, 'utf8');
     return filePath;
   }
