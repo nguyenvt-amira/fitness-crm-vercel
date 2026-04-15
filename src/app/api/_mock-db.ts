@@ -487,6 +487,8 @@ type DbType = {
     _seed(): void;
     getList(): Store[];
     getById(id: string): Store | undefined;
+    create(input: Omit<Store, 'id' | 'store_id' | 'created_at' | 'updated_at'>): Store;
+    updateById(id: string, patch: Partial<Store>): Store | undefined;
     setManagerStaff(storeId: string, manager_staff_id: string | null): void;
   };
 };
@@ -1787,6 +1789,36 @@ function createDb() {
       getById(id: string): Store | undefined {
         this._seed();
         return this._rows.find((s) => s.id === id);
+      },
+      create(input: Omit<Store, 'id' | 'store_id' | 'created_at' | 'updated_at'>): Store {
+        this._seed();
+        const nextNumber = this._rows.length + 1;
+        const now = new Date().toISOString();
+        const row: Store = {
+          ...input,
+          id: `store-${String(nextNumber).padStart(3, '0')}`,
+          store_id: `S-${String(nextNumber).padStart(3, '0')}`,
+          created_at: now,
+          updated_at: now,
+        };
+        this._rows.unshift(row);
+        return row;
+      },
+      updateById(id: string, patch: Partial<Store>): Store | undefined {
+        this._seed();
+        const index = this._rows.findIndex((s) => s.id === id);
+        if (index === -1) return undefined;
+        const current = this._rows[index]!;
+        const updated: Store = {
+          ...current,
+          ...patch,
+          id: current.id,
+          store_id: current.store_id,
+          created_at: current.created_at,
+          updated_at: new Date().toISOString(),
+        };
+        this._rows[index] = updated;
+        return updated;
       },
       setManagerStaff(storeId: string, manager_staff_id: string | null): void {
         this._seed();

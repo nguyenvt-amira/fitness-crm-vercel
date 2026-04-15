@@ -14,7 +14,7 @@ export const STORE_BRAND_LABELS: Record<StoreListBrand, string> = {
 export const STORE_BRAND_BADGE_CLASSES: Record<StoreListBrand, string> = {
   [StoreListBrand.JOYFIT]: 'bg-zinc-100 text-zinc-700 border-zinc-200',
   [StoreListBrand.FIT365]: 'bg-pink-100 text-pink-700 border-pink-200',
-  [StoreListBrand.JOYFIT24]: 'bg-cyan-100 text-cyan-700 border-cyan-200',
+  [StoreListBrand.JOYFIT24]: 'bg-blue-100 text-blue-800 border-blue-200',
   [StoreListBrand.JOYFIT_YOGA]: 'bg-emerald-100 text-emerald-700 border-emerald-200',
   [StoreListBrand.JOYFIT_PLUS]: 'bg-amber-100 text-amber-700 border-amber-200',
 };

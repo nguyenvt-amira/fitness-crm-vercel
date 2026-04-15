@@ -49,14 +49,53 @@ export const StoreSchema = z
     id: z.string().openapi({ example: 'store-001', description: '内部ID' }),
     /** Display store id (一覧・帳票) */
     store_id: z.string().openapi({ example: 'S-001', description: '店舗ID (表示)' }),
-    club_code: z.string().openapi({ example: 'STR-00001', description: 'クラブコード' }),
+    club_code: z.string().optional().openapi({ example: 'STR-00001', description: 'クラブコード' }),
     name: z.string().openapi({ example: 'Fit365八潮店', description: '店舗名' }),
     brand: StoreListBrandSchema.openapi({ description: 'ブランド' }),
-    area: StoreAreaSchema.openapi({ description: 'エリア' }),
-    operating_company_name: z.string().openapi({
+    area: StoreAreaSchema.optional().openapi({ description: 'エリア' }),
+    operating_company_name: z.string().optional().openapi({
       example: '株式会社ウェルネスフロンティア',
       description: '運営企業',
     }),
+    postal_code: z.string().optional().openapi({ example: '160-0022', description: '郵便番号' }),
+    prefecture: z.string().optional().openapi({ example: '東京都', description: '都道府県' }),
+    address: z
+      .string()
+      .optional()
+      .openapi({ example: '新宿区新宿3-1-1 ABCビル 2F', description: '住所' }),
+    email: z
+      .string()
+      .optional()
+      .openapi({ example: 'shinjuku@joyfit.jp', description: 'メールアドレス' }),
+    phone: z.string().optional().openapi({ example: '03-1234-5678', description: '電話番号' }),
+    accounting_code: z
+      .string()
+      .optional()
+      .openapi({ example: 'ACC-TK001', description: '会計コード' }),
+    interview_url: z.string().optional().openapi({
+      example: 'https://goo.gl/maps/indoor-shinjuku',
+      description: 'インドアビュー URL',
+    }),
+    google_map_url: z.string().optional().openapi({
+      example: 'https://goo.gl/maps/shinjuku-store',
+      description: 'Google Map URL',
+    }),
+    x_url: z.string().optional().openapi({ example: '@joyfit24_shinjuku', description: 'X URL' }),
+    instagram_url: z
+      .string()
+      .optional()
+      .openapi({ example: '@joyfit24_shinjuku', description: 'Instagram URL' }),
+    line_url: z
+      .string()
+      .optional()
+      .openapi({ example: '@joyfit24shinjuku', description: 'LINE URL' }),
+    facebook_url: z
+      .string()
+      .optional()
+      .openapi({ example: 'joyfit24shinjuku', description: 'Facebook URL' }),
+    youtube_url: z.string().optional().openapi({ example: '', description: 'YouTube URL' }),
+    store_photos: z.array(z.string()).optional().openapi({ description: '店舗写真 URLs' }),
+    floor_map_url: z.string().optional().openapi({ description: 'フロアマップ URL' }),
     /** UIステータス (一覧・詳細共通) */
     status: StoreListStatusSchema.openapi({ description: 'ステータス' }),
     fc_company_id: z.string().nullable().optional().openapi({
@@ -104,6 +143,37 @@ export const StoreSchema = z
 
 export type Store = z.infer<typeof StoreSchema>;
 
+export const UpsertStorePayloadSchema = z
+  .object({
+    name: z.string().min(1).openapi({ example: 'JOYFIT24新宿店' }),
+    brand: StoreListBrandSchema,
+    area: StoreAreaSchema.optional(),
+    status: StoreListStatusSchema,
+    operating_company_name: z.string().optional(),
+    postal_code: z.string().optional(),
+    prefecture: z.string().optional(),
+    address: z.string().optional(),
+    email: z.string().optional(),
+    phone: z.string().optional(),
+    club_code: z.string().optional().openapi({ example: 'TK-001' }),
+    accounting_code: z.string().optional(),
+    /** Omitted on PATCH means “leave unchanged”; FE create always sends a boolean */
+    is_fc: z.boolean().optional(),
+    interview_url: z.string().optional(),
+    google_map_url: z.string().optional(),
+    x_url: z.string().optional(),
+    instagram_url: z.string().optional(),
+    line_url: z.string().optional(),
+    facebook_url: z.string().optional(),
+    youtube_url: z.string().optional(),
+    store_photos: z.array(z.string()).optional(),
+    floor_map_url: z.string().optional(),
+  })
+  .openapi({
+    title: 'UpsertStorePayload',
+    description: 'Create/update payload for store',
+  });
+
 export const GetStoresQuerySchema = z
   .object({
     page: z.coerce.number().int().min(1).default(1).openapi({ example: 1 }),
@@ -142,10 +212,40 @@ export const GetStoresResponseSchema = z
     description: 'Store list response with pagination',
   });
 
+export const GetStoreByIdResponseSchema = z
+  .object({
+    store: StoreSchema,
+  })
+  .openapi({
+    title: 'GetStoreByIdResponse',
+    description: 'Store detail response',
+  });
+
+export const CreateStoreResponseSchema = z
+  .object({
+    message: z.string().openapi({ example: '店舗を作成しました' }),
+    store: StoreSchema,
+  })
+  .openapi({
+    title: 'CreateStoreResponse',
+    description: 'Store create response',
+  });
+
+export const UpdateStoreResponseSchema = z
+  .object({
+    message: z.string().openapi({ example: '店舗情報を更新しました' }),
+    store: StoreSchema,
+  })
+  .openapi({
+    title: 'UpdateStoreResponse',
+    description: 'Store update response',
+  });
+
 export type StoreListBrand = z.infer<typeof StoreListBrandSchema>;
 export type StoreArea = z.infer<typeof StoreAreaSchema>;
 export type StoreListStatus = z.infer<typeof StoreListStatusSchema>;
 export type GetStoresQuery = z.infer<typeof GetStoresQuerySchema>;
 export type GetStoresResponse = z.infer<typeof GetStoresResponseSchema>;
+export type UpsertStorePayload = z.infer<typeof UpsertStorePayloadSchema>;
 
 export { ErrorResponseSchema } from './auth.schema';

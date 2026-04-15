@@ -2,12 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { db } from '@/app/api/_mock-db';
 import {
+  CreateStoreResponseSchema,
   ErrorResponseSchema,
   type GetStoresQuery,
   GetStoresQuerySchema,
   type GetStoresResponse,
   GetStoresResponseSchema,
   type Store,
+  UpsertStorePayloadSchema,
 } from '@/app/api/_schemas/store.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
 
@@ -20,6 +22,23 @@ registerRoute({
   query: GetStoresQuerySchema,
   responses: [
     { status: 200, schema: GetStoresResponseSchema, description: 'List of stores' },
+    { status: 400, schema: ErrorResponseSchema, description: 'Bad request' },
+    { status: 500, schema: ErrorResponseSchema, description: 'Internal server error' },
+  ],
+});
+
+registerRoute({
+  method: 'post',
+  path: '/crm/stores',
+  summary: 'Create store',
+  description: 'Create a new store',
+  tags: ['Stores'],
+  requestBody: {
+    schema: UpsertStorePayloadSchema,
+    description: 'Store create payload',
+  },
+  responses: [
+    { status: 200, schema: CreateStoreResponseSchema, description: 'Store created successfully' },
     { status: 400, schema: ErrorResponseSchema, description: 'Bad request' },
     { status: 500, schema: ErrorResponseSchema, description: 'Internal server error' },
   ],
@@ -58,12 +77,12 @@ export async function GET(request: NextRequest) {
       filtered = filtered.filter(
         (s) =>
           s.name.toLowerCase().includes(q) ||
-          s.club_code.toLowerCase().includes(q) ||
+          (s.club_code ?? '').toLowerCase().includes(q) ||
           s.id.toLowerCase().includes(q) ||
           s.store_id.toLowerCase().includes(q) ||
           s.brand.toLowerCase().includes(q) ||
-          s.area.toLowerCase().includes(q) ||
-          s.operating_company_name.toLowerCase().includes(q),
+          (s.area ?? '').toLowerCase().includes(q) ||
+          (s.operating_company_name ?? '').toLowerCase().includes(q),
       );
     }
 
@@ -99,5 +118,61 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Error fetching stores:', error);
     return NextResponse.json({ error: 'Failed to fetch stores' }, { status: 500 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const validationResult = UpsertStorePayloadSchema.safeParse(body);
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((issue) => issue.message).join(', ');
+      return NextResponse.json({ error: errors }, { status: 400 });
+    }
+
+    const payload = validationResult.data;
+    const created = db.stores.create({
+      club_code: payload.club_code,
+      name: payload.name,
+      brand: payload.brand,
+      area: payload.area,
+      operating_company_name: payload.operating_company_name,
+      status: payload.status,
+      fc_company_id: (payload.is_fc ?? false) ? 'fc-001' : null,
+      manager_staff_id: null,
+      main_contract_id: null,
+      main_contract_status: null,
+      option_pass_price: 0,
+      mutual_use_enabled: false,
+      mutual_use_type: 'none',
+      closing_date: null,
+      locker_map_id: null,
+      asset_id: null,
+      created_by: 'STF-001',
+      updated_by: 'STF-001',
+      postal_code: payload.postal_code,
+      prefecture: payload.prefecture,
+      address: payload.address,
+      email: payload.email,
+      phone: payload.phone,
+      accounting_code: payload.accounting_code,
+      interview_url: payload.interview_url,
+      google_map_url: payload.google_map_url,
+      x_url: payload.x_url,
+      instagram_url: payload.instagram_url,
+      line_url: payload.line_url,
+      facebook_url: payload.facebook_url,
+      youtube_url: payload.youtube_url,
+      store_photos: payload.store_photos,
+      floor_map_url: payload.floor_map_url,
+    });
+
+    return NextResponse.json({
+      message: '店舗を作成しました',
+      store: created,
+    });
+  } catch (error) {
+    console.error('Error creating store:', error);
+    return NextResponse.json({ error: 'Failed to create store' }, { status: 500 });
   }
 }

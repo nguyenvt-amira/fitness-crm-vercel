@@ -93,13 +93,15 @@ export function StoresTableColumns({
     {
       accessorKey: 'area',
       header: 'エリア',
-      cell: ({ row }) => <span>{STORE_AREA_LABELS[row.original.area]}</span>,
+      cell: ({ row }) => (
+        <span>{row.original.area != null ? STORE_AREA_LABELS[row.original.area] : '—'}</span>
+      ),
       meta: { label: 'エリア' },
     },
     {
       accessorKey: 'club_code',
       header: 'クラブコード',
-      cell: ({ row }) => <span>{row.original.club_code}</span>,
+      cell: ({ row }) => <span>{row.original.club_code ?? '—'}</span>,
       meta: { label: 'クラブコード' },
     },
     {

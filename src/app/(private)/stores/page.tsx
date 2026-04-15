@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { ColumnDef, SortingState } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
 
+import { DataStateBoundary } from '@/components/common/data-state-boundary';
 import { DataTable } from '@/components/common/data-table';
 import { TablePagination } from '@/components/common/table-pagination';
 import { Badge } from '@/components/ui/badge';
@@ -31,7 +32,7 @@ function StoresPageContent() {
   const { filters, setFilters, queryParams, currentPage, setCurrentPage, pageSize } = filtersHook;
   const router = useRouter();
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     ...getCrmStoresOptions({
       query: queryParams,
     }),
@@ -61,10 +62,10 @@ function StoresPageContent() {
     () =>
       StoresTableColumns({
         onEditClick: (id) => {
-          // router.push(navigate('/stores/[id]/edit', id));
+          router.push(navigate('/stores/[id]/edit', id));
         },
       }),
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
@@ -76,7 +77,12 @@ function StoresPageContent() {
           <Badge variant="secondary">{totalStores}件</Badge>
           {/* <span className="text-muted-foreground text-sm">{totalStores}件</span> */}
         </div>
-        <Button type="button" size="sm" className="gap-1">
+        <Button
+          type="button"
+          size="sm"
+          className="gap-1"
+          onClick={() => router.push(navigate('/stores/create'))}
+        >
           <Plus className="size-4" />
           新規登録
         </Button>
@@ -90,32 +96,45 @@ function StoresPageContent() {
             </StoresFiltersProvider>
           </div>
 
-          <DataTable
-            columns={columns}
-            data={stores}
+          <DataStateBoundary
             isLoading={isLoading}
-            variant="simple"
-            className="rounded-none border-x-0 border-b-0"
-            containerClassName={
-              isFilterOpen ? 'max-h-[calc(100vh-370px)]' : 'max-h-[calc(100vh-320px)]'
-            }
-            tableOptions={{
-              onSortingChange: handleSortingChange,
-              manualSorting: true,
-              state: {
-                sorting,
-              },
-            }}
-          />
+            isError={isError}
+            isEmpty={stores.length === 0}
+            onRetry={() => refetch()}
+            emptyTitle="店舗がありません"
+            emptyDescription="条件を変更するか、新規登録してください。"
+            errorTitle="店舗一覧の取得に失敗しました"
+          >
+            <DataTable
+              columns={columns}
+              data={stores}
+              isLoading={false}
+              variant="simple"
+              onRowClick={(row) => {
+                router.push(navigate('/stores/[id]', row.id));
+              }}
+              className="rounded-none border-x-0 border-b-0"
+              containerClassName={
+                isFilterOpen ? 'max-h-[calc(100vh-370px)]' : 'max-h-[calc(100vh-320px)]'
+              }
+              tableOptions={{
+                onSortingChange: handleSortingChange,
+                manualSorting: true,
+                state: {
+                  sorting,
+                },
+              }}
+            />
 
-          <TablePagination
-            currentPage={page}
-            totalPages={totalPages}
-            total={totalStores}
-            limit={limit}
-            onPageChange={setCurrentPage}
-            isLoading={isLoading}
-          />
+            <TablePagination
+              currentPage={page}
+              totalPages={totalPages}
+              total={totalStores}
+              limit={limit}
+              onPageChange={setCurrentPage}
+              isLoading={false}
+            />
+          </DataStateBoundary>
         </Card>
       </div>
     </div>
