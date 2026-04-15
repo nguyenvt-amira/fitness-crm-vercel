@@ -6364,6 +6364,12 @@ export type StaffDetail = {
      */
     position_id: number;
     /**
+     * StaffJobTitle
+     *
+     * 役職コード（職位とは別の個別フィールド）
+     */
+    job_title?: 'manager' | 'assistant_manager' | 'chief' | 'fulltime' | 'part_time';
+    /**
      * StaffBrand
      *
      * 主担当ブランド（一覧の brand と一致）
@@ -6743,6 +6749,12 @@ export type GetStaffDetailResponse = {
          */
         position_id: number;
         /**
+         * StaffJobTitle
+         *
+         * 役職コード（職位とは別の個別フィールド）
+         */
+        job_title?: 'manager' | 'assistant_manager' | 'chief' | 'fulltime' | 'part_time';
+        /**
          * StaffBrand
          *
          * 主担当ブランド（一覧の brand と一致）
@@ -7051,6 +7063,12 @@ export type UpdateStaffRequest = {
      */
     position_id?: number;
     /**
+     * StaffJobTitle
+     *
+     * 役職（職位とは別の個別フィールド）
+     */
+    job_title?: 'manager' | 'assistant_manager' | 'chief' | 'fulltime' | 'part_time';
+    /**
      * StaffPermissionSettings
      *
      * 権限設定 (partial update)
@@ -7203,6 +7221,12 @@ export type UpdateStaffResponse = {
          * FK → positions.id
          */
         position_id: number;
+        /**
+         * StaffJobTitle
+         *
+         * 役職コード（職位とは別の個別フィールド）
+         */
+        job_title?: 'manager' | 'assistant_manager' | 'chief' | 'fulltime' | 'part_time';
         /**
          * StaffBrand
          *
@@ -14459,6 +14483,12 @@ export type GetCrmStaffsByIdResponses = {
              */
             position_id: number;
             /**
+             * StaffJobTitle
+             *
+             * 役職コード（職位とは別の個別フィールド）
+             */
+            job_title?: 'manager' | 'assistant_manager' | 'chief' | 'fulltime' | 'part_time';
+            /**
              * StaffBrand
              *
              * 主担当ブランド（一覧の brand と一致）
@@ -14771,6 +14801,12 @@ export type PatchCrmStaffsByIdData = {
          */
         position_id?: number;
         /**
+         * StaffJobTitle
+         *
+         * 役職（職位とは別の個別フィールド）
+         */
+        job_title?: 'manager' | 'assistant_manager' | 'chief' | 'fulltime' | 'part_time';
+        /**
          * StaffPermissionSettings
          *
          * 権限設定 (partial update)
@@ -14971,6 +15007,12 @@ export type PatchCrmStaffsByIdResponses = {
              * FK → positions.id
              */
             position_id: number;
+            /**
+             * StaffJobTitle
+             *
+             * 役職コード（職位とは別の個別フィールド）
+             */
+            job_title?: 'manager' | 'assistant_manager' | 'chief' | 'fulltime' | 'part_time';
             /**
              * StaffBrand
              *

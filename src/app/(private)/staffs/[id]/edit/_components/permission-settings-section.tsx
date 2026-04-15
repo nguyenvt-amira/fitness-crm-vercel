@@ -2,6 +2,7 @@
 
 import { useFieldArray, useFormContext } from 'react-hook-form';
 
+import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { Plus, Trash2 } from 'lucide-react';
 
@@ -27,7 +28,10 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import { STAFF_BRAND_LABELS, STAFF_ROLE_LABELS } from '../../../_constants/constants';
+import { getCrmPositionsOptions } from '@/lib/api/@tanstack/react-query.gen';
+
+import { STAFF_BRAND_LABELS } from '../../../_constants/constants';
+import { staffRoleFromPositionRoleCategory } from '../../../_utils/position-role.util';
 import type { StaffEditFormValues } from '../_schemas/staff-edit-form.schema';
 
 const STORES = [
@@ -39,6 +43,13 @@ const STORES = [
 
 export function PermissionSettingsSection() {
   const form = useFormContext<StaffEditFormValues>();
+  const { data: positionsRes, isLoading: positionsLoading } = useQuery({
+    ...getCrmPositionsOptions(),
+  });
+  const positions = positionsRes?.positions ?? [];
+  const positionId = form.watch('position_id');
+  const positionInList = positions.some((p) => p.id === positionId);
+
   const { fields, append, remove } = useFieldArray({
     name: 'editable_scopes',
     control: form.control,
@@ -50,26 +61,51 @@ export function PermissionSettingsSection() {
         <CardTitle>権限設定</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* ─── 編集権限 (required, left half) ─── */}
+        {/* ─── 職位 (API master, required, left half) — syncs permission_settings.role ─── */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <FormField
             control={form.control}
-            name="role"
+            name="position_id"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  編集権限<span className="text-destructive ml-0.5">*</span>
+                  職位<span className="text-destructive ml-0.5">*</span>
                 </FormLabel>
-                <Select value={field.value ?? ''} onValueChange={field.onChange}>
+                <Select
+                  value={field.value != null ? String(field.value) : ''}
+                  onValueChange={(value) => {
+                    const id = Number.parseInt(value, 10);
+                    field.onChange(Number.isNaN(id) ? undefined : id);
+                    const pos = positions.find((p) => p.id === id);
+                    if (pos) {
+                      form.setValue('role', staffRoleFromPositionRoleCategory(pos.role));
+                    }
+                  }}
+                  disabled={positionsLoading}
+                >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="選択" />
+                      <SelectValue placeholder={positionsLoading ? '読み込み中…' : '選択'}>
+                        {field.value != null
+                          ? (positions.find((p) => p.id === field.value)?.position_name ??
+                            (!positionInList
+                              ? positionsLoading
+                                ? '読み込み中…'
+                                : `職位 #${field.value}`
+                              : undefined))
+                          : undefined}
+                      </SelectValue>
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {Object.entries(STAFF_ROLE_LABELS).map(([value, label]) => (
-                      <SelectItem key={value} value={value}>
-                        {label}
+                    {field.value != null && !positionInList ? (
+                      <SelectItem value={String(field.value)}>
+                        {positionsLoading ? '読み込み中…' : `職位 #${field.value}`}
+                      </SelectItem>
+                    ) : null}
+                    {positions.map((p) => (
+                      <SelectItem key={p.id} value={String(p.id)}>
+                        {p.position_name}
                       </SelectItem>
                     ))}
                   </SelectContent>

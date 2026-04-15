@@ -1,6 +1,23 @@
+import type { StaffJobTitle } from '@/app/api/_schemas/staff.schema';
+
 import { StaffBrand, StaffRole, StaffStatus } from '@/lib/api/types.gen';
 
 export { StaffBrand, StaffRole, StaffStatus } from '@/lib/api/types.gen';
+
+/** 役職: APIコード(key) と表示ラベル（API はコードのみ保持） */
+export const STAFF_JOB_TITLES = [
+  { key: 'manager', label: '店長' },
+  { key: 'assistant_manager', label: '副店長' },
+  { key: 'chief', label: 'チーフ' },
+  { key: 'fulltime', label: 'スタッフ' },
+  { key: 'part_time', label: 'アルバイト' },
+] as const satisfies ReadonlyArray<{ key: StaffJobTitle; label: string }>;
+
+export function getStaffJobTitleLabel(code: string | undefined | null): string {
+  if (code == null || code === '') return '—';
+  const row = STAFF_JOB_TITLES.find((t) => t.key === code);
+  return row?.label ?? code;
+}
 
 export const STAFF_ROLE_LABELS: Record<StaffRole, string> = {
   [StaffRole.HEADQUARTERS]: '本部',

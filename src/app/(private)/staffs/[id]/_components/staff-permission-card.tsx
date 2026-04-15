@@ -20,6 +20,7 @@ import {
   STAFF_ROLE_LABELS,
   type StaffBrand,
   type StaffRole,
+  getStaffJobTitleLabel,
 } from '../../_constants/constants';
 
 type Staff = GetCrmStaffsByIdResponse['staff'];

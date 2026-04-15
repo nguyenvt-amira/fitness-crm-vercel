@@ -53,6 +53,7 @@ export default function StaffEditPage() {
       birthday: staff.personal_info.birthday ?? '',
       phone: staff.personal_info.phone ?? '',
       email: staff.personal_info.email,
+      job_title: staff.job_title ?? '',
       postal_code: staff.personal_info.postal_code ?? '',
       prefecture: staff.personal_info.prefecture ?? '',
       city: staff.personal_info.city ?? '',
@@ -61,6 +62,7 @@ export default function StaffEditPage() {
       login_method: staff.login_settings.login_method,
       social_id: staff.login_settings.social_id ?? '',
       role: staff.permission_settings.role,
+      position_id: staff.position_id,
       billing_correction: staff.permission_settings.additional_permissions.billing_correction,
       refund_request: staff.permission_settings.additional_permissions.refund_request,
       transfer_request: staff.permission_settings.additional_permissions.transfer_request,
@@ -118,10 +120,12 @@ export default function StaffEditPage() {
         address: values.address || undefined,
         building: values.building || undefined,
       },
+      job_title: values.job_title || undefined,
       login_settings: {
         login_method: values.login_method,
         social_id: values.social_id || undefined,
       },
+      position_id: values.position_id,
       permission_settings: {
         role: values.role,
         additional_permissions: {
