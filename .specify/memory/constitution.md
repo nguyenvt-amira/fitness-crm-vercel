@@ -1,13 +1,21 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: (none) → 1.0.0  (initial ratification — no prior version existed)
-Modified principles: N/A — all sections are new
+Version change: 1.0.0 → 1.1.0
+Modified principles: N/A
 Added sections:
-  - Core Principles (I–V)
-  - Technology Stack & Constraints
-  - Development Workflow & Quality Gates
-  - Governance
+  - File Naming Conventions (new subsection under Technology Stack & Constraints)
+  - Routing Conventions (new subsection under Technology Stack & Constraints)
+  - Icon Library (added to Principle II)
+  - Responsive Design constraint (added to Principle II)
+  - Color Token constraint (added to Principle II)
+  - Static Assets policy (new subsection under Technology Stack & Constraints)
+Sources merged: .cursor/rules/cursor-project-rules.mdc, ui-rule.mdc, form-rule.mdc, call-api-rule.mdc
+Conflict resolved:
+  - cursor-project-rules.mdc mentions Jotai for state management; this conflicts with
+    Principle III which forbids global state stores. Principle III takes precedence.
+    Jotai is NOT permitted. The stores/ folder entry is retained for documentation
+    purposes only with a deprecation note.
 Templates requiring updates:
   - .specify/templates/plan-template.md  ⚠ pending — Constitution Check gates should
     reference the five principles listed here by Roman numeral
@@ -69,6 +77,12 @@ folders is forbidden.
 - The Noto Sans JP font family and the CSS variable token system in
   `src/app/globals.css` are canonical. No additional font families may be
   introduced without a constitution amendment.
+- All icons MUST use `lucide-react`. Other icon libraries MUST NOT be introduced.
+- All colour usage in components MUST reference CSS variables defined in
+  `src/app/globals.css` or `src/styles/tailwind.theme.css`. Hard-coded hex or RGB
+  colour values in component files are forbidden without a design exception.
+- All UI components MUST be responsive and support a minimum viewport width of
+  768 px. No layout MUST break below this breakpoint.
 
 **Rationale**: A CRM used daily by gym staff requires zero ambiguity in form
 controls, tables, and dialogs. Consistent UI primitives reduce onboarding cost and
@@ -190,6 +204,47 @@ labels and user-visible copy. English is used for all code identifiers, comments
 and documentation. Hard-coded Japanese strings in components are acceptable until
 a dedicated i18n migration spec is ratified.
 
+**File Naming Conventions**: All files under `src/` MUST follow the suffix-based
+naming pattern below. Deviations are a lint error enforced by code review.
+
+| Artifact          | Pattern              | Example                      |
+| ----------------- | -------------------- | ---------------------------- |
+| Type definitions  | `[name].type.ts`     | `member.type.ts`             |
+| Custom hooks      | `[name].hook.ts`     | `use-member-filters.hook.ts` |
+| Utility functions | `[name].util.ts`     | `date.util.ts`               |
+| Zod schemas       | `[name].schema.ts`   | `staff.schema.ts`            |
+| React contexts    | `[name]-context.tsx` | `staff-filters-context.tsx`  |
+
+**Routing Conventions**: All programmatic navigation MUST use the typed `navigate`
+helper exported from `@/lib/routes/routes.util`. Raw `router.push()` with string
+literals and `href` props with un-typed strings are forbidden. When a new page is
+created, its route MUST be declared in `src/lib/routes/routes.config.ts` so the
+type system enforces route correctness across the codebase.
+
+**Folder Structure**: The canonical `src/` sub-directories are:
+
+```
+app/          Next.js App Router pages
+components/   Reusable UI components (ui/ and common/)
+configs/      Application configuration objects
+constants/    Enums and constant values (non-type)
+hooks/        Custom React hooks
+providers/    React Context Providers
+types/        TypeScript type definitions
+utils/        Utility functions
+```
+
+> **Note on state management**: The `stores/` directory from earlier project
+> scaffolding is retained for reference only. Jotai atoms and all other global
+> state libraries are FORBIDDEN by Principle III. Any file in `stores/` MUST be
+> migrated to URL state (`nuqs`) or React context before the feature it belongs
+> to is considered done.
+
+**Static Assets**: All static files (images, fonts, icons, etc.) that must be
+served at a predictable public URL MUST be placed in the `public/` directory.
+Assets imported directly into components MUST go through `next/image` or standard
+module imports, not through public-path strings.
+
 ## Development Workflow & Quality Gates
 
 ### Branch Strategy
@@ -265,4 +320,4 @@ agreements made outside the amendment process.
 - MINOR: new principle or section added; materially expanded guidance.
 - PATCH: clarifications, wording adjustments, typo fixes with no semantic change.
 
-**Version**: 1.0.0 | **Ratified**: 2026-04-08 | **Last Amended**: 2026-04-08
+**Version**: 1.1.0 | **Ratified**: 2026-04-08 | **Last Amended**: 2026-04-15

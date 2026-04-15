@@ -63,38 +63,85 @@ The text the user typed after `/speckit.specify` in the triggering message **is*
 
 Given that feature description, do this:
 
-1. **Generate a concise short name** (2-4 words) for the branch:
-   - Analyze the feature description and extract the most meaningful keywords
-   - Create a 2-4 word short name that captures the essence of the feature
-   - Use action-noun format when possible (e.g., "add-user-auth", "fix-payment-bug")
-   - Preserve technical terms and acronyms (OAuth2, API, JWT, etc.)
-   - Keep it concise but descriptive enough to understand the feature at a glance
+1. **Determine branch type and generate a slug**:
+
+   **Branch type** — infer from the feature description:
+   - Use `feat/` prefix for new features, enhancements, or additions
+   - Use `fix/` prefix for bug fixes, regressions, or corrections
    - Examples:
-     - "I want to add user authentication" → "user-auth"
-     - "Implement OAuth2 integration for the API" → "oauth2-api-integration"
-     - "Create a dashboard for analytics" → "analytics-dashboard"
-     - "Fix payment processing timeout bug" → "fix-payment-timeout"
+     - "Add member search filter" → `feat/member-search-filter`
+     - "Fix rendering of member name on detail page" → `fix/render-member-name`
+     - "Implement OAuth2 login" → `feat/oauth2-login`
+     - "Fix payment timeout bug" → `fix/payment-timeout`
 
-2. **Create the feature branch** by running the script with `--short-name` (and `--json`). In sequential mode, do NOT pass `--number` — the script auto-detects the next available number. In timestamp mode, the script generates a `YYYYMMDD-HHMMSS` prefix automatically:
+   **Slug rules** — the part after `feat/` or `fix/`:
+   - 2–5 words, all lowercase, hyphen-separated
+   - Preserve technical acronyms (OAuth2, API, JWT, QR, etc.)
+   - No special characters other than hyphens
+   - Final branch name format: `feat/<slug>` or `fix/<slug>`
 
-   **Branch numbering mode**: Before running the script, check if `.specify/init-options.json` exists and read the `branch_numbering` value.
-   - If `"timestamp"`, add `--timestamp` (Bash) or `-Timestamp` (PowerShell) to the script invocation
-   - If `"sequential"` or absent, do not add any extra flag (default behavior)
+2. **Checkout the base branch before creating the feature branch**:
 
-   - Bash example: `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" --json --short-name "user-auth" "Add user authentication"`
-   - Bash (timestamp): `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" --json --timestamp --short-name "user-auth" "Add user authentication"`
-   - PowerShell example: `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" -Json -ShortName "user-auth" "Add user authentication"`
-   - PowerShell (timestamp): `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" -Json -Timestamp -ShortName "user-auth" "Add user authentication"`
+   **Determine base branch**:
+   - If the user explicitly named a base branch in their prompt (e.g., "branch off `dev`", "base: `QA`"), use that branch name.
+   - If no base branch is specified, use `dev` as the default.
 
-   **IMPORTANT**:
-   - Do NOT pass `--number` — the script determines the correct next number automatically
-   - Always include the JSON flag (`--json` for Bash, `-Json` for PowerShell) so the output can be parsed reliably
-   - You must only ever run this script once per feature
-   - The JSON is provided in the terminal as output - always refer to it to get the actual content you're looking for
-   - The JSON output will contain BRANCH_NAME and SPEC_FILE paths
-   - For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot")
+   Run the checkout command first:
+
+   ```bash
+   git checkout <base-branch>
+   ```
+
+   If the checkout fails (branch does not exist locally), try fetching first:
+
+   ```bash
+   git fetch origin <base-branch> && git checkout <base-branch>
+   ```
+
+   If it still fails, stop and report the error to the user — do **not** proceed with branch creation from an unknown base.
+
+2.5. **Create the feature branch** by running the script with `--short-name` (and `--json`). The `--short-name` value MUST be the full branch name including the `feat/` or `fix/` prefix determined in step 1.
+
+**Branch numbering mode**: Before running the script, check if `.specify/init-options.json` exists and read the `branch_numbering` value.
+
+- If `"timestamp"`, add `--timestamp` (Bash) or `-Timestamp` (PowerShell) to the script invocation
+- If `"sequential"` or absent, do not add any extra flag (default behavior)
+
+- Bash example: `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" --json --short-name "feat/member-search-filter" "Add member search filter"`
+- Bash (timestamp): `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" --json --timestamp --short-name "feat/member-search-filter" "Add member search filter"`
+- PowerShell example: `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" -Json -ShortName "feat/member-search-filter" "Add member search filter"`
+- PowerShell (timestamp): `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" -Json -Timestamp -ShortName "feat/member-search-filter" "Add member search filter"`
+
+**IMPORTANT**:
+
+- Do NOT pass `--number` — the script determines the correct next number automatically
+- Always include the JSON flag (`--json` for Bash, `-Json` for PowerShell) so the output can be parsed reliably
+- You must only ever run this script once per feature
+- The JSON is provided in the terminal as output - always refer to it to get the actual content you're looking for
+- The JSON output will contain BRANCH_NAME and SPEC_FILE paths
+- For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot")
 
 3. Load `.specify/templates/spec-template.md` to understand required sections.
+
+3.5. **Load Steering context** — Before writing any spec content, read the following steering files to understand the system domain, terminology, and existing module boundaries. Use this context throughout all subsequent steps to ensure the spec is consistent with the rest of the system.
+
+Files to read (all under `.specify/steering/`):
+
+- `_index.md` — module registry and category overview
+- `architecture.md` — tech stack, folder structure, API design patterns
+- `business-flows.md` — end-to-end business flows and actor interactions
+- `business-glossary.md` — canonical business term definitions
+- `user-personas.md` — user types and their goals
+
+While reading, identify:
+
+- **Which module category** (A–Z) the new feature belongs to, if any
+- **Related modules** that may be affected or referenced by this spec
+- **Business terms** already defined in the glossary that apply to this feature — use exact glossary terms in the spec (do not invent synonyms)
+- **Actors** from `user-personas.md` who interact with this feature
+- **Existing flows** in `business-flows.md` that this feature extends or modifies
+
+If any steering file does not exist, skip it silently and continue.
 
 4. **Detect UI screenshots**: Check whether the user attached one or more images (wireframes / mockups / screenshots) to this message.
    - **If images are present**: set `HAS_WIREFRAME = true` — the spec MUST include a completed `UI Specification` section (see step 4.9 below)
@@ -129,6 +176,30 @@ Given that feature description, do this:
 6. Write the specification to SPEC_FILE using the template structure, replacing placeholders with concrete details derived from the feature description (arguments) while preserving section order and headings.
    - If `HAS_WIREFRAME = true`: include a fully populated `UI Specification` section (placed just before `Assumptions`)
    - If `HAS_WIREFRAME = false`: omit the `UI Specification` section entirely
+
+6.5. **Update Steering** — After writing the spec, determine whether any steering file needs to be updated to reflect new or changed domain knowledge introduced by this spec. Apply updates directly; do not ask for permission.
+
+**When to update each file**:
+
+| Steering File          | Update if…                                                                                                   |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `_index.md`            | A new module/screen is introduced that does not yet appear in the Module Index table                         |
+| `business-glossary.md` | The spec introduces new business terms, actors, or domain concepts not yet defined in the glossary           |
+| `business-flows.md`    | The spec adds or materially changes an end-to-end business flow, or introduces a new flow not yet documented |
+| `architecture.md`      | The spec introduces a new technical pattern, integration, or structural convention not yet described         |
+| `user-personas.md`     | The spec introduces a new user type/actor or significantly extends an existing persona's responsibilities    |
+
+**Update rules**:
+
+- **Additive only**: only append new rows, sections, or bullet points. Do **not** remove or rewrite existing steering content.
+- **`_index.md` Module Index**: add one row per new module using the existing table format:
+  `| [Category] | [ID] | [Module Name] | \`docs/specs/[feature-dir]/spec.md\` | In Progress |`
+- **`business-glossary.md`**: add new terms to the most appropriate existing section table. If no section fits, append a new section at the bottom before the `*Last updated*` line.
+- **`business-flows.md`**: if a new flow is needed, append it as a new numbered subsection under `## 4. Key Business Flows`.
+- **Always update** the `*Last updated*` date at the bottom of any file you modify (ISO date: `April 2026` format).
+- **Do not update** a steering file if the spec contains only implementation details with no new business/domain knowledge.
+
+After updating, list each file modified and the specific change made (one line per file).
 
 7. **Specification Quality Validation**: After writing the initial spec, validate it against quality criteria:
 
