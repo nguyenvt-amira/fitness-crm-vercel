@@ -2333,6 +2333,13 @@ function createDb() {
           '品川区大崎',
           '目黒区自由が丘',
         ];
+        const jobTitles = [
+          'manager',
+          'assistant_manager',
+          'chief',
+          'fulltime',
+          'part_time',
+        ] as const;
 
         for (let i = 1; i <= 200; i++) {
           const ln = lastNames[i % lastNames.length]!;
@@ -2379,6 +2386,7 @@ function createDb() {
                 ? 13
                 : 5 + (i % 6);
           const position_name = positionNameById(position_id);
+          const job_title = jobTitles[(i - 1) % jobTitles.length]!;
 
           const staff_linkage = useFcLinkage
             ? ({
@@ -2444,6 +2452,7 @@ function createDb() {
             id: String(i),
             staff_id: `STF-${String(i).padStart(3, '0')}`,
             position_id,
+            job_title,
             brand,
             brand_display_name: staffBrandDisplayName(brand),
             status,
@@ -2518,6 +2527,7 @@ function createDb() {
           ? { ...existing.staff_linkage, ...patch.staff_linkage }
           : existing.staff_linkage;
         const position_id = patch.position_id ?? existing.position_id;
+        const job_title = patch.job_title ?? existing.job_title;
         const nextBrand = (patch.brand ?? existing.brand ?? 'all') as StaffDetail['brand'];
         const staff_permissions = patch.staff_permissions
           ? permissionRows.filter((r) => r.staff_id === id)
@@ -2527,6 +2537,7 @@ function createDb() {
           ...existing,
           ...patch,
           position_id,
+          job_title,
           brand: nextBrand,
           brand_display_name: staffBrandDisplayName(nextBrand),
           personal_info: patch.personal_info
@@ -2623,6 +2634,7 @@ function createDb() {
           id: String(nextId),
           staff_id: staff.staff_id,
           position_id,
+          job_title: 'fulltime',
           brand: assignedBrand,
           brand_display_name: staffBrandDisplayName(assignedBrand),
           status: 'active',

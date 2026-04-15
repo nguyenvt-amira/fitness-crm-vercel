@@ -17,7 +17,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+import { STAFF_JOB_TITLES } from '../../../_constants/constants';
 import type { StaffEditFormValues } from '../_schemas/staff-edit-form.schema';
+
+const JOB_TITLE_NONE = '__none__';
 
 export function PersonalInfoSection() {
   const form = useFormContext<StaffEditFormValues>();
@@ -129,6 +132,37 @@ export function PersonalInfoSection() {
           )}
         />
 
+        {/* 役職（店舗組織コード; 職位マスターとは別）— optional、性別の下 */}
+        <FormField
+          control={form.control}
+          name="job_title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>役職</FormLabel>
+              <Select
+                value={field.value ? field.value : JOB_TITLE_NONE}
+                onValueChange={(v) => field.onChange(v === JOB_TITLE_NONE ? '' : v)}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="選択" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value={JOB_TITLE_NONE}>未選択</SelectItem>
+                  {STAFF_JOB_TITLES.map(({ key, label }) => (
+                    <SelectItem key={key} value={key}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div />
+
         {/* Row 4: 携帯電話番号 — left col only (half width) */}
         <FormField
           control={form.control}
@@ -219,7 +253,7 @@ export function PersonalInfoSection() {
           )}
         />
 
-        {/* Row 8: 番地 — full width */}
+        {/* Row 9: 番地 — full width */}
         <FormField
           control={form.control}
           name="address"
@@ -234,7 +268,7 @@ export function PersonalInfoSection() {
           )}
         />
 
-        {/* Row 9: 建物名 — full width */}
+        {/* Row 10: 建物名 — full width */}
         <FormField
           control={form.control}
           name="building"

@@ -9264,6 +9264,13 @@
             "example": 6,
             "description": "FK → positions.id"
           },
+          "job_title": {
+            "type": "string",
+            "enum": ["manager", "assistant_manager", "chief", "fulltime", "part_time"],
+            "title": "StaffJobTitle",
+            "description": "役職コード（職位とは別の個別フィールド）",
+            "example": "manager"
+          },
           "brand": {
             "type": "string",
             "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
@@ -9778,6 +9785,13 @@
                 "example": 6,
                 "description": "FK → positions.id"
               },
+              "job_title": {
+                "type": "string",
+                "enum": ["manager", "assistant_manager", "chief", "fulltime", "part_time"],
+                "title": "StaffJobTitle",
+                "description": "役職コード（職位とは別の個別フィールド）",
+                "example": "manager"
+              },
               "brand": {
                 "type": "string",
                 "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
@@ -10183,6 +10197,12 @@
             "type": "integer",
             "description": "職位マスター (positions.id)"
           },
+          "job_title": {
+            "type": "string",
+            "enum": ["manager", "assistant_manager", "chief", "fulltime", "part_time"],
+            "title": "StaffJobTitle",
+            "description": "役職（職位とは別の個別フィールド）"
+          },
           "permission_settings": {
             "type": "object",
             "properties": {
@@ -10366,6 +10386,13 @@
                 "type": "integer",
                 "example": 6,
                 "description": "FK → positions.id"
+              },
+              "job_title": {
+                "type": "string",
+                "enum": ["manager", "assistant_manager", "chief", "fulltime", "part_time"],
+                "title": "StaffJobTitle",
+                "description": "役職コード（職位とは別の個別フィールド）",
+                "example": "manager"
               },
               "brand": {
                 "type": "string",
@@ -21974,6 +22001,19 @@
                           "example": 6,
                           "description": "FK → positions.id"
                         },
+                        "job_title": {
+                          "type": "string",
+                          "enum": [
+                            "manager",
+                            "assistant_manager",
+                            "chief",
+                            "fulltime",
+                            "part_time"
+                          ],
+                          "title": "StaffJobTitle",
+                          "description": "役職コード（職位とは別の個別フィールド）",
+                          "example": "manager"
+                        },
                         "brand": {
                           "type": "string",
                           "enum": [
@@ -22461,6 +22501,12 @@
                     "type": "integer",
                     "description": "職位マスター (positions.id)"
                   },
+                  "job_title": {
+                    "type": "string",
+                    "enum": ["manager", "assistant_manager", "chief", "fulltime", "part_time"],
+                    "title": "StaffJobTitle",
+                    "description": "役職（職位とは別の個別フィールド）"
+                  },
                   "permission_settings": {
                     "type": "object",
                     "properties": {
@@ -22659,6 +22705,19 @@
                           "type": "integer",
                           "example": 6,
                           "description": "FK → positions.id"
+                        },
+                        "job_title": {
+                          "type": "string",
+                          "enum": [
+                            "manager",
+                            "assistant_manager",
+                            "chief",
+                            "fulltime",
+                            "part_time"
+                          ],
+                          "title": "StaffJobTitle",
+                          "description": "役職コード（職位とは別の個別フィールド）",
+                          "example": "manager"
                         },
                         "brand": {
                           "type": "string",

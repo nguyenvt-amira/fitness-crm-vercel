@@ -1,5 +1,6 @@
 'use client';
 
+import { StaffJobTitleSchema } from '@/app/api/_schemas/staff.schema';
 import { z } from 'zod';
 
 // ─── Editable Scope Row ────────────────────────────────────────────────────────
@@ -28,6 +29,7 @@ export const staffEditFormSchema = z.object({
   birthday: z.string().optional().or(z.literal('')),
   phone: z.string().optional().or(z.literal('')),
   email: z.string().email('メール形式が正しくありません'),
+  job_title: StaffJobTitleSchema.optional().or(z.literal('')),
   postal_code: z.string().optional().or(z.literal('')),
   prefecture: z.string().optional().or(z.literal('')),
   city: z.string().optional().or(z.literal('')),
@@ -38,6 +40,8 @@ export const staffEditFormSchema = z.object({
   social_id: z.string().optional().or(z.literal('')),
   // 権限設定
   role: z.enum(['headquarters', 'store_staff', 'viewer'], { message: '必須です' }),
+  /** 職位マスター (positions.id) */
+  position_id: z.number().int().positive({ message: '必須です' }),
   billing_correction: z.boolean().default(false),
   refund_request: z.boolean().default(false),
   transfer_request: z.boolean().default(false),

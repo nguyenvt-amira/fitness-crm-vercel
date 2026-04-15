@@ -58,6 +58,27 @@ export const StaffScopeTargetSchema = z.enum(['all_stores', 'specific_store']).o
   description: 'Scope target: all_stores=全店舗, specific_store=特定店舗',
 });
 
+/**
+ * Allowed 役職 codes (職位マスターとは別). UI は FE のラベルマスタで表示名を解決する。
+ * manager=店長, assistant_manager=副店長, chief=チーフ, fulltime=スタッフ, part_time=アルバイト
+ */
+export const STAFF_JOB_TITLE_VALUES = [
+  'manager',
+  'assistant_manager',
+  'chief',
+  'fulltime',
+  'part_time',
+] as const;
+
+/**
+ * Staff Job Title Schema - 役職（職位マスター position とは別）
+ */
+export const StaffJobTitleSchema = z.enum(STAFF_JOB_TITLE_VALUES).openapi({
+  title: 'StaffJobTitle',
+  description:
+    '店舗組織上の役職コード。職位（positions）とは独立。表示ラベルはクライアントのマスタ参照',
+});
+
 // ─── Sub Schemas (Staff Detail) ──────────────────────────────────────────────
 
 /**
@@ -367,6 +388,10 @@ export const StaffDetailSchema = z
       example: 6,
       description: 'FK → positions.id',
     }),
+    job_title: StaffJobTitleSchema.optional().openapi({
+      example: 'manager',
+      description: '役職コード（職位とは別の個別フィールド）',
+    }),
     brand: StaffBrandSchema.openapi({
       example: 'joyfit',
       description: '主担当ブランド（一覧の brand と一致）',
@@ -514,6 +539,9 @@ export const UpdateStaffRequestSchema = z
     position_id: z.number().int().optional().openapi({
       description: '職位マスター (positions.id)',
     }),
+    job_title: StaffJobTitleSchema.optional().openapi({
+      description: '役職（職位とは別の個別フィールド）',
+    }),
     permission_settings: StaffPermissionSettingsSchema.optional().openapi({
       description: '権限設定 (partial update)',
     }),
@@ -637,6 +665,7 @@ export type StaffPermissionSettings = z.infer<typeof StaffPermissionSettingsSche
 export type StaffEditableScope = z.infer<typeof StaffEditableScopeSchema>;
 export type StaffLinkage = z.infer<typeof StaffLinkageSchema>;
 export type StaffLinkageType = z.infer<typeof StaffLinkageTypeSchema>;
+export type StaffJobTitle = z.infer<typeof StaffJobTitleSchema>;
 export type GetStaffsQuery = z.infer<typeof GetStaffsQuerySchema>;
 export type GetStaffsResponse = z.infer<typeof GetStaffsResponseSchema>;
 export type GetStaffDetailResponse = z.infer<typeof GetStaffDetailResponseSchema>;
