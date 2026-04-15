@@ -116,6 +116,8 @@ export type RouteRequiresParams<T extends RouteKey> = RouterFunction<T> extends 
 import { routes, routeKeys } from './routes.config';
 import type { RouteKey, RoutePattern, RouteConfig, RouterFunction } from './routes.type';
 
+type QueryParams = Record<string, string | number | boolean | null | undefined>;
+
 /**
  * Get route configuration by key
  */
@@ -135,16 +137,39 @@ export function getRoute(key: RouteKey): RouteConfig {
  * 
  * // Catch-all route
  * navigate('/blog/[...slug]', 'category', 'post-title') // '/blog/category/post-title'
+ *
+ * // Route with query params
+ * navigate('/users', { name: 'Henry' }) // '/users?name=Henry'
  */
 export function navigate<T extends RouteKey>(
   key: T,
-  ...params: RouterFunction<T> extends (...args: infer P) => string ? P : []
+  ...params: [...(RouterFunction<T> extends (...args: infer P) => string ? P : []), QueryParams?]
 ): string {
   const route = routes[key] as RouteConfig;
-  if (typeof route.router === 'function') {
-    return (route.router as (...args: (string | number)[]) => string)(...params as (string | number)[]);
+  const maybeQuery = params.at(-1);
+  const queryParams = typeof maybeQuery === 'object' && maybeQuery !== null && !Array.isArray(maybeQuery)
+    ? (params.pop() as QueryParams)
+    : undefined;
+
+  const basePath = typeof route.router === 'function'
+    ? (route.router as (...args: (string | number)[]) => string)(...(params as (string | number)[]))
+    : (route.router as string);
+
+  if (!queryParams) {
+    return basePath;
   }
-  return route.router as string;
+
+  const queryString = new URLSearchParams(
+    Object.entries(queryParams)
+      .filter(([, value]) => value !== undefined && value !== null)
+      .map(([queryKey, value]) => [queryKey, String(value)])
+  ).toString();
+
+  if (!queryString) {
+    return basePath;
+  }
+
+  return \`\${basePath}?\${queryString}\`;
 }
 
 /**
