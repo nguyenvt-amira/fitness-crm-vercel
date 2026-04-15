@@ -50,6 +50,12 @@ export const routes = {
     pattern: '/membership-applications/:id',
     private: true,
   },
+  '/positions': {
+    router: '/positions',
+    filePath: '(private)/positions',
+    pattern: '/positions',
+    private: true,
+  },
   '/staffs': {
     router: '/staffs',
     filePath: '(private)/staffs',
@@ -116,6 +122,7 @@ export const routeKeys = [
   '/members/[id]',
   '/membership-applications',
   '/membership-applications/[id]',
+  '/positions',
   '/staffs',
   '/staffs/[id]',
   '/staffs/[id]/edit',
@@ -137,6 +144,7 @@ export const routePatterns = [
   '/members/:id',
   '/membership-applications',
   '/membership-applications/:id',
+  '/positions',
   '/staffs',
   '/staffs/:id',
   '/staffs/:id/edit',

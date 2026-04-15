@@ -1,15 +1,19 @@
 'use client';
 
+import Link from 'next/link';
+
 import { formatDate } from '@/utils/format.util';
 import type { ColumnDef } from '@tanstack/react-table';
 import { Check, Minus } from 'lucide-react';
 
 import { DataTable } from '@/components/common/data-table';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
 import { type GetCrmStaffsByIdResponse } from '@/lib/api/types.gen';
+import { navigate } from '@/lib/routes/routes.util';
 
 import {
   STAFF_BRAND_LABELS,
@@ -69,7 +73,13 @@ export function StaffPermissionCard({ staff }: StaffPermissionCardProps) {
               {STAFF_ROLE_LABELS[staffRole] || '-'}
             </Badge>
           </div>
-
+          {/* TODO: Update to use the new position page */}
+          <Link
+            href={navigate('/positions', { id: staff.position_id })}
+            className="cursor-pointer text-xs hover:underline"
+          >
+            本部管理者の権限を確認 →{' '}
+          </Link>
           <div className="bg-muted/20 rounded-lg border p-4">
             <div className="grid gap-3">
               <div className="flex items-center gap-2">
@@ -101,7 +111,7 @@ export function StaffPermissionCard({ staff }: StaffPermissionCardProps) {
 
           <Separator />
 
-          <div className="space-y-2">
+          <div className="space-y-2 overflow-scroll">
             <div className="text-muted-foreground text-xs font-medium">編集可能情報</div>
             <DataTable
               variant="simple"
