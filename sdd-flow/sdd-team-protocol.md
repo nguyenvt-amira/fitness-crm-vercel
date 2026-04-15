@@ -99,6 +99,13 @@ fitness-crm/
 │   └── sdd-sequence-flow.md         ← Sequence diagram (roles + gates)
 │
 └── docs/
+    ├── steering/                    ← System-wide domain knowledge (always loaded by agents)
+    │   ├── _index.md                ← Navigation hub: module registry + category overview
+    │   ├── architecture.md          ← Tech stack, folder structure, API design patterns
+    │   ├── business-flows.md        ← End-to-end business flows and actor interactions
+    │   ├── business-glossary.md     ← Canonical business term → technical mapping
+    │   └── user-personas.md         ← User types, goals, and feature usage patterns
+    │
     └── specs/
         └── <feature>/               ← Layer 3–4: per-feature artefacts
             ├── spec.md              ← Feature spec (speckit.specify output)
@@ -254,12 +261,12 @@ draft → review → approved → implemented
 
 ## 7. Context Injection Per AI Tool
 
-| Tool               | Stock context (always loaded)                                                                                                           | Flow context (per feature)                                                  |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| **GitHub Copilot** | `.github/copilot-instructions.md` auto-loaded. Add `.specify/memory/` files to Copilot context via `#file:` references in agent prompt. | `@` attach `docs/specs/<feature>/spec.md` before invoking any SpecKit skill |
-| **Cursor**         | Add `.specify/memory/` + `.github/copilot-instructions.md` to `.cursorrules`                                                            | `@docs/specs/<feature>/spec.md`                                             |
-| **Claude**         | Paste `copilot-instructions.md` + constitution + playbook summary                                                                       | Paste `spec.md` content                                                     |
-| **Any chat AI**    | Copy-paste stock context blocks                                                                                                         | Copy-paste spec.md                                                          |
+| Tool               | Stock context (always loaded)                                                                                                                              | Flow context (per feature)                                                  |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| **GitHub Copilot** | `.github/copilot-instructions.md` auto-loaded. Add `.specify/memory/` + `docs/steering/` files to Copilot context via `#file:` references in agent prompt. | `@` attach `docs/specs/<feature>/spec.md` before invoking any SpecKit skill |
+| **Cursor**         | Add `.specify/memory/` + `docs/steering/` + `.github/copilot-instructions.md` to `.cursorrules`                                                            | `@docs/specs/<feature>/spec.md`                                             |
+| **Claude**         | Paste `copilot-instructions.md` + constitution + playbook summary + relevant steering files                                                                | Paste `spec.md` content                                                     |
+| **Any chat AI**    | Copy-paste stock context blocks                                                                                                                            | Copy-paste spec.md                                                          |
 
 ### Recommended Copilot agent prompt prefix
 
@@ -267,6 +274,9 @@ draft → review → approved → implemented
 Before starting, read:
 - #file:.specify/memory/constitution.md
 - #file:.specify/memory/implementation-playbook.md
+- #file:docs/steering/_index.md
+- #file:docs/steering/architecture.md
+- #file:docs/steering/business-glossary.md
 - #file:.github/copilot-instructions.md
 - #file:docs/specs/<feature>/spec.md
 
@@ -309,6 +319,20 @@ Do not proceed past speckit.tasks without running speckit.analyze first.
 | New tech added to stack                    | Add to "Active Technologies" section |
 | New feature pattern established            | Add to "Recent Changes" section      |
 | Structural refactor changes file locations | Update "Project Structure" section   |
+
+### Steering (`docs/steering/`)
+
+Steering files are **additive only** — never remove or rewrite existing content. Each file has its own update trigger:
+
+| File                   | Update when…                                                                                 | Who updates                    |
+| ---------------------- | -------------------------------------------------------------------------------------------- | ------------------------------ |
+| `_index.md`            | A new module or screen is introduced (add one row to the Module Index table)                 | Agent (speckit.specify) or Dev |
+| `architecture.md`      | A new tech pattern, external integration, or structural convention is established            | Dev / Tech Lead                |
+| `business-flows.md`    | A new end-to-end flow is added or an existing flow materially changes                        | Agent (speckit.specify) or BA  |
+| `business-glossary.md` | A new business term, actor, or domain concept appears that is not yet defined                | Agent (speckit.specify) or BA  |
+| `user-personas.md`     | A new user type is introduced or an existing persona's responsibilities significantly expand | BA / PO                        |
+
+**Rule**: `speckit.specify` updates steering automatically as part of step 6.5. Manual updates follow the same additive-only constraint.
 
 ---
 

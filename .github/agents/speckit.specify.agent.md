@@ -125,15 +125,13 @@ Given that feature description, do this:
 
 3.5. **Load Steering context** — Before writing any spec content, read the following steering files to understand the system domain, terminology, and existing module boundaries. Use this context throughout all subsequent steps to ensure the spec is consistent with the rest of the system.
 
-Files to read (all under `.specify/steering/`):
+Files to read (all under `docs/steering/`):
 
-- `_index.md` — module registry and category overview
-- `architecture.md` — tech stack, folder structure, API design patterns
-- `business-flows.md` — end-to-end business flows and actor interactions
-- `business-glossary.md` — canonical business term definitions
-- `user-personas.md` — user types and their goals
-
-While reading, identify:
+- `docs/steering/_index.md` — module registry and category overview
+- `docs/steering/architecture.md` — tech stack, folder structure, API design patterns
+- `docs/steering/business-flows.md` — end-to-end business flows and actor interactions
+- `docs/steering/business-glossary.md` — canonical business term definitions
+- `docs/steering/user-personas.md` — user types and their goalsWhile reading, identify:
 
 - **Which module category** (A–Z) the new feature belongs to, if any
 - **Related modules** that may be affected or referenced by this spec
