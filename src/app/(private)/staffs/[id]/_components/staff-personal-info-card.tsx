@@ -70,12 +70,11 @@ export function StaffPersonalInfoCard({ staff }: StaffPersonalInfoCardProps) {
               <div className="text-muted-foreground text-xs font-medium">携帯電話番号</div>
               <div className="mt-1 text-sm">{personal.phone ?? '—'}</div>
             </div>
-            <div>
-              <div className="text-muted-foreground text-xs font-medium">メールアドレス</div>
-              <div className="mt-1 text-sm break-all">{personal.email}</div>
-            </div>
           </div>
-
+          <div>
+            <div className="text-muted-foreground text-xs font-medium">メールアドレス</div>
+            <div className="mt-1 text-sm break-all">{personal.email}</div>
+          </div>
           <div>
             <div className="text-muted-foreground text-xs font-medium">住所</div>
             <div className="mt-1 text-sm">
