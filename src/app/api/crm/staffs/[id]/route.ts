@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { db } from '@/app/api/_mock-db';
 import {
+  DeleteStaffRequestSchema,
   DeleteStaffResponseSchema,
   ErrorResponseSchema,
   GetStaffDetailResponseSchema,
@@ -151,11 +152,20 @@ registerRoute({
       schema: { type: 'string' },
     },
   ],
+  requestBody: {
+    schema: DeleteStaffRequestSchema,
+    description: 'Staff delete payload',
+  },
   responses: [
     {
       status: 200,
       schema: DeleteStaffResponseSchema,
       description: 'Staff deleted successfully',
+    },
+    {
+      status: 400,
+      schema: ErrorResponseSchema,
+      description: 'Invalid request body',
     },
     {
       status: 404,
@@ -171,11 +181,19 @@ registerRoute({
 });
 
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
+    const body = await request.json();
+    const validationResult = DeleteStaffRequestSchema.safeParse(body);
+
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((issue) => issue.message).join(', ');
+      return NextResponse.json({ error: errors }, { status: 400 });
+    }
+
     const deleted = db.staffs.delete(id);
 
     if (!deleted) {

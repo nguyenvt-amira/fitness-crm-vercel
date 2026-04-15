@@ -684,7 +684,14 @@ export class Staffs {
      * Delete a staff member by ID
      */
     public static deleteCrmStaffsById<ThrowOnError extends boolean = false>(options: Options<DeleteCrmStaffsByIdData, ThrowOnError>) {
-        return (options.client ?? client).delete<DeleteCrmStaffsByIdResponses, DeleteCrmStaffsByIdErrors, ThrowOnError>({ url: '/crm/staffs/{id}', ...options });
+        return (options.client ?? client).delete<DeleteCrmStaffsByIdResponses, DeleteCrmStaffsByIdErrors, ThrowOnError>({
+            url: '/crm/staffs/{id}',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
     }
     
     /**
