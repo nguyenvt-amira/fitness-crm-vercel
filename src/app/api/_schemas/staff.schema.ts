@@ -654,6 +654,25 @@ export const DeleteStaffResponseSchema = z
     description: 'Response after deleting a staff member',
   });
 
+/**
+ * Delete Staff Request Schema
+ */
+export const DeleteStaffRequestSchema = z
+  .object({
+    delete_reason: z
+      .string()
+      .min(1, { message: '削除理由は必須です' })
+      .max(255, { message: '削除理由は255文字以内で入力してください' })
+      .openapi({
+        example: '退職に伴うアカウント削除',
+        description: 'Reason for deleting the staff account',
+      }),
+  })
+  .openapi({
+    title: 'DeleteStaffRequest',
+    description: 'Request body to delete a staff member',
+  });
+
 // ─── Export Types ─────────────────────────────────────────────────────────────
 
 export type StaffListItem = z.infer<typeof StaffListItemSchema>;
@@ -673,6 +692,7 @@ export type UpdateStaffRequest = z.infer<typeof UpdateStaffRequestSchema>;
 export type UpdateStaffResponse = z.infer<typeof UpdateStaffResponseSchema>;
 export type InviteStaffRequest = z.infer<typeof InviteStaffRequestSchema>;
 export type InviteStaffResponse = z.infer<typeof InviteStaffResponseSchema>;
+export type DeleteStaffRequest = z.infer<typeof DeleteStaffRequestSchema>;
 export type DeleteStaffResponse = z.infer<typeof DeleteStaffResponseSchema>;
 
 export { ErrorResponseSchema } from './auth.schema';

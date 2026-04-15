@@ -14364,7 +14364,17 @@ export type GetCrmPositionsResponses = {
 export type GetCrmPositionsResponse = GetCrmPositionsResponses[keyof GetCrmPositionsResponses];
 
 export type DeleteCrmStaffsByIdData = {
-    body?: never;
+    /**
+     * DeleteStaffRequest
+     *
+     * Request body to delete a staff member
+     */
+    body?: {
+        /**
+         * Reason for deleting the staff account
+         */
+        delete_reason: string;
+    };
     path: {
         /**
          * Staff ID
@@ -14376,6 +14386,17 @@ export type DeleteCrmStaffsByIdData = {
 };
 
 export type DeleteCrmStaffsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
     /**
      * ErrorResponse
      *

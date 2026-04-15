@@ -23117,6 +23117,28 @@
             }
           }
         ],
+        "requestBody": {
+          "description": "Staff delete payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "delete_reason": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "退職に伴うアカウント削除",
+                    "description": "Reason for deleting the staff account"
+                  }
+                },
+                "required": ["delete_reason"],
+                "title": "DeleteStaffRequest",
+                "description": "Request body to delete a staff member"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Staff deleted successfully",
@@ -23134,6 +23156,26 @@
                   "required": ["message"],
                   "title": "DeleteStaffResponse",
                   "description": "Response after deleting a staff member"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
                 }
               }
             }

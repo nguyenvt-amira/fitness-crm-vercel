@@ -1,16 +1,18 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 import { useRouter } from 'next/navigation';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -20,12 +22,26 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Textarea } from '@/components/ui/textarea';
 
 import {
   deleteCrmStaffsByIdMutation,
   getCrmStaffsQueryKey,
 } from '@/lib/api/@tanstack/react-query.gen';
 import { navigate } from '@/lib/routes/routes.util';
+
+import {
+  DeleteStaffSchema,
+  type DeleteStaffSchema as DeleteStaffValues,
+} from '../_schemas/delete-staff.schema';
 
 interface StaffDeleteActionProps {
   staffId: string;
@@ -40,12 +56,30 @@ interface StaffDeleteActionProps {
 export function StaffDeleteAction({ staffId, trigger, onOpenChange }: StaffDeleteActionProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const form = useForm<DeleteStaffValues>({
+    resolver: zodResolver(DeleteStaffSchema),
+    mode: 'onChange',
+    defaultValues: { delete_reason: '' },
+  });
+
+  useEffect(() => {
+    if (open) {
+      form.reset({ delete_reason: '' });
+    }
+  }, [form, open]);
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    setOpen(nextOpen);
+    onOpenChange?.(nextOpen);
+  };
 
   const deleteMutation = useMutation({
     ...deleteCrmStaffsByIdMutation(),
     onSuccess: (data) => {
       toast.success(data.message || 'スタッフを削除しました');
       queryClient.invalidateQueries({ queryKey: getCrmStaffsQueryKey() });
+      setOpen(false);
       router.push(navigate('/staffs'));
     },
     onError: () => {
@@ -53,8 +87,17 @@ export function StaffDeleteAction({ staffId, trigger, onOpenChange }: StaffDelet
     },
   });
 
+  const onSubmit = (data: DeleteStaffValues) => {
+    deleteMutation.mutate({
+      path: { id: staffId },
+      body: {
+        delete_reason: data.delete_reason,
+      },
+    });
+  };
+
   return (
-    <AlertDialog onOpenChange={onOpenChange}>
+    <AlertDialog open={open} onOpenChange={handleOpenChange}>
       <AlertDialogTrigger asChild>
         {trigger ?? (
           <Button variant="destructive" size="sm" disabled={deleteMutation.isPending}>
@@ -68,19 +111,46 @@ export function StaffDeleteAction({ staffId, trigger, onOpenChange }: StaffDelet
         <AlertDialogHeader>
           <AlertDialogTitle>スタッフを削除しますか？</AlertDialogTitle>
           <AlertDialogDescription>
-            この操作は取り消せません。削除するとログインできなくなります。
+            このスタッフアカウントを削除すると、ログインできなくなります。この操作は取り消せません。
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel disabled={deleteMutation.isPending}>キャンセル</AlertDialogCancel>
-          <AlertDialogAction
-            variant="destructive"
-            disabled={deleteMutation.isPending}
-            onClick={() => deleteMutation.mutate({ path: { id: staffId } })}
-          >
-            削除する
-          </AlertDialogAction>
-        </AlertDialogFooter>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="delete_reason"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    削除理由 <span className="text-destructive">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      rows={3}
+                      placeholder="削除理由を入力してください"
+                      disabled={deleteMutation.isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={deleteMutation.isPending}>キャンセル</AlertDialogCancel>
+              <Button
+                type="submit"
+                variant="destructive"
+                size="sm"
+                disabled={deleteMutation.isPending}
+              >
+                削除する
+              </Button>
+            </AlertDialogFooter>
+          </form>
+        </Form>
       </AlertDialogContent>
     </AlertDialog>
   );
