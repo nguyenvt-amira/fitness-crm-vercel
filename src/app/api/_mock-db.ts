@@ -7,6 +7,7 @@ import type {
   FamilyRegistrationStatus,
   FamilyRelationship,
 } from '@/app/api/_schemas/family-registration.schema';
+import type { StoreAccessSettings } from '@/app/api/_schemas/store-access-settings.schema';
 import type { Store, StoreBusinessHours } from '@/app/api/_schemas/store.schema';
 
 import type {
@@ -500,6 +501,13 @@ type DbType = {
       storeId: string,
       patch: Partial<Omit<StoreBusinessHours, 'store_id'>>,
     ): StoreBusinessHours;
+  };
+  store_access_settings: {
+    _byStoreId: Record<string, StoreAccessSettings>;
+    _seeded: boolean;
+    _seed(): void;
+    getByStoreId(storeId: string): StoreAccessSettings | undefined;
+    replaceForStore(storeId: string, data: StoreAccessSettings): StoreAccessSettings | undefined;
   };
 };
 
@@ -1834,6 +1842,67 @@ function createDb() {
         this._seed();
         const row = this._rows.find((s) => s.id === storeId);
         if (row) row.manager_staff_id = manager_staff_id;
+      },
+    },
+    store_access_settings: {
+      _byStoreId: {} as Record<string, StoreAccessSettings>,
+      _seeded: false,
+      _default(): StoreAccessSettings {
+        return {
+          mutual_use_enabled: true,
+          start_date: '2024/04/01',
+          end_date: '2027/03/31',
+          under18_start_time: '10:00',
+          under18_end_time: '18:00',
+          permitted_stores: [
+            {
+              id: 'g-1',
+              store_name: 'JOYFIT24新宿店',
+              brand: 'joyfit24',
+              setup_date: '2024/04/01',
+            },
+            {
+              id: 'g-2',
+              store_name: 'JOYFIT24渋谷店',
+              brand: 'joyfit24',
+              setup_date: '2024/04/01',
+            },
+            {
+              id: 'g-3',
+              store_name: 'FIT365八潮店',
+              brand: 'fit365',
+              setup_date: '2025/01/15',
+            },
+          ],
+          joy_usage_fees: [
+            { id: 'fee-1', option_name: '1日利用券（一般）', fee: 2200 },
+            { id: 'fee-2', option_name: '1日利用券（学生）', fee: 1650 },
+          ],
+        };
+      },
+      _clone(data: StoreAccessSettings): StoreAccessSettings {
+        return JSON.parse(JSON.stringify(data)) as StoreAccessSettings;
+      },
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        db.stores._seed();
+        for (const store of db.stores._rows) {
+          this._byStoreId[store.id] = this._clone(this._default());
+        }
+      },
+      getByStoreId(storeId: string): StoreAccessSettings | undefined {
+        this._seed();
+        if (!db.stores.getById(storeId)) return undefined;
+        const row = this._byStoreId[storeId];
+        return this._clone(row ?? this._default());
+      },
+      replaceForStore(storeId: string, data: StoreAccessSettings): StoreAccessSettings | undefined {
+        this._seed();
+        if (!db.stores.getById(storeId)) return undefined;
+        const next = this._clone(data);
+        this._byStoreId[storeId] = next;
+        return this._clone(next);
       },
     },
     businessHours: {

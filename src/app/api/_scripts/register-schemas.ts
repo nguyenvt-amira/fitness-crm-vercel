@@ -8,6 +8,7 @@ import * as autoApprovalSchemas from '../_schemas/auto-approval.schema';
 import * as familyRegistrationSchemas from '../_schemas/family-registration.schema';
 import * as memberSchemas from '../_schemas/member.schema';
 import * as membershipApplicationSchemas from '../_schemas/membership-application.schema';
+import * as storeAccessSettingsSchemas from '../_schemas/store-access-settings.schema';
 import * as storeSchemas from '../_schemas/store.schema';
 import { registry } from './register-route';
 
@@ -528,6 +529,39 @@ export function registerAllSchemas() {
   registeredSchemaMap.set(
     'GetStoresResponse',
     registry.register('GetStoresResponse', storeSchemas.GetStoresResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'PermittedStore',
+    registry.register('PermittedStore', storeAccessSettingsSchemas.PermittedStoreSchema),
+  );
+  registeredSchemaMap.set(
+    'JoyUsageFee',
+    registry.register('JoyUsageFee', storeAccessSettingsSchemas.JoyUsageFeeSchema),
+  );
+  registeredSchemaMap.set(
+    'StoreAccessSettings',
+    registry.register('StoreAccessSettings', storeAccessSettingsSchemas.StoreAccessSettingsSchema),
+  );
+  registeredSchemaMap.set(
+    'GetStoreAccessSettingsResponse',
+    registry.register(
+      'GetStoreAccessSettingsResponse',
+      storeAccessSettingsSchemas.GetStoreAccessSettingsResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateStoreAccessSettingsRequest',
+    registry.register(
+      'UpdateStoreAccessSettingsRequest',
+      storeAccessSettingsSchemas.UpdateStoreAccessSettingsRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateStoreAccessSettingsResponse',
+    registry.register(
+      'UpdateStoreAccessSettingsResponse',
+      storeAccessSettingsSchemas.UpdateStoreAccessSettingsResponseSchema,
+    ),
   );
 
   // Register business hours schemas

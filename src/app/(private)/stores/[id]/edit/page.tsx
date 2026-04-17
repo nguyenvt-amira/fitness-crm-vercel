@@ -156,11 +156,7 @@ export default function StoreEditPage() {
 
       <div className="bg-background/95 fixed right-0 bottom-0 left-0 border-t px-4 py-4 backdrop-blur">
         <div className="mx-auto flex max-w-5xl justify-end gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => router.push(navigate('/stores/[id]', id))}
-          >
+          <Button type="button" variant="outline" onClick={() => router.push(navigate('/stores'))}>
             キャンセル
           </Button>
           <Button

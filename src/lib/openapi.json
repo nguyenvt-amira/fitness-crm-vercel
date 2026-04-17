@@ -7871,6 +7871,190 @@
         "title": "GetStoresResponse",
         "description": "Store list response with pagination"
       },
+      "PermittedStore": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "store_name": {
+            "type": "string"
+          },
+          "brand": {
+            "type": "string",
+            "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+            "title": "StoreListBrand",
+            "description": "Store brand"
+          },
+          "setup_date": {
+            "type": "string",
+            "description": "設定日 (yyyy/MM/dd)"
+          }
+        },
+        "required": ["id", "store_name", "brand", "setup_date"],
+        "title": "PermittedStore",
+        "description": "相互利用グループの許可店舗行"
+      },
+      "JoyUsageFee": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "option_name": {
+            "type": "string"
+          },
+          "fee": {
+            "type": "number",
+            "description": "料金（税込）"
+          }
+        },
+        "required": ["id", "option_name", "fee"],
+        "title": "JoyUsageFee",
+        "description": "どこでもJOY利用料金の行"
+      },
+      "StoreAccessSettings": {
+        "type": "object",
+        "properties": {
+          "mutual_use_enabled": {
+            "type": "boolean"
+          },
+          "start_date": {
+            "type": "string"
+          },
+          "end_date": {
+            "type": "string"
+          },
+          "under18_start_time": {
+            "type": "string"
+          },
+          "under18_end_time": {
+            "type": "string"
+          },
+          "permitted_stores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PermittedStore"
+            }
+          },
+          "joy_usage_fees": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JoyUsageFee"
+            }
+          }
+        },
+        "required": [
+          "mutual_use_enabled",
+          "start_date",
+          "end_date",
+          "under18_start_time",
+          "under18_end_time",
+          "permitted_stores",
+          "joy_usage_fees"
+        ],
+        "title": "StoreAccessSettings",
+        "description": "店舗の入退室・相互利用設定（mock）"
+      },
+      "GetStoreAccessSettingsResponse": {
+        "type": "object",
+        "properties": {
+          "mutual_use_enabled": {
+            "type": "boolean"
+          },
+          "start_date": {
+            "type": "string"
+          },
+          "end_date": {
+            "type": "string"
+          },
+          "under18_start_time": {
+            "type": "string"
+          },
+          "under18_end_time": {
+            "type": "string"
+          },
+          "permitted_stores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PermittedStore"
+            }
+          },
+          "joy_usage_fees": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JoyUsageFee"
+            }
+          }
+        },
+        "required": [
+          "mutual_use_enabled",
+          "start_date",
+          "end_date",
+          "under18_start_time",
+          "under18_end_time",
+          "permitted_stores",
+          "joy_usage_fees"
+        ],
+        "title": "GetStoreAccessSettingsResponse",
+        "description": "店舗の入退室・相互利用設定（mock）"
+      },
+      "UpdateStoreAccessSettingsRequest": {
+        "type": "object",
+        "properties": {
+          "mutual_use_enabled": {
+            "type": "boolean"
+          },
+          "start_date": {
+            "type": "string"
+          },
+          "end_date": {
+            "type": "string"
+          },
+          "under18_start_time": {
+            "type": "string"
+          },
+          "under18_end_time": {
+            "type": "string"
+          },
+          "permitted_stores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PermittedStore"
+            }
+          },
+          "joy_usage_fees": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JoyUsageFee"
+            }
+          }
+        },
+        "required": [
+          "mutual_use_enabled",
+          "start_date",
+          "end_date",
+          "under18_start_time",
+          "under18_end_time",
+          "permitted_stores",
+          "joy_usage_fees"
+        ],
+        "title": "UpdateStoreAccessSettingsRequest",
+        "description": "店舗の入退室・相互利用設定（mock）"
+      },
+      "UpdateStoreAccessSettingsResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "access_settings": {
+            "$ref": "#/components/schemas/StoreAccessSettings"
+          }
+        },
+        "required": ["message", "access_settings"],
+        "title": "UpdateStoreAccessSettingsResponse"
+      },
       "DayOfWeek": {
         "type": "string",
         "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun", "holiday"],
@@ -18777,6 +18961,174 @@
                     "error": {
                       "type": "string",
                       "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/stores/{id}/access-settings": {
+      "get": {
+        "summary": "Get store access settings",
+        "description": "入退室・相互利用設定（mock）",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Store ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Access settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetStoreAccessSettingsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Store not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update store access settings",
+        "description": "入退室・相互利用設定を更新（mock）",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Store ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Full access settings payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStoreAccessSettingsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateStoreAccessSettingsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Store not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
                       "description": "Error message"
                     }
                   },

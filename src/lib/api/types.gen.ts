@@ -5380,6 +5380,93 @@ export type GetStoresResponse = {
 };
 
 /**
+ * PermittedStore
+ *
+ * 相互利用グループの許可店舗行
+ */
+export type PermittedStore = {
+    id: string;
+    store_name: string;
+    /**
+     * StoreListBrand
+     *
+     * Store brand
+     */
+    brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * 設定日 (yyyy/MM/dd)
+     */
+    setup_date: string;
+};
+
+/**
+ * JoyUsageFee
+ *
+ * どこでもJOY利用料金の行
+ */
+export type JoyUsageFee = {
+    id: string;
+    option_name: string;
+    /**
+     * 料金（税込）
+     */
+    fee: number;
+};
+
+/**
+ * StoreAccessSettings
+ *
+ * 店舗の入退室・相互利用設定（mock）
+ */
+export type StoreAccessSettings = {
+    mutual_use_enabled: boolean;
+    start_date: string;
+    end_date: string;
+    under18_start_time: string;
+    under18_end_time: string;
+    permitted_stores: Array<PermittedStore>;
+    joy_usage_fees: Array<JoyUsageFee>;
+};
+
+/**
+ * GetStoreAccessSettingsResponse
+ *
+ * 店舗の入退室・相互利用設定（mock）
+ */
+export type GetStoreAccessSettingsResponse = {
+    mutual_use_enabled: boolean;
+    start_date: string;
+    end_date: string;
+    under18_start_time: string;
+    under18_end_time: string;
+    permitted_stores: Array<PermittedStore>;
+    joy_usage_fees: Array<JoyUsageFee>;
+};
+
+/**
+ * UpdateStoreAccessSettingsRequest
+ *
+ * 店舗の入退室・相互利用設定（mock）
+ */
+export type UpdateStoreAccessSettingsRequest = {
+    mutual_use_enabled: boolean;
+    start_date: string;
+    end_date: string;
+    under18_start_time: string;
+    under18_end_time: string;
+    permitted_stores: Array<PermittedStore>;
+    joy_usage_fees: Array<JoyUsageFee>;
+};
+
+/**
+ * UpdateStoreAccessSettingsResponse
+ */
+export type UpdateStoreAccessSettingsResponse = {
+    message: string;
+    access_settings: StoreAccessSettings;
+};
+
+/**
  * DayOfWeek
  *
  * Day of week including holiday
@@ -12114,6 +12201,116 @@ export type GetCrmMembershipApplicationsSummaryResponses = {
 };
 
 export type GetCrmMembershipApplicationsSummaryResponse = GetCrmMembershipApplicationsSummaryResponses[keyof GetCrmMembershipApplicationsSummaryResponses];
+
+export type GetCrmStoresByIdAccessSettingsData = {
+    body?: never;
+    path: {
+        /**
+         * Store ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/stores/{id}/access-settings';
+};
+
+export type GetCrmStoresByIdAccessSettingsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmStoresByIdAccessSettingsError = GetCrmStoresByIdAccessSettingsErrors[keyof GetCrmStoresByIdAccessSettingsErrors];
+
+export type GetCrmStoresByIdAccessSettingsResponses = {
+    /**
+     * Access settings
+     */
+    200: GetStoreAccessSettingsResponse;
+};
+
+export type GetCrmStoresByIdAccessSettingsResponse = GetCrmStoresByIdAccessSettingsResponses[keyof GetCrmStoresByIdAccessSettingsResponses];
+
+export type PutCrmStoresByIdAccessSettingsData = {
+    /**
+     * Full access settings payload
+     */
+    body?: UpdateStoreAccessSettingsRequest;
+    path: {
+        /**
+         * Store ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/stores/{id}/access-settings';
+};
+
+export type PutCrmStoresByIdAccessSettingsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PutCrmStoresByIdAccessSettingsError = PutCrmStoresByIdAccessSettingsErrors[keyof PutCrmStoresByIdAccessSettingsErrors];
+
+export type PutCrmStoresByIdAccessSettingsResponses = {
+    /**
+     * Updated
+     */
+    200: UpdateStoreAccessSettingsResponse;
+};
+
+export type PutCrmStoresByIdAccessSettingsResponse = PutCrmStoresByIdAccessSettingsResponses[keyof PutCrmStoresByIdAccessSettingsResponses];
 
 export type GetCrmStoresByIdBusinessHoursData = {
     body?: never;
