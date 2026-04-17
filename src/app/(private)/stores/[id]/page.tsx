@@ -22,6 +22,7 @@ import { STORE_STATUS_BADGE_CLASSES, STORE_STATUS_LABELS } from '../_constants/c
 import { AccessSettingsTab } from './_components/tabs/access-settings-tab';
 import { BasicInfoTab } from './_components/tabs/basic-info-tab';
 import { BusinessSettingsTab } from './_components/tabs/business-settings-tab';
+import { ContractTab } from './_components/tabs/contract-tab';
 
 export default function StoreDetailPage() {
   const params = useParams<{ id: string }>();
@@ -93,7 +94,7 @@ export default function StoreDetailPage() {
               <TabsTrigger value="business" className={tabTriggerClass}>
                 営業設定
               </TabsTrigger>
-              <TabsTrigger value="contract" disabled className={tabTriggerClass}>
+              <TabsTrigger value="contract" className={tabTriggerClass}>
                 契約・料金
               </TabsTrigger>
               <TabsTrigger value="access" className={tabTriggerClass}>
@@ -120,6 +121,9 @@ export default function StoreDetailPage() {
             </TabsContent>
             <TabsContent value="business" className="mt-0 focus-visible:outline-none">
               <BusinessSettingsTab storeId={store.id} />
+            </TabsContent>
+            <TabsContent value="contract" className="mt-0 focus-visible:outline-none">
+              <ContractTab />
             </TabsContent>
             <TabsContent value="access" className="focus-visible:outline-none">
               <AccessSettingsTab storeId={store.id} />

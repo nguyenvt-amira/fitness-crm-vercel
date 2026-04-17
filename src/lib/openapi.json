@@ -11682,6 +11682,261 @@
         }
       }
     },
+    "/crm/main-contracts": {
+      "get": {
+        "summary": "Get main contract masters",
+        "description": "Get paginated list of main contract masters (G-01)",
+        "tags": ["Main Contracts"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 20
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "主契約名・IDで検索"
+            },
+            "required": false,
+            "description": "主契約名・IDで検索",
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "general",
+                "oneDay",
+                "family",
+                "kids",
+                "student",
+                "corporate",
+                "welfare",
+                "prepaid",
+                "special"
+              ],
+              "title": "MainContractType",
+              "description": "主契約タイプ（G-01）"
+            },
+            "required": false,
+            "description": "主契約タイプ（G-01）",
+            "name": "contract_type",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+              "title": "StoreListBrand",
+              "description": "Store brand"
+            },
+            "required": false,
+            "description": "Store brand",
+            "name": "brand",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["active", "inactive"],
+              "title": "MainContractStatus",
+              "description": "主契約の有効/無効ステータス"
+            },
+            "required": false,
+            "description": "主契約の有効/無効ステータス",
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["id", "name", "contract_type", "brand", "price_including_tax"],
+              "default": "id"
+            },
+            "required": false,
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            },
+            "required": false,
+            "name": "sort_order",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Main contract list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "main_contracts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "MC001",
+                            "description": "主契約ID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "レギュラー会員",
+                            "description": "主契約名"
+                          },
+                          "contract_type": {
+                            "type": "string",
+                            "enum": [
+                              "general",
+                              "oneDay",
+                              "family",
+                              "kids",
+                              "student",
+                              "corporate",
+                              "welfare",
+                              "prepaid",
+                              "special"
+                            ],
+                            "title": "MainContractType",
+                            "description": "契約タイプ"
+                          },
+                          "brand": {
+                            "type": "string",
+                            "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                            "title": "StoreListBrand",
+                            "description": "ブランド"
+                          },
+                          "target_store_name": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "JOYFIT24新宿店",
+                            "description": "特殊契約の場合の対象店舗名"
+                          },
+                          "price_including_tax": {
+                            "type": "number",
+                            "minimum": 0,
+                            "example": 7700,
+                            "description": "料金（税込）"
+                          },
+                          "companion_benefit_enabled": {
+                            "type": "boolean",
+                            "example": false,
+                            "description": "同伴特典フラグ"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["active", "inactive"],
+                            "title": "MainContractStatus",
+                            "description": "ステータス"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "contract_type",
+                          "brand",
+                          "price_including_tax",
+                          "companion_benefit_enabled",
+                          "status"
+                        ],
+                        "title": "MainContractListItem",
+                        "description": "主契約一覧アイテム"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "number"
+                        },
+                        "limit": {
+                          "type": "number"
+                        },
+                        "total": {
+                          "type": "number"
+                        },
+                        "total_pages": {
+                          "type": "number"
+                        }
+                      },
+                      "required": ["page", "limit", "total", "total_pages"]
+                    }
+                  },
+                  "required": ["main_contracts", "pagination"],
+                  "title": "GetMainContractsResponse",
+                  "description": "主契約一覧レスポンス"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/members/{id}/basic-info": {
       "get": {
         "summary": "Get member basic info",
@@ -18974,6 +19229,246 @@
         }
       }
     },
+    "/crm/options": {
+      "get": {
+        "summary": "Get option masters",
+        "description": "Get paginated list of option masters (G-02)",
+        "tags": ["Options"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 20
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "オプション名・IDで検索"
+            },
+            "required": false,
+            "description": "オプション名・IDで検索",
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+              "title": "StoreListBrand",
+              "description": "Store brand"
+            },
+            "required": false,
+            "description": "Store brand",
+            "name": "brand",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["standard", "metered", "auto_attached"],
+              "title": "OptionType",
+              "description": "オプション種別（通常/都次/自動付与）"
+            },
+            "required": false,
+            "description": "オプション種別（通常/都次/自動付与）",
+            "name": "option_type",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["active", "inactive"],
+              "title": "OptionStatus",
+              "description": "オプション有効/無効ステータス"
+            },
+            "required": false,
+            "description": "オプション有効/無効ステータス",
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["id", "name", "brand", "price_including_tax"],
+              "default": "id"
+            },
+            "required": false,
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            },
+            "required": false,
+            "name": "sort_order",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Option list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "options": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "OP002",
+                            "description": "オプションID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "水素水",
+                            "description": "オプション名"
+                          },
+                          "brand": {
+                            "type": "string",
+                            "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                            "title": "StoreListBrand",
+                            "description": "ブランド"
+                          },
+                          "option_type": {
+                            "type": "string",
+                            "enum": ["standard", "metered", "auto_attached"],
+                            "title": "OptionType",
+                            "description": "オプション種別"
+                          },
+                          "price_including_tax": {
+                            "type": "number",
+                            "minimum": 0,
+                            "example": 1100,
+                            "description": "料金（税込）"
+                          },
+                          "prorated_enabled": {
+                            "type": "boolean",
+                            "example": true,
+                            "description": "日割り要否"
+                          },
+                          "usage_rule": {
+                            "type": "string",
+                            "enum": [
+                              "disabled",
+                              "add_remove",
+                              "add_remove_change",
+                              "change_remove"
+                            ],
+                            "description": "利用可否ルール"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["active", "inactive"],
+                            "title": "OptionStatus",
+                            "description": "ステータス"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "brand",
+                          "option_type",
+                          "price_including_tax",
+                          "prorated_enabled",
+                          "usage_rule",
+                          "status"
+                        ],
+                        "title": "OptionMasterListItem",
+                        "description": "オプション一覧アイテム"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "number"
+                        },
+                        "limit": {
+                          "type": "number"
+                        },
+                        "total": {
+                          "type": "number"
+                        },
+                        "total_pages": {
+                          "type": "number"
+                        }
+                      },
+                      "required": ["page", "limit", "total", "total_pages"]
+                    }
+                  },
+                  "required": ["options", "pagination"],
+                  "title": "GetOptionMastersResponse",
+                  "description": "オプション一覧レスポンス"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/stores/{id}/access-settings": {
       "get": {
         "summary": "Get store access settings",
@@ -19635,6 +20130,464 @@
           },
           "500": {
             "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/stores/{id}/main-contracts": {
+      "get": {
+        "summary": "List main contracts by store",
+        "description": "店舗に紐づく主契約一覧を取得する",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Store main contracts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "main_contracts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "MC001"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "レギュラー会員"
+                          },
+                          "contract_type": {
+                            "type": "string",
+                            "enum": [
+                              "general",
+                              "oneDay",
+                              "family",
+                              "kids",
+                              "student",
+                              "corporate",
+                              "welfare",
+                              "prepaid",
+                              "special"
+                            ],
+                            "title": "MainContractType",
+                            "description": "主契約タイプ（G-01）"
+                          },
+                          "price_including_tax": {
+                            "type": "number",
+                            "minimum": 0,
+                            "example": 7700
+                          },
+                          "linked_at": {
+                            "type": "string",
+                            "example": "2024/04/01",
+                            "description": "紐づけ日 (YYYY/MM/DD)"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "contract_type",
+                          "price_including_tax",
+                          "linked_at"
+                        ],
+                        "title": "StoreLinkedMainContract",
+                        "description": "店舗に紐づく主契約"
+                      }
+                    }
+                  },
+                  "required": ["main_contracts"],
+                  "title": "GetStoreMainContractsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Store not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Add main contracts into store",
+        "description": "店舗に主契約を紐づける",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Main contract IDs to link",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "main_contract_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  }
+                },
+                "required": ["main_contract_ids"],
+                "title": "AddStoreMainContractsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Linked main contracts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "主契約を紐づけました"
+                    },
+                    "main_contracts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "MC001"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "レギュラー会員"
+                          },
+                          "contract_type": {
+                            "type": "string",
+                            "enum": [
+                              "general",
+                              "oneDay",
+                              "family",
+                              "kids",
+                              "student",
+                              "corporate",
+                              "welfare",
+                              "prepaid",
+                              "special"
+                            ],
+                            "title": "MainContractType",
+                            "description": "主契約タイプ（G-01）"
+                          },
+                          "price_including_tax": {
+                            "type": "number",
+                            "minimum": 0,
+                            "example": 7700
+                          },
+                          "linked_at": {
+                            "type": "string",
+                            "example": "2024/04/01",
+                            "description": "紐づけ日 (YYYY/MM/DD)"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "contract_type",
+                          "price_including_tax",
+                          "linked_at"
+                        ],
+                        "title": "StoreLinkedMainContract",
+                        "description": "店舗に紐づく主契約"
+                      }
+                    }
+                  },
+                  "required": ["message", "main_contracts"],
+                  "title": "AddStoreMainContractsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Store not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/stores/{id}/options": {
+      "get": {
+        "summary": "List options by store",
+        "description": "店舗に紐づくオプション一覧を取得する",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Store options",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "options": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "OP002"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "水素水"
+                          },
+                          "related_option_name": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": null
+                          },
+                          "price_including_tax": {
+                            "type": "number",
+                            "minimum": 0,
+                            "example": 1100
+                          }
+                        },
+                        "required": ["id", "name", "related_option_name", "price_including_tax"],
+                        "title": "StoreLinkedOption",
+                        "description": "店舗に紐づくオプション"
+                      }
+                    }
+                  },
+                  "required": ["options"],
+                  "title": "GetStoreOptionsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Store not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Add options into store",
+        "description": "店舗にオプションを紐づける",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Option IDs to link",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "option_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  }
+                },
+                "required": ["option_ids"],
+                "title": "AddStoreOptionsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Linked options",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "オプションを紐づけました"
+                    },
+                    "options": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "OP002"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "水素水"
+                          },
+                          "related_option_name": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": null
+                          },
+                          "price_including_tax": {
+                            "type": "number",
+                            "minimum": 0,
+                            "example": 1100
+                          }
+                        },
+                        "required": ["id", "name", "related_option_name", "price_including_tax"],
+                        "title": "StoreLinkedOption",
+                        "description": "店舗に紐づくオプション"
+                      }
+                    }
+                  },
+                  "required": ["message", "options"],
+                  "title": "AddStoreOptionsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Store not found",
             "content": {
               "application/json": {
                 "schema": {

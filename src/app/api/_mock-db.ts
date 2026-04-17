@@ -7,7 +7,13 @@ import type {
   FamilyRegistrationStatus,
   FamilyRelationship,
 } from '@/app/api/_schemas/family-registration.schema';
+import type { MainContractListItem } from '@/app/api/_schemas/main-contract.schema';
+import type { OptionMasterListItem } from '@/app/api/_schemas/option-master.schema';
 import type { StoreAccessSettings } from '@/app/api/_schemas/store-access-settings.schema';
+import type {
+  StoreLinkedMainContract,
+  StoreLinkedOption,
+} from '@/app/api/_schemas/store-sales-settings.schema';
 import type { Store, StoreBusinessHours } from '@/app/api/_schemas/store.schema';
 
 import type {
@@ -482,6 +488,32 @@ type DbType = {
     getForMember(memberId: string): unknown;
   };
   getMemberRelationships(memberId: string): unknown;
+  mainContracts: {
+    _rows: MainContractListItem[];
+    _seeded: boolean;
+    _seed(): void;
+    getList(): MainContractListItem[];
+  };
+  optionMasters: {
+    _rows: OptionMasterListItem[];
+    _seeded: boolean;
+    _seed(): void;
+    getList(): OptionMasterListItem[];
+  };
+  storeMainContracts: {
+    _rows: Array<{ store_id: string; main_contract_id: string; linked_at: string }>;
+    _seeded: boolean;
+    _seed(): void;
+    listByStoreId(storeId: string): StoreLinkedMainContract[];
+    addByStoreId(storeId: string, mainContractIds: string[]): StoreLinkedMainContract[];
+  };
+  storeOptions: {
+    _rows: Array<{ store_id: string; option_id: string; linked_at: string }>;
+    _seeded: boolean;
+    _seed(): void;
+    listByStoreId(storeId: string): StoreLinkedOption[];
+    addByStoreId(storeId: string, optionIds: string[]): StoreLinkedOption[];
+  };
   stores: {
     _rows: Store[];
     _seeded: boolean;
@@ -512,7 +544,7 @@ type DbType = {
 };
 
 declare global {
-  var __fitnessDb_v6: DbType | undefined;
+  var __fitnessDb_v9: DbType | undefined;
 }
 
 function createDb() {
@@ -1611,6 +1643,494 @@ function createDb() {
         },
       };
     },
+    mainContracts: {
+      _rows: [] as MainContractListItem[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows.push(
+          {
+            id: 'MC001',
+            name: 'レギュラー会員',
+            contract_type: 'general',
+            brand: 'joyfit24',
+            target_store_name: null,
+            price_including_tax: 7700,
+            companion_benefit_enabled: false,
+            status: 'active',
+          },
+          {
+            id: 'MC001-A',
+            name: 'レギュラー会員（学生）',
+            contract_type: 'student',
+            brand: 'joyfit24',
+            target_store_name: null,
+            price_including_tax: 5500,
+            companion_benefit_enabled: false,
+            status: 'active',
+          },
+          {
+            id: 'MC002',
+            name: 'ナイト会員',
+            contract_type: 'general',
+            brand: 'fit365',
+            target_store_name: null,
+            price_including_tax: 5500,
+            companion_benefit_enabled: false,
+            status: 'active',
+          },
+          {
+            id: 'MC003',
+            name: 'デイタイム会員',
+            contract_type: 'general',
+            brand: 'joyfit',
+            target_store_name: null,
+            price_including_tax: 6600,
+            companion_benefit_enabled: true,
+            status: 'active',
+          },
+          {
+            id: 'MC005',
+            name: 'シニア会員（当店限定）',
+            contract_type: 'special',
+            brand: 'joyfit',
+            target_store_name: 'JOYFIT池袋店',
+            price_including_tax: 4400,
+            companion_benefit_enabled: false,
+            status: 'active',
+          },
+          {
+            id: 'MC007',
+            name: '1Day利用',
+            contract_type: 'oneDay',
+            brand: 'joyfit24',
+            target_store_name: null,
+            price_including_tax: 1650,
+            companion_benefit_enabled: false,
+            status: 'active',
+          },
+          {
+            id: 'MC010',
+            name: 'スタッフ会員（当店限定）',
+            contract_type: 'special',
+            brand: 'joyfit24',
+            target_store_name: 'JOYFIT24新宿店',
+            price_including_tax: 0,
+            companion_benefit_enabled: true,
+            status: 'inactive',
+          },
+          {
+            id: 'MC011',
+            name: 'ファミリー会員',
+            contract_type: 'family',
+            brand: 'joyfit',
+            target_store_name: null,
+            price_including_tax: 8800,
+            companion_benefit_enabled: true,
+            status: 'active',
+          },
+          {
+            id: 'MC012',
+            name: 'キッズ会員',
+            contract_type: 'kids',
+            brand: 'fit365',
+            target_store_name: null,
+            price_including_tax: 4400,
+            companion_benefit_enabled: false,
+            status: 'active',
+          },
+          {
+            id: 'MC013',
+            name: '法人スタンダード',
+            contract_type: 'corporate',
+            brand: 'joyfit24',
+            target_store_name: null,
+            price_including_tax: 9900,
+            companion_benefit_enabled: false,
+            status: 'active',
+          },
+          {
+            id: 'MC014',
+            name: '福利厚生プラン',
+            contract_type: 'welfare',
+            brand: 'fit365',
+            target_store_name: null,
+            price_including_tax: 7150,
+            companion_benefit_enabled: false,
+            status: 'active',
+          },
+          {
+            id: 'MC015',
+            name: 'プリペイド30',
+            contract_type: 'prepaid',
+            brand: 'joyfit',
+            target_store_name: null,
+            price_including_tax: 3300,
+            companion_benefit_enabled: false,
+            status: 'active',
+          },
+          {
+            id: 'MC016',
+            name: '朝活会員',
+            contract_type: 'general',
+            brand: 'joyfit_yoga',
+            target_store_name: null,
+            price_including_tax: 6050,
+            companion_benefit_enabled: false,
+            status: 'active',
+          },
+          {
+            id: 'MC017',
+            name: '平日デイ会員',
+            contract_type: 'general',
+            brand: 'joyfit_plus',
+            target_store_name: null,
+            price_including_tax: 6600,
+            companion_benefit_enabled: false,
+            status: 'active',
+          },
+          {
+            id: 'MC018',
+            name: 'シニア午前会員',
+            contract_type: 'special',
+            brand: 'joyfit24',
+            target_store_name: 'JOYFIT24 新宿店',
+            price_including_tax: 3850,
+            companion_benefit_enabled: false,
+            status: 'active',
+          },
+          {
+            id: 'MC019',
+            name: '学生ナイト会員',
+            contract_type: 'student',
+            brand: 'joyfit',
+            target_store_name: null,
+            price_including_tax: 4950,
+            companion_benefit_enabled: false,
+            status: 'active',
+          },
+          {
+            id: 'MC020',
+            name: 'Weekend会員',
+            contract_type: 'general',
+            brand: 'fit365',
+            target_store_name: null,
+            price_including_tax: 5720,
+            companion_benefit_enabled: true,
+            status: 'active',
+          },
+        );
+      },
+      getList(): MainContractListItem[] {
+        this._seed();
+        return [...this._rows];
+      },
+    },
+    optionMasters: {
+      _rows: [] as OptionMasterListItem[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows.push(
+          {
+            id: 'OP001',
+            name: 'ドリンクバー（月額）',
+            brand: 'fit365',
+            option_type: 'standard',
+            price_including_tax: 550,
+            prorated_enabled: true,
+            usage_rule: 'add_remove_change',
+            status: 'active',
+          },
+          {
+            id: 'OP002',
+            name: '水素水',
+            brand: 'joyfit24',
+            option_type: 'standard',
+            price_including_tax: 1100,
+            prorated_enabled: true,
+            usage_rule: 'add_remove',
+            status: 'active',
+          },
+          {
+            id: 'OP003',
+            name: 'タオルセット',
+            brand: 'joyfit24',
+            option_type: 'standard',
+            price_including_tax: 330,
+            prorated_enabled: true,
+            usage_rule: 'add_remove_change',
+            status: 'active',
+          },
+          {
+            id: 'OP006',
+            name: '契約ロッカー',
+            brand: 'joyfit24',
+            option_type: 'standard',
+            price_including_tax: 1100,
+            prorated_enabled: false,
+            usage_rule: 'change_remove',
+            status: 'active',
+          },
+          {
+            id: 'OP007',
+            name: 'パーソナルトレーニング（月2回）',
+            brand: 'fit365',
+            option_type: 'metered',
+            price_including_tax: 13200,
+            prorated_enabled: false,
+            usage_rule: 'add_remove_change',
+            status: 'active',
+          },
+          {
+            id: 'OP011',
+            name: 'パーソナルトレーニング（月4回）',
+            brand: 'joyfit24',
+            option_type: 'metered',
+            price_including_tax: 22000,
+            prorated_enabled: false,
+            usage_rule: 'add_remove_change',
+            status: 'active',
+          },
+          {
+            id: 'OP021',
+            name: '安心サポート（当店版）',
+            brand: 'joyfit24',
+            option_type: 'auto_attached',
+            price_including_tax: 660,
+            prorated_enabled: false,
+            usage_rule: 'disabled',
+            status: 'active',
+          },
+          {
+            id: 'OP022',
+            name: '有料駐車場チケット（当店限定）',
+            brand: 'fit365',
+            option_type: 'standard',
+            price_including_tax: 1100,
+            prorated_enabled: true,
+            usage_rule: 'add_remove',
+            status: 'inactive',
+          },
+          {
+            id: 'OP023',
+            name: 'プロテインサーバー',
+            brand: 'fit365',
+            option_type: 'metered',
+            price_including_tax: 1650,
+            prorated_enabled: false,
+            usage_rule: 'add_remove_change',
+            status: 'active',
+          },
+          {
+            id: 'OP024',
+            name: 'コラーゲンマシン',
+            brand: 'fit365',
+            option_type: 'metered',
+            price_including_tax: 2200,
+            prorated_enabled: false,
+            usage_rule: 'add_remove_change',
+            status: 'active',
+          },
+          {
+            id: 'OP025',
+            name: '契約ロッカーL',
+            brand: 'joyfit',
+            option_type: 'standard',
+            price_including_tax: 1650,
+            prorated_enabled: true,
+            usage_rule: 'change_remove',
+            status: 'active',
+          },
+          {
+            id: 'OP026',
+            name: 'タンニング',
+            brand: 'fit365',
+            option_type: 'metered',
+            price_including_tax: 3300,
+            prorated_enabled: false,
+            usage_rule: 'add_remove_change',
+            status: 'active',
+          },
+          {
+            id: 'OP027',
+            name: 'ボディプランナー',
+            brand: 'fit365',
+            option_type: 'metered',
+            price_including_tax: 1980,
+            prorated_enabled: false,
+            usage_rule: 'add_remove_change',
+            status: 'active',
+          },
+          {
+            id: 'OP028',
+            name: 'シャワー利用',
+            brand: 'joyfit24',
+            option_type: 'metered',
+            price_including_tax: 550,
+            prorated_enabled: false,
+            usage_rule: 'add_remove',
+            status: 'active',
+          },
+          {
+            id: 'OP029',
+            name: 'レンタルウェア',
+            brand: 'joyfit',
+            option_type: 'standard',
+            price_including_tax: 880,
+            prorated_enabled: true,
+            usage_rule: 'add_remove_change',
+            status: 'active',
+          },
+          {
+            id: 'OP030',
+            name: '安心サポートPLUS',
+            brand: 'joyfit_plus',
+            option_type: 'auto_attached',
+            price_including_tax: 880,
+            prorated_enabled: false,
+            usage_rule: 'disabled',
+            status: 'active',
+          },
+          {
+            id: 'OP031',
+            name: 'メンテナンス会費',
+            brand: 'fit365',
+            option_type: 'auto_attached',
+            price_including_tax: 770,
+            prorated_enabled: false,
+            usage_rule: 'disabled',
+            status: 'active',
+          },
+          {
+            id: 'OP032',
+            name: '水素水プレミアム',
+            brand: 'joyfit_yoga',
+            option_type: 'standard',
+            price_including_tax: 1430,
+            prorated_enabled: true,
+            usage_rule: 'add_remove',
+            status: 'active',
+          },
+        );
+      },
+      getList(): OptionMasterListItem[] {
+        this._seed();
+        return [...this._rows];
+      },
+    },
+    storeMainContracts: {
+      _rows: [] as Array<{ store_id: string; main_contract_id: string; linked_at: string }>,
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        db.stores._seed();
+        db.mainContracts._seed();
+        const seeds = [
+          { store_id: 'store-001', ids: ['MC001', 'MC002', 'MC003'] },
+          { store_id: 'store-002', ids: ['MC001', 'MC001-A'] },
+          { store_id: 'store-006', ids: ['MC001', 'MC005'] },
+        ];
+        for (const seed of seeds) {
+          for (const id of seed.ids) {
+            this._rows.push({
+              store_id: seed.store_id,
+              main_contract_id: id,
+              linked_at: '2024/04/01',
+            });
+          }
+        }
+      },
+      listByStoreId(storeId: string): StoreLinkedMainContract[] {
+        this._seed();
+        db.mainContracts._seed();
+        const masterMap = new Map(db.mainContracts.getList().map((item) => [item.id, item]));
+        return this._rows
+          .filter((row) => row.store_id === storeId)
+          .map((row) => {
+            const master = masterMap.get(row.main_contract_id);
+            if (!master) return undefined;
+            return {
+              id: master.id,
+              name: master.name,
+              contract_type: master.contract_type,
+              price_including_tax: master.price_including_tax,
+              linked_at: row.linked_at,
+            };
+          })
+          .filter((item): item is StoreLinkedMainContract => Boolean(item));
+      },
+      addByStoreId(storeId: string, mainContractIds: string[]): StoreLinkedMainContract[] {
+        this._seed();
+        const current = new Set(
+          this._rows.filter((row) => row.store_id === storeId).map((row) => row.main_contract_id),
+        );
+        const today = new Date().toLocaleDateString('ja-JP').replaceAll('-', '/');
+        for (const id of mainContractIds) {
+          if (current.has(id)) continue;
+          this._rows.push({ store_id: storeId, main_contract_id: id, linked_at: today });
+        }
+        return this.listByStoreId(storeId);
+      },
+    },
+    storeOptions: {
+      _rows: [] as Array<{ store_id: string; option_id: string; linked_at: string }>,
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        db.stores._seed();
+        db.optionMasters._seed();
+        const seeds = [
+          { store_id: 'store-001', ids: ['OP002', 'OP003', 'OP006'] },
+          { store_id: 'store-002', ids: ['OP001', 'OP007'] },
+          { store_id: 'store-006', ids: ['OP021'] },
+        ];
+        for (const seed of seeds) {
+          for (const id of seed.ids) {
+            this._rows.push({ store_id: seed.store_id, option_id: id, linked_at: '2024/04/01' });
+          }
+        }
+      },
+      listByStoreId(storeId: string): StoreLinkedOption[] {
+        this._seed();
+        db.optionMasters._seed();
+        const masterMap = new Map(db.optionMasters.getList().map((item) => [item.id, item]));
+        return this._rows
+          .filter((row) => row.store_id === storeId)
+          .map((row) => {
+            const master = masterMap.get(row.option_id);
+            if (!master) return undefined;
+            return {
+              id: master.id,
+              name: master.name,
+              related_option_name:
+                master.option_type === 'metered'
+                  ? 'パーソナル'
+                  : master.option_type === 'auto_attached'
+                    ? '自動付与'
+                    : null,
+              price_including_tax: master.price_including_tax,
+            };
+          })
+          .filter((item): item is StoreLinkedOption => Boolean(item));
+      },
+      addByStoreId(storeId: string, optionIds: string[]): StoreLinkedOption[] {
+        this._seed();
+        const current = new Set(
+          this._rows.filter((row) => row.store_id === storeId).map((row) => row.option_id),
+        );
+        const today = new Date().toLocaleDateString('ja-JP').replaceAll('-', '/');
+        for (const id of optionIds) {
+          if (current.has(id)) continue;
+          this._rows.push({ store_id: storeId, option_id: id, linked_at: today });
+        }
+        return this.listByStoreId(storeId);
+      },
+    },
     stores: {
       _rows: [] as Store[],
       _seeded: false,
@@ -1991,4 +2511,4 @@ function createDb() {
 // Without this, each route handler gets its own module instance and mutations are invisible
 // across routes.
 // Bump this key whenever the seed logic changes to force a fresh re-seed.
-export const db: DbType = (globalThis.__fitnessDb_v6 ??= createDb() as unknown as DbType);
+export const db: DbType = (globalThis.__fitnessDb_v9 ??= createDb() as unknown as DbType);

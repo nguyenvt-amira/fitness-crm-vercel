@@ -7457,6 +7457,125 @@ export type GetCrmFamilyRegistrationsSummaryResponses = {
 
 export type GetCrmFamilyRegistrationsSummaryResponse = GetCrmFamilyRegistrationsSummaryResponses[keyof GetCrmFamilyRegistrationsSummaryResponses];
 
+export type GetCrmMainContractsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        limit?: number;
+        /**
+         * 主契約名・IDで検索
+         */
+        search?: string;
+        /**
+         * MainContractType
+         *
+         * 主契約タイプ（G-01）
+         */
+        contract_type?: 'general' | 'oneDay' | 'family' | 'kids' | 'student' | 'corporate' | 'welfare' | 'prepaid' | 'special';
+        /**
+         * StoreListBrand
+         *
+         * Store brand
+         */
+        brand?: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * MainContractStatus
+         *
+         * 主契約の有効/無効ステータス
+         */
+        status?: 'active' | 'inactive';
+        sort_by?: 'id' | 'name' | 'contract_type' | 'brand' | 'price_including_tax';
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/main-contracts';
+};
+
+export type GetCrmMainContractsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMainContractsError = GetCrmMainContractsErrors[keyof GetCrmMainContractsErrors];
+
+export type GetCrmMainContractsResponses = {
+    /**
+     * GetMainContractsResponse
+     *
+     * 主契約一覧レスポンス
+     */
+    200: {
+        main_contracts: Array<{
+            /**
+             * 主契約ID
+             */
+            id: string;
+            /**
+             * 主契約名
+             */
+            name: string;
+            /**
+             * MainContractType
+             *
+             * 契約タイプ
+             */
+            contract_type: 'general' | 'oneDay' | 'family' | 'kids' | 'student' | 'corporate' | 'welfare' | 'prepaid' | 'special';
+            /**
+             * StoreListBrand
+             *
+             * ブランド
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * 特殊契約の場合の対象店舗名
+             */
+            target_store_name?: string | null;
+            /**
+             * 料金（税込）
+             */
+            price_including_tax: number;
+            /**
+             * 同伴特典フラグ
+             */
+            companion_benefit_enabled: boolean;
+            /**
+             * MainContractStatus
+             *
+             * ステータス
+             */
+            status: 'active' | 'inactive';
+        }>;
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmMainContractsResponse = GetCrmMainContractsResponses[keyof GetCrmMainContractsResponses];
+
 export type GetCrmMembersByIdBasicInfoData = {
     body?: never;
     path: {
@@ -12202,6 +12321,125 @@ export type GetCrmMembershipApplicationsSummaryResponses = {
 
 export type GetCrmMembershipApplicationsSummaryResponse = GetCrmMembershipApplicationsSummaryResponses[keyof GetCrmMembershipApplicationsSummaryResponses];
 
+export type GetCrmOptionsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        limit?: number;
+        /**
+         * オプション名・IDで検索
+         */
+        search?: string;
+        /**
+         * StoreListBrand
+         *
+         * Store brand
+         */
+        brand?: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * OptionType
+         *
+         * オプション種別（通常/都次/自動付与）
+         */
+        option_type?: 'standard' | 'metered' | 'auto_attached';
+        /**
+         * OptionStatus
+         *
+         * オプション有効/無効ステータス
+         */
+        status?: 'active' | 'inactive';
+        sort_by?: 'id' | 'name' | 'brand' | 'price_including_tax';
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/options';
+};
+
+export type GetCrmOptionsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmOptionsError = GetCrmOptionsErrors[keyof GetCrmOptionsErrors];
+
+export type GetCrmOptionsResponses = {
+    /**
+     * GetOptionMastersResponse
+     *
+     * オプション一覧レスポンス
+     */
+    200: {
+        options: Array<{
+            /**
+             * オプションID
+             */
+            id: string;
+            /**
+             * オプション名
+             */
+            name: string;
+            /**
+             * StoreListBrand
+             *
+             * ブランド
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * OptionType
+             *
+             * オプション種別
+             */
+            option_type: 'standard' | 'metered' | 'auto_attached';
+            /**
+             * 料金（税込）
+             */
+            price_including_tax: number;
+            /**
+             * 日割り要否
+             */
+            prorated_enabled: boolean;
+            /**
+             * 利用可否ルール
+             */
+            usage_rule: 'disabled' | 'add_remove' | 'add_remove_change' | 'change_remove';
+            /**
+             * OptionStatus
+             *
+             * ステータス
+             */
+            status: 'active' | 'inactive';
+        }>;
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmOptionsResponse = GetCrmOptionsResponses[keyof GetCrmOptionsResponses];
+
 export type GetCrmStoresByIdAccessSettingsData = {
     body?: never;
     path: {
@@ -12589,6 +12827,234 @@ export type PatchCrmStoresByIdBusinessHoursResponses = {
 };
 
 export type PatchCrmStoresByIdBusinessHoursResponse = PatchCrmStoresByIdBusinessHoursResponses[keyof PatchCrmStoresByIdBusinessHoursResponses];
+
+export type GetCrmStoresByIdMainContractsData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/crm/stores/{id}/main-contracts';
+};
+
+export type GetCrmStoresByIdMainContractsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmStoresByIdMainContractsError = GetCrmStoresByIdMainContractsErrors[keyof GetCrmStoresByIdMainContractsErrors];
+
+export type GetCrmStoresByIdMainContractsResponses = {
+    /**
+     * GetStoreMainContractsResponse
+     *
+     * Store main contracts
+     */
+    200: {
+        main_contracts: Array<{
+            id: string;
+            name: string;
+            /**
+             * MainContractType
+             *
+             * 主契約タイプ（G-01）
+             */
+            contract_type: 'general' | 'oneDay' | 'family' | 'kids' | 'student' | 'corporate' | 'welfare' | 'prepaid' | 'special';
+            price_including_tax: number;
+            /**
+             * 紐づけ日 (YYYY/MM/DD)
+             */
+            linked_at: string;
+        }>;
+    };
+};
+
+export type GetCrmStoresByIdMainContractsResponse = GetCrmStoresByIdMainContractsResponses[keyof GetCrmStoresByIdMainContractsResponses];
+
+export type PostCrmStoresByIdMainContractsData = {
+    /**
+     * AddStoreMainContractsRequest
+     *
+     * Main contract IDs to link
+     */
+    body?: {
+        main_contract_ids: Array<string>;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/crm/stores/{id}/main-contracts';
+};
+
+export type PostCrmStoresByIdMainContractsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmStoresByIdMainContractsError = PostCrmStoresByIdMainContractsErrors[keyof PostCrmStoresByIdMainContractsErrors];
+
+export type PostCrmStoresByIdMainContractsResponses = {
+    /**
+     * AddStoreMainContractsResponse
+     *
+     * Linked main contracts
+     */
+    200: {
+        message: string;
+        main_contracts: Array<{
+            id: string;
+            name: string;
+            /**
+             * MainContractType
+             *
+             * 主契約タイプ（G-01）
+             */
+            contract_type: 'general' | 'oneDay' | 'family' | 'kids' | 'student' | 'corporate' | 'welfare' | 'prepaid' | 'special';
+            price_including_tax: number;
+            /**
+             * 紐づけ日 (YYYY/MM/DD)
+             */
+            linked_at: string;
+        }>;
+    };
+};
+
+export type PostCrmStoresByIdMainContractsResponse = PostCrmStoresByIdMainContractsResponses[keyof PostCrmStoresByIdMainContractsResponses];
+
+export type GetCrmStoresByIdOptionsData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/crm/stores/{id}/options';
+};
+
+export type GetCrmStoresByIdOptionsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmStoresByIdOptionsError = GetCrmStoresByIdOptionsErrors[keyof GetCrmStoresByIdOptionsErrors];
+
+export type GetCrmStoresByIdOptionsResponses = {
+    /**
+     * GetStoreOptionsResponse
+     *
+     * Store options
+     */
+    200: {
+        options: Array<{
+            id: string;
+            name: string;
+            related_option_name: string | null;
+            price_including_tax: number;
+        }>;
+    };
+};
+
+export type GetCrmStoresByIdOptionsResponse = GetCrmStoresByIdOptionsResponses[keyof GetCrmStoresByIdOptionsResponses];
+
+export type PostCrmStoresByIdOptionsData = {
+    /**
+     * AddStoreOptionsRequest
+     *
+     * Option IDs to link
+     */
+    body?: {
+        option_ids: Array<string>;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/crm/stores/{id}/options';
+};
+
+export type PostCrmStoresByIdOptionsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmStoresByIdOptionsError = PostCrmStoresByIdOptionsErrors[keyof PostCrmStoresByIdOptionsErrors];
+
+export type PostCrmStoresByIdOptionsResponses = {
+    /**
+     * AddStoreOptionsResponse
+     *
+     * Linked options
+     */
+    200: {
+        message: string;
+        options: Array<{
+            id: string;
+            name: string;
+            related_option_name: string | null;
+            price_including_tax: number;
+        }>;
+    };
+};
+
+export type PostCrmStoresByIdOptionsResponse = PostCrmStoresByIdOptionsResponses[keyof PostCrmStoresByIdOptionsResponses];
 
 export type GetCrmStoresByIdData = {
     body?: never;
