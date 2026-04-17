@@ -99,9 +99,6 @@ export default function StoreDetailPage() {
               <TabsTrigger value="access" className={tabTriggerClass}>
                 入退室設定
               </TabsTrigger>
-              <TabsTrigger value="restrictions" disabled className={tabTriggerClass}>
-                機能制限
-              </TabsTrigger>
             </TabsList>
             {activeTab === 'basic' && (
               <Button
