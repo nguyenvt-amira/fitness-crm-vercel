@@ -191,8 +191,8 @@ export default function MemberDetailPage() {
   };
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <div className="flex items-center gap-2 border-b px-4 py-4">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden">
+      <div className="flex shrink-0 items-center gap-2 border-b px-4 py-4">
         <div className="text-muted-foreground flex size-6 items-center justify-center">
           <User className="size-6" />
         </div>
@@ -200,7 +200,7 @@ export default function MemberDetailPage() {
       </div>
 
       {/* Header */}
-      <div className="bg-card border-b p-4">
+      <div className="bg-card shrink-0 border-b p-4">
         <Card>
           <CardHeader>
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -292,11 +292,11 @@ export default function MemberDetailPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex min-h-0 flex-1 flex-col p-4 pt-0">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden p-4 pt-0">
         <Tabs
           value={activeTab}
           onValueChange={setActiveTab}
-          className="flex min-h-0 w-full flex-1 flex-col"
+          className="flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden"
         >
           <div className="shrink-0 overflow-x-auto overflow-y-hidden pt-4 pb-2">
             <TabsList className="inline-flex w-full min-w-max">
@@ -312,7 +312,7 @@ export default function MemberDetailPage() {
             </TabsList>
           </div>
 
-          <ScrollArea className="mt-2 min-h-0 min-w-0 flex-1 pr-2">
+          <ScrollArea className="mt-2 min-h-0 min-w-0 flex-1 overflow-hidden pr-2">
             <TabsContent value="basic">
               <BasicInfoTab member={member} />
             </TabsContent>
