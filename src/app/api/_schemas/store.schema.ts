@@ -248,4 +248,82 @@ export type GetStoresQuery = z.infer<typeof GetStoresQuerySchema>;
 export type GetStoresResponse = z.infer<typeof GetStoresResponseSchema>;
 export type UpsertStorePayload = z.infer<typeof UpsertStorePayloadSchema>;
 
+// ─── Business Hours (Y-02-04 営業カレンダー) ──────────────────────────────────
+
+export const DayOfWeekSchema = z
+  .enum(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'holiday'])
+  .openapi({ title: 'DayOfWeek', description: 'Day of week including holiday' });
+
+export const DefaultHoursEntrySchema = z
+  .object({
+    day: DayOfWeekSchema,
+    open_time: z.string().openapi({ example: '10:00', description: '開店時刻 HH:mm' }),
+    close_time: z.string().openapi({ example: '23:00', description: '閉店時刻 HH:mm' }),
+    is_closed: z.boolean().openapi({ description: '定休日フラグ' }),
+  })
+  .openapi({ title: 'DefaultHoursEntry', description: '曜日別デフォルト営業時間' });
+
+export const ExceptionHoursEntrySchema = z
+  .object({
+    id: z.string().openapi({ example: 'exc-001' }),
+    date: z.string().openapi({ example: '2026-12-31', description: '例外日 YYYY-MM-DD' }),
+    open_time: z.string().openapi({ example: '10:00' }),
+    close_time: z.string().openapi({ example: '17:00' }),
+  })
+  .openapi({ title: 'ExceptionHoursEntry', description: '例外営業時間（特定日）' });
+
+export const TemporaryClosureEntrySchema = z
+  .object({
+    id: z.string().openapi({ example: 'tcl-001' }),
+    date: z.string().openapi({ example: '2026-03-15', description: '臨時休業日 YYYY-MM-DD' }),
+    reason: z.string().optional().openapi({ example: '設備点検', description: '理由' }),
+  })
+  .openapi({ title: 'TemporaryClosureEntry', description: '臨時休業日' });
+
+export const StoreBusinessHoursSchema = z
+  .object({
+    store_id: z.string().openapi({ example: 'store-001' }),
+    default_hours: z.array(DefaultHoursEntrySchema).openapi({
+      description: '曜日別デフォルト営業時間',
+    }),
+    exception_hours: z.array(ExceptionHoursEntrySchema).openapi({
+      description: '例外営業時間（特定日に通常と異なる時間）',
+    }),
+    temporary_closures: z.array(TemporaryClosureEntrySchema).openapi({
+      description: '臨時休業日一覧',
+    }),
+    updated_at: z.string().openapi({ example: '2026-03-01T12:00:00Z' }),
+    updated_by: z.string().openapi({ example: 'STF-001' }),
+  })
+  .openapi({ title: 'StoreBusinessHours', description: '店舗営業時間設定' });
+
+export const UpdateStoreBusinessHoursPayloadSchema = z
+  .object({
+    default_hours: z.array(DefaultHoursEntrySchema).optional(),
+    exception_hours: z.array(ExceptionHoursEntrySchema).optional(),
+    temporary_closures: z.array(TemporaryClosureEntrySchema).optional(),
+  })
+  .openapi({
+    title: 'UpdateStoreBusinessHoursPayload',
+    description: '営業時間更新リクエスト',
+  });
+
+export const GetStoreBusinessHoursResponseSchema = z
+  .object({ business_hours: StoreBusinessHoursSchema })
+  .openapi({ title: 'GetStoreBusinessHoursResponse' });
+
+export const UpdateStoreBusinessHoursResponseSchema = z
+  .object({
+    message: z.string().openapi({ example: '営業時間を更新しました' }),
+    business_hours: StoreBusinessHoursSchema,
+  })
+  .openapi({ title: 'UpdateStoreBusinessHoursResponse' });
+
+export type DayOfWeek = z.infer<typeof DayOfWeekSchema>;
+export type DefaultHoursEntry = z.infer<typeof DefaultHoursEntrySchema>;
+export type ExceptionHoursEntry = z.infer<typeof ExceptionHoursEntrySchema>;
+export type TemporaryClosureEntry = z.infer<typeof TemporaryClosureEntrySchema>;
+export type StoreBusinessHours = z.infer<typeof StoreBusinessHoursSchema>;
+export type UpdateStoreBusinessHoursPayload = z.infer<typeof UpdateStoreBusinessHoursPayloadSchema>;
+
 export { ErrorResponseSchema } from './auth.schema';

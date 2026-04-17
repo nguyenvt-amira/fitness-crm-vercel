@@ -529,4 +529,47 @@ export function registerAllSchemas() {
     'GetStoresResponse',
     registry.register('GetStoresResponse', storeSchemas.GetStoresResponseSchema),
   );
+
+  // Register business hours schemas
+  registeredSchemaMap.set(
+    'DayOfWeek',
+    registry.register('DayOfWeek', storeSchemas.DayOfWeekSchema),
+  );
+  registeredSchemaMap.set(
+    'DefaultHoursEntry',
+    registry.register('DefaultHoursEntry', storeSchemas.DefaultHoursEntrySchema),
+  );
+  registeredSchemaMap.set(
+    'ExceptionHoursEntry',
+    registry.register('ExceptionHoursEntry', storeSchemas.ExceptionHoursEntrySchema),
+  );
+  registeredSchemaMap.set(
+    'TemporaryClosureEntry',
+    registry.register('TemporaryClosureEntry', storeSchemas.TemporaryClosureEntrySchema),
+  );
+  registeredSchemaMap.set(
+    'StoreBusinessHours',
+    registry.register('StoreBusinessHours', storeSchemas.StoreBusinessHoursSchema),
+  );
+  registeredSchemaMap.set(
+    'UpdateStoreBusinessHoursPayload',
+    registry.register(
+      'UpdateStoreBusinessHoursPayload',
+      storeSchemas.UpdateStoreBusinessHoursPayloadSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetStoreBusinessHoursResponse',
+    registry.register(
+      'GetStoreBusinessHoursResponse',
+      storeSchemas.GetStoreBusinessHoursResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateStoreBusinessHoursResponse',
+    registry.register(
+      'UpdateStoreBusinessHoursResponse',
+      storeSchemas.UpdateStoreBusinessHoursResponseSchema,
+    ),
+  );
 }

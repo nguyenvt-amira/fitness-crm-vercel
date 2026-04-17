@@ -48,6 +48,7 @@ import '@/app/api/crm/membership-applications/bulk-reject/route';
 // Import membership applications routes
 import '@/app/api/crm/membership-applications/route';
 import '@/app/api/crm/membership-applications/summary/route';
+import '@/app/api/crm/stores/[id]/business-hours/route';
 import '@/app/api/crm/stores/[id]/route';
 import '@/app/api/crm/stores/route';
 

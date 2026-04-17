@@ -17,6 +17,7 @@ import { navigate } from '@/lib/routes/routes.util';
 
 import { STORE_STATUS_BADGE_CLASSES, STORE_STATUS_LABELS } from '../_constants/constants';
 import { BasicInfoTab } from './_components/tabs/basic-info-tab';
+import { BusinessSettingsTab } from './_components/tabs/business-settings-tab';
 
 export default function StoreDetailPage() {
   const params = useParams<{ id: string }>();
@@ -83,7 +84,7 @@ export default function StoreDetailPage() {
               <TabsTrigger value="basic" className={tabTriggerClass}>
                 基本情報
               </TabsTrigger>
-              <TabsTrigger value="business" disabled className={tabTriggerClass}>
+              <TabsTrigger value="business" className={tabTriggerClass}>
                 営業設定
               </TabsTrigger>
               <TabsTrigger value="contract" disabled className={tabTriggerClass}>
@@ -110,6 +111,9 @@ export default function StoreDetailPage() {
 
           <TabsContent value="basic" className="mt-6 focus-visible:outline-none">
             <BasicInfoTab store={store} />
+          </TabsContent>
+          <TabsContent value="business" className="mt-0 focus-visible:outline-none">
+            <BusinessSettingsTab storeId={store.id} />
           </TabsContent>
         </Tabs>
       </div>

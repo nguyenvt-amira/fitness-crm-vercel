@@ -7870,6 +7870,538 @@
         "required": ["stores", "pagination"],
         "title": "GetStoresResponse",
         "description": "Store list response with pagination"
+      },
+      "DayOfWeek": {
+        "type": "string",
+        "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun", "holiday"],
+        "title": "DayOfWeek",
+        "description": "Day of week including holiday"
+      },
+      "DefaultHoursEntry": {
+        "type": "object",
+        "properties": {
+          "day": {
+            "type": "string",
+            "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun", "holiday"],
+            "title": "DayOfWeek",
+            "description": "Day of week including holiday"
+          },
+          "open_time": {
+            "type": "string",
+            "example": "10:00",
+            "description": "開店時刻 HH:mm"
+          },
+          "close_time": {
+            "type": "string",
+            "example": "23:00",
+            "description": "閉店時刻 HH:mm"
+          },
+          "is_closed": {
+            "type": "boolean",
+            "description": "定休日フラグ"
+          }
+        },
+        "required": ["day", "open_time", "close_time", "is_closed"],
+        "title": "DefaultHoursEntry",
+        "description": "曜日別デフォルト営業時間"
+      },
+      "ExceptionHoursEntry": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "exc-001"
+          },
+          "date": {
+            "type": "string",
+            "example": "2026-12-31",
+            "description": "例外日 YYYY-MM-DD"
+          },
+          "open_time": {
+            "type": "string",
+            "example": "10:00"
+          },
+          "close_time": {
+            "type": "string",
+            "example": "17:00"
+          }
+        },
+        "required": ["id", "date", "open_time", "close_time"],
+        "title": "ExceptionHoursEntry",
+        "description": "例外営業時間（特定日）"
+      },
+      "TemporaryClosureEntry": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "tcl-001"
+          },
+          "date": {
+            "type": "string",
+            "example": "2026-03-15",
+            "description": "臨時休業日 YYYY-MM-DD"
+          },
+          "reason": {
+            "type": "string",
+            "example": "設備点検",
+            "description": "理由"
+          }
+        },
+        "required": ["id", "date"],
+        "title": "TemporaryClosureEntry",
+        "description": "臨時休業日"
+      },
+      "StoreBusinessHours": {
+        "type": "object",
+        "properties": {
+          "store_id": {
+            "type": "string",
+            "example": "store-001"
+          },
+          "default_hours": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "day": {
+                  "type": "string",
+                  "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun", "holiday"],
+                  "title": "DayOfWeek",
+                  "description": "Day of week including holiday"
+                },
+                "open_time": {
+                  "type": "string",
+                  "example": "10:00",
+                  "description": "開店時刻 HH:mm"
+                },
+                "close_time": {
+                  "type": "string",
+                  "example": "23:00",
+                  "description": "閉店時刻 HH:mm"
+                },
+                "is_closed": {
+                  "type": "boolean",
+                  "description": "定休日フラグ"
+                }
+              },
+              "required": ["day", "open_time", "close_time", "is_closed"],
+              "title": "DefaultHoursEntry",
+              "description": "曜日別デフォルト営業時間"
+            },
+            "description": "曜日別デフォルト営業時間"
+          },
+          "exception_hours": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "exc-001"
+                },
+                "date": {
+                  "type": "string",
+                  "example": "2026-12-31",
+                  "description": "例外日 YYYY-MM-DD"
+                },
+                "open_time": {
+                  "type": "string",
+                  "example": "10:00"
+                },
+                "close_time": {
+                  "type": "string",
+                  "example": "17:00"
+                }
+              },
+              "required": ["id", "date", "open_time", "close_time"],
+              "title": "ExceptionHoursEntry",
+              "description": "例外営業時間（特定日）"
+            },
+            "description": "例外営業時間（特定日に通常と異なる時間）"
+          },
+          "temporary_closures": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "tcl-001"
+                },
+                "date": {
+                  "type": "string",
+                  "example": "2026-03-15",
+                  "description": "臨時休業日 YYYY-MM-DD"
+                },
+                "reason": {
+                  "type": "string",
+                  "example": "設備点検",
+                  "description": "理由"
+                }
+              },
+              "required": ["id", "date"],
+              "title": "TemporaryClosureEntry",
+              "description": "臨時休業日"
+            },
+            "description": "臨時休業日一覧"
+          },
+          "updated_at": {
+            "type": "string",
+            "example": "2026-03-01T12:00:00Z"
+          },
+          "updated_by": {
+            "type": "string",
+            "example": "STF-001"
+          }
+        },
+        "required": [
+          "store_id",
+          "default_hours",
+          "exception_hours",
+          "temporary_closures",
+          "updated_at",
+          "updated_by"
+        ],
+        "title": "StoreBusinessHours",
+        "description": "店舗営業時間設定"
+      },
+      "UpdateStoreBusinessHoursPayload": {
+        "type": "object",
+        "properties": {
+          "default_hours": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "day": {
+                  "type": "string",
+                  "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun", "holiday"],
+                  "title": "DayOfWeek",
+                  "description": "Day of week including holiday"
+                },
+                "open_time": {
+                  "type": "string",
+                  "example": "10:00",
+                  "description": "開店時刻 HH:mm"
+                },
+                "close_time": {
+                  "type": "string",
+                  "example": "23:00",
+                  "description": "閉店時刻 HH:mm"
+                },
+                "is_closed": {
+                  "type": "boolean",
+                  "description": "定休日フラグ"
+                }
+              },
+              "required": ["day", "open_time", "close_time", "is_closed"],
+              "title": "DefaultHoursEntry",
+              "description": "曜日別デフォルト営業時間"
+            }
+          },
+          "exception_hours": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "exc-001"
+                },
+                "date": {
+                  "type": "string",
+                  "example": "2026-12-31",
+                  "description": "例外日 YYYY-MM-DD"
+                },
+                "open_time": {
+                  "type": "string",
+                  "example": "10:00"
+                },
+                "close_time": {
+                  "type": "string",
+                  "example": "17:00"
+                }
+              },
+              "required": ["id", "date", "open_time", "close_time"],
+              "title": "ExceptionHoursEntry",
+              "description": "例外営業時間（特定日）"
+            }
+          },
+          "temporary_closures": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "tcl-001"
+                },
+                "date": {
+                  "type": "string",
+                  "example": "2026-03-15",
+                  "description": "臨時休業日 YYYY-MM-DD"
+                },
+                "reason": {
+                  "type": "string",
+                  "example": "設備点検",
+                  "description": "理由"
+                }
+              },
+              "required": ["id", "date"],
+              "title": "TemporaryClosureEntry",
+              "description": "臨時休業日"
+            }
+          }
+        },
+        "title": "UpdateStoreBusinessHoursPayload",
+        "description": "営業時間更新リクエスト"
+      },
+      "GetStoreBusinessHoursResponse": {
+        "type": "object",
+        "properties": {
+          "business_hours": {
+            "type": "object",
+            "properties": {
+              "store_id": {
+                "type": "string",
+                "example": "store-001"
+              },
+              "default_hours": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "day": {
+                      "type": "string",
+                      "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun", "holiday"],
+                      "title": "DayOfWeek",
+                      "description": "Day of week including holiday"
+                    },
+                    "open_time": {
+                      "type": "string",
+                      "example": "10:00",
+                      "description": "開店時刻 HH:mm"
+                    },
+                    "close_time": {
+                      "type": "string",
+                      "example": "23:00",
+                      "description": "閉店時刻 HH:mm"
+                    },
+                    "is_closed": {
+                      "type": "boolean",
+                      "description": "定休日フラグ"
+                    }
+                  },
+                  "required": ["day", "open_time", "close_time", "is_closed"],
+                  "title": "DefaultHoursEntry",
+                  "description": "曜日別デフォルト営業時間"
+                },
+                "description": "曜日別デフォルト営業時間"
+              },
+              "exception_hours": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "exc-001"
+                    },
+                    "date": {
+                      "type": "string",
+                      "example": "2026-12-31",
+                      "description": "例外日 YYYY-MM-DD"
+                    },
+                    "open_time": {
+                      "type": "string",
+                      "example": "10:00"
+                    },
+                    "close_time": {
+                      "type": "string",
+                      "example": "17:00"
+                    }
+                  },
+                  "required": ["id", "date", "open_time", "close_time"],
+                  "title": "ExceptionHoursEntry",
+                  "description": "例外営業時間（特定日）"
+                },
+                "description": "例外営業時間（特定日に通常と異なる時間）"
+              },
+              "temporary_closures": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "tcl-001"
+                    },
+                    "date": {
+                      "type": "string",
+                      "example": "2026-03-15",
+                      "description": "臨時休業日 YYYY-MM-DD"
+                    },
+                    "reason": {
+                      "type": "string",
+                      "example": "設備点検",
+                      "description": "理由"
+                    }
+                  },
+                  "required": ["id", "date"],
+                  "title": "TemporaryClosureEntry",
+                  "description": "臨時休業日"
+                },
+                "description": "臨時休業日一覧"
+              },
+              "updated_at": {
+                "type": "string",
+                "example": "2026-03-01T12:00:00Z"
+              },
+              "updated_by": {
+                "type": "string",
+                "example": "STF-001"
+              }
+            },
+            "required": [
+              "store_id",
+              "default_hours",
+              "exception_hours",
+              "temporary_closures",
+              "updated_at",
+              "updated_by"
+            ],
+            "title": "StoreBusinessHours",
+            "description": "店舗営業時間設定"
+          }
+        },
+        "required": ["business_hours"],
+        "title": "GetStoreBusinessHoursResponse"
+      },
+      "UpdateStoreBusinessHoursResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "営業時間を更新しました"
+          },
+          "business_hours": {
+            "type": "object",
+            "properties": {
+              "store_id": {
+                "type": "string",
+                "example": "store-001"
+              },
+              "default_hours": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "day": {
+                      "type": "string",
+                      "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun", "holiday"],
+                      "title": "DayOfWeek",
+                      "description": "Day of week including holiday"
+                    },
+                    "open_time": {
+                      "type": "string",
+                      "example": "10:00",
+                      "description": "開店時刻 HH:mm"
+                    },
+                    "close_time": {
+                      "type": "string",
+                      "example": "23:00",
+                      "description": "閉店時刻 HH:mm"
+                    },
+                    "is_closed": {
+                      "type": "boolean",
+                      "description": "定休日フラグ"
+                    }
+                  },
+                  "required": ["day", "open_time", "close_time", "is_closed"],
+                  "title": "DefaultHoursEntry",
+                  "description": "曜日別デフォルト営業時間"
+                },
+                "description": "曜日別デフォルト営業時間"
+              },
+              "exception_hours": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "exc-001"
+                    },
+                    "date": {
+                      "type": "string",
+                      "example": "2026-12-31",
+                      "description": "例外日 YYYY-MM-DD"
+                    },
+                    "open_time": {
+                      "type": "string",
+                      "example": "10:00"
+                    },
+                    "close_time": {
+                      "type": "string",
+                      "example": "17:00"
+                    }
+                  },
+                  "required": ["id", "date", "open_time", "close_time"],
+                  "title": "ExceptionHoursEntry",
+                  "description": "例外営業時間（特定日）"
+                },
+                "description": "例外営業時間（特定日に通常と異なる時間）"
+              },
+              "temporary_closures": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "tcl-001"
+                    },
+                    "date": {
+                      "type": "string",
+                      "example": "2026-03-15",
+                      "description": "臨時休業日 YYYY-MM-DD"
+                    },
+                    "reason": {
+                      "type": "string",
+                      "example": "設備点検",
+                      "description": "理由"
+                    }
+                  },
+                  "required": ["id", "date"],
+                  "title": "TemporaryClosureEntry",
+                  "description": "臨時休業日"
+                },
+                "description": "臨時休業日一覧"
+              },
+              "updated_at": {
+                "type": "string",
+                "example": "2026-03-01T12:00:00Z"
+              },
+              "updated_by": {
+                "type": "string",
+                "example": "STF-001"
+              }
+            },
+            "required": [
+              "store_id",
+              "default_hours",
+              "exception_hours",
+              "temporary_closures",
+              "updated_at",
+              "updated_by"
+            ],
+            "title": "StoreBusinessHours",
+            "description": "店舗営業時間設定"
+          }
+        },
+        "required": ["message", "business_hours"],
+        "title": "UpdateStoreBusinessHoursResponse"
       }
     },
     "parameters": {}
@@ -18245,6 +18777,520 @@
                     "error": {
                       "type": "string",
                       "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/stores/{id}/business-hours": {
+      "get": {
+        "summary": "Get store business hours",
+        "description": "店舗の営業時間設定（デフォルト・例外・臨時休業）を取得する",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Store ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Business hours",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "business_hours": {
+                      "type": "object",
+                      "properties": {
+                        "store_id": {
+                          "type": "string",
+                          "example": "store-001"
+                        },
+                        "default_hours": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "day": {
+                                "type": "string",
+                                "enum": [
+                                  "mon",
+                                  "tue",
+                                  "wed",
+                                  "thu",
+                                  "fri",
+                                  "sat",
+                                  "sun",
+                                  "holiday"
+                                ],
+                                "title": "DayOfWeek",
+                                "description": "Day of week including holiday"
+                              },
+                              "open_time": {
+                                "type": "string",
+                                "example": "10:00",
+                                "description": "開店時刻 HH:mm"
+                              },
+                              "close_time": {
+                                "type": "string",
+                                "example": "23:00",
+                                "description": "閉店時刻 HH:mm"
+                              },
+                              "is_closed": {
+                                "type": "boolean",
+                                "description": "定休日フラグ"
+                              }
+                            },
+                            "required": ["day", "open_time", "close_time", "is_closed"],
+                            "title": "DefaultHoursEntry",
+                            "description": "曜日別デフォルト営業時間"
+                          },
+                          "description": "曜日別デフォルト営業時間"
+                        },
+                        "exception_hours": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "exc-001"
+                              },
+                              "date": {
+                                "type": "string",
+                                "example": "2026-12-31",
+                                "description": "例外日 YYYY-MM-DD"
+                              },
+                              "open_time": {
+                                "type": "string",
+                                "example": "10:00"
+                              },
+                              "close_time": {
+                                "type": "string",
+                                "example": "17:00"
+                              }
+                            },
+                            "required": ["id", "date", "open_time", "close_time"],
+                            "title": "ExceptionHoursEntry",
+                            "description": "例外営業時間（特定日）"
+                          },
+                          "description": "例外営業時間（特定日に通常と異なる時間）"
+                        },
+                        "temporary_closures": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "tcl-001"
+                              },
+                              "date": {
+                                "type": "string",
+                                "example": "2026-03-15",
+                                "description": "臨時休業日 YYYY-MM-DD"
+                              },
+                              "reason": {
+                                "type": "string",
+                                "example": "設備点検",
+                                "description": "理由"
+                              }
+                            },
+                            "required": ["id", "date"],
+                            "title": "TemporaryClosureEntry",
+                            "description": "臨時休業日"
+                          },
+                          "description": "臨時休業日一覧"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026-03-01T12:00:00Z"
+                        },
+                        "updated_by": {
+                          "type": "string",
+                          "example": "STF-001"
+                        }
+                      },
+                      "required": [
+                        "store_id",
+                        "default_hours",
+                        "exception_hours",
+                        "temporary_closures",
+                        "updated_at",
+                        "updated_by"
+                      ],
+                      "title": "StoreBusinessHours",
+                      "description": "店舗営業時間設定"
+                    }
+                  },
+                  "required": ["business_hours"],
+                  "title": "GetStoreBusinessHoursResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Store not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update store business hours",
+        "description": "店舗の営業時間設定を更新する",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Store ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Business hours update payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "default_hours": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "day": {
+                          "type": "string",
+                          "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun", "holiday"],
+                          "title": "DayOfWeek",
+                          "description": "Day of week including holiday"
+                        },
+                        "open_time": {
+                          "type": "string",
+                          "example": "10:00",
+                          "description": "開店時刻 HH:mm"
+                        },
+                        "close_time": {
+                          "type": "string",
+                          "example": "23:00",
+                          "description": "閉店時刻 HH:mm"
+                        },
+                        "is_closed": {
+                          "type": "boolean",
+                          "description": "定休日フラグ"
+                        }
+                      },
+                      "required": ["day", "open_time", "close_time", "is_closed"],
+                      "title": "DefaultHoursEntry",
+                      "description": "曜日別デフォルト営業時間"
+                    }
+                  },
+                  "exception_hours": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "exc-001"
+                        },
+                        "date": {
+                          "type": "string",
+                          "example": "2026-12-31",
+                          "description": "例外日 YYYY-MM-DD"
+                        },
+                        "open_time": {
+                          "type": "string",
+                          "example": "10:00"
+                        },
+                        "close_time": {
+                          "type": "string",
+                          "example": "17:00"
+                        }
+                      },
+                      "required": ["id", "date", "open_time", "close_time"],
+                      "title": "ExceptionHoursEntry",
+                      "description": "例外営業時間（特定日）"
+                    }
+                  },
+                  "temporary_closures": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "tcl-001"
+                        },
+                        "date": {
+                          "type": "string",
+                          "example": "2026-03-15",
+                          "description": "臨時休業日 YYYY-MM-DD"
+                        },
+                        "reason": {
+                          "type": "string",
+                          "example": "設備点検",
+                          "description": "理由"
+                        }
+                      },
+                      "required": ["id", "date"],
+                      "title": "TemporaryClosureEntry",
+                      "description": "臨時休業日"
+                    }
+                  }
+                },
+                "title": "UpdateStoreBusinessHoursPayload",
+                "description": "営業時間更新リクエスト"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Business hours updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "営業時間を更新しました"
+                    },
+                    "business_hours": {
+                      "type": "object",
+                      "properties": {
+                        "store_id": {
+                          "type": "string",
+                          "example": "store-001"
+                        },
+                        "default_hours": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "day": {
+                                "type": "string",
+                                "enum": [
+                                  "mon",
+                                  "tue",
+                                  "wed",
+                                  "thu",
+                                  "fri",
+                                  "sat",
+                                  "sun",
+                                  "holiday"
+                                ],
+                                "title": "DayOfWeek",
+                                "description": "Day of week including holiday"
+                              },
+                              "open_time": {
+                                "type": "string",
+                                "example": "10:00",
+                                "description": "開店時刻 HH:mm"
+                              },
+                              "close_time": {
+                                "type": "string",
+                                "example": "23:00",
+                                "description": "閉店時刻 HH:mm"
+                              },
+                              "is_closed": {
+                                "type": "boolean",
+                                "description": "定休日フラグ"
+                              }
+                            },
+                            "required": ["day", "open_time", "close_time", "is_closed"],
+                            "title": "DefaultHoursEntry",
+                            "description": "曜日別デフォルト営業時間"
+                          },
+                          "description": "曜日別デフォルト営業時間"
+                        },
+                        "exception_hours": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "exc-001"
+                              },
+                              "date": {
+                                "type": "string",
+                                "example": "2026-12-31",
+                                "description": "例外日 YYYY-MM-DD"
+                              },
+                              "open_time": {
+                                "type": "string",
+                                "example": "10:00"
+                              },
+                              "close_time": {
+                                "type": "string",
+                                "example": "17:00"
+                              }
+                            },
+                            "required": ["id", "date", "open_time", "close_time"],
+                            "title": "ExceptionHoursEntry",
+                            "description": "例外営業時間（特定日）"
+                          },
+                          "description": "例外営業時間（特定日に通常と異なる時間）"
+                        },
+                        "temporary_closures": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "tcl-001"
+                              },
+                              "date": {
+                                "type": "string",
+                                "example": "2026-03-15",
+                                "description": "臨時休業日 YYYY-MM-DD"
+                              },
+                              "reason": {
+                                "type": "string",
+                                "example": "設備点検",
+                                "description": "理由"
+                              }
+                            },
+                            "required": ["id", "date"],
+                            "title": "TemporaryClosureEntry",
+                            "description": "臨時休業日"
+                          },
+                          "description": "臨時休業日一覧"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026-03-01T12:00:00Z"
+                        },
+                        "updated_by": {
+                          "type": "string",
+                          "example": "STF-001"
+                        }
+                      },
+                      "required": [
+                        "store_id",
+                        "default_hours",
+                        "exception_hours",
+                        "temporary_closures",
+                        "updated_at",
+                        "updated_by"
+                      ],
+                      "title": "StoreBusinessHours",
+                      "description": "店舗営業時間設定"
+                    }
+                  },
+                  "required": ["message", "business_hours"],
+                  "title": "UpdateStoreBusinessHoursResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Store not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
                       "description": "Error message"
                     }
                   },

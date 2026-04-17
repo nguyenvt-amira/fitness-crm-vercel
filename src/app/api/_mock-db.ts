@@ -7,7 +7,7 @@ import type {
   FamilyRegistrationStatus,
   FamilyRelationship,
 } from '@/app/api/_schemas/family-registration.schema';
-import type { Store } from '@/app/api/_schemas/store.schema';
+import type { Store, StoreBusinessHours } from '@/app/api/_schemas/store.schema';
 
 import type {
   GetContractsResponse,
@@ -491,10 +491,20 @@ type DbType = {
     updateById(id: string, patch: Partial<Store>): Store | undefined;
     setManagerStaff(storeId: string, manager_staff_id: string | null): void;
   };
+  businessHours: {
+    _rows: StoreBusinessHours[];
+    _seeded: boolean;
+    _seed(): void;
+    getByStoreId(storeId: string): StoreBusinessHours | undefined;
+    upsert(
+      storeId: string,
+      patch: Partial<Omit<StoreBusinessHours, 'store_id'>>,
+    ): StoreBusinessHours;
+  };
 };
 
 declare global {
-  var __fitnessDb_v2: DbType | undefined;
+  var __fitnessDb_v6: DbType | undefined;
 }
 
 function createDb() {
@@ -1826,6 +1836,77 @@ function createDb() {
         if (row) row.manager_staff_id = manager_staff_id;
       },
     },
+    businessHours: {
+      _rows: [] as StoreBusinessHours[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        db.stores._seed();
+        const now = '2026-03-01T12:00:00Z';
+        for (const store of db.stores._rows) {
+          this._rows.push({
+            store_id: store.id,
+            default_hours: [
+              { day: 'mon', open_time: '10:00', close_time: '23:00', is_closed: false },
+              { day: 'tue', open_time: '10:00', close_time: '23:00', is_closed: false },
+              { day: 'wed', open_time: '10:00', close_time: '23:00', is_closed: false },
+              { day: 'thu', open_time: '10:00', close_time: '23:00', is_closed: false },
+              { day: 'fri', open_time: '10:00', close_time: '23:00', is_closed: false },
+              { day: 'sat', open_time: '10:00', close_time: '20:00', is_closed: false },
+              { day: 'sun', open_time: '10:00', close_time: '18:00', is_closed: false },
+              { day: 'holiday', open_time: '10:00', close_time: '18:00', is_closed: false },
+            ],
+            exception_hours: [
+              {
+                id: `exc-${store.id}-001`,
+                date: '2026-12-31',
+                open_time: '10:00',
+                close_time: '17:00',
+              },
+            ],
+            temporary_closures: [
+              { id: `tcl-${store.id}-001`, date: '2026-03-15', reason: '設備点検' },
+            ],
+            updated_at: now,
+            updated_by: 'STF-001',
+          });
+        }
+      },
+      getByStoreId(storeId: string): StoreBusinessHours | undefined {
+        this._seed();
+        return this._rows.find((r) => r.store_id === storeId);
+      },
+      upsert(
+        storeId: string,
+        patch: Partial<Omit<StoreBusinessHours, 'store_id'>>,
+      ): StoreBusinessHours {
+        this._seed();
+        const idx = this._rows.findIndex((r) => r.store_id === storeId);
+        const now = new Date().toISOString();
+        if (idx === -1) {
+          const row: StoreBusinessHours = {
+            store_id: storeId,
+            default_hours: patch.default_hours ?? [],
+            exception_hours: patch.exception_hours ?? [],
+            temporary_closures: patch.temporary_closures ?? [],
+            updated_at: now,
+            updated_by: patch.updated_by ?? 'system',
+          };
+          this._rows.push(row);
+          return row;
+        }
+        const current = this._rows[idx]!;
+        const updated: StoreBusinessHours = {
+          ...current,
+          ...patch,
+          store_id: storeId,
+          updated_at: now,
+        };
+        this._rows[idx] = updated;
+        return updated;
+      },
+    },
   };
 
   // Seed mock data immediately when the singleton is first created
@@ -1841,4 +1922,4 @@ function createDb() {
 // Without this, each route handler gets its own module instance and mutations are invisible
 // across routes.
 // Bump this key whenever the seed logic changes to force a fresh re-seed.
-export const db: DbType = (globalThis.__fitnessDb_v2 ??= createDb() as unknown as DbType);
+export const db: DbType = (globalThis.__fitnessDb_v6 ??= createDb() as unknown as DbType);

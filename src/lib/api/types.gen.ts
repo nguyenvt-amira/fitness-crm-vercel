@@ -5379,6 +5379,326 @@ export type GetStoresResponse = {
     };
 };
 
+/**
+ * DayOfWeek
+ *
+ * Day of week including holiday
+ */
+export const DayOfWeek = {
+    MON: 'mon',
+    TUE: 'tue',
+    WED: 'wed',
+    THU: 'thu',
+    FRI: 'fri',
+    SAT: 'sat',
+    SUN: 'sun',
+    HOLIDAY: 'holiday'
+} as const;
+
+/**
+ * DayOfWeek
+ *
+ * Day of week including holiday
+ */
+export type DayOfWeek = typeof DayOfWeek[keyof typeof DayOfWeek];
+
+/**
+ * DefaultHoursEntry
+ *
+ * 曜日別デフォルト営業時間
+ */
+export type DefaultHoursEntry = {
+    /**
+     * DayOfWeek
+     *
+     * Day of week including holiday
+     */
+    day: 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun' | 'holiday';
+    /**
+     * 開店時刻 HH:mm
+     */
+    open_time: string;
+    /**
+     * 閉店時刻 HH:mm
+     */
+    close_time: string;
+    /**
+     * 定休日フラグ
+     */
+    is_closed: boolean;
+};
+
+/**
+ * ExceptionHoursEntry
+ *
+ * 例外営業時間（特定日）
+ */
+export type ExceptionHoursEntry = {
+    id: string;
+    /**
+     * 例外日 YYYY-MM-DD
+     */
+    date: string;
+    open_time: string;
+    close_time: string;
+};
+
+/**
+ * TemporaryClosureEntry
+ *
+ * 臨時休業日
+ */
+export type TemporaryClosureEntry = {
+    id: string;
+    /**
+     * 臨時休業日 YYYY-MM-DD
+     */
+    date: string;
+    /**
+     * 理由
+     */
+    reason?: string;
+};
+
+/**
+ * StoreBusinessHours
+ *
+ * 店舗営業時間設定
+ */
+export type StoreBusinessHours = {
+    store_id: string;
+    /**
+     * 曜日別デフォルト営業時間
+     */
+    default_hours: Array<{
+        /**
+         * DayOfWeek
+         *
+         * Day of week including holiday
+         */
+        day: 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun' | 'holiday';
+        /**
+         * 開店時刻 HH:mm
+         */
+        open_time: string;
+        /**
+         * 閉店時刻 HH:mm
+         */
+        close_time: string;
+        /**
+         * 定休日フラグ
+         */
+        is_closed: boolean;
+    }>;
+    /**
+     * 例外営業時間（特定日に通常と異なる時間）
+     */
+    exception_hours: Array<{
+        id: string;
+        /**
+         * 例外日 YYYY-MM-DD
+         */
+        date: string;
+        open_time: string;
+        close_time: string;
+    }>;
+    /**
+     * 臨時休業日一覧
+     */
+    temporary_closures: Array<{
+        id: string;
+        /**
+         * 臨時休業日 YYYY-MM-DD
+         */
+        date: string;
+        /**
+         * 理由
+         */
+        reason?: string;
+    }>;
+    updated_at: string;
+    updated_by: string;
+};
+
+/**
+ * UpdateStoreBusinessHoursPayload
+ *
+ * 営業時間更新リクエスト
+ */
+export type UpdateStoreBusinessHoursPayload = {
+    default_hours?: Array<{
+        /**
+         * DayOfWeek
+         *
+         * Day of week including holiday
+         */
+        day: 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun' | 'holiday';
+        /**
+         * 開店時刻 HH:mm
+         */
+        open_time: string;
+        /**
+         * 閉店時刻 HH:mm
+         */
+        close_time: string;
+        /**
+         * 定休日フラグ
+         */
+        is_closed: boolean;
+    }>;
+    exception_hours?: Array<{
+        id: string;
+        /**
+         * 例外日 YYYY-MM-DD
+         */
+        date: string;
+        open_time: string;
+        close_time: string;
+    }>;
+    temporary_closures?: Array<{
+        id: string;
+        /**
+         * 臨時休業日 YYYY-MM-DD
+         */
+        date: string;
+        /**
+         * 理由
+         */
+        reason?: string;
+    }>;
+};
+
+/**
+ * GetStoreBusinessHoursResponse
+ */
+export type GetStoreBusinessHoursResponse = {
+    /**
+     * StoreBusinessHours
+     *
+     * 店舗営業時間設定
+     */
+    business_hours: {
+        store_id: string;
+        /**
+         * 曜日別デフォルト営業時間
+         */
+        default_hours: Array<{
+            /**
+             * DayOfWeek
+             *
+             * Day of week including holiday
+             */
+            day: 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun' | 'holiday';
+            /**
+             * 開店時刻 HH:mm
+             */
+            open_time: string;
+            /**
+             * 閉店時刻 HH:mm
+             */
+            close_time: string;
+            /**
+             * 定休日フラグ
+             */
+            is_closed: boolean;
+        }>;
+        /**
+         * 例外営業時間（特定日に通常と異なる時間）
+         */
+        exception_hours: Array<{
+            id: string;
+            /**
+             * 例外日 YYYY-MM-DD
+             */
+            date: string;
+            open_time: string;
+            close_time: string;
+        }>;
+        /**
+         * 臨時休業日一覧
+         */
+        temporary_closures: Array<{
+            id: string;
+            /**
+             * 臨時休業日 YYYY-MM-DD
+             */
+            date: string;
+            /**
+             * 理由
+             */
+            reason?: string;
+        }>;
+        updated_at: string;
+        updated_by: string;
+    };
+};
+
+/**
+ * UpdateStoreBusinessHoursResponse
+ */
+export type UpdateStoreBusinessHoursResponse = {
+    message: string;
+    /**
+     * StoreBusinessHours
+     *
+     * 店舗営業時間設定
+     */
+    business_hours: {
+        store_id: string;
+        /**
+         * 曜日別デフォルト営業時間
+         */
+        default_hours: Array<{
+            /**
+             * DayOfWeek
+             *
+             * Day of week including holiday
+             */
+            day: 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun' | 'holiday';
+            /**
+             * 開店時刻 HH:mm
+             */
+            open_time: string;
+            /**
+             * 閉店時刻 HH:mm
+             */
+            close_time: string;
+            /**
+             * 定休日フラグ
+             */
+            is_closed: boolean;
+        }>;
+        /**
+         * 例外営業時間（特定日に通常と異なる時間）
+         */
+        exception_hours: Array<{
+            id: string;
+            /**
+             * 例外日 YYYY-MM-DD
+             */
+            date: string;
+            open_time: string;
+            close_time: string;
+        }>;
+        /**
+         * 臨時休業日一覧
+         */
+        temporary_closures: Array<{
+            id: string;
+            /**
+             * 臨時休業日 YYYY-MM-DD
+             */
+            date: string;
+            /**
+             * 理由
+             */
+            reason?: string;
+        }>;
+        updated_at: string;
+        updated_by: string;
+    };
+};
+
 export type PostAuthLoginData = {
     /**
      * LoginRequest
@@ -11794,6 +12114,284 @@ export type GetCrmMembershipApplicationsSummaryResponses = {
 };
 
 export type GetCrmMembershipApplicationsSummaryResponse = GetCrmMembershipApplicationsSummaryResponses[keyof GetCrmMembershipApplicationsSummaryResponses];
+
+export type GetCrmStoresByIdBusinessHoursData = {
+    body?: never;
+    path: {
+        /**
+         * Store ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/stores/{id}/business-hours';
+};
+
+export type GetCrmStoresByIdBusinessHoursErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmStoresByIdBusinessHoursError = GetCrmStoresByIdBusinessHoursErrors[keyof GetCrmStoresByIdBusinessHoursErrors];
+
+export type GetCrmStoresByIdBusinessHoursResponses = {
+    /**
+     * GetStoreBusinessHoursResponse
+     *
+     * Business hours
+     */
+    200: {
+        /**
+         * StoreBusinessHours
+         *
+         * 店舗営業時間設定
+         */
+        business_hours: {
+            store_id: string;
+            /**
+             * 曜日別デフォルト営業時間
+             */
+            default_hours: Array<{
+                /**
+                 * DayOfWeek
+                 *
+                 * Day of week including holiday
+                 */
+                day: 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun' | 'holiday';
+                /**
+                 * 開店時刻 HH:mm
+                 */
+                open_time: string;
+                /**
+                 * 閉店時刻 HH:mm
+                 */
+                close_time: string;
+                /**
+                 * 定休日フラグ
+                 */
+                is_closed: boolean;
+            }>;
+            /**
+             * 例外営業時間（特定日に通常と異なる時間）
+             */
+            exception_hours: Array<{
+                id: string;
+                /**
+                 * 例外日 YYYY-MM-DD
+                 */
+                date: string;
+                open_time: string;
+                close_time: string;
+            }>;
+            /**
+             * 臨時休業日一覧
+             */
+            temporary_closures: Array<{
+                id: string;
+                /**
+                 * 臨時休業日 YYYY-MM-DD
+                 */
+                date: string;
+                /**
+                 * 理由
+                 */
+                reason?: string;
+            }>;
+            updated_at: string;
+            updated_by: string;
+        };
+    };
+};
+
+export type GetCrmStoresByIdBusinessHoursResponse = GetCrmStoresByIdBusinessHoursResponses[keyof GetCrmStoresByIdBusinessHoursResponses];
+
+export type PatchCrmStoresByIdBusinessHoursData = {
+    /**
+     * UpdateStoreBusinessHoursPayload
+     *
+     * 営業時間更新リクエスト
+     */
+    body?: {
+        default_hours?: Array<{
+            /**
+             * DayOfWeek
+             *
+             * Day of week including holiday
+             */
+            day: 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun' | 'holiday';
+            /**
+             * 開店時刻 HH:mm
+             */
+            open_time: string;
+            /**
+             * 閉店時刻 HH:mm
+             */
+            close_time: string;
+            /**
+             * 定休日フラグ
+             */
+            is_closed: boolean;
+        }>;
+        exception_hours?: Array<{
+            id: string;
+            /**
+             * 例外日 YYYY-MM-DD
+             */
+            date: string;
+            open_time: string;
+            close_time: string;
+        }>;
+        temporary_closures?: Array<{
+            id: string;
+            /**
+             * 臨時休業日 YYYY-MM-DD
+             */
+            date: string;
+            /**
+             * 理由
+             */
+            reason?: string;
+        }>;
+    };
+    path: {
+        /**
+         * Store ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/stores/{id}/business-hours';
+};
+
+export type PatchCrmStoresByIdBusinessHoursErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PatchCrmStoresByIdBusinessHoursError = PatchCrmStoresByIdBusinessHoursErrors[keyof PatchCrmStoresByIdBusinessHoursErrors];
+
+export type PatchCrmStoresByIdBusinessHoursResponses = {
+    /**
+     * UpdateStoreBusinessHoursResponse
+     *
+     * Business hours updated
+     */
+    200: {
+        message: string;
+        /**
+         * StoreBusinessHours
+         *
+         * 店舗営業時間設定
+         */
+        business_hours: {
+            store_id: string;
+            /**
+             * 曜日別デフォルト営業時間
+             */
+            default_hours: Array<{
+                /**
+                 * DayOfWeek
+                 *
+                 * Day of week including holiday
+                 */
+                day: 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun' | 'holiday';
+                /**
+                 * 開店時刻 HH:mm
+                 */
+                open_time: string;
+                /**
+                 * 閉店時刻 HH:mm
+                 */
+                close_time: string;
+                /**
+                 * 定休日フラグ
+                 */
+                is_closed: boolean;
+            }>;
+            /**
+             * 例外営業時間（特定日に通常と異なる時間）
+             */
+            exception_hours: Array<{
+                id: string;
+                /**
+                 * 例外日 YYYY-MM-DD
+                 */
+                date: string;
+                open_time: string;
+                close_time: string;
+            }>;
+            /**
+             * 臨時休業日一覧
+             */
+            temporary_closures: Array<{
+                id: string;
+                /**
+                 * 臨時休業日 YYYY-MM-DD
+                 */
+                date: string;
+                /**
+                 * 理由
+                 */
+                reason?: string;
+            }>;
+            updated_at: string;
+            updated_by: string;
+        };
+    };
+};
+
+export type PatchCrmStoresByIdBusinessHoursResponse = PatchCrmStoresByIdBusinessHoursResponses[keyof PatchCrmStoresByIdBusinessHoursResponses];
 
 export type GetCrmStoresByIdData = {
     body?: never;
