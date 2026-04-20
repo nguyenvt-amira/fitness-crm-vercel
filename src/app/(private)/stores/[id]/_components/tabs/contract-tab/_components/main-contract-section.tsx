@@ -14,6 +14,7 @@ import { TablePagination } from '@/components/common/table-pagination';
 import { Card, CardContent } from '@/components/ui/card';
 
 import {
+  deleteCrmStoresByIdMainContractsByContractIdMutation,
   getCrmMainContractsOptions,
   getCrmStoresByIdMainContractsOptions,
   getCrmStoresByIdMainContractsQueryKey,
@@ -70,6 +71,29 @@ export function MainContractSection() {
     return items.slice(start, start + PAGE_SIZE);
   }, [items, page]);
 
+  const linkMainContractsMutation = useMutation({
+    ...postCrmStoresByIdMainContractsMutation(),
+    onSuccess: async () => {
+      if (!storeId) return;
+      await queryClient.invalidateQueries({
+        queryKey: getCrmStoresByIdMainContractsQueryKey({ path: { id: safeStoreId } }),
+      });
+      toast.success('主契約を紐づけました');
+    },
+    onError: () => toast.error('主契約の紐づけに失敗しました'),
+  });
+
+  const unlinkMainContractMutation = useMutation({
+    ...deleteCrmStoresByIdMainContractsByContractIdMutation(),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: getCrmStoresByIdMainContractsQueryKey({ path: { id: safeStoreId } }),
+      });
+      toast.success('主契約の紐づけを解除しました');
+    },
+    onError: () => toast.error('主契約の紐づけ解除に失敗しました'),
+  });
+
   const columns = useMemo<ColumnDef<StoreMainContract>[]>(
     () => [
       {
@@ -81,6 +105,7 @@ export function MainContractSection() {
         accessorKey: 'name',
         header: '主契約名',
         cell: ({ row }) => <span className="text-xs">{row.original.name}</span>,
+        meta: { className: 'w-full min-w-40' },
       },
       {
         accessorKey: 'contract_type',
@@ -104,27 +129,24 @@ export function MainContractSection() {
       {
         id: 'actions',
         header: () => <div className="text-center text-xs font-semibold">操作</div>,
-        cell: () => (
+        cell: ({ row }) => (
           <div className="text-center">
-            <RemoveActionButton />
+            <RemoveActionButton
+              dialogTitle="プランの紐づけを解除しますか？"
+              dialogDescription={`「${row.original.name}」の紐づけを解除します。新規契約はできなくなります。`}
+              isPending={unlinkMainContractMutation.isPending}
+              onConfirm={() =>
+                unlinkMainContractMutation.mutate({
+                  path: { id: safeStoreId, contractId: row.original.id },
+                })
+              }
+            />
           </div>
         ),
       },
     ],
-    [],
+    [safeStoreId, unlinkMainContractMutation],
   );
-
-  const linkMainContractsMutation = useMutation({
-    ...postCrmStoresByIdMainContractsMutation(),
-    onSuccess: async () => {
-      if (!storeId) return;
-      await queryClient.invalidateQueries({
-        queryKey: getCrmStoresByIdMainContractsQueryKey({ path: { id: safeStoreId } }),
-      });
-      toast.success('主契約を紐づけました');
-    },
-    onError: () => toast.error('主契約の紐づけに失敗しました'),
-  });
 
   const handleBindMainContracts = (selectedMainIds: string[]) => {
     if (!storeId || selectedMainIds.length === 0) return;

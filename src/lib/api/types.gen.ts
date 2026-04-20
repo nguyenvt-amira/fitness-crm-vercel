@@ -12828,6 +12828,45 @@ export type PatchCrmStoresByIdBusinessHoursResponses = {
 
 export type PatchCrmStoresByIdBusinessHoursResponse = PatchCrmStoresByIdBusinessHoursResponses[keyof PatchCrmStoresByIdBusinessHoursResponses];
 
+export type DeleteCrmStoresByIdMainContractsByContractIdData = {
+    body?: never;
+    path: {
+        id: string;
+        contractId: string;
+    };
+    query?: never;
+    url: '/crm/stores/{id}/main-contracts/{contractId}';
+};
+
+export type DeleteCrmStoresByIdMainContractsByContractIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type DeleteCrmStoresByIdMainContractsByContractIdError = DeleteCrmStoresByIdMainContractsByContractIdErrors[keyof DeleteCrmStoresByIdMainContractsByContractIdErrors];
+
+export type DeleteCrmStoresByIdMainContractsByContractIdResponses = {
+    /**
+     * RemoveStoreMainContractResponse
+     *
+     * Main contract unlinked
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type DeleteCrmStoresByIdMainContractsByContractIdResponse = DeleteCrmStoresByIdMainContractsByContractIdResponses[keyof DeleteCrmStoresByIdMainContractsByContractIdResponses];
+
 export type GetCrmStoresByIdMainContractsData = {
     body?: never;
     path: {
@@ -12950,6 +12989,45 @@ export type PostCrmStoresByIdMainContractsResponses = {
 };
 
 export type PostCrmStoresByIdMainContractsResponse = PostCrmStoresByIdMainContractsResponses[keyof PostCrmStoresByIdMainContractsResponses];
+
+export type DeleteCrmStoresByIdOptionsByOptionIdData = {
+    body?: never;
+    path: {
+        id: string;
+        optionId: string;
+    };
+    query?: never;
+    url: '/crm/stores/{id}/options/{optionId}';
+};
+
+export type DeleteCrmStoresByIdOptionsByOptionIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type DeleteCrmStoresByIdOptionsByOptionIdError = DeleteCrmStoresByIdOptionsByOptionIdErrors[keyof DeleteCrmStoresByIdOptionsByOptionIdErrors];
+
+export type DeleteCrmStoresByIdOptionsByOptionIdResponses = {
+    /**
+     * RemoveStoreOptionResponse
+     *
+     * Option unlinked
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type DeleteCrmStoresByIdOptionsByOptionIdResponse = DeleteCrmStoresByIdOptionsByOptionIdResponses[keyof DeleteCrmStoresByIdOptionsByOptionIdResponses];
 
 export type GetCrmStoresByIdOptionsData = {
     body?: never;

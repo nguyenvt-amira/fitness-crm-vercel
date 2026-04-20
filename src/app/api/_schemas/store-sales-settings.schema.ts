@@ -44,6 +44,12 @@ export const AddStoreMainContractsResponseSchema = z
   })
   .openapi({ title: 'AddStoreMainContractsResponse' });
 
+export const RemoveStoreMainContractResponseSchema = z
+  .object({
+    message: z.string().openapi({ example: '主契約の紐づけを解除しました' }),
+  })
+  .openapi({ title: 'RemoveStoreMainContractResponse' });
+
 export const GetStoreOptionsResponseSchema = z
   .object({
     options: z.array(StoreLinkedOptionSchema),
@@ -62,6 +68,12 @@ export const AddStoreOptionsResponseSchema = z
     options: z.array(StoreLinkedOptionSchema),
   })
   .openapi({ title: 'AddStoreOptionsResponse' });
+
+export const RemoveStoreOptionResponseSchema = z
+  .object({
+    message: z.string().openapi({ example: 'オプションの紐づけを解除しました' }),
+  })
+  .openapi({ title: 'RemoveStoreOptionResponse' });
 
 export type StoreLinkedMainContract = z.infer<typeof StoreLinkedMainContractSchema>;
 export type StoreLinkedOption = z.infer<typeof StoreLinkedOptionSchema>;

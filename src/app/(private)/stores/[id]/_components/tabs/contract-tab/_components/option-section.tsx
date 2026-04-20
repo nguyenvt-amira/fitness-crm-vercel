@@ -14,6 +14,7 @@ import { TablePagination } from '@/components/common/table-pagination';
 import { Card, CardContent } from '@/components/ui/card';
 
 import {
+  deleteCrmStoresByIdOptionsByOptionIdMutation,
   getCrmOptionsOptions,
   getCrmStoresByIdOptionsOptions,
   getCrmStoresByIdOptionsQueryKey,
@@ -75,6 +76,29 @@ export function OptionSection() {
     return items.slice(start, start + PAGE_SIZE);
   }, [items, page]);
 
+  const linkOptionsMutation = useMutation({
+    ...postCrmStoresByIdOptionsMutation(),
+    onSuccess: async () => {
+      if (!storeId) return;
+      await queryClient.invalidateQueries({
+        queryKey: getCrmStoresByIdOptionsQueryKey({ path: { id: safeStoreId } }),
+      });
+      toast.success('オプションを紐づけました');
+    },
+    onError: () => toast.error('オプションの紐づけに失敗しました'),
+  });
+
+  const unlinkOptionMutation = useMutation({
+    ...deleteCrmStoresByIdOptionsByOptionIdMutation(),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: getCrmStoresByIdOptionsQueryKey({ path: { id: safeStoreId } }),
+      });
+      toast.success('オプションの紐づけを解除しました');
+    },
+    onError: () => toast.error('オプションの紐づけ解除に失敗しました'),
+  });
+
   const columns = useMemo<ColumnDef<StoreOption>[]>(
     () => [
       {
@@ -86,6 +110,7 @@ export function OptionSection() {
         accessorKey: 'name',
         header: 'オプション名',
         cell: ({ row }) => <span className="text-xs">{row.original.name}</span>,
+        meta: { className: 'w-full min-w-40' },
       },
       {
         accessorKey: 'related_option_name',
@@ -106,27 +131,24 @@ export function OptionSection() {
       {
         id: 'actions',
         header: () => <div className="text-center text-xs font-semibold">操作</div>,
-        cell: () => (
+        cell: ({ row }) => (
           <div className="text-center">
-            <RemoveActionButton />
+            <RemoveActionButton
+              dialogTitle="オプションの紐づけを解除しますか？"
+              dialogDescription={`「${row.original.name}」の紐づけを解除します。新規契約はできなくなります。`}
+              isPending={unlinkOptionMutation.isPending}
+              onConfirm={() =>
+                unlinkOptionMutation.mutate({
+                  path: { id: safeStoreId, optionId: row.original.id },
+                })
+              }
+            />
           </div>
         ),
       },
     ],
-    [],
+    [safeStoreId, unlinkOptionMutation],
   );
-
-  const linkOptionsMutation = useMutation({
-    ...postCrmStoresByIdOptionsMutation(),
-    onSuccess: async () => {
-      if (!storeId) return;
-      await queryClient.invalidateQueries({
-        queryKey: getCrmStoresByIdOptionsQueryKey({ path: { id: safeStoreId } }),
-      });
-      toast.success('オプションを紐づけました');
-    },
-    onError: () => toast.error('オプションの紐づけに失敗しました'),
-  });
 
   const handleBindOptions = (selectedOptionIds: string[]) => {
     if (!storeId || selectedOptionIds.length === 0) return;

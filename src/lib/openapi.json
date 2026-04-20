@@ -20151,6 +20151,71 @@
         }
       }
     },
+    "/crm/stores/{id}/main-contracts/{contractId}": {
+      "delete": {
+        "summary": "Remove main contract from store",
+        "description": "店舗から主契約の紐づけを解除する",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contractId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Main contract unlinked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "主契約の紐づけを解除しました"
+                    }
+                  },
+                  "required": ["message"],
+                  "title": "RemoveStoreMainContractResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/stores/{id}/main-contracts": {
       "get": {
         "summary": "List main contracts by store",
@@ -20381,6 +20446,71 @@
           },
           "404": {
             "description": "Store not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/stores/{id}/options/{optionId}": {
+      "delete": {
+        "summary": "Remove option from store",
+        "description": "店舗からオプションの紐づけを解除する",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "optionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Option unlinked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "オプションの紐づけを解除しました"
+                    }
+                  },
+                  "required": ["message"],
+                  "title": "RemoveStoreOptionResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
             "content": {
               "application/json": {
                 "schema": {

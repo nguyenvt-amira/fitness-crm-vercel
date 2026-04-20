@@ -506,6 +506,7 @@ type DbType = {
     _seed(): void;
     listByStoreId(storeId: string): StoreLinkedMainContract[];
     addByStoreId(storeId: string, mainContractIds: string[]): StoreLinkedMainContract[];
+    removeByStoreId(storeId: string, mainContractId: string): boolean;
   };
   storeOptions: {
     _rows: Array<{ store_id: string; option_id: string; linked_at: string }>;
@@ -513,6 +514,7 @@ type DbType = {
     _seed(): void;
     listByStoreId(storeId: string): StoreLinkedOption[];
     addByStoreId(storeId: string, optionIds: string[]): StoreLinkedOption[];
+    removeByStoreId(storeId: string, optionId: string): boolean;
   };
   stores: {
     _rows: Store[];
@@ -2075,6 +2077,14 @@ function createDb() {
         }
         return this.listByStoreId(storeId);
       },
+      removeByStoreId(storeId: string, mainContractId: string): boolean {
+        this._seed();
+        const before = this._rows.length;
+        this._rows = this._rows.filter(
+          (row) => !(row.store_id === storeId && row.main_contract_id === mainContractId),
+        );
+        return this._rows.length < before;
+      },
     },
     storeOptions: {
       _rows: [] as Array<{ store_id: string; option_id: string; linked_at: string }>,
@@ -2129,6 +2139,14 @@ function createDb() {
           this._rows.push({ store_id: storeId, option_id: id, linked_at: today });
         }
         return this.listByStoreId(storeId);
+      },
+      removeByStoreId(storeId: string, optionId: string): boolean {
+        this._seed();
+        const before = this._rows.length;
+        this._rows = this._rows.filter(
+          (row) => !(row.store_id === storeId && row.option_id === optionId),
+        );
+        return this._rows.length < before;
       },
     },
     stores: {
