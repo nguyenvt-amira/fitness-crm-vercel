@@ -1,7 +1,7 @@
 # SDD 開発ワークフロー — Fitness CRM
 
 > Fitness CRM プロジェクトにおける、**SpecKit**（GitHub Copilot）を使ったAI支援開発フロー。
-> 参照: [sdd-sequence-flow.md](./sdd-sequence-flow.md) | [constitution.md](../.specify/memory/constitution.md) | [implementation-playbook.md](../.specify/memory/implementation-playbook.md)
+> 参照: [sdd-sequence-flow.md](./sdd-sequence-flow.md) | [constitution.md](../.specify/memory/constitution.md)
 
 ---
 

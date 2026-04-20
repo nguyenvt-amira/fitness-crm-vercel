@@ -48,15 +48,13 @@
 
 1. **Layer 0 — Constitution** (`.specify/memory/constitution.md`)  
    非交渉原則 I〜V。全エージェント実行で遵守必須。
-2. **Layer 1 — Implementation Playbook** (`.specify/memory/implementation-playbook.md`)  
-   実績のあるパターン / アンチパターン / コード生成パイプライン。
-3. **Layer 2 — Copilot Instructions** (`.github/copilot-instructions.md`)  
+2. **Layer 1 — Copilot Instructions** (`.github/copilot-instructions.md`)  
    現行スタックと構造。
-4. **Layer 3 — Feature Spec** (`docs/specs/<feature>/spec.md`)  
+3. **Layer 2 — Feature Spec** (`docs/specs/<feature>/spec.md`)  
    機能単位の「なぜ + なにを」。
-5. **Layer 4 — 実装成果物** (`plan.md` / `tasks.md`)  
+4. **Layer 3 — 実装成果物** (`plan.md` / `tasks.md`)  
    `spec.md` から生成し、実装時に消費。
-6. **Layer 5 — レビュープロトコル**  
+5. **Layer 4 — レビュープロトコル**  
    4つのレビューゲートで品質を担保。
 
 ---
@@ -66,8 +64,7 @@
 ```
 fitness-crm/
 ├── .specify/memory/
-│   ├── constitution.md
-│   └── implementation-playbook.md
+│   └── constitution.md
 ├── .github/copilot-instructions.md
 ├── sdd-flow/
 │   ├── sdd-overview.md
@@ -130,7 +127,7 @@ fitness-crm/
 | ---------------- | ------------------------------------------------------ | ------------------------------- |
 | GitHub Copilot   | `.github/copilot-instructions.md` + `.specify/memory/` | `docs/specs/<feature>/spec.md`  |
 | Cursor           | `.specify/memory/` + `.github/copilot-instructions.md` | `@docs/specs/<feature>/spec.md` |
-| Claude           | copilot instructions + constitution + playbook 要約    | `spec.md` 本文                  |
+| Claude           | copilot instructions + constitution + steering 要約    | `spec.md` 本文                  |
 | 任意のチャットAI | stock文脈を貼り付け                                    | `spec.md` を貼り付け            |
 
 ---
@@ -138,7 +135,7 @@ fitness-crm/
 ## 8. 更新ルール（要点）
 
 - Constitution: 新原則追加は提案・承認プロセス必須
-- Playbook: 新しい再発パターン発見時に更新
+- Steering (`docs/steering/`): 新しい再発パターンや用語は追記（既存内容の削除・書き換えはしない）
 - Feature Spec: 仕様誤りは先にspec PRを出してから実装再開
 - Copilot Instructions: スタックや構造の変更時に即更新
 
@@ -146,12 +143,12 @@ fitness-crm/
 
 ## 9. 典型的な失敗と対策
 
-| 失敗                               | 根本原因                   | 対策                                       |
-| ---------------------------------- | -------------------------- | ------------------------------------------ |
-| 以前の判断と矛盾したコード生成     | 実装前に spec 未読込       | `spec.md` を必ず添付して実行               |
-| `speckit.analyze` が CRITICAL 検出 | 原則I〜V未確認             | 承認前に Constitution Check を埋める       |
-| `types.gen.ts` と Zod の乖離       | コード生成パイプライン省略 | `generate-openapi` → `generate-api` を徹底 |
-| フィルター状態の同期ずれ           | Providerパターン不遵守     | Playbook 3.1 の単一呼び出し原則を適用      |
+| 失敗                               | 根本原因                   | 対策                                                       |
+| ---------------------------------- | -------------------------- | ---------------------------------------------------------- |
+| 以前の判断と矛盾したコード生成     | 実装前に spec 未読込       | `spec.md` を必ず添付して実行                               |
+| `speckit.analyze` が CRITICAL 検出 | 原則I〜V未確認             | 承認前に Constitution Check を埋める                       |
+| `types.gen.ts` と Zod の乖離       | コード生成パイプライン省略 | `generate-openapi` → `generate-api` を徹底                 |
+| フィルター状態の同期ずれ           | Providerパターン不遵守     | `docs/steering/architecture.md` の Provider パターンに従う |
 
 ---
 
@@ -159,7 +156,7 @@ fitness-crm/
 
 1. `sdd-overview.md` を読む（なぜSDDか）
 2. `constitution.md` を読む（非交渉ルール）
-3. `implementation-playbook.md` を読む（実装原則）
+3. `docs/steering/_index.md` と `docs/steering/architecture.md` を読む（全体パターンと構造）
 4. `sdd-sequence-flow.md` を読む（全体フロー）
 5. `sdd-dev-workflow.md` を読む（フェーズ詳細）
 6. 完了済み機能例（`docs/specs/staff-management/`）を確認

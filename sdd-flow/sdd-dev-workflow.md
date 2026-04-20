@@ -1,7 +1,7 @@
 # SDD Development Workflow — Fitness CRM
 
 > AI-assisted development workflow using **SpecKit** (GitHub Copilot) for the Fitness CRM project.
-> Reference: [sdd-sequence-flow.md](./sdd-sequence-flow.md) | [constitution.md](../.specify/memory/constitution.md) | [implementation-playbook.md](../.specify/memory/implementation-playbook.md)
+> Reference: [sdd-sequence-flow.md](./sdd-sequence-flow.md) | [constitution.md](../.specify/memory/constitution.md)
 
 ---
 
@@ -139,7 +139,7 @@ SpecKit performs a read-only cross-artifact check across `spec.md`, `plan.md`, a
 
 ### Step 6 — Implementation (`speckit.implement`)
 
-SpecKit executes `tasks.md` following the implementation order in the playbook.
+SpecKit executes `tasks.md` following the implementation order documented below.
 
 **Implementation order (MANDATORY):**
 
@@ -339,7 +339,7 @@ A feature branch is ready to merge when ALL gates pass:
 | File                                              | Purpose                                                   |
 | ------------------------------------------------- | --------------------------------------------------------- |
 | `.specify/memory/constitution.md`                 | Project constitution — non-negotiable principles          |
-| `.specify/memory/implementation-playbook.md`      | Proven patterns, anti-patterns, codegen pipeline          |
+| `docs/steering/`                                  | System-wide patterns, glossary, and architecture          |
 | `.github/copilot-instructions.md`                 | Active tech stack and project structure                   |
 | `docs/specs/<feature>/spec.md`                    | Feature specification (SpecKit output)                    |
 | `docs/specs/<feature>/plan.md`                    | Implementation plan (SpecKit output)                      |
