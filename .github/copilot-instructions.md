@@ -82,8 +82,7 @@ src/
 npm run dev              # Start Next.js dev server (http://localhost:3000)
 npm run build            # Production build (check bundle size)
 npm run lint             # ESLint + Prettier check
-npm run type-check       # tsc --noEmit
-npm run test             # Run all tests
+npm run type-check       # tsc --noEmit (see tsconfig.typecheck.json)
 npm run generate-openapi # Regenerate openapi.json from API route registrations
 npm run generate-api     # Regenerate TypeScript client + React Query factories from OpenAPI spec
 ```

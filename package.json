@@ -10,6 +10,7 @@
     "build": "tsx src/lib/routes/scripts/generate-routes.ts && next build",
     "start": "next start",
     "lint": "eslint",
+    "type-check": "tsc --noEmit -p tsconfig.typecheck.json",
     "format": "prettier --write ./src",
     "prepare": "husky",
     "generate-routes": "tsx src/lib/routes/scripts/generate-routes.ts",
