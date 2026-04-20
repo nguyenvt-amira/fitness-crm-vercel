@@ -1025,11 +1025,15 @@ export type MemberListItem = {
     /**
      * Member type
      */
-    member_type: 'regular' | 'family' | 'corporate' | 'company_discount';
+    member_type: 'regular' | 'family' | 'corporate' | 'one_day_member';
+    /**
+     * Contract type
+     */
+    contract_type: 'regular' | 'one_day_member' | 'family';
     /**
      * Member status
      */
-    status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
+    status: 'active' | 'suspended' | 'gate_stop' | 'pending_withdrawal' | 'withdrawn' | 'force_withdrawn';
     /**
      * Store name
      */
@@ -1076,14 +1080,24 @@ export const MemberType = {
     REGULAR: 'regular',
     FAMILY: 'family',
     CORPORATE: 'corporate',
-    COMPANY_DISCOUNT: 'company_discount'
+    ONE_DAY_MEMBER: 'one_day_member'
 } as const;
 
 export type MemberType = typeof MemberType[keyof typeof MemberType];
 
+export const ContractType = {
+    REGULAR: 'regular',
+    ONE_DAY_MEMBER: 'one_day_member',
+    FAMILY: 'family'
+} as const;
+
+export type ContractType = typeof ContractType[keyof typeof ContractType];
+
 export const MemberStatus = {
     ACTIVE: 'active',
     SUSPENDED: 'suspended',
+    GATE_STOP: 'gate_stop',
+    PENDING_WITHDRAWAL: 'pending_withdrawal',
     WITHDRAWN: 'withdrawn',
     FORCE_WITHDRAWN: 'force_withdrawn'
 } as const;
@@ -1187,13 +1201,13 @@ export type GetMembersQuery = {
      */
     search?: string;
     /**
-     * Filter by member type (array)
+     * Filter by contract type (array)
      */
-    member_type?: Array<'regular' | 'family' | 'corporate' | 'company_discount'> | null;
+    contract_type?: Array<'regular' | 'one_day_member' | 'family'> | null;
     /**
      * Filter by status (array)
      */
-    status?: Array<'active' | 'suspended' | 'withdrawn' | 'force_withdrawn'> | null;
+    status?: Array<'active' | 'suspended' | 'gate_stop' | 'pending_withdrawal' | 'withdrawn' | 'force_withdrawn'> | null;
     /**
      * Filter by brand (array)
      */
@@ -1253,11 +1267,15 @@ export type GetMembersResponse = {
         /**
          * Member type
          */
-        member_type: 'regular' | 'family' | 'corporate' | 'company_discount';
+        member_type: 'regular' | 'family' | 'corporate' | 'one_day_member';
+        /**
+         * Contract type
+         */
+        contract_type: 'regular' | 'one_day_member' | 'family';
         /**
          * Member status
          */
-        status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
+        status: 'active' | 'suspended' | 'gate_stop' | 'pending_withdrawal' | 'withdrawn' | 'force_withdrawn';
         /**
          * Store name
          */
@@ -1322,6 +1340,46 @@ export type GetMembersResponse = {
          */
         total_pages: number;
     };
+};
+
+/**
+ * GetMembersSummaryResponse
+ *
+ * Summary statistics for the members list page
+ */
+export type GetMembersSummaryResponse = {
+    /**
+     * Number of active members
+     */
+    active_count: number;
+    /**
+     * Month-over-month change in active members (percent)
+     */
+    active_change_percent: number;
+    /**
+     * Number of suspended members
+     */
+    suspended_count: number;
+    /**
+     * Suspended members as percent of total
+     */
+    suspended_percent: number;
+    /**
+     * Members with unpaid balance
+     */
+    unpaid_count: number;
+    /**
+     * Total unpaid amount in yen
+     */
+    unpaid_total_yen: number;
+    /**
+     * Members scheduled to withdraw this month
+     */
+    scheduled_withdrawal_count: number;
+    /**
+     * Withdrawal rate (percent)
+     */
+    withdrawal_rate_percent: number;
 };
 
 /**
@@ -1423,11 +1481,11 @@ export type GetMemberDetailResponse = {
         /**
          * Member type
          */
-        member_type: 'regular' | 'family' | 'corporate' | 'company_discount';
+        member_type: 'regular' | 'family' | 'corporate' | 'one_day_member';
         /**
          * Member status
          */
-        status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
+        status: 'active' | 'suspended' | 'gate_stop' | 'pending_withdrawal' | 'withdrawn' | 'force_withdrawn';
         /**
          * Store ID
          */
@@ -11287,7 +11345,7 @@ export type GetCrmMembersByIdRelationshipsResponses = {
                 member_number: string;
                 name: string;
                 relationship: string;
-                status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
+                status: 'active' | 'suspended' | 'gate_stop' | 'pending_withdrawal' | 'withdrawn' | 'force_withdrawn';
             }>;
             current_count?: number;
             max_count?: number;
@@ -11296,7 +11354,7 @@ export type GetCrmMembersByIdRelationshipsResponses = {
                 member_number: string;
                 name: string;
                 relationship: string;
-                status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
+                status: 'active' | 'suspended' | 'gate_stop' | 'pending_withdrawal' | 'withdrawn' | 'force_withdrawn';
             };
         };
         /**
@@ -11324,7 +11382,7 @@ export type GetCrmMembersByIdRelationshipsResponses = {
                     member_number: string;
                     name: string;
                     referred_at: string;
-                    membership_status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
+                    membership_status: 'active' | 'suspended' | 'gate_stop' | 'pending_withdrawal' | 'withdrawn' | 'force_withdrawn';
                     /**
                      * ReferralPointsStatus
                      *
@@ -11492,11 +11550,11 @@ export type GetCrmMembersByIdResponses = {
             /**
              * Member type
              */
-            member_type: 'regular' | 'family' | 'corporate' | 'company_discount';
+            member_type: 'regular' | 'family' | 'corporate' | 'one_day_member';
             /**
              * Member status
              */
-            status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
+            status: 'active' | 'suspended' | 'gate_stop' | 'pending_withdrawal' | 'withdrawn' | 'force_withdrawn';
             /**
              * Store ID
              */
@@ -11936,13 +11994,13 @@ export type GetCrmMembersData = {
          */
         search?: string;
         /**
-         * Filter by member type (array)
+         * Filter by contract type (array)
          */
-        member_type?: Array<'regular' | 'family' | 'corporate' | 'company_discount'> | null;
+        contract_type?: Array<'regular' | 'one_day_member' | 'family'> | null;
         /**
          * Filter by status (array)
          */
-        status?: Array<'active' | 'suspended' | 'withdrawn' | 'force_withdrawn'> | null;
+        status?: Array<'active' | 'suspended' | 'gate_stop' | 'pending_withdrawal' | 'withdrawn' | 'force_withdrawn'> | null;
         /**
          * Filter by brand (array)
          */
@@ -12032,11 +12090,15 @@ export type GetCrmMembersResponses = {
             /**
              * Member type
              */
-            member_type: 'regular' | 'family' | 'corporate' | 'company_discount';
+            member_type: 'regular' | 'family' | 'corporate' | 'one_day_member';
+            /**
+             * Contract type
+             */
+            contract_type: 'regular' | 'one_day_member' | 'family';
             /**
              * Member status
              */
-            status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
+            status: 'active' | 'suspended' | 'gate_stop' | 'pending_withdrawal' | 'withdrawn' | 'force_withdrawn';
             /**
              * Store name
              */
@@ -12105,6 +12167,73 @@ export type GetCrmMembersResponses = {
 };
 
 export type GetCrmMembersResponse = GetCrmMembersResponses[keyof GetCrmMembersResponses];
+
+export type GetCrmMembersSummaryData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/members/summary';
+};
+
+export type GetCrmMembersSummaryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembersSummaryError = GetCrmMembersSummaryErrors[keyof GetCrmMembersSummaryErrors];
+
+export type GetCrmMembersSummaryResponses = {
+    /**
+     * GetMembersSummaryResponse
+     *
+     * Summary statistics for the members list page
+     */
+    200: {
+        /**
+         * Number of active members
+         */
+        active_count: number;
+        /**
+         * Month-over-month change in active members (percent)
+         */
+        active_change_percent: number;
+        /**
+         * Number of suspended members
+         */
+        suspended_count: number;
+        /**
+         * Suspended members as percent of total
+         */
+        suspended_percent: number;
+        /**
+         * Members with unpaid balance
+         */
+        unpaid_count: number;
+        /**
+         * Total unpaid amount in yen
+         */
+        unpaid_total_yen: number;
+        /**
+         * Members scheduled to withdraw this month
+         */
+        scheduled_withdrawal_count: number;
+        /**
+         * Withdrawal rate (percent)
+         */
+        withdrawal_rate_percent: number;
+    };
+};
+
+export type GetCrmMembersSummaryResponse = GetCrmMembersSummaryResponses[keyof GetCrmMembersSummaryResponses];
 
 export type PostCrmMembershipApplicationsByIdApproveData = {
     /**

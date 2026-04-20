@@ -42,6 +42,7 @@ import '@/app/api/crm/members/[id]/usage-history/route';
 import '@/app/api/crm/members/export/route';
 // Import members routes
 import '@/app/api/crm/members/route';
+import '@/app/api/crm/members/summary/route';
 import '@/app/api/crm/membership-applications/[id]/approve/route';
 import '@/app/api/crm/membership-applications/[id]/cancel/route';
 import '@/app/api/crm/membership-applications/[id]/reject/route';

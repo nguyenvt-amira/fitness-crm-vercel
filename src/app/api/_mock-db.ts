@@ -9,6 +9,7 @@ import type {
   FamilyRelationship,
 } from '@/app/api/_schemas/family-registration.schema';
 import type { MainContractListItem } from '@/app/api/_schemas/main-contract.schema';
+import type { ContractType } from '@/app/api/_schemas/member.schema';
 import type { OptionMasterListItem } from '@/app/api/_schemas/option-master.schema';
 import type { Position, StaffPermissionRecord } from '@/app/api/_schemas/position.schema';
 import type { StaffDetail, StaffListItem } from '@/app/api/_schemas/staff.schema';
@@ -78,6 +79,7 @@ interface GetMembersResponseMember {
   name_kanji: string;
   name_kana: string;
   member_type: NonNullable<GetMemberDetailResponse['profile']>['member_type'];
+  contract_type: ContractType;
   status: NonNullable<GetMemberDetailResponse['profile']>['status'];
   store_name: string;
   store_id: string;
@@ -95,6 +97,7 @@ interface GetMembersResponseMember {
 interface MemberListMeta {
   contract_plan_id: string;
   contract_plan_name: string;
+  contract_type: ContractType;
   last_visit_date?: string;
   has_unpaid: boolean;
 }
@@ -299,6 +302,12 @@ type ContractRow = {
 
 type MemberProfile = NonNullable<GetMemberDetailResponse['profile']>;
 
+function resolveContractTypeFromMemberType(memberType: MemberProfile['member_type']): ContractType {
+  if (memberType === 'family') return 'family';
+  if (memberType === 'one_day_member') return 'one_day_member';
+  return 'regular';
+}
+
 function createMember(
   id: string,
   listMeta: {
@@ -309,6 +318,7 @@ function createMember(
     birthday: string;
     gender: 'male' | 'female' | 'other';
     member_type: MemberProfile['member_type'];
+    contract_type: ContractType;
     status: MemberProfile['status'];
     store_id: string;
     store_name: string;
@@ -388,6 +398,7 @@ function createMember(
     _listMeta: {
       contract_plan_id: listMeta.contract_plan_id,
       contract_plan_name: listMeta.contract_plan_name,
+      contract_type: listMeta.contract_type,
       last_visit_date: listMeta.last_visit_date,
       has_unpaid: listMeta.has_unpaid,
     },
@@ -402,6 +413,7 @@ function memberToListItem(m: MemberRow): GetMembersResponseMember {
     name_kanji: m.basic_info.name_kanji,
     name_kana: m.basic_info.name_kana,
     member_type: m.profile.member_type,
+    contract_type: meta?.contract_type ?? 'regular',
     status: m.profile.status,
     store_id: m.profile.store_id,
     store_name: m.profile.store_name,
@@ -485,6 +497,16 @@ type DbType = {
     _seed(): void;
     get(id: string): Member | undefined;
     getList(): GetMembersResponseMember[];
+    getSummary(): {
+      active_count: number;
+      active_change_percent: number;
+      suspended_count: number;
+      suspended_percent: number;
+      unpaid_count: number;
+      unpaid_total_yen: number;
+      scheduled_withdrawal_count: number;
+      withdrawal_rate_percent: number;
+    };
     createFromApplication(application: MembershipApplicationDetails): Member;
     createFromFamilyRegistration(registration: {
       applicant_name: string;
@@ -798,6 +820,8 @@ function createDb() {
           { kanji: '山田 健太', kana: 'ヤマダ ケンタ' },
           { kanji: '中村 由美', kana: 'ナカムラ ユミ' },
         ];
+        const now = new Date();
+        const dayMs = 24 * 60 * 60 * 1000;
         for (let i = 1; i <= 200; i++) {
           const id = `M-${String(i).padStart(5, '0')}`;
           const name = names[i % names.length];
@@ -805,6 +829,9 @@ function createDb() {
           const plan = MOCK_PLANS[i % MOCK_PLANS.length];
           const phone = `090${String(1000 + (i % 9000)).slice(-4)}${String(1000 + (i % 9000)).slice(-4)}`;
           const email = `member${String(i).padStart(5, '0')}@example.jp`;
+          const memberType = (
+            ['regular', 'family', 'corporate', 'one_day_member'] as MemberProfile['member_type'][]
+          )[i % 4]!;
           this._members.push(
             createMember(id, {
               name_kanji: name.kanji,
@@ -813,23 +840,28 @@ function createDb() {
               email,
               birthday: `199${i % 10}-0${(i % 9) + 1}-15`,
               gender: i % 2 === 0 ? 'male' : 'female',
-              member_type: (
+              member_type: memberType,
+              status: (
                 [
-                  'regular',
-                  'family',
-                  'corporate',
-                  'company_discount',
-                ] as MemberProfile['member_type'][]
-              )[i % 4],
-              status: (['active', 'suspended', 'withdrawn'] as MemberProfile['status'][])[i % 3],
+                  'active',
+                  'suspended',
+                  'withdrawn',
+                  'gate_stop',
+                  'pending_withdrawal',
+                  'active',
+                ] as MemberProfile['status'][]
+              )[i % 6],
+              contract_type: resolveContractTypeFromMemberType(memberType),
               store_name: store.name,
               store_id: store.id,
-              brand: i % 2 === 0 ? 'fit365' : 'joyfit',
+              brand: store.brand as Brand,
               contract_plan_name: plan.name,
               contract_plan_id: plan.id,
               joined_at: `2024-${String((i % 12) + 1).padStart(2, '0')}-${String((i % 28) + 1).padStart(2, '0')}`,
               last_visit_date:
-                i % 5 === 0 ? undefined : `2024-12-${String((i % 28) + 1).padStart(2, '0')}`,
+                i % 5 === 0
+                  ? undefined
+                  : toIsoDate(new Date(now.getTime() - ((i * 3) % 420) * dayMs)),
               has_unpaid: i % 7 === 0,
               emergency_contact_name: name.kanji,
               emergency_contact_relationship: '夫',
@@ -849,6 +881,38 @@ function createDb() {
         return this._members.map(memberToListItem);
       },
 
+      getSummary(): {
+        active_count: number;
+        active_change_percent: number;
+        suspended_count: number;
+        suspended_percent: number;
+        unpaid_count: number;
+        unpaid_total_yen: number;
+        scheduled_withdrawal_count: number;
+        withdrawal_rate_percent: number;
+      } {
+        this._seed();
+        const all = this._members;
+        const total = all.length;
+        const active = all.filter((m) => m.profile.status === 'active').length;
+        const suspended = all.filter((m) => m.profile.status === 'suspended').length;
+        const unpaidMembers = all.filter((m) => m._listMeta?.has_unpaid === true);
+        const pending_withdrawal = all.filter(
+          (m) => m.profile.status === 'pending_withdrawal',
+        ).length;
+        return {
+          active_count: active,
+          active_change_percent: 5.8,
+          suspended_count: suspended,
+          suspended_percent: total > 0 ? Math.round((suspended / total) * 1000) / 10 : 0,
+          unpaid_count: unpaidMembers.length,
+          unpaid_total_yen: unpaidMembers.length * 15700,
+          scheduled_withdrawal_count: pending_withdrawal,
+          withdrawal_rate_percent:
+            total > 0 ? Math.round((pending_withdrawal / total) * 1000) / 10 : 0,
+        };
+      },
+
       createFromApplication(application: MembershipApplicationDetails): Member {
         this._seed();
         const nextNumber = this._members.length + 1;
@@ -857,6 +921,9 @@ function createDb() {
         const storeRows = db.stores._rows;
         const store = storeRows[nextNumber % storeRows.length]!;
         const now = new Date();
+        const memberType = (['regular', 'family', 'corporate'] as MemberProfile['member_type'][])[
+          nextNumber % 3
+        ]!;
         const row = createMember(id, {
           name_kanji: application.applicant_name || '',
           name_kana: application.applicant_name || '',
@@ -864,10 +931,9 @@ function createDb() {
           email: application.applicant_email || '',
           birthday: application.birthday || '',
           gender: application.gender || 'other',
-          member_type: (['regular', 'family', 'corporate'] as MemberProfile['member_type'][])[
-            nextNumber % 3
-          ]!,
+          member_type: memberType,
           status: 'active',
+          contract_type: resolveContractTypeFromMemberType(memberType),
           store_name: store.name,
           store_id: store.id,
           brand: nextNumber % 2 === 0 ? 'fit365' : 'joyfit',
@@ -915,6 +981,7 @@ function createDb() {
           gender: 'male',
           member_type: 'family' as MemberProfile['member_type'],
           status: 'active' as MemberProfile['status'],
+          contract_type: 'family',
           store_name: store.name,
           store_id: store.id,
           brand: primary?.profile.brand ?? (nextNumber % 2 === 0 ? 'fit365' : 'joyfit'),
@@ -1315,13 +1382,13 @@ function createDb() {
         db.members._seed();
 
         const members = db.members._members;
-        // Include regular, corporate and company_discount active members as primaries
+        // Include regular, corporate and one_day_member active members as primaries
         // so by_member_type has data across all member types.
         const primaries = members.filter(
           (m) =>
             (m.profile.member_type === MemberType.REGULAR ||
               m.profile.member_type === MemberType.CORPORATE ||
-              m.profile.member_type === MemberType.COMPANY_DISCOUNT) &&
+              m.profile.member_type === MemberType.ONE_DAY_MEMBER) &&
             m.profile.status === MemberStatus.ACTIVE,
         );
         const familyCandidates = members.filter((m) => m.profile.member_type === MemberType.FAMILY);
@@ -1354,7 +1421,7 @@ function createDb() {
         const typeGroups: Array<{ type: MemberType; count: number }> = [
           { type: MemberType.REGULAR, count: 15 },
           { type: MemberType.CORPORATE, count: 10 },
-          { type: MemberType.COMPANY_DISCOUNT, count: 8 },
+          { type: MemberType.ONE_DAY_MEMBER, count: 8 },
         ];
         const relationships: FamilyRelationship[] = [
           'spouse',
@@ -1795,7 +1862,7 @@ function createDb() {
           contact_department: '総務・人事部',
           contact_name: '営業 一郎',
         };
-      } else if (memberType === MemberType.COMPANY_DISCOUNT) {
+      } else if (memberType === MemberType.ONE_DAY_MEMBER) {
         const corpMember = db.members._members.find(
           (m) => m.profile.member_type === MemberType.CORPORATE,
         );

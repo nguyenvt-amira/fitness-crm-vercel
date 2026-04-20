@@ -57,6 +57,8 @@ interface TablePaginationProps {
   onPageChange: (page: number) => void;
   /** Show skeleton loading state */
   isLoading?: boolean;
+  /** Show page numbers */
+  showPageNumbers?: boolean;
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -68,6 +70,7 @@ export function TablePagination({
   limit,
   onPageChange,
   isLoading = false,
+  showPageNumbers = true,
 }: TablePaginationProps) {
   const startItem = total === 0 ? 0 : (currentPage - 1) * limit + 1;
   const endItem = Math.min(currentPage * limit, total);
@@ -107,23 +110,25 @@ export function TablePagination({
                   <span className="bg-muted flex size-9 animate-pulse rounded-md" />
                 </PaginationItem>
               ))
-            : pageNumbers.map((page, index) =>
-                page === 'ellipsis' ? (
-                  <PaginationItem key={`ellipsis-${index}`}>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                ) : (
-                  <PaginationItem key={page}>
-                    <PaginationLink
-                      isActive={page === currentPage}
-                      onClick={() => onPageChange(page)}
-                      className="h-8 cursor-pointer"
-                    >
-                      {page}
-                    </PaginationLink>
-                  </PaginationItem>
-                ),
-              )}
+            : showPageNumbers
+              ? pageNumbers.map((page, index) =>
+                  page === 'ellipsis' ? (
+                    <PaginationItem key={`ellipsis-${index}`}>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  ) : (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        isActive={page === currentPage}
+                        onClick={() => onPageChange(page)}
+                        className="h-8 cursor-pointer"
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ),
+                )
+              : null}
 
           <PaginationItem className="rounded-md border">
             <PaginationNext

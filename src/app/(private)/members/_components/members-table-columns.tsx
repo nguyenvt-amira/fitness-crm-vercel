@@ -1,13 +1,12 @@
 'use client';
 
+import { formatDate } from '@/utils/format.util';
 import type { ColumnDef } from '@tanstack/react-table';
-import { AlertOctagon, Edit, MessageSquare, MoreHorizontal } from 'lucide-react';
+import { Eye, MoreHorizontal, Pencil } from 'lucide-react';
 
-import { DataTableColumnCheckbox } from '@/components/common/data-table/data-table-column-checkbox';
 import { DataTableColumnHeader } from '@/components/common/data-table/data-table-column-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,138 +15,77 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import type { GetCrmMembersResponse } from '@/lib/api/types.gen';
-import { Brand, MemberStatus, MemberType } from '@/lib/api/types.gen';
-import { cn } from '@/lib/utils';
+import { MemberStatus } from '@/lib/api/types.gen';
 
-import { BRAND_CLASSES, BRAND_LABELS, MEMBER_STATUS_CLASSES } from '../_constants/constants';
-import { MEMBER_STATUS_LABELS, MEMBER_TYPE_LABELS } from '../_constants/constants';
+import { MEMBER_STATUS_CLASSES, MEMBER_STATUS_LABELS } from '../_constants/constants';
 
 interface MembersTableColumnsProps {
   onMemberClick: (memberId: string) => void;
-  /** Navigate to member detail with コミュニケーション tab and memo modal open */
-  onMemoClick: (memberId: string) => void;
 }
 
 export function MembersTableColumns({
   onMemberClick,
-  onMemoClick,
 }: MembersTableColumnsProps): ColumnDef<NonNullable<GetCrmMembersResponse['members']>[0]>[] {
   return [
     {
-      id: 'select',
-      header: ({ table }) => (
-        <div className="w-[32px] px-2 py-2.5">
-          <Checkbox
-            aria-label="Select all"
-            checked={table.getIsAllPageRowsSelected()}
-            onCheckedChange={(value) => table.toggleAllRowsSelected(!!value)}
-          />
-        </div>
-      ),
-      cell: ({ row }) => <DataTableColumnCheckbox row={row} />,
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
       accessorKey: 'member_number',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="会員番号" />,
-      cell: ({ row }) => row.original.member_number || '-',
-      meta: {
-        label: '会員番号',
-      },
+      header: ({ column }) => <DataTableColumnHeader column={column} title="会員ID" />,
+      cell: ({ row }) => (
+        <span className="text-muted-foreground font-mono text-xs">
+          {row.original.member_number || '-'}
+        </span>
+      ),
+      meta: { label: '会員ID' },
     },
     {
       accessorKey: 'name',
       header: ({ column }) => <DataTableColumnHeader column={column} title="氏名" />,
       cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <span>{row.original.name_kanji || '-'}</span>
-        </div>
+        <span className="text-sm font-medium">{row.original.name_kanji || '-'}</span>
       ),
-      meta: {
-        label: '氏名',
-      },
+      meta: { label: '氏名' },
     },
     {
-      accessorKey: 'member_type',
-      header: '会員種別',
-      cell: ({ row }) => (
-        <div className="flex items-center gap-1">
-          {/* TODO: Add member type icon */}
-          <span>
-            {row.original.member_type
-              ? MEMBER_TYPE_LABELS[row.original.member_type as MemberType]
-              : '-'}
-          </span>
-        </div>
-      ),
+      accessorKey: 'store_name',
+      header: '店舗名',
+      cell: ({ row }) => <span className="text-xs">{row.original.store_name || '-'}</span>,
     },
     {
       accessorKey: 'status',
       header: 'ステータス',
-      cell: ({ row }) => (
-        <Badge className={MEMBER_STATUS_CLASSES[row.original.status as MemberStatus]}>
-          {row.original.status ? MEMBER_STATUS_LABELS[row.original.status as MemberStatus] : '-'}
-        </Badge>
-      ),
-    },
-    {
-      accessorKey: 'store_name',
-      header: '所属店舗',
-      cell: ({ row }) => row.original.store_name || '-',
-    },
-    {
-      accessorKey: 'brand',
-      header: 'ブランド',
-      cell: ({ row }) => (
-        <Badge
-          className={cn(
-            'rounded-md',
-            row.original.brand ? BRAND_CLASSES[row.original.brand as Brand] : '',
-          )}
-        >
-          {row.original.brand ? BRAND_LABELS[row.original.brand as Brand] : '-'}
-        </Badge>
-      ),
+      cell: ({ row }) => {
+        const status = row.original.status as MemberStatus | undefined;
+        if (!status) return <span>-</span>;
+        return (
+          <Badge className={`border text-[10px] ${MEMBER_STATUS_CLASSES[status]}`}>
+            <span className="mr-1 inline-block size-1.5 rounded-full bg-current" />
+            {MEMBER_STATUS_LABELS[status]}
+          </Badge>
+        );
+      },
     },
     {
       accessorKey: 'contract_plan_name',
-      header: '主契約プラン',
-      cell: ({ row }) => row.original.contract_plan_name || '-',
+      header: '主契約名',
+      cell: ({ row }) => <span className="text-xs">{row.original.contract_plan_name || '-'}</span>,
     },
     {
       accessorKey: 'joined_at',
       header: ({ column }) => <DataTableColumnHeader column={column} title="入会日" />,
-      cell: ({ row }) => {
-        if (!row.original.joined_at) return '-';
-        const date = new Date(row.original.joined_at);
-        return date.toLocaleDateString('ja-JP');
-      },
-      meta: {
-        label: '入会日',
-      },
+      cell: ({ row }) => (
+        <span className="text-muted-foreground text-xs">
+          {formatDate(row.original.joined_at, '-')}
+        </span>
+      ),
+      meta: { label: '入会日' },
     },
     {
       accessorKey: 'last_visit_date',
       header: ({ column }) => <DataTableColumnHeader column={column} title="最終来館日" />,
-      cell: ({ row }) => {
-        if (!row.original.last_visit_date) return '-';
-        const date = new Date(row.original.last_visit_date);
-        return date.toLocaleDateString('ja-JP');
-      },
-      meta: {
-        label: '最終来館日',
-      },
-    },
-    {
-      id: 'unpaid',
-      header: '未納',
-      cell: ({ row }) =>
-        row.original.has_unpaid ? (
-          <AlertOctagon className="text-destructive size-4" />
-        ) : (
-          <span className="text-muted-foreground">-</span>
-        ),
+      cell: ({ row }) => (
+        <span className="text-xs">{formatDate(row.original.last_visit_date, '-')}</span>
+      ),
+      meta: { label: '最終来館日' },
     },
     {
       id: 'actions',
@@ -158,7 +96,12 @@ export function MembersTableColumns({
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" onClick={(e) => e.stopPropagation()}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <MoreHorizontal className="size-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -169,6 +112,7 @@ export function MembersTableColumns({
                   onMemberClick(memberId);
                 }}
               >
+                <Eye className="mr-2 size-4" />
                 詳細
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -176,17 +120,8 @@ export function MembersTableColumns({
                   e.stopPropagation();
                 }}
               >
-                <Edit className="mr-2 size-4" />
+                <Pencil className="mr-2 size-4" />
                 編集
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onMemoClick?.(memberId);
-                }}
-              >
-                <MessageSquare className="mr-2 size-4" />
-                メモ
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

@@ -7,12 +7,20 @@ extendZodWithOpenApi(z);
 /**
  * Member Type Schema
  */
-export const MemberTypeSchema = z.enum(['regular', 'family', 'corporate', 'company_discount']);
+export const MemberTypeSchema = z.enum(['regular', 'family', 'corporate', 'one_day_member']);
+export const ContractTypeSchema = z.enum(['regular', 'one_day_member', 'family']);
 
 /**
  * Member Status Schema
  */
-export const MemberStatusSchema = z.enum(['active', 'suspended', 'withdrawn', 'force_withdrawn']);
+export const MemberStatusSchema = z.enum([
+  'active',
+  'suspended',
+  'gate_stop',
+  'pending_withdrawal',
+  'withdrawn',
+  'force_withdrawn',
+]);
 
 /**
  * Brand Schema
@@ -55,6 +63,10 @@ export const MemberListItemSchema = z
     member_type: MemberTypeSchema.openapi({
       example: 'regular',
       description: 'Member type',
+    }),
+    contract_type: ContractTypeSchema.openapi({
+      example: 'regular',
+      description: 'Contract type',
     }),
     status: MemberStatusSchema.openapi({
       example: 'active',
@@ -150,7 +162,7 @@ export const GetMembersQuerySchema = z
       example: '佐藤',
       description: 'Search query (name, member number, phone, email)',
     }),
-    member_type: z.preprocess(
+    contract_type: z.preprocess(
       (val) => {
         if (val === undefined || val === null) return undefined;
         if (Array.isArray(val)) return val;
@@ -163,11 +175,11 @@ export const GetMembersQuerySchema = z
         return [val];
       },
       z
-        .array(MemberTypeSchema)
+        .array(ContractTypeSchema)
         .optional()
         .openapi({
           example: ['regular', 'family'],
-          description: 'Filter by member type (array)',
+          description: 'Filter by contract type (array)',
         }),
     ),
     status: z.preprocess(
@@ -303,6 +315,49 @@ export const GetMembersResponseSchema = z
   .openapi({
     title: 'GetMembersResponse',
     description: 'Response for getting members list',
+  });
+
+/**
+ * Members list / dashboard summary (aggregated KPIs)
+ */
+export const GetMembersSummaryResponseSchema = z
+  .object({
+    active_count: z.number().int().nonnegative().openapi({
+      example: 1250,
+      description: 'Number of active members',
+    }),
+    active_change_percent: z.number().openapi({
+      example: 2.4,
+      description: 'Month-over-month change in active members (percent)',
+    }),
+    suspended_count: z.number().int().nonnegative().openapi({
+      example: 42,
+      description: 'Number of suspended members',
+    }),
+    suspended_percent: z.number().openapi({
+      example: 3.2,
+      description: 'Suspended members as percent of total',
+    }),
+    unpaid_count: z.number().int().nonnegative().openapi({
+      example: 18,
+      description: 'Members with unpaid balance',
+    }),
+    unpaid_total_yen: z.number().int().nonnegative().openapi({
+      example: 245000,
+      description: 'Total unpaid amount in yen',
+    }),
+    scheduled_withdrawal_count: z.number().int().nonnegative().openapi({
+      example: 7,
+      description: 'Members scheduled to withdraw this month',
+    }),
+    withdrawal_rate_percent: z.number().openapi({
+      example: 1.1,
+      description: 'Withdrawal rate (percent)',
+    }),
+  })
+  .openapi({
+    title: 'GetMembersSummaryResponse',
+    description: 'Summary statistics for the members list page',
   });
 
 /**
@@ -1322,6 +1377,7 @@ export const GetRelationshipsResponseSchema = z
 
 // Type exports for use in route handlers
 export type MemberType = z.infer<typeof MemberTypeSchema>;
+export type ContractType = z.infer<typeof ContractTypeSchema>;
 export type MemberStatus = z.infer<typeof MemberStatusSchema>;
 export type Brand = z.infer<typeof BrandSchema>;
 export type Gender = z.infer<typeof GenderSchema>;
@@ -1329,6 +1385,7 @@ export type MemberListItem = z.infer<typeof MemberListItemSchema>;
 export type Pagination = z.infer<typeof PaginationSchema>;
 export type GetMembersQuery = z.infer<typeof GetMembersQuerySchema>;
 export type GetMembersResponse = z.infer<typeof GetMembersResponseSchema>;
+export type GetMembersSummaryResponse = z.infer<typeof GetMembersSummaryResponseSchema>;
 export type GetMemberDetailResponse = z.infer<typeof GetMemberDetailResponseSchema>;
 export type UpdateBasicInfoRequest = z.infer<typeof UpdateBasicInfoRequestSchema>;
 export type UpdateBasicInfoResponse = z.infer<typeof UpdateBasicInfoResponseSchema>;

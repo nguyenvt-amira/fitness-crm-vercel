@@ -117,6 +117,10 @@ export function registerAllSchemas() {
     registry.register('MemberType', memberSchemas.MemberTypeSchema),
   );
   registeredSchemaMap.set(
+    'ContractType',
+    registry.register('ContractType', memberSchemas.ContractTypeSchema),
+  );
+  registeredSchemaMap.set(
     'MemberStatus',
     registry.register('MemberStatus', memberSchemas.MemberStatusSchema),
   );
@@ -138,6 +142,10 @@ export function registerAllSchemas() {
   registeredSchemaMap.set(
     'GetMembersResponse',
     registry.register('GetMembersResponse', memberSchemas.GetMembersResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'GetMembersSummaryResponse',
+    registry.register('GetMembersSummaryResponse', memberSchemas.GetMembersSummaryResponseSchema),
   );
   registeredSchemaMap.set(
     'GetMemberDetailResponse',

@@ -1446,13 +1446,26 @@
           },
           "member_type": {
             "type": "string",
-            "enum": ["regular", "family", "corporate", "company_discount"],
+            "enum": ["regular", "family", "corporate", "one_day_member"],
             "example": "regular",
             "description": "Member type"
           },
+          "contract_type": {
+            "type": "string",
+            "enum": ["regular", "one_day_member", "family"],
+            "example": "regular",
+            "description": "Contract type"
+          },
           "status": {
             "type": "string",
-            "enum": ["active", "suspended", "withdrawn", "force_withdrawn"],
+            "enum": [
+              "active",
+              "suspended",
+              "gate_stop",
+              "pending_withdrawal",
+              "withdrawn",
+              "force_withdrawn"
+            ],
             "example": "active",
             "description": "Member status"
           },
@@ -1517,6 +1530,7 @@
           "name_kanji",
           "name_kana",
           "member_type",
+          "contract_type",
           "status",
           "store_name",
           "store_id",
@@ -1533,11 +1547,22 @@
       },
       "MemberType": {
         "type": "string",
-        "enum": ["regular", "family", "corporate", "company_discount"]
+        "enum": ["regular", "family", "corporate", "one_day_member"]
+      },
+      "ContractType": {
+        "type": "string",
+        "enum": ["regular", "one_day_member", "family"]
       },
       "MemberStatus": {
         "type": "string",
-        "enum": ["active", "suspended", "withdrawn", "force_withdrawn"]
+        "enum": [
+          "active",
+          "suspended",
+          "gate_stop",
+          "pending_withdrawal",
+          "withdrawn",
+          "force_withdrawn"
+        ]
       },
       "Brand": {
         "type": "string",
@@ -1613,22 +1638,29 @@
             "example": "佐藤",
             "description": "Search query (name, member number, phone, email)"
           },
-          "member_type": {
+          "contract_type": {
             "type": "array",
             "nullable": true,
             "items": {
               "type": "string",
-              "enum": ["regular", "family", "corporate", "company_discount"]
+              "enum": ["regular", "one_day_member", "family"]
             },
             "example": ["regular", "family"],
-            "description": "Filter by member type (array)"
+            "description": "Filter by contract type (array)"
           },
           "status": {
             "type": "array",
             "nullable": true,
             "items": {
               "type": "string",
-              "enum": ["active", "suspended", "withdrawn", "force_withdrawn"]
+              "enum": [
+                "active",
+                "suspended",
+                "gate_stop",
+                "pending_withdrawal",
+                "withdrawn",
+                "force_withdrawn"
+              ]
             },
             "example": ["active", "suspended"],
             "description": "Filter by status (array)"
@@ -1721,13 +1753,26 @@
                 },
                 "member_type": {
                   "type": "string",
-                  "enum": ["regular", "family", "corporate", "company_discount"],
+                  "enum": ["regular", "family", "corporate", "one_day_member"],
                   "example": "regular",
                   "description": "Member type"
                 },
+                "contract_type": {
+                  "type": "string",
+                  "enum": ["regular", "one_day_member", "family"],
+                  "example": "regular",
+                  "description": "Contract type"
+                },
                 "status": {
                   "type": "string",
-                  "enum": ["active", "suspended", "withdrawn", "force_withdrawn"],
+                  "enum": [
+                    "active",
+                    "suspended",
+                    "gate_stop",
+                    "pending_withdrawal",
+                    "withdrawn",
+                    "force_withdrawn"
+                  ],
                   "example": "active",
                   "description": "Member status"
                 },
@@ -1792,6 +1837,7 @@
                 "name_kanji",
                 "name_kana",
                 "member_type",
+                "contract_type",
                 "status",
                 "store_name",
                 "store_id",
@@ -1840,6 +1886,68 @@
         "required": ["members", "pagination"],
         "title": "GetMembersResponse",
         "description": "Response for getting members list"
+      },
+      "GetMembersSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "active_count": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 1250,
+            "description": "Number of active members"
+          },
+          "active_change_percent": {
+            "type": "number",
+            "example": 2.4,
+            "description": "Month-over-month change in active members (percent)"
+          },
+          "suspended_count": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 42,
+            "description": "Number of suspended members"
+          },
+          "suspended_percent": {
+            "type": "number",
+            "example": 3.2,
+            "description": "Suspended members as percent of total"
+          },
+          "unpaid_count": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 18,
+            "description": "Members with unpaid balance"
+          },
+          "unpaid_total_yen": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 245000,
+            "description": "Total unpaid amount in yen"
+          },
+          "scheduled_withdrawal_count": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 7,
+            "description": "Members scheduled to withdraw this month"
+          },
+          "withdrawal_rate_percent": {
+            "type": "number",
+            "example": 1.1,
+            "description": "Withdrawal rate (percent)"
+          }
+        },
+        "required": [
+          "active_count",
+          "active_change_percent",
+          "suspended_count",
+          "suspended_percent",
+          "unpaid_count",
+          "unpaid_total_yen",
+          "scheduled_withdrawal_count",
+          "withdrawal_rate_percent"
+        ],
+        "title": "GetMembersSummaryResponse",
+        "description": "Summary statistics for the members list page"
       },
       "GetMemberDetailResponse": {
         "type": "object",
@@ -1963,13 +2071,20 @@
             "properties": {
               "member_type": {
                 "type": "string",
-                "enum": ["regular", "family", "corporate", "company_discount"],
+                "enum": ["regular", "family", "corporate", "one_day_member"],
                 "example": "regular",
                 "description": "Member type"
               },
               "status": {
                 "type": "string",
-                "enum": ["active", "suspended", "withdrawn", "force_withdrawn"],
+                "enum": [
+                  "active",
+                  "suspended",
+                  "gate_stop",
+                  "pending_withdrawal",
+                  "withdrawn",
+                  "force_withdrawn"
+                ],
                 "example": "active",
                 "description": "Member status"
               },
@@ -16898,7 +17013,14 @@
                               },
                               "status": {
                                 "type": "string",
-                                "enum": ["active", "suspended", "withdrawn", "force_withdrawn"]
+                                "enum": [
+                                  "active",
+                                  "suspended",
+                                  "gate_stop",
+                                  "pending_withdrawal",
+                                  "withdrawn",
+                                  "force_withdrawn"
+                                ]
                               }
                             },
                             "required": ["id", "member_number", "name", "relationship", "status"]
@@ -16927,7 +17049,14 @@
                             },
                             "status": {
                               "type": "string",
-                              "enum": ["active", "suspended", "withdrawn", "force_withdrawn"]
+                              "enum": [
+                                "active",
+                                "suspended",
+                                "gate_stop",
+                                "pending_withdrawal",
+                                "withdrawn",
+                                "force_withdrawn"
+                              ]
                             }
                           },
                           "required": ["id", "member_number", "name", "relationship", "status"]
@@ -17008,7 +17137,14 @@
                                   },
                                   "membership_status": {
                                     "type": "string",
-                                    "enum": ["active", "suspended", "withdrawn", "force_withdrawn"]
+                                    "enum": [
+                                      "active",
+                                      "suspended",
+                                      "gate_stop",
+                                      "pending_withdrawal",
+                                      "withdrawn",
+                                      "force_withdrawn"
+                                    ]
                                   },
                                   "points_status": {
                                     "type": "string",
@@ -17279,13 +17415,20 @@
                       "properties": {
                         "member_type": {
                           "type": "string",
-                          "enum": ["regular", "family", "corporate", "company_discount"],
+                          "enum": ["regular", "family", "corporate", "one_day_member"],
                           "example": "regular",
                           "description": "Member type"
                         },
                         "status": {
                           "type": "string",
-                          "enum": ["active", "suspended", "withdrawn", "force_withdrawn"],
+                          "enum": [
+                            "active",
+                            "suspended",
+                            "gate_stop",
+                            "pending_withdrawal",
+                            "withdrawn",
+                            "force_withdrawn"
+                          ],
                           "example": "active",
                           "description": "Member status"
                         },
@@ -17988,14 +18131,14 @@
               "nullable": true,
               "items": {
                 "type": "string",
-                "enum": ["regular", "family", "corporate", "company_discount"]
+                "enum": ["regular", "one_day_member", "family"]
               },
               "example": ["regular", "family"],
-              "description": "Filter by member type (array)"
+              "description": "Filter by contract type (array)"
             },
             "required": false,
-            "description": "Filter by member type (array)",
-            "name": "member_type",
+            "description": "Filter by contract type (array)",
+            "name": "contract_type",
             "in": "query"
           },
           {
@@ -18004,7 +18147,14 @@
               "nullable": true,
               "items": {
                 "type": "string",
-                "enum": ["active", "suspended", "withdrawn", "force_withdrawn"]
+                "enum": [
+                  "active",
+                  "suspended",
+                  "gate_stop",
+                  "pending_withdrawal",
+                  "withdrawn",
+                  "force_withdrawn"
+                ]
               },
               "example": ["active", "suspended"],
               "description": "Filter by status (array)"
@@ -18146,13 +18296,26 @@
                           },
                           "member_type": {
                             "type": "string",
-                            "enum": ["regular", "family", "corporate", "company_discount"],
+                            "enum": ["regular", "family", "corporate", "one_day_member"],
                             "example": "regular",
                             "description": "Member type"
                           },
+                          "contract_type": {
+                            "type": "string",
+                            "enum": ["regular", "one_day_member", "family"],
+                            "example": "regular",
+                            "description": "Contract type"
+                          },
                           "status": {
                             "type": "string",
-                            "enum": ["active", "suspended", "withdrawn", "force_withdrawn"],
+                            "enum": [
+                              "active",
+                              "suspended",
+                              "gate_stop",
+                              "pending_withdrawal",
+                              "withdrawn",
+                              "force_withdrawn"
+                            ],
                             "example": "active",
                             "description": "Member status"
                           },
@@ -18217,6 +18380,7 @@
                           "name_kanji",
                           "name_kana",
                           "member_type",
+                          "contract_type",
                           "status",
                           "store_name",
                           "store_id",
@@ -18285,6 +18449,104 @@
                   "required": ["error"],
                   "title": "ErrorResponse",
                   "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/summary": {
+      "get": {
+        "summary": "Get members summary",
+        "description": "Aggregate KPI statistics for the members list dashboard",
+        "tags": ["Members"],
+        "responses": {
+          "200": {
+            "description": "Summary statistics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "active_count": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "example": 1250,
+                      "description": "Number of active members"
+                    },
+                    "active_change_percent": {
+                      "type": "number",
+                      "example": 2.4,
+                      "description": "Month-over-month change in active members (percent)"
+                    },
+                    "suspended_count": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "example": 42,
+                      "description": "Number of suspended members"
+                    },
+                    "suspended_percent": {
+                      "type": "number",
+                      "example": 3.2,
+                      "description": "Suspended members as percent of total"
+                    },
+                    "unpaid_count": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "example": 18,
+                      "description": "Members with unpaid balance"
+                    },
+                    "unpaid_total_yen": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "example": 245000,
+                      "description": "Total unpaid amount in yen"
+                    },
+                    "scheduled_withdrawal_count": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "example": 7,
+                      "description": "Members scheduled to withdraw this month"
+                    },
+                    "withdrawal_rate_percent": {
+                      "type": "number",
+                      "example": 1.1,
+                      "description": "Withdrawal rate (percent)"
+                    }
+                  },
+                  "required": [
+                    "active_count",
+                    "active_change_percent",
+                    "suspended_count",
+                    "suspended_percent",
+                    "unpaid_count",
+                    "unpaid_total_yen",
+                    "scheduled_withdrawal_count",
+                    "withdrawal_rate_percent"
+                  ],
+                  "title": "GetMembersSummaryResponse",
+                  "description": "Summary statistics for the members list page"
                 }
               }
             }

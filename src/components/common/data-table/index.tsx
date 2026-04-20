@@ -106,7 +106,7 @@ export function DataTable<TData, TValue>({
         <Table containerClassName={cn('overflow-y-auto', containerClassName)}>
           <TableHeader className="bg-background sticky top-0 overflow-hidden">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="bg-neutral-50 hover:bg-neutral-100">
+              <TableRow key={headerGroup.id} className="bg-muted/50 hover:bg-muted/50">
                 {headerGroup.headers.map((header) => {
                   const meta = header.column.columnDef.meta as Record<string, unknown> | undefined;
                   return (
@@ -140,7 +140,7 @@ export function DataTable<TData, TValue>({
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
                   onClick={() => onRowClick?.(row.original)}
-                  className={cn('h-12', onRowClick ? 'cursor-pointer' : '')}
+                  className={cn('hover:bg-muted/50 h-12', onRowClick ? 'cursor-pointer' : '')}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell

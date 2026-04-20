@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
       page,
       limit,
       search = '',
-      member_type,
+      contract_type,
       status,
       brand,
       store_id,
@@ -91,8 +91,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    if (member_type && member_type.length > 0) {
-      filtered = filtered.filter((m) => member_type.includes(m.member_type));
+    if (contract_type && contract_type.length > 0) {
+      filtered = filtered.filter((m) => contract_type.includes(m.contract_type));
     }
 
     if (status && status.length > 0) {
