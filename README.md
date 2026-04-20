@@ -38,11 +38,6 @@
 
 プロトタイプやフロー画面の素材も、同じ `docs/specs/<feature>/` 配下に置く運用です（詳細は [sdd-flow/sdd-dev-workflow.md](./sdd-flow/sdd-dev-workflow.md)）。
 
-### `specs/`（リポジトリ直下）について
-
-Spec Kit 付属のシェル（例: `.specify/scripts/bash/create-new-feature.sh`）は、**デフォルトでリポジトリ直下の `specs/`** を参照する場合があります。一方、本プロジェクトの **SDD ドキュメント・ステアリング・レビュー**は **`docs/specs/`** を前提にしています。  
-**Codex など別のエージェントで生成した結果が `specs/` に出た場合**は、チームの単一の真実に合わせるため **`docs/specs/<feature>/` へ移す／そこに直接書く**運用にしてください（MR レビューでは `docs/specs/` を見ればよい、と揃えます）。
-
 ## フロー文書（手順の全体像）
 
 | 文書                                                             | 内容                                                                                  |
