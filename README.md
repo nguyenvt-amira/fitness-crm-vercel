@@ -4,15 +4,47 @@
 
 # 技術スタック
 
-| カテゴリ       | 技術                     | 備考                                                             |
-| :------------- | :----------------------- | :--------------------------------------------------------------- |
-| ランタイム     | Node.js                  | v24以上を推奨                                                    |
-| 言語           | TypeScript               | 全体にわたる型安全性の確保                                       |
-| フレームワーク | Next.js                  | App Routerを使用                                                 |
-| UIライブラリ   | shadcn/ui                | Tailwind CSSベースのコンポーネント                               |
-| リンター       | ESLint                   | コード品質の自動チェック                                         |
-| フォーマッター | Prettier                 | チーム全体での統一されたコードスタイル <br> インポートの自動整列 |
-| コミット管理   | husky <br /> lint-staged | コミット時にLint/フォーマッターを自動実行                        |
+| カテゴリ       | 技術                      | 備考                                                                                 |
+| :------------- | :------------------------ | :----------------------------------------------------------------------------------- |
+| ランタイム     | Node.js                   | v24以上を推奨                                                                        |
+| 言語           | TypeScript                | 全体にわたる型安全性の確保                                                           |
+| フレームワーク | Next.js                   | App Routerを使用                                                                     |
+| UIライブラリ   | shadcn/ui                 | Tailwind CSSベースのコンポーネント                                                   |
+| リンター       | ESLint                    | コード品質の自動チェック                                                             |
+| フォーマッター | Prettier                  | チーム全体での統一されたコードスタイル <br> インポートの自動整列                     |
+| コミット管理   | husky <br /> lint-staged  | コミット時にLint/フォーマッターを自動実行                                            |
+| 仕様駆動開発   | SpecKit（GitHub Copilot） | 機能ごとの `spec.md` / `plan.md` / `tasks.md` などをエージェントで生成（詳細は下記） |
+
+# SpecKit（SDD）と仕様書の置き場
+
+本リポジトリでは **Specification-Driven Development（SDD）** を採用し、[SpecKit](https://github.com/github/spec-kit) 相当のワークフローを **GitHub Copilot 用のエージェント定義**（`.github/agents/`・`.github/prompts/`）と **`.specify/`** のスクリプト／テンプレートで運用します。`npm` パッケージとして SpecKit を追加インストールする必要はありません（リポジトリに同梱された定義を Copilot が読みます）。
+
+## セットアップ（利用側）
+
+1. 本リポジトリへのアクセスと、組織方針に従った **GitHub Copilot** の有効化。
+2. 開発環境は通常どおり [インストール](#インストール)（`npm install` など）。
+3. 機能開発を始める際は、Copilot の **エージェント／チャット**から `speckit.specify` などの SpecKit 系エージェントを起動し、自然言語の機能説明を渡します（具体的な呼び出し方法は利用中の Copilot UI に依存します）。
+
+## 生成物の保存場所（レビュー時の目安）
+
+**このプロジェクトで仕様・計画・タスクの正とするパスは次です。**
+
+| 種類                         | パス（機能名は例）                                          |
+| :--------------------------- | :---------------------------------------------------------- |
+| 機能仕様                     | `docs/specs/<feature>/spec.md`                              |
+| 実装計画                     | `docs/specs/<feature>/plan.md`                              |
+| タスク一覧                   | `docs/specs/<feature>/tasks.md`                             |
+| 調査・データモデル・契約など | `docs/specs/<feature>/research.md` など同一ディレクトリ配下 |
+
+プロトタイプやフロー画面の素材も、同じ `docs/specs/<feature>/` 配下に置く運用です（詳細は [sdd-flow/sdd-dev-workflow.md](./sdd-flow/sdd-dev-workflow.md)）。
+
+## フロー文書（手順の全体像）
+
+| 文書                                                             | 内容                                                                                  |
+| :--------------------------------------------------------------- | :------------------------------------------------------------------------------------ |
+| [sdd-flow/sdd-overview.md](./sdd-flow/sdd-overview.md)           | SDD を採用する理由と前提                                                              |
+| [sdd-flow/sdd-dev-workflow.md](./sdd-flow/sdd-dev-workflow.md)   | フェーズごとの作業手順（kickoff → specify → plan → tasks → analyze → implement など） |
+| [sdd-flow/sdd-team-protocol.md](./sdd-flow/sdd-team-protocol.md) | レイヤー構成・コンテキスト注入・更新ルール（ツール非依存）                            |
 
 # はじめに
 
