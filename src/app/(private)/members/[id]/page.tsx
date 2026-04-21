@@ -320,7 +320,7 @@ export default function MemberDetailPage() {
             </TabsContent>
 
             <TabsContent value="contracts">
-              <ContractsTab memberId={memberId} />
+              <ContractsTab memberId={memberId} memberStatus={member.profile.status} />
             </TabsContent>
 
             <TabsContent value="points">
