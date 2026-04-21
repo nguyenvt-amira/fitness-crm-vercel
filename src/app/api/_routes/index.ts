@@ -40,6 +40,7 @@ import '@/app/api/crm/members/[id]/service-usage/route';
 import '@/app/api/crm/members/[id]/training-records/route';
 import '@/app/api/crm/members/[id]/usage-history/route';
 import '@/app/api/crm/members/export/route';
+import '@/app/api/crm/members/meta/main-contract-labels/route';
 // Import members routes
 import '@/app/api/crm/members/route';
 import '@/app/api/crm/members/summary/route';

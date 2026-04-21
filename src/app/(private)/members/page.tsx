@@ -80,7 +80,12 @@ function MembersPageContent() {
             {totalMembers.toLocaleString()}名
           </Badge>
         </div>
-        <Button type="button" size="sm" className="gap-1">
+        <Button
+          type="button"
+          size="sm"
+          className="gap-1"
+          onClick={() => router.push(navigate('/members/create'))}
+        >
           <Plus className="size-4" />
           新規登録
         </Button>

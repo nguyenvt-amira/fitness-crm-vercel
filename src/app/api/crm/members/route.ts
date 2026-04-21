@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { db } from '@/app/api/_mock-db';
 import {
+  CreateMemberRequestSchema,
+  type CreateMemberResponse,
+  CreateMemberResponseSchema,
   ErrorResponseSchema,
   type GetMembersQuery,
   GetMembersQuerySchema,
@@ -28,6 +31,35 @@ registerRoute({
       status: 400,
       schema: ErrorResponseSchema,
       description: 'Bad request - invalid query parameters',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
+
+registerRoute({
+  method: 'post',
+  path: '/crm/members',
+  summary: 'Create member',
+  description: 'Create a new member',
+  tags: ['Members'],
+  requestBody: {
+    schema: CreateMemberRequestSchema,
+    description: 'Member create payload',
+  },
+  responses: [
+    {
+      status: 200,
+      schema: CreateMemberResponseSchema,
+      description: 'Member created successfully',
+    },
+    {
+      status: 400,
+      schema: ErrorResponseSchema,
+      description: 'Bad request - invalid request body',
     },
     {
       status: 500,
@@ -179,5 +211,28 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Error fetching members:', error);
     return NextResponse.json({ error: 'Failed to fetch members' }, { status: 500 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const validationResult = CreateMemberRequestSchema.safeParse(body);
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((issue) => issue.message).join(', ');
+      return NextResponse.json({ error: errors }, { status: 400 });
+    }
+
+    const member = db.members.create(validationResult.data);
+
+    const response: CreateMemberResponse = {
+      message: 'Member created successfully',
+      member: member.basic_info,
+    };
+
+    return NextResponse.json(response);
+  } catch (error) {
+    console.error('Error creating member:', error);
+    return NextResponse.json({ error: 'Failed to create member' }, { status: 500 });
   }
 }

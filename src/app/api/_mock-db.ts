@@ -9,7 +9,11 @@ import type {
   FamilyRelationship,
 } from '@/app/api/_schemas/family-registration.schema';
 import type { MainContractListItem } from '@/app/api/_schemas/main-contract.schema';
-import type { ContractType } from '@/app/api/_schemas/member.schema';
+import type {
+  ContractType,
+  CreateMemberRequest,
+  UpdateMemberRequest,
+} from '@/app/api/_schemas/member.schema';
 import type { OptionMasterListItem } from '@/app/api/_schemas/option-master.schema';
 import type { Position, StaffPermissionRecord } from '@/app/api/_schemas/position.schema';
 import type { StaffDetail, StaffListItem } from '@/app/api/_schemas/staff.schema';
@@ -34,6 +38,97 @@ import type {
   MembershipApplicationStatus,
   RiskReason,
 } from '@/types/api/membership-application.type';
+
+/**
+ * Mock DB table: canonical main contract master rows for members.
+ */
+export const MEMBER_MAIN_CONTRACT_MASTER = [
+  {
+    id: 'master-contract-regular',
+    name: 'レギュラー会員',
+    template_contract_id: 'ctr-tpl-regular',
+    plan_master_id: 'plan-001',
+    monthly_fee: 6580,
+  },
+  {
+    id: 'master-contract-night',
+    name: 'ナイト会員',
+    template_contract_id: 'ctr-tpl-night',
+    plan_master_id: 'plan-002',
+    monthly_fee: 5980,
+  },
+  {
+    id: 'master-contract-daytime',
+    name: 'デイタイム会員',
+    template_contract_id: 'ctr-tpl-daytime',
+    plan_master_id: 'plan-002',
+    monthly_fee: 5480,
+  },
+  {
+    id: 'master-contract-weekend',
+    name: 'ウィークエンド会員',
+    template_contract_id: 'ctr-tpl-weekend',
+    plan_master_id: 'plan-003',
+    monthly_fee: 4980,
+  },
+  {
+    id: 'master-contract-1day',
+    name: '1Dayパス',
+    template_contract_id: 'ctr-tpl-1day',
+    plan_master_id: 'plan-001',
+    monthly_fee: 880,
+  },
+] as const;
+
+export type MemberMainContractName = (typeof MEMBER_MAIN_CONTRACT_MASTER)[number]['name'];
+
+export const DEFAULT_MEMBER_MAIN_CONTRACT: MemberMainContractName = 'レギュラー会員';
+
+export function isMemberMainContractName(
+  value: string | undefined | null,
+): value is MemberMainContractName {
+  return value != null && MEMBER_MAIN_CONTRACT_MASTER.some((contract) => contract.name === value);
+}
+
+/** Stable template row id per main contract (mock `contracts` table). */
+export const MEMBER_MAIN_CONTRACT_TEMPLATE_CONTRACT_ID = Object.fromEntries(
+  MEMBER_MAIN_CONTRACT_MASTER.map((contract) => [contract.name, contract.template_contract_id]),
+) as Record<MemberMainContractName, string>;
+
+/** Plan master id for filters / mock billing (maps several UI labels onto plan-001...003). */
+export const MEMBER_MAIN_CONTRACT_PLAN_MASTER_ID = Object.fromEntries(
+  MEMBER_MAIN_CONTRACT_MASTER.map((contract) => [contract.name, contract.plan_master_id]),
+) as Record<MemberMainContractName, string>;
+
+export const MEMBER_MAIN_CONTRACT_MONTHLY_FEE = Object.fromEntries(
+  MEMBER_MAIN_CONTRACT_MASTER.map((contract) => [contract.name, contract.monthly_fee]),
+) as Record<MemberMainContractName, number>;
+
+/** Map legacy / application plan labels onto the canonical main-contract names. */
+export function normalizeToMemberMainContractName(
+  raw: string | undefined | null,
+): MemberMainContractName {
+  if (isMemberMainContractName(raw)) return raw;
+  const s = raw?.trim() ?? '';
+  if (!s) return DEFAULT_MEMBER_MAIN_CONTRACT;
+  if (/1Day|ワンデー|oneday/i.test(s) || s.includes('1Day')) return '1Dayパス';
+  if (s.includes('ウィークエンド') || s.includes('週末')) return 'ウィークエンド会員';
+  if (s.includes('デイタイム')) return 'デイタイム会員';
+  if (s.includes('ナイト')) return 'ナイト会員';
+  if (
+    s.includes('プレミアム') ||
+    s.includes('スタンダード') ||
+    s.includes('ベーシック') ||
+    s.includes('通常会員')
+  ) {
+    return 'レギュラー会員';
+  }
+  return DEFAULT_MEMBER_MAIN_CONTRACT;
+}
+
+export function getMemberMainContractFormLabels(): readonly string[] {
+  return MEMBER_MAIN_CONTRACT_MASTER.map((contract) => contract.name);
+}
 
 export type MembershipApplicationContractDetails = {
   plan_id: string;
@@ -84,7 +179,10 @@ interface GetMembersResponseMember {
   store_name: string;
   store_id: string;
   brand: NonNullable<GetMemberDetailResponse['profile']>['brand'];
-  contract_plan_name: string;
+  contract_name: MemberMainContractName;
+  /** CRM contract row id the member holds (may differ from plan master id). */
+  contract_id: string;
+  /** Plan master id for list filters (e.g. plan-001). */
   contract_plan_id: string;
   joined_at: string;
   last_visit_date?: string;
@@ -95,8 +193,9 @@ interface GetMembersResponseMember {
 
 // List-only fields stored with Member for list view
 interface MemberListMeta {
+  contract_id: string;
   contract_plan_id: string;
-  contract_plan_name: string;
+  contract_name: MemberMainContractName;
   contract_type: ContractType;
   last_visit_date?: string;
   has_unpaid: boolean;
@@ -104,11 +203,15 @@ interface MemberListMeta {
 type Member = GetMemberDetailResponse;
 type MemberRow = Member & { _listMeta?: MemberListMeta };
 
-const MOCK_PLANS = [
-  { id: 'plan-001', name: 'ベーシックプラン' },
-  { id: 'plan-002', name: 'スタンダードプラン' },
-  { id: 'plan-003', name: 'プレミアムプラン' },
-];
+function resolvePlanMasterIdFromMainContractLabel(label: string): string {
+  const n = normalizeToMemberMainContractName(label);
+  return MEMBER_MAIN_CONTRACT_PLAN_MASTER_ID[n];
+}
+
+function resolveMonthlyFeeForMainContractLabel(label: string): number {
+  const n = normalizeToMemberMainContractName(label);
+  return MEMBER_MAIN_CONTRACT_MONTHLY_FEE[n];
+}
 
 /** Position master seed (positions table) — mirrors 職位マスター */
 const SEED_POSITION_ROWS: Position[] = [
@@ -291,7 +394,7 @@ function staffBrandDisplayName(code: string): string {
 
 type ContractRow = {
   contract_id: string;
-  member_id: string;
+  member_id?: string;
   /**
    * For traceability in mocks: which membership application created this contract (if any).
    */
@@ -306,6 +409,15 @@ function resolveContractTypeFromMemberType(memberType: MemberProfile['member_typ
   if (memberType === 'family') return 'family';
   if (memberType === 'one_day_member') return 'one_day_member';
   return 'regular';
+}
+
+function resolveBrand(input: string | undefined, fallback: Brand): Brand {
+  if (!input) return fallback;
+  const normalized = input.toLowerCase();
+  if (normalized === 'fit365' || normalized === 'joyfit') {
+    return normalized as Brand;
+  }
+  return fallback;
 }
 
 function createMember(
@@ -324,8 +436,9 @@ function createMember(
     store_name: string;
     brand: MemberProfile['brand'];
     joined_at: string;
+    contract_id: string;
     contract_plan_id: string;
-    contract_plan_name: string;
+    contract_name: MemberMainContractName;
     last_visit_date?: string;
     has_unpaid: boolean;
     emergency_contact_name: string;
@@ -339,14 +452,14 @@ function createMember(
       member_number: id,
       name_kanji: listMeta.name_kanji,
       name_kana: listMeta.name_kana,
-      birthday: '1990-05-15',
-      age: 34,
+      birthday: listMeta.birthday,
+      age: calculateAgeFromBirthday(listMeta.birthday),
       gender: listMeta.gender,
-      postal_code: '1500002',
-      prefecture: '東京都',
-      city: '渋谷区',
-      address: '渋谷1-2-3',
-      building: 'サンプルマンション 101',
+      postal_code: '',
+      prefecture: '',
+      city: '',
+      address: '',
+      building: '',
       phone: listMeta.phone,
       email: listMeta.email,
       emergency_contact: {
@@ -354,14 +467,17 @@ function createMember(
         relationship: listMeta.emergency_contact_relationship,
         phone: listMeta.emergency_contact_phone,
       },
+      notes: '',
     },
     profile: {
       member_type: listMeta.member_type,
       status: listMeta.status,
+      contract_id: listMeta.contract_id,
       store_id: listMeta.store_id,
       store_name: listMeta.store_name,
       brand: listMeta.brand,
       joined_at: listMeta.joined_at,
+      contract_name: listMeta.contract_name,
       is_black_listed: false,
     },
     ekyc: {
@@ -393,11 +509,11 @@ function createMember(
       medical_history: '特になし',
       allergies: 'なし',
       exercise_restrictions: '特になし',
-      other_notes: '入会時健康アンケート済み。',
     },
     _listMeta: {
+      contract_id: listMeta.contract_id,
       contract_plan_id: listMeta.contract_plan_id,
-      contract_plan_name: listMeta.contract_plan_name,
+      contract_name: listMeta.contract_name,
       contract_type: listMeta.contract_type,
       last_visit_date: listMeta.last_visit_date,
       has_unpaid: listMeta.has_unpaid,
@@ -405,8 +521,35 @@ function createMember(
   };
 }
 
+function calculateAgeFromBirthday(birthday: string): number {
+  const [yearText, monthText, dayText] = birthday.split('-');
+  const year = Number(yearText);
+  const month = Number(monthText);
+  const day = Number(dayText);
+
+  if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) {
+    return 0;
+  }
+
+  const today = new Date();
+  let age = today.getFullYear() - year;
+  const hasHadBirthdayThisYear =
+    today.getMonth() + 1 > month || (today.getMonth() + 1 === month && today.getDate() >= day);
+
+  if (!hasHadBirthdayThisYear) {
+    age -= 1;
+  }
+
+  return Math.max(age, 0);
+}
+
 function memberToListItem(m: MemberRow): GetMembersResponseMember {
   const meta = m._listMeta;
+  const rawContractLabel =
+    meta?.contract_name ??
+    (m.profile as { contract_name?: string | null } | undefined)?.contract_name ??
+    '';
+  const contractName = normalizeToMemberMainContractName(rawContractLabel);
   return {
     id: m.basic_info.id,
     member_number: m.basic_info.member_number,
@@ -421,8 +564,9 @@ function memberToListItem(m: MemberRow): GetMembersResponseMember {
     joined_at: m.profile.joined_at,
     phone: m.basic_info.phone,
     email: m.basic_info.email,
+    contract_id: meta?.contract_id ?? meta?.contract_plan_id ?? 'plan-001',
     contract_plan_id: meta?.contract_plan_id ?? 'plan-001',
-    contract_plan_name: meta?.contract_plan_name ?? 'ベーシックプラン',
+    contract_name: contractName,
     last_visit_date: meta?.last_visit_date,
     has_unpaid: meta?.has_unpaid ?? false,
   };
@@ -514,18 +658,26 @@ type DbType = {
       applicant?: { birthday?: string; phone?: string; email?: string };
       primary_member_id: string;
     }): MemberRow;
+    create(body: CreateMemberRequest): Member;
+    update(id: string, body: UpdateMemberRequest): Member | undefined;
     updateBasicInfo(id: string, body: UpdateBasicInfoRequest): Member | undefined;
+    updateProfileInfo(
+      id: string,
+      body: NonNullable<UpdateMemberRequest['profile_info']>,
+    ): Member | undefined;
     updateHealthInfo(id: string, body: UpdateHealthInfoRequest): Member | undefined;
     updateMarketingConsent(id: string, body: UpdateMarketingConsentRequest): Member | undefined;
   };
   contracts: {
     _seeded: boolean;
     _seed(): void;
+    getById(contractId: string): ContractRow | undefined;
+    getByPlanName(planName: string): ContractRow | undefined;
     getByMemberId(memberId: string): GetContractsResponse | undefined;
     getByApplicationId(applicationId: string): ContractRow | undefined;
     create(input: {
       contract_id: string;
-      member_id: string;
+      member_id?: string;
       application_id?: string;
       data: GetContractsResponse;
     }): unknown;
@@ -826,7 +978,11 @@ function createDb() {
           const id = `M-${String(i).padStart(5, '0')}`;
           const name = names[i % names.length];
           const store = storeRows[i % storeRows.length]!;
-          const plan = MOCK_PLANS[i % MOCK_PLANS.length];
+          const contractMaster =
+            MEMBER_MAIN_CONTRACT_MASTER[i % MEMBER_MAIN_CONTRACT_MASTER.length]!;
+          const displayName = contractMaster.name;
+          const tplContractId = MEMBER_MAIN_CONTRACT_TEMPLATE_CONTRACT_ID[displayName];
+          const planMasterId = MEMBER_MAIN_CONTRACT_PLAN_MASTER_ID[displayName];
           const phone = `090${String(1000 + (i % 9000)).slice(-4)}${String(1000 + (i % 9000)).slice(-4)}`;
           const email = `member${String(i).padStart(5, '0')}@example.jp`;
           const memberType = (
@@ -855,8 +1011,9 @@ function createDb() {
               store_name: store.name,
               store_id: store.id,
               brand: store.brand as Brand,
-              contract_plan_name: plan.name,
-              contract_plan_id: plan.id,
+              contract_name: displayName,
+              contract_id: tplContractId,
+              contract_plan_id: planMasterId,
               joined_at: `2024-${String((i % 12) + 1).padStart(2, '0')}-${String((i % 28) + 1).padStart(2, '0')}`,
               last_visit_date:
                 i % 5 === 0
@@ -924,6 +1081,11 @@ function createDb() {
         const memberType = (['regular', 'family', 'corporate'] as MemberProfile['member_type'][])[
           nextNumber % 3
         ]!;
+        const rawPlan =
+          application.contract_details?.plan_name || application.contract_details?.plan_id || '';
+        const displayName = normalizeToMemberMainContractName(rawPlan);
+        const planMasterId = MEMBER_MAIN_CONTRACT_PLAN_MASTER_ID[displayName];
+        const tplContractId = MEMBER_MAIN_CONTRACT_TEMPLATE_CONTRACT_ID[displayName];
         const row = createMember(id, {
           name_kanji: application.applicant_name || '',
           name_kana: application.applicant_name || '',
@@ -938,8 +1100,9 @@ function createDb() {
           store_id: store.id,
           brand: nextNumber % 2 === 0 ? 'fit365' : 'joyfit',
           joined_at: toIsoDate(now),
-          contract_plan_name: application.contract_details?.plan_name || '-',
-          contract_plan_id: application.contract_details?.plan_id || '-',
+          contract_name: displayName,
+          contract_id: tplContractId,
+          contract_plan_id: planMasterId,
           last_visit_date: toIsoDate(new Date(application.contract_details?.start_date ?? now)),
           has_unpaid: false,
           emergency_contact_name: application.emergency_contact_name || '',
@@ -966,7 +1129,10 @@ function createDb() {
         const store = primary?.profile.store_id
           ? { id: primary.profile.store_id, name: primary.profile.store_name }
           : { id: fallbackStore.id, name: fallbackStore.name };
-        const plan = MOCK_PLANS[nextNumber % MOCK_PLANS.length]!;
+        const displayName =
+          MEMBER_MAIN_CONTRACT_MASTER[nextNumber % MEMBER_MAIN_CONTRACT_MASTER.length]!.name;
+        const tplContractId = MEMBER_MAIN_CONTRACT_TEMPLATE_CONTRACT_ID[displayName];
+        const planMasterId = MEMBER_MAIN_CONTRACT_PLAN_MASTER_ID[displayName];
         const now = new Date();
         const row = createMember(id, {
           name_kanji: registration.applicant_name,
@@ -986,8 +1152,9 @@ function createDb() {
           store_id: store.id,
           brand: primary?.profile.brand ?? (nextNumber % 2 === 0 ? 'fit365' : 'joyfit'),
           joined_at: toIsoDate(now),
-          contract_plan_name: plan.name,
-          contract_plan_id: plan.id,
+          contract_name: displayName,
+          contract_id: tplContractId,
+          contract_plan_id: planMasterId,
           last_visit_date: undefined,
           has_unpaid: false,
           emergency_contact_name: registration.applicant_name,
@@ -996,6 +1163,101 @@ function createDb() {
         });
         this._members.push(row);
         return row;
+      },
+
+      create(body: CreateMemberRequest): Member {
+        this._seed();
+        db.contracts._seed();
+        db.stores._seed();
+        const nextNumber = this._members.length + 1;
+        const id = `M-${String(nextNumber).padStart(5, '0')}`;
+        const storeRows = db.stores._rows;
+        const profileInfo = body.profile_info;
+        const joinedAt = profileInfo?.join_date ?? toIsoDate(new Date());
+        const memberType: MemberProfile['member_type'] = profileInfo?.member_type ?? 'regular';
+        const contractName = normalizeToMemberMainContractName(
+          profileInfo?.contract_name ?? DEFAULT_MEMBER_MAIN_CONTRACT,
+        );
+        const existingContract = db.contracts.getByPlanName(contractName);
+        const contractId =
+          existingContract?.contract_id ?? `contract-member-${String(nextNumber).padStart(5, '0')}`;
+        if (!existingContract) {
+          db.contracts.create({
+            contract_id: contractId,
+            data: buildMemberContractData({
+              plan_name: contractName,
+              start_date: joinedAt,
+              monthly_fee: resolveMonthlyFeeForMainContractLabel(contractName),
+              created_at: new Date().toISOString(),
+            }),
+          });
+        }
+        const joinStoreId = profileInfo?.join_store?.trim();
+        const selectedStore =
+          joinStoreId != null && joinStoreId !== ''
+            ? storeRows.find((row) => row.id === joinStoreId || row.store_id === joinStoreId)
+            : undefined;
+        const resolvedStore = selectedStore;
+        const normalizedBrand = profileInfo?.brand?.trim();
+        const brand =
+          normalizedBrand && resolvedStore
+            ? resolveBrand(normalizedBrand, resolvedStore.brand as Brand)
+            : ('' as MemberProfile['brand']);
+        const planMasterId = resolvePlanMasterIdFromMainContractLabel(contractName);
+
+        const row = createMember(id, {
+          name_kanji: body.name_kanji,
+          name_kana: body.name_kana,
+          phone: body.phone,
+          email: body.email,
+          birthday: body.birthday ?? '1990-01-01',
+          gender: body.gender ?? 'other',
+          member_type: memberType,
+          status: 'active',
+          contract_type: resolveContractTypeFromMemberType(memberType),
+          store_name: resolvedStore?.name ?? '',
+          store_id: resolvedStore?.id ?? '',
+          brand,
+          joined_at: joinedAt,
+          contract_name: contractName,
+          contract_id: contractId,
+          contract_plan_id: planMasterId,
+          last_visit_date: undefined,
+          has_unpaid: false,
+          emergency_contact_name: body.emergency_contact?.name ?? '',
+          emergency_contact_relationship: body.emergency_contact?.relationship ?? '',
+          emergency_contact_phone: body.emergency_contact?.phone ?? '',
+        });
+
+        row.basic_info.birthday = body.birthday ?? row.basic_info.birthday;
+        row.basic_info.postal_code = body.postal_code ?? row.basic_info.postal_code;
+        row.basic_info.prefecture = body.prefecture ?? row.basic_info.prefecture;
+        row.basic_info.city = body.city ?? row.basic_info.city;
+        row.basic_info.address = body.address ?? row.basic_info.address;
+        row.basic_info.building = body.building ?? row.basic_info.building;
+        row.basic_info.notes = body.notes ?? row.basic_info.notes;
+        row.profile.contract_id = contractId;
+        row.profile.contract_name = profileInfo?.contract_name ?? row.profile.contract_name;
+        row.profile.join_route = profileInfo?.join_route ?? row.profile.join_route;
+        row.profile.referrer_member_id =
+          profileInfo?.referrer_member_id ?? row.profile.referrer_member_id;
+        row.ekyc = {
+          ...(row.ekyc ?? { verified: false }),
+          photoUrl: profileInfo?.photo_url ?? row.ekyc?.photoUrl,
+        };
+        this._members.push(row);
+        return row;
+      },
+
+      update(id: string, body: UpdateMemberRequest): Member | undefined {
+        this._seed();
+        if (body.basic_info) {
+          this.updateBasicInfo(id, body.basic_info);
+        }
+        if (body.profile_info) {
+          this.updateProfileInfo(id, body.profile_info);
+        }
+        return this.get(id);
       },
 
       updateBasicInfo(id: string, body: UpdateBasicInfoRequest): Member | undefined {
@@ -1010,6 +1272,97 @@ function createDb() {
             ...body,
             emergency_contact: body.emergency_contact ?? current.basic_info.emergency_contact,
           },
+        };
+        this._members[idx] = updated;
+        return updated;
+      },
+
+      updateProfileInfo(
+        id: string,
+        body: NonNullable<UpdateMemberRequest['profile_info']>,
+      ): Member | undefined {
+        this._seed();
+        const idx = this._members.findIndex((m) => m.basic_info.id === id);
+        if (idx === -1) return undefined;
+        const current = this._members[idx];
+        const nextContractType = body.member_type
+          ? resolveContractTypeFromMemberType(body.member_type)
+          : current._listMeta?.contract_type;
+        let nextContractDisplayName = normalizeToMemberMainContractName(
+          body.contract_name ??
+            current._listMeta?.contract_name ??
+            current.profile.contract_name ??
+            DEFAULT_MEMBER_MAIN_CONTRACT,
+        );
+        let nextContractPlanId = current._listMeta?.contract_plan_id;
+        let nextContractId = current._listMeta?.contract_id;
+
+        if (body.contract_name) {
+          db.contracts._seed();
+          let contract = db.contracts.getByPlanName(body.contract_name);
+          if (!contract) {
+            const newContractId = `contract-member-${id}-${Date.now()}`;
+            contract = db.contracts.create({
+              contract_id: newContractId,
+              data: buildMemberContractData({
+                plan_name: body.contract_name,
+                start_date: body.join_date ?? current.profile.joined_at,
+                monthly_fee: resolveMonthlyFeeForMainContractLabel(body.contract_name),
+                created_at: new Date().toISOString(),
+              }),
+            });
+          }
+          nextContractId = contract.contract_id;
+          nextContractDisplayName = normalizeToMemberMainContractName(
+            contract.data.main_contract.plan_name,
+          );
+          nextContractPlanId = resolvePlanMasterIdFromMainContractLabel(nextContractDisplayName);
+        }
+
+        const updated: MemberRow = {
+          ...current,
+          profile: {
+            ...current.profile,
+            member_type: body.member_type ?? current.profile.member_type,
+            joined_at: body.join_date ?? current.profile.joined_at,
+            store_id: body.join_store ?? current.profile.store_id,
+            store_name:
+              body.join_store != null
+                ? (db.stores.getById(body.join_store)?.name ?? current.profile.store_name)
+                : current.profile.store_name,
+            brand: resolveBrand(body.brand, current.profile.brand),
+            contract_id: nextContractId ?? current.profile.contract_id,
+            contract_name: nextContractDisplayName,
+            join_route: body.join_route ?? current.profile.join_route,
+            referrer_member_id: body.referrer_member_id ?? current.profile.referrer_member_id,
+          },
+          ekyc: {
+            ...(current.ekyc ?? { verified: false }),
+            photoUrl: body.photo_url ?? current.ekyc?.photoUrl,
+          },
+          _listMeta: current._listMeta
+            ? {
+                ...current._listMeta,
+                contract_id: nextContractId ?? current._listMeta.contract_id,
+                contract_type: nextContractType ?? current._listMeta.contract_type,
+                contract_name: nextContractDisplayName,
+                contract_plan_id: nextContractPlanId ?? current._listMeta.contract_plan_id,
+              }
+            : {
+                contract_id:
+                  nextContractId ??
+                  current.profile.contract_id ??
+                  MEMBER_MAIN_CONTRACT_TEMPLATE_CONTRACT_ID[nextContractDisplayName],
+                contract_plan_id:
+                  nextContractPlanId ??
+                  resolvePlanMasterIdFromMainContractLabel(nextContractDisplayName),
+                contract_name: nextContractDisplayName,
+                contract_type:
+                  nextContractType ??
+                  resolveContractTypeFromMemberType(current.profile.member_type),
+                last_visit_date: undefined,
+                has_unpaid: false,
+              },
         };
         this._members[idx] = updated;
         return updated;
@@ -1062,62 +1415,42 @@ function createDb() {
       _seed(): void {
         if (this._seeded) return;
         this._seeded = true;
-
-        // Ensure members are seeded first so contracts can reference them
-        db.members._seed();
-
-        const members = db.members._members;
-        for (let i = 0; i < members.length; i++) {
-          const m = members[i]!;
-          const meta = m._listMeta;
-          const planName = meta?.contract_plan_name ?? 'ベーシックプラン';
-          const joinedAt = m.profile.joined_at;
-
-          const createdAt = new Date(joinedAt + 'T00:00:00.000Z').toISOString();
-          const monthlyFee = planName.includes('プレミアム')
-            ? 12000
-            : planName.includes('スタンダード')
-              ? 8580
-              : 6580;
-
-          const contractId = `CONTRACT-${m.basic_info.id}`;
-          const data = buildMemberContractData({
-            plan_name: planName,
-            start_date: joinedAt,
-            monthly_fee: monthlyFee,
-            created_at: createdAt,
-          });
-
-          // Add a couple of deterministic options for some members
-          if (i % 10 === 0) {
-            data.option_contracts.push({
-              id: `opt-${m.basic_info.id}-001`,
-              name: 'パーソナルトレーニング',
-              monthly_fee: 11000,
-              start_date: joinedAt,
-              next_billing_date: toIsoDate(addMonths(new Date(joinedAt), 1)),
-            });
-            data.option_change_history.push({
-              changed_at: createdAt,
-              option_name: 'パーソナルトレーニング',
-              action_type: 'add',
-              notes: 'オプション追加',
-            });
-          }
-
+        const now = new Date().toISOString();
+        for (const masterContract of MEMBER_MAIN_CONTRACT_MASTER) {
+          const name = masterContract.name;
+          const monthlyFee = masterContract.monthly_fee;
           this._contracts.push({
-            contract_id: contractId,
-            member_id: m.basic_info.id,
-            created_at: createdAt,
-            data,
+            contract_id: masterContract.template_contract_id,
+            created_at: now,
+            data: buildMemberContractData({
+              plan_name: name,
+              start_date: '2024-01-01',
+              monthly_fee: monthlyFee,
+              created_at: now,
+            }),
           });
         }
       },
 
+      getById(contractId: string): ContractRow | undefined {
+        this._seed();
+        return this._contracts.find((c) => c.contract_id === contractId);
+      },
+
+      getByPlanName(planName: string): ContractRow | undefined {
+        this._seed();
+        return this._contracts.find((c) => c.data.main_contract.plan_name === planName);
+      },
+
       getByMemberId(memberId: string): GetContractsResponse | undefined {
         this._seed();
-        const row = this._contracts.find((c) => c.member_id === memberId);
-        return row?.data;
+        const member = db.members._members.find((m) => m.basic_info.id === memberId);
+        const contractId = member?._listMeta?.contract_id ?? member?._listMeta?.contract_plan_id;
+        if (contractId) {
+          return this.getById(contractId)?.data;
+        }
+        // backward compatibility for any row that still stores member_id link only
+        return this._contracts.find((c) => c.member_id === memberId)?.data;
       },
 
       getByApplicationId(applicationId: string): ContractRow | undefined {
@@ -1127,7 +1460,7 @@ function createDb() {
 
       create(input: {
         contract_id: string;
-        member_id: string;
+        member_id?: string;
         application_id?: string;
         data: GetContractsResponse;
       }): ContractRow {
@@ -1140,7 +1473,34 @@ function createDb() {
           created_at: now,
           data: input.data,
         };
-        this._contracts.unshift(row);
+        const existingIndex = this._contracts.findIndex((c) => c.contract_id === input.contract_id);
+        if (existingIndex >= 0) {
+          this._contracts[existingIndex] = row;
+        } else {
+          this._contracts.unshift(row);
+        }
+
+        if (input.member_id) {
+          const member = db.members._members.find((m) => m.basic_info.id === input.member_id);
+          if (member?._listMeta) {
+            const normalizedPlan = normalizeToMemberMainContractName(
+              row.data.main_contract.plan_name,
+            );
+            const nextContractType =
+              normalizedPlan === '1Dayパス' || row.data.main_contract.plan_name.includes('1Day')
+                ? 'one_day_member'
+                : member._listMeta.contract_type;
+            const planMasterId = resolvePlanMasterIdFromMainContractLabel(
+              row.data.main_contract.plan_name,
+            );
+            member._listMeta.contract_id = row.contract_id;
+            member._listMeta.contract_plan_id = planMasterId;
+            member._listMeta.contract_name = normalizedPlan;
+            member._listMeta.contract_type = nextContractType;
+            member.profile.contract_id = row.contract_id;
+            member.profile.contract_name = normalizedPlan;
+          }
+        }
         return row;
       },
 
@@ -1157,14 +1517,11 @@ function createDb() {
         const contractId = `CONTRACT-${application.id}`;
         const createdAt = new Date().toISOString();
 
-        const monthlyFee = application.plan_name?.includes('プレミアム')
-          ? 12000
-          : application.plan_name?.includes('スタンダード')
-            ? 8580
-            : 6580;
+        const displayName = normalizeToMemberMainContractName(application.plan_name ?? '');
+        const monthlyFee = MEMBER_MAIN_CONTRACT_MONTHLY_FEE[displayName];
 
         const data = buildMemberContractData({
-          plan_name: application.plan_name,
+          plan_name: displayName,
           start_date: application.scheduled_start_date,
           monthly_fee: monthlyFee,
           created_at: createdAt,
@@ -1172,9 +1529,9 @@ function createDb() {
 
         this.create({
           contract_id: contractId,
-          member_id,
           application_id: application.id,
           data,
+          member_id,
         });
 
         return { member_id, contract_id: contractId };
@@ -1189,7 +1546,7 @@ function createDb() {
       _seed(): void {
         if (this._seeded) return;
         this._seeded = true;
-        const plans = ['通常会員', 'プレミアム会員', 'ベーシックプラン'];
+        const plans = MEMBER_MAIN_CONTRACT_MASTER.map((contract) => contract.name);
         const riskReasons: RiskReason[] = [
           'blacklist_match',
           'duplicate_application',

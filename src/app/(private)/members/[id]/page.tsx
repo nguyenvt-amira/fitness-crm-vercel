@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 import Link from 'next/link';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -36,9 +36,8 @@ import {
 import type { StaffMemo } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
-import { MEMBER_STATUS_CLASSES } from '../_constants/constants';
+import { BRAND_LABELS, MEMBER_STATUS_CLASSES } from '../_constants/constants';
 import { MEMBER_STATUS_LABELS } from '../_constants/constants';
-import { EditMemberModal } from './_components/edit-member-modal';
 import { MemoModal } from './_components/memo-modal';
 import { PrintModal } from './_components/print-modal';
 import { BasicInfoTab } from './_components/tabs/basic-info-tab';
@@ -54,6 +53,7 @@ import { UsageHistoryTab } from './_components/tabs/usage-history-tab';
 const BREADCRUMB_ITEMS = [{ url: '/members', label: '会員一覧' }, { label: '会員詳細' }];
 
 export default function MemberDetailPage() {
+  const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
   const tab = searchParams.get('tab');
@@ -64,7 +64,6 @@ export default function MemberDetailPage() {
     tab === 'communications' ? 'communications' : 'basic',
   );
   const queryClient = useQueryClient();
-  const [showEditModal, setShowEditModal] = useState(false);
   const [showMemoModal, setShowMemoModal] = useState(() => memo === 'add');
   const [editingMemo, setEditingMemo] = useState<StaffMemo | null>(null);
   const [showPrintModal, setShowPrintModal] = useState(false);
@@ -117,7 +116,7 @@ export default function MemberDetailPage() {
   const contractRenewalSoon = false; // TODO: Calculate from contract end date
 
   const handleEdit = () => {
-    setShowEditModal(true);
+    router.push(navigate('/members/[id]/edit', memberId));
   };
 
   const handleAddMemo = () => {
@@ -227,10 +226,13 @@ export default function MemberDetailPage() {
                     <Badge className={MEMBER_STATUS_CLASSES[member.profile.status]}>
                       {MEMBER_STATUS_LABELS[member.profile.status]}
                     </Badge>
-                    <Badge variant="outline" className="flex items-center gap-1">
-                      <Building2 className="size-3" />
-                      {member.profile.brand === 'fit365' ? 'FIT365' : 'JOYFIT'}
-                    </Badge>
+                    {member.profile.brand && (
+                      <Badge variant="outline" className="flex items-center gap-1">
+                        <Building2 className="size-3" />
+                        {BRAND_LABELS[member.profile.brand]}
+                      </Badge>
+                    )}
+
                     <span className="text-muted-foreground text-sm">
                       {member.profile.store_name}
                     </span>
@@ -358,7 +360,6 @@ export default function MemberDetailPage() {
       </div>
 
       {/* Modals */}
-      <EditMemberModal open={showEditModal} onOpenChange={setShowEditModal} member={member} />
       <MemoModal
         open={showMemoModal}
         onOpenChange={handleMemoModalOpenChange}

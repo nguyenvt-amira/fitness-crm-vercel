@@ -1485,15 +1485,20 @@
             "example": "fit365",
             "description": "Brand"
           },
-          "contract_plan_name": {
+          "contract_name": {
             "type": "string",
-            "example": "ベーシックプラン",
-            "description": "Contract plan name"
+            "example": "レギュラー会員",
+            "description": "Main contract display name"
+          },
+          "contract_id": {
+            "type": "string",
+            "example": "plan-001",
+            "description": "Member's active contract row id (references CRM contract)"
           },
           "contract_plan_id": {
             "type": "string",
             "example": "plan-001",
-            "description": "Contract plan ID"
+            "description": "Contract plan master id (for filtering by plan template)"
           },
           "joined_at": {
             "type": "string",
@@ -1535,7 +1540,8 @@
           "store_name",
           "store_id",
           "brand",
-          "contract_plan_name",
+          "contract_name",
+          "contract_id",
           "contract_plan_id",
           "joined_at",
           "has_unpaid",
@@ -1792,15 +1798,20 @@
                   "example": "fit365",
                   "description": "Brand"
                 },
-                "contract_plan_name": {
+                "contract_name": {
                   "type": "string",
-                  "example": "ベーシックプラン",
-                  "description": "Contract plan name"
+                  "example": "レギュラー会員",
+                  "description": "Main contract display name"
+                },
+                "contract_id": {
+                  "type": "string",
+                  "example": "plan-001",
+                  "description": "Member's active contract row id (references CRM contract)"
                 },
                 "contract_plan_id": {
                   "type": "string",
                   "example": "plan-001",
-                  "description": "Contract plan ID"
+                  "description": "Contract plan master id (for filtering by plan template)"
                 },
                 "joined_at": {
                   "type": "string",
@@ -1842,7 +1853,8 @@
                 "store_name",
                 "store_id",
                 "brand",
-                "contract_plan_name",
+                "contract_name",
+                "contract_id",
                 "contract_plan_id",
                 "joined_at",
                 "has_unpaid",
@@ -2050,6 +2062,11 @@
                 "required": ["name", "relationship", "phone"],
                 "title": "MemberEmergencyContact",
                 "description": "Emergency contact information"
+              },
+              "notes": {
+                "type": "string",
+                "example": "特記事項なし",
+                "description": "Other notes"
               }
             },
             "required": [
@@ -2088,6 +2105,11 @@
                 "example": "active",
                 "description": "Member status"
               },
+              "contract_id": {
+                "type": "string",
+                "example": "plan-001",
+                "description": "Member's active contract id (CRM contract row)"
+              },
               "store_id": {
                 "type": "string",
                 "example": "store-001",
@@ -2118,6 +2140,21 @@
                 "type": "boolean",
                 "example": false,
                 "description": "Blacklisted status"
+              },
+              "contract_name": {
+                "type": "string",
+                "example": "レギュラー会員",
+                "description": "Main contract display name"
+              },
+              "join_route": {
+                "type": "string",
+                "example": "紹介",
+                "description": "Join route"
+              },
+              "referrer_member_id": {
+                "type": "string",
+                "example": "M-00001",
+                "description": "Referrer member ID"
               }
             },
             "required": [
@@ -2263,11 +2300,6 @@
                 "type": "string",
                 "example": "膝に負担がかかる運動は避ける",
                 "description": "Exercise restrictions"
-              },
-              "other_notes": {
-                "type": "string",
-                "example": "特記事項なし",
-                "description": "Other notes"
               }
             },
             "title": "MemberHealthInfo",
@@ -2277,6 +2309,26 @@
         "required": ["basic_info", "profile"],
         "title": "GetMemberDetailResponse",
         "description": "Response for getting member detail"
+      },
+      "GetMemberMainContractLabelsResponse": {
+        "type": "object",
+        "properties": {
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Ordered main contract display names for the member form"
+          },
+          "default_label": {
+            "type": "string",
+            "example": "レギュラー会員",
+            "description": "Default selection when none is set"
+          }
+        },
+        "required": ["labels", "default_label"],
+        "title": "GetMemberMainContractLabelsResponse",
+        "description": "Main contract label options for member create/edit (from mock DB)"
       },
       "UpdateBasicInfoRequest": {
         "type": "object",
@@ -2290,6 +2342,18 @@
             "type": "string",
             "example": "サトウ ハナコ",
             "description": "Name in kana"
+          },
+          "birthday": {
+            "type": "string",
+            "example": "1990-05-20",
+            "description": "Birthday (ISO date)"
+          },
+          "gender": {
+            "type": "string",
+            "enum": ["male", "female", "other"],
+            "title": "Gender",
+            "description": "Gender",
+            "example": "female"
           },
           "postal_code": {
             "type": "string",
@@ -2342,6 +2406,11 @@
             },
             "required": ["name", "relationship", "phone"],
             "description": "Emergency contact information"
+          },
+          "notes": {
+            "type": "string",
+            "example": "特記事項なし",
+            "description": "Other notes"
           }
         },
         "title": "UpdateBasicInfoRequest",
@@ -2445,6 +2514,11 @@
             "required": ["name", "relationship", "phone"],
             "title": "MemberEmergencyContact",
             "description": "Emergency contact information"
+          },
+          "notes": {
+            "type": "string",
+            "example": "特記事項なし",
+            "description": "Other notes"
           }
         },
         "required": [
@@ -2483,11 +2557,6 @@
             "type": "string",
             "example": "特になし",
             "description": "Exercise restrictions"
-          },
-          "other_notes": {
-            "type": "string",
-            "example": "特記事項なし",
-            "description": "Other notes"
           }
         },
         "title": "UpdateHealthInfoRequest",
@@ -2515,11 +2584,6 @@
             "type": "string",
             "example": "膝に負担がかかる運動は避ける",
             "description": "Exercise restrictions"
-          },
-          "other_notes": {
-            "type": "string",
-            "example": "特記事項なし",
-            "description": "Other notes"
           }
         },
         "title": "UpdateHealthInfoResponse",
@@ -2960,13 +3024,13 @@
           },
           "previous_plan": {
             "type": "string",
-            "example": "ベーシックプラン",
-            "description": "Previous plan name"
+            "example": "レギュラー会員",
+            "description": "Previous main contract display name"
           },
           "new_plan": {
             "type": "string",
-            "example": "スタンダードプラン",
-            "description": "New plan name"
+            "example": "ナイト会員",
+            "description": "New main contract display name"
           },
           "reason": {
             "type": "string",
@@ -3013,13 +3077,13 @@
                 },
                 "previous_plan": {
                   "type": "string",
-                  "example": "ベーシックプラン",
-                  "description": "Previous plan name"
+                  "example": "レギュラー会員",
+                  "description": "Previous main contract display name"
                 },
                 "new_plan": {
                   "type": "string",
-                  "example": "スタンダードプラン",
-                  "description": "New plan name"
+                  "example": "ナイト会員",
+                  "description": "New main contract display name"
                 },
                 "reason": {
                   "type": "string",
@@ -3579,13 +3643,13 @@
                     },
                     "previous_plan": {
                       "type": "string",
-                      "example": "ベーシックプラン",
-                      "description": "Previous plan name"
+                      "example": "レギュラー会員",
+                      "description": "Previous main contract display name"
                     },
                     "new_plan": {
                       "type": "string",
-                      "example": "スタンダードプラン",
-                      "description": "New plan name"
+                      "example": "ナイト会員",
+                      "description": "New main contract display name"
                     },
                     "reason": {
                       "type": "string",
@@ -14485,6 +14549,11 @@
                       "required": ["name", "relationship", "phone"],
                       "title": "MemberEmergencyContact",
                       "description": "Emergency contact information"
+                    },
+                    "notes": {
+                      "type": "string",
+                      "example": "特記事項なし",
+                      "description": "Other notes"
                     }
                   },
                   "required": [
@@ -14578,6 +14647,18 @@
                     "example": "サトウ ハナコ",
                     "description": "Name in kana"
                   },
+                  "birthday": {
+                    "type": "string",
+                    "example": "1990-05-20",
+                    "description": "Birthday (ISO date)"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "enum": ["male", "female", "other"],
+                    "title": "Gender",
+                    "description": "Gender",
+                    "example": "female"
+                  },
                   "postal_code": {
                     "type": "string",
                     "example": "1500002",
@@ -14629,6 +14710,11 @@
                     },
                     "required": ["name", "relationship", "phone"],
                     "description": "Emergency contact information"
+                  },
+                  "notes": {
+                    "type": "string",
+                    "example": "特記事項なし",
+                    "description": "Other notes"
                   }
                 },
                 "title": "UpdateBasicInfoRequest",
@@ -14740,6 +14826,11 @@
                       "required": ["name", "relationship", "phone"],
                       "title": "MemberEmergencyContact",
                       "description": "Emergency contact information"
+                    },
+                    "notes": {
+                      "type": "string",
+                      "example": "特記事項なし",
+                      "description": "Other notes"
                     }
                   },
                   "required": [
@@ -15369,13 +15460,13 @@
                               },
                               "previous_plan": {
                                 "type": "string",
-                                "example": "ベーシックプラン",
-                                "description": "Previous plan name"
+                                "example": "レギュラー会員",
+                                "description": "Previous main contract display name"
                               },
                               "new_plan": {
                                 "type": "string",
-                                "example": "スタンダードプラン",
-                                "description": "New plan name"
+                                "example": "ナイト会員",
+                                "description": "New main contract display name"
                               },
                               "reason": {
                                 "type": "string",
@@ -16029,11 +16120,6 @@
                     "type": "string",
                     "example": "特になし",
                     "description": "Exercise restrictions"
-                  },
-                  "other_notes": {
-                    "type": "string",
-                    "example": "特記事項なし",
-                    "description": "Other notes"
                   }
                 },
                 "title": "UpdateHealthInfoRequest",
@@ -16069,11 +16155,6 @@
                       "type": "string",
                       "example": "膝に負担がかかる運動は避ける",
                       "description": "Exercise restrictions"
-                    },
-                    "other_notes": {
-                      "type": "string",
-                      "example": "特記事項なし",
-                      "description": "Other notes"
                     }
                   },
                   "title": "UpdateHealthInfoResponse",
@@ -17394,6 +17475,11 @@
                           "required": ["name", "relationship", "phone"],
                           "title": "MemberEmergencyContact",
                           "description": "Emergency contact information"
+                        },
+                        "notes": {
+                          "type": "string",
+                          "example": "特記事項なし",
+                          "description": "Other notes"
                         }
                       },
                       "required": [
@@ -17432,6 +17518,11 @@
                           "example": "active",
                           "description": "Member status"
                         },
+                        "contract_id": {
+                          "type": "string",
+                          "example": "plan-001",
+                          "description": "Member's active contract id (CRM contract row)"
+                        },
                         "store_id": {
                           "type": "string",
                           "example": "store-001",
@@ -17462,6 +17553,21 @@
                           "type": "boolean",
                           "example": false,
                           "description": "Blacklisted status"
+                        },
+                        "contract_name": {
+                          "type": "string",
+                          "example": "レギュラー会員",
+                          "description": "Main contract display name"
+                        },
+                        "join_route": {
+                          "type": "string",
+                          "example": "紹介",
+                          "description": "Join route"
+                        },
+                        "referrer_member_id": {
+                          "type": "string",
+                          "example": "M-00001",
+                          "description": "Referrer member ID"
                         }
                       },
                       "required": [
@@ -17607,11 +17713,6 @@
                           "type": "string",
                           "example": "膝に負担がかかる運動は避ける",
                           "description": "Exercise restrictions"
-                        },
-                        "other_notes": {
-                          "type": "string",
-                          "example": "特記事項なし",
-                          "description": "Other notes"
                         }
                       },
                       "title": "MemberHealthInfo",
@@ -17621,6 +17722,587 @@
                   "required": ["basic_info", "profile"],
                   "title": "GetMemberDetailResponse",
                   "description": "Response for getting member detail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update member detail",
+        "description": "Update member detail (basic info, profile info)",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Member update payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "basic_info": {
+                    "type": "object",
+                    "properties": {
+                      "name_kanji": {
+                        "type": "string",
+                        "example": "佐藤 花子",
+                        "description": "Name in kanji"
+                      },
+                      "name_kana": {
+                        "type": "string",
+                        "example": "サトウ ハナコ",
+                        "description": "Name in kana"
+                      },
+                      "birthday": {
+                        "type": "string",
+                        "example": "1990-05-20",
+                        "description": "Birthday (ISO date)"
+                      },
+                      "gender": {
+                        "type": "string",
+                        "enum": ["male", "female", "other"],
+                        "title": "Gender",
+                        "description": "Gender",
+                        "example": "female"
+                      },
+                      "postal_code": {
+                        "type": "string",
+                        "example": "1500002",
+                        "description": "Postal code"
+                      },
+                      "prefecture": {
+                        "type": "string",
+                        "example": "東京都",
+                        "description": "Prefecture"
+                      },
+                      "city": {
+                        "type": "string",
+                        "example": "渋谷区",
+                        "description": "City"
+                      },
+                      "address": {
+                        "type": "string",
+                        "example": "渋谷1-2-3",
+                        "description": "Address"
+                      },
+                      "building": {
+                        "type": "string",
+                        "example": "サンプルマンション 101",
+                        "description": "Building name"
+                      },
+                      "phone": {
+                        "type": "string",
+                        "example": "09012345678",
+                        "description": "Phone number"
+                      },
+                      "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "hanako.sato@example.com",
+                        "description": "Email address"
+                      },
+                      "emergency_contact": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "relationship": {
+                            "type": "string"
+                          },
+                          "phone": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["name", "relationship", "phone"],
+                        "description": "Emergency contact information"
+                      },
+                      "notes": {
+                        "type": "string",
+                        "example": "特記事項なし",
+                        "description": "Other notes"
+                      }
+                    },
+                    "title": "UpdateBasicInfoRequest",
+                    "description": "Basic member information"
+                  },
+                  "profile_info": {
+                    "type": "object",
+                    "properties": {
+                      "member_type": {
+                        "type": "string",
+                        "enum": ["regular", "family", "corporate", "one_day_member"],
+                        "example": "regular",
+                        "description": "Member type"
+                      },
+                      "contract_name": {
+                        "type": "string",
+                        "example": "レギュラー会員",
+                        "description": "Main contract display name"
+                      },
+                      "join_date": {
+                        "type": "string",
+                        "example": "2024-01-15",
+                        "description": "Join date (ISO date)"
+                      },
+                      "join_store": {
+                        "type": "string",
+                        "example": "Fit365八潮店",
+                        "description": "Join store name"
+                      },
+                      "brand": {
+                        "type": "string",
+                        "example": "fit365",
+                        "description": "Brand"
+                      },
+                      "join_route": {
+                        "type": "string",
+                        "example": "紹介",
+                        "description": "Join route"
+                      },
+                      "referrer_member_id": {
+                        "type": "string",
+                        "example": "M-00001",
+                        "description": "Referrer member ID"
+                      },
+                      "photo_url": {
+                        "type": "string",
+                        "example": "https://example.com/photo.jpg",
+                        "description": "Member photo URL"
+                      }
+                    },
+                    "description": "Additional member profile information"
+                  }
+                },
+                "title": "UpdateMemberRequest",
+                "description": "Request payload for updating a member"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Member updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "basic_info": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "M-00001",
+                          "description": "Member ID"
+                        },
+                        "member_number": {
+                          "type": "string",
+                          "example": "M-00001",
+                          "description": "Member number"
+                        },
+                        "name_kanji": {
+                          "type": "string",
+                          "example": "佐藤 花子",
+                          "description": "Name in kanji"
+                        },
+                        "name_kana": {
+                          "type": "string",
+                          "example": "サトウ ハナコ",
+                          "description": "Name in kana"
+                        },
+                        "birthday": {
+                          "type": "string",
+                          "example": "1990-01-01",
+                          "description": "Birthday (ISO date)"
+                        },
+                        "age": {
+                          "type": "integer",
+                          "example": 35,
+                          "description": "Age"
+                        },
+                        "gender": {
+                          "type": "string",
+                          "enum": ["male", "female", "other"],
+                          "title": "Gender",
+                          "description": "Gender",
+                          "example": "female"
+                        },
+                        "postal_code": {
+                          "type": "string",
+                          "example": "1500002",
+                          "description": "Postal code"
+                        },
+                        "prefecture": {
+                          "type": "string",
+                          "example": "東京都",
+                          "description": "Prefecture"
+                        },
+                        "city": {
+                          "type": "string",
+                          "example": "渋谷区",
+                          "description": "City"
+                        },
+                        "address": {
+                          "type": "string",
+                          "example": "渋谷1-2-3",
+                          "description": "Address"
+                        },
+                        "building": {
+                          "type": "string",
+                          "example": "サンプルマンション101",
+                          "description": "Building"
+                        },
+                        "phone": {
+                          "type": "string",
+                          "example": "090-1234-5678",
+                          "description": "Phone number"
+                        },
+                        "email": {
+                          "type": "string",
+                          "format": "email",
+                          "example": "member00001@example.jp",
+                          "description": "Email address"
+                        },
+                        "emergency_contact": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "example": "山田 太郎",
+                              "description": "Emergency contact name"
+                            },
+                            "relationship": {
+                              "type": "string",
+                              "example": "配偶者",
+                              "description": "Relationship to member"
+                            },
+                            "phone": {
+                              "type": "string",
+                              "example": "090-0000-0000",
+                              "description": "Emergency contact phone"
+                            }
+                          },
+                          "required": ["name", "relationship", "phone"],
+                          "title": "MemberEmergencyContact",
+                          "description": "Emergency contact information"
+                        },
+                        "notes": {
+                          "type": "string",
+                          "example": "特記事項なし",
+                          "description": "Other notes"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "member_number",
+                        "name_kanji",
+                        "name_kana",
+                        "birthday",
+                        "age",
+                        "gender",
+                        "phone",
+                        "email"
+                      ],
+                      "title": "MemberBasicInfo",
+                      "description": "Basic member information"
+                    },
+                    "profile": {
+                      "type": "object",
+                      "properties": {
+                        "member_type": {
+                          "type": "string",
+                          "enum": ["regular", "family", "corporate", "one_day_member"],
+                          "example": "regular",
+                          "description": "Member type"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "active",
+                            "suspended",
+                            "gate_stop",
+                            "pending_withdrawal",
+                            "withdrawn",
+                            "force_withdrawn"
+                          ],
+                          "example": "active",
+                          "description": "Member status"
+                        },
+                        "contract_id": {
+                          "type": "string",
+                          "example": "plan-001",
+                          "description": "Member's active contract id (CRM contract row)"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "example": "store-001",
+                          "description": "Store ID"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "example": "Fit365八潮店",
+                          "description": "Store name"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "enum": ["joyfit", "fit365"],
+                          "example": "fit365",
+                          "description": "Brand"
+                        },
+                        "joined_at": {
+                          "type": "string",
+                          "example": "2024-01-15",
+                          "description": "Join date (ISO date)"
+                        },
+                        "withdrawn_at": {
+                          "type": "string",
+                          "example": "2025-02-01",
+                          "description": "Withdrawal date (ISO date)"
+                        },
+                        "is_black_listed": {
+                          "type": "boolean",
+                          "example": false,
+                          "description": "Blacklisted status"
+                        },
+                        "contract_name": {
+                          "type": "string",
+                          "example": "レギュラー会員",
+                          "description": "Main contract display name"
+                        },
+                        "join_route": {
+                          "type": "string",
+                          "example": "紹介",
+                          "description": "Join route"
+                        },
+                        "referrer_member_id": {
+                          "type": "string",
+                          "example": "M-00001",
+                          "description": "Referrer member ID"
+                        }
+                      },
+                      "required": [
+                        "member_type",
+                        "status",
+                        "store_id",
+                        "store_name",
+                        "brand",
+                        "joined_at",
+                        "is_black_listed"
+                      ],
+                      "title": "MemberProfile",
+                      "description": "Member profile"
+                    },
+                    "ekyc": {
+                      "type": "object",
+                      "properties": {
+                        "verified": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "Whether eKYC is verified"
+                        },
+                        "verified_at": {
+                          "type": "string",
+                          "example": "2025-01-20T10:00:00.000Z",
+                          "description": "Verification datetime (ISO)"
+                        },
+                        "document_type": {
+                          "type": "string",
+                          "example": "driver_license",
+                          "description": "Document type"
+                        },
+                        "photoUrl": {
+                          "type": "string",
+                          "example": "https://example.com/photo.jpg",
+                          "description": "Photo URL"
+                        }
+                      },
+                      "required": ["verified"],
+                      "title": "MemberEKYC",
+                      "description": "eKYC information"
+                    },
+                    "consent": {
+                      "type": "object",
+                      "properties": {
+                        "member_agreement": {
+                          "type": "object",
+                          "properties": {
+                            "version": {
+                              "type": "string",
+                              "example": "1.0",
+                              "description": "Agreement version"
+                            },
+                            "agreed_at": {
+                              "type": "string",
+                              "example": "2025-01-10T10:00:00.000Z",
+                              "description": "Agreed datetime (ISO)"
+                            }
+                          },
+                          "required": ["version", "agreed_at"],
+                          "description": "Member agreement consent"
+                        },
+                        "privacy_policy": {
+                          "type": "object",
+                          "properties": {
+                            "version": {
+                              "type": "string",
+                              "example": "1.0",
+                              "description": "Policy version"
+                            },
+                            "agreed_at": {
+                              "type": "string",
+                              "example": "2025-01-10T10:00:00.000Z",
+                              "description": "Agreed datetime (ISO)"
+                            }
+                          },
+                          "required": ["version", "agreed_at"],
+                          "description": "Privacy policy consent"
+                        },
+                        "optional_agreement": {
+                          "type": "object",
+                          "properties": {
+                            "version": {
+                              "type": "string",
+                              "example": "1.0",
+                              "description": "Optional agreement version"
+                            },
+                            "agreed_at": {
+                              "type": "string",
+                              "example": "2025-01-10T10:00:00.000Z",
+                              "description": "Agreed datetime (ISO)"
+                            }
+                          },
+                          "required": ["version", "agreed_at"],
+                          "description": "Optional agreement consent"
+                        },
+                        "marketing_consent": {
+                          "type": "object",
+                          "properties": {
+                            "email": {
+                              "type": "boolean",
+                              "example": true,
+                              "description": "Email marketing consent"
+                            },
+                            "sms": {
+                              "type": "boolean",
+                              "example": false,
+                              "description": "SMS marketing consent"
+                            },
+                            "push": {
+                              "type": "boolean",
+                              "example": true,
+                              "description": "Push marketing consent"
+                            }
+                          },
+                          "required": ["email", "sms", "push"],
+                          "description": "Marketing consent"
+                        }
+                      },
+                      "required": ["member_agreement", "privacy_policy", "marketing_consent"],
+                      "title": "MemberConsent",
+                      "description": "Consent information"
+                    },
+                    "health_info": {
+                      "type": "object",
+                      "properties": {
+                        "health_status": {
+                          "type": "string",
+                          "example": "良好",
+                          "description": "Health status"
+                        },
+                        "medical_history": {
+                          "type": "string",
+                          "example": "なし",
+                          "description": "Medical history"
+                        },
+                        "allergies": {
+                          "type": "string",
+                          "example": "花粉症",
+                          "description": "Allergies"
+                        },
+                        "exercise_restrictions": {
+                          "type": "string",
+                          "example": "膝に負担がかかる運動は避ける",
+                          "description": "Exercise restrictions"
+                        }
+                      },
+                      "title": "MemberHealthInfo",
+                      "description": "Health information"
+                    }
+                  },
+                  "required": ["basic_info", "profile"],
+                  "title": "UpdateMemberResponse",
+                  "description": "Response for updating a member"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
                 }
               }
             }
@@ -18080,6 +18762,62 @@
         }
       }
     },
+    "/crm/members/meta/main-contract-labels": {
+      "get": {
+        "summary": "Member form main contract labels",
+        "description": "Returns ordered main contract display names for member create/edit (mock DB master).",
+        "tags": ["Members"],
+        "responses": {
+          "200": {
+            "description": "Label list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "labels": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Ordered main contract display names for the member form"
+                    },
+                    "default_label": {
+                      "type": "string",
+                      "example": "レギュラー会員",
+                      "description": "Default selection when none is set"
+                    }
+                  },
+                  "required": ["labels", "default_label"],
+                  "title": "GetMemberMainContractLabelsResponse",
+                  "description": "Main contract label options for member create/edit (from mock DB)"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/members": {
       "get": {
         "summary": "Get members list",
@@ -18335,15 +19073,20 @@
                             "example": "fit365",
                             "description": "Brand"
                           },
-                          "contract_plan_name": {
+                          "contract_name": {
                             "type": "string",
-                            "example": "ベーシックプラン",
-                            "description": "Contract plan name"
+                            "example": "レギュラー会員",
+                            "description": "Main contract display name"
+                          },
+                          "contract_id": {
+                            "type": "string",
+                            "example": "plan-001",
+                            "description": "Member's active contract row id (references CRM contract)"
                           },
                           "contract_plan_id": {
                             "type": "string",
                             "example": "plan-001",
-                            "description": "Contract plan ID"
+                            "description": "Contract plan master id (for filtering by plan template)"
                           },
                           "joined_at": {
                             "type": "string",
@@ -18385,7 +19128,8 @@
                           "store_name",
                           "store_id",
                           "brand",
-                          "contract_plan_name",
+                          "contract_name",
+                          "contract_id",
                           "contract_plan_id",
                           "joined_at",
                           "has_unpaid",
@@ -18435,6 +19179,336 @@
           },
           "400": {
             "description": "Bad request - invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create member",
+        "description": "Create a new member",
+        "tags": ["Members"],
+        "requestBody": {
+          "description": "Member create payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name_kanji": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "佐藤 花子",
+                    "description": "Name in kanji"
+                  },
+                  "name_kana": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "サトウ ハナコ",
+                    "description": "Name in kana"
+                  },
+                  "birthday": {
+                    "type": "string",
+                    "example": "1990-05-20",
+                    "description": "Birthday (ISO date)"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "enum": ["male", "female", "other"],
+                    "title": "Gender",
+                    "description": "Gender",
+                    "example": "female"
+                  },
+                  "postal_code": {
+                    "type": "string",
+                    "example": "1500001",
+                    "description": "Postal code"
+                  },
+                  "prefecture": {
+                    "type": "string",
+                    "example": "東京都",
+                    "description": "Prefecture"
+                  },
+                  "city": {
+                    "type": "string",
+                    "example": "渋谷区",
+                    "description": "City"
+                  },
+                  "address": {
+                    "type": "string",
+                    "example": "神宮前1-1-1",
+                    "description": "Address"
+                  },
+                  "building": {
+                    "type": "string",
+                    "example": "サンプルビル 5F",
+                    "description": "Building name"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "09012345678",
+                    "description": "Phone number"
+                  },
+                  "email": {
+                    "type": "string",
+                    "minLength": 1,
+                    "format": "email",
+                    "example": "hanako.sato@example.com",
+                    "description": "Email address"
+                  },
+                  "emergency_contact": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "relationship": {
+                        "type": "string"
+                      },
+                      "phone": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["name", "relationship", "phone"],
+                    "description": "Emergency contact information"
+                  },
+                  "notes": {
+                    "type": "string",
+                    "example": "特記事項なし",
+                    "description": "Other notes"
+                  },
+                  "profile_info": {
+                    "type": "object",
+                    "properties": {
+                      "member_type": {
+                        "type": "string",
+                        "enum": ["regular", "family", "corporate", "one_day_member"],
+                        "example": "regular",
+                        "description": "Member type"
+                      },
+                      "contract_name": {
+                        "type": "string",
+                        "example": "レギュラー会員",
+                        "description": "Main contract display name"
+                      },
+                      "join_date": {
+                        "type": "string",
+                        "example": "2024-01-15",
+                        "description": "Join date (ISO date)"
+                      },
+                      "join_store": {
+                        "type": "string",
+                        "example": "Fit365八潮店",
+                        "description": "Join store name"
+                      },
+                      "brand": {
+                        "type": "string",
+                        "example": "fit365",
+                        "description": "Brand"
+                      },
+                      "join_route": {
+                        "type": "string",
+                        "example": "紹介",
+                        "description": "Join route"
+                      },
+                      "referrer_member_id": {
+                        "type": "string",
+                        "example": "M-00001",
+                        "description": "Referrer member ID"
+                      },
+                      "photo_url": {
+                        "type": "string",
+                        "example": "https://example.com/photo.jpg",
+                        "description": "Member photo URL"
+                      }
+                    },
+                    "description": "Additional member profile information"
+                  }
+                },
+                "required": ["name_kanji", "name_kana", "phone", "email"],
+                "title": "CreateMemberRequest",
+                "description": "Request payload for creating a member"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Member created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Member created successfully"
+                    },
+                    "member": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "M-00001",
+                          "description": "Member ID"
+                        },
+                        "member_number": {
+                          "type": "string",
+                          "example": "M-00001",
+                          "description": "Member number"
+                        },
+                        "name_kanji": {
+                          "type": "string",
+                          "example": "佐藤 花子",
+                          "description": "Name in kanji"
+                        },
+                        "name_kana": {
+                          "type": "string",
+                          "example": "サトウ ハナコ",
+                          "description": "Name in kana"
+                        },
+                        "birthday": {
+                          "type": "string",
+                          "example": "1990-01-01",
+                          "description": "Birthday (ISO date)"
+                        },
+                        "age": {
+                          "type": "integer",
+                          "example": 35,
+                          "description": "Age"
+                        },
+                        "gender": {
+                          "type": "string",
+                          "enum": ["male", "female", "other"],
+                          "title": "Gender",
+                          "description": "Gender",
+                          "example": "female"
+                        },
+                        "postal_code": {
+                          "type": "string",
+                          "example": "1500002",
+                          "description": "Postal code"
+                        },
+                        "prefecture": {
+                          "type": "string",
+                          "example": "東京都",
+                          "description": "Prefecture"
+                        },
+                        "city": {
+                          "type": "string",
+                          "example": "渋谷区",
+                          "description": "City"
+                        },
+                        "address": {
+                          "type": "string",
+                          "example": "渋谷1-2-3",
+                          "description": "Address"
+                        },
+                        "building": {
+                          "type": "string",
+                          "example": "サンプルマンション101",
+                          "description": "Building"
+                        },
+                        "phone": {
+                          "type": "string",
+                          "example": "090-1234-5678",
+                          "description": "Phone number"
+                        },
+                        "email": {
+                          "type": "string",
+                          "format": "email",
+                          "example": "member00001@example.jp",
+                          "description": "Email address"
+                        },
+                        "emergency_contact": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "example": "山田 太郎",
+                              "description": "Emergency contact name"
+                            },
+                            "relationship": {
+                              "type": "string",
+                              "example": "配偶者",
+                              "description": "Relationship to member"
+                            },
+                            "phone": {
+                              "type": "string",
+                              "example": "090-0000-0000",
+                              "description": "Emergency contact phone"
+                            }
+                          },
+                          "required": ["name", "relationship", "phone"],
+                          "title": "MemberEmergencyContact",
+                          "description": "Emergency contact information"
+                        },
+                        "notes": {
+                          "type": "string",
+                          "example": "特記事項なし",
+                          "description": "Other notes"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "member_number",
+                        "name_kanji",
+                        "name_kana",
+                        "birthday",
+                        "age",
+                        "gender",
+                        "phone",
+                        "email"
+                      ],
+                      "title": "MemberBasicInfo",
+                      "description": "Created member basic info"
+                    }
+                  },
+                  "required": ["message", "member"],
+                  "title": "CreateMemberResponse",
+                  "description": "Response for creating a member"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid request body",
             "content": {
               "application/json": {
                 "schema": {

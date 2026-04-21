@@ -1047,11 +1047,15 @@ export type MemberListItem = {
      */
     brand: 'joyfit' | 'fit365';
     /**
-     * Contract plan name
+     * Main contract display name
      */
-    contract_plan_name: string;
+    contract_name: string;
     /**
-     * Contract plan ID
+     * Member's active contract row id (references CRM contract)
+     */
+    contract_id: string;
+    /**
+     * Contract plan master id (for filtering by plan template)
      */
     contract_plan_id: string;
     /**
@@ -1289,11 +1293,15 @@ export type GetMembersResponse = {
          */
         brand: 'joyfit' | 'fit365';
         /**
-         * Contract plan name
+         * Main contract display name
          */
-        contract_plan_name: string;
+        contract_name: string;
         /**
-         * Contract plan ID
+         * Member's active contract row id (references CRM contract)
+         */
+        contract_id: string;
+        /**
+         * Contract plan master id (for filtering by plan template)
          */
         contract_plan_id: string;
         /**
@@ -1471,6 +1479,10 @@ export type GetMemberDetailResponse = {
              */
             phone: string;
         };
+        /**
+         * Other notes
+         */
+        notes?: string;
     };
     /**
      * MemberProfile
@@ -1486,6 +1498,10 @@ export type GetMemberDetailResponse = {
          * Member status
          */
         status: 'active' | 'suspended' | 'gate_stop' | 'pending_withdrawal' | 'withdrawn' | 'force_withdrawn';
+        /**
+         * Member's active contract id (CRM contract row)
+         */
+        contract_id?: string;
         /**
          * Store ID
          */
@@ -1510,6 +1526,18 @@ export type GetMemberDetailResponse = {
          * Blacklisted status
          */
         is_black_listed: boolean;
+        /**
+         * Main contract display name
+         */
+        contract_name?: string;
+        /**
+         * Join route
+         */
+        join_route?: string;
+        /**
+         * Referrer member ID
+         */
+        referrer_member_id?: string;
     };
     /**
      * MemberEKYC
@@ -1619,11 +1647,23 @@ export type GetMemberDetailResponse = {
          * Exercise restrictions
          */
         exercise_restrictions?: string;
-        /**
-         * Other notes
-         */
-        other_notes?: string;
     };
+};
+
+/**
+ * GetMemberMainContractLabelsResponse
+ *
+ * Main contract label options for member create/edit (from mock DB)
+ */
+export type GetMemberMainContractLabelsResponse = {
+    /**
+     * Ordered main contract display names for the member form
+     */
+    labels: Array<string>;
+    /**
+     * Default selection when none is set
+     */
+    default_label: string;
 };
 
 /**
@@ -1640,6 +1680,16 @@ export type UpdateBasicInfoRequest = {
      * Name in kana
      */
     name_kana?: string;
+    /**
+     * Birthday (ISO date)
+     */
+    birthday?: string;
+    /**
+     * Gender
+     *
+     * Gender
+     */
+    gender?: 'male' | 'female' | 'other';
     /**
      * Postal code
      */
@@ -1676,6 +1726,10 @@ export type UpdateBasicInfoRequest = {
         relationship: string;
         phone: string;
     };
+    /**
+     * Other notes
+     */
+    notes?: string;
 };
 
 /**
@@ -1761,6 +1815,10 @@ export type UpdateBasicInfoResponse = {
          */
         phone: string;
     };
+    /**
+     * Other notes
+     */
+    notes?: string;
 };
 
 /**
@@ -1785,10 +1843,6 @@ export type UpdateHealthInfoRequest = {
      * Exercise restrictions
      */
     exercise_restrictions?: string;
-    /**
-     * Other notes
-     */
-    other_notes?: string;
 };
 
 /**
@@ -1813,10 +1867,6 @@ export type UpdateHealthInfoResponse = {
      * Exercise restrictions
      */
     exercise_restrictions?: string;
-    /**
-     * Other notes
-     */
-    other_notes?: string;
 };
 
 /**
@@ -2186,11 +2236,11 @@ export type ContractChange = {
      */
     changed_at: string;
     /**
-     * Previous plan name
+     * Previous main contract display name
      */
     previous_plan: string;
     /**
-     * New plan name
+     * New main contract display name
      */
     new_plan: string;
     /**
@@ -2230,11 +2280,11 @@ export type MainContract = {
          */
         changed_at: string;
         /**
-         * Previous plan name
+         * Previous main contract display name
          */
         previous_plan: string;
         /**
-         * New plan name
+         * New main contract display name
          */
         new_plan: string;
         /**
@@ -2696,11 +2746,11 @@ export type GetContractsResponse = {
              */
             changed_at: string;
             /**
-             * Previous plan name
+             * Previous main contract display name
              */
             previous_plan: string;
             /**
-             * New plan name
+             * New main contract display name
              */
             new_plan: string;
             /**
@@ -9669,6 +9719,10 @@ export type GetCrmMembersByIdBasicInfoResponses = {
              */
             phone: string;
         };
+        /**
+         * Other notes
+         */
+        notes?: string;
     };
 };
 
@@ -9689,6 +9743,16 @@ export type PutCrmMembersByIdBasicInfoData = {
          * Name in kana
          */
         name_kana?: string;
+        /**
+         * Birthday (ISO date)
+         */
+        birthday?: string;
+        /**
+         * Gender
+         *
+         * Gender
+         */
+        gender?: 'male' | 'female' | 'other';
         /**
          * Postal code
          */
@@ -9725,6 +9789,10 @@ export type PutCrmMembersByIdBasicInfoData = {
             relationship: string;
             phone: string;
         };
+        /**
+         * Other notes
+         */
+        notes?: string;
     };
     path: {
         /**
@@ -9858,6 +9926,10 @@ export type PutCrmMembersByIdBasicInfoResponses = {
              */
             phone: string;
         };
+        /**
+         * Other notes
+         */
+        notes?: string;
     };
 };
 
@@ -10264,11 +10336,11 @@ export type GetCrmMembersByIdContractsResponses = {
                  */
                 changed_at: string;
                 /**
-                 * Previous plan name
+                 * Previous main contract display name
                  */
                 previous_plan: string;
                 /**
-                 * New plan name
+                 * New main contract display name
                  */
                 new_plan: string;
                 /**
@@ -10663,10 +10735,6 @@ export type PutCrmMembersByIdHealthInfoData = {
          * Exercise restrictions
          */
         exercise_restrictions?: string;
-        /**
-         * Other notes
-         */
-        other_notes?: string;
     };
     path: {
         /**
@@ -10739,10 +10807,6 @@ export type PutCrmMembersByIdHealthInfoResponses = {
          * Exercise restrictions
          */
         exercise_restrictions?: string;
-        /**
-         * Other notes
-         */
-        other_notes?: string;
     };
 };
 
@@ -11540,6 +11604,10 @@ export type GetCrmMembersByIdResponses = {
                  */
                 phone: string;
             };
+            /**
+             * Other notes
+             */
+            notes?: string;
         };
         /**
          * MemberProfile
@@ -11555,6 +11623,10 @@ export type GetCrmMembersByIdResponses = {
              * Member status
              */
             status: 'active' | 'suspended' | 'gate_stop' | 'pending_withdrawal' | 'withdrawn' | 'force_withdrawn';
+            /**
+             * Member's active contract id (CRM contract row)
+             */
+            contract_id?: string;
             /**
              * Store ID
              */
@@ -11579,6 +11651,18 @@ export type GetCrmMembersByIdResponses = {
              * Blacklisted status
              */
             is_black_listed: boolean;
+            /**
+             * Main contract display name
+             */
+            contract_name?: string;
+            /**
+             * Join route
+             */
+            join_route?: string;
+            /**
+             * Referrer member ID
+             */
+            referrer_member_id?: string;
         };
         /**
          * MemberEKYC
@@ -11688,15 +11772,433 @@ export type GetCrmMembersByIdResponses = {
              * Exercise restrictions
              */
             exercise_restrictions?: string;
-            /**
-             * Other notes
-             */
-            other_notes?: string;
         };
     };
 };
 
 export type GetCrmMembersByIdResponse = GetCrmMembersByIdResponses[keyof GetCrmMembersByIdResponses];
+
+export type PatchCrmMembersByIdData = {
+    /**
+     * UpdateMemberRequest
+     *
+     * Request payload for updating a member
+     */
+    body?: {
+        /**
+         * UpdateBasicInfoRequest
+         *
+         * Basic member information
+         */
+        basic_info?: {
+            /**
+             * Name in kanji
+             */
+            name_kanji?: string;
+            /**
+             * Name in kana
+             */
+            name_kana?: string;
+            /**
+             * Birthday (ISO date)
+             */
+            birthday?: string;
+            /**
+             * Gender
+             *
+             * Gender
+             */
+            gender?: 'male' | 'female' | 'other';
+            /**
+             * Postal code
+             */
+            postal_code?: string;
+            /**
+             * Prefecture
+             */
+            prefecture?: string;
+            /**
+             * City
+             */
+            city?: string;
+            /**
+             * Address
+             */
+            address?: string;
+            /**
+             * Building name
+             */
+            building?: string;
+            /**
+             * Phone number
+             */
+            phone?: string;
+            /**
+             * Email address
+             */
+            email?: string;
+            /**
+             * Emergency contact information
+             */
+            emergency_contact?: {
+                name: string;
+                relationship: string;
+                phone: string;
+            };
+            /**
+             * Other notes
+             */
+            notes?: string;
+        };
+        /**
+         * Additional member profile information
+         */
+        profile_info?: {
+            /**
+             * Member type
+             */
+            member_type?: 'regular' | 'family' | 'corporate' | 'one_day_member';
+            /**
+             * Main contract display name
+             */
+            contract_name?: string;
+            /**
+             * Join date (ISO date)
+             */
+            join_date?: string;
+            /**
+             * Join store name
+             */
+            join_store?: string;
+            /**
+             * Brand
+             */
+            brand?: string;
+            /**
+             * Join route
+             */
+            join_route?: string;
+            /**
+             * Referrer member ID
+             */
+            referrer_member_id?: string;
+            /**
+             * Member photo URL
+             */
+            photo_url?: string;
+        };
+    };
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}';
+};
+
+export type PatchCrmMembersByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PatchCrmMembersByIdError = PatchCrmMembersByIdErrors[keyof PatchCrmMembersByIdErrors];
+
+export type PatchCrmMembersByIdResponses = {
+    /**
+     * UpdateMemberResponse
+     *
+     * Response for updating a member
+     */
+    200: {
+        /**
+         * MemberBasicInfo
+         *
+         * Basic member information
+         */
+        basic_info: {
+            /**
+             * Member ID
+             */
+            id: string;
+            /**
+             * Member number
+             */
+            member_number: string;
+            /**
+             * Name in kanji
+             */
+            name_kanji: string;
+            /**
+             * Name in kana
+             */
+            name_kana: string;
+            /**
+             * Birthday (ISO date)
+             */
+            birthday: string;
+            /**
+             * Age
+             */
+            age: number;
+            /**
+             * Gender
+             *
+             * Gender
+             */
+            gender: 'male' | 'female' | 'other';
+            /**
+             * Postal code
+             */
+            postal_code?: string;
+            /**
+             * Prefecture
+             */
+            prefecture?: string;
+            /**
+             * City
+             */
+            city?: string;
+            /**
+             * Address
+             */
+            address?: string;
+            /**
+             * Building
+             */
+            building?: string;
+            /**
+             * Phone number
+             */
+            phone: string;
+            /**
+             * Email address
+             */
+            email: string;
+            /**
+             * MemberEmergencyContact
+             *
+             * Emergency contact information
+             */
+            emergency_contact?: {
+                /**
+                 * Emergency contact name
+                 */
+                name: string;
+                /**
+                 * Relationship to member
+                 */
+                relationship: string;
+                /**
+                 * Emergency contact phone
+                 */
+                phone: string;
+            };
+            /**
+             * Other notes
+             */
+            notes?: string;
+        };
+        /**
+         * MemberProfile
+         *
+         * Member profile
+         */
+        profile: {
+            /**
+             * Member type
+             */
+            member_type: 'regular' | 'family' | 'corporate' | 'one_day_member';
+            /**
+             * Member status
+             */
+            status: 'active' | 'suspended' | 'gate_stop' | 'pending_withdrawal' | 'withdrawn' | 'force_withdrawn';
+            /**
+             * Member's active contract id (CRM contract row)
+             */
+            contract_id?: string;
+            /**
+             * Store ID
+             */
+            store_id: string;
+            /**
+             * Store name
+             */
+            store_name: string;
+            /**
+             * Brand
+             */
+            brand: 'joyfit' | 'fit365';
+            /**
+             * Join date (ISO date)
+             */
+            joined_at: string;
+            /**
+             * Withdrawal date (ISO date)
+             */
+            withdrawn_at?: string;
+            /**
+             * Blacklisted status
+             */
+            is_black_listed: boolean;
+            /**
+             * Main contract display name
+             */
+            contract_name?: string;
+            /**
+             * Join route
+             */
+            join_route?: string;
+            /**
+             * Referrer member ID
+             */
+            referrer_member_id?: string;
+        };
+        /**
+         * MemberEKYC
+         *
+         * eKYC information
+         */
+        ekyc?: {
+            /**
+             * Whether eKYC is verified
+             */
+            verified: boolean;
+            /**
+             * Verification datetime (ISO)
+             */
+            verified_at?: string;
+            /**
+             * Document type
+             */
+            document_type?: string;
+            /**
+             * Photo URL
+             */
+            photoUrl?: string;
+        };
+        /**
+         * MemberConsent
+         *
+         * Consent information
+         */
+        consent?: {
+            /**
+             * Member agreement consent
+             */
+            member_agreement: {
+                /**
+                 * Agreement version
+                 */
+                version: string;
+                /**
+                 * Agreed datetime (ISO)
+                 */
+                agreed_at: string;
+            };
+            /**
+             * Privacy policy consent
+             */
+            privacy_policy: {
+                /**
+                 * Policy version
+                 */
+                version: string;
+                /**
+                 * Agreed datetime (ISO)
+                 */
+                agreed_at: string;
+            };
+            /**
+             * Optional agreement consent
+             */
+            optional_agreement?: {
+                /**
+                 * Optional agreement version
+                 */
+                version: string;
+                /**
+                 * Agreed datetime (ISO)
+                 */
+                agreed_at: string;
+            };
+            /**
+             * Marketing consent
+             */
+            marketing_consent: {
+                /**
+                 * Email marketing consent
+                 */
+                email: boolean;
+                /**
+                 * SMS marketing consent
+                 */
+                sms: boolean;
+                /**
+                 * Push marketing consent
+                 */
+                push: boolean;
+            };
+        };
+        /**
+         * MemberHealthInfo
+         *
+         * Health information
+         */
+        health_info?: {
+            /**
+             * Health status
+             */
+            health_status?: string;
+            /**
+             * Medical history
+             */
+            medical_history?: string;
+            /**
+             * Allergies
+             */
+            allergies?: string;
+            /**
+             * Exercise restrictions
+             */
+            exercise_restrictions?: string;
+        };
+    };
+};
+
+export type PatchCrmMembersByIdResponse = PatchCrmMembersByIdResponses[keyof PatchCrmMembersByIdResponses];
 
 export type GetCrmMembersByIdServiceUsageData = {
     body?: never;
@@ -11977,6 +12479,49 @@ export type PostCrmMembersExportResponses = {
 
 export type PostCrmMembersExportResponse = PostCrmMembersExportResponses[keyof PostCrmMembersExportResponses];
 
+export type GetCrmMembersMetaMainContractLabelsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/members/meta/main-contract-labels';
+};
+
+export type GetCrmMembersMetaMainContractLabelsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembersMetaMainContractLabelsError = GetCrmMembersMetaMainContractLabelsErrors[keyof GetCrmMembersMetaMainContractLabelsErrors];
+
+export type GetCrmMembersMetaMainContractLabelsResponses = {
+    /**
+     * GetMemberMainContractLabelsResponse
+     *
+     * Main contract label options for member create/edit (from mock DB)
+     */
+    200: {
+        /**
+         * Ordered main contract display names for the member form
+         */
+        labels: Array<string>;
+        /**
+         * Default selection when none is set
+         */
+        default_label: string;
+    };
+};
+
+export type GetCrmMembersMetaMainContractLabelsResponse = GetCrmMembersMetaMainContractLabelsResponses[keyof GetCrmMembersMetaMainContractLabelsResponses];
+
 export type GetCrmMembersData = {
     body?: never;
     path?: never;
@@ -12112,11 +12657,15 @@ export type GetCrmMembersResponses = {
              */
             brand: 'joyfit' | 'fit365';
             /**
-             * Contract plan name
+             * Main contract display name
              */
-            contract_plan_name: string;
+            contract_name: string;
             /**
-             * Contract plan ID
+             * Member's active contract row id (references CRM contract)
+             */
+            contract_id: string;
+            /**
+             * Contract plan master id (for filtering by plan template)
              */
             contract_plan_id: string;
             /**
@@ -12167,6 +12716,242 @@ export type GetCrmMembersResponses = {
 };
 
 export type GetCrmMembersResponse = GetCrmMembersResponses[keyof GetCrmMembersResponses];
+
+export type PostCrmMembersData = {
+    /**
+     * CreateMemberRequest
+     *
+     * Request payload for creating a member
+     */
+    body?: {
+        /**
+         * Name in kanji
+         */
+        name_kanji: string;
+        /**
+         * Name in kana
+         */
+        name_kana: string;
+        /**
+         * Birthday (ISO date)
+         */
+        birthday?: string;
+        /**
+         * Gender
+         *
+         * Gender
+         */
+        gender?: 'male' | 'female' | 'other';
+        /**
+         * Postal code
+         */
+        postal_code?: string;
+        /**
+         * Prefecture
+         */
+        prefecture?: string;
+        /**
+         * City
+         */
+        city?: string;
+        /**
+         * Address
+         */
+        address?: string;
+        /**
+         * Building name
+         */
+        building?: string;
+        /**
+         * Phone number
+         */
+        phone: string;
+        /**
+         * Email address
+         */
+        email: string;
+        /**
+         * Emergency contact information
+         */
+        emergency_contact?: {
+            name: string;
+            relationship: string;
+            phone: string;
+        };
+        /**
+         * Other notes
+         */
+        notes?: string;
+        /**
+         * Additional member profile information
+         */
+        profile_info?: {
+            /**
+             * Member type
+             */
+            member_type?: 'regular' | 'family' | 'corporate' | 'one_day_member';
+            /**
+             * Main contract display name
+             */
+            contract_name?: string;
+            /**
+             * Join date (ISO date)
+             */
+            join_date?: string;
+            /**
+             * Join store name
+             */
+            join_store?: string;
+            /**
+             * Brand
+             */
+            brand?: string;
+            /**
+             * Join route
+             */
+            join_route?: string;
+            /**
+             * Referrer member ID
+             */
+            referrer_member_id?: string;
+            /**
+             * Member photo URL
+             */
+            photo_url?: string;
+        };
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/members';
+};
+
+export type PostCrmMembersErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembersError = PostCrmMembersErrors[keyof PostCrmMembersErrors];
+
+export type PostCrmMembersResponses = {
+    /**
+     * CreateMemberResponse
+     *
+     * Response for creating a member
+     */
+    200: {
+        message: string;
+        /**
+         * MemberBasicInfo
+         *
+         * Created member basic info
+         */
+        member: {
+            /**
+             * Member ID
+             */
+            id: string;
+            /**
+             * Member number
+             */
+            member_number: string;
+            /**
+             * Name in kanji
+             */
+            name_kanji: string;
+            /**
+             * Name in kana
+             */
+            name_kana: string;
+            /**
+             * Birthday (ISO date)
+             */
+            birthday: string;
+            /**
+             * Age
+             */
+            age: number;
+            /**
+             * Gender
+             *
+             * Gender
+             */
+            gender: 'male' | 'female' | 'other';
+            /**
+             * Postal code
+             */
+            postal_code?: string;
+            /**
+             * Prefecture
+             */
+            prefecture?: string;
+            /**
+             * City
+             */
+            city?: string;
+            /**
+             * Address
+             */
+            address?: string;
+            /**
+             * Building
+             */
+            building?: string;
+            /**
+             * Phone number
+             */
+            phone: string;
+            /**
+             * Email address
+             */
+            email: string;
+            /**
+             * MemberEmergencyContact
+             *
+             * Emergency contact information
+             */
+            emergency_contact?: {
+                /**
+                 * Emergency contact name
+                 */
+                name: string;
+                /**
+                 * Relationship to member
+                 */
+                relationship: string;
+                /**
+                 * Emergency contact phone
+                 */
+                phone: string;
+            };
+            /**
+             * Other notes
+             */
+            notes?: string;
+        };
+    };
+};
+
+export type PostCrmMembersResponse = PostCrmMembersResponses[keyof PostCrmMembersResponses];
 
 export type GetCrmMembersSummaryData = {
     body?: never;

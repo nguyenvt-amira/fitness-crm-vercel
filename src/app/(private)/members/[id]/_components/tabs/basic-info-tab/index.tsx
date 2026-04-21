@@ -206,7 +206,7 @@ export function BasicInfoTab({ member }: { member: GetMemberDetailResponse }) {
               <InfoRow label="運動制限事項" value={member.health_info?.exercise_restrictions} />
               <InfoRow
                 label="その他特記事項"
-                value={member.health_info?.other_notes}
+                value={member.basic_info.notes}
                 className="md:col-span-2"
               />
             </CardContent>

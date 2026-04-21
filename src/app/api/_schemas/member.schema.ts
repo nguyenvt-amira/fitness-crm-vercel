@@ -1,8 +1,33 @@
+import { isMemberMainContractName } from '@/app/api/_mock-db';
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 
 // Extend Zod with OpenAPI support
 extendZodWithOpenApi(z);
+
+/** Canonical main contract (主契約) labels — aligned with member form Select. */
+export const MemberMainContractNameSchema = z.string().refine(isMemberMainContractName, {
+  message: 'Invalid main contract name',
+});
+
+export const GetMemberMainContractLabelsResponseSchema = z
+  .object({
+    labels: z.array(z.string()).openapi({
+      description: 'Ordered main contract display names for the member form',
+    }),
+    default_label: z.string().openapi({
+      example: 'レギュラー会員',
+      description: 'Default selection when none is set',
+    }),
+  })
+  .openapi({
+    title: 'GetMemberMainContractLabelsResponse',
+    description: 'Main contract label options for member create/edit (from mock DB)',
+  });
+
+export type GetMemberMainContractLabelsResponse = z.infer<
+  typeof GetMemberMainContractLabelsResponseSchema
+>;
 
 /**
  * Member Type Schema
@@ -84,13 +109,17 @@ export const MemberListItemSchema = z
       example: 'fit365',
       description: 'Brand',
     }),
-    contract_plan_name: z.string().openapi({
-      example: 'ベーシックプラン',
-      description: 'Contract plan name',
+    contract_name: MemberMainContractNameSchema.openapi({
+      example: 'レギュラー会員',
+      description: 'Main contract display name',
+    }),
+    contract_id: z.string().openapi({
+      example: 'plan-001',
+      description: "Member's active contract row id (references CRM contract)",
     }),
     contract_plan_id: z.string().openapi({
       example: 'plan-001',
-      description: 'Contract plan ID',
+      description: 'Contract plan master id (for filtering by plan template)',
     }),
     joined_at: z.string().date().openapi({
       example: '2024-01-15',
@@ -399,6 +428,10 @@ export const MemberBasicInfoSchema = z
     emergency_contact: MemberEmergencyContactSchema.optional().openapi({
       description: 'Emergency contact information',
     }),
+    notes: z.string().optional().openapi({
+      example: '特記事項なし',
+      description: 'Other notes',
+    }),
   })
   .openapi({
     title: 'MemberBasicInfo',
@@ -409,6 +442,10 @@ export const MemberProfileSchema = z
   .object({
     member_type: MemberTypeSchema.openapi({ example: 'regular', description: 'Member type' }),
     status: MemberStatusSchema.openapi({ example: 'active', description: 'Member status' }),
+    contract_id: z.string().optional().openapi({
+      example: 'plan-001',
+      description: "Member's active contract id (CRM contract row)",
+    }),
     store_id: z.string().openapi({ example: 'store-001', description: 'Store ID' }),
     store_name: z.string().openapi({ example: 'Fit365八潮店', description: 'Store name' }),
     brand: BrandSchema.openapi({ example: 'fit365', description: 'Brand' }),
@@ -500,20 +537,49 @@ export const MemberHealthInfoSchema = z
       example: '膝に負担がかかる運動は避ける',
       description: 'Exercise restrictions',
     }),
-    other_notes: z
-      .string()
-      .optional()
-      .openapi({ example: '特記事項なし', description: 'Other notes' }),
   })
   .openapi({
     title: 'MemberHealthInfo',
     description: 'Health information',
   });
 
+export const MemberProfileInfoSchema = z
+  .object({
+    contract_name: MemberMainContractNameSchema.optional().openapi({
+      example: 'レギュラー会員',
+      description: 'Main contract display name',
+    }),
+    join_route: z.string().optional().openapi({
+      example: '紹介',
+      description: 'Join route',
+    }),
+    referrer_member_id: z.string().optional().openapi({
+      example: 'M-00001',
+      description: 'Referrer member ID',
+    }),
+  })
+  .openapi({
+    title: 'MemberProfileInfo',
+    description: 'Additional member profile information',
+  });
+
 export const GetMemberDetailResponseSchema = z
   .object({
     basic_info: MemberBasicInfoSchema.openapi({ description: 'Basic member information' }),
-    profile: MemberProfileSchema.openapi({ description: 'Member profile' }),
+    profile: MemberProfileSchema.extend({
+      contract_name: MemberMainContractNameSchema.optional().openapi({
+        example: 'レギュラー会員',
+        description: 'Main contract display name',
+      }),
+      join_route: z.string().optional().openapi({
+        example: '紹介',
+        description: 'Join route',
+      }),
+      referrer_member_id: z.string().optional().openapi({
+        example: 'M-00001',
+        description: 'Referrer member ID',
+      }),
+    }).openapi({ description: 'Member profile' }),
     ekyc: MemberEKYCSchema.optional().openapi({ description: 'eKYC information' }),
     consent: MemberConsentSchema.optional().openapi({ description: 'Consent information' }),
     health_info: MemberHealthInfoSchema.optional().openapi({
@@ -523,6 +589,128 @@ export const GetMemberDetailResponseSchema = z
   .openapi({
     title: 'GetMemberDetailResponse',
     description: 'Response for getting member detail',
+  });
+
+/**
+ * Create Member Request Schema
+ */
+export const CreateMemberRequestSchema = z
+  .object({
+    name_kanji: z.string().min(1).openapi({
+      example: '佐藤 花子',
+      description: 'Name in kanji',
+    }),
+    name_kana: z.string().min(1).openapi({
+      example: 'サトウ ハナコ',
+      description: 'Name in kana',
+    }),
+    birthday: z.string().optional().openapi({
+      example: '1990-05-20',
+      description: 'Birthday (ISO date)',
+    }),
+    gender: GenderSchema.optional().openapi({
+      example: 'female',
+      description: 'Gender',
+    }),
+    postal_code: z.string().optional().openapi({
+      example: '1500001',
+      description: 'Postal code',
+    }),
+    prefecture: z.string().optional().openapi({
+      example: '東京都',
+      description: 'Prefecture',
+    }),
+    city: z.string().optional().openapi({
+      example: '渋谷区',
+      description: 'City',
+    }),
+    address: z.string().optional().openapi({
+      example: '神宮前1-1-1',
+      description: 'Address',
+    }),
+    building: z.string().optional().openapi({
+      example: 'サンプルビル 5F',
+      description: 'Building name',
+    }),
+    phone: z.string().min(1).openapi({
+      example: '09012345678',
+      description: 'Phone number',
+    }),
+    email: z.string().email().min(1).openapi({
+      example: 'hanako.sato@example.com',
+      description: 'Email address',
+    }),
+    emergency_contact: z
+      .object({
+        name: z.string(),
+        relationship: z.string(),
+        phone: z.string(),
+      })
+      .optional()
+      .openapi({
+        description: 'Emergency contact information',
+      }),
+    notes: z.string().optional().openapi({
+      example: '特記事項なし',
+      description: 'Other notes',
+    }),
+    profile_info: z
+      .object({
+        member_type: MemberTypeSchema.optional().openapi({
+          example: 'regular',
+          description: 'Member type',
+        }),
+        contract_name: MemberMainContractNameSchema.optional().openapi({
+          example: 'レギュラー会員',
+          description: 'Main contract display name',
+        }),
+        join_date: z.string().optional().openapi({
+          example: '2024-01-15',
+          description: 'Join date (ISO date)',
+        }),
+        join_store: z.string().optional().openapi({
+          example: 'Fit365八潮店',
+          description: 'Join store name',
+        }),
+        brand: z.string().optional().openapi({
+          example: 'fit365',
+          description: 'Brand',
+        }),
+        join_route: z.string().optional().openapi({
+          example: '紹介',
+          description: 'Join route',
+        }),
+        referrer_member_id: z.string().optional().openapi({
+          example: 'M-00001',
+          description: 'Referrer member ID',
+        }),
+        photo_url: z.string().optional().openapi({
+          example: 'https://example.com/photo.jpg',
+          description: 'Member photo URL',
+        }),
+      })
+      .optional()
+      .openapi({
+        description: 'Additional member profile information',
+      }),
+  })
+  .openapi({
+    title: 'CreateMemberRequest',
+    description: 'Request payload for creating a member',
+  });
+
+export const CreateMemberResponseSchema = z
+  .object({
+    message: z.string().openapi({
+      example: 'Member created successfully',
+    }),
+    member: MemberBasicInfoSchema.openapi({
+      description: 'Created member basic info',
+    }),
+  })
+  .openapi({
+    title: 'CreateMemberResponse',
+    description: 'Response for creating a member',
   });
 
 /**
@@ -537,6 +725,14 @@ export const UpdateBasicInfoRequestSchema = z
     name_kana: z.string().optional().openapi({
       example: 'サトウ ハナコ',
       description: 'Name in kana',
+    }),
+    birthday: z.string().optional().openapi({
+      example: '1990-05-20',
+      description: 'Birthday (ISO date)',
+    }),
+    gender: GenderSchema.optional().openapi({
+      example: 'female',
+      description: 'Gender',
     }),
     postal_code: z.string().optional().openapi({
       example: '1500002',
@@ -576,6 +772,10 @@ export const UpdateBasicInfoRequestSchema = z
       .openapi({
         description: 'Emergency contact information',
       }),
+    notes: z.string().optional().openapi({
+      example: '特記事項なし',
+      description: 'Other notes',
+    }),
   })
   .openapi({
     title: 'UpdateBasicInfoRequest',
@@ -610,10 +810,6 @@ export const UpdateHealthInfoRequestSchema = z
     exercise_restrictions: z.string().optional().openapi({
       example: '特になし',
       description: 'Exercise restrictions',
-    }),
-    other_notes: z.string().optional().openapi({
-      example: '特記事項なし',
-      description: 'Other notes',
     }),
   })
   .openapi({
@@ -660,6 +856,64 @@ export const UpdateMarketingConsentResponseSchema =
     title: 'UpdateMarketingConsentResponse',
     description: 'Response for updating marketing consent',
   });
+
+/**
+ * Update Member Request Schema
+ */
+export const UpdateMemberRequestSchema = z
+  .object({
+    basic_info: UpdateBasicInfoRequestSchema.optional().openapi({
+      description: 'Basic member information',
+    }),
+    profile_info: z
+      .object({
+        member_type: MemberTypeSchema.optional().openapi({
+          example: 'regular',
+          description: 'Member type',
+        }),
+        contract_name: MemberMainContractNameSchema.optional().openapi({
+          example: 'レギュラー会員',
+          description: 'Main contract display name',
+        }),
+        join_date: z.string().optional().openapi({
+          example: '2024-01-15',
+          description: 'Join date (ISO date)',
+        }),
+        join_store: z.string().optional().openapi({
+          example: 'Fit365八潮店',
+          description: 'Join store name',
+        }),
+        brand: z.string().optional().openapi({
+          example: 'fit365',
+          description: 'Brand',
+        }),
+        join_route: z.string().optional().openapi({
+          example: '紹介',
+          description: 'Join route',
+        }),
+        referrer_member_id: z.string().optional().openapi({
+          example: 'M-00001',
+          description: 'Referrer member ID',
+        }),
+        photo_url: z.string().optional().openapi({
+          example: 'https://example.com/photo.jpg',
+          description: 'Member photo URL',
+        }),
+      })
+      .optional()
+      .openapi({
+        description: 'Additional member profile information',
+      }),
+  })
+  .openapi({
+    title: 'UpdateMemberRequest',
+    description: 'Request payload for updating a member',
+  });
+
+export const UpdateMemberResponseSchema = GetMemberDetailResponseSchema.openapi({
+  title: 'UpdateMemberResponse',
+  description: 'Response for updating a member',
+});
 
 /**
  * Point Adjustment Type Schema
@@ -926,12 +1180,12 @@ export const ContractChangeSchema = z
       description: 'Change date and time',
     }),
     previous_plan: z.string().openapi({
-      example: 'ベーシックプラン',
-      description: 'Previous plan name',
+      example: 'レギュラー会員',
+      description: 'Previous main contract display name',
     }),
     new_plan: z.string().openapi({
-      example: 'スタンダードプラン',
-      description: 'New plan name',
+      example: 'ナイト会員',
+      description: 'New main contract display name',
     }),
     reason: z.string().optional().openapi({
       example: 'プラン変更希望',
@@ -1387,6 +1641,10 @@ export type GetMembersQuery = z.infer<typeof GetMembersQuerySchema>;
 export type GetMembersResponse = z.infer<typeof GetMembersResponseSchema>;
 export type GetMembersSummaryResponse = z.infer<typeof GetMembersSummaryResponseSchema>;
 export type GetMemberDetailResponse = z.infer<typeof GetMemberDetailResponseSchema>;
+export type CreateMemberRequest = z.infer<typeof CreateMemberRequestSchema>;
+export type CreateMemberResponse = z.infer<typeof CreateMemberResponseSchema>;
+export type UpdateMemberRequest = z.infer<typeof UpdateMemberRequestSchema>;
+export type UpdateMemberResponse = z.infer<typeof UpdateMemberResponseSchema>;
 export type UpdateBasicInfoRequest = z.infer<typeof UpdateBasicInfoRequestSchema>;
 export type UpdateBasicInfoResponse = z.infer<typeof UpdateBasicInfoResponseSchema>;
 export type UpdateHealthInfoRequest = z.infer<typeof UpdateHealthInfoRequestSchema>;

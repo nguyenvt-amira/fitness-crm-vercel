@@ -152,6 +152,13 @@ export function registerAllSchemas() {
     registry.register('GetMemberDetailResponse', memberSchemas.GetMemberDetailResponseSchema),
   );
   registeredSchemaMap.set(
+    'GetMemberMainContractLabelsResponse',
+    registry.register(
+      'GetMemberMainContractLabelsResponse',
+      memberSchemas.GetMemberMainContractLabelsResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
     'UpdateBasicInfoRequest',
     registry.register('UpdateBasicInfoRequest', memberSchemas.UpdateBasicInfoRequestSchema),
   );

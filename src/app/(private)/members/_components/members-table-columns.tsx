@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import { formatDate } from '@/utils/format.util';
 import type { ColumnDef } from '@tanstack/react-table';
 import { Eye, MoreHorizontal, Pencil } from 'lucide-react';
@@ -16,6 +18,7 @@ import {
 
 import type { GetCrmMembersResponse } from '@/lib/api/types.gen';
 import { MemberStatus } from '@/lib/api/types.gen';
+import { navigate } from '@/lib/routes/routes.util';
 
 import { MEMBER_STATUS_CLASSES, MEMBER_STATUS_LABELS } from '../_constants/constants';
 
@@ -26,6 +29,8 @@ interface MembersTableColumnsProps {
 export function MembersTableColumns({
   onMemberClick,
 }: MembersTableColumnsProps): ColumnDef<NonNullable<GetCrmMembersResponse['members']>[0]>[] {
+  const router = useRouter();
+
   return [
     {
       accessorKey: 'member_number',
@@ -65,9 +70,9 @@ export function MembersTableColumns({
       },
     },
     {
-      accessorKey: 'contract_plan_name',
+      accessorKey: 'contract_name',
       header: '主契約名',
-      cell: ({ row }) => <span className="text-xs">{row.original.contract_plan_name || '-'}</span>,
+      cell: ({ row }) => <span className="text-xs">{row.original.contract_name || '-'}</span>,
     },
     {
       accessorKey: 'joined_at',
@@ -118,6 +123,7 @@ export function MembersTableColumns({
               <DropdownMenuItem
                 onClick={(e) => {
                   e.stopPropagation();
+                  router.push(navigate('/members/[id]', memberId));
                 }}
               >
                 <Pencil className="mr-2 size-4" />
