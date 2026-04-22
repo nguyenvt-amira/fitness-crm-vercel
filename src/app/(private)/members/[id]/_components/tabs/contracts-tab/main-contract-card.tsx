@@ -38,7 +38,6 @@ import {
 import {
   getCrmMembersByIdContractsMainContractOptions,
   getCrmMembersByIdContractsMainContractQueryKey,
-  getCrmMembersByIdContractsQueryKey,
   getCrmMembersByIdOptions,
   getCrmStoresByIdMainContractsOptions,
   patchCrmMembersByIdContractsMainContractChangeMutation,
@@ -104,18 +103,11 @@ export function MainContractCard({ memberId }: MainContractCardProps) {
   const { mutate: submitChangeMainContract, isPending: isChangingMainContract } = useMutation({
     ...patchCrmMembersByIdContractsMainContractChangeMutation(),
     onSuccess: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: getCrmMembersByIdContractsMainContractQueryKey({
-            path: { id: memberId },
-          }),
+      await queryClient.invalidateQueries({
+        queryKey: getCrmMembersByIdContractsMainContractQueryKey({
+          path: { id: memberId },
         }),
-        queryClient.invalidateQueries({
-          queryKey: getCrmMembersByIdContractsQueryKey({
-            path: { id: memberId },
-          }),
-        }),
-      ]);
+      });
       setOpen(false);
     },
   });

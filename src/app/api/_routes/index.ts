@@ -34,7 +34,6 @@ import '@/app/api/crm/members/[id]/contracts/option-contracts/cancel/route';
 import '@/app/api/crm/members/[id]/contracts/option-contracts/change/route';
 import '@/app/api/crm/members/[id]/contracts/option-contracts/route';
 import '@/app/api/crm/members/[id]/contracts/payment-history/route';
-import '@/app/api/crm/members/[id]/contracts/route';
 import '@/app/api/crm/members/[id]/contracts/summary/route';
 import '@/app/api/crm/members/[id]/family-members/route';
 import '@/app/api/crm/members/[id]/health-info/route';

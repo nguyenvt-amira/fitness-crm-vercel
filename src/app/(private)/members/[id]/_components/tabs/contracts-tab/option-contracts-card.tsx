@@ -45,7 +45,6 @@ import { Textarea } from '@/components/ui/textarea';
 import {
   getCrmMembersByIdContractsOptionContractsOptions,
   getCrmMembersByIdContractsOptionContractsQueryKey,
-  getCrmMembersByIdContractsQueryKey,
   getCrmMembersByIdOptions,
   getCrmStoresByIdOptionsOptions,
   patchCrmMembersByIdContractsOptionContractsCancelMutation,
@@ -139,18 +138,11 @@ export function OptionContractsCard({
   const selectedOptionData = allAvailableOptions.find((o) => o.value === selectedOptionId);
 
   const invalidateContractQueries = async () => {
-    await Promise.all([
-      queryClient.invalidateQueries({
-        queryKey: getCrmMembersByIdContractsOptionContractsQueryKey({
-          path: { id: memberId },
-        }),
+    await queryClient.invalidateQueries({
+      queryKey: getCrmMembersByIdContractsOptionContractsQueryKey({
+        path: { id: memberId },
       }),
-      queryClient.invalidateQueries({
-        queryKey: getCrmMembersByIdContractsQueryKey({
-          path: { id: memberId },
-        }),
-      }),
-    ]);
+    });
   };
 
   const { mutate: submitAddOption, isPending: isAddingOption } = useMutation({
