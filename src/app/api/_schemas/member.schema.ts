@@ -992,28 +992,67 @@ export const PointAdjustmentResponseSchema = z
     description: 'Response for adjusting points',
   });
 
+export const GetPointsPeriodSchema = z
+  .enum(['all', 'this_month', 'last_3_months', 'last_1_year'])
+  .openapi({
+    title: 'GetPointsPeriod',
+    description: 'Time period filter for point history',
+  });
+
+export const GetPointsQuerySchema = z
+  .object({
+    period: GetPointsPeriodSchema.optional().default('all').openapi({
+      example: 'all',
+      description: 'Point history period filter',
+    }),
+  })
+  .openapi({
+    title: 'GetPointsQuery',
+    description: 'Query parameters for getting points',
+  });
+
+export const PointHistoryItemSchema = z
+  .object({
+    id: z.string().openapi({
+      example: 'earn-001',
+      description: 'Point history ID',
+    }),
+    date: z.string().openapi({
+      example: '2025-03-10T10:00:00+09:00',
+      description: 'Point transaction datetime (ISO)',
+    }),
+    reason: z.string().openapi({
+      example: '来館',
+      description: 'Point transaction reason',
+    }),
+    points: z.number().int().nonnegative().openapi({
+      example: 100,
+      description: 'Point amount',
+    }),
+  })
+  .openapi({
+    title: 'PointHistoryItem',
+    description: 'Point history row',
+  });
+
 /**
  * Get Points Response Schema (simplified)
  */
 export const GetPointsResponseSchema = z
   .object({
-    fit365: z.any().optional().openapi({
-      description: 'FIT365 points information',
+    point_balance: z.number().int().nonnegative().openapi({
+      example: 1200,
+      description: 'Current point balance',
     }),
-    joyfit: z.any().optional().openapi({
-      description: 'JOYFIT points information',
+    period: GetPointsPeriodSchema.openapi({
+      example: 'all',
+      description: 'Applied period filter',
     }),
-    rank: z.any().optional().openapi({
-      description: 'Rank information',
+    earn_history: z.array(PointHistoryItemSchema).openapi({
+      description: 'Earn history list',
     }),
-    earn_history: z.array(z.any()).openapi({
-      description: 'Earn history',
-    }),
-    spend_history: z.array(z.any()).openapi({
-      description: 'Spend history',
-    }),
-    adjustment_history: z.array(z.any()).openapi({
-      description: 'Adjustment history',
+    spend_history: z.array(PointHistoryItemSchema).openapi({
+      description: 'Spend history list',
     }),
   })
   .openapi({

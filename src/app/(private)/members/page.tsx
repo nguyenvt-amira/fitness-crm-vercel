@@ -1,12 +1,13 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { useQuery } from '@tanstack/react-query';
-import type { ColumnDef, SortingState } from '@tanstack/react-table';
-import { Plus } from 'lucide-react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import type { ColumnDef, RowSelectionState, SortingState } from '@tanstack/react-table';
+import { Plus, Shuffle } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { DataTable } from '@/components/common/data-table';
 import { TablePagination } from '@/components/common/table-pagination';
@@ -16,20 +17,36 @@ import { Card } from '@/components/ui/card';
 
 import {
   getCrmMembersOptions,
+  getCrmMembersQueryKey,
   getCrmMembersSummaryOptions,
+  getCrmMembersSummaryQueryKey,
+  patchCrmMembersByIdContractsMainContractChangeMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
 import type { GetCrmMembersResponse } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
+import { MemberBulkContractDialog } from './_components/member-bulk-contract-dialog';
 import { MembersFilters } from './_components/members-filters';
 import SummaryMembers from './_components/members-summary';
 import { MembersTableColumns } from './_components/members-table-columns';
 import { MembersFiltersProvider } from './_contexts/members-filters-context';
 import { useMembersFilters } from './_hooks/use-members-filters';
 
+function formatNextMonthStart() {
+  const now = new Date();
+  const nextMonthStart = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  return `${nextMonthStart.getFullYear()}年${nextMonthStart.getMonth() + 1}月${nextMonthStart.getDate()}日`;
+}
+
 function MembersPageContent() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [bulkDialogOpen, setBulkDialogOpen] = useState(false);
+  const [toContractId, setToContractId] = useState('');
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+
+  const selectedIDs = Object.keys(rowSelection);
 
   const filtersHook = useMembersFilters();
   const { queryParams, filters, setFilters, currentPage, setCurrentPage, pageSize } = filtersHook;
@@ -57,12 +74,74 @@ function MembersPageContent() {
     }),
   });
 
-  const members = data?.members ?? [];
+  const members = useMemo(() => data?.members ?? [], [data?.members]);
   const pagination = data?.pagination;
   const totalMembers = pagination?.total ?? 0;
   const totalPages = pagination?.total_pages ?? 0;
   const page = pagination?.page ?? currentPage;
   const limit = pagination?.limit ?? pageSize;
+  const selectedMembers = useMemo(
+    () => members.filter((member) => member.id && selectedIDs.includes(member.id)),
+    [members, selectedIDs],
+  );
+  const contractOptions = useMemo(() => {
+    const map = new Map<string, string>();
+    members.forEach((member) => {
+      if (member.contract_plan_id && member.contract_name) {
+        map.set(member.contract_plan_id, member.contract_name);
+      }
+    });
+    return Array.from(map.entries()).map(([id, name]) => ({ id, name }));
+  }, [members]);
+  const selectedContractName = contractOptions.find(
+    (contract) => contract.id === toContractId,
+  )?.name;
+  const applyDateLabel = formatNextMonthStart();
+
+  const { mutateAsync: changeMainContract, isPending: isChangingMainContract } = useMutation({
+    ...patchCrmMembersByIdContractsMainContractChangeMutation(),
+  });
+
+  const handleOpenBulkDialog = () => {
+    setToContractId('');
+    setBulkDialogOpen(true);
+  };
+
+  const handleBulkExecute = async () => {
+    if (!toContractId || selectedIDs.length === 0) return;
+
+    const results = await Promise.allSettled(
+      selectedIDs.map((memberId) =>
+        changeMainContract({
+          path: { id: memberId },
+          body: { contract_id: toContractId },
+        }),
+      ),
+    );
+
+    const successCount = results.filter((result) => result.status === 'fulfilled').length;
+    const failedCount = results.length - successCount;
+
+    await Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: getCrmMembersQueryKey({ query: queryParams }),
+      }),
+      queryClient.invalidateQueries({
+        queryKey: getCrmMembersSummaryQueryKey(),
+      }),
+    ]);
+
+    if (successCount > 0) {
+      toast.success(`${successCount}名の主契約を変更しました（${applyDateLabel} 適用）`);
+    }
+    if (failedCount > 0) {
+      toast.error(`${failedCount}名の主契約変更に失敗しました`);
+    }
+
+    setBulkDialogOpen(false);
+    setRowSelection({});
+    setToContractId('');
+  };
 
   const columns: ColumnDef<NonNullable<GetCrmMembersResponse['members']>[0]>[] =
     MembersTableColumns({
@@ -99,6 +178,22 @@ function MembersPageContent() {
             <MembersFiltersProvider value={filtersHook}>
               <MembersFilters isFilterOpen={isFilterOpen} onFilterOpenChange={setIsFilterOpen} />
             </MembersFiltersProvider>
+
+            {selectedIDs.length > 0 && (
+              <div className="bg-primary/10 border-primary/20 mt-3 flex items-center gap-3 rounded-lg border px-3 py-2">
+                <span className="text-primary text-sm font-medium">
+                  {selectedIDs.length}名選択中
+                </span>
+                <Button variant="ghost" size="sm" onClick={() => setRowSelection({})}>
+                  選択解除
+                </Button>
+                <div className="bg-primary/20 h-4 w-px" />
+                <Button size="sm" className="gap-1" onClick={handleOpenBulkDialog}>
+                  <Shuffle className="size-4" />
+                  主契約を変更（{selectedIDs.length}名）
+                </Button>
+              </div>
+            )}
           </div>
 
           <DataTable
@@ -118,7 +213,10 @@ function MembersPageContent() {
               manualSorting: true,
               state: {
                 sorting,
+                rowSelection,
               },
+              getRowId: (originalRow) => originalRow?.id,
+              onRowSelectionChange: setRowSelection,
             }}
           />
 
@@ -135,6 +233,19 @@ function MembersPageContent() {
           )}
         </Card>
       </div>
+
+      <MemberBulkContractDialog
+        open={bulkDialogOpen}
+        onOpenChange={setBulkDialogOpen}
+        selectedMemberIds={selectedIDs}
+        selectedMembers={selectedMembers}
+        toContractId={toContractId}
+        onContractChange={setToContractId}
+        contractOptions={contractOptions}
+        selectedContractName={selectedContractName}
+        isChangingMainContract={isChangingMainContract}
+        onExecute={handleBulkExecute}
+      />
     </div>
   );
 }

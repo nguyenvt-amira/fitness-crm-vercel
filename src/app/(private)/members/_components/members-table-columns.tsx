@@ -6,9 +6,11 @@ import { formatDate } from '@/utils/format.util';
 import type { ColumnDef } from '@tanstack/react-table';
 import { Eye, MoreHorizontal, Pencil } from 'lucide-react';
 
+import { DataTableColumnCheckbox } from '@/components/common/data-table/data-table-column-checkbox';
 import { DataTableColumnHeader } from '@/components/common/data-table/data-table-column-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,6 +34,21 @@ export function MembersTableColumns({
   const router = useRouter();
 
   return [
+    {
+      id: 'select',
+      header: ({ table }) => (
+        <div className="w-[32px] px-2 py-2.5">
+          <Checkbox
+            aria-label="Select all"
+            checked={table.getIsAllPageRowsSelected()}
+            onCheckedChange={(value) => table.toggleAllRowsSelected(!!value)}
+          />
+        </div>
+      ),
+      cell: ({ row }) => <DataTableColumnCheckbox row={row} />,
+      enableSorting: false,
+      enableHiding: false,
+    },
     {
       accessorKey: 'member_number',
       header: ({ column }) => <DataTableColumnHeader column={column} title="会員ID" />,

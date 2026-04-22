@@ -9,7 +9,7 @@ import { OptionSection } from './_components/option-section';
 
 export function ContractTab() {
   return (
-    <div className="mt-6 space-y-4">
+    <div className="space-y-4">
       {/* <Alert className="rounded-lg border-amber-300 bg-amber-50 px-3 py-2 [&>svg]:text-amber-700">
         <TriangleAlert className="size-4 shrink-0" aria-hidden />
         <AlertDescription className="text-amber-900 text-sm">

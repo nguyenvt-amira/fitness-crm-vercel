@@ -2741,41 +2741,87 @@
       "GetPointsResponse": {
         "type": "object",
         "properties": {
-          "fit365": {
-            "nullable": true,
-            "description": "FIT365 points information"
+          "point_balance": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 1200,
+            "description": "Current point balance"
           },
-          "joyfit": {
-            "nullable": true,
-            "description": "JOYFIT points information"
-          },
-          "rank": {
-            "nullable": true,
-            "description": "Rank information"
+          "period": {
+            "type": "string",
+            "enum": ["all", "this_month", "last_3_months", "last_1_year"],
+            "title": "GetPointsPeriod",
+            "description": "Applied period filter",
+            "example": "all"
           },
           "earn_history": {
             "type": "array",
             "items": {
-              "nullable": true
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "earn-001",
+                  "description": "Point history ID"
+                },
+                "date": {
+                  "type": "string",
+                  "example": "2025-03-10T10:00:00+09:00",
+                  "description": "Point transaction datetime (ISO)"
+                },
+                "reason": {
+                  "type": "string",
+                  "example": "来館",
+                  "description": "Point transaction reason"
+                },
+                "points": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "example": 100,
+                  "description": "Point amount"
+                }
+              },
+              "required": ["id", "date", "reason", "points"],
+              "title": "PointHistoryItem",
+              "description": "Point history row"
             },
-            "description": "Earn history"
+            "description": "Earn history list"
           },
           "spend_history": {
             "type": "array",
             "items": {
-              "nullable": true
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "earn-001",
+                  "description": "Point history ID"
+                },
+                "date": {
+                  "type": "string",
+                  "example": "2025-03-10T10:00:00+09:00",
+                  "description": "Point transaction datetime (ISO)"
+                },
+                "reason": {
+                  "type": "string",
+                  "example": "来館",
+                  "description": "Point transaction reason"
+                },
+                "points": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "example": 100,
+                  "description": "Point amount"
+                }
+              },
+              "required": ["id", "date", "reason", "points"],
+              "title": "PointHistoryItem",
+              "description": "Point history row"
             },
-            "description": "Spend history"
-          },
-          "adjustment_history": {
-            "type": "array",
-            "items": {
-              "nullable": true
-            },
-            "description": "Adjustment history"
+            "description": "Spend history list"
           }
         },
-        "required": ["earn_history", "spend_history", "adjustment_history"],
+        "required": ["point_balance", "period", "earn_history", "spend_history"],
         "title": "GetPointsResponse",
         "description": "Response for getting points"
       },
@@ -7393,74 +7439,6 @@
         ],
         "title": "GetFamilyRegistrationsDashboardResponse",
         "description": "Dashboard data for family registrations (A-02-02-08)"
-      },
-      "PositionRoleCategory": {
-        "type": "string",
-        "enum": ["headquarter", "manager", "staff", "trainer", "observer"],
-        "title": "PositionRoleCategory",
-        "description": "Position role: headquarter=本部, manager=マネージャー系, staff=店舗スタッフ, trainer=トレーナー, observer=閲覧"
-      },
-      "PositionFeatures": {
-        "type": "object",
-        "additionalProperties": {
-          "nullable": true
-        },
-        "title": "PositionFeatures",
-        "description": "Feature flags and labels for this position (mirrors DB JSON column)"
-      },
-      "Position": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "example": 1,
-            "description": "Position PK"
-          },
-          "role": {
-            "type": "string",
-            "enum": ["headquarter", "manager", "staff", "trainer", "observer"],
-            "title": "PositionRoleCategory",
-            "description": "ロール"
-          },
-          "position_name": {
-            "type": "string",
-            "example": "本部管理者",
-            "description": "職位名"
-          },
-          "features": {
-            "type": "object",
-            "additionalProperties": {
-              "nullable": true
-            },
-            "title": "PositionFeatures",
-            "description": "主な権限の特徴"
-          }
-        },
-        "required": ["id", "role", "position_name", "features"],
-        "title": "Position",
-        "description": "Normalized staff position / 職位マスター"
-      },
-      "StaffPermissionRecord": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "description": "Permission row PK"
-          },
-          "staff_id": {
-            "type": "string",
-            "example": "1",
-            "description": "Internal staff id (FK staff.id)"
-          },
-          "permission_code": {
-            "type": "string",
-            "example": "Y-03.view",
-            "description": "Permission code"
-          }
-        },
-        "required": ["id", "staff_id", "permission_code"],
-        "title": "StaffPermissionRecord",
-        "description": "Staff permission detail row"
       },
       "GetPositionsResponse": {
         "type": "object",
@@ -17711,6 +17689,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "period",
+            "in": "query",
+            "required": false,
+            "description": "Point history period filter",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -17721,41 +17708,87 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "fit365": {
-                      "nullable": true,
-                      "description": "FIT365 points information"
+                    "point_balance": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "example": 1200,
+                      "description": "Current point balance"
                     },
-                    "joyfit": {
-                      "nullable": true,
-                      "description": "JOYFIT points information"
-                    },
-                    "rank": {
-                      "nullable": true,
-                      "description": "Rank information"
+                    "period": {
+                      "type": "string",
+                      "enum": ["all", "this_month", "last_3_months", "last_1_year"],
+                      "title": "GetPointsPeriod",
+                      "description": "Applied period filter",
+                      "example": "all"
                     },
                     "earn_history": {
                       "type": "array",
                       "items": {
-                        "nullable": true
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "earn-001",
+                            "description": "Point history ID"
+                          },
+                          "date": {
+                            "type": "string",
+                            "example": "2025-03-10T10:00:00+09:00",
+                            "description": "Point transaction datetime (ISO)"
+                          },
+                          "reason": {
+                            "type": "string",
+                            "example": "来館",
+                            "description": "Point transaction reason"
+                          },
+                          "points": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "example": 100,
+                            "description": "Point amount"
+                          }
+                        },
+                        "required": ["id", "date", "reason", "points"],
+                        "title": "PointHistoryItem",
+                        "description": "Point history row"
                       },
-                      "description": "Earn history"
+                      "description": "Earn history list"
                     },
                     "spend_history": {
                       "type": "array",
                       "items": {
-                        "nullable": true
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "earn-001",
+                            "description": "Point history ID"
+                          },
+                          "date": {
+                            "type": "string",
+                            "example": "2025-03-10T10:00:00+09:00",
+                            "description": "Point transaction datetime (ISO)"
+                          },
+                          "reason": {
+                            "type": "string",
+                            "example": "来館",
+                            "description": "Point transaction reason"
+                          },
+                          "points": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "example": 100,
+                            "description": "Point amount"
+                          }
+                        },
+                        "required": ["id", "date", "reason", "points"],
+                        "title": "PointHistoryItem",
+                        "description": "Point history row"
                       },
-                      "description": "Spend history"
-                    },
-                    "adjustment_history": {
-                      "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
-                      "description": "Adjustment history"
+                      "description": "Spend history list"
                     }
                   },
-                  "required": ["earn_history", "spend_history", "adjustment_history"],
+                  "required": ["point_balance", "period", "earn_history", "spend_history"],
                   "title": "GetPointsResponse",
                   "description": "Response for getting points"
                 }

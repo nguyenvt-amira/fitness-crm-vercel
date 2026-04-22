@@ -2017,7 +2017,6 @@ function createDb() {
         this._seed();
         const { brand, settings } = this.getBrandSettingsByPrimaryMemberId(primary_member_id);
         const rels = this._relationships.get(primary_member_id) ?? [];
-        console.log('=====================', rels);
         const members = rels
           .map((r) => {
             const child = db.members.get(r.child_member_id);

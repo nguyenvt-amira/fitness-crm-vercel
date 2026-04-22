@@ -2002,29 +2002,57 @@ export type PointAdjustmentResponse = {
  */
 export type GetPointsResponse = {
     /**
-     * FIT365 points information
+     * Current point balance
      */
-    fit365?: unknown;
+    point_balance: number;
     /**
-     * JOYFIT points information
+     * GetPointsPeriod
+     *
+     * Applied period filter
      */
-    joyfit?: unknown;
+    period: 'all' | 'this_month' | 'last_3_months' | 'last_1_year';
     /**
-     * Rank information
+     * Earn history list
      */
-    rank?: unknown;
+    earn_history: Array<{
+        /**
+         * Point history ID
+         */
+        id: string;
+        /**
+         * Point transaction datetime (ISO)
+         */
+        date: string;
+        /**
+         * Point transaction reason
+         */
+        reason: string;
+        /**
+         * Point amount
+         */
+        points: number;
+    }>;
     /**
-     * Earn history
+     * Spend history list
      */
-    earn_history: Array<unknown>;
-    /**
-     * Spend history
-     */
-    spend_history: Array<unknown>;
-    /**
-     * Adjustment history
-     */
-    adjustment_history: Array<unknown>;
+    spend_history: Array<{
+        /**
+         * Point history ID
+         */
+        id: string;
+        /**
+         * Point transaction datetime (ISO)
+         */
+        date: string;
+        /**
+         * Point transaction reason
+         */
+        reason: string;
+        /**
+         * Point amount
+         */
+        points: number;
+    }>;
 };
 
 /**
@@ -11731,7 +11759,12 @@ export type GetCrmMembersByIdPointsData = {
          */
         id: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * Point history period filter
+         */
+        period?: string;
+    };
     url: '/crm/members/{id}/points';
 };
 
@@ -11770,29 +11803,57 @@ export type GetCrmMembersByIdPointsResponses = {
      */
     200: {
         /**
-         * FIT365 points information
+         * Current point balance
          */
-        fit365?: unknown;
+        point_balance: number;
         /**
-         * JOYFIT points information
+         * GetPointsPeriod
+         *
+         * Applied period filter
          */
-        joyfit?: unknown;
+        period: 'all' | 'this_month' | 'last_3_months' | 'last_1_year';
         /**
-         * Rank information
+         * Earn history list
          */
-        rank?: unknown;
+        earn_history: Array<{
+            /**
+             * Point history ID
+             */
+            id: string;
+            /**
+             * Point transaction datetime (ISO)
+             */
+            date: string;
+            /**
+             * Point transaction reason
+             */
+            reason: string;
+            /**
+             * Point amount
+             */
+            points: number;
+        }>;
         /**
-         * Earn history
+         * Spend history list
          */
-        earn_history: Array<unknown>;
-        /**
-         * Spend history
-         */
-        spend_history: Array<unknown>;
-        /**
-         * Adjustment history
-         */
-        adjustment_history: Array<unknown>;
+        spend_history: Array<{
+            /**
+             * Point history ID
+             */
+            id: string;
+            /**
+             * Point transaction datetime (ISO)
+             */
+            date: string;
+            /**
+             * Point transaction reason
+             */
+            reason: string;
+            /**
+             * Point amount
+             */
+            points: number;
+        }>;
     };
 };
 

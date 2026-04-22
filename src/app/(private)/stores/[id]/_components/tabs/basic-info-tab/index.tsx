@@ -79,7 +79,7 @@ function ImageEmptySlot() {
  */
 export function BasicInfoTab({ store }: { store: StoreDetail }) {
   const photos = store.store_photos ?? [];
-  const photoSlots = 6;
+  const photoSlots = 5;
   const photoCells = Array.from({ length: photoSlots }, (_, i) => photos[i] ?? null);
 
   return (
@@ -189,7 +189,7 @@ export function BasicInfoTab({ store }: { store: StoreDetail }) {
                       </div>
                     );
                   }
-                  if (photos.length === 0 && index < 6) {
+                  if (photos.length === 0 && index < photoSlots) {
                     return <ImagePlaceholder key={`ph-${index}`} />;
                   }
                   return <ImageEmptySlot key={`empty-${index}`} />;
