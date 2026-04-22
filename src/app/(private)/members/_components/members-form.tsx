@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { useQuery } from '@tanstack/react-query';
+import { format } from 'date-fns';
 import { Camera, Check, ChevronsUpDown } from 'lucide-react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,6 +16,7 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
+import { DatePicker } from '@/components/ui/date-picker';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -198,7 +200,13 @@ export function MembersForm() {
                     生年月日<span className="text-destructive ml-0.5">*</span>
                   </FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <DatePicker
+                      date={field.value ? new Date(field.value) : undefined}
+                      placeholder="日付を選択"
+                      onDateChange={(date) =>
+                        field.onChange(date ? format(date, 'yyyy-MM-dd') : '')
+                      }
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -299,7 +307,7 @@ export function MembersForm() {
       </Card>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="px-4">
           <CardTitle className="text-base">連絡先</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6 px-4">
@@ -425,7 +433,7 @@ export function MembersForm() {
       </Card>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="px-4">
           <CardTitle className="text-base">契約情報</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 gap-6 px-4 md:grid-cols-2">
@@ -470,7 +478,11 @@ export function MembersForm() {
                   入会日<span className="text-destructive ml-0.5">*</span>
                 </FormLabel>
                 <FormControl>
-                  <Input type="date" {...field} />
+                  <DatePicker
+                    date={field.value ? new Date(field.value) : undefined}
+                    placeholder="日付を選択"
+                    onDateChange={(date) => field.onChange(date ? format(date, 'yyyy-MM-dd') : '')}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -646,7 +658,7 @@ export function MembersForm() {
       </Card>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="px-4">
           <CardTitle className="text-base">備考</CardTitle>
         </CardHeader>
         <CardContent className="px-4">

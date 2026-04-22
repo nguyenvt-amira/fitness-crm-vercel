@@ -1481,7 +1481,7 @@
           },
           "brand": {
             "type": "string",
-            "enum": ["joyfit", "fit365"],
+            "enum": ["joyfit", "fit365", "joyfit_plus", "joyfit_yoga", "joyfit24"],
             "example": "fit365",
             "description": "Brand"
           },
@@ -1571,6 +1571,10 @@
         ]
       },
       "Brand": {
+        "type": "string",
+        "enum": ["joyfit", "fit365", "joyfit_plus", "joyfit_yoga", "joyfit24"]
+      },
+      "MainBrand": {
         "type": "string",
         "enum": ["joyfit", "fit365"]
       },
@@ -1676,7 +1680,7 @@
             "nullable": true,
             "items": {
               "type": "string",
-              "enum": ["joyfit", "fit365"]
+              "enum": ["joyfit", "fit365", "joyfit_plus", "joyfit_yoga", "joyfit24"]
             },
             "example": ["joyfit", "fit365"],
             "description": "Filter by brand (array)"
@@ -1794,7 +1798,7 @@
                 },
                 "brand": {
                   "type": "string",
-                  "enum": ["joyfit", "fit365"],
+                  "enum": ["joyfit", "fit365", "joyfit_plus", "joyfit_yoga", "joyfit24"],
                   "example": "fit365",
                   "description": "Brand"
                 },
@@ -2083,6 +2087,28 @@
             "title": "MemberBasicInfo",
             "description": "Basic member information"
           },
+          "constraints": {
+            "type": "object",
+            "properties": {
+              "hasUnpaidFee": {
+                "type": "boolean",
+                "example": false,
+                "description": "Whether member has unpaid fees"
+              },
+              "inCancellationPeriod": {
+                "type": "boolean",
+                "example": false,
+                "description": "Whether member is in cancellation penalty period"
+              },
+              "isOptionRestricted": {
+                "type": "boolean",
+                "example": false,
+                "description": "Whether option actions are restricted"
+              }
+            },
+            "required": ["hasUnpaidFee", "inCancellationPeriod", "isOptionRestricted"],
+            "description": "Constraint flags for member operations"
+          },
           "profile": {
             "type": "object",
             "properties": {
@@ -2122,9 +2148,15 @@
               },
               "brand": {
                 "type": "string",
-                "enum": ["joyfit", "fit365"],
-                "example": "fit365",
+                "enum": ["joyfit", "fit365", "joyfit_plus", "joyfit_yoga", "joyfit24"],
+                "example": "joyfit_plus",
                 "description": "Brand"
+              },
+              "main_brand": {
+                "type": "string",
+                "enum": ["joyfit", "fit365"],
+                "example": "joyfit",
+                "description": "Main brand"
               },
               "joined_at": {
                 "type": "string",
@@ -2163,6 +2195,7 @@
               "store_id",
               "store_name",
               "brand",
+              "main_brand",
               "joined_at",
               "is_black_listed"
             ],
@@ -2306,7 +2339,7 @@
             "description": "Health information"
           }
         },
-        "required": ["basic_info", "profile"],
+        "required": ["basic_info", "constraints", "profile"],
         "title": "GetMemberDetailResponse",
         "description": "Response for getting member detail"
       },
@@ -7360,6 +7393,74 @@
         ],
         "title": "GetFamilyRegistrationsDashboardResponse",
         "description": "Dashboard data for family registrations (A-02-02-08)"
+      },
+      "PositionRoleCategory": {
+        "type": "string",
+        "enum": ["headquarter", "manager", "staff", "trainer", "observer"],
+        "title": "PositionRoleCategory",
+        "description": "Position role: headquarter=本部, manager=マネージャー系, staff=店舗スタッフ, trainer=トレーナー, observer=閲覧"
+      },
+      "PositionFeatures": {
+        "type": "object",
+        "additionalProperties": {
+          "nullable": true
+        },
+        "title": "PositionFeatures",
+        "description": "Feature flags and labels for this position (mirrors DB JSON column)"
+      },
+      "Position": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1,
+            "description": "Position PK"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["headquarter", "manager", "staff", "trainer", "observer"],
+            "title": "PositionRoleCategory",
+            "description": "ロール"
+          },
+          "position_name": {
+            "type": "string",
+            "example": "本部管理者",
+            "description": "職位名"
+          },
+          "features": {
+            "type": "object",
+            "additionalProperties": {
+              "nullable": true
+            },
+            "title": "PositionFeatures",
+            "description": "主な権限の特徴"
+          }
+        },
+        "required": ["id", "role", "position_name", "features"],
+        "title": "Position",
+        "description": "Normalized staff position / 職位マスター"
+      },
+      "StaffPermissionRecord": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Permission row PK"
+          },
+          "staff_id": {
+            "type": "string",
+            "example": "1",
+            "description": "Internal staff id (FK staff.id)"
+          },
+          "permission_code": {
+            "type": "string",
+            "example": "Y-03.view",
+            "description": "Permission code"
+          }
+        },
+        "required": ["id", "staff_id", "permission_code"],
+        "title": "StaffPermissionRecord",
+        "description": "Staff permission detail row"
       },
       "GetPositionsResponse": {
         "type": "object",
@@ -18319,6 +18420,28 @@
                       "title": "MemberBasicInfo",
                       "description": "Basic member information"
                     },
+                    "constraints": {
+                      "type": "object",
+                      "properties": {
+                        "hasUnpaidFee": {
+                          "type": "boolean",
+                          "example": false,
+                          "description": "Whether member has unpaid fees"
+                        },
+                        "inCancellationPeriod": {
+                          "type": "boolean",
+                          "example": false,
+                          "description": "Whether member is in cancellation penalty period"
+                        },
+                        "isOptionRestricted": {
+                          "type": "boolean",
+                          "example": false,
+                          "description": "Whether option actions are restricted"
+                        }
+                      },
+                      "required": ["hasUnpaidFee", "inCancellationPeriod", "isOptionRestricted"],
+                      "description": "Constraint flags for member operations"
+                    },
                     "profile": {
                       "type": "object",
                       "properties": {
@@ -18358,9 +18481,15 @@
                         },
                         "brand": {
                           "type": "string",
-                          "enum": ["joyfit", "fit365"],
-                          "example": "fit365",
+                          "enum": ["joyfit", "fit365", "joyfit_plus", "joyfit_yoga", "joyfit24"],
+                          "example": "joyfit_plus",
                           "description": "Brand"
+                        },
+                        "main_brand": {
+                          "type": "string",
+                          "enum": ["joyfit", "fit365"],
+                          "example": "joyfit",
+                          "description": "Main brand"
                         },
                         "joined_at": {
                           "type": "string",
@@ -18399,6 +18528,7 @@
                         "store_id",
                         "store_name",
                         "brand",
+                        "main_brand",
                         "joined_at",
                         "is_black_listed"
                       ],
@@ -18542,7 +18672,7 @@
                       "description": "Health information"
                     }
                   },
-                  "required": ["basic_info", "profile"],
+                  "required": ["basic_info", "constraints", "profile"],
                   "title": "GetMemberDetailResponse",
                   "description": "Response for getting member detail"
                 }
@@ -18880,6 +19010,28 @@
                       "title": "MemberBasicInfo",
                       "description": "Basic member information"
                     },
+                    "constraints": {
+                      "type": "object",
+                      "properties": {
+                        "hasUnpaidFee": {
+                          "type": "boolean",
+                          "example": false,
+                          "description": "Whether member has unpaid fees"
+                        },
+                        "inCancellationPeriod": {
+                          "type": "boolean",
+                          "example": false,
+                          "description": "Whether member is in cancellation penalty period"
+                        },
+                        "isOptionRestricted": {
+                          "type": "boolean",
+                          "example": false,
+                          "description": "Whether option actions are restricted"
+                        }
+                      },
+                      "required": ["hasUnpaidFee", "inCancellationPeriod", "isOptionRestricted"],
+                      "description": "Constraint flags for member operations"
+                    },
                     "profile": {
                       "type": "object",
                       "properties": {
@@ -18919,9 +19071,15 @@
                         },
                         "brand": {
                           "type": "string",
-                          "enum": ["joyfit", "fit365"],
-                          "example": "fit365",
+                          "enum": ["joyfit", "fit365", "joyfit_plus", "joyfit_yoga", "joyfit24"],
+                          "example": "joyfit_plus",
                           "description": "Brand"
+                        },
+                        "main_brand": {
+                          "type": "string",
+                          "enum": ["joyfit", "fit365"],
+                          "example": "joyfit",
+                          "description": "Main brand"
                         },
                         "joined_at": {
                           "type": "string",
@@ -18960,6 +19118,7 @@
                         "store_id",
                         "store_name",
                         "brand",
+                        "main_brand",
                         "joined_at",
                         "is_black_listed"
                       ],
@@ -19103,7 +19262,7 @@
                       "description": "Health information"
                     }
                   },
-                  "required": ["basic_info", "profile"],
+                  "required": ["basic_info", "constraints", "profile"],
                   "title": "UpdateMemberResponse",
                   "description": "Response for updating a member"
                 }
@@ -19833,7 +19992,7 @@
               "nullable": true,
               "items": {
                 "type": "string",
-                "enum": ["joyfit", "fit365"]
+                "enum": ["joyfit", "fit365", "joyfit_plus", "joyfit_yoga", "joyfit24"]
               },
               "example": ["joyfit", "fit365"],
               "description": "Filter by brand (array)"
@@ -19994,7 +20153,7 @@
                           },
                           "brand": {
                             "type": "string",
-                            "enum": ["joyfit", "fit365"],
+                            "enum": ["joyfit", "fit365", "joyfit_plus", "joyfit_yoga", "joyfit24"],
                             "example": "fit365",
                             "description": "Brand"
                           },

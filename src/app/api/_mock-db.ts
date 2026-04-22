@@ -31,7 +31,7 @@ import type {
   UpdateHealthInfoRequest,
   UpdateMarketingConsentRequest,
 } from '@/lib/api/types.gen';
-import { Brand, MemberStatus, MemberType } from '@/lib/api/types.gen';
+import { Brand, MainBrand, MemberStatus, MemberType } from '@/lib/api/types.gen';
 
 import type {
   MembershipApplication,
@@ -411,12 +411,35 @@ function resolveContractTypeFromMemberType(memberType: MemberProfile['member_typ
   return 'regular';
 }
 
+function resolveMainContractNameFromMemberType(
+  memberType: MemberProfile['member_type'],
+): MemberMainContractName {
+  if (memberType === 'one_day_member') return '1Dayパス';
+  if (memberType === 'family') return 'ウィークエンド会員';
+  if (memberType === 'corporate') return 'デイタイム会員';
+  return 'レギュラー会員';
+}
+
 function resolveBrand(input: string | undefined, fallback: Brand): Brand {
   if (!input) return fallback;
-  const normalized = input.toLowerCase();
-  if (normalized === 'fit365' || normalized === 'joyfit') {
-    return normalized as Brand;
-  }
+  const normalized = input
+    .trim()
+    .toLowerCase()
+    .replace(/[\s-]+/g, '_');
+  const brandValues = Object.values(Brand) as string[];
+  const matched = brandValues.find((value) => value.toLowerCase() === normalized);
+  if (matched) return matched as Brand;
+  return fallback;
+}
+
+function resolveMainBrand(input: string | undefined, fallback: MainBrand = 'fit365'): MainBrand {
+  if (!input) return fallback;
+  const normalized = input
+    .trim()
+    .toLowerCase()
+    .replace(/[\s-]+/g, '_');
+  if (normalized === 'fit365') return 'fit365';
+  if (normalized.startsWith('joyfit')) return 'joyfit';
   return fallback;
 }
 
@@ -444,6 +467,8 @@ function createMember(
     emergency_contact_name: string;
     emergency_contact_relationship: string;
     emergency_contact_phone: string;
+    in_cancellation_period: boolean;
+    is_option_restricted: boolean;
   },
 ): MemberRow {
   return {
@@ -469,6 +494,11 @@ function createMember(
       },
       notes: '',
     },
+    constraints: {
+      hasUnpaidFee: listMeta.has_unpaid ?? false,
+      inCancellationPeriod: listMeta.in_cancellation_period ?? false,
+      isOptionRestricted: listMeta.is_option_restricted ?? false,
+    },
     profile: {
       member_type: listMeta.member_type,
       status: listMeta.status,
@@ -476,6 +506,7 @@ function createMember(
       store_id: listMeta.store_id,
       store_name: listMeta.store_name,
       brand: listMeta.brand,
+      main_brand: resolveMainBrand(listMeta.brand),
       joined_at: listMeta.joined_at,
       contract_name: listMeta.contract_name,
       is_black_listed: false,
@@ -1032,16 +1063,14 @@ function createDb() {
           const id = `M-${String(i).padStart(5, '0')}`;
           const name = names[i % names.length];
           const store = storeRows[i % storeRows.length]!;
-          const contractMaster =
-            MEMBER_MAIN_CONTRACT_MASTER[i % MEMBER_MAIN_CONTRACT_MASTER.length]!;
-          const displayName = contractMaster.name;
+          const memberType = (
+            ['regular', 'family', 'corporate', 'one_day_member'] as MemberProfile['member_type'][]
+          )[i % 4]!;
+          const displayName = resolveMainContractNameFromMemberType(memberType);
           const tplContractId = MEMBER_MAIN_CONTRACT_TEMPLATE_CONTRACT_ID[displayName];
           const planMasterId = MEMBER_MAIN_CONTRACT_PLAN_MASTER_ID[displayName];
           const phone = `090${String(1000 + (i % 9000)).slice(-4)}${String(1000 + (i % 9000)).slice(-4)}`;
           const email = `member${String(i).padStart(5, '0')}@example.jp`;
-          const memberType = (
-            ['regular', 'family', 'corporate', 'one_day_member'] as MemberProfile['member_type'][]
-          )[i % 4]!;
           this._members.push(
             createMember(id, {
               name_kanji: name.kanji,
@@ -1074,6 +1103,8 @@ function createDb() {
                   ? undefined
                   : toIsoDate(new Date(now.getTime() - ((i * 3) % 420) * dayMs)),
               has_unpaid: i % 7 === 0,
+              in_cancellation_period: i % 6 === 4,
+              is_option_restricted: i % 7 === 0,
               emergency_contact_name: name.kanji,
               emergency_contact_relationship: '夫',
               emergency_contact_phone: '09087654321',
@@ -1159,6 +1190,8 @@ function createDb() {
           contract_plan_id: planMasterId,
           last_visit_date: toIsoDate(new Date(application.contract_details?.start_date ?? now)),
           has_unpaid: false,
+          in_cancellation_period: false,
+          is_option_restricted: false,
           emergency_contact_name: application.emergency_contact_name || '',
           emergency_contact_relationship: application.emergency_contact_relationship || '',
           emergency_contact_phone: application.emergency_contact_phone || '',
@@ -1211,6 +1244,8 @@ function createDb() {
           contract_plan_id: planMasterId,
           last_visit_date: undefined,
           has_unpaid: false,
+          in_cancellation_period: false,
+          is_option_restricted: false,
           emergency_contact_name: registration.applicant_name,
           emergency_contact_relationship: registration.relationship,
           emergency_contact_phone: registration.applicant?.phone ?? '',
@@ -1278,6 +1313,8 @@ function createDb() {
           contract_plan_id: planMasterId,
           last_visit_date: undefined,
           has_unpaid: false,
+          in_cancellation_period: false,
+          is_option_restricted: false,
           emergency_contact_name: body.emergency_contact?.name ?? '',
           emergency_contact_relationship: body.emergency_contact?.relationship ?? '',
           emergency_contact_phone: body.emergency_contact?.phone ?? '',
@@ -1385,6 +1422,7 @@ function createDb() {
                 ? (db.stores.getById(body.join_store)?.name ?? current.profile.store_name)
                 : current.profile.store_name,
             brand: resolveBrand(body.brand, current.profile.brand),
+            main_brand: resolveMainBrand(resolveBrand(body.brand, current.profile.brand)),
             contract_id: nextContractId ?? current.profile.contract_id,
             contract_name: nextContractDisplayName,
             join_route: body.join_route ?? current.profile.join_route,
@@ -1969,8 +2007,9 @@ function createDb() {
       getBrandSettingsByPrimaryMemberId(primary_member_id: string) {
         this._seed();
         const primary = db.members.get(primary_member_id);
+        const mainBrand = primary?.profile.main_brand ?? 'fit365';
+        const settings = this._brandSettings[mainBrand] ?? this._brandSettings[Brand.FIT365];
         const brand = primary?.profile.brand ?? Brand.FIT365;
-        const settings = this._brandSettings[brand];
         return { brand, settings };
       },
 
@@ -1978,6 +2017,7 @@ function createDb() {
         this._seed();
         const { brand, settings } = this.getBrandSettingsByPrimaryMemberId(primary_member_id);
         const rels = this._relationships.get(primary_member_id) ?? [];
+        console.log('=====================', rels);
         const members = rels
           .map((r) => {
             const child = db.members.get(r.child_member_id);

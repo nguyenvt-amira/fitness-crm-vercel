@@ -1045,7 +1045,7 @@ export type MemberListItem = {
     /**
      * Brand
      */
-    brand: 'joyfit' | 'fit365';
+    brand: 'joyfit' | 'fit365' | 'joyfit_plus' | 'joyfit_yoga' | 'joyfit24';
     /**
      * Main contract display name
      */
@@ -1108,9 +1108,19 @@ export const MemberStatus = {
 
 export type MemberStatus = typeof MemberStatus[keyof typeof MemberStatus];
 
-export const Brand = { JOYFIT: 'joyfit', FIT365: 'fit365' } as const;
+export const Brand = {
+    JOYFIT: 'joyfit',
+    FIT365: 'fit365',
+    JOYFIT_PLUS: 'joyfit_plus',
+    JOYFIT_YOGA: 'joyfit_yoga',
+    JOYFIT24: 'joyfit24'
+} as const;
 
 export type Brand = typeof Brand[keyof typeof Brand];
+
+export const MainBrand = { JOYFIT: 'joyfit', FIT365: 'fit365' } as const;
+
+export type MainBrand = typeof MainBrand[keyof typeof MainBrand];
 
 /**
  * Gender
@@ -1215,7 +1225,7 @@ export type GetMembersQuery = {
     /**
      * Filter by brand (array)
      */
-    brand?: Array<'joyfit' | 'fit365'> | null;
+    brand?: Array<'joyfit' | 'fit365' | 'joyfit_plus' | 'joyfit_yoga' | 'joyfit24'> | null;
     /**
      * Filter by store ID (array)
      */
@@ -1291,7 +1301,7 @@ export type GetMembersResponse = {
         /**
          * Brand
          */
-        brand: 'joyfit' | 'fit365';
+        brand: 'joyfit' | 'fit365' | 'joyfit_plus' | 'joyfit_yoga' | 'joyfit24';
         /**
          * Main contract display name
          */
@@ -1485,6 +1495,23 @@ export type GetMemberDetailResponse = {
         notes?: string;
     };
     /**
+     * Constraint flags for member operations
+     */
+    constraints: {
+        /**
+         * Whether member has unpaid fees
+         */
+        hasUnpaidFee: boolean;
+        /**
+         * Whether member is in cancellation penalty period
+         */
+        inCancellationPeriod: boolean;
+        /**
+         * Whether option actions are restricted
+         */
+        isOptionRestricted: boolean;
+    };
+    /**
      * MemberProfile
      *
      * Member profile
@@ -1513,7 +1540,11 @@ export type GetMemberDetailResponse = {
         /**
          * Brand
          */
-        brand: 'joyfit' | 'fit365';
+        brand: 'joyfit' | 'fit365' | 'joyfit_plus' | 'joyfit_yoga' | 'joyfit24';
+        /**
+         * Main brand
+         */
+        main_brand: 'joyfit' | 'fit365';
         /**
          * Join date (ISO date)
          */
@@ -12131,6 +12162,23 @@ export type GetCrmMembersByIdResponses = {
             notes?: string;
         };
         /**
+         * Constraint flags for member operations
+         */
+        constraints: {
+            /**
+             * Whether member has unpaid fees
+             */
+            hasUnpaidFee: boolean;
+            /**
+             * Whether member is in cancellation penalty period
+             */
+            inCancellationPeriod: boolean;
+            /**
+             * Whether option actions are restricted
+             */
+            isOptionRestricted: boolean;
+        };
+        /**
          * MemberProfile
          *
          * Member profile
@@ -12159,7 +12207,11 @@ export type GetCrmMembersByIdResponses = {
             /**
              * Brand
              */
-            brand: 'joyfit' | 'fit365';
+            brand: 'joyfit' | 'fit365' | 'joyfit_plus' | 'joyfit_yoga' | 'joyfit24';
+            /**
+             * Main brand
+             */
+            main_brand: 'joyfit' | 'fit365';
             /**
              * Join date (ISO date)
              */
@@ -12553,6 +12605,23 @@ export type PatchCrmMembersByIdResponses = {
             notes?: string;
         };
         /**
+         * Constraint flags for member operations
+         */
+        constraints: {
+            /**
+             * Whether member has unpaid fees
+             */
+            hasUnpaidFee: boolean;
+            /**
+             * Whether member is in cancellation penalty period
+             */
+            inCancellationPeriod: boolean;
+            /**
+             * Whether option actions are restricted
+             */
+            isOptionRestricted: boolean;
+        };
+        /**
          * MemberProfile
          *
          * Member profile
@@ -12581,7 +12650,11 @@ export type PatchCrmMembersByIdResponses = {
             /**
              * Brand
              */
-            brand: 'joyfit' | 'fit365';
+            brand: 'joyfit' | 'fit365' | 'joyfit_plus' | 'joyfit_yoga' | 'joyfit24';
+            /**
+             * Main brand
+             */
+            main_brand: 'joyfit' | 'fit365';
             /**
              * Join date (ISO date)
              */
@@ -13137,7 +13210,7 @@ export type GetCrmMembersData = {
         /**
          * Filter by brand (array)
          */
-        brand?: Array<'joyfit' | 'fit365'> | null;
+        brand?: Array<'joyfit' | 'fit365' | 'joyfit_plus' | 'joyfit_yoga' | 'joyfit24'> | null;
         /**
          * Filter by store ID (array)
          */
@@ -13243,7 +13316,7 @@ export type GetCrmMembersResponses = {
             /**
              * Brand
              */
-            brand: 'joyfit' | 'fit365';
+            brand: 'joyfit' | 'fit365' | 'joyfit_plus' | 'joyfit_yoga' | 'joyfit24';
             /**
              * Main contract display name
              */

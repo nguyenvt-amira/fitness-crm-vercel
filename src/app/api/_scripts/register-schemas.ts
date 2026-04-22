@@ -125,6 +125,10 @@ export function registerAllSchemas() {
     registry.register('MemberStatus', memberSchemas.MemberStatusSchema),
   );
   registeredSchemaMap.set('Brand', registry.register('Brand', memberSchemas.BrandSchema));
+  registeredSchemaMap.set(
+    'MainBrand',
+    registry.register('MainBrand', memberSchemas.MainBrandSchema),
+  );
   registeredSchemaMap.set('Gender', registry.register('Gender', memberSchemas.GenderSchema));
   registeredSchemaMap.set('MemoType', registry.register('MemoType', memberSchemas.MemoTypeSchema));
   registeredSchemaMap.set(

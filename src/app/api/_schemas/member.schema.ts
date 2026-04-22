@@ -50,7 +50,12 @@ export const MemberStatusSchema = z.enum([
 /**
  * Brand Schema
  */
-export const BrandSchema = z.enum(['joyfit', 'fit365']);
+export const BrandSchema = z.enum(['joyfit', 'fit365', 'joyfit_plus', 'joyfit_yoga', 'joyfit24']);
+
+/**
+ * Main Brand Schema
+ */
+export const MainBrandSchema = z.enum(['joyfit', 'fit365']);
 
 /**
  * Gender Schema
@@ -448,7 +453,8 @@ export const MemberProfileSchema = z
     }),
     store_id: z.string().openapi({ example: 'store-001', description: 'Store ID' }),
     store_name: z.string().openapi({ example: 'Fit365八潮店', description: 'Store name' }),
-    brand: BrandSchema.openapi({ example: 'fit365', description: 'Brand' }),
+    brand: BrandSchema.openapi({ example: 'joyfit_plus', description: 'Brand' }),
+    main_brand: MainBrandSchema.openapi({ example: 'joyfit', description: 'Main brand' }),
     joined_at: z.string().openapi({ example: '2024-01-15', description: 'Join date (ISO date)' }),
     withdrawn_at: z.string().optional().openapi({
       example: '2025-02-01',
@@ -566,6 +572,24 @@ export const MemberProfileInfoSchema = z
 export const GetMemberDetailResponseSchema = z
   .object({
     basic_info: MemberBasicInfoSchema.openapi({ description: 'Basic member information' }),
+    constraints: z
+      .object({
+        hasUnpaidFee: z.boolean().openapi({
+          example: false,
+          description: 'Whether member has unpaid fees',
+        }),
+        inCancellationPeriod: z.boolean().openapi({
+          example: false,
+          description: 'Whether member is in cancellation penalty period',
+        }),
+        isOptionRestricted: z.boolean().openapi({
+          example: false,
+          description: 'Whether option actions are restricted',
+        }),
+      })
+      .openapi({
+        description: 'Constraint flags for member operations',
+      }),
     profile: MemberProfileSchema.extend({
       contract_name: MemberMainContractNameSchema.optional().openapi({
         example: 'レギュラー会員',
@@ -1866,6 +1890,7 @@ export type MemberType = z.infer<typeof MemberTypeSchema>;
 export type ContractType = z.infer<typeof ContractTypeSchema>;
 export type MemberStatus = z.infer<typeof MemberStatusSchema>;
 export type Brand = z.infer<typeof BrandSchema>;
+export type MainBrand = z.infer<typeof MainBrandSchema>;
 export type Gender = z.infer<typeof GenderSchema>;
 export type MemberListItem = z.infer<typeof MemberListItemSchema>;
 export type Pagination = z.infer<typeof PaginationSchema>;

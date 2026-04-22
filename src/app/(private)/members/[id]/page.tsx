@@ -2,19 +2,11 @@
 
 import { useState } from 'react';
 
-import Link from 'next/link';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 
+import { formatDate } from '@/utils/format.util';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  AlertOctagon,
-  ArrowLeft,
-  Building2,
-  Edit,
-  MessageSquare,
-  Printer,
-  User,
-} from 'lucide-react';
+import { MoreHorizontal, Pencil, PlayCircle, User, UserCheck } from 'lucide-react';
 
 import { BreadcrumbNav } from '@/components/common/breadcrumb-nav';
 import { DataStateBoundary } from '@/components/common/data-state-boundary';
@@ -22,8 +14,16 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import {
@@ -33,11 +33,12 @@ import {
   postCrmMembersByIdMemosMutation,
   putCrmMembersByIdMemosByMemoIdMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
-import type { StaffMemo } from '@/lib/api/types.gen';
+import { MemberStatus, type StaffMemo } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
-import { BRAND_LABELS, MEMBER_STATUS_CLASSES } from '../_constants/constants';
+import { GENDER_CLASSES, MEMBER_STATUS_CLASSES, MEMBER_TYPE_LABELS } from '../_constants/constants';
 import { MEMBER_STATUS_LABELS } from '../_constants/constants';
+import { GENDER_LABELS } from '../_constants/constants';
 import { MemoModal } from './_components/memo-modal';
 import { PrintModal } from './_components/print-modal';
 import { BasicInfoTab } from './_components/tabs/basic-info-tab';
@@ -111,9 +112,15 @@ export default function MemberDetailPage() {
     );
   }
 
-  // Mock alerts - in real app, these would come from API
-  const has_unpaid = false; // TODO: Get from member data
-  const contractRenewalSoon = false; // TODO: Calculate from contract end date
+  const fullAddress = [
+    member.basic_info.postal_code,
+    member.basic_info.prefecture,
+    member.basic_info.city,
+    member.basic_info.address,
+    member.basic_info.building,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   const handleEdit = () => {
     router.push(navigate('/members/[id]/edit', memberId));
@@ -134,15 +141,6 @@ export default function MemberDetailPage() {
     if (!open) setEditingMemo(null);
   };
 
-  const handlePrint = () => {
-    setShowPrintModal(true);
-  };
-
-  const handleChangeMainContract = () => {
-    // TODO: Navigate to main contract change page (B-01)
-    console.log('Change main contract');
-  };
-
   const handleSuspend = () => {
     // TODO: Navigate to suspend page (A-02-06)
     console.log('Suspend membership');
@@ -152,7 +150,39 @@ export default function MemberDetailPage() {
     // TODO: Navigate to withdraw page (A-02-05)
     console.log('Withdraw membership');
   };
+  const handleReEnroll = () => {
+    // TODO: Open re-enroll sheet
+    console.log('Re-enroll member');
+  };
+  const handlePersonalDataDelete = () => {
+    // TODO: Open personal data delete dialog
+    console.log('Delete personal data');
+  };
+  const handleTransfer = () => {
+    // TODO: Open transfer apply sheet
+    console.log('Transfer apply');
+  };
+  const handleGateStopSetting = () => {
+    // TODO: Open gate stop setting sheet
+    console.log('Gate stop setting');
+  };
+  const handleForceWithdraw = () => {
+    // TODO: Open force-withdraw dialog
+    console.log('Force withdraw');
+  };
+  const handleLeaveRelease = () => {
+    // TODO: Open leave release sheet
+    console.log('Leave release');
+  };
+  const handleCancelWithdraw = () => {
+    // TODO: Cancel pending withdraw
+    console.log('Cancel pending withdraw');
+  };
 
+  const memberStatusLabel = MEMBER_STATUS_LABELS[member.profile.status];
+  const isWithdrawnStatus =
+    member.profile.status === MemberStatus.WITHDRAWN ||
+    member.profile.status === MemberStatus.FORCE_WITHDRAWN;
   const handleSaveMemo = (data: { type: 'caution' | 'vip' | 'other'; content: string }) => {
     const onSuccess = () => {
       setShowMemoModal(false);
@@ -200,10 +230,10 @@ export default function MemberDetailPage() {
 
       {/* Header */}
       <div className="bg-card shrink-0 border-b p-4">
-        <Card>
-          <CardHeader>
+        <Card className="mb-0 py-4">
+          <CardContent className="flex flex-col gap-3 px-4 py-3">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-              <div className="flex items-start gap-4">
+              <div className="flex min-w-0 items-start gap-4">
                 <Avatar className="size-16">
                   <AvatarImage src={member.ekyc?.photoUrl} alt={member.basic_info.name_kanji} />
                   <AvatarFallback>
@@ -215,80 +245,205 @@ export default function MemberDetailPage() {
                 </Avatar>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <CardTitle className="text-lg sm:text-xl">
-                      {member.basic_info.name_kanji}
-                    </CardTitle>
-                    <span className="text-muted-foreground text-sm font-normal sm:text-base">
-                      {member.basic_info.name_kana}
-                    </span>
-                  </div>
-                  <div className="mt-2 flex flex-wrap items-center gap-2">
-                    <Badge className={MEMBER_STATUS_CLASSES[member.profile.status]}>
-                      {MEMBER_STATUS_LABELS[member.profile.status]}
+                    <h1 className="text-xl font-bold">{member.basic_info.name_kanji}</h1>
+                    <Badge
+                      variant="outline"
+                      className={`text-[10px] ${MEMBER_STATUS_CLASSES[member.profile.status]}`}
+                    >
+                      {memberStatusLabel}
                     </Badge>
-                    {member.profile.brand && (
-                      <Badge variant="outline" className="flex items-center gap-1">
-                        <Building2 className="size-3" />
-                        {BRAND_LABELS[member.profile.brand]}
+                    {member.profile.member_type && (
+                      <Badge variant="outline" className="text-[10px]">
+                        {MEMBER_TYPE_LABELS[member.profile.member_type]}
                       </Badge>
                     )}
-
-                    <span className="text-muted-foreground text-sm">
-                      {member.profile.store_name}
-                    </span>
                   </div>
-                  <div className="text-muted-foreground mt-1 text-sm">
-                    会員番号: {member.basic_info.member_number}
+                  <p className="text-muted-foreground mt-1 text-xs">
+                    {member.basic_info.name_kana}
+                  </p>
+                  <div className="text-muted-foreground mt-1 font-mono text-xs">
+                    ID: {member.basic_info.member_number}/ 旧No:
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
-                <Button asChild variant="outline" size="sm">
-                  <Link href={navigate('/members')}>
-                    <ArrowLeft className="mr-2 size-4" />
-                    一覧に戻る
-                  </Link>
-                </Button>
-                <Button variant="outline" size="sm" onClick={handlePrint}>
-                  <Printer className="mr-2 size-4" />
-                  印刷
-                </Button>
-                <Button variant="outline" size="sm" onClick={handleAddMemo}>
-                  <MessageSquare className="mr-2 size-4" />
-                  メモ追加
-                </Button>
-                <Button size="sm" onClick={handleEdit}>
-                  <Edit className="mr-2 size-4" />
-                  編集
-                </Button>
+              <div className="flex shrink-0 items-center gap-2">
+                {!isWithdrawnStatus && (
+                  <Button size="sm" className="gap-1" onClick={handleEdit}>
+                    <Pencil className="size-4" />
+                    編集
+                  </Button>
+                )}
+                {isWithdrawnStatus && (
+                  <>
+                    <Button size="sm" className="gap-1" onClick={handleReEnroll}>
+                      <UserCheck className="size-4" />
+                      再入会
+                    </Button>
+                    <DropdownMenu modal={false}>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="border-input bg-background hover:bg-accent hover:text-accent-foreground size-8"
+                        >
+                          <MoreHorizontal className="size-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          className="text-destructive"
+                          onSelect={handlePersonalDataDelete}
+                        >
+                          個人情報削除
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </>
+                )}
+                {!isWithdrawnStatus && (
+                  <DropdownMenu modal={false}>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="border-input bg-background hover:bg-accent hover:text-accent-foreground size-8"
+                      >
+                        <MoreHorizontal className="size-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      {member.profile.status === MemberStatus.ACTIVE && (
+                        <>
+                          <DropdownMenuItem
+                            disabled={member.constraints.hasUnpaidFee}
+                            onSelect={handleSuspend}
+                          >
+                            <div className="flex flex-col">
+                              <span>休会申請</span>
+                              {member.constraints.hasUnpaidFee && (
+                                <span className="text-destructive text-xs">
+                                  未納金があるため操作できません
+                                </span>
+                              )}
+                            </div>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onSelect={handleWithdraw}>退会申請</DropdownMenuItem>
+                          <DropdownMenuItem
+                            disabled={
+                              member.constraints.hasUnpaidFee ||
+                              member.constraints.inCancellationPeriod
+                            }
+                            onSelect={handleTransfer}
+                          >
+                            <div className="flex flex-col">
+                              <span>移籍申請</span>
+                              {member.constraints.inCancellationPeriod && (
+                                <span className="text-destructive text-xs">
+                                  解約手数料期間中のため移籍できません
+                                </span>
+                              )}
+                              {!member.constraints.inCancellationPeriod &&
+                                member.constraints.hasUnpaidFee && (
+                                  <span className="text-destructive text-xs">
+                                    未納金があるため操作できません
+                                  </span>
+                                )}
+                            </div>
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onSelect={handleGateStopSetting}>
+                            ゲートストップ設定
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            className="text-destructive"
+                            onSelect={handleForceWithdraw}
+                          >
+                            強制退会
+                          </DropdownMenuItem>
+                        </>
+                      )}
+                      {member.profile.status === MemberStatus.SUSPENDED && (
+                        <>
+                          <DropdownMenuItem onSelect={handleLeaveRelease}>
+                            <PlayCircle className="size-4" />
+                            休会解除
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onSelect={handleWithdraw}>退会申請</DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onSelect={handleGateStopSetting}>
+                            ゲートストップ設定
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            className="text-destructive"
+                            onSelect={handleForceWithdraw}
+                          >
+                            強制退会
+                          </DropdownMenuItem>
+                        </>
+                      )}
+                      {member.profile.status === MemberStatus.PENDING_WITHDRAWAL && (
+                        <DropdownMenuItem onSelect={handleCancelWithdraw}>
+                          退会取り消し
+                        </DropdownMenuItem>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </div>
             </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Alert Area */}
-            {(has_unpaid || contractRenewalSoon) && (
-              <Alert variant={has_unpaid ? 'destructive' : 'default'}>
-                <AlertOctagon className="size-4" />
-                <AlertTitle>アラート</AlertTitle>
-                <AlertDescription>
-                  {has_unpaid && '未納金があります。'}
-                  {contractRenewalSoon && '契約更新が間近です。'}
-                </AlertDescription>
+            <Separator />
+            {member.profile.status === MemberStatus.GATE_STOP && (
+              <Alert className="border-destructive/50 bg-destructive/10">
+                <AlertTitle>ゲートストップ中</AlertTitle>
+                <AlertDescription>全店舗への入館が制限されています。</AlertDescription>
               </Alert>
             )}
 
-            {/* Quick Action Buttons */}
-            <div className="flex flex-wrap gap-2">
-              <Button variant="outline" size="sm" onClick={handleChangeMainContract}>
-                主契約変更
-              </Button>
-              <Button variant="outline" size="sm" onClick={handleSuspend}>
-                休会処理
-              </Button>
-              <Button variant="outline" size="sm" onClick={handleWithdraw}>
-                退会処理
-              </Button>
-            </div>
+            <dl className="grid grid-cols-1 gap-x-6 gap-y-3 md:grid-cols-2 xl:grid-cols-4">
+              <div>
+                <dt className="text-muted-foreground mb-1 text-xs">生年月日</dt>
+                <dd className="text-sm font-medium">
+                  {member.basic_info.birthday
+                    ? `${formatDate(member.basic_info.birthday)}（${member.basic_info.age ?? '—'}歳）`
+                    : '—'}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground mb-1 text-xs">性別</dt>
+                <dd className="flex items-center gap-1">
+                  <Badge
+                    variant="outline"
+                    className={`text-xs ${GENDER_CLASSES[member.basic_info.gender]}`}
+                  >
+                    {GENDER_LABELS[member.basic_info.gender]}
+                  </Badge>
+                </dd>
+              </div>
+              <div className="md:col-span-2">
+                <dt className="text-muted-foreground mb-1 text-xs">住所</dt>
+                <dd className="text-sm font-medium">{fullAddress || '—'}</dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground mb-1 text-xs">電話番号</dt>
+                <dd className="text-sm font-medium">{member.basic_info.phone || '—'}</dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground mb-1 text-xs">メールアドレス</dt>
+                <dd className="text-sm font-medium">{member.basic_info.email || '—'}</dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground mb-1 text-xs">主契約店舗</dt>
+                <dd className="text-sm font-medium">{member.profile.store_name || '—'}</dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground mb-1 text-xs">登録日</dt>
+                <dd className="text-sm font-medium">
+                  {member.profile.joined_at ? formatDate(member.profile.joined_at) : '—'}
+                </dd>
+              </div>
+            </dl>
           </CardContent>
         </Card>
       </div>
@@ -301,16 +456,16 @@ export default function MemberDetailPage() {
           className="flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden"
         >
           <div className="shrink-0 overflow-x-auto overflow-y-hidden pt-4 pb-2">
-            <TabsList className="inline-flex w-full min-w-max">
+            <TabsList className="inline-flex min-w-max">
               <TabsTrigger value="basic">基本情報</TabsTrigger>
-              <TabsTrigger value="contracts">契約情報</TabsTrigger>
-              <TabsTrigger value="points">ポイント</TabsTrigger>
+              <TabsTrigger value="contracts">契約操作</TabsTrigger>
               <TabsTrigger value="usage">利用履歴</TabsTrigger>
+              <TabsTrigger value="points">ポイント履歴</TabsTrigger>
               <TabsTrigger value="training">トレーニング記録</TabsTrigger>
-              <TabsTrigger value="service">サービス利用</TabsTrigger>
+              <TabsTrigger value="service">サービス利用履歴</TabsTrigger>
               <TabsTrigger value="communications">コミュニケーション</TabsTrigger>
               <TabsTrigger value="history">変更履歴</TabsTrigger>
-              <TabsTrigger value="relationships">関係性</TabsTrigger>
+              <TabsTrigger value="relationships">関係者情報</TabsTrigger>
             </TabsList>
           </div>
 

@@ -32,6 +32,9 @@ export const MEMBER_STATUS_LABELS: Record<MemberStatus, string> = {
 export const BRAND_LABELS: Record<Brand, string> = {
   [Brand.JOYFIT]: 'JOYFIT',
   [Brand.FIT365]: 'FIT365',
+  [Brand.JOYFIT_PLUS]: 'JOYFIT+',
+  [Brand.JOYFIT_YOGA]: 'JOYFIT YOGA',
+  [Brand.JOYFIT24]: 'JOYFIT24',
 };
 
 export const MEMBER_STATUS_CLASSES: Record<MemberStatus, string> = {
@@ -46,6 +49,9 @@ export const MEMBER_STATUS_CLASSES: Record<MemberStatus, string> = {
 export const BRAND_CLASSES: Record<Brand, string> = {
   [Brand.JOYFIT]: 'bg-blue-100 text-blue-600',
   [Brand.FIT365]: 'bg-green-100 text-green-600',
+  [Brand.JOYFIT_PLUS]: 'bg-yellow-100 text-yellow-600',
+  [Brand.JOYFIT_YOGA]: 'bg-purple-100 text-purple-600',
+  [Brand.JOYFIT24]: 'bg-red-100 text-red-600',
 };
 
 export const GENDER_LABELS: Record<Gender, string> = {
@@ -58,4 +64,10 @@ export const MEMO_TYPE_LABELS: Record<MemoType, string> = {
   [MemoType.CAUTION]: '要注意',
   [MemoType.VIP]: 'VIP',
   [MemoType.OTHER]: 'その他',
+};
+
+export const GENDER_CLASSES: Record<Gender, string> = {
+  [Gender.MALE]: 'bg-gender-male/15 text-gender-male border-gender-male/20',
+  [Gender.FEMALE]: 'bg-gender-female/15 text-gender-female border-gender-female/20',
+  [Gender.OTHER]: 'bg-muted text-muted-foreground border-muted/20',
 };
