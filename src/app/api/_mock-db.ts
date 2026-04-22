@@ -582,6 +582,32 @@ function addMonths(date: Date, months: number): Date {
   return d;
 }
 
+function buildPaymentHistory(
+  startDate: string,
+  monthlyFee: number,
+): GetContractsResponse['payment_info']['payment_history'] {
+  const records = [];
+  const start = new Date(startDate);
+  const now = new Date();
+  let cursor = new Date(start);
+  cursor.setDate(27);
+  if (cursor < start) cursor = addMonths(cursor, 1);
+  let month = 0;
+  while (cursor <= now && month < 12) {
+    const failed = month === 2; // simulate one failed payment
+    records.push({
+      date: toIsoDate(cursor),
+      amount: monthlyFee,
+      breakdown: `月会費 ${monthlyFee.toLocaleString()}円`,
+      status: (failed ? 'failed' : 'success') as 'success' | 'failed',
+      notes: failed ? '残高不足' : undefined,
+    });
+    cursor = addMonths(cursor, 1);
+    month++;
+  }
+  return records.reverse(); // newest first
+}
+
 function buildMemberContractData(input: {
   plan_name: string;
   start_date: string;
@@ -591,6 +617,15 @@ function buildMemberContractData(input: {
   const start = new Date(input.start_date);
   const penaltyEnd = addMonths(start, 12);
   penaltyEnd.setDate(penaltyEnd.getDate() - 1);
+
+  const campaignStart = toIsoDate(addMonths(start, -1));
+  const campaignEnd = toIsoDate(addMonths(start, 5));
+  const now = new Date();
+  const remainingMs = new Date(campaignEnd).getTime() - now.getTime();
+  const remainingDays = Math.max(0, Math.ceil(remainingMs / (1000 * 60 * 60 * 24)));
+
+  const historyStart = toIsoDate(addMonths(start, -4));
+  const historyEnd = toIsoDate(addMonths(start, -1));
 
   return {
     main_contract: {
@@ -624,12 +659,31 @@ function buildMemberContractData(input: {
       last_payment_date: undefined,
       last_payment_amount: undefined,
       status: 'normal',
-      payment_history: [],
+      payment_history: buildPaymentHistory(input.start_date, input.monthly_fee),
     },
     unpaid_info: null,
     campaigns: {
-      active: [],
-      history: [],
+      active: [
+        {
+          campaign_name: '春の入会キャンペーン',
+          period_start: campaignStart,
+          period_end: campaignEnd,
+          discount_content: '入会金無料',
+          remaining_days: remainingDays,
+          applied_at: input.start_date,
+          status: 'active' as const,
+        },
+      ],
+      history: [
+        {
+          campaign_name: '年末特別キャンペーン',
+          period_start: historyStart,
+          period_end: historyEnd,
+          discount_content: '月会費1ヶ月無料',
+          applied_at: historyStart,
+          status: 'expired' as const,
+        },
+      ],
     },
   };
 }

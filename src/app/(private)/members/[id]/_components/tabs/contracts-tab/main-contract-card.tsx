@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 import { formatDate, formatYen } from '@/utils/format.util';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowRight, RefreshCw } from 'lucide-react';
 
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -24,6 +25,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -33,15 +35,15 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
+import {
+  getCrmMembersByIdContractsMainContractOptions,
+  getCrmMembersByIdContractsMainContractQueryKey,
+  getCrmMembersByIdContractsQueryKey,
+  getCrmMembersByIdOptions,
+  getCrmStoresByIdMainContractsOptions,
+  patchCrmMembersByIdContractsMainContractChangeMutation,
+} from '@/lib/api/@tanstack/react-query.gen';
 import type { GetCrmMembersByIdContractsResponse } from '@/lib/api/types.gen';
-
-// TODO: Replace with API call when available
-const ALL_AVAILABLE_PLANS = [
-  { value: 'プレミアム会員', label: 'プレミアム会員', price: 9900 },
-  { value: 'ナイト会員', label: 'ナイト会員', price: 5500 },
-  { value: 'ウィークデイ会員', label: 'ウィークデイ会員', price: 6600 },
-  { value: 'レギュラー会員', label: 'レギュラー会員', price: 7700 },
-];
 
 function getNextMonthFirstLabel() {
   const today = new Date();
@@ -54,24 +56,93 @@ function getNextMonthFirstLabel() {
 type MainContract = GetCrmMembersByIdContractsResponse['main_contract'];
 
 interface MainContractCardProps {
-  mainContract: MainContract;
+  memberId: string;
 }
 
-export function MainContractCard({ mainContract }: MainContractCardProps) {
-  const [open, setOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState('');
+function MainContractCardSkeleton() {
+  return (
+    <Card className="gap-0 py-0">
+      <CardHeader className="px-4 py-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-sm">主契約</CardTitle>
+          <Skeleton className="h-8 w-16" />
+        </div>
+      </CardHeader>
+      <div className="space-y-3 px-4 pb-4">
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+      </div>
+    </Card>
+  );
+}
 
-  const availablePlans = ALL_AVAILABLE_PLANS.filter((p) => p.label !== mainContract?.plan_name);
-  const selectedPlanData = ALL_AVAILABLE_PLANS.find((p) => p.value === selectedPlan);
+export function MainContractCard({ memberId }: MainContractCardProps) {
+  const [open, setOpen] = useState(false);
+  const [selectedContractId, setSelectedContractId] = useState('');
+  const queryClient = useQueryClient();
+  const {
+    data: mainContract,
+    isLoading: isMainContractLoading,
+    isFetching: isMainContractFetching,
+  } = useQuery(
+    getCrmMembersByIdContractsMainContractOptions({
+      path: { id: memberId },
+    }),
+  );
+  const { data: memberData, isLoading: isMemberLoading } = useQuery(
+    getCrmMembersByIdOptions({
+      path: { id: memberId },
+    }),
+  );
+  const storeId = memberData?.profile.store_id;
+  const { data: storeMainContracts, isLoading: isStoreMainContractsLoading } = useQuery({
+    ...getCrmStoresByIdMainContractsOptions({
+      path: { id: storeId ?? '' },
+    }),
+    enabled: Boolean(storeId) && open,
+  });
+  const { mutate: submitChangeMainContract, isPending: isChangingMainContract } = useMutation({
+    ...patchCrmMembersByIdContractsMainContractChangeMutation(),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: getCrmMembersByIdContractsMainContractQueryKey({
+            path: { id: memberId },
+          }),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: getCrmMembersByIdContractsQueryKey({
+            path: { id: memberId },
+          }),
+        }),
+      ]);
+      setOpen(false);
+    },
+  });
+
+  const planOptions =
+    storeMainContracts?.main_contracts.map((contract) => ({
+      value: contract.id,
+      label: contract.name,
+      price: contract.price_including_tax,
+    })) ?? [];
+  const availablePlans = planOptions.filter((p) => p.label !== mainContract?.plan_name);
+  const selectedContractData = planOptions.find((p) => p.value === selectedContractId);
   const planPriceDiff =
-    selectedPlanData && mainContract ? selectedPlanData.price - mainContract.monthly_fee : null;
+    selectedContractData && mainContract
+      ? selectedContractData.price - mainContract.monthly_fee
+      : null;
 
   const nextMonthFirstLabel = getNextMonthFirstLabel();
 
   const handleOpen = () => {
-    setSelectedPlan('');
+    setSelectedContractId('');
     setOpen(true);
   };
+
+  if (isMainContractLoading || isMemberLoading) {
+    return <MainContractCardSkeleton />;
+  }
 
   return (
     <>
@@ -111,6 +182,7 @@ export function MainContractCard({ mainContract }: MainContractCardProps) {
           </TableBody>
         </Table>
       </Card>
+      {isMainContractFetching ? <Skeleton className="h-1 w-full rounded-none" /> : null}
 
       {/* 主契約変更 Sheet */}
       <Sheet open={open} onOpenChange={setOpen}>
@@ -146,11 +218,20 @@ export function MainContractCard({ mainContract }: MainContractCardProps) {
                 <Label htmlFor="plan-select" className="text-sm font-medium">
                   変更先プラン <span className="text-destructive ml-1 text-xs">*</span>
                 </Label>
-                <Select value={selectedPlan} onValueChange={setSelectedPlan}>
-                  <SelectTrigger id="plan-select" className="h-9 text-sm">
+                <Select value={selectedContractId} onValueChange={setSelectedContractId}>
+                  <SelectTrigger
+                    id="plan-select"
+                    className="h-9 text-sm"
+                    disabled={isStoreMainContractsLoading || availablePlans.length === 0}
+                  >
                     <SelectValue placeholder="選択してください" />
                   </SelectTrigger>
                   <SelectContent>
+                    {isStoreMainContractsLoading ? (
+                      <div className="px-2 py-2">
+                        <Skeleton className="h-7 w-full" />
+                      </div>
+                    ) : null}
                     {availablePlans.map((p) => (
                       <SelectItem key={p.value} value={p.value}>
                         {p.label}　¥{p.price.toLocaleString()}/月
@@ -160,7 +241,7 @@ export function MainContractCard({ mainContract }: MainContractCardProps) {
                 </Select>
               </div>
 
-              {selectedPlanData && planPriceDiff !== null && (
+              {selectedContractData && planPriceDiff !== null && (
                 <div className="flex flex-col gap-2 rounded-md border p-3">
                   <p className="text-muted-foreground text-xs font-medium">料金変更</p>
                   <div className="flex items-center gap-2 text-sm">
@@ -169,7 +250,7 @@ export function MainContractCard({ mainContract }: MainContractCardProps) {
                     </span>
                     <ArrowRight className="text-muted-foreground size-4" />
                     <span className="font-semibold">
-                      ¥{selectedPlanData.price.toLocaleString()}/月
+                      ¥{selectedContractData.price.toLocaleString()}/月
                     </span>
                     {planPriceDiff !== 0 && (
                       <span
@@ -198,13 +279,15 @@ export function MainContractCard({ mainContract }: MainContractCardProps) {
             </Button>
             <Button
               className="flex-1"
-              disabled={!selectedPlan}
+              disabled={!selectedContractId || isChangingMainContract}
               onClick={() => {
-                // TODO: Call API to change main contract
-                setOpen(false);
+                submitChangeMainContract({
+                  path: { id: memberId },
+                  body: { contract_id: selectedContractId },
+                });
               }}
             >
-              変更申請を送信
+              {isChangingMainContract ? '送信中...' : '変更申請を送信'}
             </Button>
           </div>
         </SheetContent>

@@ -15401,6 +15401,1265 @@
         }
       }
     },
+    "/crm/members/{id}/contracts/campaigns": {
+      "get": {
+        "summary": "Get member campaigns",
+        "description": "Get active and historical campaign information for a member",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campaign information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "active": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "campaign_name": {
+                            "type": "string",
+                            "example": "春の入会キャンペーン",
+                            "description": "Campaign name"
+                          },
+                          "period_start": {
+                            "type": "string",
+                            "example": "2025-03-01",
+                            "description": "Campaign period start date"
+                          },
+                          "period_end": {
+                            "type": "string",
+                            "example": "2025-03-31",
+                            "description": "Campaign period end date"
+                          },
+                          "discount_content": {
+                            "type": "string",
+                            "example": "入会金50%OFF",
+                            "description": "Discount content"
+                          },
+                          "remaining_days": {
+                            "type": "number",
+                            "example": 15,
+                            "description": "Remaining days"
+                          },
+                          "applied_at": {
+                            "type": "string",
+                            "example": "2024-01-15",
+                            "description": "Applied date"
+                          },
+                          "content": {
+                            "type": "string",
+                            "example": "初月月会費無料",
+                            "description": "Campaign content"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["active", "expired", "upcoming"],
+                            "title": "CampaignStatus",
+                            "description": "Campaign status",
+                            "example": "expired"
+                          }
+                        },
+                        "required": ["campaign_name"],
+                        "title": "Campaign",
+                        "description": "Campaign information"
+                      },
+                      "description": "Active campaigns"
+                    },
+                    "history": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "campaign_name": {
+                            "type": "string",
+                            "example": "春の入会キャンペーン",
+                            "description": "Campaign name"
+                          },
+                          "period_start": {
+                            "type": "string",
+                            "example": "2025-03-01",
+                            "description": "Campaign period start date"
+                          },
+                          "period_end": {
+                            "type": "string",
+                            "example": "2025-03-31",
+                            "description": "Campaign period end date"
+                          },
+                          "discount_content": {
+                            "type": "string",
+                            "example": "入会金50%OFF",
+                            "description": "Discount content"
+                          },
+                          "remaining_days": {
+                            "type": "number",
+                            "example": 15,
+                            "description": "Remaining days"
+                          },
+                          "applied_at": {
+                            "type": "string",
+                            "example": "2024-01-15",
+                            "description": "Applied date"
+                          },
+                          "content": {
+                            "type": "string",
+                            "example": "初月月会費無料",
+                            "description": "Campaign content"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["active", "expired", "upcoming"],
+                            "title": "CampaignStatus",
+                            "description": "Campaign status",
+                            "example": "expired"
+                          }
+                        },
+                        "required": ["campaign_name"],
+                        "title": "Campaign",
+                        "description": "Campaign information"
+                      },
+                      "description": "Campaign history"
+                    }
+                  },
+                  "required": ["active", "history"],
+                  "title": "GetCampaignsResponse",
+                  "description": "Response for getting member campaigns"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/contracts/day-pass-history": {
+      "get": {
+        "summary": "Get member day pass purchase history",
+        "description": "Get 1DayPass purchase history records for a member",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Day pass purchase history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "day_pass_history": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "dp-001",
+                            "description": "Day pass record ID"
+                          },
+                          "purchased_at": {
+                            "type": "string",
+                            "example": "2025-03-10",
+                            "description": "Purchase date"
+                          },
+                          "store_name": {
+                            "type": "string",
+                            "example": "JOYFIT渋谷店",
+                            "description": "Store used for the day pass"
+                          },
+                          "amount": {
+                            "type": "number",
+                            "example": 1100,
+                            "description": "Purchase amount (tax included)"
+                          },
+                          "expires_at": {
+                            "type": "string",
+                            "example": "2025-03-10",
+                            "description": "Expiry date of the day pass"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["used", "unused", "expired"],
+                            "title": "DayPassStatus",
+                            "example": "used",
+                            "description": "Day pass status"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "purchased_at",
+                          "store_name",
+                          "amount",
+                          "expires_at",
+                          "status"
+                        ],
+                        "title": "DayPassRecord",
+                        "description": "Day pass purchase record"
+                      },
+                      "description": "Day pass purchase history records"
+                    }
+                  },
+                  "required": ["day_pass_history"],
+                  "title": "GetDayPassHistoryResponse",
+                  "description": "Response for getting member day pass purchase history"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/contracts/main-contract/change": {
+      "patch": {
+        "summary": "Change member main contract",
+        "description": "Submit a request to change the member main contract",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "New main contract id",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "contract_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "MC002",
+                    "description": "New main contract id"
+                  }
+                },
+                "required": ["contract_id"],
+                "title": "ChangeMainContractRequest",
+                "description": "Request payload for changing member main contract"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Main contract changed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "plan_name": {
+                      "type": "string",
+                      "example": "スタンダードプラン",
+                      "description": "Plan name"
+                    },
+                    "monthly_fee": {
+                      "type": "number",
+                      "example": 8580,
+                      "description": "Monthly fee (tax included)"
+                    },
+                    "start_date": {
+                      "type": "string",
+                      "example": "2024-01-15",
+                      "description": "Contract start date"
+                    },
+                    "penalty_period_end": {
+                      "type": "string",
+                      "example": "2025-01-14",
+                      "description": "Penalty period end date"
+                    },
+                    "change_history": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "changed_at": {
+                            "type": "string",
+                            "example": "2024-01-15T00:00:00+09:00",
+                            "description": "Change date and time"
+                          },
+                          "previous_plan": {
+                            "type": "string",
+                            "example": "レギュラー会員",
+                            "description": "Previous main contract display name"
+                          },
+                          "new_plan": {
+                            "type": "string",
+                            "example": "ナイト会員",
+                            "description": "New main contract display name"
+                          },
+                          "reason": {
+                            "type": "string",
+                            "example": "プラン変更希望",
+                            "description": "Reason for change"
+                          }
+                        },
+                        "required": ["changed_at", "previous_plan", "new_plan"],
+                        "title": "ContractChange",
+                        "description": "Contract change history item"
+                      },
+                      "description": "Contract change history"
+                    }
+                  },
+                  "required": ["plan_name", "monthly_fee", "start_date", "change_history"],
+                  "title": "ChangeMainContractResponse",
+                  "description": "Updated member main contract after change request"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member or contract not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/contracts/main-contract": {
+      "get": {
+        "summary": "Get member main contract",
+        "description": "Get main contract information for a member",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Main contract information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "plan_name": {
+                      "type": "string",
+                      "example": "スタンダードプラン",
+                      "description": "Plan name"
+                    },
+                    "monthly_fee": {
+                      "type": "number",
+                      "example": 8580,
+                      "description": "Monthly fee (tax included)"
+                    },
+                    "start_date": {
+                      "type": "string",
+                      "example": "2024-01-15",
+                      "description": "Contract start date"
+                    },
+                    "penalty_period_end": {
+                      "type": "string",
+                      "example": "2025-01-14",
+                      "description": "Penalty period end date"
+                    },
+                    "change_history": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "changed_at": {
+                            "type": "string",
+                            "example": "2024-01-15T00:00:00+09:00",
+                            "description": "Change date and time"
+                          },
+                          "previous_plan": {
+                            "type": "string",
+                            "example": "レギュラー会員",
+                            "description": "Previous main contract display name"
+                          },
+                          "new_plan": {
+                            "type": "string",
+                            "example": "ナイト会員",
+                            "description": "New main contract display name"
+                          },
+                          "reason": {
+                            "type": "string",
+                            "example": "プラン変更希望",
+                            "description": "Reason for change"
+                          }
+                        },
+                        "required": ["changed_at", "previous_plan", "new_plan"],
+                        "title": "ContractChange",
+                        "description": "Contract change history item"
+                      },
+                      "description": "Contract change history"
+                    }
+                  },
+                  "required": ["plan_name", "monthly_fee", "start_date", "change_history"],
+                  "title": "GetMainContractResponse",
+                  "description": "Response for getting member main contract"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member or contract not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/contracts/option-contracts/cancel": {
+      "patch": {
+        "summary": "Cancel member option contract",
+        "description": "Cancel one option contract for a member",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Option cancel payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "option_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "OP003",
+                    "description": "Option contract id to cancel"
+                  },
+                  "cancel_timing": {
+                    "type": "string",
+                    "enum": ["immediate", "end_of_next_month"],
+                    "example": "immediate",
+                    "description": "When to cancel the option contract"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "example": "利用しなくなったため",
+                    "description": "Cancel reason"
+                  }
+                },
+                "required": ["option_id", "cancel_timing"],
+                "title": "CancelOptionContractRequest",
+                "description": "Request payload for cancelling a member option contract"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cancelled option contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "cancelled_option_id": {
+                      "type": "string",
+                      "example": "OP003",
+                      "description": "Cancelled option contract id"
+                    }
+                  },
+                  "required": ["cancelled_option_id"],
+                  "title": "CancelOptionContractResponse",
+                  "description": "Cancelled option contract result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member or contracts not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/contracts/option-contracts/change": {
+      "patch": {
+        "summary": "Change member option contract",
+        "description": "Replace a current option contract with another option",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Option change payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "current_option_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "OP002",
+                    "description": "Current option contract id"
+                  },
+                  "next_option_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "OP003",
+                    "description": "Next option master id"
+                  }
+                },
+                "required": ["current_option_id", "next_option_id"],
+                "title": "ChangeOptionContractRequest",
+                "description": "Request payload for changing a member option contract"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Changed option contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "removed_option_id": {
+                      "type": "string",
+                      "example": "OP002",
+                      "description": "Removed option contract id"
+                    },
+                    "added_option": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "opt-001",
+                          "description": "Option contract ID"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "パーソナルトレーニング",
+                          "description": "Option name"
+                        },
+                        "monthly_fee": {
+                          "type": "number",
+                          "example": 11000,
+                          "description": "Monthly fee"
+                        },
+                        "start_date": {
+                          "type": "string",
+                          "example": "2024-02-01",
+                          "description": "Start date"
+                        },
+                        "next_billing_date": {
+                          "type": "string",
+                          "example": "2025-03-01",
+                          "description": "Next billing date"
+                        }
+                      },
+                      "required": ["id", "name", "monthly_fee", "start_date", "next_billing_date"],
+                      "title": "OptionContract",
+                      "description": "Newly added option contract"
+                    }
+                  },
+                  "required": ["removed_option_id", "added_option"],
+                  "title": "ChangeOptionContractResponse",
+                  "description": "Changed option contract result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member or contracts not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/contracts/option-contracts": {
+      "post": {
+        "summary": "Add member option contract",
+        "description": "Add an option contract for a member",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Option add payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "option_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "OP002",
+                    "description": "Option master id to add"
+                  },
+                  "apply_from": {
+                    "type": "string",
+                    "enum": ["today", "next_month"],
+                    "example": "today",
+                    "description": "When to start applying the option"
+                  }
+                },
+                "required": ["option_id", "apply_from"],
+                "title": "AddOptionContractRequest",
+                "description": "Request payload for adding a member option contract"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Added option contract",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "opt-001",
+                      "description": "Option contract ID"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "パーソナルトレーニング",
+                      "description": "Option name"
+                    },
+                    "monthly_fee": {
+                      "type": "number",
+                      "example": 11000,
+                      "description": "Monthly fee"
+                    },
+                    "start_date": {
+                      "type": "string",
+                      "example": "2024-02-01",
+                      "description": "Start date"
+                    },
+                    "next_billing_date": {
+                      "type": "string",
+                      "example": "2025-03-01",
+                      "description": "Next billing date"
+                    }
+                  },
+                  "required": ["id", "name", "monthly_fee", "start_date", "next_billing_date"],
+                  "title": "AddOptionContractResponse",
+                  "description": "Added option contract"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member or contracts not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get member option contracts",
+        "description": "Get option contracts for a member",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Member option contracts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "example": "opt-001",
+                        "description": "Option contract ID"
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "パーソナルトレーニング",
+                        "description": "Option name"
+                      },
+                      "monthly_fee": {
+                        "type": "number",
+                        "example": 11000,
+                        "description": "Monthly fee"
+                      },
+                      "start_date": {
+                        "type": "string",
+                        "example": "2024-02-01",
+                        "description": "Start date"
+                      },
+                      "next_billing_date": {
+                        "type": "string",
+                        "example": "2025-03-01",
+                        "description": "Next billing date"
+                      }
+                    },
+                    "required": ["id", "name", "monthly_fee", "start_date", "next_billing_date"],
+                    "title": "OptionContract",
+                    "description": "Option contract information"
+                  },
+                  "title": "GetOptionContractsResponse",
+                  "description": "Response for getting member option contracts"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member or contracts not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/contracts/payment-history": {
+      "get": {
+        "summary": "Get member payment history",
+        "description": "Get payment history records for a member",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment history records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "payment_history": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "date": {
+                            "type": "string",
+                            "example": "2025-02-27",
+                            "description": "Payment date"
+                          },
+                          "amount": {
+                            "type": "number",
+                            "example": 9680,
+                            "description": "Payment amount"
+                          },
+                          "breakdown": {
+                            "type": "string",
+                            "example": "月会費 8,580円 + オプション 1,100円",
+                            "description": "Payment breakdown"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["success", "failed"],
+                            "example": "success",
+                            "description": "Payment status"
+                          },
+                          "notes": {
+                            "type": "string",
+                            "example": "",
+                            "description": "Additional notes"
+                          }
+                        },
+                        "required": ["date", "amount", "breakdown", "status"],
+                        "title": "PaymentRecord",
+                        "description": "Payment history record"
+                      },
+                      "description": "Payment history records"
+                    }
+                  },
+                  "required": ["payment_history"],
+                  "title": "GetPaymentHistoryResponse",
+                  "description": "Response for getting member payment history"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/members/{id}/contracts": {
       "get": {
         "summary": "Get member contracts",
@@ -15902,6 +17161,118 @@
                   ],
                   "title": "GetContractsResponse",
                   "description": "Response for getting contracts"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/contracts/summary": {
+      "get": {
+        "summary": "Get member contract summary",
+        "description": "Get a compact contract summary for a member (plan name, monthly fee, billing info, unpaid amount)",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contract summary",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "plan_name": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "レギュラー会員",
+                      "description": "Main contract plan name"
+                    },
+                    "total_monthly_fee": {
+                      "type": "number",
+                      "example": 9680,
+                      "description": "Total monthly fee (main + options, tax included)"
+                    },
+                    "billing_day": {
+                      "type": "integer",
+                      "nullable": true,
+                      "minimum": 1,
+                      "maximum": 31,
+                      "example": 27,
+                      "description": "Billing day of month"
+                    },
+                    "payment_method": {
+                      "type": "string",
+                      "nullable": true,
+                      "enum": ["credit_card", "bank_transfer", null],
+                      "example": "credit_card",
+                      "description": "Payment method"
+                    },
+                    "unpaid_amount": {
+                      "type": "number",
+                      "example": 0,
+                      "description": "Unpaid amount (0 if none)"
+                    }
+                  },
+                  "required": [
+                    "plan_name",
+                    "total_monthly_fee",
+                    "billing_day",
+                    "payment_method",
+                    "unpaid_amount"
+                  ],
+                  "title": "GetContractSummaryResponse",
+                  "description": "Response for getting member contract summary"
                 }
               }
             }
@@ -18589,6 +19960,108 @@
                   "required": ["storeUsage", "visitRecords"],
                   "title": "GetUsageHistoryResponse",
                   "description": "Response for getting usage history"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/usage-status": {
+      "get": {
+        "summary": "Get member usage status",
+        "description": "Get visit counts and usage patterns for a member",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usage status information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "monthly_visits": {
+                      "type": "integer",
+                      "example": 12,
+                      "description": "Number of visits in the current month"
+                    },
+                    "monthly_visits_diff": {
+                      "type": "integer",
+                      "example": 3,
+                      "description": "Difference in visits compared to the previous month"
+                    },
+                    "peak_time_slot": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "18:00-20:00",
+                      "description": "Most frequently used time slot"
+                    },
+                    "frequent_store": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "JOYFIT渋谷店",
+                      "description": "Most frequently visited store name"
+                    }
+                  },
+                  "required": [
+                    "monthly_visits",
+                    "monthly_visits_diff",
+                    "peak_time_slot",
+                    "frequent_store"
+                  ],
+                  "title": "GetUsageStatusResponse",
+                  "description": "Response for getting member usage status"
                 }
               }
             }

@@ -4,7 +4,7 @@ import { type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutation
 
 import { client } from '../client.gen';
 import { Authentication, AutoApproval, Brands, FamilyMembers, FamilyRegistrations, MainContracts, Members, MembershipApplications, type Options, Options2, Staffs, Stores } from '../sdk.gen';
-import type { DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdError, DeleteCrmMembersByIdMemosByMemoIdResponse, DeleteCrmStaffsByIdData, DeleteCrmStaffsByIdError, DeleteCrmStaffsByIdResponse, DeleteCrmStoresByIdMainContractsByContractIdData, DeleteCrmStoresByIdMainContractsByContractIdError, DeleteCrmStoresByIdMainContractsByContractIdResponse, DeleteCrmStoresByIdOptionsByOptionIdData, DeleteCrmStoresByIdOptionsByOptionIdError, DeleteCrmStoresByIdOptionsByOptionIdResponse, GetCrmAutoApprovalDashboardData, GetCrmAutoApprovalDashboardError, GetCrmAutoApprovalDashboardResponse, GetCrmAutoApprovalSettingsData, GetCrmAutoApprovalSettingsError, GetCrmAutoApprovalSettingsResponse, GetCrmBrandsData, GetCrmBrandsError, GetCrmBrandsResponse, GetCrmFamilyRegistrationsByIdData, GetCrmFamilyRegistrationsByIdError, GetCrmFamilyRegistrationsByIdResponse, GetCrmFamilyRegistrationsDashboardData, GetCrmFamilyRegistrationsDashboardError, GetCrmFamilyRegistrationsDashboardResponse, GetCrmFamilyRegistrationsData, GetCrmFamilyRegistrationsError, GetCrmFamilyRegistrationsResponse, GetCrmFamilyRegistrationsSummaryData, GetCrmFamilyRegistrationsSummaryError, GetCrmFamilyRegistrationsSummaryResponse, GetCrmMainContractsData, GetCrmMainContractsError, GetCrmMainContractsResponse, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoError, GetCrmMembersByIdBasicInfoResponse, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryError, GetCrmMembersByIdChangeHistoryResponse, GetCrmMembersByIdCommunicationsData, GetCrmMembersByIdCommunicationsError, GetCrmMembersByIdCommunicationsResponse, GetCrmMembersByIdContractsData, GetCrmMembersByIdContractsError, GetCrmMembersByIdContractsResponse, GetCrmMembersByIdData, GetCrmMembersByIdError, GetCrmMembersByIdMemosData, GetCrmMembersByIdMemosError, GetCrmMembersByIdMemosResponse, GetCrmMembersByIdPointsData, GetCrmMembersByIdPointsError, GetCrmMembersByIdPointsResponse, GetCrmMembersByIdRelationshipsData, GetCrmMembersByIdRelationshipsError, GetCrmMembersByIdRelationshipsResponse, GetCrmMembersByIdResponse, GetCrmMembersByIdServiceUsageData, GetCrmMembersByIdServiceUsageError, GetCrmMembersByIdServiceUsageResponse, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsError, GetCrmMembersByIdTrainingRecordsResponse, GetCrmMembersByIdUsageHistoryData, GetCrmMembersByIdUsageHistoryError, GetCrmMembersByIdUsageHistoryResponse, GetCrmMembersByMemberIdFamilyMembersData, GetCrmMembersByMemberIdFamilyMembersError, GetCrmMembersByMemberIdFamilyMembersResponse, GetCrmMembersData, GetCrmMembersError, GetCrmMembershipApplicationsByIdData, GetCrmMembershipApplicationsByIdError, GetCrmMembershipApplicationsByIdResponse, GetCrmMembershipApplicationsData, GetCrmMembershipApplicationsError, GetCrmMembershipApplicationsResponse, GetCrmMembershipApplicationsSummaryData, GetCrmMembershipApplicationsSummaryError, GetCrmMembershipApplicationsSummaryResponse, GetCrmMembersMetaMainContractLabelsData, GetCrmMembersMetaMainContractLabelsError, GetCrmMembersMetaMainContractLabelsResponse, GetCrmMembersResponse, GetCrmMembersSummaryData, GetCrmMembersSummaryError, GetCrmMembersSummaryResponse, GetCrmOptionsData, GetCrmOptionsError, GetCrmOptionsResponse, GetCrmPositionsData, GetCrmPositionsError, GetCrmPositionsResponse, GetCrmStaffsByIdData, GetCrmStaffsByIdError, GetCrmStaffsByIdResponse, GetCrmStaffsData, GetCrmStaffsError, GetCrmStaffsResponse, GetCrmStoresByIdAccessSettingsData, GetCrmStoresByIdAccessSettingsError, GetCrmStoresByIdAccessSettingsResponse, GetCrmStoresByIdBusinessHoursData, GetCrmStoresByIdBusinessHoursError, GetCrmStoresByIdBusinessHoursResponse, GetCrmStoresByIdData, GetCrmStoresByIdError, GetCrmStoresByIdMainContractsData, GetCrmStoresByIdMainContractsError, GetCrmStoresByIdMainContractsResponse, GetCrmStoresByIdOptionsData, GetCrmStoresByIdOptionsError, GetCrmStoresByIdOptionsResponse, GetCrmStoresByIdResponse, GetCrmStoresData, GetCrmStoresError, GetCrmStoresResponse, PatchCrmMembersByIdData, PatchCrmMembersByIdError, PatchCrmMembersByIdResponse, PatchCrmMembershipApplicationsByIdData, PatchCrmMembershipApplicationsByIdError, PatchCrmMembershipApplicationsByIdResponse, PatchCrmStaffsByIdData, PatchCrmStaffsByIdError, PatchCrmStaffsByIdResponse, PatchCrmStoresByIdBusinessHoursData, PatchCrmStoresByIdBusinessHoursError, PatchCrmStoresByIdBusinessHoursResponse, PatchCrmStoresByIdData, PatchCrmStoresByIdError, PatchCrmStoresByIdResponse, PostAuthLoginData, PostAuthLoginError, PostAuthLoginResponse, PostAuthRefreshData, PostAuthRefreshError, PostAuthRefreshResponse, PostCrmFamilyRegistrationsBulkApproveData, PostCrmFamilyRegistrationsBulkApproveError, PostCrmFamilyRegistrationsBulkApproveResponse, PostCrmFamilyRegistrationsBulkRejectData, PostCrmFamilyRegistrationsBulkRejectError, PostCrmFamilyRegistrationsBulkRejectResponse, PostCrmFamilyRegistrationsByIdApproveData, PostCrmFamilyRegistrationsByIdApproveError, PostCrmFamilyRegistrationsByIdApproveResponse, PostCrmFamilyRegistrationsByIdCompleteData, PostCrmFamilyRegistrationsByIdCompleteError, PostCrmFamilyRegistrationsByIdCompleteResponse, PostCrmFamilyRegistrationsByIdRejectData, PostCrmFamilyRegistrationsByIdRejectError, PostCrmFamilyRegistrationsByIdRejectResponse, PostCrmFamilyRegistrationsCheckPrimaryMemberData, PostCrmFamilyRegistrationsCheckPrimaryMemberError, PostCrmFamilyRegistrationsCheckPrimaryMemberResponse, PostCrmFamilyRegistrationsData, PostCrmFamilyRegistrationsError, PostCrmFamilyRegistrationsResponse, PostCrmFamilyRegistrationsRiskEvaluationData, PostCrmFamilyRegistrationsRiskEvaluationError, PostCrmFamilyRegistrationsRiskEvaluationResponse, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosError, PostCrmMembersByIdMemosResponse, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsAdjustError, PostCrmMembersByIdPointsAdjustResponse, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsError, PostCrmMembersByIdPointsResponse, PostCrmMembersData, PostCrmMembersError, PostCrmMembersExportData, PostCrmMembersExportError, PostCrmMembersExportResponse, PostCrmMembershipApplicationsBulkApproveData, PostCrmMembershipApplicationsBulkApproveError, PostCrmMembershipApplicationsBulkApproveResponse, PostCrmMembershipApplicationsBulkRejectData, PostCrmMembershipApplicationsBulkRejectError, PostCrmMembershipApplicationsBulkRejectResponse, PostCrmMembershipApplicationsByIdApproveData, PostCrmMembershipApplicationsByIdApproveError, PostCrmMembershipApplicationsByIdApproveResponse, PostCrmMembershipApplicationsByIdCancelData, PostCrmMembershipApplicationsByIdCancelError, PostCrmMembershipApplicationsByIdCancelResponse, PostCrmMembershipApplicationsByIdRejectData, PostCrmMembershipApplicationsByIdRejectError, PostCrmMembershipApplicationsByIdRejectResponse, PostCrmMembershipApplicationsData, PostCrmMembershipApplicationsError, PostCrmMembershipApplicationsResponse, PostCrmMembersResponse, PostCrmStaffsInviteData, PostCrmStaffsInviteError, PostCrmStaffsInviteResponse, PostCrmStoresByIdMainContractsData, PostCrmStoresByIdMainContractsError, PostCrmStoresByIdMainContractsResponse, PostCrmStoresByIdOptionsData, PostCrmStoresByIdOptionsError, PostCrmStoresByIdOptionsResponse, PostCrmStoresData, PostCrmStoresError, PostCrmStoresResponse, PutCrmAutoApprovalSettingsData, PutCrmAutoApprovalSettingsError, PutCrmAutoApprovalSettingsResponse, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdBasicInfoError, PutCrmMembersByIdBasicInfoResponse, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoError, PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentError, PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdError, PutCrmMembersByIdMemosByMemoIdResponse, PutCrmStoresByIdAccessSettingsData, PutCrmStoresByIdAccessSettingsError, PutCrmStoresByIdAccessSettingsResponse } from '../types.gen';
+import type { DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdError, DeleteCrmMembersByIdMemosByMemoIdResponse, DeleteCrmStaffsByIdData, DeleteCrmStaffsByIdError, DeleteCrmStaffsByIdResponse, DeleteCrmStoresByIdMainContractsByContractIdData, DeleteCrmStoresByIdMainContractsByContractIdError, DeleteCrmStoresByIdMainContractsByContractIdResponse, DeleteCrmStoresByIdOptionsByOptionIdData, DeleteCrmStoresByIdOptionsByOptionIdError, DeleteCrmStoresByIdOptionsByOptionIdResponse, GetCrmAutoApprovalDashboardData, GetCrmAutoApprovalDashboardError, GetCrmAutoApprovalDashboardResponse, GetCrmAutoApprovalSettingsData, GetCrmAutoApprovalSettingsError, GetCrmAutoApprovalSettingsResponse, GetCrmBrandsData, GetCrmBrandsError, GetCrmBrandsResponse, GetCrmFamilyRegistrationsByIdData, GetCrmFamilyRegistrationsByIdError, GetCrmFamilyRegistrationsByIdResponse, GetCrmFamilyRegistrationsDashboardData, GetCrmFamilyRegistrationsDashboardError, GetCrmFamilyRegistrationsDashboardResponse, GetCrmFamilyRegistrationsData, GetCrmFamilyRegistrationsError, GetCrmFamilyRegistrationsResponse, GetCrmFamilyRegistrationsSummaryData, GetCrmFamilyRegistrationsSummaryError, GetCrmFamilyRegistrationsSummaryResponse, GetCrmMainContractsData, GetCrmMainContractsError, GetCrmMainContractsResponse, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoError, GetCrmMembersByIdBasicInfoResponse, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryError, GetCrmMembersByIdChangeHistoryResponse, GetCrmMembersByIdCommunicationsData, GetCrmMembersByIdCommunicationsError, GetCrmMembersByIdCommunicationsResponse, GetCrmMembersByIdContractsCampaignsData, GetCrmMembersByIdContractsCampaignsError, GetCrmMembersByIdContractsCampaignsResponse, GetCrmMembersByIdContractsData, GetCrmMembersByIdContractsDayPassHistoryData, GetCrmMembersByIdContractsDayPassHistoryError, GetCrmMembersByIdContractsDayPassHistoryResponse, GetCrmMembersByIdContractsError, GetCrmMembersByIdContractsMainContractData, GetCrmMembersByIdContractsMainContractError, GetCrmMembersByIdContractsMainContractResponse, GetCrmMembersByIdContractsOptionContractsData, GetCrmMembersByIdContractsOptionContractsError, GetCrmMembersByIdContractsOptionContractsResponse, GetCrmMembersByIdContractsPaymentHistoryData, GetCrmMembersByIdContractsPaymentHistoryError, GetCrmMembersByIdContractsPaymentHistoryResponse, GetCrmMembersByIdContractsResponse, GetCrmMembersByIdContractsSummaryData, GetCrmMembersByIdContractsSummaryError, GetCrmMembersByIdContractsSummaryResponse, GetCrmMembersByIdData, GetCrmMembersByIdError, GetCrmMembersByIdMemosData, GetCrmMembersByIdMemosError, GetCrmMembersByIdMemosResponse, GetCrmMembersByIdPointsData, GetCrmMembersByIdPointsError, GetCrmMembersByIdPointsResponse, GetCrmMembersByIdRelationshipsData, GetCrmMembersByIdRelationshipsError, GetCrmMembersByIdRelationshipsResponse, GetCrmMembersByIdResponse, GetCrmMembersByIdServiceUsageData, GetCrmMembersByIdServiceUsageError, GetCrmMembersByIdServiceUsageResponse, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsError, GetCrmMembersByIdTrainingRecordsResponse, GetCrmMembersByIdUsageHistoryData, GetCrmMembersByIdUsageHistoryError, GetCrmMembersByIdUsageHistoryResponse, GetCrmMembersByIdUsageStatusData, GetCrmMembersByIdUsageStatusError, GetCrmMembersByIdUsageStatusResponse, GetCrmMembersByMemberIdFamilyMembersData, GetCrmMembersByMemberIdFamilyMembersError, GetCrmMembersByMemberIdFamilyMembersResponse, GetCrmMembersData, GetCrmMembersError, GetCrmMembershipApplicationsByIdData, GetCrmMembershipApplicationsByIdError, GetCrmMembershipApplicationsByIdResponse, GetCrmMembershipApplicationsData, GetCrmMembershipApplicationsError, GetCrmMembershipApplicationsResponse, GetCrmMembershipApplicationsSummaryData, GetCrmMembershipApplicationsSummaryError, GetCrmMembershipApplicationsSummaryResponse, GetCrmMembersMetaMainContractLabelsData, GetCrmMembersMetaMainContractLabelsError, GetCrmMembersMetaMainContractLabelsResponse, GetCrmMembersResponse, GetCrmMembersSummaryData, GetCrmMembersSummaryError, GetCrmMembersSummaryResponse, GetCrmOptionsData, GetCrmOptionsError, GetCrmOptionsResponse, GetCrmPositionsData, GetCrmPositionsError, GetCrmPositionsResponse, GetCrmStaffsByIdData, GetCrmStaffsByIdError, GetCrmStaffsByIdResponse, GetCrmStaffsData, GetCrmStaffsError, GetCrmStaffsResponse, GetCrmStoresByIdAccessSettingsData, GetCrmStoresByIdAccessSettingsError, GetCrmStoresByIdAccessSettingsResponse, GetCrmStoresByIdBusinessHoursData, GetCrmStoresByIdBusinessHoursError, GetCrmStoresByIdBusinessHoursResponse, GetCrmStoresByIdData, GetCrmStoresByIdError, GetCrmStoresByIdMainContractsData, GetCrmStoresByIdMainContractsError, GetCrmStoresByIdMainContractsResponse, GetCrmStoresByIdOptionsData, GetCrmStoresByIdOptionsError, GetCrmStoresByIdOptionsResponse, GetCrmStoresByIdResponse, GetCrmStoresData, GetCrmStoresError, GetCrmStoresResponse, PatchCrmMembersByIdContractsMainContractChangeData, PatchCrmMembersByIdContractsMainContractChangeError, PatchCrmMembersByIdContractsMainContractChangeResponse, PatchCrmMembersByIdContractsOptionContractsCancelData, PatchCrmMembersByIdContractsOptionContractsCancelError, PatchCrmMembersByIdContractsOptionContractsCancelResponse, PatchCrmMembersByIdContractsOptionContractsChangeData, PatchCrmMembersByIdContractsOptionContractsChangeError, PatchCrmMembersByIdContractsOptionContractsChangeResponse, PatchCrmMembersByIdData, PatchCrmMembersByIdError, PatchCrmMembersByIdResponse, PatchCrmMembershipApplicationsByIdData, PatchCrmMembershipApplicationsByIdError, PatchCrmMembershipApplicationsByIdResponse, PatchCrmStaffsByIdData, PatchCrmStaffsByIdError, PatchCrmStaffsByIdResponse, PatchCrmStoresByIdBusinessHoursData, PatchCrmStoresByIdBusinessHoursError, PatchCrmStoresByIdBusinessHoursResponse, PatchCrmStoresByIdData, PatchCrmStoresByIdError, PatchCrmStoresByIdResponse, PostAuthLoginData, PostAuthLoginError, PostAuthLoginResponse, PostAuthRefreshData, PostAuthRefreshError, PostAuthRefreshResponse, PostCrmFamilyRegistrationsBulkApproveData, PostCrmFamilyRegistrationsBulkApproveError, PostCrmFamilyRegistrationsBulkApproveResponse, PostCrmFamilyRegistrationsBulkRejectData, PostCrmFamilyRegistrationsBulkRejectError, PostCrmFamilyRegistrationsBulkRejectResponse, PostCrmFamilyRegistrationsByIdApproveData, PostCrmFamilyRegistrationsByIdApproveError, PostCrmFamilyRegistrationsByIdApproveResponse, PostCrmFamilyRegistrationsByIdCompleteData, PostCrmFamilyRegistrationsByIdCompleteError, PostCrmFamilyRegistrationsByIdCompleteResponse, PostCrmFamilyRegistrationsByIdRejectData, PostCrmFamilyRegistrationsByIdRejectError, PostCrmFamilyRegistrationsByIdRejectResponse, PostCrmFamilyRegistrationsCheckPrimaryMemberData, PostCrmFamilyRegistrationsCheckPrimaryMemberError, PostCrmFamilyRegistrationsCheckPrimaryMemberResponse, PostCrmFamilyRegistrationsData, PostCrmFamilyRegistrationsError, PostCrmFamilyRegistrationsResponse, PostCrmFamilyRegistrationsRiskEvaluationData, PostCrmFamilyRegistrationsRiskEvaluationError, PostCrmFamilyRegistrationsRiskEvaluationResponse, PostCrmMembersByIdContractsOptionContractsData, PostCrmMembersByIdContractsOptionContractsError, PostCrmMembersByIdContractsOptionContractsResponse, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosError, PostCrmMembersByIdMemosResponse, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsAdjustError, PostCrmMembersByIdPointsAdjustResponse, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsError, PostCrmMembersByIdPointsResponse, PostCrmMembersData, PostCrmMembersError, PostCrmMembersExportData, PostCrmMembersExportError, PostCrmMembersExportResponse, PostCrmMembershipApplicationsBulkApproveData, PostCrmMembershipApplicationsBulkApproveError, PostCrmMembershipApplicationsBulkApproveResponse, PostCrmMembershipApplicationsBulkRejectData, PostCrmMembershipApplicationsBulkRejectError, PostCrmMembershipApplicationsBulkRejectResponse, PostCrmMembershipApplicationsByIdApproveData, PostCrmMembershipApplicationsByIdApproveError, PostCrmMembershipApplicationsByIdApproveResponse, PostCrmMembershipApplicationsByIdCancelData, PostCrmMembershipApplicationsByIdCancelError, PostCrmMembershipApplicationsByIdCancelResponse, PostCrmMembershipApplicationsByIdRejectData, PostCrmMembershipApplicationsByIdRejectError, PostCrmMembershipApplicationsByIdRejectResponse, PostCrmMembershipApplicationsData, PostCrmMembershipApplicationsError, PostCrmMembershipApplicationsResponse, PostCrmMembersResponse, PostCrmStaffsInviteData, PostCrmStaffsInviteError, PostCrmStaffsInviteResponse, PostCrmStoresByIdMainContractsData, PostCrmStoresByIdMainContractsError, PostCrmStoresByIdMainContractsResponse, PostCrmStoresByIdOptionsData, PostCrmStoresByIdOptionsError, PostCrmStoresByIdOptionsResponse, PostCrmStoresData, PostCrmStoresError, PostCrmStoresResponse, PutCrmAutoApprovalSettingsData, PutCrmAutoApprovalSettingsError, PutCrmAutoApprovalSettingsResponse, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdBasicInfoError, PutCrmMembersByIdBasicInfoResponse, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoError, PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentError, PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdError, PutCrmMembersByIdMemosByMemoIdResponse, PutCrmStoresByIdAccessSettingsData, PutCrmStoresByIdAccessSettingsError, PutCrmStoresByIdAccessSettingsResponse } from '../types.gen';
 
 /**
  * User login
@@ -595,6 +595,182 @@ export const getCrmMembersByIdCommunicationsOptions = (options: Options<GetCrmMe
     queryKey: getCrmMembersByIdCommunicationsQueryKey(options)
 });
 
+export const getCrmMembersByIdContractsCampaignsQueryKey = (options: Options<GetCrmMembersByIdContractsCampaignsData>) => createQueryKey('getCrmMembersByIdContractsCampaigns', options);
+
+/**
+ * Get member campaigns
+ *
+ * Get active and historical campaign information for a member
+ */
+export const getCrmMembersByIdContractsCampaignsOptions = (options: Options<GetCrmMembersByIdContractsCampaignsData>) => queryOptions<GetCrmMembersByIdContractsCampaignsResponse, GetCrmMembersByIdContractsCampaignsError, GetCrmMembersByIdContractsCampaignsResponse, ReturnType<typeof getCrmMembersByIdContractsCampaignsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdContractsCampaigns({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdContractsCampaignsQueryKey(options)
+});
+
+export const getCrmMembersByIdContractsDayPassHistoryQueryKey = (options: Options<GetCrmMembersByIdContractsDayPassHistoryData>) => createQueryKey('getCrmMembersByIdContractsDayPassHistory', options);
+
+/**
+ * Get member day pass purchase history
+ *
+ * Get 1DayPass purchase history records for a member
+ */
+export const getCrmMembersByIdContractsDayPassHistoryOptions = (options: Options<GetCrmMembersByIdContractsDayPassHistoryData>) => queryOptions<GetCrmMembersByIdContractsDayPassHistoryResponse, GetCrmMembersByIdContractsDayPassHistoryError, GetCrmMembersByIdContractsDayPassHistoryResponse, ReturnType<typeof getCrmMembersByIdContractsDayPassHistoryQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdContractsDayPassHistory({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdContractsDayPassHistoryQueryKey(options)
+});
+
+/**
+ * Change member main contract
+ *
+ * Submit a request to change the member main contract
+ */
+export const patchCrmMembersByIdContractsMainContractChangeMutation = (options?: Partial<Options<PatchCrmMembersByIdContractsMainContractChangeData>>): UseMutationOptions<PatchCrmMembersByIdContractsMainContractChangeResponse, PatchCrmMembersByIdContractsMainContractChangeError, Options<PatchCrmMembersByIdContractsMainContractChangeData>> => {
+    const mutationOptions: UseMutationOptions<PatchCrmMembersByIdContractsMainContractChangeResponse, PatchCrmMembersByIdContractsMainContractChangeError, Options<PatchCrmMembersByIdContractsMainContractChangeData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Members.patchCrmMembersByIdContractsMainContractChange({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmMembersByIdContractsMainContractQueryKey = (options: Options<GetCrmMembersByIdContractsMainContractData>) => createQueryKey('getCrmMembersByIdContractsMainContract', options);
+
+/**
+ * Get member main contract
+ *
+ * Get main contract information for a member
+ */
+export const getCrmMembersByIdContractsMainContractOptions = (options: Options<GetCrmMembersByIdContractsMainContractData>) => queryOptions<GetCrmMembersByIdContractsMainContractResponse, GetCrmMembersByIdContractsMainContractError, GetCrmMembersByIdContractsMainContractResponse, ReturnType<typeof getCrmMembersByIdContractsMainContractQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdContractsMainContract({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdContractsMainContractQueryKey(options)
+});
+
+/**
+ * Cancel member option contract
+ *
+ * Cancel one option contract for a member
+ */
+export const patchCrmMembersByIdContractsOptionContractsCancelMutation = (options?: Partial<Options<PatchCrmMembersByIdContractsOptionContractsCancelData>>): UseMutationOptions<PatchCrmMembersByIdContractsOptionContractsCancelResponse, PatchCrmMembersByIdContractsOptionContractsCancelError, Options<PatchCrmMembersByIdContractsOptionContractsCancelData>> => {
+    const mutationOptions: UseMutationOptions<PatchCrmMembersByIdContractsOptionContractsCancelResponse, PatchCrmMembersByIdContractsOptionContractsCancelError, Options<PatchCrmMembersByIdContractsOptionContractsCancelData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Members.patchCrmMembersByIdContractsOptionContractsCancel({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Change member option contract
+ *
+ * Replace a current option contract with another option
+ */
+export const patchCrmMembersByIdContractsOptionContractsChangeMutation = (options?: Partial<Options<PatchCrmMembersByIdContractsOptionContractsChangeData>>): UseMutationOptions<PatchCrmMembersByIdContractsOptionContractsChangeResponse, PatchCrmMembersByIdContractsOptionContractsChangeError, Options<PatchCrmMembersByIdContractsOptionContractsChangeData>> => {
+    const mutationOptions: UseMutationOptions<PatchCrmMembersByIdContractsOptionContractsChangeResponse, PatchCrmMembersByIdContractsOptionContractsChangeError, Options<PatchCrmMembersByIdContractsOptionContractsChangeData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Members.patchCrmMembersByIdContractsOptionContractsChange({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmMembersByIdContractsOptionContractsQueryKey = (options: Options<GetCrmMembersByIdContractsOptionContractsData>) => createQueryKey('getCrmMembersByIdContractsOptionContracts', options);
+
+/**
+ * Get member option contracts
+ *
+ * Get option contracts for a member
+ */
+export const getCrmMembersByIdContractsOptionContractsOptions = (options: Options<GetCrmMembersByIdContractsOptionContractsData>) => queryOptions<GetCrmMembersByIdContractsOptionContractsResponse, GetCrmMembersByIdContractsOptionContractsError, GetCrmMembersByIdContractsOptionContractsResponse, ReturnType<typeof getCrmMembersByIdContractsOptionContractsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdContractsOptionContracts({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdContractsOptionContractsQueryKey(options)
+});
+
+/**
+ * Add member option contract
+ *
+ * Add an option contract for a member
+ */
+export const postCrmMembersByIdContractsOptionContractsMutation = (options?: Partial<Options<PostCrmMembersByIdContractsOptionContractsData>>): UseMutationOptions<PostCrmMembersByIdContractsOptionContractsResponse, PostCrmMembersByIdContractsOptionContractsError, Options<PostCrmMembersByIdContractsOptionContractsData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembersByIdContractsOptionContractsResponse, PostCrmMembersByIdContractsOptionContractsError, Options<PostCrmMembersByIdContractsOptionContractsData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Members.postCrmMembersByIdContractsOptionContracts({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmMembersByIdContractsPaymentHistoryQueryKey = (options: Options<GetCrmMembersByIdContractsPaymentHistoryData>) => createQueryKey('getCrmMembersByIdContractsPaymentHistory', options);
+
+/**
+ * Get member payment history
+ *
+ * Get payment history records for a member
+ */
+export const getCrmMembersByIdContractsPaymentHistoryOptions = (options: Options<GetCrmMembersByIdContractsPaymentHistoryData>) => queryOptions<GetCrmMembersByIdContractsPaymentHistoryResponse, GetCrmMembersByIdContractsPaymentHistoryError, GetCrmMembersByIdContractsPaymentHistoryResponse, ReturnType<typeof getCrmMembersByIdContractsPaymentHistoryQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdContractsPaymentHistory({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdContractsPaymentHistoryQueryKey(options)
+});
+
 export const getCrmMembersByIdContractsQueryKey = (options: Options<GetCrmMembersByIdContractsData>) => createQueryKey('getCrmMembersByIdContracts', options);
 
 /**
@@ -613,6 +789,26 @@ export const getCrmMembersByIdContractsOptions = (options: Options<GetCrmMembers
         return data;
     },
     queryKey: getCrmMembersByIdContractsQueryKey(options)
+});
+
+export const getCrmMembersByIdContractsSummaryQueryKey = (options: Options<GetCrmMembersByIdContractsSummaryData>) => createQueryKey('getCrmMembersByIdContractsSummary', options);
+
+/**
+ * Get member contract summary
+ *
+ * Get a compact contract summary for a member (plan name, monthly fee, billing info, unpaid amount)
+ */
+export const getCrmMembersByIdContractsSummaryOptions = (options: Options<GetCrmMembersByIdContractsSummaryData>) => queryOptions<GetCrmMembersByIdContractsSummaryResponse, GetCrmMembersByIdContractsSummaryError, GetCrmMembersByIdContractsSummaryResponse, ReturnType<typeof getCrmMembersByIdContractsSummaryQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdContractsSummary({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdContractsSummaryQueryKey(options)
 });
 
 export const getCrmMembersByMemberIdFamilyMembersQueryKey = (options: Options<GetCrmMembersByMemberIdFamilyMembersData>) => createQueryKey('getCrmMembersByMemberIdFamilyMembers', options);
@@ -886,6 +1082,26 @@ export const getCrmMembersByIdUsageHistoryOptions = (options: Options<GetCrmMemb
         return data;
     },
     queryKey: getCrmMembersByIdUsageHistoryQueryKey(options)
+});
+
+export const getCrmMembersByIdUsageStatusQueryKey = (options: Options<GetCrmMembersByIdUsageStatusData>) => createQueryKey('getCrmMembersByIdUsageStatus', options);
+
+/**
+ * Get member usage status
+ *
+ * Get visit counts and usage patterns for a member
+ */
+export const getCrmMembersByIdUsageStatusOptions = (options: Options<GetCrmMembersByIdUsageStatusData>) => queryOptions<GetCrmMembersByIdUsageStatusResponse, GetCrmMembersByIdUsageStatusError, GetCrmMembersByIdUsageStatusResponse, ReturnType<typeof getCrmMembersByIdUsageStatusQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdUsageStatus({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdUsageStatusQueryKey(options)
 });
 
 /**

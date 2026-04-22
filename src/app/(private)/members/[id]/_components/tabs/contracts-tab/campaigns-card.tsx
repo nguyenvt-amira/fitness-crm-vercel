@@ -1,7 +1,11 @@
+'use client';
+
 import { formatDate } from '@/utils/format.util';
+import { useQuery } from '@tanstack/react-query';
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -11,15 +15,20 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import type { GetCrmMembersByIdContractsResponse } from '@/lib/api/types.gen';
-
-type Campaigns = GetCrmMembersByIdContractsResponse['campaigns'];
+import { getCrmMembersByIdContractsCampaignsOptions } from '@/lib/api/@tanstack/react-query.gen';
 
 interface CampaignsCardProps {
-  campaigns: Campaigns;
+  memberId: string;
 }
 
-export function ActiveCampaignsCard({ campaigns }: CampaignsCardProps) {
+export function ActiveCampaignsCard({ memberId }: CampaignsCardProps) {
+  const { data: campaigns, isLoading } = useQuery(
+    getCrmMembersByIdContractsCampaignsOptions({
+      path: { id: memberId },
+    }),
+  );
+
+  if (isLoading) return <Skeleton className="h-32 w-full rounded-lg" />;
   return (
     <Card className="gap-0 py-0">
       <CardHeader className="px-4 py-3">
@@ -63,7 +72,14 @@ export function ActiveCampaignsCard({ campaigns }: CampaignsCardProps) {
   );
 }
 
-export function CampaignHistoryCard({ campaigns }: CampaignsCardProps) {
+export function CampaignHistoryCard({ memberId }: CampaignsCardProps) {
+  const { data: campaigns, isLoading } = useQuery(
+    getCrmMembersByIdContractsCampaignsOptions({
+      path: { id: memberId },
+    }),
+  );
+
+  if (isLoading) return <Skeleton className="h-32 w-full rounded-lg" />;
   return (
     <Card className="gap-0 py-0">
       <CardHeader className="px-4 py-3">

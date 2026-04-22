@@ -1227,6 +1227,28 @@ export const MainContractSchema = z
     description: 'Main contract information',
   });
 
+export const GetMainContractResponseSchema = MainContractSchema.openapi({
+  title: 'GetMainContractResponse',
+  description: 'Response for getting member main contract',
+});
+
+export const ChangeMainContractRequestSchema = z
+  .object({
+    contract_id: z.string().min(1).openapi({
+      example: 'MC002',
+      description: 'New main contract id',
+    }),
+  })
+  .openapi({
+    title: 'ChangeMainContractRequest',
+    description: 'Request payload for changing member main contract',
+  });
+
+export const ChangeMainContractResponseSchema = MainContractSchema.openapi({
+  title: 'ChangeMainContractResponse',
+  description: 'Updated member main contract after change request',
+});
+
 /**
  * Option Contract Schema
  */
@@ -1256,6 +1278,95 @@ export const OptionContractSchema = z
   .openapi({
     title: 'OptionContract',
     description: 'Option contract information',
+  });
+
+export const GetOptionContractsResponseSchema = z.array(OptionContractSchema).openapi({
+  title: 'GetOptionContractsResponse',
+  description: 'Response for getting member option contracts',
+});
+
+export const AddOptionContractRequestSchema = z
+  .object({
+    option_id: z.string().min(1).openapi({
+      example: 'OP002',
+      description: 'Option master id to add',
+    }),
+    apply_from: z.enum(['today', 'next_month']).openapi({
+      example: 'today',
+      description: 'When to start applying the option',
+    }),
+  })
+  .openapi({
+    title: 'AddOptionContractRequest',
+    description: 'Request payload for adding a member option contract',
+  });
+
+export const AddOptionContractResponseSchema = OptionContractSchema.openapi({
+  title: 'AddOptionContractResponse',
+  description: 'Added option contract',
+});
+
+export const ChangeOptionContractRequestSchema = z
+  .object({
+    current_option_id: z.string().min(1).openapi({
+      example: 'OP002',
+      description: 'Current option contract id',
+    }),
+    next_option_id: z.string().min(1).openapi({
+      example: 'OP003',
+      description: 'Next option master id',
+    }),
+  })
+  .openapi({
+    title: 'ChangeOptionContractRequest',
+    description: 'Request payload for changing a member option contract',
+  });
+
+export const ChangeOptionContractResponseSchema = z
+  .object({
+    removed_option_id: z.string().openapi({
+      example: 'OP002',
+      description: 'Removed option contract id',
+    }),
+    added_option: OptionContractSchema.openapi({
+      description: 'Newly added option contract',
+    }),
+  })
+  .openapi({
+    title: 'ChangeOptionContractResponse',
+    description: 'Changed option contract result',
+  });
+
+export const CancelOptionContractRequestSchema = z
+  .object({
+    option_id: z.string().min(1).openapi({
+      example: 'OP003',
+      description: 'Option contract id to cancel',
+    }),
+    cancel_timing: z.enum(['immediate', 'end_of_next_month']).openapi({
+      example: 'immediate',
+      description: 'When to cancel the option contract',
+    }),
+    reason: z.string().optional().openapi({
+      example: '利用しなくなったため',
+      description: 'Cancel reason',
+    }),
+  })
+  .openapi({
+    title: 'CancelOptionContractRequest',
+    description: 'Request payload for cancelling a member option contract',
+  });
+
+export const CancelOptionContractResponseSchema = z
+  .object({
+    cancelled_option_id: z.string().openapi({
+      example: 'OP003',
+      description: 'Cancelled option contract id',
+    }),
+  })
+  .openapi({
+    title: 'CancelOptionContractResponse',
+    description: 'Cancelled option contract result',
   });
 
 /**
@@ -1492,6 +1603,127 @@ export const CampaignsSchema = z
   });
 
 /**
+ * Day Pass Record Schema
+ */
+export const DayPassRecordSchema = z
+  .object({
+    id: z.string().openapi({ example: 'dp-001', description: 'Day pass record ID' }),
+    purchased_at: z.string().openapi({
+      example: '2025-03-10',
+      description: 'Purchase date',
+    }),
+    store_name: z.string().openapi({
+      example: 'JOYFIT渋谷店',
+      description: 'Store used for the day pass',
+    }),
+    amount: z.number().openapi({ example: 1100, description: 'Purchase amount (tax included)' }),
+    expires_at: z.string().openapi({
+      example: '2025-03-10',
+      description: 'Expiry date of the day pass',
+    }),
+    status: z.enum(['used', 'unused', 'expired']).openapi({
+      title: 'DayPassStatus',
+      example: 'used',
+      description: 'Day pass status',
+    }),
+  })
+  .openapi({ title: 'DayPassRecord', description: 'Day pass purchase record' });
+
+/**
+ * Get Day Pass History Response Schema
+ */
+export const GetDayPassHistoryResponseSchema = z
+  .object({
+    day_pass_history: z.array(DayPassRecordSchema).openapi({
+      description: 'Day pass purchase history records',
+    }),
+  })
+  .openapi({
+    title: 'GetDayPassHistoryResponse',
+    description: 'Response for getting member day pass purchase history',
+  });
+
+/**
+ * Get Campaigns Response Schema
+ */
+export const GetCampaignsResponseSchema = CampaignsSchema.openapi({
+  title: 'GetCampaignsResponse',
+  description: 'Response for getting member campaigns',
+});
+
+/**
+ * Get Payment History Response Schema
+ */
+export const GetPaymentHistoryResponseSchema = z
+  .object({
+    payment_history: z.array(PaymentRecordSchema).openapi({
+      description: 'Payment history records',
+    }),
+  })
+  .openapi({
+    title: 'GetPaymentHistoryResponse',
+    description: 'Response for getting member payment history',
+  });
+
+/**
+ * Get Contract Summary Response Schema
+ */
+export const GetContractSummaryResponseSchema = z
+  .object({
+    plan_name: z.string().nullable().openapi({
+      example: 'レギュラー会員',
+      description: 'Main contract plan name',
+    }),
+    total_monthly_fee: z.number().openapi({
+      example: 9680,
+      description: 'Total monthly fee (main + options, tax included)',
+    }),
+    billing_day: z.number().int().min(1).max(31).nullable().openapi({
+      example: 27,
+      description: 'Billing day of month',
+    }),
+    payment_method: z.enum(['credit_card', 'bank_transfer']).nullable().openapi({
+      example: 'credit_card',
+      description: 'Payment method',
+    }),
+    unpaid_amount: z.number().openapi({
+      example: 0,
+      description: 'Unpaid amount (0 if none)',
+    }),
+  })
+  .openapi({
+    title: 'GetContractSummaryResponse',
+    description: 'Response for getting member contract summary',
+  });
+
+/**
+ * Get Usage Status Response Schema
+ */
+export const GetUsageStatusResponseSchema = z
+  .object({
+    monthly_visits: z.number().int().openapi({
+      example: 12,
+      description: 'Number of visits in the current month',
+    }),
+    monthly_visits_diff: z.number().int().openapi({
+      example: 3,
+      description: 'Difference in visits compared to the previous month',
+    }),
+    peak_time_slot: z.string().nullable().openapi({
+      example: '18:00-20:00',
+      description: 'Most frequently used time slot',
+    }),
+    frequent_store: z.string().nullable().openapi({
+      example: 'JOYFIT渋谷店',
+      description: 'Most frequently visited store name',
+    }),
+  })
+  .openapi({
+    title: 'GetUsageStatusResponse',
+    description: 'Response for getting member usage status',
+  });
+
+/**
  * Get Contracts Response Schema
  */
 export const GetContractsResponseSchema = z
@@ -1666,14 +1898,30 @@ export type ExportMembersRequest = z.infer<typeof ExportMembersRequestSchema>;
 export type ExportMembersResponse = z.infer<typeof ExportMembersResponseSchema>;
 export type ContractChange = z.infer<typeof ContractChangeSchema>;
 export type MainContract = z.infer<typeof MainContractSchema>;
+export type GetMainContractResponse = z.infer<typeof GetMainContractResponseSchema>;
+export type ChangeMainContractRequest = z.infer<typeof ChangeMainContractRequestSchema>;
+export type ChangeMainContractResponse = z.infer<typeof ChangeMainContractResponseSchema>;
 export type OptionContract = z.infer<typeof OptionContractSchema>;
+export type GetOptionContractsResponse = z.infer<typeof GetOptionContractsResponseSchema>;
+export type AddOptionContractRequest = z.infer<typeof AddOptionContractRequestSchema>;
+export type AddOptionContractResponse = z.infer<typeof AddOptionContractResponseSchema>;
+export type ChangeOptionContractRequest = z.infer<typeof ChangeOptionContractRequestSchema>;
+export type ChangeOptionContractResponse = z.infer<typeof ChangeOptionContractResponseSchema>;
+export type CancelOptionContractRequest = z.infer<typeof CancelOptionContractRequestSchema>;
+export type CancelOptionContractResponse = z.infer<typeof CancelOptionContractResponseSchema>;
 export type OptionChangeHistory = z.infer<typeof OptionChangeHistorySchema>;
 export type SpecialContractItem = z.infer<typeof SpecialContractItemSchema>;
 export type SpecialContracts = z.infer<typeof SpecialContractsSchema>;
 export type PaymentRecord = z.infer<typeof PaymentRecordSchema>;
 export type PaymentInfo = z.infer<typeof PaymentInfoSchema>;
 export type UnpaidInfo = z.infer<typeof UnpaidInfoSchema>;
+export type DayPassRecord = z.infer<typeof DayPassRecordSchema>;
+export type GetDayPassHistoryResponse = z.infer<typeof GetDayPassHistoryResponseSchema>;
 export type Campaign = z.infer<typeof CampaignSchema>;
 export type Campaigns = z.infer<typeof CampaignsSchema>;
+export type GetCampaignsResponse = z.infer<typeof GetCampaignsResponseSchema>;
+export type GetPaymentHistoryResponse = z.infer<typeof GetPaymentHistoryResponseSchema>;
+export type GetContractSummaryResponse = z.infer<typeof GetContractSummaryResponseSchema>;
+export type GetUsageStatusResponse = z.infer<typeof GetUsageStatusResponseSchema>;
 export type GetContractsResponse = z.infer<typeof GetContractsResponseSchema>;
 export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;

@@ -1,24 +1,29 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+'use client';
 
-// TODO: Replace with real API data when available
-interface UsageStats {
-  monthlyVisits?: number;
-  monthlyVisitsDiff?: number;
-  peakTimeSlot?: string;
-  frequentStore?: string;
-}
+import { useQuery } from '@tanstack/react-query';
+
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+
+import { getCrmMembersByIdUsageStatusOptions } from '@/lib/api/@tanstack/react-query.gen';
 
 interface UsageStatusCardProps {
-  stats?: UsageStats;
+  memberId: string;
 }
 
-export function UsageStatusCard({ stats }: UsageStatusCardProps) {
-  const {
-    monthlyVisits = 12,
-    monthlyVisitsDiff = 3,
-    peakTimeSlot = '18:00-20:00',
-    frequentStore = 'JOYFIT渋谷店',
-  } = stats ?? {};
+export function UsageStatusCard({ memberId }: UsageStatusCardProps) {
+  const { data, isLoading } = useQuery(
+    getCrmMembersByIdUsageStatusOptions({
+      path: { id: memberId },
+    }),
+  );
+
+  if (isLoading) return <Skeleton className="h-36 w-full rounded-lg" />;
+
+  const monthlyVisits = data?.monthly_visits ?? 0;
+  const monthlyVisitsDiff: number = data?.monthly_visits_diff ?? 0;
+  const peakTimeSlot = data?.peak_time_slot ?? null;
+  const frequentStore = data?.frequent_store ?? null;
 
   return (
     <Card>

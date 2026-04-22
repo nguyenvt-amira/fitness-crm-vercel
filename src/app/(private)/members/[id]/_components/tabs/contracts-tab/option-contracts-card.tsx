@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 import { formatDate, formatYen } from '@/utils/format.util';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { MoreHorizontal, Plus, RefreshCw, ShieldOff } from 'lucide-react';
 
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -41,47 +42,16 @@ import {
 } from '@/components/ui/table';
 import { Textarea } from '@/components/ui/textarea';
 
-import type { GetCrmMembersByIdContractsResponse } from '@/lib/api/types.gen';
-
-// TODO: Replace with API call when available
-const ALL_AVAILABLE_OPTIONS = [
-  {
-    value: 'タオルレンタル',
-    label: 'タオルレンタル',
-    price: 330,
-    description: '毎回タオルをレンタルできます。',
-  },
-  {
-    value: 'プロテインバー',
-    label: 'プロテインバー',
-    price: 880,
-    description: 'トレーニング後にプロテインバーを受け取れます。',
-  },
-  {
-    value: '契約ロッカー',
-    label: '契約ロッカー',
-    price: 1100,
-    description: '専用ロッカーを月単位で契約できます。',
-  },
-  {
-    value: '水素水',
-    label: '水素水',
-    price: 1100,
-    description: '水素水をいつでもご利用いただけます。',
-  },
-  {
-    value: 'シャワー',
-    label: 'シャワー',
-    price: 550,
-    description: 'シャワー設備をご利用いただけます。',
-  },
-  {
-    value: 'レディースエリア',
-    label: 'レディースエリア',
-    price: 1650,
-    description: '女性専用エリアをご利用いただけます。',
-  },
-];
+import {
+  getCrmMembersByIdContractsOptionContractsOptions,
+  getCrmMembersByIdContractsOptionContractsQueryKey,
+  getCrmMembersByIdContractsQueryKey,
+  getCrmMembersByIdOptions,
+  getCrmStoresByIdOptionsOptions,
+  patchCrmMembersByIdContractsOptionContractsCancelMutation,
+  patchCrmMembersByIdContractsOptionContractsChangeMutation,
+  postCrmMembersByIdContractsOptionContractsMutation,
+} from '@/lib/api/@tanstack/react-query.gen';
 
 function getDateLabels() {
   const today = new Date();
@@ -99,11 +69,8 @@ function getDateLabels() {
   };
 }
 
-type OptionContract = NonNullable<GetCrmMembersByIdContractsResponse['option_contracts']>[number];
-type MemberStatus = GetCrmMembersByIdContractsResponse extends never ? never : string;
-
 interface OptionContractsCardProps {
-  optionContracts: OptionContract[] | undefined;
+  memberId: string;
   isOnLeave: boolean;
   isRetirePending: boolean;
   hasUnpaidFee: boolean;
@@ -112,46 +79,120 @@ interface OptionContractsCardProps {
 type TargetOption = { id: string; name: string; monthly_fee: number };
 
 export function OptionContractsCard({
-  optionContracts,
+  memberId,
   isOnLeave,
   isRetirePending,
   hasUnpaidFee,
 }: OptionContractsCardProps) {
-  const optionAddBlocked = isOnLeave || isRetirePending || hasUnpaidFee;
-  const optionEditBlocked = isOnLeave || isRetirePending;
-
-  const contractedOptionNames = optionContracts?.map((o) => o.name) ?? [];
-  const availableOptions = ALL_AVAILABLE_OPTIONS.filter(
-    (o) => !contractedOptionNames.includes(o.label),
-  );
-
-  const { todayLabel, nextMonthLabel, nextMonthFirstLabel } = getDateLabels();
+  const queryClient = useQueryClient();
 
   // Add sheet state
   const [showAddSheet, setShowAddSheet] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedOptionId, setSelectedOptionId] = useState('');
   const [optionTiming, setOptionTiming] = useState('今日から');
-  const selectedOptionData = ALL_AVAILABLE_OPTIONS.find((o) => o.value === selectedOption);
 
   // Change sheet state
   const [showChangeSheet, setShowChangeSheet] = useState(false);
   const [targetOption, setTargetOption] = useState<TargetOption | null>(null);
-  const [optionChangeTo, setOptionChangeTo] = useState('');
+  const [optionChangeToId, setOptionChangeToId] = useState('');
 
   // Cancel sheet state
   const [showCancelSheet, setShowCancelSheet] = useState(false);
   const [optionCancelTiming, setOptionCancelTiming] = useState('即時解約');
   const [optionCancelReason, setOptionCancelReason] = useState('');
 
+  const { data: optionContracts } = useQuery(
+    getCrmMembersByIdContractsOptionContractsOptions({
+      path: { id: memberId },
+    }),
+  );
+
+  const optionAddBlocked = isOnLeave || isRetirePending || hasUnpaidFee;
+  const optionEditBlocked = isOnLeave || isRetirePending;
+
+  const { data: memberData } = useQuery(
+    getCrmMembersByIdOptions({
+      path: { id: memberId },
+    }),
+  );
+  const storeId = memberData?.profile.store_id;
+  const { data: storeOptionsData, isLoading: isStoreOptionsLoading } = useQuery({
+    ...getCrmStoresByIdOptionsOptions({
+      path: { id: storeId ?? '' },
+    }),
+    enabled: Boolean(storeId) && showAddSheet,
+  });
+  const allAvailableOptions =
+    storeOptionsData?.options.map((option) => ({
+      value: option.id,
+      label: option.name,
+      price: option.price_including_tax,
+      description: option.related_option_name ?? '',
+    })) ?? [];
+  const contractedOptionNames = optionContracts?.map((o) => o.name) ?? [];
+  const availableOptions = allAvailableOptions.filter(
+    (o) => !contractedOptionNames.includes(o.label),
+  );
+
+  const { todayLabel, nextMonthLabel, nextMonthFirstLabel } = getDateLabels();
+
+  const selectedOptionData = allAvailableOptions.find((o) => o.value === selectedOptionId);
+
+  const invalidateContractQueries = async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: getCrmMembersByIdContractsOptionContractsQueryKey({
+          path: { id: memberId },
+        }),
+      }),
+      queryClient.invalidateQueries({
+        queryKey: getCrmMembersByIdContractsQueryKey({
+          path: { id: memberId },
+        }),
+      }),
+    ]);
+  };
+
+  const { mutate: submitAddOption, isPending: isAddingOption } = useMutation({
+    ...postCrmMembersByIdContractsOptionContractsMutation(),
+    onSuccess: async () => {
+      await invalidateContractQueries();
+      setShowAddSheet(false);
+      setSelectedOptionId('');
+      setOptionTiming('今日から');
+    },
+  });
+
+  const { mutate: submitChangeOption, isPending: isChangingOption } = useMutation({
+    ...patchCrmMembersByIdContractsOptionContractsChangeMutation(),
+    onSuccess: async () => {
+      await invalidateContractQueries();
+      setShowChangeSheet(false);
+      setTargetOption(null);
+      setOptionChangeToId('');
+    },
+  });
+
+  const { mutate: submitCancelOption, isPending: isCancellingOption } = useMutation({
+    ...patchCrmMembersByIdContractsOptionContractsCancelMutation(),
+    onSuccess: async () => {
+      await invalidateContractQueries();
+      setShowCancelSheet(false);
+      setTargetOption(null);
+      setOptionCancelTiming('即時解約');
+      setOptionCancelReason('');
+    },
+  });
+
   const handleOptionAdd = () => {
-    setSelectedOption('');
+    setSelectedOptionId('');
     setOptionTiming('今日から');
     setShowAddSheet(true);
   };
 
   const handleOptionChange = (opt: TargetOption) => {
     setTargetOption(opt);
-    setOptionChangeTo('');
+    setOptionChangeToId('');
     setShowChangeSheet(true);
   };
 
@@ -310,18 +351,18 @@ export function OptionContractsCard({
                 <Label htmlFor="option-change-to" className="text-sm font-medium">
                   変更先オプション <span className="text-destructive ml-1 text-xs">*</span>
                 </Label>
-                <Select value={optionChangeTo} onValueChange={setOptionChangeTo}>
+                <Select value={optionChangeToId} onValueChange={setOptionChangeToId}>
                   <SelectTrigger id="option-change-to" className="h-9 text-sm">
                     <SelectValue placeholder="選択してください" />
                   </SelectTrigger>
                   <SelectContent>
-                    {ALL_AVAILABLE_OPTIONS.filter((o) => o.label !== targetOption?.name).map(
-                      (o) => (
-                        <SelectItem key={o.value} value={o.label}>
+                    {allAvailableOptions
+                      .filter((o) => o.value !== targetOption?.id)
+                      .map((o) => (
+                        <SelectItem key={o.value} value={o.value}>
                           {o.label}　¥{o.price.toLocaleString()}/月
                         </SelectItem>
-                      ),
-                    )}
+                      ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -340,13 +381,19 @@ export function OptionContractsCard({
             </Button>
             <Button
               className="flex-1"
-              disabled={!optionChangeTo}
+              disabled={!optionChangeToId || !targetOption || isChangingOption}
               onClick={() => {
-                // TODO: Call API to change option contract
-                setShowChangeSheet(false);
+                if (!targetOption) return;
+                submitChangeOption({
+                  path: { id: memberId },
+                  body: {
+                    current_option_id: targetOption.id,
+                    next_option_id: optionChangeToId,
+                  },
+                });
               }}
             >
-              変更
+              {isChangingOption ? '送信中...' : '変更'}
             </Button>
           </div>
         </SheetContent>
@@ -452,11 +499,20 @@ export function OptionContractsCard({
               variant="destructive"
               className="flex-1"
               onClick={() => {
-                // TODO: Call API to cancel option contract
-                setShowCancelSheet(false);
+                if (!targetOption) return;
+                submitCancelOption({
+                  path: { id: memberId },
+                  body: {
+                    option_id: targetOption.id,
+                    cancel_timing:
+                      optionCancelTiming === '即時解約' ? 'immediate' : 'end_of_next_month',
+                    reason: optionCancelReason.trim() || undefined,
+                  },
+                });
               }}
+              disabled={!targetOption || isCancellingOption}
             >
-              解約
+              {isCancellingOption ? '送信中...' : '解約'}
             </Button>
           </div>
         </SheetContent>
@@ -491,8 +547,12 @@ export function OptionContractsCard({
                 <Label htmlFor="option-select" className="text-sm font-medium">
                   追加するオプション <span className="text-destructive ml-1 text-xs">*</span>
                 </Label>
-                <Select value={selectedOption} onValueChange={setSelectedOption}>
-                  <SelectTrigger id="option-select" className="h-9 text-sm">
+                <Select value={selectedOptionId} onValueChange={setSelectedOptionId}>
+                  <SelectTrigger
+                    id="option-select"
+                    className="h-9 text-sm"
+                    disabled={isStoreOptionsLoading}
+                  >
                     <SelectValue placeholder="選択してください" />
                   </SelectTrigger>
                   <SelectContent>
@@ -567,13 +627,18 @@ export function OptionContractsCard({
             </Button>
             <Button
               className="flex-1"
-              disabled={hasUnpaidFee || !selectedOption}
+              disabled={hasUnpaidFee || !selectedOptionId || isAddingOption}
               onClick={() => {
-                // TODO: Call API to add option
-                setShowAddSheet(false);
+                submitAddOption({
+                  path: { id: memberId },
+                  body: {
+                    option_id: selectedOptionId,
+                    apply_from: optionTiming === '今日から' ? 'today' : 'next_month',
+                  },
+                });
               }}
             >
-              オプションを追加
+              {isAddingOption ? '送信中...' : 'オプションを追加'}
             </Button>
           </div>
         </SheetContent>

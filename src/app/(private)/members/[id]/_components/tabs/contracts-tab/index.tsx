@@ -2,16 +2,14 @@
 
 import { useQuery } from '@tanstack/react-query';
 
-import { DataStateBoundary } from '@/components/common/data-state-boundary';
-
-import { getCrmMembersByIdContractsOptions } from '@/lib/api/@tanstack/react-query.gen';
+import { getCrmMembersByIdContractsSummaryOptions } from '@/lib/api/@tanstack/react-query.gen';
 import type { GetCrmMembersByIdResponse } from '@/lib/api/types.gen';
 
 import { ActiveCampaignsCard, CampaignHistoryCard } from './campaigns-card';
 import { ContractSummaryCard } from './contract-summary-card';
+import { DayPassHistoryCard } from './day-pass-history-card';
 import { MainContractCard } from './main-contract-card';
 import { OptionContractsCard } from './option-contracts-card';
-import { DayPassHistoryCard, PaymentHistoryCard } from './payment-history-card';
 import { UsageStatusCard } from './usage-status-card';
 
 type MemberStatus = GetCrmMembersByIdResponse['profile']['status'];
@@ -22,63 +20,43 @@ interface ContractsTabProps {
 }
 
 export function ContractsTab({ memberId, memberStatus }: ContractsTabProps) {
-  const { data, isLoading, isError, refetch } = useQuery(
-    getCrmMembersByIdContractsOptions({
+  const { data } = useQuery(
+    getCrmMembersByIdContractsSummaryOptions({
       path: { id: memberId },
     }),
   );
 
   const isOnLeave = memberStatus === 'suspended';
   const isRetirePending = memberStatus === 'pending_withdrawal';
-  const hasUnpaidFee = (data?.unpaid_info?.amount ?? 0) > 0;
+  const hasUnpaidFee = (data?.unpaid_amount ?? 0) > 0;
 
   return (
-    <DataStateBoundary
-      isLoading={isLoading}
-      isError={isError}
-      isEmpty={!data}
-      onRetry={() => refetch()}
-    >
-      {data ? (
-        <div className="flex gap-4">
-          {/* Left Column (60%) */}
-          <div className="flex w-[60%] flex-col gap-4">
-            <MainContractCard mainContract={data.main_contract} />
+    <div className="flex gap-4">
+      {/* Left Column (60%) */}
+      <div className="flex w-[60%] flex-col gap-4">
+        <MainContractCard memberId={memberId} />
 
-            <OptionContractsCard
-              optionContracts={data.option_contracts}
-              isOnLeave={isOnLeave}
-              isRetirePending={isRetirePending}
-              hasUnpaidFee={hasUnpaidFee}
-            />
+        <OptionContractsCard
+          memberId={memberId}
+          isOnLeave={isOnLeave}
+          isRetirePending={isRetirePending}
+          hasUnpaidFee={hasUnpaidFee}
+        />
 
-            <ActiveCampaignsCard campaigns={data.campaigns} />
+        <ActiveCampaignsCard memberId={memberId} />
 
-            <CampaignHistoryCard campaigns={data.campaigns} />
+        <CampaignHistoryCard memberId={memberId} />
 
-            <PaymentHistoryCard paymentHistory={data.payment_info?.payment_history} />
+        <DayPassHistoryCard memberId={memberId} />
+      </div>
 
-            <DayPassHistoryCard />
-          </div>
-
-          {/* Right Column (40%) */}
-          <div className="w-[40%]">
-            <div className="sticky flex flex-col gap-4">
-              <ContractSummaryCard
-                mainContract={data.main_contract}
-                optionContracts={data.option_contracts}
-                paymentInfo={data.payment_info}
-                unpaidInfo={data.unpaid_info}
-              />
-              <UsageStatusCard />
-
-              {/* <PaymentInfoCard paymentInfo={data.payment_info} />
-
-              <SpecialContractsCard specialContracts={data.special_contracts} /> */}
-            </div>
-          </div>
+      {/* Right Column (40%) */}
+      <div className="w-[40%]">
+        <div className="sticky flex flex-col gap-4">
+          <ContractSummaryCard memberId={memberId} />
+          <UsageStatusCard memberId={memberId} />
         </div>
-      ) : null}
-    </DataStateBoundary>
+      </div>
+    </div>
   );
 }

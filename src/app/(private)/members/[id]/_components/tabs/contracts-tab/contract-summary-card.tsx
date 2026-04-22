@@ -1,33 +1,28 @@
+'use client';
+
 import { formatYen } from '@/utils/format.util';
+import { useQuery } from '@tanstack/react-query';
 import { CreditCard } from 'lucide-react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 
-import type { GetCrmMembersByIdContractsResponse } from '@/lib/api/types.gen';
-
-type MainContract = GetCrmMembersByIdContractsResponse['main_contract'];
-type OptionContracts = GetCrmMembersByIdContractsResponse['option_contracts'];
-type PaymentInfo = GetCrmMembersByIdContractsResponse['payment_info'];
-type UnpaidInfo = GetCrmMembersByIdContractsResponse['unpaid_info'];
+import { getCrmMembersByIdContractsSummaryOptions } from '@/lib/api/@tanstack/react-query.gen';
 
 interface ContractSummaryCardProps {
-  mainContract: MainContract;
-  optionContracts: OptionContracts;
-  paymentInfo: PaymentInfo;
-  unpaidInfo: UnpaidInfo;
+  memberId: string;
 }
 
-export function ContractSummaryCard({
-  mainContract,
-  optionContracts,
-  paymentInfo,
-  unpaidInfo,
-}: ContractSummaryCardProps) {
-  const totalMonthlyFee =
-    (mainContract?.monthly_fee ?? 0) +
-    (optionContracts?.reduce((sum, opt) => sum + opt.monthly_fee, 0) ?? 0);
+export function ContractSummaryCard({ memberId }: ContractSummaryCardProps) {
+  const { data, isLoading } = useQuery(
+    getCrmMembersByIdContractsSummaryOptions({
+      path: { id: memberId },
+    }),
+  );
 
-  const hasUnpaidFee = (unpaidInfo?.amount ?? 0) > 0;
+  if (isLoading) return <Skeleton className="h-48 w-full rounded-lg" />;
+
+  const hasUnpaidFee = (data?.unpaid_amount ?? 0) > 0;
 
   return (
     <Card>
@@ -38,16 +33,16 @@ export function ContractSummaryCard({
         <div className="grid grid-cols-2 gap-x-8 gap-y-4">
           <div>
             <p className="text-muted-foreground mb-1 text-xs">主契約名</p>
-            <p className="text-sm font-medium">{mainContract?.plan_name ?? '—'}</p>
+            <p className="text-sm font-medium">{data?.plan_name ?? '—'}</p>
           </div>
           <div>
             <p className="text-muted-foreground mb-1 text-xs">月額合計</p>
-            <p className="text-lg font-semibold">{formatYen(totalMonthlyFee)}</p>
+            <p className="text-lg font-semibold">{formatYen(data?.total_monthly_fee ?? 0)}</p>
           </div>
           <div>
             <p className="text-muted-foreground mb-1 text-xs">次回請求日</p>
             <p className="text-sm font-medium">
-              {paymentInfo?.billing_day ? `毎月${paymentInfo.billing_day}日` : '—'}
+              {data?.billing_day ? `毎月${data.billing_day}日` : '—'}
             </p>
           </div>
           <div>
@@ -55,7 +50,7 @@ export function ContractSummaryCard({
             <div className="flex items-center gap-1">
               <CreditCard className="text-muted-foreground size-4" />
               <p className="text-sm font-medium">
-                {paymentInfo?.method === 'credit_card' ? 'クレジットカード' : '口座振替'}
+                {data?.payment_method === 'credit_card' ? 'クレジットカード' : '口座振替'}
               </p>
             </div>
           </div>
@@ -66,7 +61,7 @@ export function ContractSummaryCard({
                 hasUnpaidFee ? 'text-destructive' : 'text-muted-foreground'
               }`}
             >
-              {hasUnpaidFee ? formatYen(unpaidInfo!.amount) : '¥0'}
+              {hasUnpaidFee ? formatYen(data!.unpaid_amount) : '¥0'}
             </p>
           </div>
         </div>

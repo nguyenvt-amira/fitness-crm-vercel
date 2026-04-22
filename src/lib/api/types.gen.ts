@@ -10259,6 +10259,848 @@ export type GetCrmMembersByIdCommunicationsResponses = {
 
 export type GetCrmMembersByIdCommunicationsResponse = GetCrmMembersByIdCommunicationsResponses[keyof GetCrmMembersByIdCommunicationsResponses];
 
+export type GetCrmMembersByIdContractsCampaignsData = {
+    body?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/contracts/campaigns';
+};
+
+export type GetCrmMembersByIdContractsCampaignsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembersByIdContractsCampaignsError = GetCrmMembersByIdContractsCampaignsErrors[keyof GetCrmMembersByIdContractsCampaignsErrors];
+
+export type GetCrmMembersByIdContractsCampaignsResponses = {
+    /**
+     * GetCampaignsResponse
+     *
+     * Response for getting member campaigns
+     */
+    200: {
+        /**
+         * Active campaigns
+         */
+        active: Array<{
+            /**
+             * Campaign name
+             */
+            campaign_name: string;
+            /**
+             * Campaign period start date
+             */
+            period_start?: string;
+            /**
+             * Campaign period end date
+             */
+            period_end?: string;
+            /**
+             * Discount content
+             */
+            discount_content?: string;
+            /**
+             * Remaining days
+             */
+            remaining_days?: number;
+            /**
+             * Applied date
+             */
+            applied_at?: string;
+            /**
+             * Campaign content
+             */
+            content?: string;
+            /**
+             * CampaignStatus
+             *
+             * Campaign status
+             */
+            status?: 'active' | 'expired' | 'upcoming';
+        }>;
+        /**
+         * Campaign history
+         */
+        history: Array<{
+            /**
+             * Campaign name
+             */
+            campaign_name: string;
+            /**
+             * Campaign period start date
+             */
+            period_start?: string;
+            /**
+             * Campaign period end date
+             */
+            period_end?: string;
+            /**
+             * Discount content
+             */
+            discount_content?: string;
+            /**
+             * Remaining days
+             */
+            remaining_days?: number;
+            /**
+             * Applied date
+             */
+            applied_at?: string;
+            /**
+             * Campaign content
+             */
+            content?: string;
+            /**
+             * CampaignStatus
+             *
+             * Campaign status
+             */
+            status?: 'active' | 'expired' | 'upcoming';
+        }>;
+    };
+};
+
+export type GetCrmMembersByIdContractsCampaignsResponse = GetCrmMembersByIdContractsCampaignsResponses[keyof GetCrmMembersByIdContractsCampaignsResponses];
+
+export type GetCrmMembersByIdContractsDayPassHistoryData = {
+    body?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/contracts/day-pass-history';
+};
+
+export type GetCrmMembersByIdContractsDayPassHistoryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembersByIdContractsDayPassHistoryError = GetCrmMembersByIdContractsDayPassHistoryErrors[keyof GetCrmMembersByIdContractsDayPassHistoryErrors];
+
+export type GetCrmMembersByIdContractsDayPassHistoryResponses = {
+    /**
+     * GetDayPassHistoryResponse
+     *
+     * Response for getting member day pass purchase history
+     */
+    200: {
+        /**
+         * Day pass purchase history records
+         */
+        day_pass_history: Array<{
+            /**
+             * Day pass record ID
+             */
+            id: string;
+            /**
+             * Purchase date
+             */
+            purchased_at: string;
+            /**
+             * Store used for the day pass
+             */
+            store_name: string;
+            /**
+             * Purchase amount (tax included)
+             */
+            amount: number;
+            /**
+             * Expiry date of the day pass
+             */
+            expires_at: string;
+            /**
+             * DayPassStatus
+             *
+             * Day pass status
+             */
+            status: 'used' | 'unused' | 'expired';
+        }>;
+    };
+};
+
+export type GetCrmMembersByIdContractsDayPassHistoryResponse = GetCrmMembersByIdContractsDayPassHistoryResponses[keyof GetCrmMembersByIdContractsDayPassHistoryResponses];
+
+export type PatchCrmMembersByIdContractsMainContractChangeData = {
+    /**
+     * ChangeMainContractRequest
+     *
+     * Request payload for changing member main contract
+     */
+    body?: {
+        /**
+         * New main contract id
+         */
+        contract_id: string;
+    };
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/contracts/main-contract/change';
+};
+
+export type PatchCrmMembersByIdContractsMainContractChangeErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PatchCrmMembersByIdContractsMainContractChangeError = PatchCrmMembersByIdContractsMainContractChangeErrors[keyof PatchCrmMembersByIdContractsMainContractChangeErrors];
+
+export type PatchCrmMembersByIdContractsMainContractChangeResponses = {
+    /**
+     * ChangeMainContractResponse
+     *
+     * Updated member main contract after change request
+     */
+    200: {
+        /**
+         * Plan name
+         */
+        plan_name: string;
+        /**
+         * Monthly fee (tax included)
+         */
+        monthly_fee: number;
+        /**
+         * Contract start date
+         */
+        start_date: string;
+        /**
+         * Penalty period end date
+         */
+        penalty_period_end?: string;
+        /**
+         * Contract change history
+         */
+        change_history: Array<{
+            /**
+             * Change date and time
+             */
+            changed_at: string;
+            /**
+             * Previous main contract display name
+             */
+            previous_plan: string;
+            /**
+             * New main contract display name
+             */
+            new_plan: string;
+            /**
+             * Reason for change
+             */
+            reason?: string;
+        }>;
+    };
+};
+
+export type PatchCrmMembersByIdContractsMainContractChangeResponse = PatchCrmMembersByIdContractsMainContractChangeResponses[keyof PatchCrmMembersByIdContractsMainContractChangeResponses];
+
+export type GetCrmMembersByIdContractsMainContractData = {
+    body?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/contracts/main-contract';
+};
+
+export type GetCrmMembersByIdContractsMainContractErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembersByIdContractsMainContractError = GetCrmMembersByIdContractsMainContractErrors[keyof GetCrmMembersByIdContractsMainContractErrors];
+
+export type GetCrmMembersByIdContractsMainContractResponses = {
+    /**
+     * GetMainContractResponse
+     *
+     * Response for getting member main contract
+     */
+    200: {
+        /**
+         * Plan name
+         */
+        plan_name: string;
+        /**
+         * Monthly fee (tax included)
+         */
+        monthly_fee: number;
+        /**
+         * Contract start date
+         */
+        start_date: string;
+        /**
+         * Penalty period end date
+         */
+        penalty_period_end?: string;
+        /**
+         * Contract change history
+         */
+        change_history: Array<{
+            /**
+             * Change date and time
+             */
+            changed_at: string;
+            /**
+             * Previous main contract display name
+             */
+            previous_plan: string;
+            /**
+             * New main contract display name
+             */
+            new_plan: string;
+            /**
+             * Reason for change
+             */
+            reason?: string;
+        }>;
+    };
+};
+
+export type GetCrmMembersByIdContractsMainContractResponse = GetCrmMembersByIdContractsMainContractResponses[keyof GetCrmMembersByIdContractsMainContractResponses];
+
+export type PatchCrmMembersByIdContractsOptionContractsCancelData = {
+    /**
+     * CancelOptionContractRequest
+     *
+     * Request payload for cancelling a member option contract
+     */
+    body?: {
+        /**
+         * Option contract id to cancel
+         */
+        option_id: string;
+        /**
+         * When to cancel the option contract
+         */
+        cancel_timing: 'immediate' | 'end_of_next_month';
+        /**
+         * Cancel reason
+         */
+        reason?: string;
+    };
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/contracts/option-contracts/cancel';
+};
+
+export type PatchCrmMembersByIdContractsOptionContractsCancelErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PatchCrmMembersByIdContractsOptionContractsCancelError = PatchCrmMembersByIdContractsOptionContractsCancelErrors[keyof PatchCrmMembersByIdContractsOptionContractsCancelErrors];
+
+export type PatchCrmMembersByIdContractsOptionContractsCancelResponses = {
+    /**
+     * CancelOptionContractResponse
+     *
+     * Cancelled option contract result
+     */
+    200: {
+        /**
+         * Cancelled option contract id
+         */
+        cancelled_option_id: string;
+    };
+};
+
+export type PatchCrmMembersByIdContractsOptionContractsCancelResponse = PatchCrmMembersByIdContractsOptionContractsCancelResponses[keyof PatchCrmMembersByIdContractsOptionContractsCancelResponses];
+
+export type PatchCrmMembersByIdContractsOptionContractsChangeData = {
+    /**
+     * ChangeOptionContractRequest
+     *
+     * Request payload for changing a member option contract
+     */
+    body?: {
+        /**
+         * Current option contract id
+         */
+        current_option_id: string;
+        /**
+         * Next option master id
+         */
+        next_option_id: string;
+    };
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/contracts/option-contracts/change';
+};
+
+export type PatchCrmMembersByIdContractsOptionContractsChangeErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PatchCrmMembersByIdContractsOptionContractsChangeError = PatchCrmMembersByIdContractsOptionContractsChangeErrors[keyof PatchCrmMembersByIdContractsOptionContractsChangeErrors];
+
+export type PatchCrmMembersByIdContractsOptionContractsChangeResponses = {
+    /**
+     * ChangeOptionContractResponse
+     *
+     * Changed option contract result
+     */
+    200: {
+        /**
+         * Removed option contract id
+         */
+        removed_option_id: string;
+        /**
+         * OptionContract
+         *
+         * Newly added option contract
+         */
+        added_option: {
+            /**
+             * Option contract ID
+             */
+            id: string;
+            /**
+             * Option name
+             */
+            name: string;
+            /**
+             * Monthly fee
+             */
+            monthly_fee: number;
+            /**
+             * Start date
+             */
+            start_date: string;
+            /**
+             * Next billing date
+             */
+            next_billing_date: string;
+        };
+    };
+};
+
+export type PatchCrmMembersByIdContractsOptionContractsChangeResponse = PatchCrmMembersByIdContractsOptionContractsChangeResponses[keyof PatchCrmMembersByIdContractsOptionContractsChangeResponses];
+
+export type GetCrmMembersByIdContractsOptionContractsData = {
+    body?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/contracts/option-contracts';
+};
+
+export type GetCrmMembersByIdContractsOptionContractsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembersByIdContractsOptionContractsError = GetCrmMembersByIdContractsOptionContractsErrors[keyof GetCrmMembersByIdContractsOptionContractsErrors];
+
+export type GetCrmMembersByIdContractsOptionContractsResponses = {
+    /**
+     * GetOptionContractsResponse
+     *
+     * Response for getting member option contracts
+     */
+    200: Array<{
+        /**
+         * Option contract ID
+         */
+        id: string;
+        /**
+         * Option name
+         */
+        name: string;
+        /**
+         * Monthly fee
+         */
+        monthly_fee: number;
+        /**
+         * Start date
+         */
+        start_date: string;
+        /**
+         * Next billing date
+         */
+        next_billing_date: string;
+    }>;
+};
+
+export type GetCrmMembersByIdContractsOptionContractsResponse = GetCrmMembersByIdContractsOptionContractsResponses[keyof GetCrmMembersByIdContractsOptionContractsResponses];
+
+export type PostCrmMembersByIdContractsOptionContractsData = {
+    /**
+     * AddOptionContractRequest
+     *
+     * Request payload for adding a member option contract
+     */
+    body?: {
+        /**
+         * Option master id to add
+         */
+        option_id: string;
+        /**
+         * When to start applying the option
+         */
+        apply_from: 'today' | 'next_month';
+    };
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/contracts/option-contracts';
+};
+
+export type PostCrmMembersByIdContractsOptionContractsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembersByIdContractsOptionContractsError = PostCrmMembersByIdContractsOptionContractsErrors[keyof PostCrmMembersByIdContractsOptionContractsErrors];
+
+export type PostCrmMembersByIdContractsOptionContractsResponses = {
+    /**
+     * AddOptionContractResponse
+     *
+     * Added option contract
+     */
+    200: {
+        /**
+         * Option contract ID
+         */
+        id: string;
+        /**
+         * Option name
+         */
+        name: string;
+        /**
+         * Monthly fee
+         */
+        monthly_fee: number;
+        /**
+         * Start date
+         */
+        start_date: string;
+        /**
+         * Next billing date
+         */
+        next_billing_date: string;
+    };
+};
+
+export type PostCrmMembersByIdContractsOptionContractsResponse = PostCrmMembersByIdContractsOptionContractsResponses[keyof PostCrmMembersByIdContractsOptionContractsResponses];
+
+export type GetCrmMembersByIdContractsPaymentHistoryData = {
+    body?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/contracts/payment-history';
+};
+
+export type GetCrmMembersByIdContractsPaymentHistoryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembersByIdContractsPaymentHistoryError = GetCrmMembersByIdContractsPaymentHistoryErrors[keyof GetCrmMembersByIdContractsPaymentHistoryErrors];
+
+export type GetCrmMembersByIdContractsPaymentHistoryResponses = {
+    /**
+     * GetPaymentHistoryResponse
+     *
+     * Response for getting member payment history
+     */
+    200: {
+        /**
+         * Payment history records
+         */
+        payment_history: Array<{
+            /**
+             * Payment date
+             */
+            date: string;
+            /**
+             * Payment amount
+             */
+            amount: number;
+            /**
+             * Payment breakdown
+             */
+            breakdown: string;
+            /**
+             * Payment status
+             */
+            status: 'success' | 'failed';
+            /**
+             * Additional notes
+             */
+            notes?: string;
+        }>;
+    };
+};
+
+export type GetCrmMembersByIdContractsPaymentHistoryResponse = GetCrmMembersByIdContractsPaymentHistoryResponses[keyof GetCrmMembersByIdContractsPaymentHistoryResponses];
+
 export type GetCrmMembersByIdContractsData = {
     body?: never;
     path: {
@@ -10650,6 +11492,77 @@ export type GetCrmMembersByIdContractsResponses = {
 };
 
 export type GetCrmMembersByIdContractsResponse = GetCrmMembersByIdContractsResponses[keyof GetCrmMembersByIdContractsResponses];
+
+export type GetCrmMembersByIdContractsSummaryData = {
+    body?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/contracts/summary';
+};
+
+export type GetCrmMembersByIdContractsSummaryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembersByIdContractsSummaryError = GetCrmMembersByIdContractsSummaryErrors[keyof GetCrmMembersByIdContractsSummaryErrors];
+
+export type GetCrmMembersByIdContractsSummaryResponses = {
+    /**
+     * GetContractSummaryResponse
+     *
+     * Response for getting member contract summary
+     */
+    200: {
+        /**
+         * Main contract plan name
+         */
+        plan_name: string | null;
+        /**
+         * Total monthly fee (main + options, tax included)
+         */
+        total_monthly_fee: number;
+        /**
+         * Billing day of month
+         */
+        billing_day: number | null;
+        /**
+         * Payment method
+         */
+        payment_method: 'credit_card' | 'bank_transfer' | null;
+        /**
+         * Unpaid amount (0 if none)
+         */
+        unpaid_amount: number;
+    };
+};
+
+export type GetCrmMembersByIdContractsSummaryResponse = GetCrmMembersByIdContractsSummaryResponses[keyof GetCrmMembersByIdContractsSummaryResponses];
 
 export type GetCrmMembersByMemberIdFamilyMembersData = {
     body?: never;
@@ -12396,6 +13309,73 @@ export type GetCrmMembersByIdUsageHistoryResponses = {
 };
 
 export type GetCrmMembersByIdUsageHistoryResponse = GetCrmMembersByIdUsageHistoryResponses[keyof GetCrmMembersByIdUsageHistoryResponses];
+
+export type GetCrmMembersByIdUsageStatusData = {
+    body?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/usage-status';
+};
+
+export type GetCrmMembersByIdUsageStatusErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembersByIdUsageStatusError = GetCrmMembersByIdUsageStatusErrors[keyof GetCrmMembersByIdUsageStatusErrors];
+
+export type GetCrmMembersByIdUsageStatusResponses = {
+    /**
+     * GetUsageStatusResponse
+     *
+     * Response for getting member usage status
+     */
+    200: {
+        /**
+         * Number of visits in the current month
+         */
+        monthly_visits: number;
+        /**
+         * Difference in visits compared to the previous month
+         */
+        monthly_visits_diff: number;
+        /**
+         * Most frequently used time slot
+         */
+        peak_time_slot: string | null;
+        /**
+         * Most frequently visited store name
+         */
+        frequent_store: string | null;
+    };
+};
+
+export type GetCrmMembersByIdUsageStatusResponse = GetCrmMembersByIdUsageStatusResponses[keyof GetCrmMembersByIdUsageStatusResponses];
 
 export type PostCrmMembersExportData = {
     /**
