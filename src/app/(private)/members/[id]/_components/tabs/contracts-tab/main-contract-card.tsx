@@ -42,7 +42,6 @@ import {
   getCrmStoresByIdMainContractsOptions,
   patchCrmMembersByIdContractsMainContractChangeMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
-import type { GetCrmMembersByIdContractsResponse } from '@/lib/api/types.gen';
 
 function getNextMonthFirstLabel() {
   const today = new Date();
@@ -51,8 +50,6 @@ function getNextMonthFirstLabel() {
   const nm = nextMonthFirst.getMonth() + 1;
   return `${ny}年${nm}月${nextMonthFirst.getDate()}日`;
 }
-
-type MainContract = GetCrmMembersByIdContractsResponse['main_contract'];
 
 interface MainContractCardProps {
   memberId: string;
