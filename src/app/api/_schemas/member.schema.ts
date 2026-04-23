@@ -1876,6 +1876,168 @@ export const GetTrainingRecordsResponseSchema = z
   });
 
 /**
+ * Get Body Data Request Schema
+ */
+export const BodyDataSourceSchema = z.enum(['body_planner', '3d_scanner', 'manual']).openapi({
+  title: 'BodyDataSource',
+  description: 'Body data source',
+  example: 'body_planner',
+});
+
+export const GetBodyDataPathParamsSchema = z.object({
+  id: z.string().openapi({
+    description: 'Member ID',
+    example: 'M-00001',
+  }),
+});
+
+export const BodyDataLatestSummarySchema = z
+  .object({
+    date: z.string().openapi({
+      description: 'Latest measurement date',
+      example: '2026-04-17',
+    }),
+    weight: z.number().openapi({
+      description: 'Weight in kg',
+      example: 68.4,
+    }),
+    bmi: z.number().openapi({
+      description: 'Body mass index',
+      example: 22.8,
+    }),
+    fatPercent: z.number().openapi({
+      description: 'Body fat percentage',
+      example: 18.2,
+    }),
+    muscleMass: z.number().openapi({
+      description: 'Muscle mass in kg',
+      example: 29.6,
+    }),
+    basalMetabolism: z.number().int().openapi({
+      description: 'Basal metabolism in kcal',
+      example: 1580,
+    }),
+  })
+  .openapi({
+    title: 'BodyDataLatestSummary',
+    description: 'Latest body data summary',
+  });
+
+export const BodyCompositionSchema = z
+  .object({
+    source: BodyDataSourceSchema.openapi({
+      description: 'Body composition data source',
+    }),
+    weight: z.number().openapi({ description: 'Weight in kg', example: 68.4 }),
+    bmi: z.number().openapi({ description: 'Body mass index', example: 22.8 }),
+    fatPercent: z.number().openapi({ description: 'Body fat percentage', example: 18.2 }),
+    fatMass: z.number().openapi({ description: 'Body fat mass in kg', example: 12.5 }),
+    visceralFatIndex: z.number().openapi({ description: 'Visceral fat index', example: 7.4 }),
+    smi: z.number().openapi({ description: 'Skeletal muscle index', example: 7.6 }),
+    muscleMass: z.number().openapi({ description: 'Muscle mass in kg', example: 29.6 }),
+    boneMass: z.number().openapi({ description: 'Estimated bone mass in kg', example: 2.9 }),
+    waterContent: z.number().openapi({ description: 'Water content in kg', example: 41.2 }),
+    basalMetabolism: z.number().int().openapi({
+      description: 'Basal metabolism in kcal',
+      example: 1580,
+    }),
+    leanBodyMass: z.number().openapi({ description: 'Lean body mass in kg', example: 55.9 }),
+    limbLeanMass: z.number().openapi({ description: 'Limb lean mass in kg', example: 21.4 }),
+  })
+  .openapi({
+    title: 'BodyComposition',
+    description: 'Body composition data',
+  });
+
+export const BodyMeasurementSchema = z
+  .object({
+    source: BodyDataSourceSchema.openapi({
+      description: 'Body measurement data source',
+    }),
+    neck: z.number().openapi({ description: 'Neck circumference in cm', example: 37.5 }),
+    shoulder: z.number().openapi({ description: 'Shoulder width in cm', example: 47.1 }),
+    chest: z.number().openapi({ description: 'Chest circumference in cm', example: 95.4 }),
+    waistAbdomen: z.number().openapi({ description: 'Abdomen circumference in cm', example: 81.2 }),
+    upperArm: z.number().openapi({ description: 'Upper arm circumference in cm', example: 31.4 }),
+    forearm: z.number().openapi({ description: 'Forearm circumference in cm', example: 26.8 }),
+    waistHip: z.number().openapi({ description: 'Waist hip circumference in cm', example: 87.3 }),
+    hip: z.number().openapi({ description: 'Hip circumference in cm', example: 94.7 }),
+    thigh: z.number().openapi({ description: 'Thigh circumference in cm', example: 54.8 }),
+    calf: z.number().openapi({ description: 'Calf circumference in cm', example: 37.1 }),
+    height: z.number().openapi({ description: 'Height in cm', example: 173.0 }),
+  })
+  .openapi({
+    title: 'BodyMeasurement',
+    description: 'Body measurement data',
+  });
+
+export const BodyDataHistoryItemSchema = z
+  .object({
+    id: z.string().openapi({
+      description: 'Body data record ID',
+      example: 'body-001',
+    }),
+    date: z.string().openapi({
+      description: 'Measurement date',
+      example: '2026-04-17',
+    }),
+    source: BodyDataSourceSchema.openapi({
+      description: 'Data source',
+    }),
+    weight: z.number().openapi({
+      description: 'Weight in kg',
+      example: 68.4,
+    }),
+    fatPercent: z.number().openapi({
+      description: 'Body fat percentage',
+      example: 18.2,
+    }),
+  })
+  .openapi({
+    title: 'BodyDataHistoryItem',
+    description: 'Single body data history record',
+  });
+
+export const BodyWeightChartItemSchema = z
+  .object({
+    date: z.string().openapi({
+      description: 'Measurement date',
+      example: '04/17',
+    }),
+    weight: z.number().openapi({
+      description: 'Weight in kg',
+      example: 68.4,
+    }),
+  })
+  .openapi({
+    title: 'BodyWeightChartItem',
+    description: 'Body weight chart data point',
+  });
+
+export const GetBodyDataResponseSchema = z
+  .object({
+    latest: BodyDataLatestSummarySchema.openapi({
+      description: 'Latest body data summary',
+    }),
+    bodyComposition: BodyCompositionSchema.openapi({
+      description: 'Body composition details',
+    }),
+    bodyMeasurement: BodyMeasurementSchema.openapi({
+      description: 'Body measurement details',
+    }),
+    history: z.array(BodyDataHistoryItemSchema).openapi({
+      description: 'Body data history list',
+    }),
+    weightChart: z.array(BodyWeightChartItemSchema).openapi({
+      description: 'Body weight chart points',
+    }),
+  })
+  .openapi({
+    title: 'GetBodyDataResponse',
+    description: 'Response for getting member body data',
+  });
+
+/**
  * Get Contracts Response Schema
  */
 export const GetContractsResponseSchema = z

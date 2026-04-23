@@ -54,8 +54,8 @@ export function BasicInfoTab({ member }: { member: GetMemberDetailResponse }) {
     <div className="flex flex-col items-start gap-4 md:flex-row">
       <div className="w-full md:w-[60%]">
         <div className="flex flex-col gap-4">
-          <Card className="gap-4 py-4">
-            <CardHeader className="gap-0 px-4">
+          <Card>
+            <CardHeader>
               <CardTitle className="text-sm">入会情報</CardTitle>
             </CardHeader>
             <CardContent className="px-4">
@@ -99,8 +99,8 @@ export function BasicInfoTab({ member }: { member: GetMemberDetailResponse }) {
             </CardContent>
           </Card>
 
-          <Card className="gap-4 py-4">
-            <CardHeader className="gap-0 px-4">
+          <Card>
+            <CardHeader>
               <CardTitle className="text-sm">家族会員</CardTitle>
             </CardHeader>
             <CardContent className="px-4">
@@ -145,8 +145,8 @@ export function BasicInfoTab({ member }: { member: GetMemberDetailResponse }) {
 
       <div className="w-full md:w-[40%]">
         <div className="sticky top-6 flex flex-col gap-4">
-          <Card className="gap-4 py-4">
-            <CardHeader className="gap-0 px-4">
+          <Card>
+            <CardHeader>
               <CardTitle className="text-sm">来館情報</CardTitle>
             </CardHeader>
             <CardContent>

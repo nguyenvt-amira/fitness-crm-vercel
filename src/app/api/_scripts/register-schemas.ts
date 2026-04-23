@@ -316,6 +316,38 @@ export function registerAllSchemas() {
     'GetTrainingRecordsResponse',
     registry.register('GetTrainingRecordsResponse', memberSchemas.GetTrainingRecordsResponseSchema),
   );
+  registeredSchemaMap.set(
+    'BodyDataSource',
+    registry.register('BodyDataSource', memberSchemas.BodyDataSourceSchema),
+  );
+  registeredSchemaMap.set(
+    'GetBodyDataPathParams',
+    registry.register('GetBodyDataPathParams', memberSchemas.GetBodyDataPathParamsSchema),
+  );
+  registeredSchemaMap.set(
+    'BodyDataLatestSummary',
+    registry.register('BodyDataLatestSummary', memberSchemas.BodyDataLatestSummarySchema),
+  );
+  registeredSchemaMap.set(
+    'BodyComposition',
+    registry.register('BodyComposition', memberSchemas.BodyCompositionSchema),
+  );
+  registeredSchemaMap.set(
+    'BodyMeasurement',
+    registry.register('BodyMeasurement', memberSchemas.BodyMeasurementSchema),
+  );
+  registeredSchemaMap.set(
+    'BodyDataHistoryItem',
+    registry.register('BodyDataHistoryItem', memberSchemas.BodyDataHistoryItemSchema),
+  );
+  registeredSchemaMap.set(
+    'BodyWeightChartItem',
+    registry.register('BodyWeightChartItem', memberSchemas.BodyWeightChartItemSchema),
+  );
+  registeredSchemaMap.set(
+    'GetBodyDataResponse',
+    registry.register('GetBodyDataResponse', memberSchemas.GetBodyDataResponseSchema),
+  );
 
   // Register membership application schemas
   registeredSchemaMap.set(

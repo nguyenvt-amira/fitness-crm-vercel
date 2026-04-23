@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 
+import { formatDate } from '@/utils/format.util';
 import { useQuery } from '@tanstack/react-query';
 import { Dumbbell } from 'lucide-react';
 
@@ -103,7 +104,9 @@ export function TrainingRecordsTab({ memberId }: { memberId: string }) {
                   <TableBody>
                     {trainingHistory.map((item) => (
                       <TableRow key={item.id}>
-                        <TableCell className="text-muted-foreground text-sm">{item.date}</TableCell>
+                        <TableCell className="text-muted-foreground text-sm">
+                          {formatDate(item.date)}
+                        </TableCell>
                         <TableCell className="text-sm font-medium">{item.routineName}</TableCell>
                         <TableCell className="text-right text-sm">{item.durationMin}分</TableCell>
                         <TableCell className="text-right text-sm">{item.calories}kcal</TableCell>

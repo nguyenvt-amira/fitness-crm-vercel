@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { formatDate } from '@/utils/format.util';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -42,6 +42,7 @@ import { GENDER_LABELS } from '../_constants/constants';
 import { MemoModal } from './_components/memo-modal';
 import { PrintModal } from './_components/print-modal';
 import { BasicInfoTab } from './_components/tabs/basic-info-tab';
+import { BodyDataTab } from './_components/tabs/body-data-tab';
 import { ChangeHistoryTab } from './_components/tabs/change-history-tab';
 import { CommunicationsTab } from './_components/tabs/communications-tab';
 import { ContractsTab } from './_components/tabs/contracts-tab';
@@ -53,18 +54,34 @@ import { TrainingRecordsTab } from './_components/tabs/training-records-tab';
 import { UsageHistoryTab } from './_components/tabs/usage-history-tab';
 
 const BREADCRUMB_ITEMS = [{ url: '/members', label: '会員一覧' }, { label: '会員詳細' }];
+const TABS = [
+  'basic',
+  'contracts',
+  'usage',
+  'points',
+  'service',
+  'communications',
+  'training',
+  'history',
+  'body-data',
+  'relationships',
+] as const;
+
+const isMemberTab = (value: string | null): value is (typeof TABS)[number] => {
+  if (!value) return false;
+  return TABS.includes(value as (typeof TABS)[number]);
+};
 
 export default function MemberDetailPage() {
   const router = useRouter();
+  const pathname = usePathname();
   const params = useParams();
   const searchParams = useSearchParams();
   const tab = searchParams.get('tab');
   const memo = searchParams.get('memo');
 
   const memberId = params.id as string;
-  const [activeTab, setActiveTab] = useState(() =>
-    tab === 'communications' ? 'communications' : 'basic',
-  );
+  const activeTab = isMemberTab(tab) ? tab : 'basic';
   const queryClient = useQueryClient();
   const [showMemoModal, setShowMemoModal] = useState(() => memo === 'add');
   const [editingMemo, setEditingMemo] = useState<StaffMemo | null>(null);
@@ -218,6 +235,21 @@ export default function MemberDetailPage() {
         },
       },
     );
+  };
+
+  const handleTabChange = (value: string) => {
+    if (!isMemberTab(value)) return;
+
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (value === 'basic') {
+      params.delete('tab');
+    } else {
+      params.set('tab', value);
+    }
+
+    const nextUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname;
+    router.replace(nextUrl, { scroll: false });
   };
 
   return (
@@ -454,7 +486,7 @@ export default function MemberDetailPage() {
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden p-4 pt-0">
         <Tabs
           value={activeTab}
-          onValueChange={setActiveTab}
+          onValueChange={handleTabChange}
           className="flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden"
         >
           <div className="shrink-0 overflow-x-auto overflow-y-hidden pt-4 pb-2">
@@ -468,6 +500,7 @@ export default function MemberDetailPage() {
               <TabsTrigger value="communications">コミュニケーション</TabsTrigger>
               <TabsTrigger value="training">トレーニング記録</TabsTrigger>
               <TabsTrigger value="history">変更履歴</TabsTrigger>
+              <TabsTrigger value="body-data">ボディーデータ</TabsTrigger>
               <TabsTrigger value="relationships">関係者情報</TabsTrigger>
             </TabsList>
           </div>
@@ -512,6 +545,10 @@ export default function MemberDetailPage() {
 
             <TabsContent value="history">
               <ChangeHistoryTab memberId={memberId} />
+            </TabsContent>
+
+            <TabsContent value="body-data">
+              <BodyDataTab memberId={memberId} />
             </TabsContent>
 
             <TabsContent value="relationships">

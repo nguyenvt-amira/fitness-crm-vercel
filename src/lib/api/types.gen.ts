@@ -3260,6 +3260,426 @@ export type GetTrainingRecordsResponse = {
 };
 
 /**
+ * BodyDataSource
+ *
+ * Body data source
+ */
+export const BodyDataSource = {
+    BODY_PLANNER: 'body_planner',
+    '3D_SCANNER': '3d_scanner',
+    MANUAL: 'manual'
+} as const;
+
+/**
+ * BodyDataSource
+ *
+ * Body data source
+ */
+export type BodyDataSource = typeof BodyDataSource[keyof typeof BodyDataSource];
+
+export type GetBodyDataPathParams = {
+    /**
+     * Member ID
+     */
+    id: string;
+};
+
+/**
+ * BodyDataLatestSummary
+ *
+ * Latest body data summary
+ */
+export type BodyDataLatestSummary = {
+    /**
+     * Latest measurement date
+     */
+    date: string;
+    /**
+     * Weight in kg
+     */
+    weight: number;
+    /**
+     * Body mass index
+     */
+    bmi: number;
+    /**
+     * Body fat percentage
+     */
+    fatPercent: number;
+    /**
+     * Muscle mass in kg
+     */
+    muscleMass: number;
+    /**
+     * Basal metabolism in kcal
+     */
+    basalMetabolism: number;
+};
+
+/**
+ * BodyComposition
+ *
+ * Body composition data
+ */
+export type BodyComposition = {
+    /**
+     * BodyDataSource
+     *
+     * Body composition data source
+     */
+    source: 'body_planner' | '3d_scanner' | 'manual';
+    /**
+     * Weight in kg
+     */
+    weight: number;
+    /**
+     * Body mass index
+     */
+    bmi: number;
+    /**
+     * Body fat percentage
+     */
+    fatPercent: number;
+    /**
+     * Body fat mass in kg
+     */
+    fatMass: number;
+    /**
+     * Visceral fat index
+     */
+    visceralFatIndex: number;
+    /**
+     * Skeletal muscle index
+     */
+    smi: number;
+    /**
+     * Muscle mass in kg
+     */
+    muscleMass: number;
+    /**
+     * Estimated bone mass in kg
+     */
+    boneMass: number;
+    /**
+     * Water content in kg
+     */
+    waterContent: number;
+    /**
+     * Basal metabolism in kcal
+     */
+    basalMetabolism: number;
+    /**
+     * Lean body mass in kg
+     */
+    leanBodyMass: number;
+    /**
+     * Limb lean mass in kg
+     */
+    limbLeanMass: number;
+};
+
+/**
+ * BodyMeasurement
+ *
+ * Body measurement data
+ */
+export type BodyMeasurement = {
+    /**
+     * BodyDataSource
+     *
+     * Body measurement data source
+     */
+    source: 'body_planner' | '3d_scanner' | 'manual';
+    /**
+     * Neck circumference in cm
+     */
+    neck: number;
+    /**
+     * Shoulder width in cm
+     */
+    shoulder: number;
+    /**
+     * Chest circumference in cm
+     */
+    chest: number;
+    /**
+     * Abdomen circumference in cm
+     */
+    waistAbdomen: number;
+    /**
+     * Upper arm circumference in cm
+     */
+    upperArm: number;
+    /**
+     * Forearm circumference in cm
+     */
+    forearm: number;
+    /**
+     * Waist hip circumference in cm
+     */
+    waistHip: number;
+    /**
+     * Hip circumference in cm
+     */
+    hip: number;
+    /**
+     * Thigh circumference in cm
+     */
+    thigh: number;
+    /**
+     * Calf circumference in cm
+     */
+    calf: number;
+    /**
+     * Height in cm
+     */
+    height: number;
+};
+
+/**
+ * BodyDataHistoryItem
+ *
+ * Single body data history record
+ */
+export type BodyDataHistoryItem = {
+    /**
+     * Body data record ID
+     */
+    id: string;
+    /**
+     * Measurement date
+     */
+    date: string;
+    /**
+     * BodyDataSource
+     *
+     * Data source
+     */
+    source: 'body_planner' | '3d_scanner' | 'manual';
+    /**
+     * Weight in kg
+     */
+    weight: number;
+    /**
+     * Body fat percentage
+     */
+    fatPercent: number;
+};
+
+/**
+ * BodyWeightChartItem
+ *
+ * Body weight chart data point
+ */
+export type BodyWeightChartItem = {
+    /**
+     * Measurement date
+     */
+    date: string;
+    /**
+     * Weight in kg
+     */
+    weight: number;
+};
+
+/**
+ * GetBodyDataResponse
+ *
+ * Response for getting member body data
+ */
+export type GetBodyDataResponse = {
+    /**
+     * BodyDataLatestSummary
+     *
+     * Latest body data summary
+     */
+    latest: {
+        /**
+         * Latest measurement date
+         */
+        date: string;
+        /**
+         * Weight in kg
+         */
+        weight: number;
+        /**
+         * Body mass index
+         */
+        bmi: number;
+        /**
+         * Body fat percentage
+         */
+        fatPercent: number;
+        /**
+         * Muscle mass in kg
+         */
+        muscleMass: number;
+        /**
+         * Basal metabolism in kcal
+         */
+        basalMetabolism: number;
+    };
+    /**
+     * BodyComposition
+     *
+     * Body composition details
+     */
+    bodyComposition: {
+        /**
+         * BodyDataSource
+         *
+         * Body composition data source
+         */
+        source: 'body_planner' | '3d_scanner' | 'manual';
+        /**
+         * Weight in kg
+         */
+        weight: number;
+        /**
+         * Body mass index
+         */
+        bmi: number;
+        /**
+         * Body fat percentage
+         */
+        fatPercent: number;
+        /**
+         * Body fat mass in kg
+         */
+        fatMass: number;
+        /**
+         * Visceral fat index
+         */
+        visceralFatIndex: number;
+        /**
+         * Skeletal muscle index
+         */
+        smi: number;
+        /**
+         * Muscle mass in kg
+         */
+        muscleMass: number;
+        /**
+         * Estimated bone mass in kg
+         */
+        boneMass: number;
+        /**
+         * Water content in kg
+         */
+        waterContent: number;
+        /**
+         * Basal metabolism in kcal
+         */
+        basalMetabolism: number;
+        /**
+         * Lean body mass in kg
+         */
+        leanBodyMass: number;
+        /**
+         * Limb lean mass in kg
+         */
+        limbLeanMass: number;
+    };
+    /**
+     * BodyMeasurement
+     *
+     * Body measurement details
+     */
+    bodyMeasurement: {
+        /**
+         * BodyDataSource
+         *
+         * Body measurement data source
+         */
+        source: 'body_planner' | '3d_scanner' | 'manual';
+        /**
+         * Neck circumference in cm
+         */
+        neck: number;
+        /**
+         * Shoulder width in cm
+         */
+        shoulder: number;
+        /**
+         * Chest circumference in cm
+         */
+        chest: number;
+        /**
+         * Abdomen circumference in cm
+         */
+        waistAbdomen: number;
+        /**
+         * Upper arm circumference in cm
+         */
+        upperArm: number;
+        /**
+         * Forearm circumference in cm
+         */
+        forearm: number;
+        /**
+         * Waist hip circumference in cm
+         */
+        waistHip: number;
+        /**
+         * Hip circumference in cm
+         */
+        hip: number;
+        /**
+         * Thigh circumference in cm
+         */
+        thigh: number;
+        /**
+         * Calf circumference in cm
+         */
+        calf: number;
+        /**
+         * Height in cm
+         */
+        height: number;
+    };
+    /**
+     * Body data history list
+     */
+    history: Array<{
+        /**
+         * Body data record ID
+         */
+        id: string;
+        /**
+         * Measurement date
+         */
+        date: string;
+        /**
+         * BodyDataSource
+         *
+         * Data source
+         */
+        source: 'body_planner' | '3d_scanner' | 'manual';
+        /**
+         * Weight in kg
+         */
+        weight: number;
+        /**
+         * Body fat percentage
+         */
+        fatPercent: number;
+    }>;
+    /**
+     * Body weight chart points
+     */
+    weightChart: Array<{
+        /**
+         * Measurement date
+         */
+        date: string;
+        /**
+         * Weight in kg
+         */
+        weight: number;
+    }>;
+};
+
+/**
  * MembershipApplication
  *
  * Membership application information
@@ -10326,6 +10746,246 @@ export type GetCrmMembersByIdBillingResponses = {
 };
 
 export type GetCrmMembersByIdBillingResponse = GetCrmMembersByIdBillingResponses[keyof GetCrmMembersByIdBillingResponses];
+
+export type GetCrmMembersByIdBodyDataData = {
+    body?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/body-data';
+};
+
+export type GetCrmMembersByIdBodyDataErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembersByIdBodyDataError = GetCrmMembersByIdBodyDataErrors[keyof GetCrmMembersByIdBodyDataErrors];
+
+export type GetCrmMembersByIdBodyDataResponses = {
+    /**
+     * GetBodyDataResponse
+     *
+     * Response for getting member body data
+     */
+    200: {
+        /**
+         * BodyDataLatestSummary
+         *
+         * Latest body data summary
+         */
+        latest: {
+            /**
+             * Latest measurement date
+             */
+            date: string;
+            /**
+             * Weight in kg
+             */
+            weight: number;
+            /**
+             * Body mass index
+             */
+            bmi: number;
+            /**
+             * Body fat percentage
+             */
+            fatPercent: number;
+            /**
+             * Muscle mass in kg
+             */
+            muscleMass: number;
+            /**
+             * Basal metabolism in kcal
+             */
+            basalMetabolism: number;
+        };
+        /**
+         * BodyComposition
+         *
+         * Body composition details
+         */
+        bodyComposition: {
+            /**
+             * BodyDataSource
+             *
+             * Body composition data source
+             */
+            source: 'body_planner' | '3d_scanner' | 'manual';
+            /**
+             * Weight in kg
+             */
+            weight: number;
+            /**
+             * Body mass index
+             */
+            bmi: number;
+            /**
+             * Body fat percentage
+             */
+            fatPercent: number;
+            /**
+             * Body fat mass in kg
+             */
+            fatMass: number;
+            /**
+             * Visceral fat index
+             */
+            visceralFatIndex: number;
+            /**
+             * Skeletal muscle index
+             */
+            smi: number;
+            /**
+             * Muscle mass in kg
+             */
+            muscleMass: number;
+            /**
+             * Estimated bone mass in kg
+             */
+            boneMass: number;
+            /**
+             * Water content in kg
+             */
+            waterContent: number;
+            /**
+             * Basal metabolism in kcal
+             */
+            basalMetabolism: number;
+            /**
+             * Lean body mass in kg
+             */
+            leanBodyMass: number;
+            /**
+             * Limb lean mass in kg
+             */
+            limbLeanMass: number;
+        };
+        /**
+         * BodyMeasurement
+         *
+         * Body measurement details
+         */
+        bodyMeasurement: {
+            /**
+             * BodyDataSource
+             *
+             * Body measurement data source
+             */
+            source: 'body_planner' | '3d_scanner' | 'manual';
+            /**
+             * Neck circumference in cm
+             */
+            neck: number;
+            /**
+             * Shoulder width in cm
+             */
+            shoulder: number;
+            /**
+             * Chest circumference in cm
+             */
+            chest: number;
+            /**
+             * Abdomen circumference in cm
+             */
+            waistAbdomen: number;
+            /**
+             * Upper arm circumference in cm
+             */
+            upperArm: number;
+            /**
+             * Forearm circumference in cm
+             */
+            forearm: number;
+            /**
+             * Waist hip circumference in cm
+             */
+            waistHip: number;
+            /**
+             * Hip circumference in cm
+             */
+            hip: number;
+            /**
+             * Thigh circumference in cm
+             */
+            thigh: number;
+            /**
+             * Calf circumference in cm
+             */
+            calf: number;
+            /**
+             * Height in cm
+             */
+            height: number;
+        };
+        /**
+         * Body data history list
+         */
+        history: Array<{
+            /**
+             * Body data record ID
+             */
+            id: string;
+            /**
+             * Measurement date
+             */
+            date: string;
+            /**
+             * BodyDataSource
+             *
+             * Data source
+             */
+            source: 'body_planner' | '3d_scanner' | 'manual';
+            /**
+             * Weight in kg
+             */
+            weight: number;
+            /**
+             * Body fat percentage
+             */
+            fatPercent: number;
+        }>;
+        /**
+         * Body weight chart points
+         */
+        weightChart: Array<{
+            /**
+             * Measurement date
+             */
+            date: string;
+            /**
+             * Weight in kg
+             */
+            weight: number;
+        }>;
+    };
+};
+
+export type GetCrmMembersByIdBodyDataResponse = GetCrmMembersByIdBodyDataResponses[keyof GetCrmMembersByIdBodyDataResponses];
 
 export type GetCrmMembersByIdChangeHistoryData = {
     body?: never;

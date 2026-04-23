@@ -25,6 +25,7 @@ import '@/app/api/crm/family-registrations/summary/route';
 import '@/app/api/crm/main-contracts/route';
 import '@/app/api/crm/members/[id]/basic-info/route';
 import '@/app/api/crm/members/[id]/billing/route';
+import '@/app/api/crm/members/[id]/body-data/route';
 import '@/app/api/crm/members/[id]/change-history/route';
 import '@/app/api/crm/members/[id]/communications/route';
 import '@/app/api/crm/members/[id]/contracts/campaigns/route';

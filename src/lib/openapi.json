@@ -4346,6 +4346,634 @@
         "title": "GetTrainingRecordsResponse",
         "description": "Response for getting training records"
       },
+      "BodyDataSource": {
+        "type": "string",
+        "enum": [
+          "body_planner",
+          "3d_scanner",
+          "manual"
+        ],
+        "title": "BodyDataSource",
+        "description": "Body data source",
+        "example": "body_planner"
+      },
+      "GetBodyDataPathParams": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Member ID",
+            "example": "M-00001"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "BodyDataLatestSummary": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Latest measurement date",
+            "example": "2026-04-17"
+          },
+          "weight": {
+            "type": "number",
+            "description": "Weight in kg",
+            "example": 68.4
+          },
+          "bmi": {
+            "type": "number",
+            "description": "Body mass index",
+            "example": 22.8
+          },
+          "fatPercent": {
+            "type": "number",
+            "description": "Body fat percentage",
+            "example": 18.2
+          },
+          "muscleMass": {
+            "type": "number",
+            "description": "Muscle mass in kg",
+            "example": 29.6
+          },
+          "basalMetabolism": {
+            "type": "integer",
+            "description": "Basal metabolism in kcal",
+            "example": 1580
+          }
+        },
+        "required": [
+          "date",
+          "weight",
+          "bmi",
+          "fatPercent",
+          "muscleMass",
+          "basalMetabolism"
+        ],
+        "title": "BodyDataLatestSummary",
+        "description": "Latest body data summary"
+      },
+      "BodyComposition": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": [
+              "body_planner",
+              "3d_scanner",
+              "manual"
+            ],
+            "title": "BodyDataSource",
+            "description": "Body composition data source",
+            "example": "body_planner"
+          },
+          "weight": {
+            "type": "number",
+            "description": "Weight in kg",
+            "example": 68.4
+          },
+          "bmi": {
+            "type": "number",
+            "description": "Body mass index",
+            "example": 22.8
+          },
+          "fatPercent": {
+            "type": "number",
+            "description": "Body fat percentage",
+            "example": 18.2
+          },
+          "fatMass": {
+            "type": "number",
+            "description": "Body fat mass in kg",
+            "example": 12.5
+          },
+          "visceralFatIndex": {
+            "type": "number",
+            "description": "Visceral fat index",
+            "example": 7.4
+          },
+          "smi": {
+            "type": "number",
+            "description": "Skeletal muscle index",
+            "example": 7.6
+          },
+          "muscleMass": {
+            "type": "number",
+            "description": "Muscle mass in kg",
+            "example": 29.6
+          },
+          "boneMass": {
+            "type": "number",
+            "description": "Estimated bone mass in kg",
+            "example": 2.9
+          },
+          "waterContent": {
+            "type": "number",
+            "description": "Water content in kg",
+            "example": 41.2
+          },
+          "basalMetabolism": {
+            "type": "integer",
+            "description": "Basal metabolism in kcal",
+            "example": 1580
+          },
+          "leanBodyMass": {
+            "type": "number",
+            "description": "Lean body mass in kg",
+            "example": 55.9
+          },
+          "limbLeanMass": {
+            "type": "number",
+            "description": "Limb lean mass in kg",
+            "example": 21.4
+          }
+        },
+        "required": [
+          "source",
+          "weight",
+          "bmi",
+          "fatPercent",
+          "fatMass",
+          "visceralFatIndex",
+          "smi",
+          "muscleMass",
+          "boneMass",
+          "waterContent",
+          "basalMetabolism",
+          "leanBodyMass",
+          "limbLeanMass"
+        ],
+        "title": "BodyComposition",
+        "description": "Body composition data"
+      },
+      "BodyMeasurement": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": [
+              "body_planner",
+              "3d_scanner",
+              "manual"
+            ],
+            "title": "BodyDataSource",
+            "description": "Body measurement data source",
+            "example": "body_planner"
+          },
+          "neck": {
+            "type": "number",
+            "description": "Neck circumference in cm",
+            "example": 37.5
+          },
+          "shoulder": {
+            "type": "number",
+            "description": "Shoulder width in cm",
+            "example": 47.1
+          },
+          "chest": {
+            "type": "number",
+            "description": "Chest circumference in cm",
+            "example": 95.4
+          },
+          "waistAbdomen": {
+            "type": "number",
+            "description": "Abdomen circumference in cm",
+            "example": 81.2
+          },
+          "upperArm": {
+            "type": "number",
+            "description": "Upper arm circumference in cm",
+            "example": 31.4
+          },
+          "forearm": {
+            "type": "number",
+            "description": "Forearm circumference in cm",
+            "example": 26.8
+          },
+          "waistHip": {
+            "type": "number",
+            "description": "Waist hip circumference in cm",
+            "example": 87.3
+          },
+          "hip": {
+            "type": "number",
+            "description": "Hip circumference in cm",
+            "example": 94.7
+          },
+          "thigh": {
+            "type": "number",
+            "description": "Thigh circumference in cm",
+            "example": 54.8
+          },
+          "calf": {
+            "type": "number",
+            "description": "Calf circumference in cm",
+            "example": 37.1
+          },
+          "height": {
+            "type": "number",
+            "description": "Height in cm",
+            "example": 173
+          }
+        },
+        "required": [
+          "source",
+          "neck",
+          "shoulder",
+          "chest",
+          "waistAbdomen",
+          "upperArm",
+          "forearm",
+          "waistHip",
+          "hip",
+          "thigh",
+          "calf",
+          "height"
+        ],
+        "title": "BodyMeasurement",
+        "description": "Body measurement data"
+      },
+      "BodyDataHistoryItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Body data record ID",
+            "example": "body-001"
+          },
+          "date": {
+            "type": "string",
+            "description": "Measurement date",
+            "example": "2026-04-17"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "body_planner",
+              "3d_scanner",
+              "manual"
+            ],
+            "title": "BodyDataSource",
+            "description": "Data source",
+            "example": "body_planner"
+          },
+          "weight": {
+            "type": "number",
+            "description": "Weight in kg",
+            "example": 68.4
+          },
+          "fatPercent": {
+            "type": "number",
+            "description": "Body fat percentage",
+            "example": 18.2
+          }
+        },
+        "required": [
+          "id",
+          "date",
+          "source",
+          "weight",
+          "fatPercent"
+        ],
+        "title": "BodyDataHistoryItem",
+        "description": "Single body data history record"
+      },
+      "BodyWeightChartItem": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Measurement date",
+            "example": "04/17"
+          },
+          "weight": {
+            "type": "number",
+            "description": "Weight in kg",
+            "example": 68.4
+          }
+        },
+        "required": [
+          "date",
+          "weight"
+        ],
+        "title": "BodyWeightChartItem",
+        "description": "Body weight chart data point"
+      },
+      "GetBodyDataResponse": {
+        "type": "object",
+        "properties": {
+          "latest": {
+            "type": "object",
+            "properties": {
+              "date": {
+                "type": "string",
+                "description": "Latest measurement date",
+                "example": "2026-04-17"
+              },
+              "weight": {
+                "type": "number",
+                "description": "Weight in kg",
+                "example": 68.4
+              },
+              "bmi": {
+                "type": "number",
+                "description": "Body mass index",
+                "example": 22.8
+              },
+              "fatPercent": {
+                "type": "number",
+                "description": "Body fat percentage",
+                "example": 18.2
+              },
+              "muscleMass": {
+                "type": "number",
+                "description": "Muscle mass in kg",
+                "example": 29.6
+              },
+              "basalMetabolism": {
+                "type": "integer",
+                "description": "Basal metabolism in kcal",
+                "example": 1580
+              }
+            },
+            "required": [
+              "date",
+              "weight",
+              "bmi",
+              "fatPercent",
+              "muscleMass",
+              "basalMetabolism"
+            ],
+            "title": "BodyDataLatestSummary",
+            "description": "Latest body data summary"
+          },
+          "bodyComposition": {
+            "type": "object",
+            "properties": {
+              "source": {
+                "type": "string",
+                "enum": [
+                  "body_planner",
+                  "3d_scanner",
+                  "manual"
+                ],
+                "title": "BodyDataSource",
+                "description": "Body composition data source",
+                "example": "body_planner"
+              },
+              "weight": {
+                "type": "number",
+                "description": "Weight in kg",
+                "example": 68.4
+              },
+              "bmi": {
+                "type": "number",
+                "description": "Body mass index",
+                "example": 22.8
+              },
+              "fatPercent": {
+                "type": "number",
+                "description": "Body fat percentage",
+                "example": 18.2
+              },
+              "fatMass": {
+                "type": "number",
+                "description": "Body fat mass in kg",
+                "example": 12.5
+              },
+              "visceralFatIndex": {
+                "type": "number",
+                "description": "Visceral fat index",
+                "example": 7.4
+              },
+              "smi": {
+                "type": "number",
+                "description": "Skeletal muscle index",
+                "example": 7.6
+              },
+              "muscleMass": {
+                "type": "number",
+                "description": "Muscle mass in kg",
+                "example": 29.6
+              },
+              "boneMass": {
+                "type": "number",
+                "description": "Estimated bone mass in kg",
+                "example": 2.9
+              },
+              "waterContent": {
+                "type": "number",
+                "description": "Water content in kg",
+                "example": 41.2
+              },
+              "basalMetabolism": {
+                "type": "integer",
+                "description": "Basal metabolism in kcal",
+                "example": 1580
+              },
+              "leanBodyMass": {
+                "type": "number",
+                "description": "Lean body mass in kg",
+                "example": 55.9
+              },
+              "limbLeanMass": {
+                "type": "number",
+                "description": "Limb lean mass in kg",
+                "example": 21.4
+              }
+            },
+            "required": [
+              "source",
+              "weight",
+              "bmi",
+              "fatPercent",
+              "fatMass",
+              "visceralFatIndex",
+              "smi",
+              "muscleMass",
+              "boneMass",
+              "waterContent",
+              "basalMetabolism",
+              "leanBodyMass",
+              "limbLeanMass"
+            ],
+            "title": "BodyComposition",
+            "description": "Body composition details"
+          },
+          "bodyMeasurement": {
+            "type": "object",
+            "properties": {
+              "source": {
+                "type": "string",
+                "enum": [
+                  "body_planner",
+                  "3d_scanner",
+                  "manual"
+                ],
+                "title": "BodyDataSource",
+                "description": "Body measurement data source",
+                "example": "body_planner"
+              },
+              "neck": {
+                "type": "number",
+                "description": "Neck circumference in cm",
+                "example": 37.5
+              },
+              "shoulder": {
+                "type": "number",
+                "description": "Shoulder width in cm",
+                "example": 47.1
+              },
+              "chest": {
+                "type": "number",
+                "description": "Chest circumference in cm",
+                "example": 95.4
+              },
+              "waistAbdomen": {
+                "type": "number",
+                "description": "Abdomen circumference in cm",
+                "example": 81.2
+              },
+              "upperArm": {
+                "type": "number",
+                "description": "Upper arm circumference in cm",
+                "example": 31.4
+              },
+              "forearm": {
+                "type": "number",
+                "description": "Forearm circumference in cm",
+                "example": 26.8
+              },
+              "waistHip": {
+                "type": "number",
+                "description": "Waist hip circumference in cm",
+                "example": 87.3
+              },
+              "hip": {
+                "type": "number",
+                "description": "Hip circumference in cm",
+                "example": 94.7
+              },
+              "thigh": {
+                "type": "number",
+                "description": "Thigh circumference in cm",
+                "example": 54.8
+              },
+              "calf": {
+                "type": "number",
+                "description": "Calf circumference in cm",
+                "example": 37.1
+              },
+              "height": {
+                "type": "number",
+                "description": "Height in cm",
+                "example": 173
+              }
+            },
+            "required": [
+              "source",
+              "neck",
+              "shoulder",
+              "chest",
+              "waistAbdomen",
+              "upperArm",
+              "forearm",
+              "waistHip",
+              "hip",
+              "thigh",
+              "calf",
+              "height"
+            ],
+            "title": "BodyMeasurement",
+            "description": "Body measurement details"
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Body data record ID",
+                  "example": "body-001"
+                },
+                "date": {
+                  "type": "string",
+                  "description": "Measurement date",
+                  "example": "2026-04-17"
+                },
+                "source": {
+                  "type": "string",
+                  "enum": [
+                    "body_planner",
+                    "3d_scanner",
+                    "manual"
+                  ],
+                  "title": "BodyDataSource",
+                  "description": "Data source",
+                  "example": "body_planner"
+                },
+                "weight": {
+                  "type": "number",
+                  "description": "Weight in kg",
+                  "example": 68.4
+                },
+                "fatPercent": {
+                  "type": "number",
+                  "description": "Body fat percentage",
+                  "example": 18.2
+                }
+              },
+              "required": [
+                "id",
+                "date",
+                "source",
+                "weight",
+                "fatPercent"
+              ],
+              "title": "BodyDataHistoryItem",
+              "description": "Single body data history record"
+            },
+            "description": "Body data history list"
+          },
+          "weightChart": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "description": "Measurement date",
+                  "example": "04/17"
+                },
+                "weight": {
+                  "type": "number",
+                  "description": "Weight in kg",
+                  "example": 68.4
+                }
+              },
+              "required": [
+                "date",
+                "weight"
+              ],
+              "title": "BodyWeightChartItem",
+              "description": "Body weight chart data point"
+            },
+            "description": "Body weight chart points"
+          }
+        },
+        "required": [
+          "latest",
+          "bodyComposition",
+          "bodyMeasurement",
+          "history",
+          "weightChart"
+        ],
+        "title": "GetBodyDataResponse",
+        "description": "Response for getting member body data"
+      },
       "MembershipApplication": {
         "type": "object",
         "properties": {
@@ -15403,6 +16031,392 @@
                     }
                   },
                   "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/body-data": {
+      "get": {
+        "summary": "Get member body data",
+        "description": "Get body composition, body measurements, history, and weight chart for a member",
+        "tags": [
+          "Members"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Member body data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "latest": {
+                      "type": "object",
+                      "properties": {
+                        "date": {
+                          "type": "string",
+                          "description": "Latest measurement date",
+                          "example": "2026-04-17"
+                        },
+                        "weight": {
+                          "type": "number",
+                          "description": "Weight in kg",
+                          "example": 68.4
+                        },
+                        "bmi": {
+                          "type": "number",
+                          "description": "Body mass index",
+                          "example": 22.8
+                        },
+                        "fatPercent": {
+                          "type": "number",
+                          "description": "Body fat percentage",
+                          "example": 18.2
+                        },
+                        "muscleMass": {
+                          "type": "number",
+                          "description": "Muscle mass in kg",
+                          "example": 29.6
+                        },
+                        "basalMetabolism": {
+                          "type": "integer",
+                          "description": "Basal metabolism in kcal",
+                          "example": 1580
+                        }
+                      },
+                      "required": [
+                        "date",
+                        "weight",
+                        "bmi",
+                        "fatPercent",
+                        "muscleMass",
+                        "basalMetabolism"
+                      ],
+                      "title": "BodyDataLatestSummary",
+                      "description": "Latest body data summary"
+                    },
+                    "bodyComposition": {
+                      "type": "object",
+                      "properties": {
+                        "source": {
+                          "type": "string",
+                          "enum": [
+                            "body_planner",
+                            "3d_scanner",
+                            "manual"
+                          ],
+                          "title": "BodyDataSource",
+                          "description": "Body composition data source",
+                          "example": "body_planner"
+                        },
+                        "weight": {
+                          "type": "number",
+                          "description": "Weight in kg",
+                          "example": 68.4
+                        },
+                        "bmi": {
+                          "type": "number",
+                          "description": "Body mass index",
+                          "example": 22.8
+                        },
+                        "fatPercent": {
+                          "type": "number",
+                          "description": "Body fat percentage",
+                          "example": 18.2
+                        },
+                        "fatMass": {
+                          "type": "number",
+                          "description": "Body fat mass in kg",
+                          "example": 12.5
+                        },
+                        "visceralFatIndex": {
+                          "type": "number",
+                          "description": "Visceral fat index",
+                          "example": 7.4
+                        },
+                        "smi": {
+                          "type": "number",
+                          "description": "Skeletal muscle index",
+                          "example": 7.6
+                        },
+                        "muscleMass": {
+                          "type": "number",
+                          "description": "Muscle mass in kg",
+                          "example": 29.6
+                        },
+                        "boneMass": {
+                          "type": "number",
+                          "description": "Estimated bone mass in kg",
+                          "example": 2.9
+                        },
+                        "waterContent": {
+                          "type": "number",
+                          "description": "Water content in kg",
+                          "example": 41.2
+                        },
+                        "basalMetabolism": {
+                          "type": "integer",
+                          "description": "Basal metabolism in kcal",
+                          "example": 1580
+                        },
+                        "leanBodyMass": {
+                          "type": "number",
+                          "description": "Lean body mass in kg",
+                          "example": 55.9
+                        },
+                        "limbLeanMass": {
+                          "type": "number",
+                          "description": "Limb lean mass in kg",
+                          "example": 21.4
+                        }
+                      },
+                      "required": [
+                        "source",
+                        "weight",
+                        "bmi",
+                        "fatPercent",
+                        "fatMass",
+                        "visceralFatIndex",
+                        "smi",
+                        "muscleMass",
+                        "boneMass",
+                        "waterContent",
+                        "basalMetabolism",
+                        "leanBodyMass",
+                        "limbLeanMass"
+                      ],
+                      "title": "BodyComposition",
+                      "description": "Body composition details"
+                    },
+                    "bodyMeasurement": {
+                      "type": "object",
+                      "properties": {
+                        "source": {
+                          "type": "string",
+                          "enum": [
+                            "body_planner",
+                            "3d_scanner",
+                            "manual"
+                          ],
+                          "title": "BodyDataSource",
+                          "description": "Body measurement data source",
+                          "example": "body_planner"
+                        },
+                        "neck": {
+                          "type": "number",
+                          "description": "Neck circumference in cm",
+                          "example": 37.5
+                        },
+                        "shoulder": {
+                          "type": "number",
+                          "description": "Shoulder width in cm",
+                          "example": 47.1
+                        },
+                        "chest": {
+                          "type": "number",
+                          "description": "Chest circumference in cm",
+                          "example": 95.4
+                        },
+                        "waistAbdomen": {
+                          "type": "number",
+                          "description": "Abdomen circumference in cm",
+                          "example": 81.2
+                        },
+                        "upperArm": {
+                          "type": "number",
+                          "description": "Upper arm circumference in cm",
+                          "example": 31.4
+                        },
+                        "forearm": {
+                          "type": "number",
+                          "description": "Forearm circumference in cm",
+                          "example": 26.8
+                        },
+                        "waistHip": {
+                          "type": "number",
+                          "description": "Waist hip circumference in cm",
+                          "example": 87.3
+                        },
+                        "hip": {
+                          "type": "number",
+                          "description": "Hip circumference in cm",
+                          "example": 94.7
+                        },
+                        "thigh": {
+                          "type": "number",
+                          "description": "Thigh circumference in cm",
+                          "example": 54.8
+                        },
+                        "calf": {
+                          "type": "number",
+                          "description": "Calf circumference in cm",
+                          "example": 37.1
+                        },
+                        "height": {
+                          "type": "number",
+                          "description": "Height in cm",
+                          "example": 173
+                        }
+                      },
+                      "required": [
+                        "source",
+                        "neck",
+                        "shoulder",
+                        "chest",
+                        "waistAbdomen",
+                        "upperArm",
+                        "forearm",
+                        "waistHip",
+                        "hip",
+                        "thigh",
+                        "calf",
+                        "height"
+                      ],
+                      "title": "BodyMeasurement",
+                      "description": "Body measurement details"
+                    },
+                    "history": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Body data record ID",
+                            "example": "body-001"
+                          },
+                          "date": {
+                            "type": "string",
+                            "description": "Measurement date",
+                            "example": "2026-04-17"
+                          },
+                          "source": {
+                            "type": "string",
+                            "enum": [
+                              "body_planner",
+                              "3d_scanner",
+                              "manual"
+                            ],
+                            "title": "BodyDataSource",
+                            "description": "Data source",
+                            "example": "body_planner"
+                          },
+                          "weight": {
+                            "type": "number",
+                            "description": "Weight in kg",
+                            "example": 68.4
+                          },
+                          "fatPercent": {
+                            "type": "number",
+                            "description": "Body fat percentage",
+                            "example": 18.2
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "date",
+                          "source",
+                          "weight",
+                          "fatPercent"
+                        ],
+                        "title": "BodyDataHistoryItem",
+                        "description": "Single body data history record"
+                      },
+                      "description": "Body data history list"
+                    },
+                    "weightChart": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "date": {
+                            "type": "string",
+                            "description": "Measurement date",
+                            "example": "04/17"
+                          },
+                          "weight": {
+                            "type": "number",
+                            "description": "Weight in kg",
+                            "example": 68.4
+                          }
+                        },
+                        "required": [
+                          "date",
+                          "weight"
+                        ],
+                        "title": "BodyWeightChartItem",
+                        "description": "Body weight chart data point"
+                      },
+                      "description": "Body weight chart points"
+                    }
+                  },
+                  "required": [
+                    "latest",
+                    "bodyComposition",
+                    "bodyMeasurement",
+                    "history",
+                    "weightChart"
+                  ],
+                  "title": "GetBodyDataResponse",
+                  "description": "Response for getting member body data"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
                   "title": "ErrorResponse",
                   "description": "Error response"
                 }
