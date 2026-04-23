@@ -13294,6 +13294,74 @@ export type GetCrmMembersByIdServiceUsageResponses = {
 
 export type GetCrmMembersByIdServiceUsageResponse = GetCrmMembersByIdServiceUsageResponses[keyof GetCrmMembersByIdServiceUsageResponses];
 
+export type GetCrmMembersByIdStoresData = {
+    body?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/stores';
+};
+
+export type GetCrmMembersByIdStoresErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembersByIdStoresError = GetCrmMembersByIdStoresErrors[keyof GetCrmMembersByIdStoresErrors];
+
+export type GetCrmMembersByIdStoresResponses = {
+    /**
+     * GetUsageHistoryStoresResponse
+     *
+     * Stores available for usage history filtering
+     */
+    200: {
+        /**
+         * List of stores for the member's brand
+         */
+        stores: Array<{
+            /**
+             * Store internal ID
+             */
+            id: string;
+            /**
+             * Store display ID
+             */
+            store_id: string;
+            /**
+             * Store name in Japanese
+             */
+            name: string;
+        }>;
+    };
+};
+
+export type GetCrmMembersByIdStoresResponse = GetCrmMembersByIdStoresResponses[keyof GetCrmMembersByIdStoresResponses];
+
 export type GetCrmMembersByIdTrainingRecordsData = {
     body?: never;
     path: {
@@ -13365,7 +13433,7 @@ export type GetCrmMembersByIdTrainingRecordsResponses = {
 
 export type GetCrmMembersByIdTrainingRecordsResponse = GetCrmMembersByIdTrainingRecordsResponses[keyof GetCrmMembersByIdTrainingRecordsResponses];
 
-export type GetCrmMembersByIdUsageHistoryData = {
+export type GetCrmMembersByIdUsageHistoryAccessSettingsData = {
     body?: never;
     path: {
         /**
@@ -13374,10 +13442,10 @@ export type GetCrmMembersByIdUsageHistoryData = {
         id: string;
     };
     query?: never;
-    url: '/crm/members/{id}/usage-history';
+    url: '/crm/members/{id}/usage-history/access-settings';
 };
 
-export type GetCrmMembersByIdUsageHistoryErrors = {
+export type GetCrmMembersByIdUsageHistoryAccessSettingsErrors = {
     /**
      * ErrorResponse
      *
@@ -13402,31 +13470,245 @@ export type GetCrmMembersByIdUsageHistoryErrors = {
     };
 };
 
-export type GetCrmMembersByIdUsageHistoryError = GetCrmMembersByIdUsageHistoryErrors[keyof GetCrmMembersByIdUsageHistoryErrors];
+export type GetCrmMembersByIdUsageHistoryAccessSettingsError = GetCrmMembersByIdUsageHistoryAccessSettingsErrors[keyof GetCrmMembersByIdUsageHistoryAccessSettingsErrors];
 
-export type GetCrmMembersByIdUsageHistoryResponses = {
+export type GetCrmMembersByIdUsageHistoryAccessSettingsResponses = {
     /**
-     * GetUsageHistoryResponse
+     * GetUsageHistoryAccessSettingsResponse
      *
-     * Response for getting usage history
+     * Member access settings for usage history tab
      */
     200: {
         /**
-         * Usage summary
+         * Primary authentication method label
          */
-        summary?: unknown;
+        auth_method: string;
         /**
-         * Store usage statistics
+         * IC card number, or null if not registered
          */
-        storeUsage: Array<unknown>;
+        ic_card_number: string | null;
         /**
-         * Visit records
+         * QR code identifier, or null if not registered
          */
-        visitRecords: Array<unknown>;
+        qr_code: string | null;
+        /**
+         * Whether gate-stop is currently active
+         */
+        gate_stop: boolean;
     };
 };
 
-export type GetCrmMembersByIdUsageHistoryResponse = GetCrmMembersByIdUsageHistoryResponses[keyof GetCrmMembersByIdUsageHistoryResponses];
+export type GetCrmMembersByIdUsageHistoryAccessSettingsResponse = GetCrmMembersByIdUsageHistoryAccessSettingsResponses[keyof GetCrmMembersByIdUsageHistoryAccessSettingsResponses];
+
+export type GetCrmMembersByIdUsageHistoryEntriesData = {
+    body?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: {
+        /**
+         * Filter by store ID or "all" for all stores
+         */
+        store?: string;
+        /**
+         * Filter by period: this_month, last_month, 3months, or 6months
+         */
+        period?: string;
+        /**
+         * Page number (1-based)
+         */
+        page?: number;
+        /**
+         * Number of records per page
+         */
+        limit?: number;
+    };
+    url: '/crm/members/{id}/usage-history/entries';
+};
+
+export type GetCrmMembersByIdUsageHistoryEntriesErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembersByIdUsageHistoryEntriesError = GetCrmMembersByIdUsageHistoryEntriesErrors[keyof GetCrmMembersByIdUsageHistoryEntriesErrors];
+
+export type GetCrmMembersByIdUsageHistoryEntriesResponses = {
+    /**
+     * GetUsageHistoryEntriesResponse
+     *
+     * Paginated entry/exit history response
+     */
+    200: {
+        /**
+         * Paginated entry/exit visit records
+         */
+        items: Array<{
+            /**
+             * Visit record ID
+             */
+            id: string;
+            /**
+             * Entry time in ISO8601 format
+             */
+            entry_time: string;
+            /**
+             * Exit time in ISO8601 format, or null if still in building
+             */
+            exit_time: string | null;
+            /**
+             * Duration of stay in minutes
+             */
+            stay_time?: number;
+            /**
+             * Store ID
+             */
+            store_id: string;
+            /**
+             * Store name in Japanese
+             */
+            store_name: string;
+            /**
+             * Authentication method used for entry
+             */
+            entry_method: string;
+        }>;
+        /**
+         * Total number of entry/exit records
+         */
+        total: number;
+        /**
+         * Current page number (1-based)
+         */
+        page: number;
+        /**
+         * Number of records per page
+         */
+        limit: number;
+    };
+};
+
+export type GetCrmMembersByIdUsageHistoryEntriesResponse = GetCrmMembersByIdUsageHistoryEntriesResponses[keyof GetCrmMembersByIdUsageHistoryEntriesResponses];
+
+export type GetCrmMembersByIdUsageHistoryLessonsData = {
+    body?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: {
+        /**
+         * Page number (1-based)
+         */
+        page?: number;
+        /**
+         * Number of records per page
+         */
+        limit?: number;
+    };
+    url: '/crm/members/{id}/usage-history/lessons';
+};
+
+export type GetCrmMembersByIdUsageHistoryLessonsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembersByIdUsageHistoryLessonsError = GetCrmMembersByIdUsageHistoryLessonsErrors[keyof GetCrmMembersByIdUsageHistoryLessonsErrors];
+
+export type GetCrmMembersByIdUsageHistoryLessonsResponses = {
+    /**
+     * GetUsageHistoryLessonsResponse
+     *
+     * Paginated lesson reservations response
+     */
+    200: {
+        /**
+         * Paginated lesson reservation records
+         */
+        items: Array<{
+            /**
+             * Lesson reservation ID
+             */
+            id: string;
+            /**
+             * Lesson date in YYYY-MM-DD format
+             */
+            lesson_date: string;
+            /**
+             * Lesson name in Japanese
+             */
+            lesson_name: string;
+            /**
+             * Instructor name in Japanese
+             */
+            instructor_name: string;
+            /**
+             * Lesson participation status
+             */
+            status: 'attended' | 'absent' | 'cancelled' | 'reserved';
+        }>;
+        /**
+         * Total number of lesson reservation records
+         */
+        total: number;
+        /**
+         * Current page number (1-based)
+         */
+        page: number;
+        /**
+         * Number of records per page
+         */
+        limit: number;
+    };
+};
+
+export type GetCrmMembersByIdUsageHistoryLessonsResponse = GetCrmMembersByIdUsageHistoryLessonsResponses[keyof GetCrmMembersByIdUsageHistoryLessonsResponses];
 
 export type GetCrmMembersByIdUsageStatusData = {
     body?: never;

@@ -4,24 +4,31 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+type TableSize = "default" | "md"
+
+const TableSizeContext = React.createContext<TableSize>("default")
+
 interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
   containerClassName?: string;
+  size?: TableSize;
 }
 const Table = React.forwardRef<HTMLTableElement, TableProps>(
-  ({ className, containerClassName, onScroll, ...props }, ref) => {
+  ({ className, containerClassName, onScroll, size = "default", ...props }, ref) => {
     return (
-      <div
-        data-slot="table-container"
-        className={cn("relative w-full overflow-x-auto", containerClassName)}
-        {...{ onScroll }}
-      >
-        <table
-          data-slot="table"
-          ref={ref}
-          className={cn("w-full caption-bottom text-sm", className)}
-          {...props}
-        />
-      </div>
+      <TableSizeContext.Provider value={size}>
+        <div
+          data-slot="table-container"
+          className={cn("relative w-full overflow-x-auto", containerClassName)}
+          {...{ onScroll }}
+        >
+          <table
+            data-slot="table"
+            ref={ref}
+            className={cn("w-full caption-bottom text-sm", className)}
+            {...props}
+          />
+        </div>
+      </TableSizeContext.Provider>
     )
   }
 )
@@ -33,7 +40,10 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
   return (
     <thead
       data-slot="table-header"
-      className={cn("[&_tr]:border-b", className)}
+      className={cn(
+        "bg-background sticky top-0 z-10 [&_tr]:h-10 [&_tr]:border-b [&_tr]:bg-muted/50 [&_tr]:hover:bg-muted/50",
+        className,
+      )}
       {...props}
     />
   )
@@ -63,12 +73,15 @@ function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
 }
 
 function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
+  const size = React.useContext(TableSizeContext)
+
   return (
     <tr
       data-slot="table-row"
       className={cn(
-        "hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors",
-        className
+        "relative z-0 hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors",
+        size === "md" ? "h-10" : "h-12",
+        className,
       )}
       {...props}
     />
@@ -80,8 +93,8 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
     <th
       data-slot="table-head"
       className={cn(
-        "text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
-        className
+        "text-foreground h-10 px-4 text-left align-middle text-xs font-semibold whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        className,
       )}
       {...props}
     />
@@ -93,8 +106,8 @@ function TableCell({ className, ...props }: React.ComponentProps<"td">) {
     <td
       data-slot="table-cell"
       className={cn(
-        "p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
-        className
+        "px-4 align-middle text-xs whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        className,
       )}
       {...props}
     />

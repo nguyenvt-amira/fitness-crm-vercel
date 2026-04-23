@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 
+import { PAGE_SIZE } from '@/constants/app.constants';
 import { useQuery } from '@tanstack/react-query';
 
 import { DataStateBoundary } from '@/components/common/data-state-boundary';
@@ -31,13 +32,13 @@ export function BillingListCard({ memberId }: BillingListCardProps) {
   const { data, isLoading, isError, refetch } = useQuery(
     getCrmMembersByIdBillingOptions({
       path: { id: memberId },
-      query: { page, limit: 50 },
+      query: { page, limit: PAGE_SIZE },
     }),
   );
 
   const isEmpty = !data?.items || data.items.length === 0;
   const total = data?.total ?? 0;
-  const limit = data?.limit ?? 50;
+  const limit = data?.limit ?? PAGE_SIZE;
   const totalPages = Math.ceil(total / limit);
 
   return (
@@ -67,7 +68,7 @@ export function BillingListCard({ memberId }: BillingListCardProps) {
         <CardHeader className="px-4 py-3">
           <CardTitle className="text-sm">請求一覧</CardTitle>
         </CardHeader>
-        <Table>
+        <Table size="md">
           <TableHeader>
             <TableRow className="bg-muted/50">
               <TableHead className="text-xs font-semibold">請求月</TableHead>

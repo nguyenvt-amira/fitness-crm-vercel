@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from 'react';
 
+import { PAGE_SIZE } from '@/constants/app.constants';
 import { useQuery } from '@tanstack/react-query';
 
 import { DataStateBoundary } from '@/components/common/data-state-boundary';
@@ -57,7 +58,7 @@ export function PaymentLedgerCard({ memberId }: PaymentLedgerCardProps) {
   const { data, isLoading, isError, refetch } = useQuery(
     getCrmMembersByIdPaymentHistoryOptions({
       path: { id: memberId },
-      query: { page, limit: 50, period, type },
+      query: { page, limit: PAGE_SIZE, period, type },
     }),
   );
 
@@ -73,7 +74,7 @@ export function PaymentLedgerCard({ memberId }: PaymentLedgerCardProps) {
 
   const isEmpty = !data?.items || data.items.length === 0;
   const total = data?.total ?? 0;
-  const limit = data?.limit ?? 50;
+  const limit = data?.limit ?? PAGE_SIZE;
   const totalPages = Math.ceil(total / limit);
 
   const formatAmount = useCallback((amount: number): string => {
@@ -142,7 +143,7 @@ export function PaymentLedgerCard({ memberId }: PaymentLedgerCardProps) {
             </div>
           </div>
         </CardHeader>
-        <Table>
+        <Table size="md">
           <TableHeader>
             <TableRow className="bg-muted/50">
               <TableHead className="text-xs font-semibold">日付</TableHead>

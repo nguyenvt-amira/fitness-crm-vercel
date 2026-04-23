@@ -19966,6 +19966,107 @@
         }
       }
     },
+    "/crm/members/{id}/stores": {
+      "get": {
+        "summary": "Get stores available for member's brand",
+        "description": "Get all stores belonging to the same brand as the member, used for filtering entry/exit history",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stores available for usage history filtering",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "stores": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Store internal ID",
+                            "example": "store-uuid-001"
+                          },
+                          "store_id": {
+                            "type": "string",
+                            "description": "Store display ID",
+                            "example": "ST001"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Store name in Japanese",
+                            "example": "JOYFIT渋谷店"
+                          }
+                        },
+                        "required": ["id", "store_id", "name"],
+                        "title": "UsageHistoryStoreItem"
+                      },
+                      "description": "List of stores for the member's brand"
+                    }
+                  },
+                  "required": ["stores"],
+                  "title": "GetUsageHistoryStoresResponse",
+                  "description": "Stores available for usage history filtering"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/members/{id}/training-records": {
       "get": {
         "summary": "Get member training records",
@@ -20073,10 +20174,10 @@
         }
       }
     },
-    "/crm/members/{id}/usage-history": {
+    "/crm/members/{id}/usage-history/access-settings": {
       "get": {
-        "summary": "Get member usage history",
-        "description": "Get usage history for a member",
+        "summary": "Get member usage history access settings",
+        "description": "Get access settings block data for usage history tab",
         "tags": ["Members"],
         "parameters": [
           {
@@ -20091,40 +20192,387 @@
         ],
         "responses": {
           "200": {
-            "description": "Usage history",
+            "description": "Member access settings",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "summary": {
+                    "auth_method": {
+                      "type": "string",
+                      "description": "Primary authentication method label",
+                      "example": "QRコード"
+                    },
+                    "ic_card_number": {
+                      "type": "string",
                       "nullable": true,
-                      "description": "Usage summary"
+                      "description": "IC card number, or null if not registered",
+                      "example": "IC-0001"
                     },
-                    "storeUsage": {
-                      "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
-                      "description": "Store usage statistics"
+                    "qr_code": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "QR code identifier, or null if not registered",
+                      "example": "QR123456789"
                     },
-                    "visitRecords": {
-                      "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
-                      "description": "Visit records"
+                    "gate_stop": {
+                      "type": "boolean",
+                      "description": "Whether gate-stop is currently active",
+                      "example": false
                     }
                   },
-                  "required": ["storeUsage", "visitRecords"],
-                  "title": "GetUsageHistoryResponse",
-                  "description": "Response for getting usage history"
+                  "required": ["auth_method", "ic_card_number", "qr_code", "gate_stop"],
+                  "title": "GetUsageHistoryAccessSettingsResponse",
+                  "description": "Member access settings for usage history tab"
                 }
               }
             }
           },
           "404": {
             "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/usage-history/entries": {
+      "get": {
+        "summary": "Get member entry/exit history",
+        "description": "Get paginated entry/exit history records with store and period filters",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "store",
+            "in": "query",
+            "required": false,
+            "description": "Filter by store ID or \"all\" for all stores",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "period",
+            "in": "query",
+            "required": false,
+            "description": "Filter by period: this_month, last_month, 3months, or 6months",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number (1-based)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Number of records per page",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated entry/exit history records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Visit record ID",
+                            "example": "vr-001"
+                          },
+                          "entry_time": {
+                            "type": "string",
+                            "description": "Entry time in ISO8601 format",
+                            "example": "2026-04-23T18:00:00Z"
+                          },
+                          "exit_time": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Exit time in ISO8601 format, or null if still in building",
+                            "example": "2026-04-23T19:30:00Z"
+                          },
+                          "stay_time": {
+                            "type": "number",
+                            "description": "Duration of stay in minutes",
+                            "example": 90
+                          },
+                          "store_id": {
+                            "type": "string",
+                            "description": "Store ID",
+                            "example": "store-001"
+                          },
+                          "store_name": {
+                            "type": "string",
+                            "description": "Store name in Japanese",
+                            "example": "JOYFIT渋谷店"
+                          },
+                          "entry_method": {
+                            "type": "string",
+                            "description": "Authentication method used for entry",
+                            "example": "qr_code"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "entry_time",
+                          "exit_time",
+                          "store_id",
+                          "store_name",
+                          "entry_method"
+                        ],
+                        "title": "VisitRow",
+                        "description": "Entry/exit visit record"
+                      },
+                      "description": "Paginated entry/exit visit records"
+                    },
+                    "total": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "description": "Total number of entry/exit records",
+                      "example": 120
+                    },
+                    "page": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": true,
+                      "description": "Current page number (1-based)",
+                      "example": 1
+                    },
+                    "limit": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": true,
+                      "description": "Number of records per page",
+                      "example": 50
+                    }
+                  },
+                  "required": ["items", "total", "page", "limit"],
+                  "title": "GetUsageHistoryEntriesResponse",
+                  "description": "Paginated entry/exit history response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/usage-history/lessons": {
+      "get": {
+        "summary": "Get member lesson reservation history",
+        "description": "Get paginated lesson reservation history records",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number (1-based)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Number of records per page",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated lesson reservations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Lesson reservation ID",
+                            "example": "lr-001"
+                          },
+                          "lesson_date": {
+                            "type": "string",
+                            "description": "Lesson date in YYYY-MM-DD format",
+                            "example": "2026-04-23"
+                          },
+                          "lesson_name": {
+                            "type": "string",
+                            "description": "Lesson name in Japanese",
+                            "example": "ボクシング基礎"
+                          },
+                          "instructor_name": {
+                            "type": "string",
+                            "description": "Instructor name in Japanese",
+                            "example": "田中太郎"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["attended", "absent", "cancelled", "reserved"],
+                            "description": "Lesson participation status",
+                            "example": "attended"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "lesson_date",
+                          "lesson_name",
+                          "instructor_name",
+                          "status"
+                        ],
+                        "title": "LessonReservationRow",
+                        "description": "Lesson reservation record"
+                      },
+                      "description": "Paginated lesson reservation records"
+                    },
+                    "total": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "description": "Total number of lesson reservation records",
+                      "example": 36
+                    },
+                    "page": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": true,
+                      "description": "Current page number (1-based)",
+                      "example": 1
+                    },
+                    "limit": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": true,
+                      "description": "Number of records per page",
+                      "example": 20
+                    }
+                  },
+                  "required": ["items", "total", "page", "limit"],
+                  "title": "GetUsageHistoryLessonsResponse",
+                  "description": "Paginated lesson reservations response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameters",
             "content": {
               "application/json": {
                 "schema": {

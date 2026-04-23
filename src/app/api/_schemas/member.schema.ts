@@ -2127,3 +2127,190 @@ export const PaymentSummarySchema = z
   });
 
 export type PaymentSummary = z.infer<typeof PaymentSummarySchema>;
+
+// ─── Usage History Schemas (A-01-01-e, FR-010) ────────────────────────────
+
+export const EntryMethodSchema = z
+  .enum(['qr_code', 'ic_card', 'face_recognition', 'member_card'])
+  .openapi({
+    title: 'EntryMethod',
+    description: 'Member authentication method for entry/exit',
+    example: 'qr_code',
+  });
+
+export const VisitRowSchema = z
+  .object({
+    id: z.string().openapi({
+      description: 'Visit record ID',
+      example: 'vr-001',
+    }),
+    entry_time: z.string().openapi({
+      description: 'Entry time in ISO8601 format',
+      example: '2026-04-23T18:00:00Z',
+    }),
+    exit_time: z.string().nullable().openapi({
+      description: 'Exit time in ISO8601 format, or null if still in building',
+      example: '2026-04-23T19:30:00Z',
+    }),
+    stay_time: z.number().optional().openapi({
+      description: 'Duration of stay in minutes',
+      example: 90,
+    }),
+    store_id: z.string().openapi({
+      description: 'Store ID',
+      example: 'store-001',
+    }),
+    store_name: z.string().openapi({
+      description: 'Store name in Japanese',
+      example: 'JOYFIT渋谷店',
+    }),
+    entry_method: z.string().openapi({
+      description: 'Authentication method used for entry',
+      example: 'qr_code',
+    }),
+  })
+  .openapi({ title: 'VisitRow', description: 'Entry/exit visit record' });
+
+export const LessonReservationRowSchema = z
+  .object({
+    id: z.string().openapi({
+      description: 'Lesson reservation ID',
+      example: 'lr-001',
+    }),
+    lesson_date: z.string().openapi({
+      description: 'Lesson date in YYYY-MM-DD format',
+      example: '2026-04-23',
+    }),
+    lesson_name: z.string().openapi({
+      description: 'Lesson name in Japanese',
+      example: 'ボクシング基礎',
+    }),
+    instructor_name: z.string().openapi({
+      description: 'Instructor name in Japanese',
+      example: '田中太郎',
+    }),
+    status: z.enum(['attended', 'absent', 'cancelled', 'reserved']).openapi({
+      description: 'Lesson participation status',
+      example: 'attended',
+    }),
+  })
+  .openapi({ title: 'LessonReservationRow', description: 'Lesson reservation record' });
+
+export const MemberAccessSettingsSchema = z
+  .object({
+    auth_method: z.string().openapi({
+      description: 'Primary authentication method label',
+      example: 'QRコード',
+    }),
+    ic_card_number: z.string().nullable().openapi({
+      description: 'IC card number, or null if not registered',
+      example: 'IC-0001',
+    }),
+    qr_code: z.string().nullable().openapi({
+      description: 'QR code identifier, or null if not registered',
+      example: 'QR123456789',
+    }),
+    gate_stop: z.boolean().openapi({
+      description: 'Whether gate-stop is currently active',
+      example: false,
+    }),
+  })
+  .openapi({ title: 'MemberAccessSettings', description: 'Member access control settings' });
+
+export const GetUsageHistoryResponseSchema = z
+  .object({
+    visitRecords: z.array(VisitRowSchema).openapi({
+      description: 'Entry/exit visit history records',
+    }),
+    lessonReservations: z.array(LessonReservationRowSchema).openapi({
+      description: 'Lesson reservation history records',
+    }),
+    memberAccessSettings: MemberAccessSettingsSchema.openapi({
+      description: 'Member access control settings',
+    }),
+  })
+  .openapi({
+    title: 'GetUsageHistoryResponse',
+    description: 'Usage history tab data: visits, lessons, and access settings',
+  });
+
+export const GetUsageHistoryEntriesResponseSchema = z
+  .object({
+    items: z.array(VisitRowSchema).openapi({
+      description: 'Paginated entry/exit visit records',
+    }),
+    total: z.number().int().nonnegative().openapi({
+      description: 'Total number of entry/exit records',
+      example: 120,
+    }),
+    page: z.number().int().positive().openapi({
+      description: 'Current page number (1-based)',
+      example: 1,
+    }),
+    limit: z.number().int().positive().openapi({
+      description: 'Number of records per page',
+      example: 50,
+    }),
+  })
+  .openapi({
+    title: 'GetUsageHistoryEntriesResponse',
+    description: 'Paginated entry/exit history response',
+  });
+
+export const GetUsageHistoryLessonsResponseSchema = z
+  .object({
+    items: z.array(LessonReservationRowSchema).openapi({
+      description: 'Paginated lesson reservation records',
+    }),
+    total: z.number().int().nonnegative().openapi({
+      description: 'Total number of lesson reservation records',
+      example: 36,
+    }),
+    page: z.number().int().positive().openapi({
+      description: 'Current page number (1-based)',
+      example: 1,
+    }),
+    limit: z.number().int().positive().openapi({
+      description: 'Number of records per page',
+      example: 20,
+    }),
+  })
+  .openapi({
+    title: 'GetUsageHistoryLessonsResponse',
+    description: 'Paginated lesson reservations response',
+  });
+
+export const GetUsageHistoryAccessSettingsResponseSchema = MemberAccessSettingsSchema.openapi({
+  title: 'GetUsageHistoryAccessSettingsResponse',
+  description: 'Member access settings for usage history tab',
+});
+
+export const UsageHistoryStoreItemSchema = z
+  .object({
+    id: z.string().openapi({ description: 'Store internal ID', example: 'store-uuid-001' }),
+    store_id: z.string().openapi({ description: 'Store display ID', example: 'ST001' }),
+    name: z.string().openapi({ description: 'Store name in Japanese', example: 'JOYFIT渋谷店' }),
+  })
+  .openapi({ title: 'UsageHistoryStoreItem' });
+
+export const GetUsageHistoryStoresResponseSchema = z
+  .object({
+    stores: z.array(UsageHistoryStoreItemSchema).openapi({
+      description: "List of stores for the member's brand",
+    }),
+  })
+  .openapi({
+    title: 'GetUsageHistoryStoresResponse',
+    description: 'Stores available for usage history filtering',
+  });
+
+export type VisitRow = z.infer<typeof VisitRowSchema>;
+export type LessonReservationRow = z.infer<typeof LessonReservationRowSchema>;
+export type MemberAccessSettings = z.infer<typeof MemberAccessSettingsSchema>;
+export type GetUsageHistoryResponse = z.infer<typeof GetUsageHistoryResponseSchema>;
+export type GetUsageHistoryEntriesResponse = z.infer<typeof GetUsageHistoryEntriesResponseSchema>;
+export type GetUsageHistoryLessonsResponse = z.infer<typeof GetUsageHistoryLessonsResponseSchema>;
+export type GetUsageHistoryAccessSettingsResponse = z.infer<
+  typeof GetUsageHistoryAccessSettingsResponseSchema
+>;
+export type GetUsageHistoryStoresResponse = z.infer<typeof GetUsageHistoryStoresResponseSchema>;

@@ -53,6 +53,7 @@ interface DataTableProps<TData, TValue> {
    */
   tableOptions?: Omit<Partial<TableOptions<TData>>, 'data' | 'columns'>;
   containerClassName?: string;
+  tableSize?: 'default' | 'md';
 }
 
 export function DataTable<TData, TValue>({
@@ -73,6 +74,7 @@ export function DataTable<TData, TValue>({
   onTableReady,
   tableOptions,
   containerClassName,
+  tableSize = 'default',
 }: Readonly<DataTableProps<TData, TValue>>) {
   const table = useReactTable({
     data,
@@ -103,17 +105,14 @@ export function DataTable<TData, TValue>({
   if (variant === 'simple') {
     return (
       <div className={cn('overflow-hidden rounded-md border', className)}>
-        <Table containerClassName={cn('overflow-y-auto', containerClassName)}>
-          <TableHeader className="bg-background sticky top-0 overflow-hidden">
+        <Table size={tableSize} containerClassName={cn('overflow-y-auto', containerClassName)}>
+          <TableHeader className="overflow-hidden">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="bg-muted/50 hover:bg-muted/50">
+              <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   const meta = header.column.columnDef.meta as Record<string, unknown> | undefined;
                   return (
-                    <TableHead
-                      key={header.id}
-                      className={cn('h-10 px-4 text-xs font-semibold', meta?.className as string)}
-                    >
+                    <TableHead key={header.id} className={meta?.className as string}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(header.column.columnDef.header, header.getContext())}
@@ -126,9 +125,9 @@ export function DataTable<TData, TValue>({
           <TableBody>
             {isLoading ? (
               Array.from({ length: 20 }).map((_, i) => (
-                <TableRow key={`skeleton-${i}`} className="h-12">
+                <TableRow key={`skeleton-${i}`}>
                   {columns.map((_, j) => (
-                    <TableCell key={j} className="px-4">
+                    <TableCell key={j}>
                       <Skeleton className="h-4 w-full" />
                     </TableCell>
                   ))}
@@ -140,16 +139,15 @@ export function DataTable<TData, TValue>({
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
                   onClick={() => onRowClick?.(row.original)}
-                  className={cn('hover:bg-muted/50 h-12', onRowClick ? 'cursor-pointer' : '')}
+                  className={onRowClick ? 'cursor-pointer' : ''}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      className={cn(
-                        'px-4 text-xs',
+                      className={
                         (cell.column.columnDef.meta as Record<string, unknown> | undefined)
-                          ?.className as string,
-                      )}
+                          ?.className as string
+                      }
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
@@ -175,9 +173,10 @@ export function DataTable<TData, TValue>({
       <Table
         ref={tableRef}
         onScroll={onScroll}
+        size={tableSize}
         containerClassName={cn('rounded-md border overflow-y-auto', containerClassName)}
       >
-        <TableHeader className={cn('bg-background sticky top-0 z-20')}>
+        <TableHeader className="z-20">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
               key={headerGroup.id}

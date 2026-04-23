@@ -1203,6 +1203,186 @@ export function getPaymentSummary(): PaymentSummary {
   };
 }
 
+// ─── Usage History Mock Data ────────────────────────────────────────────────────
+
+export const MOCK_VISIT_RECORDS = [
+  {
+    id: 'vr-001',
+    entry_time: '2026-04-23T18:00:00Z',
+    exit_time: '2026-04-23T19:30:00Z',
+    stay_time: 90,
+    store_id: 'store-001',
+    store_name: 'JOYFIT渋谷店',
+    entry_method: 'qr_code',
+  },
+  {
+    id: 'vr-002',
+    entry_time: '2026-04-22T06:00:00Z',
+    exit_time: '2026-04-22T07:15:00Z',
+    stay_time: 75,
+    store_id: 'store-002',
+    store_name: 'JOYFIT新宿店',
+    entry_method: 'ic_card',
+  },
+  {
+    id: 'vr-003',
+    entry_time: '2026-04-21T19:30:00Z',
+    exit_time: null,
+    stay_time: undefined,
+    store_id: 'store-001',
+    store_name: 'JOYFIT渋谷店',
+    entry_method: 'qr_code',
+  },
+  {
+    id: 'vr-004',
+    entry_time: '2026-04-20T18:00:00Z',
+    exit_time: '2026-04-20T20:00:00Z',
+    stay_time: 120,
+    store_id: 'store-001',
+    store_name: 'JOYFIT渋谷店',
+    entry_method: 'face_recognition',
+  },
+  {
+    id: 'vr-005',
+    entry_time: '2026-04-19T06:30:00Z',
+    exit_time: '2026-04-19T08:00:00Z',
+    stay_time: 90,
+    store_id: 'store-003',
+    store_name: 'FIT365六本木',
+    entry_method: 'member_card',
+  },
+  {
+    id: 'vr-006',
+    entry_time: '2026-04-18T18:45:00Z',
+    exit_time: '2026-04-18T19:45:00Z',
+    stay_time: 60,
+    store_id: 'store-002',
+    store_name: 'JOYFIT新宿店',
+    entry_method: 'qr_code',
+  },
+  {
+    id: 'vr-007',
+    entry_time: '2026-04-17T19:00:00Z',
+    exit_time: null,
+    stay_time: undefined,
+    store_id: 'store-002',
+    store_name: 'JOYFIT新宿店',
+    entry_method: 'ic_card',
+  },
+  {
+    id: 'vr-008',
+    entry_time: '2026-04-16T07:00:00Z',
+    exit_time: '2026-04-16T08:30:00Z',
+    stay_time: 90,
+    store_id: 'store-001',
+    store_name: 'JOYFIT渋谷店',
+    entry_method: 'face_recognition',
+  },
+] as const;
+
+export const MOCK_LESSON_RESERVATIONS = [
+  {
+    id: 'lr-001',
+    lesson_date: '2026-04-23',
+    lesson_name: 'ボクシング基礎',
+    instructor_name: '田中太郎',
+    status: 'attended' as const,
+  },
+  {
+    id: 'lr-002',
+    lesson_date: '2026-04-22',
+    lesson_name: 'ヨガ基礎',
+    instructor_name: '鈴木花子',
+    status: 'attended' as const,
+  },
+  {
+    id: 'lr-003',
+    lesson_date: '2026-04-21',
+    lesson_name: 'パーソナルトレーニング',
+    instructor_name: '佐藤次郎',
+    status: 'absent' as const,
+  },
+  {
+    id: 'lr-004',
+    lesson_date: '2026-04-20',
+    lesson_name: 'グループレッスン',
+    instructor_name: '山田美咲',
+    status: 'attended' as const,
+  },
+  {
+    id: 'lr-005',
+    lesson_date: '2026-04-19',
+    lesson_name: 'ボクシング基礎',
+    instructor_name: '田中太郎',
+    status: 'cancelled' as const,
+  },
+  {
+    id: 'lr-006',
+    lesson_date: '2026-04-25',
+    lesson_name: 'ピラティス',
+    instructor_name: '中村優子',
+    status: 'reserved' as const,
+  },
+  {
+    id: 'lr-007',
+    lesson_date: '2026-05-01',
+    lesson_name: 'ダンスエクササイズ',
+    instructor_name: '高橋健太',
+    status: 'reserved' as const,
+  },
+  {
+    id: 'lr-008',
+    lesson_date: '2026-05-05',
+    lesson_name: 'スイミング',
+    instructor_name: '伊藤由美',
+    status: 'reserved' as const,
+  },
+  {
+    id: 'lr-009',
+    lesson_date: '2026-04-18',
+    lesson_name: 'ヨガ基礎',
+    instructor_name: '鈴木花子',
+    status: 'attended' as const,
+  },
+  {
+    id: 'lr-010',
+    lesson_date: '2026-04-17',
+    lesson_name: 'パーソナルトレーニング',
+    instructor_name: '佐藤次郎',
+    status: 'cancelled' as const,
+  },
+] as const;
+
+export const MOCK_MEMBER_ACCESS_SETTINGS: Record<
+  string,
+  { auth_method: string; ic_card_number: string | null; qr_code: string | null; gate_stop: boolean }
+> = {
+  'member-001': {
+    auth_method: 'QRコード',
+    ic_card_number: null,
+    qr_code: 'QR123456789',
+    gate_stop: false,
+  },
+  'member-002': {
+    auth_method: 'ICカード',
+    ic_card_number: 'IC-0002',
+    qr_code: null,
+    gate_stop: true,
+  },
+  'member-003': {
+    auth_method: 'QRコード',
+    ic_card_number: null,
+    qr_code: 'QR987654321',
+    gate_stop: false,
+  },
+  'member-004': {
+    auth_method: '顔認証',
+    ic_card_number: 'IC-0004',
+    qr_code: 'QR111222333',
+    gate_stop: false,
+  },
+};
+
 function createDb() {
   const permissionRows: StaffPermissionRecord[] = [];
   let nextStaffPermissionId = 1;
