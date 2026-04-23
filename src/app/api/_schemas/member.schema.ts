@@ -1787,6 +1787,95 @@ export const GetUsageStatusResponseSchema = z
   });
 
 /**
+ * Get Training Records Request Schema
+ */
+export const TrainingRecordsPeriodSchema = z.enum(['all', 'this_month', 'last_3_months']).openapi({
+  title: 'TrainingRecordsPeriod',
+  description: 'Period filter for training records',
+  example: 'all',
+});
+
+export const GetTrainingRecordsPathParamsSchema = z.object({
+  id: z.string().openapi({
+    description: 'Member ID',
+    example: 'M-00001',
+  }),
+});
+
+export const GetTrainingRecordsQuerySchema = z.object({
+  period: TrainingRecordsPeriodSchema.optional().default('all'),
+});
+
+/**
+ * Get Training Records Response Schema
+ */
+export const TrainingRecordItemSchema = z
+  .object({
+    id: z.string().openapi({
+      description: 'Training record ID',
+      example: 'training-001',
+    }),
+    date: z.string().openapi({
+      description: 'Training date',
+      example: '2026-04-17',
+    }),
+    routineName: z.string().openapi({
+      description: 'Routine name',
+      example: '全身強化',
+    }),
+    durationMin: z.number().int().nonnegative().openapi({
+      description: 'Training duration in minutes',
+      example: 55,
+    }),
+    calories: z.number().int().nonnegative().openapi({
+      description: 'Calories burned',
+      example: 360,
+    }),
+  })
+  .openapi({
+    title: 'TrainingRecordItem',
+    description: 'Single training history record',
+  });
+
+export const TrainingRecordSummarySchema = z
+  .object({
+    trainingCount: z.number().int().nonnegative().openapi({
+      description: 'Number of training sessions',
+      example: 8,
+    }),
+    totalDurationMin: z.number().int().nonnegative().openapi({
+      description: 'Total duration in minutes',
+      example: 435,
+    }),
+    totalCalories: z.number().int().nonnegative().openapi({
+      description: 'Total burned calories',
+      example: 2790,
+    }),
+    mostFrequentRoutineName: z.string().nullable().openapi({
+      description: 'Most frequently trained routine',
+      example: '全身強化',
+    }),
+  })
+  .openapi({
+    title: 'TrainingRecordSummary',
+    description: 'Aggregated training summary',
+  });
+
+export const GetTrainingRecordsResponseSchema = z
+  .object({
+    summary: TrainingRecordSummarySchema.openapi({
+      description: 'Training summary',
+    }),
+    trainingHistory: z.array(TrainingRecordItemSchema).openapi({
+      description: 'Training history list',
+    }),
+  })
+  .openapi({
+    title: 'GetTrainingRecordsResponse',
+    description: 'Response for getting training records',
+  });
+
+/**
  * Get Contracts Response Schema
  */
 export const GetContractsResponseSchema = z
@@ -1987,6 +2076,12 @@ export type GetCampaignsResponse = z.infer<typeof GetCampaignsResponseSchema>;
 export type GetPaymentHistoryResponse = z.infer<typeof GetPaymentHistoryResponseSchema>;
 export type GetContractSummaryResponse = z.infer<typeof GetContractSummaryResponseSchema>;
 export type GetUsageStatusResponse = z.infer<typeof GetUsageStatusResponseSchema>;
+export type TrainingRecordsPeriod = z.infer<typeof TrainingRecordsPeriodSchema>;
+export type GetTrainingRecordsPathParams = z.infer<typeof GetTrainingRecordsPathParamsSchema>;
+export type GetTrainingRecordsQuery = z.infer<typeof GetTrainingRecordsQuerySchema>;
+export type TrainingRecordItem = z.infer<typeof TrainingRecordItemSchema>;
+export type TrainingRecordSummary = z.infer<typeof TrainingRecordSummarySchema>;
+export type GetTrainingRecordsResponse = z.infer<typeof GetTrainingRecordsResponseSchema>;
 export type GetContractsResponse = z.infer<typeof GetContractsResponseSchema>;
 export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
 

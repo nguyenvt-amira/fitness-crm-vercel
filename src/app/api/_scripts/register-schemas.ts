@@ -289,6 +289,33 @@ export function registerAllSchemas() {
     'GetContractsResponse',
     registry.register('GetContractsResponse', memberSchemas.GetContractsResponseSchema),
   );
+  registeredSchemaMap.set(
+    'TrainingRecordsPeriod',
+    registry.register('TrainingRecordsPeriod', memberSchemas.TrainingRecordsPeriodSchema),
+  );
+  registeredSchemaMap.set(
+    'GetTrainingRecordsPathParams',
+    registry.register(
+      'GetTrainingRecordsPathParams',
+      memberSchemas.GetTrainingRecordsPathParamsSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetTrainingRecordsQuery',
+    registry.register('GetTrainingRecordsQuery', memberSchemas.GetTrainingRecordsQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'TrainingRecordItem',
+    registry.register('TrainingRecordItem', memberSchemas.TrainingRecordItemSchema),
+  );
+  registeredSchemaMap.set(
+    'TrainingRecordSummary',
+    registry.register('TrainingRecordSummary', memberSchemas.TrainingRecordSummarySchema),
+  );
+  registeredSchemaMap.set(
+    'GetTrainingRecordsResponse',
+    registry.register('GetTrainingRecordsResponse', memberSchemas.GetTrainingRecordsResponseSchema),
+  );
 
   // Register membership application schemas
   registeredSchemaMap.set(

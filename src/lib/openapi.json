@@ -4159,6 +4159,193 @@
         "title": "GetContractsResponse",
         "description": "Response for getting contracts"
       },
+      "TrainingRecordsPeriod": {
+        "type": "string",
+        "enum": ["all", "this_month", "last_3_months"],
+        "title": "TrainingRecordsPeriod",
+        "description": "Period filter for training records",
+        "example": "all"
+      },
+      "GetTrainingRecordsPathParams": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Member ID",
+            "example": "M-00001"
+          }
+        },
+        "required": ["id"]
+      },
+      "GetTrainingRecordsQuery": {
+        "type": "object",
+        "properties": {
+          "period": {
+            "type": "string",
+            "enum": ["all", "this_month", "last_3_months"],
+            "default": "all",
+            "title": "TrainingRecordsPeriod",
+            "description": "Period filter for training records",
+            "example": "all"
+          }
+        }
+      },
+      "TrainingRecordItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Training record ID",
+            "example": "training-001"
+          },
+          "date": {
+            "type": "string",
+            "description": "Training date",
+            "example": "2026-04-17"
+          },
+          "routineName": {
+            "type": "string",
+            "description": "Routine name",
+            "example": "全身強化"
+          },
+          "durationMin": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Training duration in minutes",
+            "example": 55
+          },
+          "calories": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Calories burned",
+            "example": 360
+          }
+        },
+        "required": ["id", "date", "routineName", "durationMin", "calories"],
+        "title": "TrainingRecordItem",
+        "description": "Single training history record"
+      },
+      "TrainingRecordSummary": {
+        "type": "object",
+        "properties": {
+          "trainingCount": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of training sessions",
+            "example": 8
+          },
+          "totalDurationMin": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total duration in minutes",
+            "example": 435
+          },
+          "totalCalories": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total burned calories",
+            "example": 2790
+          },
+          "mostFrequentRoutineName": {
+            "type": "string",
+            "nullable": true,
+            "description": "Most frequently trained routine",
+            "example": "全身強化"
+          }
+        },
+        "required": [
+          "trainingCount",
+          "totalDurationMin",
+          "totalCalories",
+          "mostFrequentRoutineName"
+        ],
+        "title": "TrainingRecordSummary",
+        "description": "Aggregated training summary"
+      },
+      "GetTrainingRecordsResponse": {
+        "type": "object",
+        "properties": {
+          "summary": {
+            "type": "object",
+            "properties": {
+              "trainingCount": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Number of training sessions",
+                "example": 8
+              },
+              "totalDurationMin": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Total duration in minutes",
+                "example": 435
+              },
+              "totalCalories": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Total burned calories",
+                "example": 2790
+              },
+              "mostFrequentRoutineName": {
+                "type": "string",
+                "nullable": true,
+                "description": "Most frequently trained routine",
+                "example": "全身強化"
+              }
+            },
+            "required": [
+              "trainingCount",
+              "totalDurationMin",
+              "totalCalories",
+              "mostFrequentRoutineName"
+            ],
+            "title": "TrainingRecordSummary",
+            "description": "Training summary"
+          },
+          "trainingHistory": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Training record ID",
+                  "example": "training-001"
+                },
+                "date": {
+                  "type": "string",
+                  "description": "Training date",
+                  "example": "2026-04-17"
+                },
+                "routineName": {
+                  "type": "string",
+                  "description": "Routine name",
+                  "example": "全身強化"
+                },
+                "durationMin": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Training duration in minutes",
+                  "example": 55
+                },
+                "calories": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Calories burned",
+                  "example": 360
+                }
+              },
+              "required": ["id", "date", "routineName", "durationMin", "calories"],
+              "title": "TrainingRecordItem",
+              "description": "Single training history record"
+            },
+            "description": "Training history list"
+          }
+        },
+        "required": ["summary", "trainingHistory"],
+        "title": "GetTrainingRecordsResponse",
+        "description": "Response for getting training records"
+      },
       "MembershipApplication": {
         "type": "object",
         "properties": {
@@ -20081,6 +20268,16 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "period",
+            "in": "query",
+            "required": false,
+            "description": "Period filter for training records",
+            "schema": {
+              "type": "string",
+              "enum": ["all", "this_month", "last_3_months"]
+            }
           }
         ],
         "responses": {
@@ -20092,39 +20289,83 @@
                   "type": "object",
                   "properties": {
                     "summary": {
-                      "nullable": true,
+                      "type": "object",
+                      "properties": {
+                        "trainingCount": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "description": "Number of training sessions",
+                          "example": 8
+                        },
+                        "totalDurationMin": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "description": "Total duration in minutes",
+                          "example": 435
+                        },
+                        "totalCalories": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "description": "Total burned calories",
+                          "example": 2790
+                        },
+                        "mostFrequentRoutineName": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "Most frequently trained routine",
+                          "example": "全身強化"
+                        }
+                      },
+                      "required": [
+                        "trainingCount",
+                        "totalDurationMin",
+                        "totalCalories",
+                        "mostFrequentRoutineName"
+                      ],
+                      "title": "TrainingRecordSummary",
                       "description": "Training summary"
                     },
-                    "strengthRecords": {
+                    "trainingHistory": {
                       "type": "array",
                       "items": {
-                        "nullable": true
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Training record ID",
+                            "example": "training-001"
+                          },
+                          "date": {
+                            "type": "string",
+                            "description": "Training date",
+                            "example": "2026-04-17"
+                          },
+                          "routineName": {
+                            "type": "string",
+                            "description": "Routine name",
+                            "example": "全身強化"
+                          },
+                          "durationMin": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "description": "Training duration in minutes",
+                            "example": 55
+                          },
+                          "calories": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "description": "Calories burned",
+                            "example": 360
+                          }
+                        },
+                        "required": ["id", "date", "routineName", "durationMin", "calories"],
+                        "title": "TrainingRecordItem",
+                        "description": "Single training history record"
                       },
-                      "description": "Strength training records"
-                    },
-                    "cardioRecords": {
-                      "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
-                      "description": "Cardio records"
-                    },
-                    "bodyRecords": {
-                      "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
-                      "description": "Body measurement records"
-                    },
-                    "trainingMenus": {
-                      "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
-                      "description": "Training menus"
+                      "description": "Training history list"
                     }
                   },
-                  "required": ["strengthRecords", "cardioRecords", "bodyRecords", "trainingMenus"],
+                  "required": ["summary", "trainingHistory"],
                   "title": "GetTrainingRecordsResponse",
                   "description": "Response for getting training records"
                 }

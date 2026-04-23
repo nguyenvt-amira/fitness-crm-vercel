@@ -3118,6 +3118,148 @@ export type GetContractsResponse = {
 };
 
 /**
+ * TrainingRecordsPeriod
+ *
+ * Period filter for training records
+ */
+export const TrainingRecordsPeriod = {
+    ALL: 'all',
+    THIS_MONTH: 'this_month',
+    LAST_3_MONTHS: 'last_3_months'
+} as const;
+
+/**
+ * TrainingRecordsPeriod
+ *
+ * Period filter for training records
+ */
+export type TrainingRecordsPeriod = typeof TrainingRecordsPeriod[keyof typeof TrainingRecordsPeriod];
+
+export type GetTrainingRecordsPathParams = {
+    /**
+     * Member ID
+     */
+    id: string;
+};
+
+export type GetTrainingRecordsQuery = {
+    /**
+     * TrainingRecordsPeriod
+     *
+     * Period filter for training records
+     */
+    period?: 'all' | 'this_month' | 'last_3_months';
+};
+
+/**
+ * TrainingRecordItem
+ *
+ * Single training history record
+ */
+export type TrainingRecordItem = {
+    /**
+     * Training record ID
+     */
+    id: string;
+    /**
+     * Training date
+     */
+    date: string;
+    /**
+     * Routine name
+     */
+    routineName: string;
+    /**
+     * Training duration in minutes
+     */
+    durationMin: number;
+    /**
+     * Calories burned
+     */
+    calories: number;
+};
+
+/**
+ * TrainingRecordSummary
+ *
+ * Aggregated training summary
+ */
+export type TrainingRecordSummary = {
+    /**
+     * Number of training sessions
+     */
+    trainingCount: number;
+    /**
+     * Total duration in minutes
+     */
+    totalDurationMin: number;
+    /**
+     * Total burned calories
+     */
+    totalCalories: number;
+    /**
+     * Most frequently trained routine
+     */
+    mostFrequentRoutineName: string | null;
+};
+
+/**
+ * GetTrainingRecordsResponse
+ *
+ * Response for getting training records
+ */
+export type GetTrainingRecordsResponse = {
+    /**
+     * TrainingRecordSummary
+     *
+     * Training summary
+     */
+    summary: {
+        /**
+         * Number of training sessions
+         */
+        trainingCount: number;
+        /**
+         * Total duration in minutes
+         */
+        totalDurationMin: number;
+        /**
+         * Total burned calories
+         */
+        totalCalories: number;
+        /**
+         * Most frequently trained routine
+         */
+        mostFrequentRoutineName: string | null;
+    };
+    /**
+     * Training history list
+     */
+    trainingHistory: Array<{
+        /**
+         * Training record ID
+         */
+        id: string;
+        /**
+         * Training date
+         */
+        date: string;
+        /**
+         * Routine name
+         */
+        routineName: string;
+        /**
+         * Training duration in minutes
+         */
+        durationMin: number;
+        /**
+         * Calories burned
+         */
+        calories: number;
+    }>;
+};
+
+/**
  * MembershipApplication
  *
  * Membership application information
@@ -13370,7 +13512,12 @@ export type GetCrmMembersByIdTrainingRecordsData = {
          */
         id: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * Period filter for training records
+         */
+        period?: 'all' | 'this_month' | 'last_3_months';
+    };
     url: '/crm/members/{id}/training-records';
 };
 
@@ -13409,25 +13556,53 @@ export type GetCrmMembersByIdTrainingRecordsResponses = {
      */
     200: {
         /**
+         * TrainingRecordSummary
+         *
          * Training summary
          */
-        summary?: unknown;
+        summary: {
+            /**
+             * Number of training sessions
+             */
+            trainingCount: number;
+            /**
+             * Total duration in minutes
+             */
+            totalDurationMin: number;
+            /**
+             * Total burned calories
+             */
+            totalCalories: number;
+            /**
+             * Most frequently trained routine
+             */
+            mostFrequentRoutineName: string | null;
+        };
         /**
-         * Strength training records
+         * Training history list
          */
-        strengthRecords: Array<unknown>;
-        /**
-         * Cardio records
-         */
-        cardioRecords: Array<unknown>;
-        /**
-         * Body measurement records
-         */
-        bodyRecords: Array<unknown>;
-        /**
-         * Training menus
-         */
-        trainingMenus: Array<unknown>;
+        trainingHistory: Array<{
+            /**
+             * Training record ID
+             */
+            id: string;
+            /**
+             * Training date
+             */
+            date: string;
+            /**
+             * Routine name
+             */
+            routineName: string;
+            /**
+             * Training duration in minutes
+             */
+            durationMin: number;
+            /**
+             * Calories burned
+             */
+            calories: number;
+        }>;
     };
 };
 

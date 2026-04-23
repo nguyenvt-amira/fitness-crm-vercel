@@ -57,7 +57,7 @@ export function registerRoute(config: {
     in: 'path' | 'query' | 'header' | 'cookie';
     required?: boolean;
     description?: string;
-    schema?: ZodSchema | { type: string };
+    schema?: ZodSchema | { type: string; enum?: string[] };
   }>;
   requestBody?: {
     schema: ZodSchema;
@@ -119,7 +119,7 @@ export function registerRoute(config: {
         in: 'path' | 'query' | 'header' | 'cookie';
         required: boolean;
         description?: string;
-        schema: ZodSchema | { type: string };
+        schema: ZodSchema | { type: string; enum?: string[] };
       }>
     | undefined;
 

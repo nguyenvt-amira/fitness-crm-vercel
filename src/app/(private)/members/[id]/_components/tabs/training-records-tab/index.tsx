@@ -1,34 +1,56 @@
 'use client';
 
+import { useState } from 'react';
+
 import { useQuery } from '@tanstack/react-query';
+import { Dumbbell } from 'lucide-react';
 
 import { DataStateBoundary } from '@/components/common/data-state-boundary';
-import { DataTable } from '@/components/common/data-table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 import { getCrmMembersByIdTrainingRecordsOptions } from '@/lib/api/@tanstack/react-query.gen';
+import type { GetCrmMembersByIdTrainingRecordsData } from '@/lib/api/types.gen';
 
-import {
-  BODY_COLUMNS,
-  type BodyRow,
-  CARDIO_COLUMNS,
-  type CardioRow,
-  MENU_COLUMNS,
-  type MenuRow,
-  STRENGTH_COLUMNS,
-  type StrengthRow,
-} from './columns';
+type TrainingRecordsPeriod = Exclude<
+  NonNullable<GetCrmMembersByIdTrainingRecordsData['query']>['period'],
+  undefined
+>;
 
-const STRENGTH_LIMIT = 20;
-const CARDIO_LIMIT = 20;
-const BODY_LIMIT = 10;
+const PERIOD_OPTIONS: Array<{ label: string; value: TrainingRecordsPeriod }> = [
+  { label: '全期間', value: 'all' },
+  { label: '今月', value: 'this_month' },
+  { label: '過去3ヶ月', value: 'last_3_months' },
+];
 
 export function TrainingRecordsTab({ memberId }: { memberId: string }) {
+  const [period, setPeriod] = useState<TrainingRecordsPeriod>('all');
+  const queryOptions: Parameters<typeof getCrmMembersByIdTrainingRecordsOptions>[0] = {
+    path: { id: memberId },
+    query: { period },
+  };
+
   const { data, isLoading, isError, refetch } = useQuery(
-    getCrmMembersByIdTrainingRecordsOptions({
-      path: { id: memberId },
-    }),
+    getCrmMembersByIdTrainingRecordsOptions(queryOptions),
   );
+  const summary = data?.summary;
+  const trainingHistory = data?.trainingHistory ?? [];
+  const selectedPeriodLabel =
+    PERIOD_OPTIONS.find((item) => item.value === period)?.label ?? '全期間';
 
   return (
     <DataStateBoundary
@@ -37,136 +59,103 @@ export function TrainingRecordsTab({ memberId }: { memberId: string }) {
       isEmpty={!data}
       onRetry={() => refetch()}
     >
-      {data
-        ? (() => {
-            const summary = (data as any).summary as {
-              recorded_days: number;
-              total_training_time: number;
-              average_training_time: number;
-              frequent_exercises: string[];
-            } | null;
+      {data ? (
+        <div className="flex flex-col gap-4 md:flex-row">
+          <div className="w-full md:w-[60%]">
+            <Card className="gap-0 py-0">
+              <CardHeader className="px-4 py-3">
+                <div className="flex items-center justify-between gap-2">
+                  <CardTitle className="text-sm">トレーニング記録</CardTitle>
+                  <Select
+                    value={period}
+                    onValueChange={(value) => setPeriod(value as TrainingRecordsPeriod)}
+                  >
+                    <SelectTrigger className="h-8 w-32 text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PERIOD_OPTIONS.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardHeader>
+              {trainingHistory.length === 0 ? (
+                <div className="text-muted-foreground flex flex-col items-center justify-center py-12">
+                  <Dumbbell className="mb-2 size-8 opacity-40" />
+                  <p className="text-sm">まだトレーニング記録がありません</p>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-muted/50">
+                      <TableHead className="text-xs font-semibold">実施日</TableHead>
+                      <TableHead className="text-xs font-semibold">ルーティン名</TableHead>
+                      <TableHead className="text-right text-xs font-semibold">実施時間</TableHead>
+                      <TableHead className="text-right text-xs font-semibold">
+                        消費カロリー
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {trainingHistory.map((item) => (
+                      <TableRow key={item.id}>
+                        <TableCell className="text-muted-foreground text-sm">{item.date}</TableCell>
+                        <TableCell className="text-sm font-medium">{item.routineName}</TableCell>
+                        <TableCell className="text-right text-sm">{item.durationMin}分</TableCell>
+                        <TableCell className="text-right text-sm">{item.calories}kcal</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </Card>
+          </div>
 
-            const strengthRecords = ((data as any).strengthRecords ?? []) as StrengthRow[];
-            const cardioRecords = ((data as any).cardioRecords ?? []) as CardioRow[];
-            const bodyRecords = ((data as any).bodyRecords ?? []) as BodyRow[];
-            const trainingMenus = ((data as any).trainingMenus ?? []) as MenuRow[];
-
-            const recentStrength = strengthRecords.slice(0, STRENGTH_LIMIT);
-            const recentCardio = cardioRecords.slice(0, CARDIO_LIMIT);
-            const recentBody = bodyRecords.slice(0, BODY_LIMIT);
-
-            const hasMoreStrength = strengthRecords.length > STRENGTH_LIMIT;
-            const hasMoreCardio = cardioRecords.length > CARDIO_LIMIT;
-            const hasMoreBody = bodyRecords.length > BODY_LIMIT;
-
-            return (
-              <div className="space-y-4">
-                {summary && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>トレーニングサマリ（直近1ヶ月）</CardTitle>
-                    </CardHeader>
-                    <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-4">
-                      <div>
-                        <p className="text-muted-foreground text-sm">記録日数</p>
-                        <p className="mt-1 text-xl font-bold">{summary.recorded_days}日</p>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground text-sm">総トレーニング時間</p>
-                        <p className="mt-1 text-xl font-bold">{summary.total_training_time}分</p>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground text-sm">平均トレーニング時間</p>
-                        <p className="mt-1 text-xl font-bold">{summary.average_training_time}分</p>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground text-sm">よく行う種目</p>
-                        <p className="mt-1">
-                          {summary.frequent_exercises && summary.frequent_exercises.length > 0
-                            ? summary.frequent_exercises.join(', ')
-                            : '-'}
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>筋トレ記録</CardTitle>
-                    <p className="text-muted-foreground text-sm">
-                      最近20件{hasMoreStrength ? '（全件表示可）' : ''}
-                    </p>
-                  </CardHeader>
-                  <CardContent>
-                    {recentStrength.length > 0 ? (
-                      <DataTable
-                        variant="simple"
-                        columns={STRENGTH_COLUMNS}
-                        data={recentStrength}
-                      />
-                    ) : (
-                      <p className="text-muted-foreground py-4 text-sm">
-                        該当のデータがありません。
+          <div className="w-full md:w-[40%]">
+            <div className="sticky top-0 flex flex-col gap-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm">記録サマリー（{selectedPeriodLabel}）</CardTitle>
+                </CardHeader>
+                <CardContent className="px-4">
+                  <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                    <div>
+                      <p className="text-muted-foreground mb-1 text-xs">実施回数</p>
+                      <p className="text-2xl font-bold">
+                        {(summary?.trainingCount ?? 0).toLocaleString()}
+                        <span className="ml-1 text-sm font-normal">回</span>
                       </p>
-                    )}
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>有酸素運動記録</CardTitle>
-                    <p className="text-muted-foreground text-sm">
-                      最近20件{hasMoreCardio ? '（全件表示可）' : ''}
-                    </p>
-                  </CardHeader>
-                  <CardContent>
-                    {recentCardio.length > 0 ? (
-                      <DataTable variant="simple" columns={CARDIO_COLUMNS} data={recentCardio} />
-                    ) : (
-                      <p className="text-muted-foreground py-4 text-sm">
-                        該当のデータがありません。
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground mb-1 text-xs">合計時間</p>
+                      <p className="text-2xl font-bold">
+                        {(summary?.totalDurationMin ?? 0).toLocaleString()}
+                        <span className="ml-1 text-sm font-normal">分</span>
                       </p>
-                    )}
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>身体記録</CardTitle>
-                    <p className="text-muted-foreground text-sm">
-                      最近10件{hasMoreBody ? '（全件表示可）' : ''}
-                    </p>
-                  </CardHeader>
-                  <CardContent>
-                    {recentBody.length > 0 ? (
-                      <DataTable variant="simple" columns={BODY_COLUMNS} data={recentBody} />
-                    ) : (
-                      <p className="text-muted-foreground py-4 text-sm">
-                        該当のデータがありません。
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground mb-1 text-xs">合計消費カロリー</p>
+                      <p className="text-sm font-semibold">
+                        {(summary?.totalCalories ?? 0).toLocaleString()} kcal
                       </p>
-                    )}
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>トレーニングメニュー（保存済み）</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {trainingMenus.length > 0 ? (
-                      <DataTable variant="simple" columns={MENU_COLUMNS} data={trainingMenus} />
-                    ) : (
-                      <p className="text-muted-foreground py-4 text-sm">
-                        保存済みのトレーニングメニューがありません。
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground mb-1 text-xs">最多ルーティン</p>
+                      <p className="text-sm font-semibold">
+                        {summary?.mostFrequentRoutineName ?? '-'}
                       </p>
-                    )}
-                  </CardContent>
-                </Card>
-              </div>
-            );
-          })()
-        : null}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </DataStateBoundary>
   );
 }

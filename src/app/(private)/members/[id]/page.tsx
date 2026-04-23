@@ -251,6 +251,7 @@ export default function MemberDetailPage() {
                       variant="outline"
                       className={`text-[10px] ${MEMBER_STATUS_CLASSES[member.profile.status]}`}
                     >
+                      <span className="mr-1 inline-block size-1.5 rounded-full bg-current" />
                       {memberStatusLabel}
                     </Badge>
                     {member.profile.member_type && (
@@ -463,9 +464,9 @@ export default function MemberDetailPage() {
               <TabsTrigger value="payment">支払い履歴</TabsTrigger>
               <TabsTrigger value="usage">利用履歴</TabsTrigger>
               <TabsTrigger value="points">ポイント履歴</TabsTrigger>
-              <TabsTrigger value="training">トレーニング記録</TabsTrigger>
               <TabsTrigger value="service">サービス利用履歴</TabsTrigger>
               <TabsTrigger value="communications">コミュニケーション</TabsTrigger>
+              <TabsTrigger value="training">トレーニング記録</TabsTrigger>
               <TabsTrigger value="history">変更履歴</TabsTrigger>
               <TabsTrigger value="relationships">関係者情報</TabsTrigger>
             </TabsList>
