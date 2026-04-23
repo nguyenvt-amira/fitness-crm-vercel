@@ -1055,10 +1055,6 @@ export type MemberListItem = {
      */
     contract_id: string;
     /**
-     * Contract plan master id (for filtering by plan template)
-     */
-    contract_plan_id: string;
-    /**
      * Join date
      */
     joined_at: string;
@@ -1231,10 +1227,6 @@ export type GetMembersQuery = {
      */
     store_id?: Array<string> | null;
     /**
-     * Filter by contract plan ID (array)
-     */
-    contract_plan_id?: Array<string> | null;
-    /**
      * Filter by last visit days (-1 for 3+ months)
      */
     last_visit_days?: number | null;
@@ -1310,10 +1302,6 @@ export type GetMembersResponse = {
          * Member's active contract row id (references CRM contract)
          */
         contract_id: string;
-        /**
-         * Contract plan master id (for filtering by plan template)
-         */
-        contract_plan_id: string;
         /**
          * Join date
          */
@@ -14770,10 +14758,6 @@ export type GetCrmMembersData = {
          */
         store_id?: Array<string> | null;
         /**
-         * Filter by contract plan ID (array)
-         */
-        contract_plan_id?: Array<string> | null;
-        /**
          * Filter by last visit days (-1 for 3+ months)
          */
         last_visit_days?: number | null;
@@ -14879,10 +14863,6 @@ export type GetCrmMembersResponses = {
              * Member's active contract row id (references CRM contract)
              */
             contract_id: string;
-            /**
-             * Contract plan master id (for filtering by plan template)
-             */
-            contract_plan_id: string;
             /**
              * Join date
              */

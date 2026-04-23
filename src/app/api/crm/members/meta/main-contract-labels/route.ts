@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { DEFAULT_MEMBER_MAIN_CONTRACT, getMemberMainContractFormLabels } from '@/app/api/_mock-db';
+import { DEFAULT_MEMBER_MAIN_CONTRACT, db } from '@/app/api/_mock-db';
 import {
   ErrorResponseSchema,
   type GetMemberMainContractLabelsResponse,
@@ -27,10 +27,18 @@ registerRoute({
 
 export async function GET() {
   try {
-    const response: GetMemberMainContractLabelsResponse = {
-      labels: [...getMemberMainContractFormLabels()],
+    const raw = {
+      labels: db.mainContracts.getList().map((contract) => contract.name),
       default_label: DEFAULT_MEMBER_MAIN_CONTRACT,
     };
+
+    const parsed = GetMemberMainContractLabelsResponseSchema.safeParse(raw);
+    if (!parsed.success) {
+      console.error('Member main contract labels validation failed:', parsed.error.flatten());
+      return NextResponse.json({ error: 'Invalid labels payload' }, { status: 500 });
+    }
+
+    const response: GetMemberMainContractLabelsResponse = parsed.data;
     return NextResponse.json(response);
   } catch (error) {
     console.error('Error fetching member main contract labels:', error);

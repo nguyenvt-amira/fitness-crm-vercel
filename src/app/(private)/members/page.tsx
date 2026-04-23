@@ -16,13 +16,14 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
 import {
+  getCrmMainContractsOptions,
   getCrmMembersOptions,
   getCrmMembersQueryKey,
   getCrmMembersSummaryOptions,
   getCrmMembersSummaryQueryKey,
   patchCrmMembersByIdContractsMainContractChangeMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
-import type { GetCrmMembersResponse } from '@/lib/api/types.gen';
+import type { GetCrmMainContractsResponse, GetCrmMembersResponse } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
 import { MemberBulkContractDialog } from './_components/member-bulk-contract-dialog';
@@ -38,12 +39,14 @@ function formatNextMonthStart() {
   return `${nextMonthStart.getFullYear()}年${nextMonthStart.getMonth() + 1}月${nextMonthStart.getDate()}日`;
 }
 
+type ContractOption = GetCrmMainContractsResponse['main_contracts'][number];
+
 function MembersPageContent() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [bulkDialogOpen, setBulkDialogOpen] = useState(false);
-  const [toContractId, setToContractId] = useState('');
+  const [toContract, setToContract] = useState<ContractOption | null>(null);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const selectedIDs = Object.keys(rowSelection);
@@ -73,6 +76,14 @@ function MembersPageContent() {
       query: queryParams,
     }),
   });
+  const { data: mainContractsData } = useQuery({
+    ...getCrmMainContractsOptions({
+      query: {
+        page: 1,
+        limit: 100,
+      },
+    }),
+  });
 
   const members = useMemo(() => data?.members ?? [], [data?.members]);
   const pagination = data?.pagination;
@@ -84,18 +95,16 @@ function MembersPageContent() {
     () => members.filter((member) => member.id && selectedIDs.includes(member.id)),
     [members, selectedIDs],
   );
+
   const contractOptions = useMemo(() => {
-    const map = new Map<string, string>();
-    members.forEach((member) => {
-      if (member.contract_plan_id && member.contract_name) {
-        map.set(member.contract_plan_id, member.contract_name);
-      }
-    });
-    return Array.from(map.entries()).map(([id, name]) => ({ id, name }));
-  }, [members]);
-  const selectedContractName = contractOptions.find(
-    (contract) => contract.id === toContractId,
-  )?.name;
+    return mainContractsData?.main_contracts ?? [];
+  }, [mainContractsData?.main_contracts]);
+
+  const handleContractChange = (contractId: string) => {
+    const nextContract = contractOptions.find((contract) => contract.id === contractId) ?? null;
+    setToContract(nextContract);
+  };
+
   const applyDateLabel = formatNextMonthStart();
 
   const { mutateAsync: changeMainContract, isPending: isChangingMainContract } = useMutation({
@@ -103,18 +112,18 @@ function MembersPageContent() {
   });
 
   const handleOpenBulkDialog = () => {
-    setToContractId('');
+    setToContract(null);
     setBulkDialogOpen(true);
   };
 
   const handleBulkExecute = async () => {
-    if (!toContractId || selectedIDs.length === 0) return;
+    if (!toContract || selectedIDs.length === 0) return;
 
     const results = await Promise.allSettled(
       selectedIDs.map((memberId) =>
         changeMainContract({
           path: { id: memberId },
-          body: { contract_id: toContractId },
+          body: { contract_id: toContract.id },
         }),
       ),
     );
@@ -140,7 +149,7 @@ function MembersPageContent() {
 
     setBulkDialogOpen(false);
     setRowSelection({});
-    setToContractId('');
+    setToContract(null);
   };
 
   const columns: ColumnDef<NonNullable<GetCrmMembersResponse['members']>[0]>[] =
@@ -239,10 +248,9 @@ function MembersPageContent() {
         onOpenChange={setBulkDialogOpen}
         selectedMemberIds={selectedIDs}
         selectedMembers={selectedMembers}
-        toContractId={toContractId}
-        onContractChange={setToContractId}
+        toContract={toContract}
+        onContractChange={handleContractChange}
         contractOptions={contractOptions}
-        selectedContractName={selectedContractName}
         isChangingMainContract={isChangingMainContract}
         onExecute={handleBulkExecute}
       />

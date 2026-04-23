@@ -42,96 +42,8 @@ import type {
   RiskReason,
 } from '@/types/api/membership-application.type';
 
-/**
- * Mock DB table: canonical main contract master rows for members.
- */
-export const MEMBER_MAIN_CONTRACT_MASTER = [
-  {
-    id: 'master-contract-regular',
-    name: 'レギュラー会員',
-    template_contract_id: 'ctr-tpl-regular',
-    plan_master_id: 'plan-001',
-    monthly_fee: 6580,
-  },
-  {
-    id: 'master-contract-night',
-    name: 'ナイト会員',
-    template_contract_id: 'ctr-tpl-night',
-    plan_master_id: 'plan-002',
-    monthly_fee: 5980,
-  },
-  {
-    id: 'master-contract-daytime',
-    name: 'デイタイム会員',
-    template_contract_id: 'ctr-tpl-daytime',
-    plan_master_id: 'plan-002',
-    monthly_fee: 5480,
-  },
-  {
-    id: 'master-contract-weekend',
-    name: 'ウィークエンド会員',
-    template_contract_id: 'ctr-tpl-weekend',
-    plan_master_id: 'plan-003',
-    monthly_fee: 4980,
-  },
-  {
-    id: 'master-contract-1day',
-    name: '1Dayパス',
-    template_contract_id: 'ctr-tpl-1day',
-    plan_master_id: 'plan-001',
-    monthly_fee: 880,
-  },
-] as const;
-
-export type MemberMainContractName = (typeof MEMBER_MAIN_CONTRACT_MASTER)[number]['name'];
-
-export const DEFAULT_MEMBER_MAIN_CONTRACT: MemberMainContractName = 'レギュラー会員';
-
-export function isMemberMainContractName(
-  value: string | undefined | null,
-): value is MemberMainContractName {
-  return value != null && MEMBER_MAIN_CONTRACT_MASTER.some((contract) => contract.name === value);
-}
-
-/** Stable template row id per main contract (mock `contracts` table). */
-export const MEMBER_MAIN_CONTRACT_TEMPLATE_CONTRACT_ID = Object.fromEntries(
-  MEMBER_MAIN_CONTRACT_MASTER.map((contract) => [contract.name, contract.template_contract_id]),
-) as Record<MemberMainContractName, string>;
-
-/** Plan master id for filters / mock billing (maps several UI labels onto plan-001...003). */
-export const MEMBER_MAIN_CONTRACT_PLAN_MASTER_ID = Object.fromEntries(
-  MEMBER_MAIN_CONTRACT_MASTER.map((contract) => [contract.name, contract.plan_master_id]),
-) as Record<MemberMainContractName, string>;
-
-export const MEMBER_MAIN_CONTRACT_MONTHLY_FEE = Object.fromEntries(
-  MEMBER_MAIN_CONTRACT_MASTER.map((contract) => [contract.name, contract.monthly_fee]),
-) as Record<MemberMainContractName, number>;
-
-/** Map legacy / application plan labels onto the canonical main-contract names. */
-export function normalizeToMemberMainContractName(
-  raw: string | undefined | null,
-): MemberMainContractName {
-  if (isMemberMainContractName(raw)) return raw;
-  const s = raw?.trim() ?? '';
-  if (!s) return DEFAULT_MEMBER_MAIN_CONTRACT;
-  if (/1Day|ワンデー|oneday/i.test(s) || s.includes('1Day')) return '1Dayパス';
-  if (s.includes('ウィークエンド') || s.includes('週末')) return 'ウィークエンド会員';
-  if (s.includes('デイタイム')) return 'デイタイム会員';
-  if (s.includes('ナイト')) return 'ナイト会員';
-  if (
-    s.includes('プレミアム') ||
-    s.includes('スタンダード') ||
-    s.includes('ベーシック') ||
-    s.includes('通常会員')
-  ) {
-    return 'レギュラー会員';
-  }
-  return DEFAULT_MEMBER_MAIN_CONTRACT;
-}
-
-export function getMemberMainContractFormLabels(): readonly string[] {
-  return MEMBER_MAIN_CONTRACT_MASTER.map((contract) => contract.name);
-}
+export const DEFAULT_MEMBER_MAIN_CONTRACT: string = 'レギュラー会員';
+const DEFAULT_MEMBER_MAIN_CONTRACT_ID = 'MC001';
 
 export type MembershipApplicationContractDetails = {
   plan_id: string;
@@ -182,11 +94,8 @@ interface GetMembersResponseMember {
   store_name: string;
   store_id: string;
   brand: NonNullable<GetMemberDetailResponse['profile']>['brand'];
-  contract_name: MemberMainContractName;
-  /** CRM contract row id the member holds (may differ from plan master id). */
+  contract_name: string;
   contract_id: string;
-  /** Plan master id for list filters (e.g. plan-001). */
-  contract_plan_id: string;
   joined_at: string;
   last_visit_date?: string;
   has_unpaid: boolean;
@@ -197,24 +106,13 @@ interface GetMembersResponseMember {
 // List-only fields stored with Member for list view
 interface MemberListMeta {
   contract_id: string;
-  contract_plan_id: string;
-  contract_name: MemberMainContractName;
+  contract_name: string;
   contract_type: ContractType;
   last_visit_date?: string;
   has_unpaid: boolean;
 }
 type Member = GetMemberDetailResponse;
 type MemberRow = Member & { _listMeta?: MemberListMeta };
-
-function resolvePlanMasterIdFromMainContractLabel(label: string): string {
-  const n = normalizeToMemberMainContractName(label);
-  return MEMBER_MAIN_CONTRACT_PLAN_MASTER_ID[n];
-}
-
-function resolveMonthlyFeeForMainContractLabel(label: string): number {
-  const n = normalizeToMemberMainContractName(label);
-  return MEMBER_MAIN_CONTRACT_MONTHLY_FEE[n];
-}
 
 /** Position master seed (positions table) — mirrors 職位マスター */
 const SEED_POSITION_ROWS: Position[] = [
@@ -414,15 +312,6 @@ function resolveContractTypeFromMemberType(memberType: MemberProfile['member_typ
   return 'regular';
 }
 
-function resolveMainContractNameFromMemberType(
-  memberType: MemberProfile['member_type'],
-): MemberMainContractName {
-  if (memberType === 'one_day_member') return '1Dayパス';
-  if (memberType === 'family') return 'ウィークエンド会員';
-  if (memberType === 'corporate') return 'デイタイム会員';
-  return 'レギュラー会員';
-}
-
 function resolveBrand(input: string | undefined, fallback: Brand): Brand {
   if (!input) return fallback;
   const normalized = input
@@ -463,8 +352,7 @@ function createMember(
     brand: MemberProfile['brand'];
     joined_at: string;
     contract_id: string;
-    contract_plan_id: string;
-    contract_name: MemberMainContractName;
+    contract_name: string;
     last_visit_date?: string;
     has_unpaid: boolean;
     emergency_contact_name: string;
@@ -546,7 +434,6 @@ function createMember(
     },
     _listMeta: {
       contract_id: listMeta.contract_id,
-      contract_plan_id: listMeta.contract_plan_id,
       contract_name: listMeta.contract_name,
       contract_type: listMeta.contract_type,
       last_visit_date: listMeta.last_visit_date,
@@ -579,11 +466,10 @@ function calculateAgeFromBirthday(birthday: string): number {
 
 function memberToListItem(m: MemberRow): GetMembersResponseMember {
   const meta = m._listMeta;
-  const rawContractLabel =
+  const contractName =
     meta?.contract_name ??
     (m.profile as { contract_name?: string | null } | undefined)?.contract_name ??
-    '';
-  const contractName = normalizeToMemberMainContractName(rawContractLabel);
+    DEFAULT_MEMBER_MAIN_CONTRACT;
   return {
     id: m.basic_info.id,
     member_number: m.basic_info.member_number,
@@ -598,8 +484,7 @@ function memberToListItem(m: MemberRow): GetMembersResponseMember {
     joined_at: m.profile.joined_at,
     phone: m.basic_info.phone,
     email: m.basic_info.email,
-    contract_id: meta?.contract_id ?? meta?.contract_plan_id ?? 'plan-001',
-    contract_plan_id: meta?.contract_plan_id ?? 'plan-001',
+    contract_id: meta?.contract_id ?? meta?.contract_id ?? 'MC001',
     contract_name: contractName,
     last_visit_date: meta?.last_visit_date,
     has_unpaid: meta?.has_unpaid ?? false,
@@ -1416,6 +1301,12 @@ function createDb() {
         ];
         const now = new Date();
         const dayMs = 24 * 60 * 60 * 1000;
+        db.mainContracts._seed();
+        const mainContracts = db.mainContracts.getList();
+        const defaultContract =
+          mainContracts.find((contract) => contract.id === DEFAULT_MEMBER_MAIN_CONTRACT_ID) ??
+          mainContracts[0];
+        const byId = new Map(mainContracts.map((contract) => [contract.id, contract]));
         for (let i = 1; i <= 200; i++) {
           const id = `M-${String(i).padStart(5, '0')}`;
           const name = names[i % names.length];
@@ -1423,9 +1314,17 @@ function createDb() {
           const memberType = (
             ['regular', 'family', 'corporate', 'one_day_member'] as MemberProfile['member_type'][]
           )[i % 4]!;
-          const displayName = resolveMainContractNameFromMemberType(memberType);
-          const tplContractId = MEMBER_MAIN_CONTRACT_TEMPLATE_CONTRACT_ID[displayName];
-          const planMasterId = MEMBER_MAIN_CONTRACT_PLAN_MASTER_ID[displayName];
+          const preferredContractId =
+            memberType === 'one_day_member'
+              ? 'MC007'
+              : memberType === 'family'
+                ? 'MC011'
+                : memberType === 'corporate'
+                  ? 'MC003'
+                  : DEFAULT_MEMBER_MAIN_CONTRACT_ID;
+          const mainContract = byId.get(preferredContractId) ?? defaultContract;
+          const displayName = mainContract?.name ?? DEFAULT_MEMBER_MAIN_CONTRACT;
+          const mainContractId = mainContract?.id ?? DEFAULT_MEMBER_MAIN_CONTRACT_ID;
           const phone = `090${String(1000 + (i % 9000)).slice(-4)}${String(1000 + (i % 9000)).slice(-4)}`;
           const email = `member${String(i).padStart(5, '0')}@example.jp`;
           this._members.push(
@@ -1452,8 +1351,7 @@ function createDb() {
               store_id: store.id,
               brand: store.brand as Brand,
               contract_name: displayName,
-              contract_id: tplContractId,
-              contract_plan_id: planMasterId,
+              contract_id: mainContractId,
               joined_at: `2024-${String((i % 12) + 1).padStart(2, '0')}-${String((i % 28) + 1).padStart(2, '0')}`,
               last_visit_date:
                 i % 5 === 0
@@ -1525,9 +1423,17 @@ function createDb() {
         ]!;
         const rawPlan =
           application.contract_details?.plan_name || application.contract_details?.plan_id || '';
-        const displayName = normalizeToMemberMainContractName(rawPlan);
-        const planMasterId = MEMBER_MAIN_CONTRACT_PLAN_MASTER_ID[displayName];
-        const tplContractId = MEMBER_MAIN_CONTRACT_TEMPLATE_CONTRACT_ID[displayName];
+        db.mainContracts._seed();
+        const mainContracts = db.mainContracts.getList();
+        const defaultContract =
+          mainContracts.find((contract) => contract.id === DEFAULT_MEMBER_MAIN_CONTRACT_ID) ??
+          mainContracts[0];
+        const selectedContract =
+          mainContracts.find((contract) => contract.id === rawPlan) ??
+          mainContracts.find((contract) => contract.name === rawPlan) ??
+          defaultContract;
+        const displayName = selectedContract?.name ?? DEFAULT_MEMBER_MAIN_CONTRACT;
+        const mainContractId = selectedContract?.id ?? DEFAULT_MEMBER_MAIN_CONTRACT_ID;
         const row = createMember(id, {
           name_kanji: application.applicant_name || '',
           name_kana: application.applicant_name || '',
@@ -1543,8 +1449,7 @@ function createDb() {
           brand: nextNumber % 2 === 0 ? 'fit365' : 'joyfit',
           joined_at: toIsoDate(now),
           contract_name: displayName,
-          contract_id: tplContractId,
-          contract_plan_id: planMasterId,
+          contract_id: mainContractId,
           last_visit_date: toIsoDate(new Date(application.contract_details?.start_date ?? now)),
           has_unpaid: false,
           in_cancellation_period: false,
@@ -1573,10 +1478,13 @@ function createDb() {
         const store = primary?.profile.store_id
           ? { id: primary.profile.store_id, name: primary.profile.store_name }
           : { id: fallbackStore.id, name: fallbackStore.name };
+        db.mainContracts._seed();
+        const contracts = db.mainContracts.getList();
         const displayName =
-          MEMBER_MAIN_CONTRACT_MASTER[nextNumber % MEMBER_MAIN_CONTRACT_MASTER.length]!.name;
-        const tplContractId = MEMBER_MAIN_CONTRACT_TEMPLATE_CONTRACT_ID[displayName];
-        const planMasterId = MEMBER_MAIN_CONTRACT_PLAN_MASTER_ID[displayName];
+          contracts[nextNumber % contracts.length]?.name ?? DEFAULT_MEMBER_MAIN_CONTRACT;
+        const mainContractId =
+          contracts.find((contract) => contract.name === displayName)?.id ??
+          DEFAULT_MEMBER_MAIN_CONTRACT_ID;
         const now = new Date();
         const row = createMember(id, {
           name_kanji: registration.applicant_name,
@@ -1597,8 +1505,7 @@ function createDb() {
           brand: primary?.profile.brand ?? (nextNumber % 2 === 0 ? 'fit365' : 'joyfit'),
           joined_at: toIsoDate(now),
           contract_name: displayName,
-          contract_id: tplContractId,
-          contract_plan_id: planMasterId,
+          contract_id: mainContractId,
           last_visit_date: undefined,
           has_unpaid: false,
           in_cancellation_period: false,
@@ -1621,9 +1528,16 @@ function createDb() {
         const profileInfo = body.profile_info;
         const joinedAt = profileInfo?.join_date ?? toIsoDate(new Date());
         const memberType: MemberProfile['member_type'] = profileInfo?.member_type ?? 'regular';
-        const contractName = normalizeToMemberMainContractName(
-          profileInfo?.contract_name ?? DEFAULT_MEMBER_MAIN_CONTRACT,
-        );
+        db.mainContracts._seed();
+        const mainContracts = db.mainContracts.getList();
+        const defaultContract =
+          mainContracts.find((contract) => contract.id === DEFAULT_MEMBER_MAIN_CONTRACT_ID) ??
+          mainContracts[0];
+        const selectedContract =
+          mainContracts.find((contract) => contract.id === profileInfo?.contract_name) ??
+          mainContracts.find((contract) => contract.name === profileInfo?.contract_name) ??
+          defaultContract;
+        const contractName = selectedContract?.name ?? DEFAULT_MEMBER_MAIN_CONTRACT;
         const existingContract = db.contracts.getByPlanName(contractName);
         const contractId =
           existingContract?.contract_id ?? `contract-member-${String(nextNumber).padStart(5, '0')}`;
@@ -1633,7 +1547,7 @@ function createDb() {
             data: buildMemberContractData({
               plan_name: contractName,
               start_date: joinedAt,
-              monthly_fee: resolveMonthlyFeeForMainContractLabel(contractName),
+              monthly_fee: selectedContract?.price_including_tax ?? 0,
               created_at: new Date().toISOString(),
             }),
           });
@@ -1649,8 +1563,6 @@ function createDb() {
           normalizedBrand && resolvedStore
             ? resolveBrand(normalizedBrand, resolvedStore.brand as Brand)
             : ('' as MemberProfile['brand']);
-        const planMasterId = resolvePlanMasterIdFromMainContractLabel(contractName);
-
         const row = createMember(id, {
           name_kanji: body.name_kanji,
           name_kana: body.name_kana,
@@ -1667,7 +1579,6 @@ function createDb() {
           joined_at: joinedAt,
           contract_name: contractName,
           contract_id: contractId,
-          contract_plan_id: planMasterId,
           last_visit_date: undefined,
           has_unpaid: false,
           in_cancellation_period: false,
@@ -1736,13 +1647,18 @@ function createDb() {
         const nextContractType = body.member_type
           ? resolveContractTypeFromMemberType(body.member_type)
           : current._listMeta?.contract_type;
-        let nextContractDisplayName = normalizeToMemberMainContractName(
-          body.contract_name ??
-            current._listMeta?.contract_name ??
-            current.profile.contract_name ??
-            DEFAULT_MEMBER_MAIN_CONTRACT,
-        );
-        let nextContractPlanId = current._listMeta?.contract_plan_id;
+        db.mainContracts._seed();
+        const mainContracts = db.mainContracts.getList();
+        const defaultContract =
+          mainContracts.find((contract) => contract.id === DEFAULT_MEMBER_MAIN_CONTRACT_ID) ??
+          mainContracts[0];
+        const selectedInitialContract =
+          mainContracts.find((contract) => contract.id === body.contract_name) ??
+          mainContracts.find((contract) => contract.name === body.contract_name) ??
+          mainContracts.find((contract) => contract.name === current._listMeta?.contract_name) ??
+          mainContracts.find((contract) => contract.name === current.profile.contract_name) ??
+          defaultContract;
+        let nextContractDisplayName = selectedInitialContract?.name ?? DEFAULT_MEMBER_MAIN_CONTRACT;
         let nextContractId = current._listMeta?.contract_id;
 
         if (body.contract_name) {
@@ -1755,16 +1671,24 @@ function createDb() {
               data: buildMemberContractData({
                 plan_name: body.contract_name,
                 start_date: body.join_date ?? current.profile.joined_at,
-                monthly_fee: resolveMonthlyFeeForMainContractLabel(body.contract_name),
+                monthly_fee:
+                  mainContracts.find((item) => item.name === body.contract_name)
+                    ?.price_including_tax ??
+                  mainContracts.find((item) => item.id === body.contract_name)
+                    ?.price_including_tax ??
+                  defaultContract?.price_including_tax ??
+                  0,
                 created_at: new Date().toISOString(),
               }),
             });
           }
           nextContractId = contract.contract_id;
-          nextContractDisplayName = normalizeToMemberMainContractName(
-            contract.data.main_contract.plan_name,
-          );
-          nextContractPlanId = resolvePlanMasterIdFromMainContractLabel(nextContractDisplayName);
+          nextContractDisplayName =
+            mainContracts.find((item) => item.name === contract.data.main_contract.plan_name)
+              ?.name ??
+            mainContracts.find((item) => item.id === contract.data.main_contract.plan_name)?.name ??
+            defaultContract?.name ??
+            DEFAULT_MEMBER_MAIN_CONTRACT;
         }
 
         const updated: MemberRow = {
@@ -1795,16 +1719,10 @@ function createDb() {
                 contract_id: nextContractId ?? current._listMeta.contract_id,
                 contract_type: nextContractType ?? current._listMeta.contract_type,
                 contract_name: nextContractDisplayName,
-                contract_plan_id: nextContractPlanId ?? current._listMeta.contract_plan_id,
               }
             : {
                 contract_id:
-                  nextContractId ??
-                  current.profile.contract_id ??
-                  MEMBER_MAIN_CONTRACT_TEMPLATE_CONTRACT_ID[nextContractDisplayName],
-                contract_plan_id:
-                  nextContractPlanId ??
-                  resolvePlanMasterIdFromMainContractLabel(nextContractDisplayName),
+                  nextContractId ?? current.profile.contract_id ?? DEFAULT_MEMBER_MAIN_CONTRACT_ID,
                 contract_name: nextContractDisplayName,
                 contract_type:
                   nextContractType ??
@@ -1865,11 +1783,12 @@ function createDb() {
         if (this._seeded) return;
         this._seeded = true;
         const now = new Date().toISOString();
-        for (const masterContract of MEMBER_MAIN_CONTRACT_MASTER) {
+        db.mainContracts._seed();
+        for (const masterContract of db.mainContracts.getList()) {
           const name = masterContract.name;
-          const monthlyFee = masterContract.monthly_fee;
+          const monthlyFee = masterContract.price_including_tax;
           this._contracts.push({
-            contract_id: masterContract.template_contract_id,
+            contract_id: masterContract.id,
             created_at: now,
             data: buildMemberContractData({
               plan_name: name,
@@ -1894,7 +1813,7 @@ function createDb() {
       getByMemberId(memberId: string): GetContractsResponse | undefined {
         this._seed();
         const member = db.members._members.find((m) => m.basic_info.id === memberId);
-        const contractId = member?._listMeta?.contract_id ?? member?._listMeta?.contract_plan_id;
+        const contractId = member?._listMeta?.contract_id;
         if (contractId) {
           return this.getById(contractId)?.data;
         }
@@ -1932,18 +1851,17 @@ function createDb() {
         if (input.member_id) {
           const member = db.members._members.find((m) => m.basic_info.id === input.member_id);
           if (member?._listMeta) {
-            const normalizedPlan = normalizeToMemberMainContractName(
-              row.data.main_contract.plan_name,
-            );
+            db.mainContracts._seed();
+            const mainContracts = db.mainContracts.getList();
+            const normalizedPlan =
+              mainContracts.find((item) => item.name === row.data.main_contract.plan_name)?.name ??
+              mainContracts.find((item) => item.id === row.data.main_contract.plan_name)?.name ??
+              DEFAULT_MEMBER_MAIN_CONTRACT;
             const nextContractType =
-              normalizedPlan === '1Dayパス' || row.data.main_contract.plan_name.includes('1Day')
+              normalizedPlan.includes('1Day') || row.data.main_contract.plan_name.includes('1Day')
                 ? 'one_day_member'
                 : member._listMeta.contract_type;
-            const planMasterId = resolvePlanMasterIdFromMainContractLabel(
-              row.data.main_contract.plan_name,
-            );
             member._listMeta.contract_id = row.contract_id;
-            member._listMeta.contract_plan_id = planMasterId;
             member._listMeta.contract_name = normalizedPlan;
             member._listMeta.contract_type = nextContractType;
             member.profile.contract_id = row.contract_id;
@@ -1965,9 +1883,15 @@ function createDb() {
         const { application, member_id } = input;
         const contractId = `CONTRACT-${application.id}`;
         const createdAt = new Date().toISOString();
-
-        const displayName = normalizeToMemberMainContractName(application.plan_name ?? '');
-        const monthlyFee = MEMBER_MAIN_CONTRACT_MONTHLY_FEE[displayName];
+        db.mainContracts._seed();
+        const mainContracts = db.mainContracts.getList();
+        const selectedContract =
+          mainContracts.find((item) => item.id === application.plan_name) ??
+          mainContracts.find((item) => item.name === application.plan_name) ??
+          mainContracts.find((item) => item.id === DEFAULT_MEMBER_MAIN_CONTRACT_ID) ??
+          mainContracts[0];
+        const displayName = selectedContract?.name ?? DEFAULT_MEMBER_MAIN_CONTRACT;
+        const monthlyFee = selectedContract?.price_including_tax ?? 0;
 
         const data = buildMemberContractData({
           plan_name: displayName,
@@ -1995,7 +1919,8 @@ function createDb() {
       _seed(): void {
         if (this._seeded) return;
         this._seeded = true;
-        const plans = MEMBER_MAIN_CONTRACT_MASTER.map((contract) => contract.name);
+        db.mainContracts._seed();
+        const plans = db.mainContracts.getList().map((contract) => contract.name);
         const riskReasons: RiskReason[] = [
           'blacklist_match',
           'duplicate_application',
@@ -4111,6 +4036,7 @@ function createDb() {
   };
 
   // Seed mock data immediately when the singleton is first created
+  db.mainContracts._seed();
   db.members._seed();
   db.contracts._seed();
   db.membershipApplications._seed();

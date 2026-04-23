@@ -1,14 +1,8 @@
-import { isMemberMainContractName } from '@/app/api/_mock-db';
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 
 // Extend Zod with OpenAPI support
 extendZodWithOpenApi(z);
-
-/** Canonical main contract (主契約) labels — aligned with member form Select. */
-export const MemberMainContractNameSchema = z.string().refine(isMemberMainContractName, {
-  message: 'Invalid main contract name',
-});
 
 export const GetMemberMainContractLabelsResponseSchema = z
   .object({
@@ -114,17 +108,13 @@ export const MemberListItemSchema = z
       example: 'fit365',
       description: 'Brand',
     }),
-    contract_name: MemberMainContractNameSchema.openapi({
+    contract_name: z.string().openapi({
       example: 'レギュラー会員',
       description: 'Main contract display name',
     }),
     contract_id: z.string().openapi({
       example: 'plan-001',
       description: "Member's active contract row id (references CRM contract)",
-    }),
-    contract_plan_id: z.string().openapi({
-      example: 'plan-001',
-      description: 'Contract plan master id (for filtering by plan template)',
     }),
     joined_at: z.string().date().openapi({
       example: '2024-01-15',
@@ -274,26 +264,6 @@ export const GetMembersQuerySchema = z
         .openapi({
           example: ['store-001', 'store-002'],
           description: 'Filter by store ID (array)',
-        }),
-    ),
-    contract_plan_id: z.preprocess(
-      (val) => {
-        if (val === undefined || val === null) return undefined;
-        if (Array.isArray(val)) return val;
-        if (typeof val === 'string') {
-          return val
-            .split(',')
-            .map((s) => s.trim())
-            .filter(Boolean);
-        }
-        return [val];
-      },
-      z
-        .array(z.string())
-        .optional()
-        .openapi({
-          example: ['plan-001', 'plan-002'],
-          description: 'Filter by contract plan ID (array)',
         }),
     ),
     last_visit_days: z.coerce.number().int().optional().openapi({
@@ -551,7 +521,7 @@ export const MemberHealthInfoSchema = z
 
 export const MemberProfileInfoSchema = z
   .object({
-    contract_name: MemberMainContractNameSchema.optional().openapi({
+    contract_name: z.string().optional().openapi({
       example: 'レギュラー会員',
       description: 'Main contract display name',
     }),
@@ -591,7 +561,7 @@ export const GetMemberDetailResponseSchema = z
         description: 'Constraint flags for member operations',
       }),
     profile: MemberProfileSchema.extend({
-      contract_name: MemberMainContractNameSchema.optional().openapi({
+      contract_name: z.string().optional().openapi({
         example: 'レギュラー会員',
         description: 'Main contract display name',
       }),
@@ -684,7 +654,7 @@ export const CreateMemberRequestSchema = z
           example: 'regular',
           description: 'Member type',
         }),
-        contract_name: MemberMainContractNameSchema.optional().openapi({
+        contract_name: z.string().optional().openapi({
           example: 'レギュラー会員',
           description: 'Main contract display name',
         }),
@@ -895,7 +865,7 @@ export const UpdateMemberRequestSchema = z
           example: 'regular',
           description: 'Member type',
         }),
-        contract_name: MemberMainContractNameSchema.optional().openapi({
+        contract_name: z.string().optional().openapi({
           example: 'レギュラー会員',
           description: 'Main contract display name',
         }),

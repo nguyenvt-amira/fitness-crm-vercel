@@ -1,5 +1,6 @@
 'use client';
 
+import { formatNextMonthStart } from '@/utils/format.util';
 import { ArrowRight } from 'lucide-react';
 
 import {
@@ -21,24 +22,18 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import type { GetCrmMembersResponse } from '@/lib/api/types.gen';
+import type { GetCrmMainContractsResponse, GetCrmMembersResponse } from '@/lib/api/types.gen';
 
 type MemberItem = NonNullable<GetCrmMembersResponse['members']>[0];
-
-interface ContractOption {
-  id: string;
-  name: string;
-}
 
 interface MemberBulkContractDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   selectedMemberIds: string[];
   selectedMembers: MemberItem[];
-  toContractId: string;
+  toContract: GetCrmMainContractsResponse['main_contracts'][number] | null;
   onContractChange: (value: string) => void;
-  contractOptions: ContractOption[];
-  selectedContractName?: string;
+  contractOptions: GetCrmMainContractsResponse['main_contracts'];
   isChangingMainContract: boolean;
   onExecute: () => void;
 }
@@ -48,10 +43,9 @@ export function MemberBulkContractDialog({
   onOpenChange,
   selectedMemberIds,
   selectedMembers,
-  toContractId,
+  toContract,
   onContractChange,
   contractOptions,
-  selectedContractName,
   isChangingMainContract,
   onExecute,
 }: MemberBulkContractDialogProps) {
@@ -72,7 +66,7 @@ export function MemberBulkContractDialog({
               変更先の主契約
               <span className="text-destructive ml-1">*</span>
             </Label>
-            <Select value={toContractId} onValueChange={onContractChange}>
+            <Select value={toContract?.id ?? undefined} onValueChange={onContractChange}>
               <SelectTrigger>
                 <SelectValue placeholder="選択してください" />
               </SelectTrigger>
@@ -85,6 +79,25 @@ export function MemberBulkContractDialog({
               </SelectContent>
             </Select>
           </div>
+
+          {/* 変更内容プレビュー */}
+          {toContract && (
+            <div className="bg-muted/50 space-y-2 rounded-md p-3">
+              <div className="flex items-center gap-2 text-xs">
+                <span className="text-muted-foreground w-16">変更後:</span>
+                <span className="text-primary font-medium">{toContract.name}</span>
+                <span className="text-muted-foreground">
+                  ¥{toContract.price_including_tax.toLocaleString()}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-xs">
+                <span className="text-muted-foreground w-16">適用開始:</span>
+                <span className="text-foreground font-medium">
+                  {formatNextMonthStart()}（翌月月初）
+                </span>
+              </div>
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label className="text-muted-foreground text-xs">
@@ -101,7 +114,7 @@ export function MemberBulkContractDialog({
                     {member.contract_name || '-'}
                   </span>
                   <ArrowRight className="text-muted-foreground size-3" />
-                  <span className="text-primary">{selectedContractName || '―'}</span>
+                  <span className="text-primary">{toContract?.name || '―'}</span>
                 </div>
               ))}
               {selectedMembers.length > 5 && (
@@ -115,7 +128,7 @@ export function MemberBulkContractDialog({
 
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isChangingMainContract}>キャンセル</AlertDialogCancel>
-          <AlertDialogAction disabled={!toContractId || isChangingMainContract} onClick={onExecute}>
+          <AlertDialogAction disabled={!toContract || isChangingMainContract} onClick={onExecute}>
             実行
           </AlertDialogAction>
         </AlertDialogFooter>

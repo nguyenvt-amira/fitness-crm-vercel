@@ -20,7 +20,6 @@ export type MembersFilters = {
   status: MemberStatus[];
   brand: Brand[];
   store_id: string[];
-  contract_plan_id: string[];
   last_visit_days: number | null;
   has_unpaid: boolean | null;
   sort_by: string;
@@ -43,7 +42,6 @@ export function useMembersFilters() {
       ).withDefault([]),
       brand: parseAsArrayOf(parseAsStringEnum<Brand>(Object.values(Brand))).withDefault([]),
       store_id: parseAsArrayOf(parseAsString).withDefault([]),
-      contract_plan_id: parseAsArrayOf(parseAsString).withDefault([]),
       last_visit_days: parseAsInteger,
       has_unpaid: parseAsBoolean,
       sort_by: parseAsString.withDefault('member_number'),
@@ -76,13 +74,7 @@ export function useMembersFilters() {
 
   const updateFilter = <K extends keyof MembersFilters>(key: K, value: MembersFilters[K]) => {
     const pageReset = { page: 1 } as const;
-    if (
-      key === 'contract_type' ||
-      key === 'status' ||
-      key === 'brand' ||
-      key === 'store_id' ||
-      key === 'contract_plan_id'
-    ) {
+    if (key === 'contract_type' || key === 'status' || key === 'brand' || key === 'store_id') {
       const arrValue = value as string[];
       setFilters({
         [key]: arrValue.length > 0 ? arrValue : null,
@@ -104,7 +96,6 @@ export function useMembersFilters() {
       status: null,
       brand: null,
       store_id: null,
-      contract_plan_id: null,
       last_visit_days: null,
       has_unpaid: null,
       sort_by: 'member_number',
@@ -117,7 +108,6 @@ export function useMembersFilters() {
     filters.status.length > 0 ||
     filters.brand.length > 0 ||
     filters.store_id.length > 0 ||
-    filters.contract_plan_id.length > 0 ||
     filters.last_visit_days !== null ||
     filters.has_unpaid !== null ||
     filters.search.length > 0;
@@ -130,7 +120,6 @@ export function useMembersFilters() {
     status: filters.status.length > 0 ? filters.status : undefined,
     brand: filters.brand.length > 0 ? filters.brand : undefined,
     store_id: filters.store_id.length > 0 ? filters.store_id : undefined,
-    contract_plan_id: filters.contract_plan_id.length > 0 ? filters.contract_plan_id : undefined,
     last_visit_days: filters.last_visit_days ?? undefined,
     has_unpaid: filters.has_unpaid ?? undefined,
     sort_by: filters.sort_by as NonNullable<GetCrmMembersData['query']>['sort_by'],

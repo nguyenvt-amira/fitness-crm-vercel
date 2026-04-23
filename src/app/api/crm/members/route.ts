@@ -95,7 +95,6 @@ export async function GET(request: NextRequest) {
       status,
       brand,
       store_id,
-      contract_plan_id,
       last_visit_days,
       has_unpaid,
       sort_by = 'member_number',
@@ -138,13 +137,6 @@ export async function GET(request: NextRequest) {
     if (store_id && store_id.length > 0) {
       // Mock filter by store - in real app, filter by store_id
       filtered = filtered.filter((m) => store_id.some((id) => m.store_id?.includes(id)));
-    }
-
-    if (contract_plan_id && contract_plan_id.length > 0) {
-      // Mock filter by contract plan
-      filtered = filtered.filter((m) =>
-        contract_plan_id.some((id) => m.contract_plan_id?.includes(id)),
-      );
     }
 
     if (last_visit_days !== undefined) {

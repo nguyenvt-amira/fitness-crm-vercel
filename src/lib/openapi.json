@@ -1495,11 +1495,6 @@
             "example": "plan-001",
             "description": "Member's active contract row id (references CRM contract)"
           },
-          "contract_plan_id": {
-            "type": "string",
-            "example": "plan-001",
-            "description": "Contract plan master id (for filtering by plan template)"
-          },
           "joined_at": {
             "type": "string",
             "format": "date",
@@ -1542,7 +1537,6 @@
           "brand",
           "contract_name",
           "contract_id",
-          "contract_plan_id",
           "joined_at",
           "has_unpaid",
           "phone",
@@ -1694,15 +1688,6 @@
             "example": ["store-001", "store-002"],
             "description": "Filter by store ID (array)"
           },
-          "contract_plan_id": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "type": "string"
-            },
-            "example": ["plan-001", "plan-002"],
-            "description": "Filter by contract plan ID (array)"
-          },
           "last_visit_days": {
             "type": "integer",
             "nullable": true,
@@ -1812,11 +1797,6 @@
                   "example": "plan-001",
                   "description": "Member's active contract row id (references CRM contract)"
                 },
-                "contract_plan_id": {
-                  "type": "string",
-                  "example": "plan-001",
-                  "description": "Contract plan master id (for filtering by plan template)"
-                },
                 "joined_at": {
                   "type": "string",
                   "format": "date",
@@ -1859,7 +1839,6 @@
                 "brand",
                 "contract_name",
                 "contract_id",
-                "contract_plan_id",
                 "joined_at",
                 "has_unpaid",
                 "phone",
@@ -4348,11 +4327,7 @@
       },
       "BodyDataSource": {
         "type": "string",
-        "enum": [
-          "body_planner",
-          "3d_scanner",
-          "manual"
-        ],
+        "enum": ["body_planner", "3d_scanner", "manual"],
         "title": "BodyDataSource",
         "description": "Body data source",
         "example": "body_planner"
@@ -4366,9 +4341,7 @@
             "example": "M-00001"
           }
         },
-        "required": [
-          "id"
-        ]
+        "required": ["id"]
       },
       "BodyDataLatestSummary": {
         "type": "object",
@@ -4404,14 +4377,7 @@
             "example": 1580
           }
         },
-        "required": [
-          "date",
-          "weight",
-          "bmi",
-          "fatPercent",
-          "muscleMass",
-          "basalMetabolism"
-        ],
+        "required": ["date", "weight", "bmi", "fatPercent", "muscleMass", "basalMetabolism"],
         "title": "BodyDataLatestSummary",
         "description": "Latest body data summary"
       },
@@ -4420,11 +4386,7 @@
         "properties": {
           "source": {
             "type": "string",
-            "enum": [
-              "body_planner",
-              "3d_scanner",
-              "manual"
-            ],
+            "enum": ["body_planner", "3d_scanner", "manual"],
             "title": "BodyDataSource",
             "description": "Body composition data source",
             "example": "body_planner"
@@ -4513,11 +4475,7 @@
         "properties": {
           "source": {
             "type": "string",
-            "enum": [
-              "body_planner",
-              "3d_scanner",
-              "manual"
-            ],
+            "enum": ["body_planner", "3d_scanner", "manual"],
             "title": "BodyDataSource",
             "description": "Body measurement data source",
             "example": "body_planner"
@@ -4610,11 +4568,7 @@
           },
           "source": {
             "type": "string",
-            "enum": [
-              "body_planner",
-              "3d_scanner",
-              "manual"
-            ],
+            "enum": ["body_planner", "3d_scanner", "manual"],
             "title": "BodyDataSource",
             "description": "Data source",
             "example": "body_planner"
@@ -4630,13 +4584,7 @@
             "example": 18.2
           }
         },
-        "required": [
-          "id",
-          "date",
-          "source",
-          "weight",
-          "fatPercent"
-        ],
+        "required": ["id", "date", "source", "weight", "fatPercent"],
         "title": "BodyDataHistoryItem",
         "description": "Single body data history record"
       },
@@ -4654,10 +4602,7 @@
             "example": 68.4
           }
         },
-        "required": [
-          "date",
-          "weight"
-        ],
+        "required": ["date", "weight"],
         "title": "BodyWeightChartItem",
         "description": "Body weight chart data point"
       },
@@ -4698,14 +4643,7 @@
                 "example": 1580
               }
             },
-            "required": [
-              "date",
-              "weight",
-              "bmi",
-              "fatPercent",
-              "muscleMass",
-              "basalMetabolism"
-            ],
+            "required": ["date", "weight", "bmi", "fatPercent", "muscleMass", "basalMetabolism"],
             "title": "BodyDataLatestSummary",
             "description": "Latest body data summary"
           },
@@ -4714,11 +4652,7 @@
             "properties": {
               "source": {
                 "type": "string",
-                "enum": [
-                  "body_planner",
-                  "3d_scanner",
-                  "manual"
-                ],
+                "enum": ["body_planner", "3d_scanner", "manual"],
                 "title": "BodyDataSource",
                 "description": "Body composition data source",
                 "example": "body_planner"
@@ -4807,11 +4741,7 @@
             "properties": {
               "source": {
                 "type": "string",
-                "enum": [
-                  "body_planner",
-                  "3d_scanner",
-                  "manual"
-                ],
+                "enum": ["body_planner", "3d_scanner", "manual"],
                 "title": "BodyDataSource",
                 "description": "Body measurement data source",
                 "example": "body_planner"
@@ -4906,11 +4836,7 @@
                 },
                 "source": {
                   "type": "string",
-                  "enum": [
-                    "body_planner",
-                    "3d_scanner",
-                    "manual"
-                  ],
+                  "enum": ["body_planner", "3d_scanner", "manual"],
                   "title": "BodyDataSource",
                   "description": "Data source",
                   "example": "body_planner"
@@ -4926,13 +4852,7 @@
                   "example": 18.2
                 }
               },
-              "required": [
-                "id",
-                "date",
-                "source",
-                "weight",
-                "fatPercent"
-              ],
+              "required": ["id", "date", "source", "weight", "fatPercent"],
               "title": "BodyDataHistoryItem",
               "description": "Single body data history record"
             },
@@ -4954,23 +4874,14 @@
                   "example": 68.4
                 }
               },
-              "required": [
-                "date",
-                "weight"
-              ],
+              "required": ["date", "weight"],
               "title": "BodyWeightChartItem",
               "description": "Body weight chart data point"
             },
             "description": "Body weight chart points"
           }
         },
-        "required": [
-          "latest",
-          "bodyComposition",
-          "bodyMeasurement",
-          "history",
-          "weightChart"
-        ],
+        "required": ["latest", "bodyComposition", "bodyMeasurement", "history", "weightChart"],
         "title": "GetBodyDataResponse",
         "description": "Response for getting member body data"
       },
@@ -16044,9 +15955,7 @@
       "get": {
         "summary": "Get member body data",
         "description": "Get body composition, body measurements, history, and weight chart for a member",
-        "tags": [
-          "Members"
-        ],
+        "tags": ["Members"],
         "parameters": [
           {
             "name": "id",
@@ -16116,11 +16025,7 @@
                       "properties": {
                         "source": {
                           "type": "string",
-                          "enum": [
-                            "body_planner",
-                            "3d_scanner",
-                            "manual"
-                          ],
+                          "enum": ["body_planner", "3d_scanner", "manual"],
                           "title": "BodyDataSource",
                           "description": "Body composition data source",
                           "example": "body_planner"
@@ -16209,11 +16114,7 @@
                       "properties": {
                         "source": {
                           "type": "string",
-                          "enum": [
-                            "body_planner",
-                            "3d_scanner",
-                            "manual"
-                          ],
+                          "enum": ["body_planner", "3d_scanner", "manual"],
                           "title": "BodyDataSource",
                           "description": "Body measurement data source",
                           "example": "body_planner"
@@ -16308,11 +16209,7 @@
                           },
                           "source": {
                             "type": "string",
-                            "enum": [
-                              "body_planner",
-                              "3d_scanner",
-                              "manual"
-                            ],
+                            "enum": ["body_planner", "3d_scanner", "manual"],
                             "title": "BodyDataSource",
                             "description": "Data source",
                             "example": "body_planner"
@@ -16328,13 +16225,7 @@
                             "example": 18.2
                           }
                         },
-                        "required": [
-                          "id",
-                          "date",
-                          "source",
-                          "weight",
-                          "fatPercent"
-                        ],
+                        "required": ["id", "date", "source", "weight", "fatPercent"],
                         "title": "BodyDataHistoryItem",
                         "description": "Single body data history record"
                       },
@@ -16356,10 +16247,7 @@
                             "example": 68.4
                           }
                         },
-                        "required": [
-                          "date",
-                          "weight"
-                        ],
+                        "required": ["date", "weight"],
                         "title": "BodyWeightChartItem",
                         "description": "Body weight chart data point"
                       },
@@ -16392,9 +16280,7 @@
                       "description": "Error message"
                     }
                   },
-                  "required": [
-                    "error"
-                  ],
+                  "required": ["error"],
                   "title": "ErrorResponse",
                   "description": "Error response"
                 }
@@ -16414,9 +16300,7 @@
                       "description": "Error message"
                     }
                   },
-                  "required": [
-                    "error"
-                  ],
+                  "required": ["error"],
                   "title": "ErrorResponse",
                   "description": "Error response"
                 }
@@ -22270,21 +22154,6 @@
           },
           {
             "schema": {
-              "type": "array",
-              "nullable": true,
-              "items": {
-                "type": "string"
-              },
-              "example": ["plan-001", "plan-002"],
-              "description": "Filter by contract plan ID (array)"
-            },
-            "required": false,
-            "description": "Filter by contract plan ID (array)",
-            "name": "contract_plan_id",
-            "in": "query"
-          },
-          {
-            "schema": {
               "type": "integer",
               "nullable": true,
               "example": 30,
@@ -22418,11 +22287,6 @@
                             "example": "plan-001",
                             "description": "Member's active contract row id (references CRM contract)"
                           },
-                          "contract_plan_id": {
-                            "type": "string",
-                            "example": "plan-001",
-                            "description": "Contract plan master id (for filtering by plan template)"
-                          },
                           "joined_at": {
                             "type": "string",
                             "format": "date",
@@ -22465,7 +22329,6 @@
                           "brand",
                           "contract_name",
                           "contract_id",
-                          "contract_plan_id",
                           "joined_at",
                           "has_unpaid",
                           "phone",
