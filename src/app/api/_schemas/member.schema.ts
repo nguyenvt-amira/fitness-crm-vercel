@@ -1989,3 +1989,141 @@ export type GetContractSummaryResponse = z.infer<typeof GetContractSummaryRespon
 export type GetUsageStatusResponse = z.infer<typeof GetUsageStatusResponseSchema>;
 export type GetContractsResponse = z.infer<typeof GetContractsResponseSchema>;
 export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
+
+// ─── Payment History Schemas (A-01 FR-009-a) ──────────────────────────────
+
+export const PaymentHistoryTypeSchema = z.enum(['sale', 'refund']).openapi({
+  title: 'PaymentHistoryType',
+  description: 'Payment history type: sale (売上) or refund (返金)',
+  example: 'sale',
+});
+
+export const PaymentHistoryItemSchema = z
+  .object({
+    date: z.string().openapi({
+      description: 'Date in YYYY/MM/DD format',
+      example: '2026/04/01',
+    }),
+    type: PaymentHistoryTypeSchema,
+    content: z.string().openapi({
+      description: 'Transaction content description',
+      example: '月会費（4月分）',
+    }),
+    amount: z.number().openapi({
+      description: 'Amount in JPY. Negative for refunds.',
+      example: 9900,
+    }),
+    method: z.string().openapi({
+      description: 'Payment method',
+      example: 'SBPS',
+    }),
+  })
+  .openapi({ title: 'PaymentHistoryItem' });
+
+export const PaymentHistoryListResponseSchema = z
+  .object({
+    items: z.array(PaymentHistoryItemSchema).openapi({
+      description: 'Payment history records',
+    }),
+    total: z.number().openapi({
+      description: 'Total number of records',
+    }),
+    page: z.number().openapi({
+      description: 'Current page number (1-based)',
+    }),
+    limit: z.number().openapi({
+      description: 'Number of records per page',
+    }),
+  })
+  .openapi({
+    title: 'PaymentHistoryListResponse',
+    description: 'Paginated payment history response',
+  });
+
+export type PaymentHistoryListResponse = z.infer<typeof PaymentHistoryListResponseSchema>;
+
+// ─── Billing Schemas (A-01 FR-009-b) ──────────────────────────────
+
+export const BillingStatusSchema = z
+  .enum(['pending', 'paid', 'uncollected', 'written-off'])
+  .openapi({
+    title: 'BillingStatus',
+    description:
+      'Billing status: pending (未確定), paid (入金済み), uncollected (未回収), written-off (貸倒)',
+    example: 'paid',
+  });
+
+export const BillingTypeSchema = z.enum(['monthly', 'oneTime']).openapi({
+  title: 'BillingType',
+  description: 'Billing type: monthly (月次) or oneTime (都度)',
+  example: 'monthly',
+});
+
+export const BillingItemSchema = z
+  .object({
+    month: z.string().openapi({
+      description: 'Billing month in Japanese format',
+      example: '2026年4月',
+    }),
+    type: BillingTypeSchema,
+    amount: z.number().openapi({
+      description: 'Billing amount in JPY',
+      example: 9900,
+    }),
+    status: BillingStatusSchema,
+    billingDate: z.string().openapi({
+      description: 'Billing date in YYYY/MM/DD format',
+      example: '2026/04/01',
+    }),
+  })
+  .openapi({ title: 'BillingItem' });
+
+export const GetBillingResponseSchema = z
+  .object({
+    items: z.array(BillingItemSchema).openapi({
+      description: 'Billing records',
+    }),
+    total: z.number().openapi({
+      description: 'Total number of billing records',
+    }),
+    page: z.number().openapi({
+      description: 'Current page number (1-based)',
+    }),
+    limit: z.number().openapi({
+      description: 'Number of records per page',
+    }),
+  })
+  .openapi({
+    title: 'GetBillingResponse',
+    description: 'Paginated billing list response',
+  });
+
+export type GetBillingResponse = z.infer<typeof GetBillingResponseSchema>;
+
+// ─── Payment Summary Schema (A-01 FR-009-c) ──────────────────────────────
+
+export const PaymentSummarySchema = z
+  .object({
+    currentMonthAmount: z.number().openapi({
+      description: 'Total billing amount for current month in JPY',
+      example: 9900,
+    }),
+    unpaidTotal: z.number().openapi({
+      description: 'Total unpaid/written-off amount in JPY',
+      example: 0,
+    }),
+    lastPaymentDate: z.string().nullable().openapi({
+      description: 'Last payment date in YYYY/MM/DD format, or null',
+      example: '2026/03/15',
+    }),
+    paymentMethod: z.string().openapi({
+      description: 'Current payment method',
+      example: 'SBPS',
+    }),
+  })
+  .openapi({
+    title: 'PaymentSummary',
+    description: 'Payment summary card data',
+  });
+
+export type PaymentSummary = z.infer<typeof PaymentSummarySchema>;

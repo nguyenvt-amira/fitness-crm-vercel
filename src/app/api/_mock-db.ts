@@ -12,6 +12,9 @@ import type { MainContractListItem } from '@/app/api/_schemas/main-contract.sche
 import type {
   ContractType,
   CreateMemberRequest,
+  GetBillingResponse,
+  PaymentHistoryListResponse,
+  PaymentSummary,
   UpdateMemberRequest,
 } from '@/app/api/_schemas/member.schema';
 import type { OptionMasterListItem } from '@/app/api/_schemas/option-master.schema';
@@ -1024,6 +1027,180 @@ type DbType = {
 
 declare global {
   var __fitnessDb_v9: DbType | undefined;
+}
+
+// ─── Mock Payment History Data (A-01 FR-009-a) ──────────────────────────────
+
+export const MOCK_PAYMENT_HISTORY: Array<{
+  date: string;
+  type: 'sale' | 'refund';
+  content: string;
+  amount: number;
+  method: string;
+}> = [
+  {
+    date: '2026/04/01',
+    type: 'sale',
+    content: '月会費（4月分）',
+    amount: 9900,
+    method: 'SBPS',
+  },
+  {
+    date: '2026/03/28',
+    type: 'refund',
+    content: '返金処理',
+    amount: -2200,
+    method: 'SBPS',
+  },
+  {
+    date: '2026/03/15',
+    type: 'sale',
+    content: '月会費（3月分）',
+    amount: 9900,
+    method: 'SBPS',
+  },
+  {
+    date: '2026/03/10',
+    type: 'sale',
+    content: 'オプション追加（パーソナルトレーニング）',
+    amount: 5500,
+    method: 'JACCS',
+  },
+  {
+    date: '2026/02/28',
+    type: 'refund',
+    content: 'オプション解約返金',
+    amount: -1100,
+    method: 'SBPS',
+  },
+  {
+    date: '2026/02/15',
+    type: 'sale',
+    content: '月会費（2月分）',
+    amount: 9900,
+    method: 'SBPS',
+  },
+  {
+    date: '2026/02/01',
+    type: 'sale',
+    content: 'ロッカー利用料',
+    amount: 550,
+    method: '現金',
+  },
+  {
+    date: '2026/01/20',
+    type: 'refund',
+    content: 'オプション返金',
+    amount: -3300,
+    method: 'SBPS',
+  },
+  {
+    date: '2026/01/15',
+    type: 'sale',
+    content: '月会費（1月分）',
+    amount: 9900,
+    method: 'SBPS',
+  },
+  {
+    date: '2025/12/28',
+    type: 'sale',
+    content: 'プロテイン販売',
+    amount: 2500,
+    method: '現金',
+  },
+];
+
+// ─── Mock Billing List Data (A-01 FR-009-b) ──────────────────────────────
+
+export const MOCK_BILLING_LIST: Array<{
+  month: string;
+  type: 'monthly' | 'oneTime';
+  amount: number;
+  status: 'pending' | 'paid' | 'uncollected' | 'written-off';
+  billingDate: string;
+}> = [
+  {
+    month: '2026年4月',
+    type: 'monthly',
+    amount: 9900,
+    status: 'paid',
+    billingDate: '2026/04/01',
+  },
+  {
+    month: '2026年3月',
+    type: 'monthly',
+    amount: 9900,
+    status: 'paid',
+    billingDate: '2026/03/01',
+  },
+  {
+    month: '2026年3月',
+    type: 'oneTime',
+    amount: 5500,
+    status: 'pending',
+    billingDate: '2026/03/10',
+  },
+  {
+    month: '2026年2月',
+    type: 'monthly',
+    amount: 9900,
+    status: 'paid',
+    billingDate: '2026/02/01',
+  },
+  {
+    month: '2026年1月',
+    type: 'monthly',
+    amount: 9900,
+    status: 'uncollected',
+    billingDate: '2026/01/01',
+  },
+  {
+    month: '2025年12月',
+    type: 'monthly',
+    amount: 9900,
+    status: 'paid',
+    billingDate: '2025/12/01',
+  },
+  {
+    month: '2025年11月',
+    type: 'monthly',
+    amount: 9900,
+    status: 'written-off',
+    billingDate: '2025/11/01',
+  },
+  {
+    month: '2025年10月',
+    type: 'monthly',
+    amount: 9900,
+    status: 'paid',
+    billingDate: '2025/10/01',
+  },
+];
+
+// ─── Mock Payment Summary Helper ──────────────────────────────
+
+export function getPaymentSummary(): PaymentSummary {
+  // Current month is 2026年4月
+  const currentMonthAmount = MOCK_BILLING_LIST.filter((item) => item.month === '2026年4月').reduce(
+    (sum, item) => sum + item.amount,
+    0,
+  );
+
+  // Unpaid total: uncollected + written-off
+  const unpaidTotal = MOCK_BILLING_LIST.filter((item) =>
+    ['uncollected', 'written-off'].includes(item.status),
+  ).reduce((sum, item) => sum + item.amount, 0);
+
+  // Last payment date: most recent date with status 'paid'
+  const paidRecords = MOCK_BILLING_LIST.filter((item) => item.status === 'paid');
+  const lastPaymentDate = paidRecords.length > 0 ? paidRecords[0]!.billingDate : null;
+
+  return {
+    currentMonthAmount,
+    unpaidTotal,
+    lastPaymentDate,
+    paymentMethod: 'SBPS',
+  };
 }
 
 function createDb() {

@@ -7440,6 +7440,74 @@
         "title": "GetFamilyRegistrationsDashboardResponse",
         "description": "Dashboard data for family registrations (A-02-02-08)"
       },
+      "PositionRoleCategory": {
+        "type": "string",
+        "enum": ["headquarter", "manager", "staff", "trainer", "observer"],
+        "title": "PositionRoleCategory",
+        "description": "Position role: headquarter=本部, manager=マネージャー系, staff=店舗スタッフ, trainer=トレーナー, observer=閲覧"
+      },
+      "PositionFeatures": {
+        "type": "object",
+        "additionalProperties": {
+          "nullable": true
+        },
+        "title": "PositionFeatures",
+        "description": "Feature flags and labels for this position (mirrors DB JSON column)"
+      },
+      "Position": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1,
+            "description": "Position PK"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["headquarter", "manager", "staff", "trainer", "observer"],
+            "title": "PositionRoleCategory",
+            "description": "ロール"
+          },
+          "position_name": {
+            "type": "string",
+            "example": "本部管理者",
+            "description": "職位名"
+          },
+          "features": {
+            "type": "object",
+            "additionalProperties": {
+              "nullable": true
+            },
+            "title": "PositionFeatures",
+            "description": "主な権限の特徴"
+          }
+        },
+        "required": ["id", "role", "position_name", "features"],
+        "title": "Position",
+        "description": "Normalized staff position / 職位マスター"
+      },
+      "StaffPermissionRecord": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Permission row PK"
+          },
+          "staff_id": {
+            "type": "string",
+            "example": "1",
+            "description": "Internal staff id (FK staff.id)"
+          },
+          "permission_code": {
+            "type": "string",
+            "example": "Y-03.view",
+            "description": "Permission code"
+          }
+        },
+        "required": ["id", "staff_id", "permission_code"],
+        "title": "StaffPermissionRecord",
+        "description": "Staff permission detail row"
+      },
       "GetPositionsResponse": {
         "type": "object",
         "properties": {
@@ -14992,6 +15060,171 @@
         }
       }
     },
+    "/crm/members/{id}/billing": {
+      "get": {
+        "summary": "Get member billing list",
+        "description": "Get billing list (請求一覧) for a member",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number (1-based)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Number of records per page",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Billing list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "month": {
+                            "type": "string",
+                            "description": "Billing month in Japanese format",
+                            "example": "2026年4月"
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": ["monthly", "oneTime"],
+                            "title": "BillingType",
+                            "description": "Billing type: monthly (月次) or oneTime (都度)",
+                            "example": "monthly"
+                          },
+                          "amount": {
+                            "type": "number",
+                            "description": "Billing amount in JPY",
+                            "example": 9900
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["pending", "paid", "uncollected", "written-off"],
+                            "title": "BillingStatus",
+                            "description": "Billing status: pending (未確定), paid (入金済み), uncollected (未回収), written-off (貸倒)",
+                            "example": "paid"
+                          },
+                          "billingDate": {
+                            "type": "string",
+                            "description": "Billing date in YYYY/MM/DD format",
+                            "example": "2026/04/01"
+                          }
+                        },
+                        "required": ["month", "type", "amount", "status", "billingDate"],
+                        "title": "BillingItem"
+                      },
+                      "description": "Billing records"
+                    },
+                    "total": {
+                      "type": "number",
+                      "description": "Total number of billing records"
+                    },
+                    "page": {
+                      "type": "number",
+                      "description": "Current page number (1-based)"
+                    },
+                    "limit": {
+                      "type": "number",
+                      "description": "Number of records per page"
+                    }
+                  },
+                  "required": ["items", "total", "page", "limit"],
+                  "title": "GetBillingResponse",
+                  "description": "Paginated billing list response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/members/{id}/change-history": {
       "get": {
         "summary": "Get member change history",
@@ -17469,6 +17702,288 @@
           },
           "404": {
             "description": "Memo not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/payment-history": {
+      "get": {
+        "summary": "Get member payment history",
+        "description": "Get payment history (入出金明細) for a member with optional filtering",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number (1-based)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Number of records per page",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "period",
+            "in": "query",
+            "required": false,
+            "description": "Filter by period: all, thisMonth, lastMonth, 3months, 6months",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Filter by type: all, sale, refund",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "date": {
+                            "type": "string",
+                            "description": "Date in YYYY/MM/DD format",
+                            "example": "2026/04/01"
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": ["sale", "refund"],
+                            "title": "PaymentHistoryType",
+                            "description": "Payment history type: sale (売上) or refund (返金)",
+                            "example": "sale"
+                          },
+                          "content": {
+                            "type": "string",
+                            "description": "Transaction content description",
+                            "example": "月会費（4月分）"
+                          },
+                          "amount": {
+                            "type": "number",
+                            "description": "Amount in JPY. Negative for refunds.",
+                            "example": 9900
+                          },
+                          "method": {
+                            "type": "string",
+                            "description": "Payment method",
+                            "example": "SBPS"
+                          }
+                        },
+                        "required": ["date", "type", "content", "amount", "method"],
+                        "title": "PaymentHistoryItem"
+                      },
+                      "description": "Payment history records"
+                    },
+                    "total": {
+                      "type": "number",
+                      "description": "Total number of records"
+                    },
+                    "page": {
+                      "type": "number",
+                      "description": "Current page number (1-based)"
+                    },
+                    "limit": {
+                      "type": "number",
+                      "description": "Number of records per page"
+                    }
+                  },
+                  "required": ["items", "total", "page", "limit"],
+                  "title": "PaymentHistoryListResponse",
+                  "description": "Paginated payment history response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/payment-summary": {
+      "get": {
+        "summary": "Get member payment summary",
+        "description": "Get payment summary (支払いサマリー) for a member",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment summary",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "currentMonthAmount": {
+                      "type": "number",
+                      "description": "Total billing amount for current month in JPY",
+                      "example": 9900
+                    },
+                    "unpaidTotal": {
+                      "type": "number",
+                      "description": "Total unpaid/written-off amount in JPY",
+                      "example": 0
+                    },
+                    "lastPaymentDate": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Last payment date in YYYY/MM/DD format, or null",
+                      "example": "2026/03/15"
+                    },
+                    "paymentMethod": {
+                      "type": "string",
+                      "description": "Current payment method",
+                      "example": "SBPS"
+                    }
+                  },
+                  "required": [
+                    "currentMonthAmount",
+                    "unpaidTotal",
+                    "lastPaymentDate",
+                    "paymentMethod"
+                  ],
+                  "title": "PaymentSummary",
+                  "description": "Payment summary card data"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
             "content": {
               "application/json": {
                 "schema": {

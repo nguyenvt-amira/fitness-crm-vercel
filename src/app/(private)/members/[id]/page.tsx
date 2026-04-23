@@ -45,6 +45,7 @@ import { BasicInfoTab } from './_components/tabs/basic-info-tab';
 import { ChangeHistoryTab } from './_components/tabs/change-history-tab';
 import { CommunicationsTab } from './_components/tabs/communications-tab';
 import { ContractsTab } from './_components/tabs/contracts-tab';
+import { PaymentHistoryTab } from './_components/tabs/payment-history-tab';
 import { PointsTab } from './_components/tabs/points-tab';
 import { RelationshipsTab } from './_components/tabs/relationships-tab';
 import { ServiceUsageTab } from './_components/tabs/service-usage-tab';
@@ -459,6 +460,7 @@ export default function MemberDetailPage() {
             <TabsList className="inline-flex min-w-max">
               <TabsTrigger value="basic">基本情報</TabsTrigger>
               <TabsTrigger value="contracts">契約操作</TabsTrigger>
+              <TabsTrigger value="payment">支払い履歴</TabsTrigger>
               <TabsTrigger value="usage">利用履歴</TabsTrigger>
               <TabsTrigger value="points">ポイント履歴</TabsTrigger>
               <TabsTrigger value="training">トレーニング記録</TabsTrigger>
@@ -476,6 +478,10 @@ export default function MemberDetailPage() {
 
             <TabsContent value="contracts">
               <ContractsTab memberId={memberId} memberStatus={member.profile.status} />
+            </TabsContent>
+
+            <TabsContent value="payment">
+              <PaymentHistoryTab memberId={memberId} />
             </TabsContent>
 
             <TabsContent value="points">

@@ -5106,6 +5106,85 @@ export type GetFamilyRegistrationsDashboardResponse = {
 };
 
 /**
+ * PositionRoleCategory
+ *
+ * Position role: headquarter=本部, manager=マネージャー系, staff=店舗スタッフ, trainer=トレーナー, observer=閲覧
+ */
+export const PositionRoleCategory = {
+    HEADQUARTER: 'headquarter',
+    MANAGER: 'manager',
+    STAFF: 'staff',
+    TRAINER: 'trainer',
+    OBSERVER: 'observer'
+} as const;
+
+/**
+ * PositionRoleCategory
+ *
+ * Position role: headquarter=本部, manager=マネージャー系, staff=店舗スタッフ, trainer=トレーナー, observer=閲覧
+ */
+export type PositionRoleCategory = typeof PositionRoleCategory[keyof typeof PositionRoleCategory];
+
+/**
+ * PositionFeatures
+ *
+ * Feature flags and labels for this position (mirrors DB JSON column)
+ */
+export type PositionFeatures = {
+    [key: string]: unknown;
+};
+
+/**
+ * Position
+ *
+ * Normalized staff position / 職位マスター
+ */
+export type Position = {
+    /**
+     * Position PK
+     */
+    id: number;
+    /**
+     * PositionRoleCategory
+     *
+     * ロール
+     */
+    role: 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
+    /**
+     * 職位名
+     */
+    position_name: string;
+    /**
+     * PositionFeatures
+     *
+     * 主な権限の特徴
+     */
+    features: {
+        [key: string]: unknown;
+    };
+};
+
+/**
+ * StaffPermissionRecord
+ *
+ * Staff permission detail row
+ */
+export type StaffPermissionRecord = {
+    /**
+     * Permission row PK
+     */
+    id: number;
+    /**
+     * Internal staff id (FK staff.id)
+     */
+    staff_id: string;
+    /**
+     * Permission code
+     */
+    permission_code: string;
+};
+
+/**
  * GetPositionsResponse
  *
  * List of staff positions for filters and forms
@@ -9994,6 +10073,118 @@ export type PutCrmMembersByIdBasicInfoResponses = {
 
 export type PutCrmMembersByIdBasicInfoResponse = PutCrmMembersByIdBasicInfoResponses[keyof PutCrmMembersByIdBasicInfoResponses];
 
+export type GetCrmMembersByIdBillingData = {
+    body?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: {
+        /**
+         * Page number (1-based)
+         */
+        page?: number;
+        /**
+         * Number of records per page
+         */
+        limit?: number;
+    };
+    url: '/crm/members/{id}/billing';
+};
+
+export type GetCrmMembersByIdBillingErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembersByIdBillingError = GetCrmMembersByIdBillingErrors[keyof GetCrmMembersByIdBillingErrors];
+
+export type GetCrmMembersByIdBillingResponses = {
+    /**
+     * GetBillingResponse
+     *
+     * Paginated billing list response
+     */
+    200: {
+        /**
+         * Billing records
+         */
+        items: Array<{
+            /**
+             * Billing month in Japanese format
+             */
+            month: string;
+            /**
+             * BillingType
+             *
+             * Billing type: monthly (月次) or oneTime (都度)
+             */
+            type: 'monthly' | 'oneTime';
+            /**
+             * Billing amount in JPY
+             */
+            amount: number;
+            /**
+             * BillingStatus
+             *
+             * Billing status: pending (未確定), paid (入金済み), uncollected (未回収), written-off (貸倒)
+             */
+            status: 'pending' | 'paid' | 'uncollected' | 'written-off';
+            /**
+             * Billing date in YYYY/MM/DD format
+             */
+            billingDate: string;
+        }>;
+        /**
+         * Total number of billing records
+         */
+        total: number;
+        /**
+         * Current page number (1-based)
+         */
+        page: number;
+        /**
+         * Number of records per page
+         */
+        limit: number;
+    };
+};
+
+export type GetCrmMembersByIdBillingResponse = GetCrmMembersByIdBillingResponses[keyof GetCrmMembersByIdBillingResponses];
+
 export type GetCrmMembersByIdChangeHistoryData = {
     body?: never;
     path: {
@@ -11643,6 +11834,191 @@ export type PutCrmMembersByIdMemosByMemoIdResponses = {
 };
 
 export type PutCrmMembersByIdMemosByMemoIdResponse = PutCrmMembersByIdMemosByMemoIdResponses[keyof PutCrmMembersByIdMemosByMemoIdResponses];
+
+export type GetCrmMembersByIdPaymentHistoryData = {
+    body?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: {
+        /**
+         * Page number (1-based)
+         */
+        page?: number;
+        /**
+         * Number of records per page
+         */
+        limit?: number;
+        /**
+         * Filter by period: all, thisMonth, lastMonth, 3months, 6months
+         */
+        period?: string;
+        /**
+         * Filter by type: all, sale, refund
+         */
+        type?: string;
+    };
+    url: '/crm/members/{id}/payment-history';
+};
+
+export type GetCrmMembersByIdPaymentHistoryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembersByIdPaymentHistoryError = GetCrmMembersByIdPaymentHistoryErrors[keyof GetCrmMembersByIdPaymentHistoryErrors];
+
+export type GetCrmMembersByIdPaymentHistoryResponses = {
+    /**
+     * PaymentHistoryListResponse
+     *
+     * Paginated payment history response
+     */
+    200: {
+        /**
+         * Payment history records
+         */
+        items: Array<{
+            /**
+             * Date in YYYY/MM/DD format
+             */
+            date: string;
+            /**
+             * PaymentHistoryType
+             *
+             * Payment history type: sale (売上) or refund (返金)
+             */
+            type: 'sale' | 'refund';
+            /**
+             * Transaction content description
+             */
+            content: string;
+            /**
+             * Amount in JPY. Negative for refunds.
+             */
+            amount: number;
+            /**
+             * Payment method
+             */
+            method: string;
+        }>;
+        /**
+         * Total number of records
+         */
+        total: number;
+        /**
+         * Current page number (1-based)
+         */
+        page: number;
+        /**
+         * Number of records per page
+         */
+        limit: number;
+    };
+};
+
+export type GetCrmMembersByIdPaymentHistoryResponse = GetCrmMembersByIdPaymentHistoryResponses[keyof GetCrmMembersByIdPaymentHistoryResponses];
+
+export type GetCrmMembersByIdPaymentSummaryData = {
+    body?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/payment-summary';
+};
+
+export type GetCrmMembersByIdPaymentSummaryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembersByIdPaymentSummaryError = GetCrmMembersByIdPaymentSummaryErrors[keyof GetCrmMembersByIdPaymentSummaryErrors];
+
+export type GetCrmMembersByIdPaymentSummaryResponses = {
+    /**
+     * PaymentSummary
+     *
+     * Payment summary card data
+     */
+    200: {
+        /**
+         * Total billing amount for current month in JPY
+         */
+        currentMonthAmount: number;
+        /**
+         * Total unpaid/written-off amount in JPY
+         */
+        unpaidTotal: number;
+        /**
+         * Last payment date in YYYY/MM/DD format, or null
+         */
+        lastPaymentDate: string | null;
+        /**
+         * Current payment method
+         */
+        paymentMethod: string;
+    };
+};
+
+export type GetCrmMembersByIdPaymentSummaryResponse = GetCrmMembersByIdPaymentSummaryResponses[keyof GetCrmMembersByIdPaymentSummaryResponses];
 
 export type PostCrmMembersByIdPointsAdjustData = {
     /**
