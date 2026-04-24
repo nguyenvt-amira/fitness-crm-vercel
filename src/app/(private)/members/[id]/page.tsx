@@ -209,7 +209,8 @@ export default function MemberDetailPage() {
                     {member.basic_info.name_kana}
                   </p>
                   <div className="text-muted-foreground mt-1 font-mono text-xs">
-                    ID: {member.basic_info.member_number}/ 旧No:
+                    ID: {member.basic_info.member_number}/ 旧No:{' '}
+                    {member.basic_info.old_member_number}
                   </div>
                 </div>
               </div>

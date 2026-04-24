@@ -140,7 +140,7 @@ export function MembersTableColumns({
               <DropdownMenuItem
                 onClick={(e) => {
                   e.stopPropagation();
-                  router.push(navigate('/members/[id]', memberId));
+                  router.push(navigate('/members/[id]/edit', memberId));
                 }}
               >
                 <Pencil className="mr-2 size-4" />

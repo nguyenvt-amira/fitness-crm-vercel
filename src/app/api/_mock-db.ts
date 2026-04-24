@@ -12,9 +12,11 @@ import type { MainContractListItem } from '@/app/api/_schemas/main-contract.sche
 import type {
   ContractType,
   CreateMemberRequest,
-  GetBillingResponse,
-  PaymentHistoryListResponse,
+  GetMemberDetailResponse,
   PaymentSummary,
+  UpdateBasicInfoRequest,
+  UpdateHealthInfoRequest,
+  UpdateMarketingConsentRequest,
   UpdateMemberRequest,
 } from '@/app/api/_schemas/member.schema';
 import type { OptionMasterListItem } from '@/app/api/_schemas/option-master.schema';
@@ -27,13 +29,7 @@ import type {
 } from '@/app/api/_schemas/store-sales-settings.schema';
 import type { Store, StoreBusinessHours } from '@/app/api/_schemas/store.schema';
 
-import type {
-  GetContractsResponse,
-  GetMemberDetailResponse,
-  UpdateBasicInfoRequest,
-  UpdateHealthInfoRequest,
-  UpdateMarketingConsentRequest,
-} from '@/lib/api/types.gen';
+import type { GetContractsResponse } from '@/lib/api/types.gen';
 import { Brand, MainBrand, MemberStatus, MemberType } from '@/lib/api/types.gen';
 
 import type {
@@ -85,6 +81,7 @@ function familyRelationshipToJa(rel: FamilyRelationship): string {
 
 interface GetMembersResponseMember {
   id: string;
+  old_member_number: string;
   member_number: string;
   name_kanji: string;
   name_kana: string;
@@ -365,6 +362,7 @@ function createMember(
   return {
     basic_info: {
       id,
+      old_member_number: 'O-' + id,
       member_number: id,
       name_kanji: listMeta.name_kanji,
       name_kana: listMeta.name_kana,
@@ -472,6 +470,7 @@ function memberToListItem(m: MemberRow): GetMembersResponseMember {
     DEFAULT_MEMBER_MAIN_CONTRACT;
   return {
     id: m.basic_info.id,
+    old_member_number: m.basic_info.old_member_number,
     member_number: m.basic_info.member_number,
     name_kanji: m.basic_info.name_kanji,
     name_kana: m.basic_info.name_kana,
@@ -1361,7 +1360,7 @@ function createDb() {
               in_cancellation_period: i % 6 === 4,
               is_option_restricted: i % 7 === 0,
               emergency_contact_name: name.kanji,
-              emergency_contact_relationship: '夫',
+              emergency_contact_relationship: '配偶者',
               emergency_contact_phone: '09087654321',
             }),
           );
@@ -1522,13 +1521,13 @@ function createDb() {
         this._seed();
         db.contracts._seed();
         db.stores._seed();
+        db.mainContracts._seed();
         const nextNumber = this._members.length + 1;
         const id = `M-${String(nextNumber).padStart(5, '0')}`;
         const storeRows = db.stores._rows;
         const profileInfo = body.profile_info;
         const joinedAt = profileInfo?.join_date ?? toIsoDate(new Date());
         const memberType: MemberProfile['member_type'] = profileInfo?.member_type ?? 'regular';
-        db.mainContracts._seed();
         const mainContracts = db.mainContracts.getList();
         const defaultContract =
           mainContracts.find((contract) => contract.id === DEFAULT_MEMBER_MAIN_CONTRACT_ID) ??
@@ -1987,7 +1986,7 @@ function createDb() {
             applicant_phone: '090-1234-5678',
             applicant_address: '東京都渋谷区1-2-3',
             emergency_contact_name: '佐藤 太郎',
-            emergency_contact_relationship: '夫',
+            emergency_contact_relationship: '配偶者',
             emergency_contact_phone: '090-8765-4321',
             contract_details: {
               plan_id: `plan-00${(i % 3) + 1}`,

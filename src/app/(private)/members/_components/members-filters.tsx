@@ -1,5 +1,6 @@
 'use client';
 
+import { useQuery } from '@tanstack/react-query';
 import { ChevronDown, ChevronUp, Search, SlidersHorizontal } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
@@ -13,17 +14,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+import { getCrmStoresOptions } from '@/lib/api/@tanstack/react-query.gen';
 import { Brand, ContractType, MemberStatus } from '@/lib/api/types.gen';
 
 import { BRAND_LABELS, CONTRACT_TYPE_LABELS, MEMBER_STATUS_LABELS } from '../_constants/constants';
 import { useMembersFiltersContext } from '../_contexts/members-filters-context';
-
-const MOCK_STORES = [
-  { id: 'store-001', name: 'Fit365八潮店' },
-  { id: 'store-002', name: 'Fit365新宿店' },
-  { id: 'store-003', name: 'Fit365渋谷店' },
-  { id: 'store-004', name: 'JOYFIT池袋店' },
-];
 
 const PERIOD_OPTIONS = [
   { value: '30', label: '過去1ヶ月' },
@@ -44,6 +39,17 @@ function filterActiveClass(isActive: boolean) {
 export function MembersFilters({ isFilterOpen, onFilterOpenChange }: MembersFiltersProps) {
   const { filters, searchInput, setSearchInput, updateFilter, hasActiveFilters, clearFilters } =
     useMembersFiltersContext();
+  const { data: storesRes } = useQuery({
+    ...getCrmStoresOptions({
+      query: {
+        page: 1,
+        limit: 100,
+        sort_by: 'name',
+        sort_order: 'asc',
+      },
+    }),
+  });
+  const stores = storesRes?.stores ?? [];
 
   const { contract_type, status, brand, store_id, last_visit_days } = filters;
 
@@ -89,6 +95,36 @@ export function MembersFilters({ isFilterOpen, onFilterOpenChange }: MembersFilt
 
       {isFilterOpen && (
         <div className="flex flex-wrap items-center gap-2">
+          <Select
+            value={store_id.length > 0 ? store_id[0] : 'all'}
+            onValueChange={(value) => {
+              if (value === 'all') {
+                updateFilter('store_id', []);
+              } else {
+                updateFilter('store_id', [value]);
+              }
+            }}
+          >
+            <SelectTrigger
+              size="sm"
+              className={`h-8 w-[160px] text-xs ${filterActiveClass(store_id.length > 0)}`}
+            >
+              <SelectValue>
+                {store_id.length > 0
+                  ? (stores.find((store) => store.id === store_id[0])?.name ?? store_id[0])
+                  : '全店舗'}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">全店舗</SelectItem>
+              {stores.map((store) => (
+                <SelectItem key={store.id} value={store.id}>
+                  {store.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
           <Select
             value={status.length > 0 ? status[0] : 'all'}
             onValueChange={(value) => {
@@ -205,36 +241,6 @@ export function MembersFilters({ isFilterOpen, onFilterOpenChange }: MembersFilt
               {PERIOD_OPTIONS.map((opt) => (
                 <SelectItem key={opt.value} value={opt.value}>
                   {opt.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select
-            value={store_id.length > 0 ? store_id[0] : 'all'}
-            onValueChange={(value) => {
-              if (value === 'all') {
-                updateFilter('store_id', []);
-              } else {
-                updateFilter('store_id', [value]);
-              }
-            }}
-          >
-            <SelectTrigger
-              size="sm"
-              className={`h-8 w-[160px] text-xs ${filterActiveClass(store_id.length > 0)}`}
-            >
-              <SelectValue>
-                {store_id.length > 0
-                  ? MOCK_STORES.find((s) => s.id === store_id[0])?.name
-                  : '全店舗'}
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">全店舗</SelectItem>
-              {MOCK_STORES.map((store) => (
-                <SelectItem key={store.id} value={store.id}>
-                  {store.name}
                 </SelectItem>
               ))}
             </SelectContent>

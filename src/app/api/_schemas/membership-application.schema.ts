@@ -658,7 +658,7 @@ export const GetApplicationDetailResponseSchema = z
         description: 'Emergency contact name',
       }),
       emergency_contact_relationship: z.string().optional().openapi({
-        example: '夫',
+        example: '配偶者',
         description: 'Emergency contact relationship',
       }),
       emergency_contact_phone: z.string().optional().openapi({
@@ -767,7 +767,7 @@ export const UpdateMembershipApplicationRequestSchema = z
           description: 'Emergency contact name',
         }),
         emergency_contact_relationship: z.string().optional().openapi({
-          example: '夫',
+          example: '配偶者',
           description: 'Emergency contact relationship',
         }),
         emergency_contact_phone: z.string().optional().openapi({

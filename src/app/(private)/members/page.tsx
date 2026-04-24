@@ -9,6 +9,7 @@ import type { ColumnDef, RowSelectionState, SortingState } from '@tanstack/react
 import { Plus, Shuffle } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { Loading } from '@/components/common/data-state-boundary/loading';
 import { DataTable } from '@/components/common/data-table';
 import { TablePagination } from '@/components/common/table-pagination';
 import { Badge } from '@/components/ui/badge';
@@ -116,7 +117,7 @@ function MembersPageContent() {
     setBulkDialogOpen(true);
   };
 
-  const handleBulkExecute = async () => {
+  const handleBulkChangeContract = async () => {
     if (!toContract || selectedIDs.length === 0) return;
 
     const results = await Promise.allSettled(
@@ -252,7 +253,7 @@ function MembersPageContent() {
         onContractChange={handleContractChange}
         contractOptions={contractOptions}
         isChangingMainContract={isChangingMainContract}
-        onExecute={handleBulkExecute}
+        onExecute={handleBulkChangeContract}
       />
     </div>
   );
@@ -260,13 +261,7 @@ function MembersPageContent() {
 
 export default function MembersPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex flex-1 items-center justify-center">
-          <div className="text-muted-foreground">読み込み中...</div>
-        </div>
-      }
-    >
+    <Suspense fallback={<Loading />}>
       <MembersPageContent />
     </Suspense>
   );

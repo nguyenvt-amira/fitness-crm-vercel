@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { ColumnDef, SortingState } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
 
+import { Loading } from '@/components/common/data-state-boundary/loading';
 import { DataTable } from '@/components/common/data-table';
 import { TablePagination } from '@/components/common/table-pagination';
 import { Badge } from '@/components/ui/badge';
@@ -134,13 +135,7 @@ function StoresPageContent() {
 
 export default function StoresPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex flex-1 items-center justify-center">
-          <div className="text-muted-foreground">読み込み中...</div>
-        </div>
-      }
-    >
+    <Suspense fallback={<Loading />}>
       <StoresPageContent />
     </Suspense>
   );

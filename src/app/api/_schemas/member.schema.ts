@@ -72,6 +72,10 @@ export const MemberListItemSchema = z
       example: 'M-00001',
       description: 'Member ID',
     }),
+    old_member_number: z.string().openapi({
+      example: 'O-M-00001',
+      description: 'Old member number',
+    }),
     member_number: z.string().openapi({
       example: 'M-00001',
       description: 'Member number',
@@ -381,6 +385,10 @@ export const MemberEmergencyContactSchema = z
 export const MemberBasicInfoSchema = z
   .object({
     id: z.string().openapi({ example: 'M-00001', description: 'Member ID' }),
+    old_member_number: z.string().openapi({
+      example: 'O-M-00001',
+      description: 'Old member number',
+    }),
     member_number: z.string().openapi({ example: 'M-00001', description: 'Member number' }),
     name_kanji: z.string().openapi({ example: '佐藤 花子', description: 'Name in kanji' }),
     name_kana: z.string().openapi({ example: 'サトウ ハナコ', description: 'Name in kana' }),

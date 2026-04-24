@@ -1011,6 +1011,10 @@ export type MemberListItem = {
      */
     id: string;
     /**
+     * Old member number
+     */
+    old_member_number: string;
+    /**
      * Member number
      */
     member_number: string;
@@ -1259,6 +1263,10 @@ export type GetMembersResponse = {
          */
         id: string;
         /**
+         * Old member number
+         */
+        old_member_number: string;
+        /**
          * Member number
          */
         member_number: string;
@@ -1404,6 +1412,10 @@ export type GetMemberDetailResponse = {
          * Member ID
          */
         id: string;
+        /**
+         * Old member number
+         */
+        old_member_number: string;
         /**
          * Member number
          */
@@ -1761,6 +1773,10 @@ export type UpdateBasicInfoResponse = {
      * Member ID
      */
     id: string;
+    /**
+     * Old member number
+     */
+    old_member_number: string;
     /**
      * Member number
      */
@@ -10335,6 +10351,10 @@ export type GetCrmMembersByIdBasicInfoResponses = {
          */
         id: string;
         /**
+         * Old member number
+         */
+        old_member_number: string;
+        /**
          * Member number
          */
         member_number: string;
@@ -10541,6 +10561,10 @@ export type PutCrmMembersByIdBasicInfoResponses = {
          * Member ID
          */
         id: string;
+        /**
+         * Old member number
+         */
+        old_member_number: string;
         /**
          * Member number
          */
@@ -13122,6 +13146,10 @@ export type GetCrmMembersByIdResponses = {
              */
             id: string;
             /**
+             * Old member number
+             */
+            old_member_number: string;
+            /**
              * Member number
              */
             member_number: string;
@@ -13564,6 +13592,10 @@ export type PatchCrmMembersByIdResponses = {
              * Member ID
              */
             id: string;
+            /**
+             * Old member number
+             */
+            old_member_number: string;
             /**
              * Member number
              */
@@ -14568,6 +14600,10 @@ export type GetCrmMembersResponses = {
              */
             id: string;
             /**
+             * Old member number
+             */
+            old_member_number: string;
+            /**
              * Member number
              */
             member_number: string;
@@ -14813,6 +14849,10 @@ export type PostCrmMembersResponses = {
              * Member ID
              */
             id: string;
+            /**
+             * Old member number
+             */
+            old_member_number: string;
             /**
              * Member number
              */
