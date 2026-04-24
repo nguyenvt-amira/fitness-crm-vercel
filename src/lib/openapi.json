@@ -16430,374 +16430,6 @@
         }
       }
     },
-    "/crm/members/{id}/memos": {
-      "get": {
-        "summary": "Get member memos",
-        "description": "Get all memos for a member",
-        "tags": ["Members"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of memos",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "memos": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "example": "memo-001",
-                            "description": "Memo ID"
-                          },
-                          "date": {
-                            "type": "string",
-                            "example": "2024-11-15T10:00:00Z",
-                            "description": "Created date (ISO)"
-                          },
-                          "type": {
-                            "type": "string",
-                            "enum": ["caution", "vip", "other"],
-                            "title": "MemoType",
-                            "description": "Memo type",
-                            "example": "caution"
-                          },
-                          "content": {
-                            "type": "string",
-                            "example": "注意事項があります",
-                            "description": "Memo content"
-                          },
-                          "created_by": {
-                            "type": "string",
-                            "example": "山田 花子",
-                            "description": "Creator name"
-                          }
-                        },
-                        "required": ["id", "date", "type", "content", "created_by"],
-                        "title": "StaffMemo",
-                        "description": "Staff memo"
-                      },
-                      "description": "List of memos"
-                    }
-                  },
-                  "required": ["memos"],
-                  "title": "GetMemosResponse",
-                  "description": "Response for getting memos"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Member not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Create member memo",
-        "description": "Create a new memo for a member",
-        "tags": ["Members"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "Memo details",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": ["caution", "vip", "other"],
-                    "title": "MemoType",
-                    "description": "Memo type",
-                    "example": "caution"
-                  },
-                  "content": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 1000,
-                    "example": "注意事項があります",
-                    "description": "Memo content (1-1000 characters)"
-                  },
-                  "created_by": {
-                    "type": "string",
-                    "example": "山田 花子",
-                    "description": "Creator name"
-                  }
-                },
-                "required": ["type", "content"],
-                "title": "CreateMemoRequest",
-                "description": "Request payload for creating a memo"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Memo created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "example": "memo-001",
-                      "description": "Memo ID"
-                    },
-                    "date": {
-                      "type": "string",
-                      "example": "2024-11-15T10:00:00Z",
-                      "description": "Created date (ISO)"
-                    },
-                    "type": {
-                      "type": "string",
-                      "enum": ["caution", "vip", "other"],
-                      "title": "MemoType",
-                      "description": "Memo type",
-                      "example": "caution"
-                    },
-                    "content": {
-                      "type": "string",
-                      "example": "注意事項があります",
-                      "description": "Memo content"
-                    },
-                    "created_by": {
-                      "type": "string",
-                      "example": "山田 花子",
-                      "description": "Creator name"
-                    }
-                  },
-                  "required": ["id", "date", "type", "content", "created_by"],
-                  "title": "CreateMemoResponse",
-                  "description": "Response for creating a memo"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request - invalid request body",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Member not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/crm/members/{id}/communications": {
-      "get": {
-        "summary": "Get member communications",
-        "description": "Get communication history for a member",
-        "tags": ["Members"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Communication history",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "inquiries": {
-                      "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
-                      "description": "Inquiry records"
-                    },
-                    "memos": {
-                      "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
-                      "description": "Staff memos"
-                    },
-                    "notifications": {
-                      "nullable": true,
-                      "description": "Notification history"
-                    },
-                    "phoneRecords": {
-                      "type": "array",
-                      "items": {
-                        "nullable": true
-                      },
-                      "description": "Phone records"
-                    }
-                  },
-                  "required": ["inquiries", "memos", "phoneRecords"],
-                  "title": "GetCommunicationsResponse",
-                  "description": "Response for getting communications"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Member not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/crm/members/{id}/contracts/campaigns": {
       "get": {
         "summary": "Get member campaigns",
@@ -18585,6 +18217,274 @@
         }
       }
     },
+    "/crm/members/{id}/memos": {
+      "get": {
+        "summary": "Get member memos",
+        "description": "Get all memos for a member",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of memos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "memos": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "memo-001",
+                            "description": "Memo ID"
+                          },
+                          "date": {
+                            "type": "string",
+                            "example": "2024-11-15T10:00:00Z",
+                            "description": "Created date (ISO)"
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": ["caution", "vip", "other"],
+                            "title": "MemoType",
+                            "description": "Memo type",
+                            "example": "caution"
+                          },
+                          "content": {
+                            "type": "string",
+                            "example": "注意事項があります",
+                            "description": "Memo content"
+                          },
+                          "created_by": {
+                            "type": "string",
+                            "example": "山田 花子",
+                            "description": "Creator name"
+                          }
+                        },
+                        "required": ["id", "date", "type", "content", "created_by"],
+                        "title": "StaffMemo",
+                        "description": "Staff memo"
+                      },
+                      "description": "List of memos"
+                    }
+                  },
+                  "required": ["memos"],
+                  "title": "GetMemosResponse",
+                  "description": "Response for getting memos"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create member memo",
+        "description": "Create a new memo for a member",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Memo details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["caution", "vip", "other"],
+                    "title": "MemoType",
+                    "description": "Memo type",
+                    "example": "caution"
+                  },
+                  "content": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000,
+                    "example": "注意事項があります",
+                    "description": "Memo content (1-1000 characters)"
+                  },
+                  "created_by": {
+                    "type": "string",
+                    "example": "山田 花子",
+                    "description": "Creator name"
+                  }
+                },
+                "required": ["type", "content"],
+                "title": "CreateMemoRequest",
+                "description": "Request payload for creating a memo"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Memo created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "memo-001",
+                      "description": "Memo ID"
+                    },
+                    "date": {
+                      "type": "string",
+                      "example": "2024-11-15T10:00:00Z",
+                      "description": "Created date (ISO)"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": ["caution", "vip", "other"],
+                      "title": "MemoType",
+                      "description": "Memo type",
+                      "example": "caution"
+                    },
+                    "content": {
+                      "type": "string",
+                      "example": "注意事項があります",
+                      "description": "Memo content"
+                    },
+                    "created_by": {
+                      "type": "string",
+                      "example": "山田 花子",
+                      "description": "Creator name"
+                    }
+                  },
+                  "required": ["id", "date", "type", "content", "created_by"],
+                  "title": "CreateMemoResponse",
+                  "description": "Response for creating a memo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/members/{id}/memos/{memoId}": {
       "put": {
         "summary": "Update member memo",
@@ -19554,315 +19454,6 @@
                   "required": ["error"],
                   "title": "ErrorResponse",
                   "description": "Error response"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Member not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/crm/members/{id}/relationships": {
-      "get": {
-        "summary": "Get member relationships",
-        "description": "Get relationship information for a member (family, corporate, referral)",
-        "tags": ["Members"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Relationship information",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "family": {
-                      "type": "object",
-                      "properties": {
-                        "role": {
-                          "type": "string",
-                          "enum": ["primary", "family_child"]
-                        },
-                        "children": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string"
-                              },
-                              "member_number": {
-                                "type": "string"
-                              },
-                              "name": {
-                                "type": "string"
-                              },
-                              "relationship": {
-                                "type": "string"
-                              },
-                              "status": {
-                                "type": "string",
-                                "enum": [
-                                  "active",
-                                  "suspended",
-                                  "gate_stop",
-                                  "pending_withdrawal",
-                                  "withdrawn",
-                                  "force_withdrawn"
-                                ]
-                              }
-                            },
-                            "required": ["id", "member_number", "name", "relationship", "status"]
-                          }
-                        },
-                        "current_count": {
-                          "type": "number"
-                        },
-                        "max_count": {
-                          "type": "number"
-                        },
-                        "parent": {
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "string"
-                            },
-                            "member_number": {
-                              "type": "string"
-                            },
-                            "name": {
-                              "type": "string"
-                            },
-                            "relationship": {
-                              "type": "string"
-                            },
-                            "status": {
-                              "type": "string",
-                              "enum": [
-                                "active",
-                                "suspended",
-                                "gate_stop",
-                                "pending_withdrawal",
-                                "withdrawn",
-                                "force_withdrawn"
-                              ]
-                            }
-                          },
-                          "required": ["id", "member_number", "name", "relationship", "status"]
-                        }
-                      },
-                      "required": ["role"],
-                      "description": "Family relationships"
-                    },
-                    "corporate": {
-                      "type": "object",
-                      "nullable": true,
-                      "properties": {
-                        "corporate_detail_member_id": {
-                          "type": "string"
-                        },
-                        "corporate_name": {
-                          "type": "string"
-                        },
-                        "corporate_number": {
-                          "type": "string"
-                        },
-                        "contract_type": {
-                          "type": "string"
-                        },
-                        "company_discount": {
-                          "type": "object",
-                          "properties": {
-                            "applied": {
-                              "type": "boolean"
-                            },
-                            "rate_percent": {
-                              "type": "number",
-                              "nullable": true
-                            }
-                          },
-                          "required": ["applied", "rate_percent"]
-                        },
-                        "contact_department": {
-                          "type": "string"
-                        },
-                        "contact_name": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "corporate_detail_member_id",
-                        "corporate_name",
-                        "corporate_number",
-                        "contract_type",
-                        "company_discount",
-                        "contact_department",
-                        "contact_name"
-                      ],
-                      "description": "Corporate relationships"
-                    },
-                    "referral": {
-                      "type": "object",
-                      "properties": {
-                        "as_referrer": {
-                          "type": "object",
-                          "properties": {
-                            "referrals": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "properties": {
-                                  "id": {
-                                    "type": "string"
-                                  },
-                                  "member_number": {
-                                    "type": "string"
-                                  },
-                                  "name": {
-                                    "type": "string"
-                                  },
-                                  "referred_at": {
-                                    "type": "string"
-                                  },
-                                  "membership_status": {
-                                    "type": "string",
-                                    "enum": [
-                                      "active",
-                                      "suspended",
-                                      "gate_stop",
-                                      "pending_withdrawal",
-                                      "withdrawn",
-                                      "force_withdrawn"
-                                    ]
-                                  },
-                                  "points_status": {
-                                    "type": "string",
-                                    "enum": ["normal", "blocked", "none"],
-                                    "title": "ReferralPointsStatus",
-                                    "description": "Referral points status"
-                                  },
-                                  "points_earned": {
-                                    "type": "number",
-                                    "nullable": true
-                                  }
-                                },
-                                "required": [
-                                  "id",
-                                  "member_number",
-                                  "name",
-                                  "referred_at",
-                                  "membership_status",
-                                  "points_status",
-                                  "points_earned"
-                                ]
-                              }
-                            },
-                            "summary": {
-                              "type": "object",
-                              "properties": {
-                                "total_referrals": {
-                                  "type": "number"
-                                },
-                                "total_points": {
-                                  "type": "number"
-                                }
-                              },
-                              "required": ["total_referrals", "total_points"]
-                            }
-                          },
-                          "required": ["referrals", "summary"]
-                        },
-                        "as_referee": {
-                          "type": "object",
-                          "nullable": true,
-                          "properties": {
-                            "referrer": {
-                              "type": "object",
-                              "properties": {
-                                "id": {
-                                  "type": "string"
-                                },
-                                "member_number": {
-                                  "type": "string"
-                                },
-                                "name": {
-                                  "type": "string"
-                                },
-                                "referred_at": {
-                                  "type": "string"
-                                },
-                                "referral_benefit": {
-                                  "type": "string"
-                                }
-                              },
-                              "required": [
-                                "id",
-                                "member_number",
-                                "name",
-                                "referred_at",
-                                "referral_benefit"
-                              ]
-                            }
-                          },
-                          "required": ["referrer"]
-                        }
-                      },
-                      "required": ["as_referrer", "as_referee"],
-                      "description": "Referral relationships"
-                    }
-                  },
-                  "required": ["family", "corporate", "referral"],
-                  "title": "GetRelationshipsResponse",
-                  "description": "Response for getting relationships"
                 }
               }
             }
@@ -20918,92 +20509,6 @@
                   "required": ["error"],
                   "title": "ErrorResponse",
                   "description": "Error response"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Member not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/crm/members/{id}/service-usage": {
-      "get": {
-        "summary": "Get member service usage",
-        "description": "Get service usage information for a member",
-        "tags": ["Members"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "Member ID",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Service usage information",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "personalTraining": {
-                      "nullable": true,
-                      "description": "Personal training information"
-                    },
-                    "studioProgram": {
-                      "nullable": true,
-                      "description": "Studio program information"
-                    },
-                    "otherServices": {
-                      "nullable": true,
-                      "description": "Other services usage"
-                    }
-                  },
-                  "title": "GetServiceUsageResponse",
-                  "description": "Response for getting service usage"
                 }
               }
             }

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { formatDate } from '@/utils/format.util';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { MoreHorizontal, Pencil, PlayCircle, User, UserCheck } from 'lucide-react';
 
 import { BreadcrumbNav } from '@/components/common/breadcrumb-nav';
@@ -26,30 +26,19 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import {
-  deleteCrmMembersByIdMemosByMemoIdMutation,
-  getCrmMembersByIdCommunicationsQueryKey,
-  getCrmMembersByIdOptions,
-  postCrmMembersByIdMemosMutation,
-  putCrmMembersByIdMemosByMemoIdMutation,
-} from '@/lib/api/@tanstack/react-query.gen';
-import { MemberStatus, type StaffMemo } from '@/lib/api/types.gen';
+import { getCrmMembersByIdOptions } from '@/lib/api/@tanstack/react-query.gen';
+import { MemberStatus } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
 import { GENDER_CLASSES, MEMBER_STATUS_CLASSES, MEMBER_TYPE_LABELS } from '../_constants/constants';
 import { MEMBER_STATUS_LABELS } from '../_constants/constants';
 import { GENDER_LABELS } from '../_constants/constants';
-import { MemoModal } from './_components/memo-modal';
-import { PrintModal } from './_components/print-modal';
 import { BasicInfoTab } from './_components/tabs/basic-info-tab';
 import { BodyDataTab } from './_components/tabs/body-data-tab';
-import { ChangeHistoryTab } from './_components/tabs/change-history-tab';
-import { CommunicationsTab } from './_components/tabs/communications-tab';
+// import { ChangeHistoryTab } from './_components/tabs/change-history-tab';
 import { ContractsTab } from './_components/tabs/contracts-tab';
 import { PaymentHistoryTab } from './_components/tabs/payment-history-tab';
 import { PointsTab } from './_components/tabs/points-tab';
-import { RelationshipsTab } from './_components/tabs/relationships-tab';
-import { ServiceUsageTab } from './_components/tabs/service-usage-tab';
 import { TrainingRecordsTab } from './_components/tabs/training-records-tab';
 import { UsageHistoryTab } from './_components/tabs/usage-history-tab';
 
@@ -57,14 +46,12 @@ const BREADCRUMB_ITEMS = [{ url: '/members', label: '会員一覧' }, { label: '
 const TABS = [
   'basic',
   'contracts',
+  'payment',
   'usage',
   'points',
-  'service',
-  'communications',
   'training',
-  'history',
   'body-data',
-  'relationships',
+  // 'history',
 ] as const;
 
 const isMemberTab = (value: string | null): value is (typeof TABS)[number] => {
@@ -78,33 +65,9 @@ export default function MemberDetailPage() {
   const params = useParams();
   const searchParams = useSearchParams();
   const tab = searchParams.get('tab');
-  const memo = searchParams.get('memo');
 
   const memberId = params.id as string;
   const activeTab = isMemberTab(tab) ? tab : 'basic';
-  const queryClient = useQueryClient();
-  const [showMemoModal, setShowMemoModal] = useState(() => memo === 'add');
-  const [editingMemo, setEditingMemo] = useState<StaffMemo | null>(null);
-  const [showPrintModal, setShowPrintModal] = useState(false);
-
-  const invalidateCommunications = () => {
-    queryClient.invalidateQueries({
-      queryKey: getCrmMembersByIdCommunicationsQueryKey({ path: { id: memberId } }),
-    });
-  };
-
-  const postMemo = useMutation({
-    ...postCrmMembersByIdMemosMutation(),
-    onSuccess: invalidateCommunications,
-  });
-  const putMemo = useMutation({
-    ...putCrmMembersByIdMemosByMemoIdMutation(),
-    onSuccess: invalidateCommunications,
-  });
-  const deleteMemo = useMutation({
-    ...deleteCrmMembersByIdMemosByMemoIdMutation(),
-    onSuccess: invalidateCommunications,
-  });
 
   const {
     data: member,
@@ -142,21 +105,6 @@ export default function MemberDetailPage() {
 
   const handleEdit = () => {
     router.push(navigate('/members/[id]/edit', memberId));
-  };
-
-  const handleAddMemo = () => {
-    setEditingMemo(null);
-    setShowMemoModal(true);
-  };
-
-  const handleEditMemo = (memo: StaffMemo) => {
-    setEditingMemo(memo);
-    setShowMemoModal(true);
-  };
-
-  const handleMemoModalOpenChange = (open: boolean) => {
-    setShowMemoModal(open);
-    if (!open) setEditingMemo(null);
   };
 
   const handleSuspend = () => {
@@ -201,41 +149,6 @@ export default function MemberDetailPage() {
   const isWithdrawnStatus =
     member.profile.status === MemberStatus.WITHDRAWN ||
     member.profile.status === MemberStatus.FORCE_WITHDRAWN;
-  const handleSaveMemo = (data: { type: 'caution' | 'vip' | 'other'; content: string }) => {
-    const onSuccess = () => {
-      setShowMemoModal(false);
-      setEditingMemo(null);
-    };
-    if (editingMemo) {
-      putMemo.mutate(
-        {
-          path: { id: memberId, memoId: editingMemo.id },
-          body: { type: data.type, content: data.content.trim() },
-        },
-        { onSuccess },
-      );
-    } else {
-      postMemo.mutate(
-        {
-          path: { id: memberId },
-          body: { type: data.type, content: data.content.trim() },
-        },
-        { onSuccess },
-      );
-    }
-  };
-
-  const handleDeleteMemo = (memoId: string) => {
-    deleteMemo.mutate(
-      { path: { id: memberId, memoId } },
-      {
-        onSuccess: () => {
-          setShowMemoModal(false);
-          setEditingMemo(null);
-        },
-      },
-    );
-  };
 
   const handleTabChange = (value: string) => {
     if (!isMemberTab(value)) return;
@@ -496,12 +409,9 @@ export default function MemberDetailPage() {
               <TabsTrigger value="payment">支払い履歴</TabsTrigger>
               <TabsTrigger value="usage">利用履歴</TabsTrigger>
               <TabsTrigger value="points">ポイント履歴</TabsTrigger>
-              <TabsTrigger value="service">サービス利用履歴</TabsTrigger>
-              <TabsTrigger value="communications">コミュニケーション</TabsTrigger>
               <TabsTrigger value="training">トレーニング記録</TabsTrigger>
-              <TabsTrigger value="history">変更履歴</TabsTrigger>
               <TabsTrigger value="body-data">ボディーデータ</TabsTrigger>
-              <TabsTrigger value="relationships">関係者情報</TabsTrigger>
+              {/* <TabsTrigger value="history">変更履歴</TabsTrigger> */}
             </TabsList>
           </div>
 
@@ -530,45 +440,16 @@ export default function MemberDetailPage() {
               <TrainingRecordsTab memberId={memberId} />
             </TabsContent>
 
-            <TabsContent value="service">
-              <ServiceUsageTab memberId={memberId} />
-            </TabsContent>
-
-            <TabsContent value="communications">
-              <CommunicationsTab
-                memberId={memberId}
-                onAddMemo={handleAddMemo}
-                onEditMemo={handleEditMemo}
-                onDeleteMemo={handleDeleteMemo}
-              />
-            </TabsContent>
-
-            <TabsContent value="history">
-              <ChangeHistoryTab memberId={memberId} />
-            </TabsContent>
-
             <TabsContent value="body-data">
               <BodyDataTab memberId={memberId} />
             </TabsContent>
 
-            <TabsContent value="relationships">
-              <RelationshipsTab memberId={memberId} />
-            </TabsContent>
+            {/* <TabsContent value="history">
+              <ChangeHistoryTab memberId={memberId} />
+            </TabsContent> */}
           </ScrollArea>
         </Tabs>
       </div>
-
-      {/* Modals */}
-      <MemoModal
-        open={showMemoModal}
-        onOpenChange={handleMemoModalOpenChange}
-        memo={editingMemo}
-        onSave={handleSaveMemo}
-        onDelete={handleDeleteMemo}
-        isSaving={postMemo.isPending || putMemo.isPending}
-        isDeleting={deleteMemo.isPending}
-      />
-      <PrintModal open={showPrintModal} onOpenChange={setShowPrintModal} member={member} />
     </div>
   );
 }

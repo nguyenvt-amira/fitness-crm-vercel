@@ -11050,255 +11050,6 @@ export type GetCrmMembersByIdChangeHistoryResponses = {
 
 export type GetCrmMembersByIdChangeHistoryResponse = GetCrmMembersByIdChangeHistoryResponses[keyof GetCrmMembersByIdChangeHistoryResponses];
 
-export type GetCrmMembersByIdMemosData = {
-    body?: never;
-    path: {
-        /**
-         * Member ID
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/crm/members/{id}/memos';
-};
-
-export type GetCrmMembersByIdMemosErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    404: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type GetCrmMembersByIdMemosError = GetCrmMembersByIdMemosErrors[keyof GetCrmMembersByIdMemosErrors];
-
-export type GetCrmMembersByIdMemosResponses = {
-    /**
-     * GetMemosResponse
-     *
-     * Response for getting memos
-     */
-    200: {
-        /**
-         * List of memos
-         */
-        memos: Array<{
-            /**
-             * Memo ID
-             */
-            id: string;
-            /**
-             * Created date (ISO)
-             */
-            date: string;
-            /**
-             * MemoType
-             *
-             * Memo type
-             */
-            type: 'caution' | 'vip' | 'other';
-            /**
-             * Memo content
-             */
-            content: string;
-            /**
-             * Creator name
-             */
-            created_by: string;
-        }>;
-    };
-};
-
-export type GetCrmMembersByIdMemosResponse = GetCrmMembersByIdMemosResponses[keyof GetCrmMembersByIdMemosResponses];
-
-export type PostCrmMembersByIdMemosData = {
-    /**
-     * CreateMemoRequest
-     *
-     * Request payload for creating a memo
-     */
-    body?: {
-        /**
-         * MemoType
-         *
-         * Memo type
-         */
-        type: 'caution' | 'vip' | 'other';
-        /**
-         * Memo content (1-1000 characters)
-         */
-        content: string;
-        /**
-         * Creator name
-         */
-        created_by?: string;
-    };
-    path: {
-        /**
-         * Member ID
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/crm/members/{id}/memos';
-};
-
-export type PostCrmMembersByIdMemosErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    400: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    404: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type PostCrmMembersByIdMemosError = PostCrmMembersByIdMemosErrors[keyof PostCrmMembersByIdMemosErrors];
-
-export type PostCrmMembersByIdMemosResponses = {
-    /**
-     * CreateMemoResponse
-     *
-     * Response for creating a memo
-     */
-    200: {
-        /**
-         * Memo ID
-         */
-        id: string;
-        /**
-         * Created date (ISO)
-         */
-        date: string;
-        /**
-         * MemoType
-         *
-         * Memo type
-         */
-        type: 'caution' | 'vip' | 'other';
-        /**
-         * Memo content
-         */
-        content: string;
-        /**
-         * Creator name
-         */
-        created_by: string;
-    };
-};
-
-export type PostCrmMembersByIdMemosResponse = PostCrmMembersByIdMemosResponses[keyof PostCrmMembersByIdMemosResponses];
-
-export type GetCrmMembersByIdCommunicationsData = {
-    body?: never;
-    path: {
-        /**
-         * Member ID
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/crm/members/{id}/communications';
-};
-
-export type GetCrmMembersByIdCommunicationsErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    404: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type GetCrmMembersByIdCommunicationsError = GetCrmMembersByIdCommunicationsErrors[keyof GetCrmMembersByIdCommunicationsErrors];
-
-export type GetCrmMembersByIdCommunicationsResponses = {
-    /**
-     * GetCommunicationsResponse
-     *
-     * Response for getting communications
-     */
-    200: {
-        /**
-         * Inquiry records
-         */
-        inquiries: Array<unknown>;
-        /**
-         * Staff memos
-         */
-        memos: Array<unknown>;
-        /**
-         * Notification history
-         */
-        notifications?: unknown;
-        /**
-         * Phone records
-         */
-        phoneRecords: Array<unknown>;
-    };
-};
-
-export type GetCrmMembersByIdCommunicationsResponse = GetCrmMembersByIdCommunicationsResponses[keyof GetCrmMembersByIdCommunicationsResponses];
-
 export type GetCrmMembersByIdContractsCampaignsData = {
     body?: never;
     path: {
@@ -12465,6 +12216,188 @@ export type PutCrmMembersByIdMarketingConsentResponses = {
 
 export type PutCrmMembersByIdMarketingConsentResponse = PutCrmMembersByIdMarketingConsentResponses[keyof PutCrmMembersByIdMarketingConsentResponses];
 
+export type GetCrmMembersByIdMemosData = {
+    body?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/memos';
+};
+
+export type GetCrmMembersByIdMemosErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembersByIdMemosError = GetCrmMembersByIdMemosErrors[keyof GetCrmMembersByIdMemosErrors];
+
+export type GetCrmMembersByIdMemosResponses = {
+    /**
+     * GetMemosResponse
+     *
+     * Response for getting memos
+     */
+    200: {
+        /**
+         * List of memos
+         */
+        memos: Array<{
+            /**
+             * Memo ID
+             */
+            id: string;
+            /**
+             * Created date (ISO)
+             */
+            date: string;
+            /**
+             * MemoType
+             *
+             * Memo type
+             */
+            type: 'caution' | 'vip' | 'other';
+            /**
+             * Memo content
+             */
+            content: string;
+            /**
+             * Creator name
+             */
+            created_by: string;
+        }>;
+    };
+};
+
+export type GetCrmMembersByIdMemosResponse = GetCrmMembersByIdMemosResponses[keyof GetCrmMembersByIdMemosResponses];
+
+export type PostCrmMembersByIdMemosData = {
+    /**
+     * CreateMemoRequest
+     *
+     * Request payload for creating a memo
+     */
+    body?: {
+        /**
+         * MemoType
+         *
+         * Memo type
+         */
+        type: 'caution' | 'vip' | 'other';
+        /**
+         * Memo content (1-1000 characters)
+         */
+        content: string;
+        /**
+         * Creator name
+         */
+        created_by?: string;
+    };
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/memos';
+};
+
+export type PostCrmMembersByIdMemosErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembersByIdMemosError = PostCrmMembersByIdMemosErrors[keyof PostCrmMembersByIdMemosErrors];
+
+export type PostCrmMembersByIdMemosResponses = {
+    /**
+     * CreateMemoResponse
+     *
+     * Response for creating a memo
+     */
+    200: {
+        /**
+         * Memo ID
+         */
+        id: string;
+        /**
+         * Created date (ISO)
+         */
+        date: string;
+        /**
+         * MemoType
+         *
+         * Memo type
+         */
+        type: 'caution' | 'vip' | 'other';
+        /**
+         * Memo content
+         */
+        content: string;
+        /**
+         * Creator name
+         */
+        created_by: string;
+    };
+};
+
+export type PostCrmMembersByIdMemosResponse = PostCrmMembersByIdMemosResponses[keyof PostCrmMembersByIdMemosResponses];
+
 export type DeleteCrmMembersByIdMemosByMemoIdData = {
     body?: never;
     path: {
@@ -13131,128 +13064,6 @@ export type PostCrmMembersByIdPointsResponses = {
 };
 
 export type PostCrmMembersByIdPointsResponse = PostCrmMembersByIdPointsResponses[keyof PostCrmMembersByIdPointsResponses];
-
-export type GetCrmMembersByIdRelationshipsData = {
-    body?: never;
-    path: {
-        /**
-         * Member ID
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/crm/members/{id}/relationships';
-};
-
-export type GetCrmMembersByIdRelationshipsErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    404: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type GetCrmMembersByIdRelationshipsError = GetCrmMembersByIdRelationshipsErrors[keyof GetCrmMembersByIdRelationshipsErrors];
-
-export type GetCrmMembersByIdRelationshipsResponses = {
-    /**
-     * GetRelationshipsResponse
-     *
-     * Response for getting relationships
-     */
-    200: {
-        /**
-         * Family relationships
-         */
-        family: {
-            role: 'primary' | 'family_child';
-            children?: Array<{
-                id: string;
-                member_number: string;
-                name: string;
-                relationship: string;
-                status: 'active' | 'suspended' | 'gate_stop' | 'pending_withdrawal' | 'withdrawn' | 'force_withdrawn';
-            }>;
-            current_count?: number;
-            max_count?: number;
-            parent?: {
-                id: string;
-                member_number: string;
-                name: string;
-                relationship: string;
-                status: 'active' | 'suspended' | 'gate_stop' | 'pending_withdrawal' | 'withdrawn' | 'force_withdrawn';
-            };
-        };
-        /**
-         * Corporate relationships
-         */
-        corporate: {
-            corporate_detail_member_id: string;
-            corporate_name: string;
-            corporate_number: string;
-            contract_type: string;
-            company_discount: {
-                applied: boolean;
-                rate_percent: number | null;
-            };
-            contact_department: string;
-            contact_name: string;
-        } | null;
-        /**
-         * Referral relationships
-         */
-        referral: {
-            as_referrer: {
-                referrals: Array<{
-                    id: string;
-                    member_number: string;
-                    name: string;
-                    referred_at: string;
-                    membership_status: 'active' | 'suspended' | 'gate_stop' | 'pending_withdrawal' | 'withdrawn' | 'force_withdrawn';
-                    /**
-                     * ReferralPointsStatus
-                     *
-                     * Referral points status
-                     */
-                    points_status: 'normal' | 'blocked' | 'none';
-                    points_earned: number | null;
-                }>;
-                summary: {
-                    total_referrals: number;
-                    total_points: number;
-                };
-            };
-            as_referee: {
-                referrer: {
-                    id: string;
-                    member_number: string;
-                    name: string;
-                    referred_at: string;
-                    referral_benefit: string;
-                };
-            } | null;
-        };
-    };
-};
-
-export type GetCrmMembersByIdRelationshipsResponse = GetCrmMembersByIdRelationshipsResponses[keyof GetCrmMembersByIdRelationshipsResponses];
 
 export type GetCrmMembersByIdData = {
     body?: never;
@@ -14020,69 +13831,6 @@ export type PatchCrmMembersByIdResponses = {
 };
 
 export type PatchCrmMembersByIdResponse = PatchCrmMembersByIdResponses[keyof PatchCrmMembersByIdResponses];
-
-export type GetCrmMembersByIdServiceUsageData = {
-    body?: never;
-    path: {
-        /**
-         * Member ID
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/crm/members/{id}/service-usage';
-};
-
-export type GetCrmMembersByIdServiceUsageErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    404: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type GetCrmMembersByIdServiceUsageError = GetCrmMembersByIdServiceUsageErrors[keyof GetCrmMembersByIdServiceUsageErrors];
-
-export type GetCrmMembersByIdServiceUsageResponses = {
-    /**
-     * GetServiceUsageResponse
-     *
-     * Response for getting service usage
-     */
-    200: {
-        /**
-         * Personal training information
-         */
-        personalTraining?: unknown;
-        /**
-         * Studio program information
-         */
-        studioProgram?: unknown;
-        /**
-         * Other services usage
-         */
-        otherServices?: unknown;
-    };
-};
-
-export type GetCrmMembersByIdServiceUsageResponse = GetCrmMembersByIdServiceUsageResponses[keyof GetCrmMembersByIdServiceUsageResponses];
 
 export type GetCrmMembersByIdStoresData = {
     body?: never;
