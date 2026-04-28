@@ -175,8 +175,66 @@ export async function POST(request: NextRequest) {
     const results = application_ids.map((id: string) => {
       const riskScore = Math.floor(Math.random() * 100);
       const approved = riskScore < 70;
-      const newStatus = approved ? 'auto_approved' : 'rejected';
-      db.membershipApplications.updateStatus(id, newStatus);
+
+      const application = db.membershipApplications.getById(id);
+      if (!application) {
+        return {
+          application_id: id,
+          approved: false,
+          risk_score: riskScore,
+          reason: 'Application not found',
+        };
+      }
+
+      // Idempotency: never downgrade an already approved application.
+      if (application.status === 'manual_approved' || application.status === 'auto_approved') {
+        return {
+          application_id: id,
+          approved: true,
+          risk_score: riskScore,
+          reason: '既に承認済み',
+        };
+      }
+
+      if (approved) {
+        const updatedApplication = db.membershipApplications.updateStatus(id, 'auto_approved');
+        if (!updatedApplication) {
+          return {
+            application_id: id,
+            approved: false,
+            risk_score: riskScore,
+            reason: 'Failed to update status',
+          };
+        }
+
+        // Prefer edited detail fields (plan/start_date) when creating contract.
+        const details = db.membershipApplications.getDetails(id);
+        const applicationForContract = {
+          ...updatedApplication,
+          ...(details?.applicant_name ? { applicant_name: details.applicant_name } : {}),
+          ...(details?.contract_details?.plan_name
+            ? { plan_name: details.contract_details.plan_name }
+            : {}),
+          ...(details?.contract_details?.start_date
+            ? { scheduled_start_date: details.contract_details.start_date }
+            : {}),
+        };
+
+        const existingContractRow = db.contracts.getByApplicationId(id);
+        if (!existingContractRow) {
+          const member = db.members.createFromApplication(applicationForContract);
+          db.contracts.createFromApprovedApplication({
+            application: applicationForContract,
+            member_id: member.basic_info.id,
+          });
+        }
+      } else {
+        // Rejection: only status update is required.
+        if (application.status !== 'rejected') {
+          db.membershipApplications.updateStatus(id, 'rejected');
+        }
+      }
+
       return {
         application_id: id,
         approved,

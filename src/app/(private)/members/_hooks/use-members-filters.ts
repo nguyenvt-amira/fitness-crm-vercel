@@ -123,7 +123,7 @@ export function useMembersFilters() {
     contract_plan_id: filters.contract_plan_id.length > 0 ? filters.contract_plan_id : undefined,
     last_visit_days: filters.last_visit_days ?? undefined,
     has_unpaid: filters.has_unpaid ?? undefined,
-    sort_by: filters.sort_by as 'member_number' | 'joined_at' | 'last_visit' | 'name',
+    sort_by: filters.sort_by as 'member_number' | 'joined_at' | 'last_visit_date' | 'name',
     sort_order: filters.sort_order,
   };
 
