@@ -62,10 +62,10 @@ function StoresPageContent() {
     () =>
       StoresTableColumns({
         onEditClick: (id) => {
-          // router.push(navigate('/stores/[id]/edit', id));
+          router.push(navigate('/stores/[id]/edit', id));
         },
       }),
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
