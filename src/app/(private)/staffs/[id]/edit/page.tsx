@@ -14,6 +14,7 @@ import { useScrollToFirstError } from '@/hooks/use-scroll-to-first-error';
 import { BreadcrumbNav } from '@/components/common/breadcrumb-nav';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
+import { Skeleton } from '@/components/ui/skeleton';
 
 import {
   getCrmStaffsByIdOptions,
@@ -29,21 +30,47 @@ import { PersonalInfoSection } from './_components/personal-info-section';
 import { type StaffEditFormValues, staffEditFormSchema } from './_schemas/staff-edit-form.schema';
 
 export default function StaffEditPage() {
-  const router = useRouter();
+  return <StaffEditDataProvider />;
+}
+
+function StaffEditDataProvider() {
   const params = useParams<{ id: string }>();
   const id = params?.id;
-
-  const queryClient = useQueryClient();
+  const staffId = id ?? '';
 
   const { data, isLoading, isError } = useQuery({
-    ...getCrmStaffsByIdOptions({ path: { id } }),
+    ...getCrmStaffsByIdOptions({ path: { id: staffId } }),
     enabled: Boolean(id),
   });
 
+  if (!id) {
+    return <div className="text-destructive p-6 text-sm">スタッフIDが不正です。</div>;
+  }
   const staff = data?.staff as GetCrmStaffsByIdResponse['staff'] | undefined;
 
-  const defaultValues = useMemo<StaffEditFormValues | undefined>(() => {
-    if (!staff) return undefined;
+  if (isLoading) {
+    return <StaffEditPageSkeleton />;
+  }
+
+  if (isError || !staff) {
+    return <div className="text-destructive p-6 text-sm">スタッフ情報の取得に失敗しました。</div>;
+  }
+
+  return <StaffEditFormContent id={id} staff={staff} />;
+}
+
+function StaffEditFormContent({
+  id,
+  staff,
+}: {
+  id: string;
+  staff: GetCrmStaffsByIdResponse['staff'];
+}) {
+  const router = useRouter();
+
+  const queryClient = useQueryClient();
+
+  const defaultValues = useMemo<StaffEditFormValues>(() => {
     return {
       last_name: staff.personal_info.last_name,
       first_name: staff.personal_info.first_name,
@@ -53,7 +80,6 @@ export default function StaffEditPage() {
       birthday: staff.personal_info.birthday ?? '',
       phone: staff.personal_info.phone ?? '',
       email: staff.personal_info.email,
-      job_title: staff.job_title ?? '',
       postal_code: staff.personal_info.postal_code ?? '',
       prefecture: staff.personal_info.prefecture ?? '',
       city: staff.personal_info.city ?? '',
@@ -120,7 +146,7 @@ export default function StaffEditPage() {
         address: values.address || undefined,
         building: values.building || undefined,
       },
-      job_title: values.job_title || undefined,
+      role: values.role,
       login_settings: {
         login_method: values.login_method,
         social_id: values.social_id || undefined,
@@ -150,13 +176,6 @@ export default function StaffEditPage() {
     });
   };
 
-  if (isLoading || !defaultValues) {
-    return <div className="text-muted-foreground p-6 text-sm">読み込み中...</div>;
-  }
-
-  if (isError || !staff) {
-    return <div className="text-destructive p-6 text-sm">スタッフ情報の取得に失敗しました。</div>;
-  }
   return (
     <div className="">
       <div className="flex items-center gap-2 border-b px-4 py-4">
@@ -191,6 +210,30 @@ export default function StaffEditPage() {
               </Button>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StaffEditPageSkeleton() {
+  return (
+    <div className="">
+      <div className="flex items-center gap-2 border-b px-4 py-4">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-3 w-3 rounded-full" />
+          <Skeleton className="h-4 w-20" />
+        </div>
+      </div>
+      <div className="mx-auto max-w-4xl px-4 pb-20">
+        <div className="py-4">
+          <Skeleton className="h-7 w-32" />
+        </div>
+        <div className="space-y-6">
+          <Skeleton className="h-80 w-full rounded-xl" />
+          <Skeleton className="h-40 w-full rounded-xl" />
+          <Skeleton className="h-72 w-full rounded-xl" />
         </div>
       </div>
     </div>

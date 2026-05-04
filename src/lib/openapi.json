@@ -8633,9 +8633,9 @@
       },
       "StaffRole": {
         "type": "string",
-        "enum": ["headquarters", "store_staff", "viewer"],
+        "enum": ["system", "headquarter", "manager", "staff", "trainer", "observer"],
         "title": "StaffRole",
-        "description": "Staff permission role: headquarters=本部, store_staff=店舗スタッフ, viewer=閲覧のみ"
+        "description": "Staff permission role: system=非表示, headquarter=本部, manager=マネージャー, staff=スタッフ, trainer=トレーナー, observer=閲覧のみ"
       },
       "StaffLinkageType": {
         "type": "string",
@@ -8984,10 +8984,10 @@
           },
           "role": {
             "type": "string",
-            "enum": ["headquarters", "store_staff", "viewer"],
+            "enum": ["system", "headquarter", "manager", "staff", "trainer", "observer"],
             "title": "StaffRole",
             "description": "Staff role/permission (編集権限グループ)",
-            "example": "headquarters"
+            "example": "headquarter"
           },
           "brand": {
             "type": "string",
@@ -9171,10 +9171,10 @@
         "properties": {
           "role": {
             "type": "string",
-            "enum": ["headquarters", "store_staff", "viewer"],
+            "enum": ["system", "headquarter", "manager", "staff", "trainer", "observer"],
             "title": "StaffRole",
             "description": "編集権限",
-            "example": "headquarters"
+            "example": "headquarter"
           },
           "additional_permissions": {
             "type": "object",
@@ -9264,12 +9264,12 @@
             "example": 6,
             "description": "FK → positions.id"
           },
-          "job_title": {
+          "role": {
             "type": "string",
-            "enum": ["manager", "assistant_manager", "chief", "fulltime", "part_time"],
-            "title": "StaffJobTitle",
-            "description": "役職コード（職位とは別の個別フィールド）",
-            "example": "manager"
+            "enum": ["system", "headquarter", "manager", "staff", "trainer", "observer"],
+            "title": "StaffRole",
+            "description": "編集権限",
+            "example": "staff"
           },
           "brand": {
             "type": "string",
@@ -9393,10 +9393,10 @@
             "properties": {
               "role": {
                 "type": "string",
-                "enum": ["headquarters", "store_staff", "viewer"],
+                "enum": ["system", "headquarter", "manager", "staff", "trainer", "observer"],
                 "title": "StaffRole",
                 "description": "編集権限",
-                "example": "headquarters"
+                "example": "headquarter"
               },
               "additional_permissions": {
                 "type": "object",
@@ -9550,6 +9550,7 @@
           "id",
           "staff_id",
           "position_id",
+          "role",
           "brand",
           "brand_display_name",
           "status",
@@ -9591,7 +9592,7 @@
           },
           "role": {
             "type": "string",
-            "enum": ["headquarters", "store_staff", "viewer"],
+            "enum": ["system", "headquarter", "manager", "staff", "trainer", "observer"],
             "title": "StaffRole",
             "description": "Filter by role"
           },
@@ -9673,10 +9674,10 @@
                 },
                 "role": {
                   "type": "string",
-                  "enum": ["headquarters", "store_staff", "viewer"],
+                  "enum": ["system", "headquarter", "manager", "staff", "trainer", "observer"],
                   "title": "StaffRole",
                   "description": "Staff role/permission (編集権限グループ)",
-                  "example": "headquarters"
+                  "example": "headquarter"
                 },
                 "brand": {
                   "type": "string",
@@ -9785,12 +9786,12 @@
                 "example": 6,
                 "description": "FK → positions.id"
               },
-              "job_title": {
+              "role": {
                 "type": "string",
-                "enum": ["manager", "assistant_manager", "chief", "fulltime", "part_time"],
-                "title": "StaffJobTitle",
-                "description": "役職コード（職位とは別の個別フィールド）",
-                "example": "manager"
+                "enum": ["system", "headquarter", "manager", "staff", "trainer", "observer"],
+                "title": "StaffRole",
+                "description": "編集権限",
+                "example": "staff"
               },
               "brand": {
                 "type": "string",
@@ -9914,10 +9915,10 @@
                 "properties": {
                   "role": {
                     "type": "string",
-                    "enum": ["headquarters", "store_staff", "viewer"],
+                    "enum": ["system", "headquarter", "manager", "staff", "trainer", "observer"],
                     "title": "StaffRole",
                     "description": "編集権限",
-                    "example": "headquarters"
+                    "example": "headquarter"
                   },
                   "additional_permissions": {
                     "type": "object",
@@ -10071,6 +10072,7 @@
               "id",
               "staff_id",
               "position_id",
+              "role",
               "brand",
               "brand_display_name",
               "status",
@@ -10197,21 +10199,21 @@
             "type": "integer",
             "description": "職位マスター (positions.id)"
           },
-          "job_title": {
+          "role": {
             "type": "string",
-            "enum": ["manager", "assistant_manager", "chief", "fulltime", "part_time"],
-            "title": "StaffJobTitle",
-            "description": "役職（職位とは別の個別フィールド）"
+            "enum": ["system", "headquarter", "manager", "staff", "trainer", "observer"],
+            "title": "StaffRole",
+            "description": "編集権限"
           },
           "permission_settings": {
             "type": "object",
             "properties": {
               "role": {
                 "type": "string",
-                "enum": ["headquarters", "store_staff", "viewer"],
+                "enum": ["system", "headquarter", "manager", "staff", "trainer", "observer"],
                 "title": "StaffRole",
                 "description": "編集権限",
-                "example": "headquarters"
+                "example": "headquarter"
               },
               "additional_permissions": {
                 "type": "object",
@@ -10387,12 +10389,12 @@
                 "example": 6,
                 "description": "FK → positions.id"
               },
-              "job_title": {
+              "role": {
                 "type": "string",
-                "enum": ["manager", "assistant_manager", "chief", "fulltime", "part_time"],
-                "title": "StaffJobTitle",
-                "description": "役職コード（職位とは別の個別フィールド）",
-                "example": "manager"
+                "enum": ["system", "headquarter", "manager", "staff", "trainer", "observer"],
+                "title": "StaffRole",
+                "description": "編集権限",
+                "example": "staff"
               },
               "brand": {
                 "type": "string",
@@ -10516,10 +10518,10 @@
                 "properties": {
                   "role": {
                     "type": "string",
-                    "enum": ["headquarters", "store_staff", "viewer"],
+                    "enum": ["system", "headquarter", "manager", "staff", "trainer", "observer"],
                     "title": "StaffRole",
                     "description": "編集権限",
-                    "example": "headquarters"
+                    "example": "headquarter"
                   },
                   "additional_permissions": {
                     "type": "object",
@@ -10673,6 +10675,7 @@
               "id",
               "staff_id",
               "position_id",
+              "role",
               "brand",
               "brand_display_name",
               "status",
@@ -10708,12 +10711,12 @@
                   "example": "staff@joyfit.co.jp",
                   "description": "Email address to invite"
                 },
-                "position_id": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "exclusiveMinimum": true,
-                  "example": 6,
-                  "description": "Position master id (positions.id) for this email"
+                "role": {
+                  "type": "string",
+                  "enum": ["system", "headquarter", "manager", "staff", "trainer", "observer"],
+                  "title": "StaffRole",
+                  "description": "Staff role for this email",
+                  "example": "staff"
                 },
                 "brand": {
                   "type": "string",
@@ -10723,17 +10726,17 @@
                   "example": "joyfit"
                 }
               },
-              "required": ["email", "position_id"]
+              "required": ["email", "role"]
             },
             "minItems": 1,
             "example": [
               {
                 "email": "staff@joyfit.co.jp",
-                "position_id": 6,
+                "role": "staff",
                 "brand": "joyfit"
               }
             ],
-            "description": "Invite list with per-email position and brand"
+            "description": "Invite list with per-email role and brand"
           }
         },
         "required": ["invitees"],
@@ -10791,10 +10794,10 @@
                 },
                 "role": {
                   "type": "string",
-                  "enum": ["headquarters", "store_staff", "viewer"],
+                  "enum": ["system", "headquarter", "manager", "staff", "trainer", "observer"],
                   "title": "StaffRole",
                   "description": "Staff role/permission (編集権限グループ)",
-                  "example": "headquarters"
+                  "example": "headquarter"
                 },
                 "brand": {
                   "type": "string",
@@ -22001,18 +22004,19 @@
                           "example": 6,
                           "description": "FK → positions.id"
                         },
-                        "job_title": {
+                        "role": {
                           "type": "string",
                           "enum": [
+                            "system",
+                            "headquarter",
                             "manager",
-                            "assistant_manager",
-                            "chief",
-                            "fulltime",
-                            "part_time"
+                            "staff",
+                            "trainer",
+                            "observer"
                           ],
-                          "title": "StaffJobTitle",
-                          "description": "役職コード（職位とは別の個別フィールド）",
-                          "example": "manager"
+                          "title": "StaffRole",
+                          "description": "編集権限",
+                          "example": "staff"
                         },
                         "brand": {
                           "type": "string",
@@ -22143,10 +22147,17 @@
                           "properties": {
                             "role": {
                               "type": "string",
-                              "enum": ["headquarters", "store_staff", "viewer"],
+                              "enum": [
+                                "system",
+                                "headquarter",
+                                "manager",
+                                "staff",
+                                "trainer",
+                                "observer"
+                              ],
                               "title": "StaffRole",
                               "description": "編集権限",
-                              "example": "headquarters"
+                              "example": "headquarter"
                             },
                             "additional_permissions": {
                               "type": "object",
@@ -22311,6 +22322,7 @@
                         "id",
                         "staff_id",
                         "position_id",
+                        "role",
                         "brand",
                         "brand_display_name",
                         "status",
@@ -22501,21 +22513,28 @@
                     "type": "integer",
                     "description": "職位マスター (positions.id)"
                   },
-                  "job_title": {
+                  "role": {
                     "type": "string",
-                    "enum": ["manager", "assistant_manager", "chief", "fulltime", "part_time"],
-                    "title": "StaffJobTitle",
-                    "description": "役職（職位とは別の個別フィールド）"
+                    "enum": ["system", "headquarter", "manager", "staff", "trainer", "observer"],
+                    "title": "StaffRole",
+                    "description": "編集権限"
                   },
                   "permission_settings": {
                     "type": "object",
                     "properties": {
                       "role": {
                         "type": "string",
-                        "enum": ["headquarters", "store_staff", "viewer"],
+                        "enum": [
+                          "system",
+                          "headquarter",
+                          "manager",
+                          "staff",
+                          "trainer",
+                          "observer"
+                        ],
                         "title": "StaffRole",
                         "description": "編集権限",
-                        "example": "headquarters"
+                        "example": "headquarter"
                       },
                       "additional_permissions": {
                         "type": "object",
@@ -22706,18 +22725,19 @@
                           "example": 6,
                           "description": "FK → positions.id"
                         },
-                        "job_title": {
+                        "role": {
                           "type": "string",
                           "enum": [
+                            "system",
+                            "headquarter",
                             "manager",
-                            "assistant_manager",
-                            "chief",
-                            "fulltime",
-                            "part_time"
+                            "staff",
+                            "trainer",
+                            "observer"
                           ],
-                          "title": "StaffJobTitle",
-                          "description": "役職コード（職位とは別の個別フィールド）",
-                          "example": "manager"
+                          "title": "StaffRole",
+                          "description": "編集権限",
+                          "example": "staff"
                         },
                         "brand": {
                           "type": "string",
@@ -22848,10 +22868,17 @@
                           "properties": {
                             "role": {
                               "type": "string",
-                              "enum": ["headquarters", "store_staff", "viewer"],
+                              "enum": [
+                                "system",
+                                "headquarter",
+                                "manager",
+                                "staff",
+                                "trainer",
+                                "observer"
+                              ],
                               "title": "StaffRole",
                               "description": "編集権限",
-                              "example": "headquarters"
+                              "example": "headquarter"
                             },
                             "additional_permissions": {
                               "type": "object",
@@ -23016,6 +23043,7 @@
                         "id",
                         "staff_id",
                         "position_id",
+                        "role",
                         "brand",
                         "brand_display_name",
                         "status",
@@ -23246,12 +23274,19 @@
                           "example": "staff@joyfit.co.jp",
                           "description": "Email address to invite"
                         },
-                        "position_id": {
-                          "type": "integer",
-                          "minimum": 0,
-                          "exclusiveMinimum": true,
-                          "example": 6,
-                          "description": "Position master id (positions.id) for this email"
+                        "role": {
+                          "type": "string",
+                          "enum": [
+                            "system",
+                            "headquarter",
+                            "manager",
+                            "staff",
+                            "trainer",
+                            "observer"
+                          ],
+                          "title": "StaffRole",
+                          "description": "Staff role for this email",
+                          "example": "staff"
                         },
                         "brand": {
                           "type": "string",
@@ -23268,17 +23303,17 @@
                           "example": "joyfit"
                         }
                       },
-                      "required": ["email", "position_id"]
+                      "required": ["email", "role"]
                     },
                     "minItems": 1,
                     "example": [
                       {
                         "email": "staff@joyfit.co.jp",
-                        "position_id": 6,
+                        "role": "staff",
                         "brand": "joyfit"
                       }
                     ],
-                    "description": "Invite list with per-email position and brand"
+                    "description": "Invite list with per-email role and brand"
                   }
                 },
                 "required": ["invitees"],
@@ -23344,10 +23379,17 @@
                           },
                           "role": {
                             "type": "string",
-                            "enum": ["headquarters", "store_staff", "viewer"],
+                            "enum": [
+                              "system",
+                              "headquarter",
+                              "manager",
+                              "staff",
+                              "trainer",
+                              "observer"
+                            ],
                             "title": "StaffRole",
                             "description": "Staff role/permission (編集権限グループ)",
-                            "example": "headquarters"
+                            "example": "headquarter"
                           },
                           "brand": {
                             "type": "string",
@@ -23512,7 +23554,7 @@
           {
             "schema": {
               "type": "string",
-              "enum": ["headquarters", "store_staff", "viewer"],
+              "enum": ["system", "headquarter", "manager", "staff", "trainer", "observer"],
               "title": "StaffRole",
               "description": "Filter by role"
             },
@@ -23631,10 +23673,17 @@
                           },
                           "role": {
                             "type": "string",
-                            "enum": ["headquarters", "store_staff", "viewer"],
+                            "enum": [
+                              "system",
+                              "headquarter",
+                              "manager",
+                              "staff",
+                              "trainer",
+                              "observer"
+                            ],
                             "title": "StaffRole",
                             "description": "Staff role/permission (編集権限グループ)",
-                            "example": "headquarters"
+                            "example": "headquarter"
                           },
                           "brand": {
                             "type": "string",

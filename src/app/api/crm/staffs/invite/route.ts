@@ -54,20 +54,11 @@ export async function POST(request: NextRequest) {
     const validatedBody: InviteStaffRequest = validationResult.data;
     const { invitees } = validatedBody;
 
-    for (const invitee of invitees) {
-      if (!db.positions.getById(invitee.position_id)) {
-        return NextResponse.json(
-          { error: `Invalid position_id: ${invitee.position_id}` },
-          { status: 400 },
-        );
-      }
-    }
-
-    // Create staff entries for each invitee with position from master table
+    // Create staff entries for each invitee with role
     const newStaffs = invitees.map((invitee) =>
       db.staffs.create({
         email: invitee.email,
-        position_id: invitee.position_id,
+        role: invitee.role,
         brand: invitee.brand,
       }),
     );

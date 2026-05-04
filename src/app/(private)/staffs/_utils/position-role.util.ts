@@ -1,4 +1,4 @@
-import type { StaffRole } from '@/lib/api/types.gen';
+import type { StaffRole } from '../_constants/constants';
 
 type PositionRoleCategory = 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
 
@@ -6,14 +6,16 @@ type PositionRoleCategory = 'headquarter' | 'manager' | 'staff' | 'trainer' | 'o
 export function staffRoleFromPositionRoleCategory(role: PositionRoleCategory): StaffRole {
   switch (role) {
     case 'headquarter':
-      return 'headquarters';
+      return 'headquarter';
     case 'observer':
-      return 'viewer';
+      return 'observer';
     case 'manager':
+      return 'manager';
     case 'staff':
+      return 'staff';
     case 'trainer':
-      return 'store_staff';
+      return 'trainer';
     default:
-      return 'store_staff';
+      return 'staff';
   }
 }

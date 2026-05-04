@@ -17,14 +17,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { STAFF_JOB_TITLES } from '../../../_constants/constants';
+import { STAFF_ROLE_LABELS, StaffRole } from '../../../_constants/constants';
 import type { StaffEditFormValues } from '../_schemas/staff-edit-form.schema';
-
-const JOB_TITLE_NONE = '__none__';
 
 export function PersonalInfoSection() {
   const form = useFormContext<StaffEditFormValues>();
-
   return (
     <Card>
       <CardHeader>
@@ -132,29 +129,29 @@ export function PersonalInfoSection() {
           )}
         />
 
-        {/* 役職（店舗組織コード; 職位マスターとは別）— optional、性別の下 */}
+        {/* Row 4: ロール — left col only (half width) */}
         <FormField
           control={form.control}
-          name="job_title"
+          name="role"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>役職</FormLabel>
-              <Select
-                value={field.value ? field.value : JOB_TITLE_NONE}
-                onValueChange={(v) => field.onChange(v === JOB_TITLE_NONE ? '' : v)}
-              >
+              <FormLabel>
+                ロール<span className="text-destructive ml-0.5">*</span>
+              </FormLabel>
+              <Select value={field.value} onValueChange={field.onChange}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="選択" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value={JOB_TITLE_NONE}>未選択</SelectItem>
-                  {STAFF_JOB_TITLES.map(({ key, label }) => (
-                    <SelectItem key={key} value={key}>
-                      {label}
-                    </SelectItem>
-                  ))}
+                  {Object.entries(STAFF_ROLE_LABELS)
+                    .filter(([value]) => value !== StaffRole.SYSTEM)
+                    .map(([value, label]) => (
+                      <SelectItem key={value} value={value}>
+                        {label}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -163,7 +160,7 @@ export function PersonalInfoSection() {
         />
         <div />
 
-        {/* Row 4: 携帯電話番号 — left col only (half width) */}
+        {/* Row 5: 携帯電話番号 — left col only (half width) */}
         <FormField
           control={form.control}
           name="phone"
@@ -180,7 +177,7 @@ export function PersonalInfoSection() {
         {/* empty right col */}
         <div />
 
-        {/* Row 5: メールアドレス — left col only (half width), required */}
+        {/* Row 6: メールアドレス — left col only (half width), required */}
         <FormField
           control={form.control}
           name="email"
