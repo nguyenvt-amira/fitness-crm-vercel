@@ -504,6 +504,23 @@ export function registerAllSchemas() {
     ),
   );
 
+  // Register position / store masters
+  registeredSchemaMap.set(
+    'PositionRoleCategory',
+    registry.register('PositionRoleCategory', positionSchemas.PositionRoleCategorySchema),
+  );
+  registeredSchemaMap.set(
+    'PositionFeatures',
+    registry.register('PositionFeatures', positionSchemas.PositionFeaturesSchema),
+  );
+  registeredSchemaMap.set(
+    'Position',
+    registry.register('Position', positionSchemas.PositionSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffPermissionRecord',
+    registry.register('StaffPermissionRecord', positionSchemas.StaffPermissionRecordSchema),
+  );
   registeredSchemaMap.set(
     'GetPositionsResponse',
     registry.register('GetPositionsResponse', positionSchemas.GetPositionsResponseSchema),
