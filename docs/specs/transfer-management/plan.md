@@ -338,9 +338,9 @@ Client does not implement role checks — relies entirely on API scope.
 
 ## 12. UI Prototype Registry Update
 
-| Branch                          | Screen name  | UI slug         | Cache path                                                    | Spec IDs    |
-| ------------------------------- | ------------ | --------------- | ------------------------------------------------------------- | ----------- |
-| `feat/transfer-management-list` | 移籍管理一覧 | `transfer-list` | `.cache/remote-ui/fitness-crm-ui/src/pages/transfer-list.tsx` | A-02 FR-001 |
+| Branch                          | Screen name  | UI slug         | Cache path                                          | Spec IDs    |
+| ------------------------------- | ------------ | --------------- | --------------------------------------------------- | ----------- |
+| `feat/transfer-management-list` | 移籍管理一覧 | `transfer-list` | `.cache/fitness-crm-ui/src/pages/transfer-list.tsx` | A-02 FR-001 |
 
 ---
 

@@ -1,48 +1,65 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 
-import { ArrowLeft } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 
 import { BreadcrumbNav } from '@/components/common/breadcrumb-nav';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { DataStateBoundary } from '@/components/common/data-state-boundary';
 
+import { getCrmTransfersByIdOptions } from '@/lib/api/@tanstack/react-query.gen';
 import { navigate } from '@/lib/routes/routes.util';
+
+import { TransferApprovalFlow } from './_components/transfer-approval-flow';
+import { TransferDetailInfo } from './_components/transfer-detail-info';
+import { TransferDetailSkeleton } from './_components/transfer-detail-skeleton';
+import { TransferStatusAction } from './_components/transfer-status-action';
+import { TransferStatusBadge } from './_components/transfer-status-badge';
 
 export default function TransferDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const router = useRouter();
+
+  const { data, isPending, isError } = useQuery({
+    ...getCrmTransfersByIdOptions({ path: { id } }),
+  });
+
+  const transfer = data?.transfer;
 
   return (
-    <div className="flex flex-col gap-6 p-6">
-      <BreadcrumbNav
-        items={[
-          { url: '/', label: 'ホーム' },
-          { url: navigate('/members/transfers'), label: '移籍管理' },
-          { label: id },
-        ]}
-      />
+    <DataStateBoundary
+      isLoading={isPending}
+      isError={isError}
+      isEmpty={!transfer}
+      skeleton={<TransferDetailSkeleton />}
+    >
+      <div className="flex flex-col gap-4 p-6">
+        <BreadcrumbNav
+          items={[
+            { url: navigate('/members/transfers'), label: '移籍管理' },
+            { label: transfer?.id ?? id },
+          ]}
+        />
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base font-semibold">詳細ページ準備中</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col items-start gap-4">
-          <p className="text-muted-foreground text-sm">
-            この機能の詳細ページはまだ準備中です。（申請ID: {id}）
-          </p>
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-1"
-            onClick={() => router.push(navigate('/members/transfers'))}
-          >
-            <ArrowLeft className="size-4" />
-            移籍管理一覧に戻る
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-semibold">{transfer?.id}</h1>
+          {transfer && <TransferStatusBadge status={transfer.status} />}
+        </div>
+
+        {transfer && (
+          <div className="flex gap-4">
+            {/* Left column — 60% */}
+            <div className="flex w-[60%] flex-col gap-4">
+              <TransferDetailInfo transfer={transfer} />
+              <TransferApprovalFlow transfer={transfer} />
+            </div>
+
+            {/* Right column — 40% */}
+            <div className="w-[40%]">
+              <TransferStatusAction transfer={transfer} />
+            </div>
+          </div>
+        )}
+      </div>
+    </DataStateBoundary>
   );
 }

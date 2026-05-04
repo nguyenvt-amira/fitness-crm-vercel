@@ -98,6 +98,74 @@ export const GetTransfersResponseSchema = z
 
 export type GetTransfersResponse = z.infer<typeof GetTransfersResponseSchema>;
 
+// ─── Detail Schema ────────────────────────────────────────────────────────────
+
+export const ApprovalHistoryItemSchema = z
+  .object({
+    step: z.number().int().openapi({ example: 1, description: 'ステップ番号（1始まり）' }),
+    label: z.string().openapi({ example: '移籍元承認', description: 'ステップラベル' }),
+    store_type: z
+      .enum(['from', 'to'])
+      .nullable()
+      .openapi({ description: '店舗種別: from=移籍元, to=移籍先, null=なし' }),
+    completed: z.boolean().openapi({ description: '完了済みかどうか' }),
+    completed_at: z
+      .string()
+      .nullable()
+      .openapi({ example: '2026-04-16T10:30:00Z', description: '完了日時 (ISO 8601)' }),
+    completed_by: z.string().nullable().openapi({ description: '完了者氏名' }),
+    is_automatic: z.boolean().openapi({ description: 'システム自動実行ステップか' }),
+  })
+  .openapi({ title: 'ApprovalHistoryItem', description: '承認フロー 1ステップ' });
+
+export type ApprovalHistoryItem = z.infer<typeof ApprovalHistoryItemSchema>;
+
+export const TransferDetailSchema = TransferRequestSchema.extend({
+  reason: z.string().openapi({ example: '転居のため', description: '移籍理由' }),
+  applicant_name: z.string().openapi({ example: '田中 太郎', description: '申請者氏名' }),
+  applicant_role: z.string().openapi({ example: 'staff', description: '申請者ロール' }),
+  updated_at: z
+    .string()
+    .openapi({ example: '2026-04-16T10:30:00Z', description: '最終更新日時 (ISO 8601)' }),
+  approval_history: z.array(ApprovalHistoryItemSchema).openapi({ description: '承認ステップ履歴' }),
+}).openapi({ title: 'TransferDetail', description: '移籍申請詳細レコード' });
+
+export type TransferDetail = z.infer<typeof TransferDetailSchema>;
+
+export const GetTransferDetailResponseSchema = z
+  .object({ transfer: TransferDetailSchema })
+  .openapi({ title: 'GetTransferDetailResponse', description: '移籍申請詳細レスポンス' });
+
+export type GetTransferDetailResponse = z.infer<typeof GetTransferDetailResponseSchema>;
+
+export const ApproveTransferBodySchema = z
+  .object({
+    comment: z.string().optional().openapi({ description: '承認コメント（任意）' }),
+  })
+  .openapi({ title: 'ApproveTransferBody' });
+
+export type ApproveTransferBody = z.infer<typeof ApproveTransferBodySchema>;
+
+export const RejectTransferBodySchema = z
+  .object({
+    comment: z.string().optional().openapi({ description: '却下理由（任意）' }),
+  })
+  .openapi({ title: 'RejectTransferBody' });
+
+export type RejectTransferBody = z.infer<typeof RejectTransferBodySchema>;
+
+export const ApproveTransferResponseSchema = z
+  .object({ transfer: TransferDetailSchema })
+  .openapi({ title: 'ApproveTransferResponse' });
+
+export type ApproveTransferResponse = z.infer<typeof ApproveTransferResponseSchema>;
+
+export const RejectTransferResponseSchema = z
+  .object({ transfer: TransferDetailSchema })
+  .openapi({ title: 'RejectTransferResponse' });
+
+export type RejectTransferResponse = z.infer<typeof RejectTransferResponseSchema>;
+
 // ─── Error Schema (re-export for convenience) ─────────────────────────────────
 
 export const ErrorResponseSchema = z

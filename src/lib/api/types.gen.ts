@@ -19541,3 +19541,472 @@ export type GetCrmTransfersResponses = {
 };
 
 export type GetCrmTransfersResponse = GetCrmTransfersResponses[keyof GetCrmTransfersResponses];
+
+export type GetCrmTransfersByIdData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/crm/transfers/{id}';
+};
+
+export type GetCrmTransfersByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Transfer request not found
+     */
+    404: {
+        error: string;
+        details?: unknown;
+    };
+};
+
+export type GetCrmTransfersByIdError = GetCrmTransfersByIdErrors[keyof GetCrmTransfersByIdErrors];
+
+export type GetCrmTransfersByIdResponses = {
+    /**
+     * GetTransferDetailResponse
+     *
+     * 移籍申請詳細レスポンス
+     */
+    200: {
+        /**
+         * TransferDetail
+         *
+         * 移籍申請詳細レコード
+         */
+        transfer: {
+            /**
+             * 移籍申請ID
+             */
+            id: string;
+            /**
+             * 会員ID
+             */
+            member_id: string;
+            /**
+             * 会員氏名
+             */
+            member_name: string;
+            /**
+             * 移籍元店舗ID
+             */
+            from_store_id: string;
+            /**
+             * 移籍元店舗名
+             */
+            from_store_name: string;
+            /**
+             * 移籍先店舗ID
+             */
+            to_store_id: string;
+            /**
+             * 移籍先店舗名
+             */
+            to_store_name: string;
+            /**
+             * TransferBrand
+             *
+             * Brand of the member contract: joyfit=JOYFIT, fit365=FIT365
+             */
+            brand: 'joyfit' | 'fit365';
+            /**
+             * 申請日時 (ISO 8601)
+             */
+            applied_at: string;
+            /**
+             * 移籍予定日 (ISO 8601)
+             */
+            scheduled_date: string;
+            /**
+             * TransferStatus
+             *
+             * Transfer request status: pending=申請中, from_store_approved=店舗承認済, approved=承認済, rejected=却下, completed=移籍完了
+             */
+            status: 'pending' | 'from_store_approved' | 'approved' | 'rejected' | 'completed';
+            /**
+             * 移籍理由
+             */
+            reason: string;
+            /**
+             * 申請者氏名
+             */
+            applicant_name: string;
+            /**
+             * 申請者ロール
+             */
+            applicant_role: string;
+            /**
+             * 最終更新日時 (ISO 8601)
+             */
+            updated_at: string;
+            /**
+             * 承認ステップ履歴
+             */
+            approval_history: Array<{
+                /**
+                 * ステップ番号（1始まり）
+                 */
+                step: number;
+                /**
+                 * ステップラベル
+                 */
+                label: string;
+                /**
+                 * 店舗種別: from=移籍元, to=移籍先, null=なし
+                 */
+                store_type: 'from' | 'to' | null;
+                /**
+                 * 完了済みかどうか
+                 */
+                completed: boolean;
+                /**
+                 * 完了日時 (ISO 8601)
+                 */
+                completed_at: string | null;
+                /**
+                 * 完了者氏名
+                 */
+                completed_by: string | null;
+                /**
+                 * システム自動実行ステップか
+                 */
+                is_automatic: boolean;
+            }>;
+        };
+    };
+};
+
+export type GetCrmTransfersByIdResponse = GetCrmTransfersByIdResponses[keyof GetCrmTransfersByIdResponses];
+
+export type PatchCrmTransfersByIdApproveData = {
+    /**
+     * ApproveTransferBody
+     */
+    body?: {
+        /**
+         * 承認コメント（任意）
+         */
+        comment?: string;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/crm/transfers/{id}/approve';
+};
+
+export type PatchCrmTransfersByIdApproveErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Invalid state transition
+     */
+    400: {
+        error: string;
+        details?: unknown;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Forbidden - insufficient permissions
+     */
+    403: {
+        error: string;
+        details?: unknown;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Transfer request not found
+     */
+    404: {
+        error: string;
+        details?: unknown;
+    };
+};
+
+export type PatchCrmTransfersByIdApproveError = PatchCrmTransfersByIdApproveErrors[keyof PatchCrmTransfersByIdApproveErrors];
+
+export type PatchCrmTransfersByIdApproveResponses = {
+    /**
+     * ApproveTransferResponse
+     *
+     * Transfer request approved
+     */
+    200: {
+        /**
+         * TransferDetail
+         *
+         * 移籍申請詳細レコード
+         */
+        transfer: {
+            /**
+             * 移籍申請ID
+             */
+            id: string;
+            /**
+             * 会員ID
+             */
+            member_id: string;
+            /**
+             * 会員氏名
+             */
+            member_name: string;
+            /**
+             * 移籍元店舗ID
+             */
+            from_store_id: string;
+            /**
+             * 移籍元店舗名
+             */
+            from_store_name: string;
+            /**
+             * 移籍先店舗ID
+             */
+            to_store_id: string;
+            /**
+             * 移籍先店舗名
+             */
+            to_store_name: string;
+            /**
+             * TransferBrand
+             *
+             * Brand of the member contract: joyfit=JOYFIT, fit365=FIT365
+             */
+            brand: 'joyfit' | 'fit365';
+            /**
+             * 申請日時 (ISO 8601)
+             */
+            applied_at: string;
+            /**
+             * 移籍予定日 (ISO 8601)
+             */
+            scheduled_date: string;
+            /**
+             * TransferStatus
+             *
+             * Transfer request status: pending=申請中, from_store_approved=店舗承認済, approved=承認済, rejected=却下, completed=移籍完了
+             */
+            status: 'pending' | 'from_store_approved' | 'approved' | 'rejected' | 'completed';
+            /**
+             * 移籍理由
+             */
+            reason: string;
+            /**
+             * 申請者氏名
+             */
+            applicant_name: string;
+            /**
+             * 申請者ロール
+             */
+            applicant_role: string;
+            /**
+             * 最終更新日時 (ISO 8601)
+             */
+            updated_at: string;
+            /**
+             * 承認ステップ履歴
+             */
+            approval_history: Array<{
+                /**
+                 * ステップ番号（1始まり）
+                 */
+                step: number;
+                /**
+                 * ステップラベル
+                 */
+                label: string;
+                /**
+                 * 店舗種別: from=移籍元, to=移籍先, null=なし
+                 */
+                store_type: 'from' | 'to' | null;
+                /**
+                 * 完了済みかどうか
+                 */
+                completed: boolean;
+                /**
+                 * 完了日時 (ISO 8601)
+                 */
+                completed_at: string | null;
+                /**
+                 * 完了者氏名
+                 */
+                completed_by: string | null;
+                /**
+                 * システム自動実行ステップか
+                 */
+                is_automatic: boolean;
+            }>;
+        };
+    };
+};
+
+export type PatchCrmTransfersByIdApproveResponse = PatchCrmTransfersByIdApproveResponses[keyof PatchCrmTransfersByIdApproveResponses];
+
+export type PatchCrmTransfersByIdRejectData = {
+    /**
+     * RejectTransferBody
+     */
+    body?: {
+        /**
+         * 却下理由（任意）
+         */
+        comment?: string;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/crm/transfers/{id}/reject';
+};
+
+export type PatchCrmTransfersByIdRejectErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Invalid state transition
+     */
+    400: {
+        error: string;
+        details?: unknown;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Forbidden - insufficient permissions
+     */
+    403: {
+        error: string;
+        details?: unknown;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Transfer request not found
+     */
+    404: {
+        error: string;
+        details?: unknown;
+    };
+};
+
+export type PatchCrmTransfersByIdRejectError = PatchCrmTransfersByIdRejectErrors[keyof PatchCrmTransfersByIdRejectErrors];
+
+export type PatchCrmTransfersByIdRejectResponses = {
+    /**
+     * RejectTransferResponse
+     *
+     * Transfer request rejected
+     */
+    200: {
+        /**
+         * TransferDetail
+         *
+         * 移籍申請詳細レコード
+         */
+        transfer: {
+            /**
+             * 移籍申請ID
+             */
+            id: string;
+            /**
+             * 会員ID
+             */
+            member_id: string;
+            /**
+             * 会員氏名
+             */
+            member_name: string;
+            /**
+             * 移籍元店舗ID
+             */
+            from_store_id: string;
+            /**
+             * 移籍元店舗名
+             */
+            from_store_name: string;
+            /**
+             * 移籍先店舗ID
+             */
+            to_store_id: string;
+            /**
+             * 移籍先店舗名
+             */
+            to_store_name: string;
+            /**
+             * TransferBrand
+             *
+             * Brand of the member contract: joyfit=JOYFIT, fit365=FIT365
+             */
+            brand: 'joyfit' | 'fit365';
+            /**
+             * 申請日時 (ISO 8601)
+             */
+            applied_at: string;
+            /**
+             * 移籍予定日 (ISO 8601)
+             */
+            scheduled_date: string;
+            /**
+             * TransferStatus
+             *
+             * Transfer request status: pending=申請中, from_store_approved=店舗承認済, approved=承認済, rejected=却下, completed=移籍完了
+             */
+            status: 'pending' | 'from_store_approved' | 'approved' | 'rejected' | 'completed';
+            /**
+             * 移籍理由
+             */
+            reason: string;
+            /**
+             * 申請者氏名
+             */
+            applicant_name: string;
+            /**
+             * 申請者ロール
+             */
+            applicant_role: string;
+            /**
+             * 最終更新日時 (ISO 8601)
+             */
+            updated_at: string;
+            /**
+             * 承認ステップ履歴
+             */
+            approval_history: Array<{
+                /**
+                 * ステップ番号（1始まり）
+                 */
+                step: number;
+                /**
+                 * ステップラベル
+                 */
+                label: string;
+                /**
+                 * 店舗種別: from=移籍元, to=移籍先, null=なし
+                 */
+                store_type: 'from' | 'to' | null;
+                /**
+                 * 完了済みかどうか
+                 */
+                completed: boolean;
+                /**
+                 * 完了日時 (ISO 8601)
+                 */
+                completed_at: string | null;
+                /**
+                 * 完了者氏名
+                 */
+                completed_by: string | null;
+                /**
+                 * システム自動実行ステップか
+                 */
+                is_automatic: boolean;
+            }>;
+        };
+    };
+};
+
+export type PatchCrmTransfersByIdRejectResponse = PatchCrmTransfersByIdRejectResponses[keyof PatchCrmTransfersByIdRejectResponses];

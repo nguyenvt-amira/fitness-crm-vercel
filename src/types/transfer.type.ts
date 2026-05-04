@@ -5,3 +5,5 @@ export enum TransferStatus {
   Rejected = 'rejected', // 却下
   Completed = 'completed', // 移籍完了
 }
+
+export type { ApprovalHistoryItem } from '@/app/api/_schemas/transfer.schema';

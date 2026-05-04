@@ -28,7 +28,7 @@ import type {
   StoreLinkedOption,
 } from '@/app/api/_schemas/store-sales-settings.schema';
 import type { Store, StoreBusinessHours } from '@/app/api/_schemas/store.schema';
-import type { TransferRequest } from '@/app/api/_schemas/transfer.schema';
+import type { ApprovalHistoryItem, TransferDetail } from '@/app/api/_schemas/transfer.schema';
 
 import type { GetContractsResponse } from '@/lib/api/types.gen';
 import { Brand, MainBrand, MemberStatus, MemberType } from '@/lib/api/types.gen';
@@ -40,7 +40,7 @@ import type {
 } from '@/types/api/membership-application.type';
 import { TransferStatus } from '@/types/transfer.type';
 
-export type TransferRow = TransferRequest;
+export type TransferRow = TransferDetail;
 
 export const DEFAULT_MEMBER_MAIN_CONTRACT: string = 'レギュラー会員';
 const DEFAULT_MEMBER_MAIN_CONTRACT_ID = 'MC001';
@@ -914,6 +914,9 @@ type DbType = {
   transfers: {
     _rows: TransferRow[];
     getAll(): TransferRow[];
+    getById(id: string): TransferRow | undefined;
+    approve(id: string, comment?: string): TransferRow | undefined;
+    reject(id: string, comment?: string): TransferRow | undefined;
   };
 };
 
@@ -1291,6 +1294,129 @@ const lastMonthYear = thisMonth === 0 ? thisYear - 1 : thisYear;
 const prevYearMonth = thisMonth === 0 ? 11 : thisMonth;
 const prevYear = thisYear - 1;
 
+// ─── Transfer approval history builder ──────────────────────────────────────
+
+function buildApprovalHistory(
+  brand: 'joyfit' | 'fit365',
+  status: TransferStatus,
+  appliedAt: string,
+): ApprovalHistoryItem[] {
+  const stepOneCompleted = true; // 申請ステップは常に完了
+  const fromApproved =
+    status === TransferStatus.FromStoreApproved ||
+    status === TransferStatus.Approved ||
+    status === TransferStatus.Completed;
+  const toApproved = status === TransferStatus.Approved || status === TransferStatus.Completed;
+  const completed = status === TransferStatus.Completed;
+
+  const appliedDate = new Date(appliedAt);
+  const fromApprovedAt = fromApproved
+    ? new Date(appliedDate.getTime() + 2 * 24 * 3600 * 1000).toISOString()
+    : null;
+  const toApprovedAt =
+    toApproved && fromApprovedAt
+      ? new Date(new Date(fromApprovedAt).getTime() + 1 * 24 * 3600 * 1000).toISOString()
+      : null;
+  const completedAt =
+    completed && toApprovedAt
+      ? new Date(new Date(toApprovedAt).getTime() + 1 * 24 * 3600 * 1000).toISOString()
+      : completed && fromApprovedAt
+        ? new Date(new Date(fromApprovedAt).getTime() + 1 * 24 * 3600 * 1000).toISOString()
+        : null;
+
+  if (brand === 'joyfit') {
+    return [
+      {
+        step: 1,
+        label: '申請',
+        store_type: null,
+        completed: stepOneCompleted,
+        completed_at: appliedAt,
+        completed_by: null,
+        is_automatic: false,
+      },
+      {
+        step: 2,
+        label: '移籍元承認',
+        store_type: 'from',
+        completed: fromApproved,
+        completed_at: fromApprovedAt,
+        completed_by: fromApproved ? '移籍元スタッフ' : null,
+        is_automatic: false,
+      },
+      {
+        step: 3,
+        label: 'システム自動移籍実行',
+        store_type: null,
+        completed: completed,
+        completed_at: completedAt,
+        completed_by: null,
+        is_automatic: true,
+      },
+    ];
+  }
+
+  // FIT365: 4ステップ
+  return [
+    {
+      step: 1,
+      label: '申請',
+      store_type: null,
+      completed: stepOneCompleted,
+      completed_at: appliedAt,
+      completed_by: null,
+      is_automatic: false,
+    },
+    {
+      step: 2,
+      label: '移籍元承認',
+      store_type: 'from',
+      completed: fromApproved,
+      completed_at: fromApprovedAt,
+      completed_by: fromApproved ? '移籍元スタッフ' : null,
+      is_automatic: false,
+    },
+    {
+      step: 3,
+      label: '移籍先承認',
+      store_type: 'to',
+      completed: toApproved,
+      completed_at: toApprovedAt,
+      completed_by: toApproved ? '移籍先スタッフ' : null,
+      is_automatic: false,
+    },
+    {
+      step: 4,
+      label: '移籍実行',
+      store_type: null,
+      completed: completed,
+      completed_at: completedAt,
+      completed_by: null,
+      is_automatic: false,
+    },
+  ];
+}
+
+const TRANSFER_REASONS = [
+  '転居のため',
+  '通勤経路が変わったため',
+  '職場の近くに利用したいため',
+  '自宅の近くに引っ越したため',
+  '家族と一緒に通いたいため',
+  '営業時間の都合のため',
+  '設備が充実している店舗に移りたいため',
+];
+
+const TRANSFER_APPLICANT_NAMES = [
+  '田中 一郎',
+  '鈴木 次郎',
+  '佐藤 三郎',
+  '山田 四郎',
+  '中村 五郎',
+  '小林 六郎',
+  '伊藤 七郎',
+];
+
 export const TRANSFER_SEED_DATA: TransferRow[] = [
   // pending ×2 (this_month)
   {
@@ -1305,6 +1431,15 @@ export const TRANSFER_SEED_DATA: TransferRow[] = [
     applied_at: isoDate(thisYear, thisMonth, 5),
     scheduled_date: isoDate(thisYear, thisMonth + 1, 1),
     status: TransferStatus.Pending,
+    reason: TRANSFER_REASONS[0]!,
+    applicant_name: TRANSFER_APPLICANT_NAMES[0]!,
+    applicant_role: 'staff',
+    updated_at: isoDate(thisYear, thisMonth, 5),
+    approval_history: buildApprovalHistory(
+      'joyfit',
+      TransferStatus.Pending,
+      isoDate(thisYear, thisMonth, 5),
+    ),
   },
   {
     id: 'TR-002',
@@ -1318,6 +1453,15 @@ export const TRANSFER_SEED_DATA: TransferRow[] = [
     applied_at: isoDate(thisYear, thisMonth, 10),
     scheduled_date: isoDate(thisYear, thisMonth + 1, 1),
     status: TransferStatus.Pending,
+    reason: TRANSFER_REASONS[1]!,
+    applicant_name: TRANSFER_APPLICANT_NAMES[1]!,
+    applicant_role: 'manager',
+    updated_at: isoDate(thisYear, thisMonth, 10),
+    approval_history: buildApprovalHistory(
+      'fit365',
+      TransferStatus.Pending,
+      isoDate(thisYear, thisMonth, 10),
+    ),
   },
   // from_store_approved ×2 (this_month)
   {
@@ -1332,6 +1476,15 @@ export const TRANSFER_SEED_DATA: TransferRow[] = [
     applied_at: isoDate(thisYear, thisMonth, 8),
     scheduled_date: isoDate(thisYear, thisMonth + 1, 1),
     status: TransferStatus.FromStoreApproved,
+    reason: TRANSFER_REASONS[2]!,
+    applicant_name: TRANSFER_APPLICANT_NAMES[2]!,
+    applicant_role: 'staff',
+    updated_at: isoDate(thisYear, thisMonth, 10),
+    approval_history: buildApprovalHistory(
+      'joyfit',
+      TransferStatus.FromStoreApproved,
+      isoDate(thisYear, thisMonth, 8),
+    ),
   },
   {
     id: 'TR-004',
@@ -1345,6 +1498,15 @@ export const TRANSFER_SEED_DATA: TransferRow[] = [
     applied_at: isoDate(thisYear, thisMonth, 12),
     scheduled_date: isoDate(thisYear, thisMonth + 1, 15),
     status: TransferStatus.FromStoreApproved,
+    reason: TRANSFER_REASONS[3]!,
+    applicant_name: TRANSFER_APPLICANT_NAMES[3]!,
+    applicant_role: 'manager',
+    updated_at: isoDate(thisYear, thisMonth, 14),
+    approval_history: buildApprovalHistory(
+      'fit365',
+      TransferStatus.FromStoreApproved,
+      isoDate(thisYear, thisMonth, 12),
+    ),
   },
   // approved ×2 (last_month)
   {
@@ -1359,6 +1521,15 @@ export const TRANSFER_SEED_DATA: TransferRow[] = [
     applied_at: isoDate(lastMonthYear, lastMonth, 15),
     scheduled_date: isoDate(thisYear, thisMonth, 1),
     status: TransferStatus.Approved,
+    reason: TRANSFER_REASONS[4]!,
+    applicant_name: TRANSFER_APPLICANT_NAMES[4]!,
+    applicant_role: 'staff',
+    updated_at: isoDate(lastMonthYear, lastMonth, 17),
+    approval_history: buildApprovalHistory(
+      'joyfit',
+      TransferStatus.Approved,
+      isoDate(lastMonthYear, lastMonth, 15),
+    ),
   },
   {
     id: 'TR-006',
@@ -1372,6 +1543,15 @@ export const TRANSFER_SEED_DATA: TransferRow[] = [
     applied_at: isoDate(lastMonthYear, lastMonth, 20),
     scheduled_date: isoDate(thisYear, thisMonth, 1),
     status: TransferStatus.Approved,
+    reason: TRANSFER_REASONS[5]!,
+    applicant_name: TRANSFER_APPLICANT_NAMES[5]!,
+    applicant_role: 'manager',
+    updated_at: isoDate(lastMonthYear, lastMonth, 23),
+    approval_history: buildApprovalHistory(
+      'fit365',
+      TransferStatus.Approved,
+      isoDate(lastMonthYear, lastMonth, 20),
+    ),
   },
   // rejected ×2 (this_year, not this month)
   {
@@ -1386,6 +1566,15 @@ export const TRANSFER_SEED_DATA: TransferRow[] = [
     applied_at: isoDate(thisYear, Math.max(thisMonth - 2, 0), 10),
     scheduled_date: isoDate(thisYear, Math.max(thisMonth - 1, 0), 1),
     status: TransferStatus.Rejected,
+    reason: TRANSFER_REASONS[6]!,
+    applicant_name: TRANSFER_APPLICANT_NAMES[6]!,
+    applicant_role: 'staff',
+    updated_at: isoDate(thisYear, Math.max(thisMonth - 2, 0), 12),
+    approval_history: buildApprovalHistory(
+      'joyfit',
+      TransferStatus.Rejected,
+      isoDate(thisYear, Math.max(thisMonth - 2, 0), 10),
+    ),
   },
   {
     id: 'TR-008',
@@ -1399,6 +1588,15 @@ export const TRANSFER_SEED_DATA: TransferRow[] = [
     applied_at: isoDate(thisYear, Math.max(thisMonth - 2, 0), 18),
     scheduled_date: isoDate(thisYear, Math.max(thisMonth - 1, 0), 1),
     status: TransferStatus.Rejected,
+    reason: TRANSFER_REASONS[0]!,
+    applicant_name: TRANSFER_APPLICANT_NAMES[0]!,
+    applicant_role: 'manager',
+    updated_at: isoDate(thisYear, Math.max(thisMonth - 2, 0), 20),
+    approval_history: buildApprovalHistory(
+      'fit365',
+      TransferStatus.Rejected,
+      isoDate(thisYear, Math.max(thisMonth - 2, 0), 18),
+    ),
   },
   // completed ×2 (prior year)
   {
@@ -1413,6 +1611,15 @@ export const TRANSFER_SEED_DATA: TransferRow[] = [
     applied_at: isoDate(prevYear, prevYearMonth, 5),
     scheduled_date: isoDate(prevYear, prevYearMonth + 1, 1),
     status: TransferStatus.Completed,
+    reason: TRANSFER_REASONS[1]!,
+    applicant_name: TRANSFER_APPLICANT_NAMES[1]!,
+    applicant_role: 'staff',
+    updated_at: isoDate(prevYear, prevYearMonth, 10),
+    approval_history: buildApprovalHistory(
+      'joyfit',
+      TransferStatus.Completed,
+      isoDate(prevYear, prevYearMonth, 5),
+    ),
   },
   {
     id: 'TR-010',
@@ -1426,6 +1633,15 @@ export const TRANSFER_SEED_DATA: TransferRow[] = [
     applied_at: isoDate(prevYear, prevYearMonth, 12),
     scheduled_date: isoDate(prevYear, prevYearMonth + 1, 1),
     status: TransferStatus.Completed,
+    reason: TRANSFER_REASONS[2]!,
+    applicant_name: TRANSFER_APPLICANT_NAMES[2]!,
+    applicant_role: 'manager',
+    updated_at: isoDate(prevYear, prevYearMonth, 17),
+    approval_history: buildApprovalHistory(
+      'fit365',
+      TransferStatus.Completed,
+      isoDate(prevYear, prevYearMonth, 12),
+    ),
   },
   // rejected ×2 (this_year, not this month)
   {
@@ -1440,6 +1656,15 @@ export const TRANSFER_SEED_DATA: TransferRow[] = [
     applied_at: isoDate(thisYear, Math.max(thisMonth - 2, 0), 10),
     scheduled_date: isoDate(thisYear, Math.max(thisMonth - 1, 0), 1),
     status: TransferStatus.Rejected,
+    reason: TRANSFER_REASONS[3]!,
+    applicant_name: TRANSFER_APPLICANT_NAMES[3]!,
+    applicant_role: 'staff',
+    updated_at: isoDate(thisYear, Math.max(thisMonth - 2, 0), 12),
+    approval_history: buildApprovalHistory(
+      'joyfit',
+      TransferStatus.Rejected,
+      isoDate(thisYear, Math.max(thisMonth - 2, 0), 10),
+    ),
   },
   {
     id: 'TR-012',
@@ -1453,6 +1678,15 @@ export const TRANSFER_SEED_DATA: TransferRow[] = [
     applied_at: isoDate(thisYear, Math.max(thisMonth - 2, 0), 18),
     scheduled_date: isoDate(thisYear, Math.max(thisMonth - 1, 0), 1),
     status: TransferStatus.Rejected,
+    reason: TRANSFER_REASONS[4]!,
+    applicant_name: TRANSFER_APPLICANT_NAMES[4]!,
+    applicant_role: 'manager',
+    updated_at: isoDate(thisYear, Math.max(thisMonth - 2, 0), 20),
+    approval_history: buildApprovalHistory(
+      'fit365',
+      TransferStatus.Rejected,
+      isoDate(thisYear, Math.max(thisMonth - 2, 0), 18),
+    ),
   },
   // completed ×2 (prior year)
   {
@@ -1467,6 +1701,15 @@ export const TRANSFER_SEED_DATA: TransferRow[] = [
     applied_at: isoDate(prevYear, prevYearMonth, 5),
     scheduled_date: isoDate(prevYear, prevYearMonth + 1, 1),
     status: TransferStatus.Completed,
+    reason: TRANSFER_REASONS[5]!,
+    applicant_name: TRANSFER_APPLICANT_NAMES[5]!,
+    applicant_role: 'staff',
+    updated_at: isoDate(prevYear, prevYearMonth, 8),
+    approval_history: buildApprovalHistory(
+      'joyfit',
+      TransferStatus.Completed,
+      isoDate(prevYear, prevYearMonth, 5),
+    ),
   },
   {
     id: 'TR-014',
@@ -1480,6 +1723,15 @@ export const TRANSFER_SEED_DATA: TransferRow[] = [
     applied_at: isoDate(prevYear, prevYearMonth, 12),
     scheduled_date: isoDate(prevYear, prevYearMonth + 1, 1),
     status: TransferStatus.Completed,
+    reason: TRANSFER_REASONS[6]!,
+    applicant_name: TRANSFER_APPLICANT_NAMES[6]!,
+    applicant_role: 'manager',
+    updated_at: isoDate(prevYear, prevYearMonth, 15),
+    approval_history: buildApprovalHistory(
+      'fit365',
+      TransferStatus.Completed,
+      isoDate(prevYear, prevYearMonth, 12),
+    ),
   },
 ];
 
@@ -4249,9 +4501,57 @@ function createDb() {
       },
     },
     transfers: {
-      _rows: TRANSFER_SEED_DATA,
+      _rows: [...TRANSFER_SEED_DATA] as TransferRow[],
       getAll(): TransferRow[] {
         return this._rows;
+      },
+      getById(id: string): TransferRow | undefined {
+        return this._rows.find((r) => r.id === id);
+      },
+      approve(id: string, _comment?: string): TransferRow | undefined {
+        const idx = this._rows.findIndex((r) => r.id === id);
+        if (idx === -1) return undefined;
+        const row = this._rows[idx]!;
+        if (row.status === TransferStatus.Completed || row.status === TransferStatus.Rejected) {
+          return undefined;
+        }
+        const now = new Date().toISOString();
+        let nextStatus: TransferRow['status'];
+        let approvedStep: number;
+        if (row.status === TransferStatus.Pending) {
+          nextStatus = TransferStatus.FromStoreApproved;
+          approvedStep = 2; // 移籍元承認
+        } else if (row.status === TransferStatus.FromStoreApproved && row.brand === 'fit365') {
+          nextStatus = TransferStatus.Approved;
+          approvedStep = 3; // 移籍先承認
+        } else {
+          return undefined;
+        }
+        const updatedHistory = row.approval_history.map((h) =>
+          h.step === approvedStep
+            ? { ...h, completed: true, completed_at: now, completed_by: 'ログインユーザー' }
+            : h,
+        );
+        const updated: TransferRow = {
+          ...row,
+          status: nextStatus,
+          updated_at: now,
+          approval_history: updatedHistory,
+        };
+        this._rows[idx] = updated;
+        return updated;
+      },
+      reject(id: string, _comment?: string): TransferRow | undefined {
+        const idx = this._rows.findIndex((r) => r.id === id);
+        if (idx === -1) return undefined;
+        const row = this._rows[idx]!;
+        if (row.status === TransferStatus.Completed || row.status === TransferStatus.Rejected) {
+          return undefined;
+        }
+        const now = new Date().toISOString();
+        const updated: TransferRow = { ...row, status: TransferStatus.Rejected, updated_at: now };
+        this._rows[idx] = updated;
+        return updated;
       },
     },
   };

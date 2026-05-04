@@ -191,7 +191,7 @@ Both brands share the same list screen; operational flow differences are handled
 ## UI Reference
 
 - **Prototype file**: `src/pages/transfer-list.tsx` in `fitness-crm-ui` repo
-- **Cache path**: `.cache/remote-ui/fitness-crm-ui/`
+- **Cache path**: `.cache/fitness-crm-ui/`
 - **UI slug**: `transfer-list`
 
 ### Layout Description (from prototype)
