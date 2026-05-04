@@ -20,8 +20,8 @@ export default function ReactQueryProvider({ children }: ReactQueryProviderProps
           queries: {
             retry: false,
             refetchOnWindowFocus: false,
-            refetchOnMount: 'always',
-            staleTime: 5 * 60 * 1000,
+            // refetchOnMount: 'always',
+            // staleTime: 5 * 60 * 1000,
           },
         },
         mutationCache: new MutationCache({
@@ -44,6 +44,6 @@ export default function ReactQueryProvider({ children }: ReactQueryProviderProps
 
   // Initialize client request
   useClientRequest();
-
+  console.log('queryClient', queryClient);
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }

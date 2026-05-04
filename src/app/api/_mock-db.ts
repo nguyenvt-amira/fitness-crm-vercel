@@ -28,6 +28,7 @@ import type {
   StoreLinkedOption,
 } from '@/app/api/_schemas/store-sales-settings.schema';
 import type { Store, StoreBusinessHours } from '@/app/api/_schemas/store.schema';
+import type { TransferRequest } from '@/app/api/_schemas/transfer.schema';
 
 import type { GetContractsResponse } from '@/lib/api/types.gen';
 import { Brand, MainBrand, MemberStatus, MemberType } from '@/lib/api/types.gen';
@@ -37,6 +38,9 @@ import type {
   MembershipApplicationStatus,
   RiskReason,
 } from '@/types/api/membership-application.type';
+import { TransferStatus } from '@/types/transfer.type';
+
+export type TransferRow = TransferRequest;
 
 export const DEFAULT_MEMBER_MAIN_CONTRACT: string = 'レギュラー会員';
 const DEFAULT_MEMBER_MAIN_CONTRACT_ID = 'MC001';
@@ -907,6 +911,10 @@ type DbType = {
     create(input: { email: string; role: StaffListItem['role']; brand?: string }): StaffListItem;
     delete(id: string): boolean;
   };
+  transfers: {
+    _rows: TransferRow[];
+    getAll(): TransferRow[];
+  };
 };
 
 declare global {
@@ -1266,6 +1274,214 @@ export const MOCK_MEMBER_ACCESS_SETTINGS: Record<
     gate_stop: false,
   },
 };
+
+// ─── Transfer Seed Data (A-02 FR-001) ────────────────────────────────────────
+
+const now = new Date();
+const thisYear = now.getFullYear();
+const thisMonth = now.getMonth(); // 0-indexed
+
+function isoDate(year: number, month: number, day: number): string {
+  return new Date(year, month, day).toISOString();
+}
+
+// this_month: 4 rows; last_month: 2 rows; this_year (not this month): 2 rows; prior year: 2 rows
+const lastMonth = thisMonth === 0 ? 11 : thisMonth - 1;
+const lastMonthYear = thisMonth === 0 ? thisYear - 1 : thisYear;
+const prevYearMonth = thisMonth === 0 ? 11 : thisMonth;
+const prevYear = thisYear - 1;
+
+export const TRANSFER_SEED_DATA: TransferRow[] = [
+  // pending ×2 (this_month)
+  {
+    id: 'TR-001',
+    member_id: 'M-10001',
+    member_name: '山田 太郎',
+    from_store_id: 'store-joyfit-001',
+    from_store_name: 'JOYFIT池袋店',
+    to_store_id: 'store-joyfit-002',
+    to_store_name: 'JOYFIT新宿店',
+    brand: 'joyfit',
+    applied_at: isoDate(thisYear, thisMonth, 5),
+    scheduled_date: isoDate(thisYear, thisMonth + 1, 1),
+    status: TransferStatus.Pending,
+  },
+  {
+    id: 'TR-002',
+    member_id: 'M-10002',
+    member_name: '鈴木 花子',
+    from_store_id: 'store-fit365-001',
+    from_store_name: 'FIT365八潮店',
+    to_store_id: 'store-fit365-002',
+    to_store_name: 'FIT365川口店',
+    brand: 'fit365',
+    applied_at: isoDate(thisYear, thisMonth, 10),
+    scheduled_date: isoDate(thisYear, thisMonth + 1, 1),
+    status: TransferStatus.Pending,
+  },
+  // from_store_approved ×2 (this_month)
+  {
+    id: 'TR-003',
+    member_id: 'M-10003',
+    member_name: '佐藤 一郎',
+    from_store_id: 'store-joyfit-003',
+    from_store_name: 'JOYFIT渋谷店',
+    to_store_id: 'store-joyfit-001',
+    to_store_name: 'JOYFIT池袋店',
+    brand: 'joyfit',
+    applied_at: isoDate(thisYear, thisMonth, 8),
+    scheduled_date: isoDate(thisYear, thisMonth + 1, 1),
+    status: TransferStatus.FromStoreApproved,
+  },
+  {
+    id: 'TR-004',
+    member_id: 'M-10004',
+    member_name: '田中 美咲',
+    from_store_id: 'store-fit365-002',
+    from_store_name: 'FIT365川口店',
+    to_store_id: 'store-fit365-003',
+    to_store_name: 'FIT365大宮店',
+    brand: 'fit365',
+    applied_at: isoDate(thisYear, thisMonth, 12),
+    scheduled_date: isoDate(thisYear, thisMonth + 1, 15),
+    status: TransferStatus.FromStoreApproved,
+  },
+  // approved ×2 (last_month)
+  {
+    id: 'TR-005',
+    member_id: 'M-10005',
+    member_name: '高橋 健司',
+    from_store_id: 'store-joyfit-002',
+    from_store_name: 'JOYFIT新宿店',
+    to_store_id: 'store-joyfit-004',
+    to_store_name: 'JOYFIT横浜店',
+    brand: 'joyfit',
+    applied_at: isoDate(lastMonthYear, lastMonth, 15),
+    scheduled_date: isoDate(thisYear, thisMonth, 1),
+    status: TransferStatus.Approved,
+  },
+  {
+    id: 'TR-006',
+    member_id: 'M-10006',
+    member_name: '伊藤 恵子',
+    from_store_id: 'store-fit365-003',
+    from_store_name: 'FIT365大宮店',
+    to_store_id: 'store-fit365-001',
+    to_store_name: 'FIT365八潮店',
+    brand: 'fit365',
+    applied_at: isoDate(lastMonthYear, lastMonth, 20),
+    scheduled_date: isoDate(thisYear, thisMonth, 1),
+    status: TransferStatus.Approved,
+  },
+  // rejected ×2 (this_year, not this month)
+  {
+    id: 'TR-007',
+    member_id: 'M-10007',
+    member_name: '渡辺 直樹',
+    from_store_id: 'store-joyfit-004',
+    from_store_name: 'JOYFIT横浜店',
+    to_store_id: 'store-joyfit-003',
+    to_store_name: 'JOYFIT渋谷店',
+    brand: 'joyfit',
+    applied_at: isoDate(thisYear, Math.max(thisMonth - 2, 0), 10),
+    scheduled_date: isoDate(thisYear, Math.max(thisMonth - 1, 0), 1),
+    status: TransferStatus.Rejected,
+  },
+  {
+    id: 'TR-008',
+    member_id: 'M-10008',
+    member_name: '中村 さくら',
+    from_store_id: 'store-fit365-001',
+    from_store_name: 'FIT365八潮店',
+    to_store_id: 'store-fit365-004',
+    to_store_name: 'FIT365越谷店',
+    brand: 'fit365',
+    applied_at: isoDate(thisYear, Math.max(thisMonth - 2, 0), 18),
+    scheduled_date: isoDate(thisYear, Math.max(thisMonth - 1, 0), 1),
+    status: TransferStatus.Rejected,
+  },
+  // completed ×2 (prior year)
+  {
+    id: 'TR-009',
+    member_id: 'M-10009',
+    member_name: '小林 隆',
+    from_store_id: 'store-joyfit-001',
+    from_store_name: 'JOYFIT池袋店',
+    to_store_id: 'store-joyfit-002',
+    to_store_name: 'JOYFIT新宿店',
+    brand: 'joyfit',
+    applied_at: isoDate(prevYear, prevYearMonth, 5),
+    scheduled_date: isoDate(prevYear, prevYearMonth + 1, 1),
+    status: TransferStatus.Completed,
+  },
+  {
+    id: 'TR-010',
+    member_id: 'M-10010',
+    member_name: '加藤 幸子',
+    from_store_id: 'store-fit365-004',
+    from_store_name: 'FIT365越谷店',
+    to_store_id: 'store-fit365-002',
+    to_store_name: 'FIT365川口店',
+    brand: 'fit365',
+    applied_at: isoDate(prevYear, prevYearMonth, 12),
+    scheduled_date: isoDate(prevYear, prevYearMonth + 1, 1),
+    status: TransferStatus.Completed,
+  },
+  // rejected ×2 (this_year, not this month)
+  {
+    id: 'TR-011',
+    member_id: 'M-10011',
+    member_name: '小林 隆',
+    from_store_id: 'store-joyfit-001',
+    from_store_name: 'JOYFIT池袋店',
+    to_store_id: 'store-joyfit-002',
+    to_store_name: 'JOYFIT新宿店',
+    brand: 'joyfit',
+    applied_at: isoDate(thisYear, Math.max(thisMonth - 2, 0), 10),
+    scheduled_date: isoDate(thisYear, Math.max(thisMonth - 1, 0), 1),
+    status: TransferStatus.Rejected,
+  },
+  {
+    id: 'TR-012',
+    member_id: 'M-10012',
+    member_name: '中村 さくら',
+    from_store_id: 'store-fit365-001',
+    from_store_name: 'FIT365八潮店',
+    to_store_id: 'store-fit365-004',
+    to_store_name: 'FIT365越谷店',
+    brand: 'fit365',
+    applied_at: isoDate(thisYear, Math.max(thisMonth - 2, 0), 18),
+    scheduled_date: isoDate(thisYear, Math.max(thisMonth - 1, 0), 1),
+    status: TransferStatus.Rejected,
+  },
+  // completed ×2 (prior year)
+  {
+    id: 'TR-013',
+    member_id: 'M-10013',
+    member_name: '小林 隆',
+    from_store_id: 'store-joyfit-001',
+    from_store_name: 'JOYFIT池袋店',
+    to_store_id: 'store-joyfit-002',
+    to_store_name: 'JOYFIT新宿店',
+    brand: 'joyfit',
+    applied_at: isoDate(prevYear, prevYearMonth, 5),
+    scheduled_date: isoDate(prevYear, prevYearMonth + 1, 1),
+    status: TransferStatus.Completed,
+  },
+  {
+    id: 'TR-014',
+    member_id: 'M-10014',
+    member_name: '加藤 幸子',
+    from_store_id: 'store-fit365-004',
+    from_store_name: 'FIT365越谷店',
+    to_store_id: 'store-fit365-002',
+    to_store_name: 'FIT365川口店',
+    brand: 'fit365',
+    applied_at: isoDate(prevYear, prevYearMonth, 12),
+    scheduled_date: isoDate(prevYear, prevYearMonth + 1, 1),
+    status: TransferStatus.Completed,
+  },
+];
 
 function createDb() {
   const permissionRows: StaffPermissionRecord[] = [];
@@ -4030,6 +4246,12 @@ function createDb() {
         delete this._details[id];
         db.staff_permissions.removeForStaff(id);
         return true;
+      },
+    },
+    transfers: {
+      _rows: TRANSFER_SEED_DATA,
+      getAll(): TransferRow[] {
+        return this._rows;
       },
     },
   };

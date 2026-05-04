@@ -19395,3 +19395,149 @@ export type PostCrmStoresResponses = {
 };
 
 export type PostCrmStoresResponse = PostCrmStoresResponses[keyof PostCrmStoresResponses];
+
+export type GetCrmTransfersData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * ページ番号
+         */
+        page?: number;
+        /**
+         * 1ページあたりの件数
+         */
+        limit?: number;
+        /**
+         * 申請ID・会員名の検索文字列
+         */
+        search?: string;
+        /**
+         * TransferStatus
+         *
+         * ステータスフィルター
+         */
+        status?: 'pending' | 'from_store_approved' | 'approved' | 'rejected' | 'completed';
+        /**
+         * 移籍元店舗IDフィルター
+         */
+        from_store_id?: string;
+        /**
+         * 移籍先店舗IDフィルター
+         */
+        to_store_id?: string;
+        /**
+         * TransferBrand
+         *
+         * ブランドフィルター
+         */
+        brand?: 'joyfit' | 'fit365';
+        /**
+         * 申請日期間フィルター
+         */
+        applied_period?: 'this_month' | 'last_month' | 'this_year';
+        /**
+         * ソートカラム
+         */
+        sort_by?: string;
+        /**
+         * ソート順
+         */
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/transfers';
+};
+
+export type GetCrmTransfersErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Bad request - invalid query parameters
+     */
+    400: {
+        error: string;
+        details?: unknown;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Internal server error
+     */
+    500: {
+        error: string;
+        details?: unknown;
+    };
+};
+
+export type GetCrmTransfersError = GetCrmTransfersErrors[keyof GetCrmTransfersErrors];
+
+export type GetCrmTransfersResponses = {
+    /**
+     * GetTransfersResponse
+     *
+     * 移籍申請一覧レスポンス
+     */
+    200: {
+        transfers: Array<{
+            /**
+             * 移籍申請ID
+             */
+            id: string;
+            /**
+             * 会員ID
+             */
+            member_id: string;
+            /**
+             * 会員氏名
+             */
+            member_name: string;
+            /**
+             * 移籍元店舗ID
+             */
+            from_store_id: string;
+            /**
+             * 移籍元店舗名
+             */
+            from_store_name: string;
+            /**
+             * 移籍先店舗ID
+             */
+            to_store_id: string;
+            /**
+             * 移籍先店舗名
+             */
+            to_store_name: string;
+            /**
+             * TransferBrand
+             *
+             * Brand of the member contract: joyfit=JOYFIT, fit365=FIT365
+             */
+            brand: 'joyfit' | 'fit365';
+            /**
+             * 申請日時 (ISO 8601)
+             */
+            applied_at: string;
+            /**
+             * 移籍予定日 (ISO 8601)
+             */
+            scheduled_date: string;
+            /**
+             * TransferStatus
+             *
+             * Transfer request status: pending=申請中, from_store_approved=店舗承認済, approved=承認済, rejected=却下, completed=移籍完了
+             */
+            status: 'pending' | 'from_store_approved' | 'approved' | 'rejected' | 'completed';
+        }>;
+        /**
+         * TransferPagination
+         */
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmTransfersResponse = GetCrmTransfersResponses[keyof GetCrmTransfersResponses];
