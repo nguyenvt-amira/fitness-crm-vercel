@@ -1,28 +1,24 @@
-import type { StaffJobTitle } from '@/app/api/_schemas/staff.schema';
+import { StaffBrand, StaffStatus } from '@/lib/api/types.gen';
 
-import { StaffBrand, StaffRole, StaffStatus } from '@/lib/api/types.gen';
+export { StaffBrand, StaffStatus } from '@/lib/api/types.gen';
 
-export { StaffBrand, StaffRole, StaffStatus } from '@/lib/api/types.gen';
-
-/** 役職: APIコード(key) と表示ラベル（API はコードのみ保持） */
-export const STAFF_JOB_TITLES = [
-  { key: 'manager', label: '店長' },
-  { key: 'assistant_manager', label: '副店長' },
-  { key: 'chief', label: 'チーフ' },
-  { key: 'fulltime', label: 'スタッフ' },
-  { key: 'part_time', label: 'アルバイト' },
-] as const satisfies ReadonlyArray<{ key: StaffJobTitle; label: string }>;
-
-export function getStaffJobTitleLabel(code: string | undefined | null): string {
-  if (code == null || code === '') return '—';
-  const row = STAFF_JOB_TITLES.find((t) => t.key === code);
-  return row?.label ?? code;
-}
+export const StaffRole = {
+  SYSTEM: 'system',
+  HEADQUARTER: 'headquarter',
+  MANAGER: 'manager',
+  STAFF: 'staff',
+  TRAINER: 'trainer',
+  OBSERVER: 'observer',
+} as const;
+export type StaffRole = (typeof StaffRole)[keyof typeof StaffRole];
 
 export const STAFF_ROLE_LABELS: Record<StaffRole, string> = {
-  [StaffRole.HEADQUARTERS]: '本部',
-  [StaffRole.STORE_STAFF]: '店舗スタッフ',
-  [StaffRole.VIEWER]: '閲覧のみ',
+  [StaffRole.SYSTEM]: '（非表示）',
+  [StaffRole.HEADQUARTER]: '本部',
+  [StaffRole.MANAGER]: 'マネージャー',
+  [StaffRole.STAFF]: 'スタッフ',
+  [StaffRole.TRAINER]: 'トレーナー',
+  [StaffRole.OBSERVER]: '閲覧のみ',
 };
 
 export const STAFF_STATUS_LABELS: Record<StaffStatus, string> = {

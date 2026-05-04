@@ -1,6 +1,12 @@
 import { z } from 'zod';
 
-import { StaffBrand } from '../_constants/constants';
+import { StaffBrand, StaffRole } from '../_constants/constants';
+
+export const inviteStaffItemSchema = z.object({
+  email: z.string().email(),
+  role: z.nativeEnum(StaffRole),
+  brand: z.nativeEnum(StaffBrand).optional(),
+});
 
 export const inviteStaffSchema = z.object({
   emails: z.string().refine(
@@ -19,6 +25,8 @@ export const inviteStaffSchema = z.object({
     },
   ),
   brand: z.nativeEnum(StaffBrand).optional(),
+  role: z.nativeEnum(StaffRole),
+  invitees: z.array(inviteStaffItemSchema),
 });
 
 export type InviteStaffFormValues = z.infer<typeof inviteStaffSchema>;

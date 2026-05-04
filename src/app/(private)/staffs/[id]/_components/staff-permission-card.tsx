@@ -8,7 +8,6 @@ import { Check, Minus } from 'lucide-react';
 
 import { DataTable } from '@/components/common/data-table';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
@@ -20,7 +19,6 @@ import {
   STAFF_ROLE_LABELS,
   type StaffBrand,
   type StaffRole,
-  getStaffJobTitleLabel,
 } from '../../_constants/constants';
 
 type Staff = GetCrmStaffsByIdResponse['staff'];

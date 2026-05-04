@@ -10,11 +10,13 @@ extendZodWithOpenApi(z);
 /**
  * Staff Role Schema - 編集権限
  */
-export const StaffRoleSchema = z.enum(['headquarters', 'store_staff', 'viewer']).openapi({
-  title: 'StaffRole',
-  description:
-    'Staff permission role: headquarters=本部, store_staff=店舗スタッフ, viewer=閲覧のみ',
-});
+export const StaffRoleSchema = z
+  .enum(['system', 'headquarter', 'manager', 'staff', 'trainer', 'observer'])
+  .openapi({
+    title: 'StaffRole',
+    description:
+      'Staff permission role: system=非表示, headquarter=本部, manager=マネージャー, staff=スタッフ, trainer=トレーナー, observer=閲覧のみ',
+  });
 
 /**
  * Staff Status Schema - ステータス
@@ -56,27 +58,6 @@ export const StaffLoginMethodSchema = z.enum(['email', 'social']).openapi({
 export const StaffScopeTargetSchema = z.enum(['all_stores', 'specific_store']).openapi({
   title: 'StaffScopeTarget',
   description: 'Scope target: all_stores=全店舗, specific_store=特定店舗',
-});
-
-/**
- * Allowed 役職 codes (職位マスターとは別). UI は FE のラベルマスタで表示名を解決する。
- * manager=店長, assistant_manager=副店長, chief=チーフ, fulltime=スタッフ, part_time=アルバイト
- */
-export const STAFF_JOB_TITLE_VALUES = [
-  'manager',
-  'assistant_manager',
-  'chief',
-  'fulltime',
-  'part_time',
-] as const;
-
-/**
- * Staff Job Title Schema - 役職（職位マスター position とは別）
- */
-export const StaffJobTitleSchema = z.enum(STAFF_JOB_TITLE_VALUES).openapi({
-  title: 'StaffJobTitle',
-  description:
-    '店舗組織上の役職コード。職位（positions）とは独立。表示ラベルはクライアントのマスタ参照',
 });
 
 // ─── Sub Schemas (Staff Detail) ──────────────────────────────────────────────
@@ -192,7 +173,7 @@ export const StaffAdditionalPermissionsSchema = z
 export const StaffPermissionSettingsSchema = z
   .object({
     role: StaffRoleSchema.openapi({
-      example: 'headquarters',
+      example: 'headquarter',
       description: '編集権限',
     }),
     additional_permissions: StaffAdditionalPermissionsSchema.openapi({
@@ -334,7 +315,7 @@ export const StaffListItemSchema = z
       description: 'Denormalized position name',
     }),
     role: StaffRoleSchema.openapi({
-      example: 'headquarters',
+      example: 'headquarter',
       description: 'Staff role/permission (編集権限グループ)',
     }),
     brand: StaffBrandSchema.openapi({
@@ -388,9 +369,9 @@ export const StaffDetailSchema = z
       example: 6,
       description: 'FK → positions.id',
     }),
-    job_title: StaffJobTitleSchema.optional().openapi({
-      example: 'manager',
-      description: '役職コード（職位とは別の個別フィールド）',
+    role: StaffRoleSchema.openapi({
+      example: 'staff',
+      description: '編集権限',
     }),
     brand: StaffBrandSchema.openapi({
       example: 'joyfit',
@@ -539,8 +520,8 @@ export const UpdateStaffRequestSchema = z
     position_id: z.number().int().optional().openapi({
       description: '職位マスター (positions.id)',
     }),
-    job_title: StaffJobTitleSchema.optional().openapi({
-      description: '役職（職位とは別の個別フィールド）',
+    role: StaffRoleSchema.optional().openapi({
+      description: '編集権限',
     }),
     permission_settings: StaffPermissionSettingsSchema.optional().openapi({
       description: '権限設定 (partial update)',
@@ -592,9 +573,9 @@ export const InviteStaffItemSchema = z.object({
     example: 'staff@joyfit.co.jp',
     description: 'Email address to invite',
   }),
-  position_id: z.number().int().positive().openapi({
-    example: 6,
-    description: 'Position master id (positions.id) for this email',
+  role: StaffRoleSchema.openapi({
+    example: 'staff',
+    description: 'Staff role for this email',
   }),
   brand: StaffBrandSchema.optional().openapi({
     example: 'joyfit',
@@ -608,8 +589,8 @@ export const InviteStaffRequestSchema = z
       .array(InviteStaffItemSchema)
       .min(1)
       .openapi({
-        example: [{ email: 'staff@joyfit.co.jp', position_id: 6, brand: 'joyfit' }],
-        description: 'Invite list with per-email position and brand',
+        example: [{ email: 'staff@joyfit.co.jp', role: 'staff', brand: 'joyfit' }],
+        description: 'Invite list with per-email role and brand',
       }),
   })
   .openapi({
@@ -684,7 +665,6 @@ export type StaffPermissionSettings = z.infer<typeof StaffPermissionSettingsSche
 export type StaffEditableScope = z.infer<typeof StaffEditableScopeSchema>;
 export type StaffLinkage = z.infer<typeof StaffLinkageSchema>;
 export type StaffLinkageType = z.infer<typeof StaffLinkageTypeSchema>;
-export type StaffJobTitle = z.infer<typeof StaffJobTitleSchema>;
 export type GetStaffsQuery = z.infer<typeof GetStaffsQuerySchema>;
 export type GetStaffsResponse = z.infer<typeof GetStaffsResponseSchema>;
 export type GetStaffDetailResponse = z.infer<typeof GetStaffDetailResponseSchema>;

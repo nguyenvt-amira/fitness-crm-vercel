@@ -192,113 +192,8 @@ function positionNameById(id: number): string {
   return SEED_POSITION_ROWS.find((p) => p.id === id)?.position_name ?? '';
 }
 
-/** Store master seed (store table) */
-const SEED_STORE_ROWS: Store[] = [
-  {
-    store_id: 'store-001',
-    store_code: 'STR-00001',
-    store_name: 'Fit365八潮店',
-    brand_id: 'brand-fit365',
-    fc_company_id: null,
-    manager_staff_id: null,
-    main_contract_id: 'ctr-store-001',
-    main_contract_status: 'active',
-    option_pass_price: 800,
-    mutual_use_enabled: true,
-    mutual_use_type: 'within_brand',
-    closing_date: null,
-    locker_map_id: 'locker-map-001',
-    asset_id: null,
-    created_by: 'STF-001',
-    created_at: '2024-01-10T09:00:00Z',
-    updated_by: 'STF-001',
-    updated_at: '2026-03-01T12:00:00Z',
-  },
-  {
-    store_id: 'store-002',
-    store_code: 'STR-00002',
-    store_name: 'Fit365新宿店',
-    brand_id: 'brand-fit365',
-    fc_company_id: null,
-    manager_staff_id: null,
-    main_contract_id: 'ctr-store-002',
-    main_contract_status: 'active',
-    option_pass_price: 900,
-    mutual_use_enabled: true,
-    mutual_use_type: 'cross_brand',
-    closing_date: null,
-    locker_map_id: 'locker-map-002',
-    asset_id: null,
-    created_by: 'STF-001',
-    created_at: '2024-01-11T09:00:00Z',
-    updated_by: 'STF-002',
-    updated_at: '2026-02-15T10:00:00Z',
-  },
-  {
-    store_id: 'store-003',
-    store_code: 'STR-00003',
-    store_name: 'Fit365渋谷店',
-    brand_id: 'brand-fit365',
-    fc_company_id: null,
-    manager_staff_id: null,
-    main_contract_id: 'ctr-store-003',
-    main_contract_status: 'active',
-    option_pass_price: 850,
-    mutual_use_enabled: false,
-    mutual_use_type: 'none',
-    closing_date: null,
-    locker_map_id: 'locker-map-003',
-    asset_id: null,
-    created_by: 'STF-002',
-    created_at: '2024-01-12T09:00:00Z',
-    updated_by: 'STF-002',
-    updated_at: '2026-01-20T11:00:00Z',
-  },
-  {
-    store_id: 'store-004',
-    store_code: 'STR-10004',
-    store_name: 'ジョイフィット渋谷店',
-    brand_id: 'brand-joyfit',
-    fc_company_id: null,
-    manager_staff_id: null,
-    main_contract_id: 'ctr-store-004',
-    main_contract_status: 'active',
-    option_pass_price: 1000,
-    mutual_use_enabled: true,
-    mutual_use_type: 'within_brand',
-    closing_date: null,
-    locker_map_id: 'locker-map-004',
-    asset_id: null,
-    created_by: 'STF-003',
-    created_at: '2024-02-01T09:00:00Z',
-    updated_by: 'STF-003',
-    updated_at: '2026-03-10T09:30:00Z',
-  },
-  {
-    store_id: 'store-005',
-    store_code: 'STR-10005',
-    store_name: 'JOYFIT池袋店',
-    brand_id: 'brand-joyfit',
-    fc_company_id: 'fc-001',
-    manager_staff_id: null,
-    main_contract_id: 'ctr-store-005',
-    main_contract_status: 'active',
-    option_pass_price: 950,
-    mutual_use_enabled: true,
-    mutual_use_type: 'custom',
-    closing_date: null,
-    locker_map_id: 'locker-map-005',
-    asset_id: null,
-    created_by: 'STF-004',
-    created_at: '2024-02-05T09:00:00Z',
-    updated_by: 'STF-004',
-    updated_at: '2026-02-28T08:00:00Z',
-  },
-];
-
-function pickMemberStore(i: number): { id: string; name: string } {
-  const s = SEED_STORE_ROWS[i % SEED_STORE_ROWS.length]!;
-  return { id: s.store_id, name: s.store_name };
+function defaultPositionIdByRole(role: StaffListItem['role']): number {
+  return SEED_POSITION_ROWS.find((position) => position.role === role)?.id ?? 6;
 }
 
 /** ブランドマスタ */
@@ -862,7 +757,7 @@ type DbType = {
     getById(id: string): StaffListItem | undefined;
     getDetailById(id: string): StaffDetail | undefined;
     updateDetail(id: string, patch: Partial<StaffDetail>): StaffDetail | undefined;
-    create(input: { email: string; position_id: number; brand?: string }): StaffListItem;
+    create(input: { email: string; role: StaffListItem['role']; brand?: string }): StaffListItem;
     delete(id: string): boolean;
   };
 };
@@ -2265,6 +2160,7 @@ function createDb() {
         db.positions._seed();
         db.stores._seed();
         db.brands._seed();
+        const seededStores = db.stores._rows;
 
         const lastNames = [
           { kanji: '田中', kana: 'タナカ' },
@@ -2300,7 +2196,7 @@ function createDb() {
         ];
 
         const domains = ['joyfit.co.jp', 'fit365.co.jp', 'joyfit24.co.jp'];
-        const roles = ['headquarters', 'store_staff', 'viewer'] as const;
+        const roles = ['headquarter', 'manager', 'staff', 'trainer', 'observer', 'system'] as const;
         const brands = [
           'all',
           'joyfit',
@@ -2333,21 +2229,13 @@ function createDb() {
           '品川区大崎',
           '目黒区自由が丘',
         ];
-        const jobTitles = [
-          'manager',
-          'assistant_manager',
-          'chief',
-          'fulltime',
-          'part_time',
-        ] as const;
-
         for (let i = 1; i <= 200; i++) {
           const ln = lastNames[i % lastNames.length]!;
           const fn = firstNames[i % firstNames.length]!;
           const fullName = `${ln.kanji} ${fn.kanji}`;
           const role = roles[i % roles.length]!;
-          // headquarters always gets 'all' brand
-          const brand = role === 'headquarters' ? 'all' : brands[(i + 1) % brands.length]!;
+          // headquarter always gets 'all' brand
+          const brand = role === 'headquarter' ? 'all' : brands[(i + 1) % brands.length]!;
           const status = i % 7 === 0 ? 'inactive' : 'active';
           const domain = domains[i % domains.length]!;
           const emailName = ln.kanji.toLowerCase().replace(/[^a-z]/g, '');
@@ -2376,17 +2264,16 @@ function createDb() {
           // Postal code
           const postalCode = `${String(100 + (i % 900)).padStart(3, '0')}-${String(1000 + (i % 9000)).padStart(4, '0')}`;
 
-          const pickStore = SEED_STORE_ROWS[(i - 1) % SEED_STORE_ROWS.length]!;
+          const pickStore = seededStores[(i - 1) % seededStores.length]!;
           const useFcLinkage = i % 5 === 0;
           const position_id = useFcLinkage
             ? 10
-            : role === 'headquarters'
+            : role === 'headquarter'
               ? 1
-              : role === 'viewer'
+              : role === 'observer'
                 ? 13
                 : 5 + (i % 6);
           const position_name = positionNameById(position_id);
-          const job_title = jobTitles[(i - 1) % jobTitles.length]!;
 
           const staff_linkage = useFcLinkage
             ? ({
@@ -2396,8 +2283,8 @@ function createDb() {
               } satisfies StaffDetail['staff_linkage'])
             : ({
                 type: 'direct_store',
-                store_id: pickStore.store_id,
-                store_name: pickStore.store_name,
+                store_id: pickStore.id,
+                store_name: pickStore.name,
               } satisfies StaffDetail['staff_linkage']);
 
           const permCodes = useFcLinkage
@@ -2427,22 +2314,22 @@ function createDb() {
           } satisfies StaffListItem);
 
           // Detail
-          const scopeCount = role === 'headquarters' ? 1 : 1 + (i % 3);
+          const scopeCount = role === 'headquarter' ? 1 : 1 + (i % 3);
           const scopes: StaffDetail['editable_scopes'] = [];
           for (let s = 0; s < scopeCount; s++) {
             const scopeBrand =
-              role === 'headquarters' ? 'all' : brands[(i + s + 1) % brands.length]!;
+              role === 'headquarter' ? 'all' : brands[(i + s + 1) % brands.length]!;
             const scopeTarget =
-              role === 'headquarters' ? 'all_stores' : s === 0 ? 'all_stores' : 'specific_store';
+              role === 'headquarter' ? 'all_stores' : s === 0 ? 'all_stores' : 'specific_store';
             const startDate = new Date('2024-04-01');
             startDate.setMonth(startDate.getMonth() + s);
-            const storeIdx = (i + s) % SEED_STORE_ROWS.length;
-            const scopeStore = SEED_STORE_ROWS[storeIdx]!;
+            const storeIdx = (i + s) % seededStores.length;
+            const scopeStore = seededStores[storeIdx]!;
             scopes.push({
               brand: scopeBrand as StaffDetail['editable_scopes'][number]['brand'],
               target: scopeTarget as StaffDetail['editable_scopes'][number]['target'],
-              store_id: scopeTarget === 'specific_store' ? scopeStore.store_id : undefined,
-              store_name: scopeTarget === 'specific_store' ? scopeStore.store_name : undefined,
+              store_id: scopeTarget === 'specific_store' ? scopeStore.id : undefined,
+              store_name: scopeTarget === 'specific_store' ? scopeStore.name : undefined,
               start_date: `${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(2, '0')}-${String(startDate.getDate()).padStart(2, '0')}`,
               end_date: i % 5 === 0 ? `2025-03-31` : undefined,
             });
@@ -2452,7 +2339,7 @@ function createDb() {
             id: String(i),
             staff_id: `STF-${String(i).padStart(3, '0')}`,
             position_id,
-            job_title,
+            role,
             brand,
             brand_display_name: staffBrandDisplayName(brand),
             status,
@@ -2478,9 +2365,9 @@ function createDb() {
             permission_settings: {
               role,
               additional_permissions: {
-                billing_correction: role === 'headquarters' || i % 3 === 0,
-                refund_request: role === 'headquarters' || i % 4 === 0,
-                transfer_request: role === 'headquarters' && i % 2 === 0,
+                billing_correction: role === 'headquarter' || i % 3 === 0,
+                refund_request: role === 'headquarter' || i % 4 === 0,
+                transfer_request: role === 'headquarter' && i % 2 === 0,
               },
             },
             staff_linkage,
@@ -2527,7 +2414,7 @@ function createDb() {
           ? { ...existing.staff_linkage, ...patch.staff_linkage }
           : existing.staff_linkage;
         const position_id = patch.position_id ?? existing.position_id;
-        const job_title = patch.job_title ?? existing.job_title;
+        const role = patch.role ?? existing.role;
         const nextBrand = (patch.brand ?? existing.brand ?? 'all') as StaffDetail['brand'];
         const staff_permissions = patch.staff_permissions
           ? permissionRows.filter((r) => r.staff_id === id)
@@ -2536,8 +2423,8 @@ function createDb() {
         const updated: StaffDetail = {
           ...existing,
           ...patch,
+          role,
           position_id,
-          job_title,
           brand: nextBrand,
           brand_display_name: staffBrandDisplayName(nextBrand),
           personal_info: patch.personal_info
@@ -2592,20 +2479,19 @@ function createDb() {
         return updated;
       },
 
-      create(input: { email: string; position_id: number; brand?: string }): StaffListItem {
+      create(input: { email: string; role: StaffListItem['role']; brand?: string }): StaffListItem {
         this._seed();
         db.positions._seed();
         db.stores._seed();
 
         const nextId = this._staffs.length + 1;
-        const position_id = input.position_id;
-        const position = db.positions.getById(position_id);
-        const role = (position?.role ?? 'staff') as StaffListItem['role'];
-        const defaultStore = SEED_STORE_ROWS[0]!;
+        const role = input.role;
+        const position_id = defaultPositionIdByRole(role);
+        const defaultStore = db.stores._rows[0]!;
         const staff_linkage: StaffDetail['staff_linkage'] = {
           type: 'direct_store',
           store_id: defaultStore.store_id,
-          store_name: defaultStore.store_name,
+          store_name: defaultStore.name,
         };
 
         pushStaffPermissions(String(nextId), ['crm.login', 'crm.members.view']);
@@ -2634,7 +2520,7 @@ function createDb() {
           id: String(nextId),
           staff_id: staff.staff_id,
           position_id,
-          job_title: 'fulltime',
+          role,
           brand: assignedBrand,
           brand_display_name: staffBrandDisplayName(assignedBrand),
           status: 'active',

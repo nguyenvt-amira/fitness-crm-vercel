@@ -5824,18 +5824,21 @@ export type UpdateStoreBusinessHoursResponse = {
 /**
  * StaffRole
  *
- * Staff permission role: headquarters=本部, store_staff=店舗スタッフ, viewer=閲覧のみ
+ * Staff permission role: system=非表示, headquarter=本部, manager=マネージャー, staff=スタッフ, trainer=トレーナー, observer=閲覧のみ
  */
 export const StaffRole = {
-    HEADQUARTERS: 'headquarters',
-    STORE_STAFF: 'store_staff',
-    VIEWER: 'viewer'
+    SYSTEM: 'system',
+    HEADQUARTER: 'headquarter',
+    MANAGER: 'manager',
+    STAFF: 'staff',
+    TRAINER: 'trainer',
+    OBSERVER: 'observer'
 } as const;
 
 /**
  * StaffRole
  *
- * Staff permission role: headquarters=本部, store_staff=店舗スタッフ, viewer=閲覧のみ
+ * Staff permission role: system=非表示, headquarter=本部, manager=マネージャー, staff=スタッフ, trainer=トレーナー, observer=閲覧のみ
  */
 export type StaffRole = typeof StaffRole[keyof typeof StaffRole];
 
@@ -6139,7 +6142,7 @@ export type StaffListItem = {
      *
      * Staff role/permission (編集権限グループ)
      */
-    role: 'headquarters' | 'store_staff' | 'viewer';
+    role: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
     /**
      * StaffBrand
      *
@@ -6287,7 +6290,7 @@ export type StaffPermissionSettings = {
      *
      * 編集権限
      */
-    role: 'headquarters' | 'store_staff' | 'viewer';
+    role: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
     /**
      * StaffAdditionalPermissions
      *
@@ -6364,11 +6367,11 @@ export type StaffDetail = {
      */
     position_id: number;
     /**
-     * StaffJobTitle
+     * StaffRole
      *
-     * 役職コード（職位とは別の個別フィールド）
+     * 編集権限
      */
-    job_title?: 'manager' | 'assistant_manager' | 'chief' | 'fulltime' | 'part_time';
+    role: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
     /**
      * StaffBrand
      *
@@ -6474,7 +6477,7 @@ export type StaffDetail = {
          *
          * 編集権限
          */
-        role: 'headquarters' | 'store_staff' | 'viewer';
+        role: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
         /**
          * StaffAdditionalPermissions
          *
@@ -6611,7 +6614,7 @@ export type GetStaffsQuery = {
      *
      * Filter by role
      */
-    role?: 'headquarters' | 'store_staff' | 'viewer';
+    role?: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
     /**
      * StaffBrand
      *
@@ -6677,7 +6680,7 @@ export type GetStaffsResponse = {
          *
          * Staff role/permission (編集権限グループ)
          */
-        role: 'headquarters' | 'store_staff' | 'viewer';
+        role: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
         /**
          * StaffBrand
          *
@@ -6749,11 +6752,11 @@ export type GetStaffDetailResponse = {
          */
         position_id: number;
         /**
-         * StaffJobTitle
+         * StaffRole
          *
-         * 役職コード（職位とは別の個別フィールド）
+         * 編集権限
          */
-        job_title?: 'manager' | 'assistant_manager' | 'chief' | 'fulltime' | 'part_time';
+        role: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
         /**
          * StaffBrand
          *
@@ -6859,7 +6862,7 @@ export type GetStaffDetailResponse = {
              *
              * 編集権限
              */
-            role: 'headquarters' | 'store_staff' | 'viewer';
+            role: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
             /**
              * StaffAdditionalPermissions
              *
@@ -7063,11 +7066,11 @@ export type UpdateStaffRequest = {
      */
     position_id?: number;
     /**
-     * StaffJobTitle
+     * StaffRole
      *
-     * 役職（職位とは別の個別フィールド）
+     * 編集権限
      */
-    job_title?: 'manager' | 'assistant_manager' | 'chief' | 'fulltime' | 'part_time';
+    role?: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
     /**
      * StaffPermissionSettings
      *
@@ -7079,7 +7082,7 @@ export type UpdateStaffRequest = {
          *
          * 編集権限
          */
-        role: 'headquarters' | 'store_staff' | 'viewer';
+        role: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
         /**
          * StaffAdditionalPermissions
          *
@@ -7222,11 +7225,11 @@ export type UpdateStaffResponse = {
          */
         position_id: number;
         /**
-         * StaffJobTitle
+         * StaffRole
          *
-         * 役職コード（職位とは別の個別フィールド）
+         * 編集権限
          */
-        job_title?: 'manager' | 'assistant_manager' | 'chief' | 'fulltime' | 'part_time';
+        role: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
         /**
          * StaffBrand
          *
@@ -7332,7 +7335,7 @@ export type UpdateStaffResponse = {
              *
              * 編集権限
              */
-            role: 'headquarters' | 'store_staff' | 'viewer';
+            role: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
             /**
              * StaffAdditionalPermissions
              *
@@ -7454,7 +7457,7 @@ export type UpdateStaffResponse = {
  */
 export type InviteStaffRequest = {
     /**
-     * Invite list with per-email position and brand
+     * Invite list with per-email role and brand
      */
     invitees: Array<{
         /**
@@ -7462,9 +7465,11 @@ export type InviteStaffRequest = {
          */
         email: string;
         /**
-         * Position master id (positions.id) for this email
+         * StaffRole
+         *
+         * Staff role for this email
          */
-        position_id: number;
+        role: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
         /**
          * StaffBrand
          *
@@ -7521,7 +7526,7 @@ export type InviteStaffResponse = {
          *
          * Staff role/permission (編集権限グループ)
          */
-        role: 'headquarters' | 'store_staff' | 'viewer';
+        role: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
         /**
          * StaffBrand
          *
@@ -14504,11 +14509,11 @@ export type GetCrmStaffsByIdResponses = {
              */
             position_id: number;
             /**
-             * StaffJobTitle
+             * StaffRole
              *
-             * 役職コード（職位とは別の個別フィールド）
+             * 編集権限
              */
-            job_title?: 'manager' | 'assistant_manager' | 'chief' | 'fulltime' | 'part_time';
+            role: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
             /**
              * StaffBrand
              *
@@ -14614,7 +14619,7 @@ export type GetCrmStaffsByIdResponses = {
                  *
                  * 編集権限
                  */
-                role: 'headquarters' | 'store_staff' | 'viewer';
+                role: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
                 /**
                  * StaffAdditionalPermissions
                  *
@@ -14822,11 +14827,11 @@ export type PatchCrmStaffsByIdData = {
          */
         position_id?: number;
         /**
-         * StaffJobTitle
+         * StaffRole
          *
-         * 役職（職位とは別の個別フィールド）
+         * 編集権限
          */
-        job_title?: 'manager' | 'assistant_manager' | 'chief' | 'fulltime' | 'part_time';
+        role?: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
         /**
          * StaffPermissionSettings
          *
@@ -14838,7 +14843,7 @@ export type PatchCrmStaffsByIdData = {
              *
              * 編集権限
              */
-            role: 'headquarters' | 'store_staff' | 'viewer';
+            role: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
             /**
              * StaffAdditionalPermissions
              *
@@ -15029,11 +15034,11 @@ export type PatchCrmStaffsByIdResponses = {
              */
             position_id: number;
             /**
-             * StaffJobTitle
+             * StaffRole
              *
-             * 役職コード（職位とは別の個別フィールド）
+             * 編集権限
              */
-            job_title?: 'manager' | 'assistant_manager' | 'chief' | 'fulltime' | 'part_time';
+            role: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
             /**
              * StaffBrand
              *
@@ -15139,7 +15144,7 @@ export type PatchCrmStaffsByIdResponses = {
                  *
                  * 編集権限
                  */
-                role: 'headquarters' | 'store_staff' | 'viewer';
+                role: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
                 /**
                  * StaffAdditionalPermissions
                  *
@@ -15265,7 +15270,7 @@ export type PostCrmStaffsInviteData = {
      */
     body?: {
         /**
-         * Invite list with per-email position and brand
+         * Invite list with per-email role and brand
          */
         invitees: Array<{
             /**
@@ -15273,9 +15278,11 @@ export type PostCrmStaffsInviteData = {
              */
             email: string;
             /**
-             * Position master id (positions.id) for this email
+             * StaffRole
+             *
+             * Staff role for this email
              */
-            position_id: number;
+            role: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
             /**
              * StaffBrand
              *
@@ -15364,7 +15371,7 @@ export type PostCrmStaffsInviteResponses = {
              *
              * Staff role/permission (編集権限グループ)
              */
-            role: 'headquarters' | 'store_staff' | 'viewer';
+            role: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
             /**
              * StaffBrand
              *
@@ -15426,7 +15433,7 @@ export type GetCrmStaffsData = {
          *
          * Filter by role
          */
-        role?: 'headquarters' | 'store_staff' | 'viewer';
+        role?: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
         /**
          * StaffBrand
          *
@@ -15522,7 +15529,7 @@ export type GetCrmStaffsResponses = {
              *
              * Staff role/permission (編集権限グループ)
              */
-            role: 'headquarters' | 'store_staff' | 'viewer';
+            role: 'system' | 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
             /**
              * StaffBrand
              *

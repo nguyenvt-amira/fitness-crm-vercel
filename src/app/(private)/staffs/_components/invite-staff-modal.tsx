@@ -1,7 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -36,12 +35,11 @@ import { Textarea } from '@/components/ui/textarea';
 
 import {
   getCrmBrandsOptions,
-  getCrmPositionsOptions,
   getCrmStaffsQueryKey,
   postCrmStaffsInviteMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
 
-import { StaffBrand } from '../_constants/constants';
+import { STAFF_ROLE_LABELS, StaffBrand, StaffRole } from '../_constants/constants';
 import { type InviteStaffFormValues, inviteStaffSchema } from '../_schemas/invite-staff.schema';
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -51,31 +49,15 @@ interface InviteStaffModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
-interface InviteListItem {
-  id: string;
-  email: string;
-  position_id: number;
-  brand?: StaffBrand;
-}
-
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DEFAULT_BRAND = StaffBrand.ALL;
+const DEFAULT_ROLE = StaffRole.STAFF;
+const STAFF_ROLE_OPTIONS = (Object.values(StaffRole) as StaffRole[]).filter(
+  (role) => role !== StaffRole.SYSTEM,
+);
 
 export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) {
   const queryClient = useQueryClient();
-  const [inviteList, setInviteList] = useState<InviteListItem[]>([]);
-  const [selectedPositionId, setSelectedPositionId] = useState<string>('');
-
-  const { data: positionsRes } = useQuery({
-    ...getCrmPositionsOptions(),
-    enabled: open,
-  });
-  const positionOptions = useMemo(() => positionsRes?.positions ?? [], [positionsRes]);
-  const defaultPositionId = useMemo(() => {
-    if (positionOptions.length === 0) return '';
-    const defaultPosition = positionOptions.find((position) => position.id === 6);
-    return String(defaultPosition?.id ?? positionOptions[0]!.id);
-  }, [positionOptions]);
 
   const { data: brandsRes } = useQuery({
     ...getCrmBrandsOptions(),
@@ -88,16 +70,29 @@ export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) 
     defaultValues: {
       emails: '',
       brand: DEFAULT_BRAND,
+      role: DEFAULT_ROLE,
+      invitees: [],
     },
+  });
+  const {
+    fields: inviteList,
+    append,
+    update,
+    remove,
+    replace,
+  } = useFieldArray({
+    control: form.control,
+    name: 'invitees',
   });
 
   const handleOpenChange = (nextOpen: boolean) => {
-    if (nextOpen) {
-      setInviteList([]);
-      setSelectedPositionId('');
+    if (!nextOpen) {
+      replace([]);
       form.reset({
         emails: '',
         brand: DEFAULT_BRAND,
+        role: DEFAULT_ROLE,
+        invitees: [],
       });
     }
     onOpenChange(nextOpen);
@@ -113,13 +108,8 @@ export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) 
   const addEmailsToList = () => {
     const emailInput = form.getValues('emails');
     const brand = form.getValues('brand');
-    const currentPositionId = selectedPositionId || defaultPositionId;
-    const parsedPositionId = Number(currentPositionId);
-
-    if (!currentPositionId || Number.isNaN(parsedPositionId)) {
-      toast.error('職位を選択してください');
-      return;
-    }
+    const role = form.getValues('role');
+    const currentInvitees = form.getValues('invitees');
 
     const emails = emailInput
       .split('\n')
@@ -143,7 +133,7 @@ export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) 
       return;
     }
 
-    const existingEmailSet = new Set(inviteList.map((item) => item.email.toLowerCase()));
+    const existingEmailSet = new Set(currentInvitees.map((item) => item.email.toLowerCase()));
     const uniqueEmails = emails.filter((email) => !existingEmailSet.has(email.toLowerCase()));
 
     if (uniqueEmails.length === 0) {
@@ -154,34 +144,35 @@ export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) 
       return;
     }
 
-    const newItems: InviteListItem[] = uniqueEmails.map((email) => ({
-      id: crypto.randomUUID(),
+    const newItems = uniqueEmails.map((email) => ({
       email,
-      position_id: parsedPositionId,
+      role,
       brand,
     }));
 
-    setInviteList((prev) => [...prev, ...newItems]);
+    append(newItems);
     form.clearErrors('emails');
     form.setValue('emails', '');
   };
 
-  const updateInviteItem = <K extends 'position_id' | 'brand'>(
-    id: string,
+  const updateInviteItem = <K extends 'role' | 'brand'>(
+    index: number,
     key: K,
-    value: InviteListItem[K],
+    value: InviteStaffFormValues['invitees'][number][K],
   ) => {
-    setInviteList((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, [key]: value } : item)),
-    );
+    const currentItem = form.getValues(`invitees.${index}`);
+    if (!currentItem) return;
+    update(index, { ...currentItem, [key]: value });
   };
 
-  const removeInviteItem = (id: string) => {
-    setInviteList((prev) => prev.filter((item) => item.id !== id));
+  const removeInviteItem = (index: number) => {
+    remove(index);
   };
 
-  const onSubmit = async () => {
-    if (inviteList.length === 0) {
+  const onSubmit = async (values: InviteStaffFormValues) => {
+    const { invitees } = values;
+
+    if (invitees.length === 0) {
       form.setError('emails', {
         type: 'manual',
         message: '招待リストにメールアドレスを追加してください',
@@ -192,9 +183,9 @@ export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) 
     try {
       await inviteMutation.mutateAsync({
         body: {
-          invitees: inviteList.map((invite) => ({
+          invitees: invitees.map((invite) => ({
             email: invite.email,
-            position_id: invite.position_id,
+            role: invite.role,
             brand: invite.brand,
           })),
         },
@@ -202,7 +193,7 @@ export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) 
 
       toast.success('招待メールを送信しました');
       queryClient.invalidateQueries({ queryKey: getCrmStaffsQueryKey() });
-      onOpenChange(false);
+      handleOpenChange(false);
     } catch {
       // Error toast is handled by mutation onError
     }
@@ -231,25 +222,31 @@ export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) 
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                   <FormItem>
                     <FormLabel className="text-muted-foreground text-xs">
-                      招待時の職位 <span className="text-destructive">*</span>
+                      招待時の権限 <span className="text-destructive">*</span>
                     </FormLabel>
-                    <Select
-                      value={selectedPositionId || defaultPositionId}
-                      onValueChange={setSelectedPositionId}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-full" size="sm">
-                          <SelectValue placeholder="職位を選択" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {positionOptions.map((option) => (
-                          <SelectItem key={option.id} value={String(option.id)}>
-                            {option.position_name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <FormField
+                      control={form.control}
+                      name="role"
+                      render={({ field }) => (
+                        <Select
+                          value={field.value}
+                          onValueChange={(value) => field.onChange(value as StaffRole)}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="w-full" size="sm">
+                              <SelectValue placeholder="権限を選択" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {STAFF_ROLE_OPTIONS.map((role) => (
+                              <SelectItem key={role} value={role}>
+                                {STAFF_ROLE_LABELS[role]}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
                   </FormItem>
 
                   <FormField
@@ -331,7 +328,7 @@ export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) 
                   </div>
                 ) : (
                   <div className="max-h-[280px] space-y-2 overflow-y-auto pr-1 md:max-h-[360px]">
-                    {inviteList.map((invite) => (
+                    {inviteList.map((invite, index) => (
                       <div
                         key={invite.id}
                         className="flex items-center gap-2 rounded-md border px-3 py-2"
@@ -339,18 +336,18 @@ export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) 
                         <p className="max-w-[150px] flex-1 truncate text-xs">{invite.email}</p>
                         <div className="flex items-center gap-2">
                           <Select
-                            value={String(invite.position_id)}
+                            value={invite.role}
                             onValueChange={(value) =>
-                              updateInviteItem(invite.id, 'position_id', Number(value))
+                              updateInviteItem(index, 'role', value as StaffRole)
                             }
                           >
                             <SelectTrigger className="w-[148px]" size="sm">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              {positionOptions.map((option) => (
-                                <SelectItem key={option.id} value={String(option.id)}>
-                                  {option.position_name}
+                              {STAFF_ROLE_OPTIONS.map((role) => (
+                                <SelectItem key={role} value={role}>
+                                  {STAFF_ROLE_LABELS[role]}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -359,7 +356,7 @@ export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) 
                           <Select
                             value={invite.brand}
                             onValueChange={(value) =>
-                              updateInviteItem(invite.id, 'brand', value as StaffBrand)
+                              updateInviteItem(index, 'brand', value as StaffBrand)
                             }
                           >
                             <SelectTrigger className="w-[128px]" size="sm">
@@ -379,7 +376,7 @@ export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) 
                             variant="ghost"
                             size="icon"
                             className="size-8"
-                            onClick={() => removeInviteItem(invite.id)}
+                            onClick={() => removeInviteItem(index)}
                           >
                             <X className="size-4" />
                           </Button>
@@ -399,7 +396,7 @@ export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) 
             variant="outline"
             size="sm"
             className="font-medium"
-            onClick={() => onOpenChange(false)}
+            onClick={() => handleOpenChange(false)}
             disabled={inviteMutation.isPending}
           >
             キャンセル
