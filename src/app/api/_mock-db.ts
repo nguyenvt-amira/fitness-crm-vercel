@@ -38,10 +38,16 @@ import type {
   MembershipApplicationStatus,
   RiskReason,
 } from '@/types/api/membership-application.type';
-import { TransferStatus } from '@/types/transfer.type';
 
 export type TransferRow = TransferDetail;
 
+export enum TransferStatus {
+  Pending = 'pending', // 申請中
+  FromStoreApproved = 'from_store_approved', // 店舗承認済
+  Approved = 'approved', // 承認済
+  Rejected = 'rejected', // 却下
+  Completed = 'completed', // 移籍完了
+}
 export const DEFAULT_MEMBER_MAIN_CONTRACT: string = 'レギュラー会員';
 const DEFAULT_MEMBER_MAIN_CONTRACT_ID = 'MC001';
 
