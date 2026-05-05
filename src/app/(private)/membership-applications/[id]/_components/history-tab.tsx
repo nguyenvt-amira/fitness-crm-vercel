@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 type HistoryTabProps = {
   application: {
-    applied_at: string;
+    application_date: string;
     elapsed_time?: string;
     status: string;
   };
@@ -24,13 +24,13 @@ export function HistoryTab({ application, statusLabels }: HistoryTabProps) {
           <div className="flex items-center justify-between border-b pb-2">
             <span className="text-sm font-medium">申込日時</span>
             <span className="text-muted-foreground text-sm">
-              {formatDateYYYYMM_HHMMSS(application.applied_at)}
+              {formatDateYYYYMM_HHMMSS(application.application_date)}
             </span>
           </div>
           <div className="flex items-center justify-between border-b pb-2">
             <span className="text-sm font-medium">経過時間</span>
             <span className="text-muted-foreground text-sm">
-              {formatElapsedTime(application.applied_at)}
+              {formatElapsedTime(application.application_date)}
             </span>
           </div>
           <div className="flex items-center justify-between border-b pb-2">

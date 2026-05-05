@@ -38,7 +38,6 @@ import { Brand, MainBrand, MemberStatus, MemberType } from '@/lib/api/types.gen'
 import type {
   MembershipApplication,
   MembershipApplicationStatus,
-  RiskReason,
 } from '@/types/api/membership-application.type';
 
 export type TransferRow = TransferDetail;
@@ -2391,7 +2390,7 @@ function createDb() {
 
         const data = buildMemberContractData({
           plan_name: displayName,
-          start_date: application.scheduled_start_date,
+          start_date: application.start_date,
           monthly_fee: monthlyFee,
           created_at: createdAt,
         });
@@ -2415,97 +2414,274 @@ function createDb() {
       _seed(): void {
         if (this._seeded) return;
         this._seeded = true;
-        db.mainContracts._seed();
-        const plans = db.mainContracts.getList().map((contract) => contract.name);
-        const riskReasons: RiskReason[] = [
-          'blacklist_match',
-          'duplicate_application',
-          'payment_failure',
-          'high_risk_score',
-          'document_issue',
-        ];
-        const statuses: MembershipApplicationStatus[] = [
-          'pending',
-          'payment_failed',
-          'auto_approved',
-          'manual_approved',
-          'rejected',
-        ];
-        const now = new Date();
-        for (let i = 1; i <= 200; i++) {
-          const appliedDate = new Date(now);
-          appliedDate.setDate(appliedDate.getDate() - (i % 10));
-          appliedDate.setHours(12 - (i % 12), i % 60, 0, 0);
-          // Same calendar day + setHours can land *after* `now` (e.g. today 02:00 when now is 01:00).
-          // Membership applications must not have applied_at in the future.
-          if (appliedDate.getTime() > now.getTime()) {
-            appliedDate.setTime(now.getTime() - (i % 1440) * 60 * 1000 - 1000);
-          }
-          const scheduledStart = new Date(appliedDate);
-          scheduledStart.setDate(scheduledStart.getDate() + 5);
-          const elapsedHours = Math.floor(
-            (now.getTime() - appliedDate.getTime()) / (1000 * 60 * 60),
-          );
-          const elapsedDays = Math.floor(elapsedHours / 24);
-          const remainingHours = elapsedHours % 24;
-          const elapsedTime =
-            elapsedDays > 0
-              ? `${elapsedDays}日${remainingHours}時間経過`
-              : `${elapsedHours}時間経過`;
-          const status = statuses[i % statuses.length];
-          const deadline = new Date(appliedDate);
-          deadline.setDate(deadline.getDate() + 7);
-          this._applications.push({
-            id: `APP-${String(i).padStart(5, '0')}`,
-            applicant_name: `会員登録${String(i).padStart(3, '0')}`,
-            applied_at: appliedDate.toISOString(),
-            elapsed_time: elapsedTime,
-            risk_score: 30 + (i % 70),
-            risk_reason: riskReasons[i % riskReasons.length],
-            plan_name: plans[i % plans.length],
-            scheduled_start_date: scheduledStart.toISOString().split('T')[0],
-            status,
-            ...(status === 'payment_failed' && { payment_failed_deadline: deadline.toISOString() }),
-            ...(status === 'pending' && { pending_deadline: deadline.toISOString() }),
-          });
 
-          const id = `APP-${String(i).padStart(5, '0')}`;
-          const ekycVerified =
-            status === 'auto_approved' || status === 'manual_approved' || i % 3 !== 0;
-          const faceSimilarity = ekycVerified ? 88 + (i % 12) : 40 + (i % 30);
-          // Seed editable detail fields (used by detail/edit screen)
-          this._details[id] = {
-            applicant_name: `会員登録${String(i).padStart(3, '0')}`,
-            gender: i % 2 === 0 ? 'male' : 'female',
-            blood_type: (['A', 'B', 'O', 'AB'] as const)[i % 4],
-            birthday: `199${i % 10}-0${(i % 9) + 1}-15`,
-            applicant_email: `applicant${String(i).padStart(5, '0')}@example.jp`,
+        const seed: MembershipApplication[] = [
+          {
+            id: 'APP-2026-0001',
+            applicant_name: '山田 太郎',
+            store_name: 'FIT365八潮店',
+            plan_name: 'レギュラー会員',
+            application_date: '2026-03-30T09:15:00+09:00',
+            status: '未審査',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: '春の入会キャンペーン',
+          },
+          {
+            id: 'APP-2026-0002',
+            applicant_name: '佐藤 花子',
+            store_name: 'FIT365草加店',
+            plan_name: 'デイタイム会員',
+            application_date: '2026-03-30T10:32:00+09:00',
+            status: '未審査',
+            blacklist_match: false,
+            start_date: '2026-04-02',
+            brand_name: 'FIT365',
+            campaign: 'なし',
+          },
+          {
+            id: 'APP-2026-0003',
+            applicant_name: '鈴木 一郎',
+            store_name: 'FIT365越谷店',
+            plan_name: 'ナイト会員',
+            application_date: '2026-03-30T11:08:00+09:00',
+            status: '未審査',
+            blacklist_match: true,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: 'なし',
+          },
+          {
+            id: 'APP-2026-0004',
+            applicant_name: '田中 美咲',
+            store_name: 'FIT365八潮店',
+            plan_name: 'ウィークエンド会員',
+            application_date: '2026-03-30T11:45:00+09:00',
+            status: '未審査',
+            blacklist_match: false,
+            start_date: '2026-04-05',
+            brand_name: 'FIT365',
+            campaign: '春の入会キャンペーン',
+          },
+          {
+            id: 'APP-2026-0005',
+            applicant_name: '伊藤 健二',
+            store_name: 'FIT365草加店',
+            plan_name: 'レギュラー会員（学生）',
+            application_date: '2026-03-30T13:20:00+09:00',
+            status: '未審査',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: '学生割引キャンペーン',
+          },
+          {
+            id: 'APP-2026-0006',
+            applicant_name: '松本 奈々',
+            store_name: 'ジョイフィット24越谷店',
+            plan_name: 'レギュラー会員',
+            application_date: '2026-03-30T14:05:00+09:00',
+            status: '未審査',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'JOYFIT',
+            campaign: 'なし',
+          },
+          {
+            id: 'APP-2026-0007',
+            applicant_name: '高橋 正男',
+            store_name: 'ジョイフィット24草加店',
+            plan_name: 'デイタイム会員',
+            application_date: '2026-03-30T14:50:00+09:00',
+            status: '未審査',
+            blacklist_match: true,
+            start_date: '2026-04-14',
+            brand_name: 'JOYFIT',
+            campaign: '春の入会キャンペーン',
+          },
+          {
+            id: 'APP-2026-0008',
+            applicant_name: '渡辺 由美子',
+            store_name: 'FIT365八潮店',
+            plan_name: 'レギュラー会員',
+            application_date: '2026-03-30T08:05:00+09:00',
+            status: '承認済',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: 'なし',
+          },
+          {
+            id: 'APP-2026-0009',
+            applicant_name: '中村 拓也',
+            store_name: 'FIT365越谷店',
+            plan_name: 'デイタイム会員',
+            application_date: '2026-03-30T07:42:00+09:00',
+            status: '承認済',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: 'なし',
+          },
+          {
+            id: 'APP-2026-0010',
+            applicant_name: '小林 優子',
+            store_name: 'ジョイフィット24越谷店',
+            plan_name: 'ナイト会員',
+            application_date: '2026-03-30T09:55:00+09:00',
+            status: '承認済',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'JOYFIT',
+            campaign: '法人会員キャンペーン',
+          },
+          {
+            id: 'APP-2026-0011',
+            applicant_name: '加藤 次郎',
+            store_name: 'FIT365八潮店',
+            plan_name: 'レギュラー会員（シニア）',
+            application_date: '2026-03-29T14:20:00+09:00',
+            status: '未審査',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: 'シニア割引キャンペーン',
+          },
+          {
+            id: 'APP-2026-0012',
+            applicant_name: '吉田 恵子',
+            store_name: 'FIT365越谷店',
+            plan_name: 'レギュラー会員',
+            application_date: '2026-03-29T09:55:00+09:00',
+            status: '否認',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: 'なし',
+          },
+          {
+            id: 'APP-2026-0013',
+            applicant_name: '山本 直人',
+            store_name: 'FIT365草加店',
+            plan_name: 'ウィークエンド会員',
+            application_date: '2026-03-28T11:22:00+09:00',
+            status: '取り消し済',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: 'なし',
+          },
+          {
+            id: 'APP-2026-0014',
+            applicant_name: '木村 幸子',
+            store_name: 'ジョイフィット24草加店',
+            plan_name: 'レギュラー会員',
+            application_date: '2026-03-28T08:50:00+09:00',
+            status: '承認済',
+            blacklist_match: false,
+            start_date: '2026-04-07',
+            brand_name: 'JOYFIT',
+            campaign: 'なし',
+          },
+          {
+            id: 'APP-2026-0015',
+            applicant_name: '石川 雄介',
+            store_name: 'FIT365八潮店',
+            plan_name: 'デイタイム会員',
+            application_date: '2026-03-27T16:30:00+09:00',
+            status: '否認',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: '春の入会キャンペーン',
+          },
+          {
+            id: 'APP-2026-0016',
+            applicant_name: '前田 由香',
+            store_name: 'FIT365八潮店',
+            plan_name: 'レギュラー会員',
+            application_date: '2026-03-30T15:40:00+09:00',
+            status: '審査中',
+            blacklist_match: true,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: '学生割引キャンペーン',
+          },
+          {
+            id: 'APP-2026-0017',
+            applicant_name: '若林 みなみ',
+            store_name: 'ジョイフィット24越谷店',
+            plan_name: 'レギュラー会員（学生）',
+            application_date: '2026-03-30T10:00:00+09:00',
+            status: '未審査',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'JOYFIT',
+            campaign: '学生割引キャンペーン',
+            is_minor: true,
+          },
+          {
+            id: 'APP-2026-0018',
+            applicant_name: '青木 太一',
+            store_name: 'FIT365草加店',
+            plan_name: 'レギュラー会員',
+            application_date: '2026-03-30T09:00:00+09:00',
+            status: '未審査',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: 'なし',
+            is_proxy: true,
+          },
+          {
+            id: 'APP-2026-0019',
+            applicant_name: '小川 拓海',
+            store_name: 'ジョイフィット24越谷店',
+            plan_name: 'レギュラー会員',
+            application_date: '2026-03-30T12:30:00+09:00',
+            status: '未審査',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'JOYFIT',
+            campaign: 'なし',
+          },
+        ];
+
+        this._applications.push(...seed);
+
+        // Seed detail placeholders for each application
+        for (const app of seed) {
+          this._details[app.id] = {
+            applicant_name: app.applicant_name,
+            gender: 'male',
+            blood_type: 'A',
+            birthday: '1990-01-15',
+            applicant_email: `${app.id.toLowerCase()}@example.jp`,
             applicant_phone: '090-1234-5678',
             applicant_address: '東京都渋谷区1-2-3',
             emergency_contact_name: '佐藤 太郎',
             emergency_contact_relationship: '配偶者',
             emergency_contact_phone: '090-8765-4321',
             contract_details: {
-              plan_id: `plan-00${(i % 3) + 1}`,
-              plan_name: plans[i % plans.length],
-              start_date: scheduledStart.toISOString().split('T')[0],
+              plan_id: 'plan-001',
+              plan_name: app.plan_name,
+              start_date: app.start_date,
               option_ids: [],
             },
             ekyc: {
-              verified: ekycVerified,
-              verified_at: appliedDate.toISOString(),
-              face_photo_url: `https://example.com/ekyc/face/APP-${String(i).padStart(5, '0')}.jpg`,
-              id_document_url: `https://example.com/ekyc/id/APP-${String(i).padStart(5, '0')}.jpg`,
-              document_type: (
-                ['運転免許証', 'マイナンバーカード', 'パスポート', '健康保険証'] as const
-              )[i % 4],
+              verified: app.status === '承認済',
+              verified_at: app.application_date,
+              face_photo_url: `https://example.com/ekyc/face/${app.id}.jpg`,
+              id_document_url: `https://example.com/ekyc/id/${app.id}.jpg`,
+              document_type: '運転免許証',
               face_match: {
-                similarity: faceSimilarity,
-                passed: faceSimilarity >= 80,
+                similarity: app.status === '承認済' ? 92 : 55,
+                passed: app.status === '承認済',
               },
               blacklist_check: {
-                matched: !ekycVerified && i % 5 === 0,
-                reason: !ekycVerified && i % 5 === 0 ? '過去に不正利用の記録あり' : undefined,
+                matched: app.blacklist_match,
+                reason: app.blacklist_match ? '過去に不正利用の記録あり' : undefined,
               },
             } satisfies EkycResult,
           };

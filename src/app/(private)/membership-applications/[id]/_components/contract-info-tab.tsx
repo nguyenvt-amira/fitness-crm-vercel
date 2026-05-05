@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 type ContractInfoTabProps = {
   application: {
     plan_name: string;
-    scheduled_start_date: string;
+    start_date: string;
     contract_details?: {
       plan_id: string;
       plan_name: string;
@@ -34,7 +34,7 @@ export function ContractInfoTab({ application }: ContractInfoTabProps) {
           </div>
           <div>
             <label className="text-muted-foreground text-sm font-medium">開始予定日</label>
-            <p className="mt-1">{formatDateYYYYMM_HHMMSS(application.scheduled_start_date)}</p>
+            <p className="mt-1">{formatDateYYYYMM_HHMMSS(application.start_date)}</p>
           </div>
           {contract && (
             <>

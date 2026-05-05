@@ -25,7 +25,7 @@ import { GetCrmMembershipApplicationsByIdResponse } from '@/lib/api';
 
 type RiskDetailsSectionProps = {
   riskScore: number;
-  riskReason: string;
+  riskReason: string | undefined;
   riskDetails?: Array<{
     reason: string;
     score: number;

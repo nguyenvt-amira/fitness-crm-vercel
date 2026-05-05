@@ -60,13 +60,13 @@ export function BasicInfoCard({ application, statusLabels }: BasicInfoCardProps)
             <div className="text-muted-foreground text-sm">申込ID：{application.id}</div>
             <div className="flex gap-4 text-sm">
               <span className="text-muted-foreground">
-                申込日時：{formatDateYYYYMM_HHMMSS(application.applied_at)}
+                申込日時：{formatDateYYYYMM_HHMMSS(application.application_date)}
               </span>
               <span className="text-muted-foreground">
                 ステータス：{statusLabels[application.status] || application.status}
               </span>
               <span className="text-muted-foreground">
-                経過時間：{formatElapsedTime(application.applied_at)}
+                経過時間：{formatElapsedTime(application.application_date)}
               </span>
             </div>
           </div>

@@ -90,7 +90,7 @@ export function EditMembershipApplicationModal({
       emergency_contact_name: application.emergency_contact_name ?? '',
       emergency_contact_relationship: application.emergency_contact_relationship ?? '',
       emergency_contact_phone: application.emergency_contact_phone ?? '',
-      start_date: application.contract_details?.start_date ?? application.scheduled_start_date,
+      start_date: application.contract_details?.start_date ?? application.start_date,
       plan_id: application.contract_details?.plan_id ?? '',
       plan_name: application.contract_details?.plan_name ?? application.plan_name,
       option_ids: application.contract_details?.option_ids ?? [],
@@ -175,13 +175,16 @@ export function EditMembershipApplicationModal({
                       <label className="text-muted-foreground mb-1.5 block text-xs font-medium">
                         申込日時
                       </label>
-                      <Input disabled value={formatDateYYYYMM_HHMMSS(application.applied_at)} />
+                      <Input
+                        disabled
+                        value={formatDateYYYYMM_HHMMSS(application.application_date)}
+                      />
                     </div>
                     <div>
                       <label className="text-muted-foreground mb-1.5 block text-xs font-medium">
                         経過時間
                       </label>
-                      <Input disabled value={formatElapsedTime(application.applied_at)} />
+                      <Input disabled value={formatElapsedTime(application.application_date)} />
                     </div>
                   </div>
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

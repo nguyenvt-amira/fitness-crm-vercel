@@ -70,7 +70,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const validatedBody: RejectRequest = validationResult.data;
     const { rejection_reason, staff_id } = validatedBody;
 
-    const updated = db.membershipApplications.updateStatus(id, 'rejected');
+    const updated = db.membershipApplications.updateStatus(id, '否認');
     if (!updated) {
       return NextResponse.json({ error: 'Application not found' }, { status: 404 });
     }
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const response: RejectResponse = {
       success: true,
       application_id: id,
-      status: 'rejected',
+      status: '否認',
       rejected_at: new Date().toISOString(),
       rejected_by: staff_id || 'staff-001',
       rejection_reason: rejection_reason,

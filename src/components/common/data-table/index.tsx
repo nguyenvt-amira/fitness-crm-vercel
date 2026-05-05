@@ -54,6 +54,7 @@ interface DataTableProps<TData, TValue> {
   tableOptions?: Omit<Partial<TableOptions<TData>>, 'data' | 'columns'>;
   containerClassName?: string;
   tableSize?: 'default' | 'md';
+  getRowClassName?: (row: TData) => string | undefined;
 }
 
 export function DataTable<TData, TValue>({
@@ -75,6 +76,7 @@ export function DataTable<TData, TValue>({
   tableOptions,
   containerClassName,
   tableSize = 'default',
+  getRowClassName,
 }: Readonly<DataTableProps<TData, TValue>>) {
   const table = useReactTable({
     data,
@@ -139,7 +141,10 @@ export function DataTable<TData, TValue>({
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
                   onClick={() => onRowClick?.(row.original)}
-                  className={onRowClick ? 'cursor-pointer' : ''}
+                  className={cn(
+                    onRowClick ? 'cursor-pointer' : '',
+                    getRowClassName?.(row.original) ?? '',
+                  )}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
@@ -219,7 +224,10 @@ export function DataTable<TData, TValue>({
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
                     onClick={() => onRowClick?.(row.original)}
-                    className={onRowClick ? 'cursor-pointer' : ''}
+                    className={cn(
+                      onRowClick ? 'cursor-pointer' : '',
+                      getRowClassName?.(row.original) ?? '',
+                    )}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell

@@ -111,8 +111,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         payment_status: 'pending',
         risk_details: [
           {
-            reason: application.risk_reason,
-            score: application.risk_score,
+            reason: 'none',
+            score: 0,
             description: 'リスク詳細の説明',
           },
         ],
@@ -123,7 +123,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         contract_details: {
           plan_id: details?.contract_details?.plan_id ?? 'plan-001',
           plan_name: details?.contract_details?.plan_name ?? application.plan_name,
-          start_date: details?.contract_details?.start_date ?? application.scheduled_start_date,
+          start_date: details?.contract_details?.start_date ?? application.start_date,
           monthly_fee: 5000,
           contract_period: 12,
           option_ids: details?.contract_details?.option_ids ?? [],
@@ -163,7 +163,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       (existing as any).applicant_name = validatedBody.basic.applicant_name;
     }
     if (validatedBody.contract?.start_date) {
-      (existing as any).scheduled_start_date = validatedBody.contract.start_date;
+      (existing as any).start_date = validatedBody.contract.start_date;
     }
     if (validatedBody.contract?.plan_name) {
       (existing as any).plan_name = validatedBody.contract.plan_name;

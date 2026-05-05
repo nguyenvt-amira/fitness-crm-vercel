@@ -62,12 +62,11 @@ export default function MembershipApplicationDetailPage() {
 
   const application = data.application;
   const statusLabels: Record<string, string> = {
-    pending: '要確認',
-    payment_failed: '決済失敗',
-    auto_approved: '自動承認済み',
-    manual_approved: '手動承認済み',
-    rejected: '却下',
-    cancelled: 'キャンセル',
+    未審査: '未審査',
+    審査中: '審査中',
+    承認済: '承認済',
+    否認: '否認',
+    取り消し済: '取り消し済',
   };
 
   return (
@@ -106,10 +105,10 @@ export default function MembershipApplicationDetailPage() {
         <BasicInfoCard application={application} statusLabels={statusLabels} />
 
         {/* Risk Details Section */}
-        {(application.risk_score > 0 || application.ekyc) && (
+        {application.ekyc && (
           <RiskDetailsSection
-            riskScore={application.risk_score}
-            riskReason={application.risk_reason}
+            riskScore={0}
+            riskReason={undefined}
             riskDetails={application.risk_details}
             ekyc={application.ekyc}
           />

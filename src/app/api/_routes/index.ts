@@ -71,11 +71,8 @@ import '@/app/api/crm/membership-applications/[id]/approve/route';
 import '@/app/api/crm/membership-applications/[id]/cancel/route';
 import '@/app/api/crm/membership-applications/[id]/reject/route';
 import '@/app/api/crm/membership-applications/[id]/route';
-import '@/app/api/crm/membership-applications/bulk-approve/route';
-import '@/app/api/crm/membership-applications/bulk-reject/route';
 // Import membership applications routes
 import '@/app/api/crm/membership-applications/route';
-import '@/app/api/crm/membership-applications/summary/route';
 import '@/app/api/crm/options/route';
 // Import staffs routes
 import '@/app/api/crm/positions/route';

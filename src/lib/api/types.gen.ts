@@ -3686,7 +3686,7 @@ export type GetBodyDataResponse = {
 /**
  * MembershipApplication
  *
- * Membership application information
+ * Membership application list item
  */
 export type MembershipApplication = {
     /**
@@ -3698,41 +3698,45 @@ export type MembershipApplication = {
      */
     applicant_name: string;
     /**
-     * Application date and time
+     * Application status
      */
-    applied_at: string;
+    status: '未審査' | '審査中' | '承認済' | '否認' | '取り消し済';
     /**
-     * Elapsed time since application
+     * Whether applicant matched blacklist
      */
-    elapsed_time?: string;
+    blacklist_match: boolean;
     /**
-     * Risk score (0-100)
+     * Brand name
      */
-    risk_score: number;
+    brand_name: string;
     /**
-     * Risk reason
+     * Store name
      */
-    risk_reason: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'document_issue' | 'other';
+    store_name: string;
     /**
      * Plan name
      */
     plan_name: string;
     /**
+     * Campaign name (なし when none)
+     */
+    campaign: string;
+    /**
+     * Application date and time
+     */
+    application_date: string;
+    /**
      * Scheduled start date
      */
-    scheduled_start_date: string;
+    start_date: string;
     /**
-     * Application status
+     * Whether applicant is a minor
      */
-    status: 'payment_failed' | 'pending' | 'auto_approved' | 'manual_approved' | 'rejected' | 'cancelled';
+    is_minor?: boolean;
     /**
-     * Payment failed deadline
+     * Whether this is a proxy application
      */
-    payment_failed_deadline?: string;
-    /**
-     * Pending deadline
-     */
-    pending_deadline?: string;
+    is_proxy?: boolean;
 };
 
 /**
@@ -3768,12 +3772,11 @@ export const MembershipApplicationPaymentStatus = {
 export type MembershipApplicationPaymentStatus = typeof MembershipApplicationPaymentStatus[keyof typeof MembershipApplicationPaymentStatus];
 
 export const MembershipApplicationStatus = {
-    PAYMENT_FAILED: 'payment_failed',
-    PENDING: 'pending',
-    AUTO_APPROVED: 'auto_approved',
-    MANUAL_APPROVED: 'manual_approved',
-    REJECTED: 'rejected',
-    CANCELLED: 'cancelled'
+    未審査: '未審査',
+    審査中: '審査中',
+    承認済: '承認済',
+    否認: '否認',
+    取り消し済: '取り消し済'
 } as const;
 
 export type MembershipApplicationStatus = typeof MembershipApplicationStatus[keyof typeof MembershipApplicationStatus];
@@ -3806,21 +3809,37 @@ export type GetMembershipApplicationsQuery = {
     /**
      * Filter by status
      */
-    status?: 'payment_failed' | 'pending' | 'auto_approved' | 'manual_approved' | 'rejected' | 'cancelled';
+    status?: '未審査' | '審査中' | '承認済' | '否認' | '取り消し済';
     /**
-     * Filter by risk reason
+     * Filter by brand name
      */
-    risk_reason?: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'document_issue' | 'other';
+    brand?: string;
+    /**
+     * Filter by store name
+     */
+    store?: string;
+    /**
+     * Filter by blacklist match
+     */
+    blacklist?: 'all' | 'match' | 'no_match';
+    /**
+     * Application date range start (YYYY-MM-DD)
+     */
+    date_from?: string;
+    /**
+     * Application date range end (YYYY-MM-DD)
+     */
+    date_to?: string;
     /**
      * Sort field
      */
-    sort_by?: 'applied_at' | 'risk_score' | 'pending_deadline';
+    sort_by?: 'application_date';
     /**
      * Sort order
      */
     sort_order?: 'asc' | 'desc';
     /**
-     * Search query
+     * Search query (ID or name)
      */
     search?: string;
 };
@@ -3844,41 +3863,45 @@ export type GetMembershipApplicationsResponse = {
          */
         applicant_name: string;
         /**
-         * Application date and time
+         * Application status
          */
-        applied_at: string;
+        status: '未審査' | '審査中' | '承認済' | '否認' | '取り消し済';
         /**
-         * Elapsed time since application
+         * Whether applicant matched blacklist
          */
-        elapsed_time?: string;
+        blacklist_match: boolean;
         /**
-         * Risk score (0-100)
+         * Brand name
          */
-        risk_score: number;
+        brand_name: string;
         /**
-         * Risk reason
+         * Store name
          */
-        risk_reason: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'document_issue' | 'other';
+        store_name: string;
         /**
          * Plan name
          */
         plan_name: string;
         /**
+         * Campaign name (なし when none)
+         */
+        campaign: string;
+        /**
+         * Application date and time
+         */
+        application_date: string;
+        /**
          * Scheduled start date
          */
-        scheduled_start_date: string;
+        start_date: string;
         /**
-         * Application status
+         * Whether applicant is a minor
          */
-        status: 'payment_failed' | 'pending' | 'auto_approved' | 'manual_approved' | 'rejected' | 'cancelled';
+        is_minor?: boolean;
         /**
-         * Payment failed deadline
+         * Whether this is a proxy application
          */
-        payment_failed_deadline?: string;
-        /**
-         * Pending deadline
-         */
-        pending_deadline?: string;
+        is_proxy?: boolean;
     }>;
     /**
      * Pagination
@@ -3906,526 +3929,6 @@ export type GetMembershipApplicationsResponse = {
 };
 
 /**
- * AutoJudgeRequest
- *
- * Request payload for auto-judge
- */
-export type AutoJudgeRequest = {
-    /**
-     * List of application IDs to auto-judge
-     */
-    application_ids: Array<string>;
-};
-
-/**
- * AutoJudgeResponse
- *
- * Response for auto-judge operation
- */
-export type AutoJudgeResponse = {
-    /**
-     * Auto-judge results
-     */
-    results: Array<{
-        /**
-         * Application ID
-         */
-        application_id: string;
-        /**
-         * Whether the application was approved
-         */
-        approved: boolean;
-        /**
-         * Risk score
-         */
-        risk_score: number;
-        /**
-         * Reason for the decision
-         */
-        reason: string;
-    }>;
-    /**
-     * Summary of auto-judge results
-     */
-    summary: {
-        /**
-         * Total number of applications
-         */
-        total: number;
-        /**
-         * Number of approved applications
-         */
-        approved: number;
-        /**
-         * Number of rejected applications
-         */
-        rejected: number;
-    };
-};
-
-/**
- * GetSummaryQuery
- *
- * Query parameters for getting summary
- */
-export type GetSummaryQuery = {
-    /**
-     * Time period
-     */
-    period?: 'day' | 'week' | 'month';
-    /**
-     * Start date (overrides period)
-     */
-    start_date?: string;
-    /**
-     * End date (overrides period)
-     */
-    end_date?: string;
-};
-
-/**
- * GetSummaryResponse
- *
- * Response for getting summary
- */
-export type GetSummaryResponse = {
-    /**
-     * MembershipApplicationSummary
-     *
-     * Summary information
-     */
-    summary: {
-        /**
-         * Total number of applications
-         */
-        total_applications: number;
-        /**
-         * Auto approval rate (%)
-         */
-        auto_approval_rate: number;
-        /**
-         * Number of auto-approved applications
-         */
-        auto_approval_count: number;
-        /**
-         * Average processing time
-         */
-        avg_processing_time: string;
-        /**
-         * Number of payment failed applications
-         */
-        payment_failed_count: number;
-        /**
-         * Payment failed deadline
-         */
-        payment_failed_deadline?: string;
-        /**
-         * Number of pending applications
-         */
-        pending_count: number;
-        /**
-         * Pending deadline
-         */
-        pending_deadline?: string;
-        /**
-         * RiskReasonsBreakdown
-         *
-         * Breakdown of risk reasons
-         */
-        risk_reasons_breakdown: {
-            /**
-             * Blacklist match count
-             */
-            blacklist_match: number;
-            /**
-             * Duplicate application count
-             */
-            duplicate_application: number;
-            /**
-             * Payment failure count
-             */
-            payment_failure: number;
-            /**
-             * High risk score count
-             */
-            high_risk_score: number;
-            /**
-             * Document issue count
-             */
-            document_issue: number;
-            /**
-             * Other risk reasons count
-             */
-            other: number;
-        };
-        /**
-         * Number of auto-approved applications today
-         */
-        auto_approved_today_count: number;
-        /**
-         * Auto approval rate today (%)
-         */
-        auto_approved_today_rate: number;
-        /**
-         * Number of manually approved applications
-         */
-        manual_approved_count: number;
-        /**
-         * Total number of rejected applications
-         */
-        rejected_count: number;
-        /**
-         * Number of auto-rejected applications
-         */
-        rejected_auto_count: number;
-        /**
-         * Number of manually rejected applications
-         */
-        rejected_manual_count: number;
-        /**
-         * Date range start
-         */
-        date_range_start: string;
-        /**
-         * Date range end
-         */
-        date_range_end: string;
-    };
-    /**
-     * List of alerts
-     */
-    alerts: Array<{
-        /**
-         * Alert title
-         */
-        title: string;
-        /**
-         * Alert description
-         */
-        description: string;
-        /**
-         * Alert type
-         */
-        type: 'payment_failed' | 'pending' | 'high_risk' | 'all';
-        /**
-         * Number of items
-         */
-        count: number;
-        /**
-         * Deadline
-         */
-        deadline?: string;
-    }>;
-};
-
-/**
- * MembershipApplicationSummary
- *
- * Summary of membership applications
- */
-export type MembershipApplicationSummary = {
-    /**
-     * Total number of applications
-     */
-    total_applications: number;
-    /**
-     * Auto approval rate (%)
-     */
-    auto_approval_rate: number;
-    /**
-     * Number of auto-approved applications
-     */
-    auto_approval_count: number;
-    /**
-     * Average processing time
-     */
-    avg_processing_time: string;
-    /**
-     * Number of payment failed applications
-     */
-    payment_failed_count: number;
-    /**
-     * Payment failed deadline
-     */
-    payment_failed_deadline?: string;
-    /**
-     * Number of pending applications
-     */
-    pending_count: number;
-    /**
-     * Pending deadline
-     */
-    pending_deadline?: string;
-    /**
-     * RiskReasonsBreakdown
-     *
-     * Breakdown of risk reasons
-     */
-    risk_reasons_breakdown: {
-        /**
-         * Blacklist match count
-         */
-        blacklist_match: number;
-        /**
-         * Duplicate application count
-         */
-        duplicate_application: number;
-        /**
-         * Payment failure count
-         */
-        payment_failure: number;
-        /**
-         * High risk score count
-         */
-        high_risk_score: number;
-        /**
-         * Document issue count
-         */
-        document_issue: number;
-        /**
-         * Other risk reasons count
-         */
-        other: number;
-    };
-    /**
-     * Number of auto-approved applications today
-     */
-    auto_approved_today_count: number;
-    /**
-     * Auto approval rate today (%)
-     */
-    auto_approved_today_rate: number;
-    /**
-     * Number of manually approved applications
-     */
-    manual_approved_count: number;
-    /**
-     * Total number of rejected applications
-     */
-    rejected_count: number;
-    /**
-     * Number of auto-rejected applications
-     */
-    rejected_auto_count: number;
-    /**
-     * Number of manually rejected applications
-     */
-    rejected_manual_count: number;
-    /**
-     * Date range start
-     */
-    date_range_start: string;
-    /**
-     * Date range end
-     */
-    date_range_end: string;
-};
-
-/**
- * MembershipApplicationAlert
- *
- * Alert information
- */
-export type MembershipApplicationAlert = {
-    /**
-     * Alert title
-     */
-    title: string;
-    /**
-     * Alert description
-     */
-    description: string;
-    /**
-     * Alert type
-     */
-    type: 'payment_failed' | 'pending' | 'high_risk' | 'all';
-    /**
-     * Number of items
-     */
-    count: number;
-    /**
-     * Deadline
-     */
-    deadline?: string;
-};
-
-/**
- * RiskReasonsBreakdown
- *
- * Breakdown of risk reasons
- */
-export type RiskReasonsBreakdown = {
-    /**
-     * Blacklist match count
-     */
-    blacklist_match: number;
-    /**
-     * Duplicate application count
-     */
-    duplicate_application: number;
-    /**
-     * Payment failure count
-     */
-    payment_failure: number;
-    /**
-     * High risk score count
-     */
-    high_risk_score: number;
-    /**
-     * Document issue count
-     */
-    document_issue: number;
-    /**
-     * Other risk reasons count
-     */
-    other: number;
-};
-
-/**
- * BulkApproveRequest
- *
- * Request payload for bulk approval
- */
-export type BulkApproveRequest = {
-    /**
-     * List of application IDs to approve
-     */
-    application_ids: Array<string>;
-    /**
-     * Approval reason
-     */
-    approval_reason?: string;
-};
-
-/**
- * BulkApproveResponse
- *
- * Response for bulk approve operation
- */
-export type BulkApproveResponse = {
-    /**
-     * Whether the operation was successful
-     */
-    success: boolean;
-    /**
-     * Bulk approve results
-     */
-    results: Array<{
-        /**
-         * Application ID
-         */
-        application_id: string;
-        /**
-         * Whether the application was approved
-         */
-        approved: boolean;
-        /**
-         * Approval date and time
-         */
-        approved_at: string;
-    }>;
-    /**
-     * Summary of bulk approve results
-     */
-    summary: {
-        /**
-         * Total number of applications
-         */
-        total: number;
-        /**
-         * Number of approved applications
-         */
-        approved: number;
-        /**
-         * Number of failed applications
-         */
-        failed: number;
-    };
-    /**
-     * Approval reason
-     */
-    approval_reason?: string;
-};
-
-/**
- * BulkRejectRequest
- *
- * Request payload for bulk rejection
- */
-export type BulkRejectRequest = {
-    /**
-     * List of application IDs to reject
-     */
-    application_ids: Array<string>;
-    /**
-     * Rejection reason
-     */
-    rejection_reason: string;
-    /**
-     * Staff ID who rejected
-     */
-    staff_id?: string;
-};
-
-/**
- * BulkRejectResponse
- *
- * Response for bulk reject operation
- */
-export type BulkRejectResponse = {
-    /**
-     * Whether the operation was successful
-     */
-    success: boolean;
-    /**
-     * Bulk reject results
-     */
-    results: Array<{
-        /**
-         * Application ID
-         */
-        application_id: string;
-        /**
-         * Whether the application was rejected
-         */
-        rejected: boolean;
-        /**
-         * Rejection date and time
-         */
-        rejected_at?: string;
-        /**
-         * Error message if rejection failed for this item
-         */
-        error?: string;
-    }>;
-    /**
-     * Summary of bulk reject results
-     */
-    summary: {
-        /**
-         * Total number of applications
-         */
-        total: number;
-        /**
-         * Number of rejected applications
-         */
-        rejected: number;
-        /**
-         * Number of failed applications
-         */
-        failed: number;
-    };
-    /**
-     * Rejection reason
-     */
-    rejection_reason: string;
-    /**
-     * Staff ID who rejected
-     */
-    rejected_by: string;
-};
-
-/**
  * GetApplicationDetailResponse
  *
  * Response for getting application detail
@@ -4446,41 +3949,45 @@ export type GetApplicationDetailResponse = {
          */
         applicant_name: string;
         /**
-         * Application date and time
+         * Application status
          */
-        applied_at: string;
+        status: '未審査' | '審査中' | '承認済' | '否認' | '取り消し済';
         /**
-         * Elapsed time since application
+         * Whether applicant matched blacklist
          */
-        elapsed_time?: string;
+        blacklist_match: boolean;
         /**
-         * Risk score (0-100)
+         * Brand name
          */
-        risk_score: number;
+        brand_name: string;
         /**
-         * Risk reason
+         * Store name
          */
-        risk_reason: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'document_issue' | 'other';
+        store_name: string;
         /**
          * Plan name
          */
         plan_name: string;
         /**
+         * Campaign name (なし when none)
+         */
+        campaign: string;
+        /**
+         * Application date and time
+         */
+        application_date: string;
+        /**
          * Scheduled start date
          */
-        scheduled_start_date: string;
+        start_date: string;
         /**
-         * Application status
+         * Whether applicant is a minor
          */
-        status: 'payment_failed' | 'pending' | 'auto_approved' | 'manual_approved' | 'rejected' | 'cancelled';
+        is_minor?: boolean;
         /**
-         * Payment failed deadline
+         * Whether this is a proxy application
          */
-        payment_failed_deadline?: string;
-        /**
-         * Pending deadline
-         */
-        pending_deadline?: string;
+        is_proxy?: boolean;
         /**
          * Gender
          */
@@ -4746,7 +4253,7 @@ export type ApproveResponse = {
     /**
      * New application status
      */
-    status: 'manual_approved';
+    status: '承認済';
     /**
      * Approval date and time
      */
@@ -4798,7 +4305,7 @@ export type RejectResponse = {
     /**
      * New application status
      */
-    status: 'rejected';
+    status: '否認';
     /**
      * Rejection date and time
      */
@@ -4846,7 +4353,7 @@ export type CancelResponse = {
     /**
      * New application status
      */
-    status: 'cancelled';
+    status: '取り消し済';
     /**
      * Cancellation date and time
      */
@@ -16557,7 +16064,7 @@ export type PostCrmMembershipApplicationsByIdApproveResponses = {
         /**
          * New application status
          */
-        status: 'manual_approved';
+        status: '承認済';
         /**
          * Approval date and time
          */
@@ -16661,7 +16168,7 @@ export type PostCrmMembershipApplicationsByIdCancelResponses = {
         /**
          * New application status
          */
-        status: 'cancelled';
+        status: '取り消し済';
         /**
          * Cancellation date and time
          */
@@ -16769,7 +16276,7 @@ export type PostCrmMembershipApplicationsByIdRejectResponses = {
         /**
          * New application status
          */
-        status: 'rejected';
+        status: '否認';
         /**
          * Rejection date and time
          */
@@ -16848,41 +16355,45 @@ export type GetCrmMembershipApplicationsByIdResponses = {
              */
             applicant_name: string;
             /**
-             * Application date and time
+             * Application status
              */
-            applied_at: string;
+            status: '未審査' | '審査中' | '承認済' | '否認' | '取り消し済';
             /**
-             * Elapsed time since application
+             * Whether applicant matched blacklist
              */
-            elapsed_time?: string;
+            blacklist_match: boolean;
             /**
-             * Risk score (0-100)
+             * Brand name
              */
-            risk_score: number;
+            brand_name: string;
             /**
-             * Risk reason
+             * Store name
              */
-            risk_reason: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'document_issue' | 'other';
+            store_name: string;
             /**
              * Plan name
              */
             plan_name: string;
             /**
+             * Campaign name (なし when none)
+             */
+            campaign: string;
+            /**
+             * Application date and time
+             */
+            application_date: string;
+            /**
              * Scheduled start date
              */
-            scheduled_start_date: string;
+            start_date: string;
             /**
-             * Application status
+             * Whether applicant is a minor
              */
-            status: 'payment_failed' | 'pending' | 'auto_approved' | 'manual_approved' | 'rejected' | 'cancelled';
+            is_minor?: boolean;
             /**
-             * Payment failed deadline
+             * Whether this is a proxy application
              */
-            payment_failed_deadline?: string;
-            /**
-             * Pending deadline
-             */
-            pending_deadline?: string;
+            is_proxy?: boolean;
             /**
              * Gender
              */
@@ -17170,222 +16681,6 @@ export type PatchCrmMembershipApplicationsByIdResponses = {
 
 export type PatchCrmMembershipApplicationsByIdResponse = PatchCrmMembershipApplicationsByIdResponses[keyof PatchCrmMembershipApplicationsByIdResponses];
 
-export type PostCrmMembershipApplicationsBulkApproveData = {
-    /**
-     * BulkApproveRequest
-     *
-     * Request payload for bulk approval
-     */
-    body?: {
-        /**
-         * List of application IDs to approve
-         */
-        application_ids: Array<string>;
-        /**
-         * Approval reason
-         */
-        approval_reason?: string;
-    };
-    path?: never;
-    query?: never;
-    url: '/crm/membership-applications/bulk-approve';
-};
-
-export type PostCrmMembershipApplicationsBulkApproveErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    400: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type PostCrmMembershipApplicationsBulkApproveError = PostCrmMembershipApplicationsBulkApproveErrors[keyof PostCrmMembershipApplicationsBulkApproveErrors];
-
-export type PostCrmMembershipApplicationsBulkApproveResponses = {
-    /**
-     * BulkApproveResponse
-     *
-     * Response for bulk approve operation
-     */
-    200: {
-        /**
-         * Whether the operation was successful
-         */
-        success: boolean;
-        /**
-         * Bulk approve results
-         */
-        results: Array<{
-            /**
-             * Application ID
-             */
-            application_id: string;
-            /**
-             * Whether the application was approved
-             */
-            approved: boolean;
-            /**
-             * Approval date and time
-             */
-            approved_at: string;
-        }>;
-        /**
-         * Summary of bulk approve results
-         */
-        summary: {
-            /**
-             * Total number of applications
-             */
-            total: number;
-            /**
-             * Number of approved applications
-             */
-            approved: number;
-            /**
-             * Number of failed applications
-             */
-            failed: number;
-        };
-        /**
-         * Approval reason
-         */
-        approval_reason?: string;
-    };
-};
-
-export type PostCrmMembershipApplicationsBulkApproveResponse = PostCrmMembershipApplicationsBulkApproveResponses[keyof PostCrmMembershipApplicationsBulkApproveResponses];
-
-export type PostCrmMembershipApplicationsBulkRejectData = {
-    /**
-     * BulkRejectRequest
-     *
-     * Request payload for bulk rejection
-     */
-    body?: {
-        /**
-         * List of application IDs to reject
-         */
-        application_ids: Array<string>;
-        /**
-         * Rejection reason
-         */
-        rejection_reason: string;
-        /**
-         * Staff ID who rejected
-         */
-        staff_id?: string;
-    };
-    path?: never;
-    query?: never;
-    url: '/crm/membership-applications/bulk-reject';
-};
-
-export type PostCrmMembershipApplicationsBulkRejectErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    400: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type PostCrmMembershipApplicationsBulkRejectError = PostCrmMembershipApplicationsBulkRejectErrors[keyof PostCrmMembershipApplicationsBulkRejectErrors];
-
-export type PostCrmMembershipApplicationsBulkRejectResponses = {
-    /**
-     * BulkRejectResponse
-     *
-     * Response for bulk reject operation
-     */
-    200: {
-        /**
-         * Whether the operation was successful
-         */
-        success: boolean;
-        /**
-         * Bulk reject results
-         */
-        results: Array<{
-            /**
-             * Application ID
-             */
-            application_id: string;
-            /**
-             * Whether the application was rejected
-             */
-            rejected: boolean;
-            /**
-             * Rejection date and time
-             */
-            rejected_at?: string;
-            /**
-             * Error message if rejection failed for this item
-             */
-            error?: string;
-        }>;
-        /**
-         * Summary of bulk reject results
-         */
-        summary: {
-            /**
-             * Total number of applications
-             */
-            total: number;
-            /**
-             * Number of rejected applications
-             */
-            rejected: number;
-            /**
-             * Number of failed applications
-             */
-            failed: number;
-        };
-        /**
-         * Rejection reason
-         */
-        rejection_reason: string;
-        /**
-         * Staff ID who rejected
-         */
-        rejected_by: string;
-    };
-};
-
-export type PostCrmMembershipApplicationsBulkRejectResponse = PostCrmMembershipApplicationsBulkRejectResponses[keyof PostCrmMembershipApplicationsBulkRejectResponses];
-
 export type GetCrmMembershipApplicationsData = {
     body?: never;
     path?: never;
@@ -17401,21 +16696,37 @@ export type GetCrmMembershipApplicationsData = {
         /**
          * Filter by status
          */
-        status?: 'payment_failed' | 'pending' | 'auto_approved' | 'manual_approved' | 'rejected' | 'cancelled';
+        status?: '未審査' | '審査中' | '承認済' | '否認' | '取り消し済';
         /**
-         * Filter by risk reason
+         * Filter by brand name
          */
-        risk_reason?: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'document_issue' | 'other';
+        brand?: string;
+        /**
+         * Filter by store name
+         */
+        store?: string;
+        /**
+         * Filter by blacklist match
+         */
+        blacklist?: 'all' | 'match' | 'no_match';
+        /**
+         * Application date range start (YYYY-MM-DD)
+         */
+        date_from?: string;
+        /**
+         * Application date range end (YYYY-MM-DD)
+         */
+        date_to?: string;
         /**
          * Sort field
          */
-        sort_by?: 'applied_at' | 'risk_score' | 'pending_deadline';
+        sort_by?: 'application_date';
         /**
          * Sort order
          */
         sort_order?: 'asc' | 'desc';
         /**
-         * Search query
+         * Search query (ID or name)
          */
         search?: string;
     };
@@ -17469,41 +16780,45 @@ export type GetCrmMembershipApplicationsResponses = {
              */
             applicant_name: string;
             /**
-             * Application date and time
+             * Application status
              */
-            applied_at: string;
+            status: '未審査' | '審査中' | '承認済' | '否認' | '取り消し済';
             /**
-             * Elapsed time since application
+             * Whether applicant matched blacklist
              */
-            elapsed_time?: string;
+            blacklist_match: boolean;
             /**
-             * Risk score (0-100)
+             * Brand name
              */
-            risk_score: number;
+            brand_name: string;
             /**
-             * Risk reason
+             * Store name
              */
-            risk_reason: 'blacklist_match' | 'duplicate_application' | 'payment_failure' | 'high_risk_score' | 'document_issue' | 'other';
+            store_name: string;
             /**
              * Plan name
              */
             plan_name: string;
             /**
+             * Campaign name (なし when none)
+             */
+            campaign: string;
+            /**
+             * Application date and time
+             */
+            application_date: string;
+            /**
              * Scheduled start date
              */
-            scheduled_start_date: string;
+            start_date: string;
             /**
-             * Application status
+             * Whether applicant is a minor
              */
-            status: 'payment_failed' | 'pending' | 'auto_approved' | 'manual_approved' | 'rejected' | 'cancelled';
+            is_minor?: boolean;
             /**
-             * Payment failed deadline
+             * Whether this is a proxy application
              */
-            payment_failed_deadline?: string;
-            /**
-             * Pending deadline
-             */
-            pending_deadline?: string;
+            is_proxy?: boolean;
         }>;
         /**
          * Pagination
@@ -17532,286 +16847,6 @@ export type GetCrmMembershipApplicationsResponses = {
 };
 
 export type GetCrmMembershipApplicationsResponse = GetCrmMembershipApplicationsResponses[keyof GetCrmMembershipApplicationsResponses];
-
-export type PostCrmMembershipApplicationsData = {
-    /**
-     * AutoJudgeRequest
-     *
-     * Request payload for auto-judge
-     */
-    body?: {
-        /**
-         * List of application IDs to auto-judge
-         */
-        application_ids: Array<string>;
-    };
-    path?: never;
-    query?: never;
-    url: '/crm/membership-applications';
-};
-
-export type PostCrmMembershipApplicationsErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    400: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type PostCrmMembershipApplicationsError = PostCrmMembershipApplicationsErrors[keyof PostCrmMembershipApplicationsErrors];
-
-export type PostCrmMembershipApplicationsResponses = {
-    /**
-     * AutoJudgeResponse
-     *
-     * Response for auto-judge operation
-     */
-    200: {
-        /**
-         * Auto-judge results
-         */
-        results: Array<{
-            /**
-             * Application ID
-             */
-            application_id: string;
-            /**
-             * Whether the application was approved
-             */
-            approved: boolean;
-            /**
-             * Risk score
-             */
-            risk_score: number;
-            /**
-             * Reason for the decision
-             */
-            reason: string;
-        }>;
-        /**
-         * Summary of auto-judge results
-         */
-        summary: {
-            /**
-             * Total number of applications
-             */
-            total: number;
-            /**
-             * Number of approved applications
-             */
-            approved: number;
-            /**
-             * Number of rejected applications
-             */
-            rejected: number;
-        };
-    };
-};
-
-export type PostCrmMembershipApplicationsResponse = PostCrmMembershipApplicationsResponses[keyof PostCrmMembershipApplicationsResponses];
-
-export type GetCrmMembershipApplicationsSummaryData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * Time period
-         */
-        period?: 'day' | 'week' | 'month';
-        /**
-         * Start date (overrides period)
-         */
-        start_date?: string;
-        /**
-         * End date (overrides period)
-         */
-        end_date?: string;
-    };
-    url: '/crm/membership-applications/summary';
-};
-
-export type GetCrmMembershipApplicationsSummaryErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    400: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type GetCrmMembershipApplicationsSummaryError = GetCrmMembershipApplicationsSummaryErrors[keyof GetCrmMembershipApplicationsSummaryErrors];
-
-export type GetCrmMembershipApplicationsSummaryResponses = {
-    /**
-     * GetSummaryResponse
-     *
-     * Response for getting summary
-     */
-    200: {
-        /**
-         * MembershipApplicationSummary
-         *
-         * Summary information
-         */
-        summary: {
-            /**
-             * Total number of applications
-             */
-            total_applications: number;
-            /**
-             * Auto approval rate (%)
-             */
-            auto_approval_rate: number;
-            /**
-             * Number of auto-approved applications
-             */
-            auto_approval_count: number;
-            /**
-             * Average processing time
-             */
-            avg_processing_time: string;
-            /**
-             * Number of payment failed applications
-             */
-            payment_failed_count: number;
-            /**
-             * Payment failed deadline
-             */
-            payment_failed_deadline?: string;
-            /**
-             * Number of pending applications
-             */
-            pending_count: number;
-            /**
-             * Pending deadline
-             */
-            pending_deadline?: string;
-            /**
-             * RiskReasonsBreakdown
-             *
-             * Breakdown of risk reasons
-             */
-            risk_reasons_breakdown: {
-                /**
-                 * Blacklist match count
-                 */
-                blacklist_match: number;
-                /**
-                 * Duplicate application count
-                 */
-                duplicate_application: number;
-                /**
-                 * Payment failure count
-                 */
-                payment_failure: number;
-                /**
-                 * High risk score count
-                 */
-                high_risk_score: number;
-                /**
-                 * Document issue count
-                 */
-                document_issue: number;
-                /**
-                 * Other risk reasons count
-                 */
-                other: number;
-            };
-            /**
-             * Number of auto-approved applications today
-             */
-            auto_approved_today_count: number;
-            /**
-             * Auto approval rate today (%)
-             */
-            auto_approved_today_rate: number;
-            /**
-             * Number of manually approved applications
-             */
-            manual_approved_count: number;
-            /**
-             * Total number of rejected applications
-             */
-            rejected_count: number;
-            /**
-             * Number of auto-rejected applications
-             */
-            rejected_auto_count: number;
-            /**
-             * Number of manually rejected applications
-             */
-            rejected_manual_count: number;
-            /**
-             * Date range start
-             */
-            date_range_start: string;
-            /**
-             * Date range end
-             */
-            date_range_end: string;
-        };
-        /**
-         * List of alerts
-         */
-        alerts: Array<{
-            /**
-             * Alert title
-             */
-            title: string;
-            /**
-             * Alert description
-             */
-            description: string;
-            /**
-             * Alert type
-             */
-            type: 'payment_failed' | 'pending' | 'high_risk' | 'all';
-            /**
-             * Number of items
-             */
-            count: number;
-            /**
-             * Deadline
-             */
-            deadline?: string;
-        }>;
-    };
-};
-
-export type GetCrmMembershipApplicationsSummaryResponse = GetCrmMembershipApplicationsSummaryResponses[keyof GetCrmMembershipApplicationsSummaryResponses];
 
 export type GetCrmOptionsData = {
     body?: never;
