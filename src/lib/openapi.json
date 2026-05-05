@@ -11820,6 +11820,300 @@
         "required": ["message"],
         "title": "DeleteStaffResponse",
         "description": "Response after deleting a staff member"
+      },
+      "LeaveType": {
+        "type": "string",
+        "enum": ["suspension", "withdrawal"],
+        "title": "LeaveType",
+        "description": "Leave type: suspension=休会, withdrawal=退会"
+      },
+      "LeaveStatus": {
+        "type": "string",
+        "enum": [
+          "suspension_scheduled",
+          "suspended",
+          "withdrawal_scheduled",
+          "withdrawal_pending",
+          "completed"
+        ],
+        "title": "LeaveStatus",
+        "description": "Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了"
+      },
+      "LeaveListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "LV-001",
+            "description": "申請ID"
+          },
+          "member_id": {
+            "type": "string",
+            "example": "M-00101",
+            "description": "会員ID"
+          },
+          "member_name": {
+            "type": "string",
+            "example": "田中 次郎",
+            "description": "会員名"
+          },
+          "brand": {
+            "type": "string",
+            "example": "JOYFIT",
+            "description": "ブランド"
+          },
+          "store_id": {
+            "type": "string",
+            "example": "store-006",
+            "description": "店舗ID"
+          },
+          "store_name": {
+            "type": "string",
+            "example": "JOYFIT24新宿店",
+            "description": "店舗名"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["suspension", "withdrawal"],
+            "title": "LeaveType",
+            "description": "Leave type: suspension=休会, withdrawal=退会"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "suspension_scheduled",
+              "suspended",
+              "withdrawal_scheduled",
+              "withdrawal_pending",
+              "completed"
+            ],
+            "title": "LeaveStatus",
+            "description": "Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了"
+          },
+          "applied_at": {
+            "type": "string",
+            "example": "2026/03/20",
+            "description": "申請日"
+          },
+          "scheduled_date": {
+            "type": "string",
+            "example": "2026/04",
+            "description": "予定日（休会開始日/退会予定日）"
+          },
+          "end_date": {
+            "type": "string",
+            "nullable": true,
+            "example": "2026/06",
+            "description": "終了日（休会終了月）"
+          },
+          "unpaid_amount": {
+            "type": "number",
+            "example": 0,
+            "description": "未納金額（円）"
+          }
+        },
+        "required": [
+          "id",
+          "member_id",
+          "member_name",
+          "brand",
+          "store_id",
+          "store_name",
+          "type",
+          "status",
+          "applied_at",
+          "scheduled_date",
+          "end_date",
+          "unpaid_amount"
+        ],
+        "title": "LeaveListItem"
+      },
+      "GetLeavesQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "example": "1",
+            "description": "ページ番号"
+          },
+          "limit": {
+            "type": "string",
+            "example": "20",
+            "description": "1ページあたりの件数"
+          },
+          "search": {
+            "type": "string",
+            "example": "LV-001",
+            "description": "申請ID・会員名で検索"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["suspension", "withdrawal"],
+            "title": "LeaveType",
+            "description": "種別フィルター"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "suspension_scheduled",
+              "suspended",
+              "withdrawal_scheduled",
+              "withdrawal_pending",
+              "completed"
+            ],
+            "title": "LeaveStatus",
+            "description": "ステータスフィルター"
+          },
+          "brand": {
+            "type": "string",
+            "description": "ブランドフィルター"
+          },
+          "store_id": {
+            "type": "string",
+            "description": "店舗IDフィルター"
+          },
+          "scheduled_period": {
+            "type": "string",
+            "enum": ["current_month", "next_month", "current_year"],
+            "description": "予定期間フィルター"
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": ["id", "applied_at", "scheduled_date"],
+            "description": "ソートフィールド"
+          },
+          "sort_order": {
+            "type": "string",
+            "enum": ["asc", "desc"],
+            "description": "ソート順"
+          }
+        },
+        "title": "GetLeavesQuery"
+      },
+      "GetLeavesResponse": {
+        "type": "object",
+        "properties": {
+          "leaves": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "LV-001",
+                  "description": "申請ID"
+                },
+                "member_id": {
+                  "type": "string",
+                  "example": "M-00101",
+                  "description": "会員ID"
+                },
+                "member_name": {
+                  "type": "string",
+                  "example": "田中 次郎",
+                  "description": "会員名"
+                },
+                "brand": {
+                  "type": "string",
+                  "example": "JOYFIT",
+                  "description": "ブランド"
+                },
+                "store_id": {
+                  "type": "string",
+                  "example": "store-006",
+                  "description": "店舗ID"
+                },
+                "store_name": {
+                  "type": "string",
+                  "example": "JOYFIT24新宿店",
+                  "description": "店舗名"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": ["suspension", "withdrawal"],
+                  "title": "LeaveType",
+                  "description": "Leave type: suspension=休会, withdrawal=退会"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "suspension_scheduled",
+                    "suspended",
+                    "withdrawal_scheduled",
+                    "withdrawal_pending",
+                    "completed"
+                  ],
+                  "title": "LeaveStatus",
+                  "description": "Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了"
+                },
+                "applied_at": {
+                  "type": "string",
+                  "example": "2026/03/20",
+                  "description": "申請日"
+                },
+                "scheduled_date": {
+                  "type": "string",
+                  "example": "2026/04",
+                  "description": "予定日（休会開始日/退会予定日）"
+                },
+                "end_date": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "2026/06",
+                  "description": "終了日（休会終了月）"
+                },
+                "unpaid_amount": {
+                  "type": "number",
+                  "example": 0,
+                  "description": "未納金額（円）"
+                }
+              },
+              "required": [
+                "id",
+                "member_id",
+                "member_name",
+                "brand",
+                "store_id",
+                "store_name",
+                "type",
+                "status",
+                "applied_at",
+                "scheduled_date",
+                "end_date",
+                "unpaid_amount"
+              ],
+              "title": "LeaveListItem"
+            }
+          },
+          "total": {
+            "type": "number",
+            "example": 8
+          },
+          "page": {
+            "type": "number",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "example": 20
+          },
+          "total_pages": {
+            "type": "number",
+            "example": 1
+          }
+        },
+        "required": ["leaves", "total", "page", "limit", "total_pages"],
+        "title": "GetLeavesResponse"
+      },
+      "LeaveErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "required": ["error"],
+        "title": "LeaveErrorResponse"
       }
     },
     "parameters": {}
@@ -15065,6 +15359,289 @@
                   "required": ["error"],
                   "title": "ErrorResponse",
                   "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/leaves": {
+      "get": {
+        "summary": "Get leaves list",
+        "description": "Get paginated list of leave/withdrawal requests with filtering and sorting",
+        "tags": ["Leaves"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "1",
+              "description": "ページ番号"
+            },
+            "required": false,
+            "description": "ページ番号",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "20",
+              "description": "1ページあたりの件数"
+            },
+            "required": false,
+            "description": "1ページあたりの件数",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "LV-001",
+              "description": "申請ID・会員名で検索"
+            },
+            "required": false,
+            "description": "申請ID・会員名で検索",
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["suspension", "withdrawal"],
+              "title": "LeaveType",
+              "description": "種別フィルター"
+            },
+            "required": false,
+            "description": "種別フィルター",
+            "name": "type",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "suspension_scheduled",
+                "suspended",
+                "withdrawal_scheduled",
+                "withdrawal_pending",
+                "completed"
+              ],
+              "title": "LeaveStatus",
+              "description": "ステータスフィルター"
+            },
+            "required": false,
+            "description": "ステータスフィルター",
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "ブランドフィルター"
+            },
+            "required": false,
+            "description": "ブランドフィルター",
+            "name": "brand",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "店舗IDフィルター"
+            },
+            "required": false,
+            "description": "店舗IDフィルター",
+            "name": "store_id",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["current_month", "next_month", "current_year"],
+              "description": "予定期間フィルター"
+            },
+            "required": false,
+            "description": "予定期間フィルター",
+            "name": "scheduled_period",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["id", "applied_at", "scheduled_date"],
+              "description": "ソートフィールド"
+            },
+            "required": false,
+            "description": "ソートフィールド",
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "description": "ソート順"
+            },
+            "required": false,
+            "description": "ソート順",
+            "name": "sort_order",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of leaves",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "leaves": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "LV-001",
+                            "description": "申請ID"
+                          },
+                          "member_id": {
+                            "type": "string",
+                            "example": "M-00101",
+                            "description": "会員ID"
+                          },
+                          "member_name": {
+                            "type": "string",
+                            "example": "田中 次郎",
+                            "description": "会員名"
+                          },
+                          "brand": {
+                            "type": "string",
+                            "example": "JOYFIT",
+                            "description": "ブランド"
+                          },
+                          "store_id": {
+                            "type": "string",
+                            "example": "store-006",
+                            "description": "店舗ID"
+                          },
+                          "store_name": {
+                            "type": "string",
+                            "example": "JOYFIT24新宿店",
+                            "description": "店舗名"
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": ["suspension", "withdrawal"],
+                            "title": "LeaveType",
+                            "description": "Leave type: suspension=休会, withdrawal=退会"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "suspension_scheduled",
+                              "suspended",
+                              "withdrawal_scheduled",
+                              "withdrawal_pending",
+                              "completed"
+                            ],
+                            "title": "LeaveStatus",
+                            "description": "Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了"
+                          },
+                          "applied_at": {
+                            "type": "string",
+                            "example": "2026/03/20",
+                            "description": "申請日"
+                          },
+                          "scheduled_date": {
+                            "type": "string",
+                            "example": "2026/04",
+                            "description": "予定日（休会開始日/退会予定日）"
+                          },
+                          "end_date": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "2026/06",
+                            "description": "終了日（休会終了月）"
+                          },
+                          "unpaid_amount": {
+                            "type": "number",
+                            "example": 0,
+                            "description": "未納金額（円）"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "member_id",
+                          "member_name",
+                          "brand",
+                          "store_id",
+                          "store_name",
+                          "type",
+                          "status",
+                          "applied_at",
+                          "scheduled_date",
+                          "end_date",
+                          "unpaid_amount"
+                        ],
+                        "title": "LeaveListItem"
+                      }
+                    },
+                    "total": {
+                      "type": "number",
+                      "example": 8
+                    },
+                    "page": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "limit": {
+                      "type": "number",
+                      "example": 20
+                    },
+                    "total_pages": {
+                      "type": "number",
+                      "example": 1
+                    }
+                  },
+                  "required": ["leaves", "total", "page", "limit", "total_pages"],
+                  "title": "GetLeavesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "LeaveErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "LeaveErrorResponse"
                 }
               }
             }

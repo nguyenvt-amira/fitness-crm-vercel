@@ -52,13 +52,11 @@ const menuItems: MenuItem[] = [
         label: '移籍管理',
         href: '/members/transfers',
       },
+      {
+        label: '休会・退会管理',
+        href: '/members/leaves',
+      },
     ],
-    // subItems: [
-    //   {
-    //     label: '休会・退会',
-    //     href: '/members/leave-withdrawal',
-    //   },
-    // ],
   },
   {
     label: '入会処理',

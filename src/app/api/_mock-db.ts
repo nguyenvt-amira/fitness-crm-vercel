@@ -8,6 +8,7 @@ import type {
   FamilyRegistrationStatus,
   FamilyRelationship,
 } from '@/app/api/_schemas/family-registration.schema';
+import type { LeaveListItem } from '@/app/api/_schemas/leave.schema';
 import type { MainContractListItem } from '@/app/api/_schemas/main-contract.schema';
 import type {
   ContractType,
@@ -923,6 +924,12 @@ type DbType = {
     getById(id: string): TransferRow | undefined;
     approve(id: string, comment?: string): TransferRow | undefined;
     reject(id: string, comment?: string): TransferRow | undefined;
+  };
+  memberLeaves: {
+    _rows: LeaveListItem[];
+    _seeded: boolean;
+    _seed(): void;
+    list(): LeaveListItem[];
   };
 };
 
@@ -4558,6 +4565,89 @@ function createDb() {
         const updated: TransferRow = { ...row, status: TransferStatus.Rejected, updated_at: now };
         this._rows[idx] = updated;
         return updated;
+      },
+    },
+    memberLeaves: {
+      _rows: [] as LeaveListItem[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        db.members._seed();
+
+        const targetStatuses = new Set<string>([
+          MemberStatus.SUSPENDED,
+          MemberStatus.PENDING_WITHDRAWAL,
+          MemberStatus.WITHDRAWN,
+          MemberStatus.FORCE_WITHDRAWN,
+        ]);
+
+        const candidates = db.members._members.filter((m) => targetStatuses.has(m.profile.status));
+
+        // Deterministic date helpers
+        const baseDate = new Date('2026-01-01');
+        const toJpDate = (d: Date): string =>
+          `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+        const toJpMonth = (d: Date): string =>
+          `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}`;
+
+        this._rows = candidates.map((m, i) => {
+          const memberStatus = m.profile.status;
+          const appliedDate = new Date(baseDate);
+          appliedDate.setDate(appliedDate.getDate() + i * 7);
+
+          const scheduledDate = new Date(appliedDate);
+          scheduledDate.setDate(scheduledDate.getDate() + 14);
+
+          let leaveStatus: LeaveListItem['status'];
+          let leaveType: LeaveListItem['type'];
+          let endDate: string | null = null;
+          let unpaidAmount = 0;
+
+          if (memberStatus === MemberStatus.SUSPENDED) {
+            leaveType = 'suspension';
+            leaveStatus = i % 2 === 0 ? 'suspended' : 'suspension_scheduled';
+            const endD = new Date(scheduledDate);
+            endD.setMonth(endD.getMonth() + 2);
+            endDate = toJpMonth(endD);
+            unpaidAmount = i % 5 === 0 ? 1100 * ((i % 3) + 1) : 0;
+          } else if (memberStatus === MemberStatus.PENDING_WITHDRAWAL) {
+            leaveType = 'withdrawal';
+            leaveStatus = 'withdrawal_pending';
+            unpaidAmount = i % 3 === 0 ? 7700 : 0;
+          } else if (memberStatus === MemberStatus.WITHDRAWN) {
+            leaveType = 'withdrawal';
+            leaveStatus = i % 2 === 0 ? 'withdrawal_scheduled' : 'withdrawal_pending';
+            unpaidAmount = 0;
+          } else {
+            // FORCE_WITHDRAWN
+            leaveType = 'withdrawal';
+            leaveStatus = 'completed';
+            unpaidAmount = 0;
+          }
+
+          const scheduledDateStr =
+            leaveType === 'suspension' ? toJpMonth(scheduledDate) : toJpDate(scheduledDate);
+
+          return {
+            id: `LV-${String(i + 1).padStart(3, '0')}`,
+            member_id: m.basic_info.id,
+            member_name: m.basic_info.name_kanji,
+            brand: m.profile.brand,
+            store_id: m.profile.store_id,
+            store_name: m.profile.store_name,
+            type: leaveType,
+            status: leaveStatus,
+            applied_at: toJpDate(appliedDate),
+            scheduled_date: scheduledDateStr,
+            end_date: endDate,
+            unpaid_amount: unpaidAmount,
+          } satisfies LeaveListItem;
+        });
+      },
+      list(): LeaveListItem[] {
+        this._seed();
+        return this._rows;
       },
     },
   };

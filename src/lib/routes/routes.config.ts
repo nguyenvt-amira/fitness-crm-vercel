@@ -60,6 +60,11 @@ export const routes = {
     router: (id: string | number) => `/members/transfers/${id}`,
     filePath: '(private)/members/transfers/[id]',
     pattern: '/members/transfers/:id',
+  },
+  '/members/leaves': {
+    router: '/members/leaves',
+    filePath: '(private)/members/leaves',
+    pattern: '/members/leaves',
     private: true,
   },
   '/membership-applications': {
@@ -148,6 +153,7 @@ export const routeKeys = [
   '/members/create',
   '/members/transfers',
   '/members/transfers/[id]',
+  '/members/leaves',
   '/membership-applications',
   '/membership-applications/[id]',
   '/positions',
@@ -174,6 +180,7 @@ export const routePatterns = [
   '/members/create',
   '/members/transfers',
   '/members/transfers/:id',
+  '/members/leaves',
   '/membership-applications',
   '/membership-applications/:id',
   '/positions',

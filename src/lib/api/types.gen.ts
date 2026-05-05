@@ -8418,6 +8418,219 @@ export type DeleteStaffResponse = {
     message: string;
 };
 
+/**
+ * LeaveType
+ *
+ * Leave type: suspension=休会, withdrawal=退会
+ */
+export const LeaveType = { SUSPENSION: 'suspension', WITHDRAWAL: 'withdrawal' } as const;
+
+/**
+ * LeaveType
+ *
+ * Leave type: suspension=休会, withdrawal=退会
+ */
+export type LeaveType = typeof LeaveType[keyof typeof LeaveType];
+
+/**
+ * LeaveStatus
+ *
+ * Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了
+ */
+export const LeaveStatus = {
+    SUSPENSION_SCHEDULED: 'suspension_scheduled',
+    SUSPENDED: 'suspended',
+    WITHDRAWAL_SCHEDULED: 'withdrawal_scheduled',
+    WITHDRAWAL_PENDING: 'withdrawal_pending',
+    COMPLETED: 'completed'
+} as const;
+
+/**
+ * LeaveStatus
+ *
+ * Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了
+ */
+export type LeaveStatus = typeof LeaveStatus[keyof typeof LeaveStatus];
+
+/**
+ * LeaveListItem
+ */
+export type LeaveListItem = {
+    /**
+     * 申請ID
+     */
+    id: string;
+    /**
+     * 会員ID
+     */
+    member_id: string;
+    /**
+     * 会員名
+     */
+    member_name: string;
+    /**
+     * ブランド
+     */
+    brand: string;
+    /**
+     * 店舗ID
+     */
+    store_id: string;
+    /**
+     * 店舗名
+     */
+    store_name: string;
+    /**
+     * LeaveType
+     *
+     * Leave type: suspension=休会, withdrawal=退会
+     */
+    type: 'suspension' | 'withdrawal';
+    /**
+     * LeaveStatus
+     *
+     * Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了
+     */
+    status: 'suspension_scheduled' | 'suspended' | 'withdrawal_scheduled' | 'withdrawal_pending' | 'completed';
+    /**
+     * 申請日
+     */
+    applied_at: string;
+    /**
+     * 予定日（休会開始日/退会予定日）
+     */
+    scheduled_date: string;
+    /**
+     * 終了日（休会終了月）
+     */
+    end_date: string | null;
+    /**
+     * 未納金額（円）
+     */
+    unpaid_amount: number;
+};
+
+/**
+ * GetLeavesQuery
+ */
+export type GetLeavesQuery = {
+    /**
+     * ページ番号
+     */
+    page?: string;
+    /**
+     * 1ページあたりの件数
+     */
+    limit?: string;
+    /**
+     * 申請ID・会員名で検索
+     */
+    search?: string;
+    /**
+     * LeaveType
+     *
+     * 種別フィルター
+     */
+    type?: 'suspension' | 'withdrawal';
+    /**
+     * LeaveStatus
+     *
+     * ステータスフィルター
+     */
+    status?: 'suspension_scheduled' | 'suspended' | 'withdrawal_scheduled' | 'withdrawal_pending' | 'completed';
+    /**
+     * ブランドフィルター
+     */
+    brand?: string;
+    /**
+     * 店舗IDフィルター
+     */
+    store_id?: string;
+    /**
+     * 予定期間フィルター
+     */
+    scheduled_period?: 'current_month' | 'next_month' | 'current_year';
+    /**
+     * ソートフィールド
+     */
+    sort_by?: 'id' | 'applied_at' | 'scheduled_date';
+    /**
+     * ソート順
+     */
+    sort_order?: 'asc' | 'desc';
+};
+
+/**
+ * GetLeavesResponse
+ */
+export type GetLeavesResponse = {
+    leaves: Array<{
+        /**
+         * 申請ID
+         */
+        id: string;
+        /**
+         * 会員ID
+         */
+        member_id: string;
+        /**
+         * 会員名
+         */
+        member_name: string;
+        /**
+         * ブランド
+         */
+        brand: string;
+        /**
+         * 店舗ID
+         */
+        store_id: string;
+        /**
+         * 店舗名
+         */
+        store_name: string;
+        /**
+         * LeaveType
+         *
+         * Leave type: suspension=休会, withdrawal=退会
+         */
+        type: 'suspension' | 'withdrawal';
+        /**
+         * LeaveStatus
+         *
+         * Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了
+         */
+        status: 'suspension_scheduled' | 'suspended' | 'withdrawal_scheduled' | 'withdrawal_pending' | 'completed';
+        /**
+         * 申請日
+         */
+        applied_at: string;
+        /**
+         * 予定日（休会開始日/退会予定日）
+         */
+        scheduled_date: string;
+        /**
+         * 終了日（休会終了月）
+         */
+        end_date: string | null;
+        /**
+         * 未納金額（円）
+         */
+        unpaid_amount: number;
+    }>;
+    total: number;
+    page: number;
+    limit: number;
+    total_pages: number;
+};
+
+/**
+ * LeaveErrorResponse
+ */
+export type LeaveErrorResponse = {
+    error: string;
+};
+
 export type PostAuthLoginData = {
     /**
      * LoginRequest
@@ -10180,6 +10393,149 @@ export type GetCrmFamilyRegistrationsSummaryResponses = {
 };
 
 export type GetCrmFamilyRegistrationsSummaryResponse = GetCrmFamilyRegistrationsSummaryResponses[keyof GetCrmFamilyRegistrationsSummaryResponses];
+
+export type GetCrmLeavesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * ページ番号
+         */
+        page?: string;
+        /**
+         * 1ページあたりの件数
+         */
+        limit?: string;
+        /**
+         * 申請ID・会員名で検索
+         */
+        search?: string;
+        /**
+         * LeaveType
+         *
+         * 種別フィルター
+         */
+        type?: 'suspension' | 'withdrawal';
+        /**
+         * LeaveStatus
+         *
+         * ステータスフィルター
+         */
+        status?: 'suspension_scheduled' | 'suspended' | 'withdrawal_scheduled' | 'withdrawal_pending' | 'completed';
+        /**
+         * ブランドフィルター
+         */
+        brand?: string;
+        /**
+         * 店舗IDフィルター
+         */
+        store_id?: string;
+        /**
+         * 予定期間フィルター
+         */
+        scheduled_period?: 'current_month' | 'next_month' | 'current_year';
+        /**
+         * ソートフィールド
+         */
+        sort_by?: 'id' | 'applied_at' | 'scheduled_date';
+        /**
+         * ソート順
+         */
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/leaves';
+};
+
+export type GetCrmLeavesErrors = {
+    /**
+     * LeaveErrorResponse
+     *
+     * Bad request
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * LeaveErrorResponse
+     *
+     * Internal server error
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type GetCrmLeavesError = GetCrmLeavesErrors[keyof GetCrmLeavesErrors];
+
+export type GetCrmLeavesResponses = {
+    /**
+     * GetLeavesResponse
+     *
+     * List of leaves
+     */
+    200: {
+        leaves: Array<{
+            /**
+             * 申請ID
+             */
+            id: string;
+            /**
+             * 会員ID
+             */
+            member_id: string;
+            /**
+             * 会員名
+             */
+            member_name: string;
+            /**
+             * ブランド
+             */
+            brand: string;
+            /**
+             * 店舗ID
+             */
+            store_id: string;
+            /**
+             * 店舗名
+             */
+            store_name: string;
+            /**
+             * LeaveType
+             *
+             * Leave type: suspension=休会, withdrawal=退会
+             */
+            type: 'suspension' | 'withdrawal';
+            /**
+             * LeaveStatus
+             *
+             * Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了
+             */
+            status: 'suspension_scheduled' | 'suspended' | 'withdrawal_scheduled' | 'withdrawal_pending' | 'completed';
+            /**
+             * 申請日
+             */
+            applied_at: string;
+            /**
+             * 予定日（休会開始日/退会予定日）
+             */
+            scheduled_date: string;
+            /**
+             * 終了日（休会終了月）
+             */
+            end_date: string | null;
+            /**
+             * 未納金額（円）
+             */
+            unpaid_amount: number;
+        }>;
+        total: number;
+        page: number;
+        limit: number;
+        total_pages: number;
+    };
+};
+
+export type GetCrmLeavesResponse = GetCrmLeavesResponses[keyof GetCrmLeavesResponses];
 
 export type GetCrmMainContractsData = {
     body?: never;

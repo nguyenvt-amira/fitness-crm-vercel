@@ -22,6 +22,8 @@ import '@/app/api/crm/family-registrations/risk-evaluation/route';
 // Import family registrations routes
 import '@/app/api/crm/family-registrations/route';
 import '@/app/api/crm/family-registrations/summary/route';
+// Import leaves routes
+import '@/app/api/crm/leaves/route';
 import '@/app/api/crm/main-contracts/route';
 import '@/app/api/crm/members/[id]/basic-info/route';
 import '@/app/api/crm/members/[id]/billing/route';
