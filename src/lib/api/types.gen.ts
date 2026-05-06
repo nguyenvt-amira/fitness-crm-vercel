@@ -10394,6 +10394,745 @@ export type GetCrmFamilyRegistrationsSummaryResponses = {
 
 export type GetCrmFamilyRegistrationsSummaryResponse = GetCrmFamilyRegistrationsSummaryResponses[keyof GetCrmFamilyRegistrationsSummaryResponses];
 
+export type PostCrmLeavesByIdApproveData = {
+    /**
+     * ApproveLeaveRequest
+     */
+    body?: {
+        /**
+         * 承認コメント（任意）
+         */
+        comment?: string;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/crm/leaves/{id}/approve';
+};
+
+export type PostCrmLeavesByIdApproveErrors = {
+    /**
+     * LeaveErrorResponse
+     *
+     * Invalid transition
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * LeaveErrorResponse
+     *
+     * Leave not found
+     */
+    404: {
+        error: string;
+    };
+};
+
+export type PostCrmLeavesByIdApproveError = PostCrmLeavesByIdApproveErrors[keyof PostCrmLeavesByIdApproveErrors];
+
+export type PostCrmLeavesByIdApproveResponses = {
+    /**
+     * LeaveActionResponse
+     *
+     * Updated leave detail
+     */
+    200: {
+        /**
+         * LeaveDetail
+         */
+        leave: {
+            /**
+             * 申請ID
+             */
+            id: string;
+            /**
+             * 会員ID
+             */
+            member_id: string;
+            /**
+             * 会員名
+             */
+            member_name: string;
+            /**
+             * ブランド
+             */
+            brand: string;
+            /**
+             * 店舗ID
+             */
+            store_id: string;
+            /**
+             * 店舗名
+             */
+            store_name: string;
+            /**
+             * LeaveType
+             *
+             * Leave type: suspension=休会, withdrawal=退会
+             */
+            type: 'suspension' | 'withdrawal';
+            /**
+             * LeaveStatus
+             *
+             * Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了
+             */
+            status: 'suspension_scheduled' | 'suspended' | 'withdrawal_scheduled' | 'withdrawal_pending' | 'completed';
+            /**
+             * 申請日時
+             */
+            applied_at: string;
+            /**
+             * 休会開始月 or 退会予定日
+             */
+            scheduled_date: string;
+            /**
+             * 休会終了月（休会のみ）
+             */
+            end_date: string | null;
+            /**
+             * 申請理由
+             */
+            reason: string;
+            /**
+             * 申請者
+             */
+            applicant: string;
+            /**
+             * 代理申請フラグ
+             */
+            is_proxy_applied: boolean;
+            /**
+             * 代理申請者名
+             */
+            proxy_applicant: string | null;
+            /**
+             * 合意日時
+             */
+            consent_at: string | null;
+            /**
+             * 合意方法
+             */
+            consent_method: string | null;
+            /**
+             * 休会費（円/月）
+             */
+            suspension_fee: number | null;
+            /**
+             * 適用キャンペーン
+             */
+            applied_campaign: string;
+            /**
+             * 未消化レッスン数
+             */
+            unused_lessons: number;
+            /**
+             * 未納金額（円）
+             */
+            unpaid_amount: number;
+            /**
+             * 作成日時
+             */
+            created_at: string;
+            /**
+             * 最終更新日時
+             */
+            updated_at: string;
+        };
+    };
+};
+
+export type PostCrmLeavesByIdApproveResponse = PostCrmLeavesByIdApproveResponses[keyof PostCrmLeavesByIdApproveResponses];
+
+export type PostCrmLeavesByIdCancelWithdrawalData = {
+    /**
+     * CancelWithdrawalRequest
+     */
+    body?: {
+        /**
+         * 取り消しコメント（任意）
+         */
+        comment?: string;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/crm/leaves/{id}/cancel-withdrawal';
+};
+
+export type PostCrmLeavesByIdCancelWithdrawalErrors = {
+    /**
+     * LeaveErrorResponse
+     *
+     * Invalid transition
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * LeaveErrorResponse
+     *
+     * Leave not found
+     */
+    404: {
+        error: string;
+    };
+};
+
+export type PostCrmLeavesByIdCancelWithdrawalError = PostCrmLeavesByIdCancelWithdrawalErrors[keyof PostCrmLeavesByIdCancelWithdrawalErrors];
+
+export type PostCrmLeavesByIdCancelWithdrawalResponses = {
+    /**
+     * LeaveActionResponse
+     *
+     * Updated leave detail
+     */
+    200: {
+        /**
+         * LeaveDetail
+         */
+        leave: {
+            /**
+             * 申請ID
+             */
+            id: string;
+            /**
+             * 会員ID
+             */
+            member_id: string;
+            /**
+             * 会員名
+             */
+            member_name: string;
+            /**
+             * ブランド
+             */
+            brand: string;
+            /**
+             * 店舗ID
+             */
+            store_id: string;
+            /**
+             * 店舗名
+             */
+            store_name: string;
+            /**
+             * LeaveType
+             *
+             * Leave type: suspension=休会, withdrawal=退会
+             */
+            type: 'suspension' | 'withdrawal';
+            /**
+             * LeaveStatus
+             *
+             * Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了
+             */
+            status: 'suspension_scheduled' | 'suspended' | 'withdrawal_scheduled' | 'withdrawal_pending' | 'completed';
+            /**
+             * 申請日時
+             */
+            applied_at: string;
+            /**
+             * 休会開始月 or 退会予定日
+             */
+            scheduled_date: string;
+            /**
+             * 休会終了月（休会のみ）
+             */
+            end_date: string | null;
+            /**
+             * 申請理由
+             */
+            reason: string;
+            /**
+             * 申請者
+             */
+            applicant: string;
+            /**
+             * 代理申請フラグ
+             */
+            is_proxy_applied: boolean;
+            /**
+             * 代理申請者名
+             */
+            proxy_applicant: string | null;
+            /**
+             * 合意日時
+             */
+            consent_at: string | null;
+            /**
+             * 合意方法
+             */
+            consent_method: string | null;
+            /**
+             * 休会費（円/月）
+             */
+            suspension_fee: number | null;
+            /**
+             * 適用キャンペーン
+             */
+            applied_campaign: string;
+            /**
+             * 未消化レッスン数
+             */
+            unused_lessons: number;
+            /**
+             * 未納金額（円）
+             */
+            unpaid_amount: number;
+            /**
+             * 作成日時
+             */
+            created_at: string;
+            /**
+             * 最終更新日時
+             */
+            updated_at: string;
+        };
+    };
+};
+
+export type PostCrmLeavesByIdCancelWithdrawalResponse = PostCrmLeavesByIdCancelWithdrawalResponses[keyof PostCrmLeavesByIdCancelWithdrawalResponses];
+
+export type PostCrmLeavesByIdExecuteWithdrawalData = {
+    /**
+     * ExecuteWithdrawalRequest
+     */
+    body?: {
+        /**
+         * 処理コメント（任意）
+         */
+        comment?: string;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/crm/leaves/{id}/execute-withdrawal';
+};
+
+export type PostCrmLeavesByIdExecuteWithdrawalErrors = {
+    /**
+     * LeaveErrorResponse
+     *
+     * Invalid transition
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * LeaveErrorResponse
+     *
+     * Leave not found
+     */
+    404: {
+        error: string;
+    };
+};
+
+export type PostCrmLeavesByIdExecuteWithdrawalError = PostCrmLeavesByIdExecuteWithdrawalErrors[keyof PostCrmLeavesByIdExecuteWithdrawalErrors];
+
+export type PostCrmLeavesByIdExecuteWithdrawalResponses = {
+    /**
+     * LeaveActionResponse
+     *
+     * Updated leave detail
+     */
+    200: {
+        /**
+         * LeaveDetail
+         */
+        leave: {
+            /**
+             * 申請ID
+             */
+            id: string;
+            /**
+             * 会員ID
+             */
+            member_id: string;
+            /**
+             * 会員名
+             */
+            member_name: string;
+            /**
+             * ブランド
+             */
+            brand: string;
+            /**
+             * 店舗ID
+             */
+            store_id: string;
+            /**
+             * 店舗名
+             */
+            store_name: string;
+            /**
+             * LeaveType
+             *
+             * Leave type: suspension=休会, withdrawal=退会
+             */
+            type: 'suspension' | 'withdrawal';
+            /**
+             * LeaveStatus
+             *
+             * Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了
+             */
+            status: 'suspension_scheduled' | 'suspended' | 'withdrawal_scheduled' | 'withdrawal_pending' | 'completed';
+            /**
+             * 申請日時
+             */
+            applied_at: string;
+            /**
+             * 休会開始月 or 退会予定日
+             */
+            scheduled_date: string;
+            /**
+             * 休会終了月（休会のみ）
+             */
+            end_date: string | null;
+            /**
+             * 申請理由
+             */
+            reason: string;
+            /**
+             * 申請者
+             */
+            applicant: string;
+            /**
+             * 代理申請フラグ
+             */
+            is_proxy_applied: boolean;
+            /**
+             * 代理申請者名
+             */
+            proxy_applicant: string | null;
+            /**
+             * 合意日時
+             */
+            consent_at: string | null;
+            /**
+             * 合意方法
+             */
+            consent_method: string | null;
+            /**
+             * 休会費（円/月）
+             */
+            suspension_fee: number | null;
+            /**
+             * 適用キャンペーン
+             */
+            applied_campaign: string;
+            /**
+             * 未消化レッスン数
+             */
+            unused_lessons: number;
+            /**
+             * 未納金額（円）
+             */
+            unpaid_amount: number;
+            /**
+             * 作成日時
+             */
+            created_at: string;
+            /**
+             * 最終更新日時
+             */
+            updated_at: string;
+        };
+    };
+};
+
+export type PostCrmLeavesByIdExecuteWithdrawalResponse = PostCrmLeavesByIdExecuteWithdrawalResponses[keyof PostCrmLeavesByIdExecuteWithdrawalResponses];
+
+export type PostCrmLeavesByIdRejectData = {
+    /**
+     * RejectLeaveRequest
+     */
+    body?: {
+        /**
+         * 却下理由
+         */
+        reason: string;
+    };
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/crm/leaves/{id}/reject';
+};
+
+export type PostCrmLeavesByIdRejectErrors = {
+    /**
+     * LeaveErrorResponse
+     *
+     * Invalid transition or missing reason
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * LeaveErrorResponse
+     *
+     * Leave not found
+     */
+    404: {
+        error: string;
+    };
+};
+
+export type PostCrmLeavesByIdRejectError = PostCrmLeavesByIdRejectErrors[keyof PostCrmLeavesByIdRejectErrors];
+
+export type PostCrmLeavesByIdRejectResponses = {
+    /**
+     * LeaveActionResponse
+     *
+     * Updated leave detail
+     */
+    200: {
+        /**
+         * LeaveDetail
+         */
+        leave: {
+            /**
+             * 申請ID
+             */
+            id: string;
+            /**
+             * 会員ID
+             */
+            member_id: string;
+            /**
+             * 会員名
+             */
+            member_name: string;
+            /**
+             * ブランド
+             */
+            brand: string;
+            /**
+             * 店舗ID
+             */
+            store_id: string;
+            /**
+             * 店舗名
+             */
+            store_name: string;
+            /**
+             * LeaveType
+             *
+             * Leave type: suspension=休会, withdrawal=退会
+             */
+            type: 'suspension' | 'withdrawal';
+            /**
+             * LeaveStatus
+             *
+             * Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了
+             */
+            status: 'suspension_scheduled' | 'suspended' | 'withdrawal_scheduled' | 'withdrawal_pending' | 'completed';
+            /**
+             * 申請日時
+             */
+            applied_at: string;
+            /**
+             * 休会開始月 or 退会予定日
+             */
+            scheduled_date: string;
+            /**
+             * 休会終了月（休会のみ）
+             */
+            end_date: string | null;
+            /**
+             * 申請理由
+             */
+            reason: string;
+            /**
+             * 申請者
+             */
+            applicant: string;
+            /**
+             * 代理申請フラグ
+             */
+            is_proxy_applied: boolean;
+            /**
+             * 代理申請者名
+             */
+            proxy_applicant: string | null;
+            /**
+             * 合意日時
+             */
+            consent_at: string | null;
+            /**
+             * 合意方法
+             */
+            consent_method: string | null;
+            /**
+             * 休会費（円/月）
+             */
+            suspension_fee: number | null;
+            /**
+             * 適用キャンペーン
+             */
+            applied_campaign: string;
+            /**
+             * 未消化レッスン数
+             */
+            unused_lessons: number;
+            /**
+             * 未納金額（円）
+             */
+            unpaid_amount: number;
+            /**
+             * 作成日時
+             */
+            created_at: string;
+            /**
+             * 最終更新日時
+             */
+            updated_at: string;
+        };
+    };
+};
+
+export type PostCrmLeavesByIdRejectResponse = PostCrmLeavesByIdRejectResponses[keyof PostCrmLeavesByIdRejectResponses];
+
+export type GetCrmLeavesByIdData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/crm/leaves/{id}';
+};
+
+export type GetCrmLeavesByIdErrors = {
+    /**
+     * LeaveErrorResponse
+     *
+     * Leave request not found
+     */
+    404: {
+        error: string;
+    };
+};
+
+export type GetCrmLeavesByIdError = GetCrmLeavesByIdErrors[keyof GetCrmLeavesByIdErrors];
+
+export type GetCrmLeavesByIdResponses = {
+    /**
+     * GetLeaveDetailResponse
+     *
+     * Leave request detail
+     */
+    200: {
+        /**
+         * LeaveDetail
+         */
+        leave: {
+            /**
+             * 申請ID
+             */
+            id: string;
+            /**
+             * 会員ID
+             */
+            member_id: string;
+            /**
+             * 会員名
+             */
+            member_name: string;
+            /**
+             * ブランド
+             */
+            brand: string;
+            /**
+             * 店舗ID
+             */
+            store_id: string;
+            /**
+             * 店舗名
+             */
+            store_name: string;
+            /**
+             * LeaveType
+             *
+             * Leave type: suspension=休会, withdrawal=退会
+             */
+            type: 'suspension' | 'withdrawal';
+            /**
+             * LeaveStatus
+             *
+             * Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了
+             */
+            status: 'suspension_scheduled' | 'suspended' | 'withdrawal_scheduled' | 'withdrawal_pending' | 'completed';
+            /**
+             * 申請日時
+             */
+            applied_at: string;
+            /**
+             * 休会開始月 or 退会予定日
+             */
+            scheduled_date: string;
+            /**
+             * 休会終了月（休会のみ）
+             */
+            end_date: string | null;
+            /**
+             * 申請理由
+             */
+            reason: string;
+            /**
+             * 申請者
+             */
+            applicant: string;
+            /**
+             * 代理申請フラグ
+             */
+            is_proxy_applied: boolean;
+            /**
+             * 代理申請者名
+             */
+            proxy_applicant: string | null;
+            /**
+             * 合意日時
+             */
+            consent_at: string | null;
+            /**
+             * 合意方法
+             */
+            consent_method: string | null;
+            /**
+             * 休会費（円/月）
+             */
+            suspension_fee: number | null;
+            /**
+             * 適用キャンペーン
+             */
+            applied_campaign: string;
+            /**
+             * 未消化レッスン数
+             */
+            unused_lessons: number;
+            /**
+             * 未納金額（円）
+             */
+            unpaid_amount: number;
+            /**
+             * 作成日時
+             */
+            created_at: string;
+            /**
+             * 最終更新日時
+             */
+            updated_at: string;
+        };
+    };
+};
+
+export type GetCrmLeavesByIdResponse = GetCrmLeavesByIdResponses[keyof GetCrmLeavesByIdResponses];
+
 export type GetCrmLeavesData = {
     body?: never;
     path?: never;
@@ -19752,291 +20491,6 @@ export type PostCrmStoresResponses = {
 
 export type PostCrmStoresResponse = PostCrmStoresResponses[keyof PostCrmStoresResponses];
 
-export type GetCrmTransfersData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * ページ番号
-         */
-        page?: number;
-        /**
-         * 1ページあたりの件数
-         */
-        limit?: number;
-        /**
-         * 申請ID・会員名の検索文字列
-         */
-        search?: string;
-        /**
-         * TransferStatus
-         *
-         * ステータスフィルター
-         */
-        status?: 'pending' | 'from_store_approved' | 'approved' | 'rejected' | 'completed';
-        /**
-         * 移籍元店舗IDフィルター
-         */
-        from_store_id?: string;
-        /**
-         * 移籍先店舗IDフィルター
-         */
-        to_store_id?: string;
-        /**
-         * TransferBrand
-         *
-         * ブランドフィルター
-         */
-        brand?: 'joyfit' | 'fit365';
-        /**
-         * 申請日期間フィルター
-         */
-        applied_period?: 'this_month' | 'last_month' | 'this_year';
-        /**
-         * ソートカラム
-         */
-        sort_by?: string;
-        /**
-         * ソート順
-         */
-        sort_order?: 'asc' | 'desc';
-    };
-    url: '/crm/transfers';
-};
-
-export type GetCrmTransfersErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Bad request - invalid query parameters
-     */
-    400: {
-        error: string;
-        details?: unknown;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Internal server error
-     */
-    500: {
-        error: string;
-        details?: unknown;
-    };
-};
-
-export type GetCrmTransfersError = GetCrmTransfersErrors[keyof GetCrmTransfersErrors];
-
-export type GetCrmTransfersResponses = {
-    /**
-     * GetTransfersResponse
-     *
-     * 移籍申請一覧レスポンス
-     */
-    200: {
-        transfers: Array<{
-            /**
-             * 移籍申請ID
-             */
-            id: string;
-            /**
-             * 会員ID
-             */
-            member_id: string;
-            /**
-             * 会員氏名
-             */
-            member_name: string;
-            /**
-             * 移籍元店舗ID
-             */
-            from_store_id: string;
-            /**
-             * 移籍元店舗名
-             */
-            from_store_name: string;
-            /**
-             * 移籍先店舗ID
-             */
-            to_store_id: string;
-            /**
-             * 移籍先店舗名
-             */
-            to_store_name: string;
-            /**
-             * TransferBrand
-             *
-             * Brand of the member contract: joyfit=JOYFIT, fit365=FIT365
-             */
-            brand: 'joyfit' | 'fit365';
-            /**
-             * 申請日時 (ISO 8601)
-             */
-            applied_at: string;
-            /**
-             * 移籍予定日 (ISO 8601)
-             */
-            scheduled_date: string;
-            /**
-             * TransferStatus
-             *
-             * Transfer request status: pending=申請中, from_store_approved=店舗承認済, approved=承認済, rejected=却下, completed=移籍完了
-             */
-            status: 'pending' | 'from_store_approved' | 'approved' | 'rejected' | 'completed';
-        }>;
-        /**
-         * TransferPagination
-         */
-        pagination: {
-            page: number;
-            limit: number;
-            total: number;
-            total_pages: number;
-        };
-    };
-};
-
-export type GetCrmTransfersResponse = GetCrmTransfersResponses[keyof GetCrmTransfersResponses];
-
-export type GetCrmTransfersByIdData = {
-    body?: never;
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/crm/transfers/{id}';
-};
-
-export type GetCrmTransfersByIdErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Transfer request not found
-     */
-    404: {
-        error: string;
-        details?: unknown;
-    };
-};
-
-export type GetCrmTransfersByIdError = GetCrmTransfersByIdErrors[keyof GetCrmTransfersByIdErrors];
-
-export type GetCrmTransfersByIdResponses = {
-    /**
-     * GetTransferDetailResponse
-     *
-     * 移籍申請詳細レスポンス
-     */
-    200: {
-        /**
-         * TransferDetail
-         *
-         * 移籍申請詳細レコード
-         */
-        transfer: {
-            /**
-             * 移籍申請ID
-             */
-            id: string;
-            /**
-             * 会員ID
-             */
-            member_id: string;
-            /**
-             * 会員氏名
-             */
-            member_name: string;
-            /**
-             * 移籍元店舗ID
-             */
-            from_store_id: string;
-            /**
-             * 移籍元店舗名
-             */
-            from_store_name: string;
-            /**
-             * 移籍先店舗ID
-             */
-            to_store_id: string;
-            /**
-             * 移籍先店舗名
-             */
-            to_store_name: string;
-            /**
-             * TransferBrand
-             *
-             * Brand of the member contract: joyfit=JOYFIT, fit365=FIT365
-             */
-            brand: 'joyfit' | 'fit365';
-            /**
-             * 申請日時 (ISO 8601)
-             */
-            applied_at: string;
-            /**
-             * 移籍予定日 (ISO 8601)
-             */
-            scheduled_date: string;
-            /**
-             * TransferStatus
-             *
-             * Transfer request status: pending=申請中, from_store_approved=店舗承認済, approved=承認済, rejected=却下, completed=移籍完了
-             */
-            status: 'pending' | 'from_store_approved' | 'approved' | 'rejected' | 'completed';
-            /**
-             * 移籍理由
-             */
-            reason: string;
-            /**
-             * 申請者氏名
-             */
-            applicant_name: string;
-            /**
-             * 申請者ロール
-             */
-            applicant_role: string;
-            /**
-             * 最終更新日時 (ISO 8601)
-             */
-            updated_at: string;
-            /**
-             * 承認ステップ履歴
-             */
-            approval_history: Array<{
-                /**
-                 * ステップ番号（1始まり）
-                 */
-                step: number;
-                /**
-                 * ステップラベル
-                 */
-                label: string;
-                /**
-                 * 店舗種別: from=移籍元, to=移籍先, null=なし
-                 */
-                store_type: 'from' | 'to' | null;
-                /**
-                 * 完了済みかどうか
-                 */
-                completed: boolean;
-                /**
-                 * 完了日時 (ISO 8601)
-                 */
-                completed_at: string | null;
-                /**
-                 * 完了者氏名
-                 */
-                completed_by: string | null;
-                /**
-                 * システム自動実行ステップか
-                 */
-                is_automatic: boolean;
-            }>;
-        };
-    };
-};
-
-export type GetCrmTransfersByIdResponse = GetCrmTransfersByIdResponses[keyof GetCrmTransfersByIdResponses];
-
 export type PatchCrmTransfersByIdApproveData = {
     /**
      * ApproveTransferBody
@@ -20366,3 +20820,288 @@ export type PatchCrmTransfersByIdRejectResponses = {
 };
 
 export type PatchCrmTransfersByIdRejectResponse = PatchCrmTransfersByIdRejectResponses[keyof PatchCrmTransfersByIdRejectResponses];
+
+export type GetCrmTransfersByIdData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/crm/transfers/{id}';
+};
+
+export type GetCrmTransfersByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Transfer request not found
+     */
+    404: {
+        error: string;
+        details?: unknown;
+    };
+};
+
+export type GetCrmTransfersByIdError = GetCrmTransfersByIdErrors[keyof GetCrmTransfersByIdErrors];
+
+export type GetCrmTransfersByIdResponses = {
+    /**
+     * GetTransferDetailResponse
+     *
+     * 移籍申請詳細レスポンス
+     */
+    200: {
+        /**
+         * TransferDetail
+         *
+         * 移籍申請詳細レコード
+         */
+        transfer: {
+            /**
+             * 移籍申請ID
+             */
+            id: string;
+            /**
+             * 会員ID
+             */
+            member_id: string;
+            /**
+             * 会員氏名
+             */
+            member_name: string;
+            /**
+             * 移籍元店舗ID
+             */
+            from_store_id: string;
+            /**
+             * 移籍元店舗名
+             */
+            from_store_name: string;
+            /**
+             * 移籍先店舗ID
+             */
+            to_store_id: string;
+            /**
+             * 移籍先店舗名
+             */
+            to_store_name: string;
+            /**
+             * TransferBrand
+             *
+             * Brand of the member contract: joyfit=JOYFIT, fit365=FIT365
+             */
+            brand: 'joyfit' | 'fit365';
+            /**
+             * 申請日時 (ISO 8601)
+             */
+            applied_at: string;
+            /**
+             * 移籍予定日 (ISO 8601)
+             */
+            scheduled_date: string;
+            /**
+             * TransferStatus
+             *
+             * Transfer request status: pending=申請中, from_store_approved=店舗承認済, approved=承認済, rejected=却下, completed=移籍完了
+             */
+            status: 'pending' | 'from_store_approved' | 'approved' | 'rejected' | 'completed';
+            /**
+             * 移籍理由
+             */
+            reason: string;
+            /**
+             * 申請者氏名
+             */
+            applicant_name: string;
+            /**
+             * 申請者ロール
+             */
+            applicant_role: string;
+            /**
+             * 最終更新日時 (ISO 8601)
+             */
+            updated_at: string;
+            /**
+             * 承認ステップ履歴
+             */
+            approval_history: Array<{
+                /**
+                 * ステップ番号（1始まり）
+                 */
+                step: number;
+                /**
+                 * ステップラベル
+                 */
+                label: string;
+                /**
+                 * 店舗種別: from=移籍元, to=移籍先, null=なし
+                 */
+                store_type: 'from' | 'to' | null;
+                /**
+                 * 完了済みかどうか
+                 */
+                completed: boolean;
+                /**
+                 * 完了日時 (ISO 8601)
+                 */
+                completed_at: string | null;
+                /**
+                 * 完了者氏名
+                 */
+                completed_by: string | null;
+                /**
+                 * システム自動実行ステップか
+                 */
+                is_automatic: boolean;
+            }>;
+        };
+    };
+};
+
+export type GetCrmTransfersByIdResponse = GetCrmTransfersByIdResponses[keyof GetCrmTransfersByIdResponses];
+
+export type GetCrmTransfersData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * ページ番号
+         */
+        page?: number;
+        /**
+         * 1ページあたりの件数
+         */
+        limit?: number;
+        /**
+         * 申請ID・会員名の検索文字列
+         */
+        search?: string;
+        /**
+         * TransferStatus
+         *
+         * ステータスフィルター
+         */
+        status?: 'pending' | 'from_store_approved' | 'approved' | 'rejected' | 'completed';
+        /**
+         * 移籍元店舗IDフィルター
+         */
+        from_store_id?: string;
+        /**
+         * 移籍先店舗IDフィルター
+         */
+        to_store_id?: string;
+        /**
+         * TransferBrand
+         *
+         * ブランドフィルター
+         */
+        brand?: 'joyfit' | 'fit365';
+        /**
+         * 申請日期間フィルター
+         */
+        applied_period?: 'this_month' | 'last_month' | 'this_year';
+        /**
+         * ソートカラム
+         */
+        sort_by?: string;
+        /**
+         * ソート順
+         */
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/transfers';
+};
+
+export type GetCrmTransfersErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Bad request - invalid query parameters
+     */
+    400: {
+        error: string;
+        details?: unknown;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Internal server error
+     */
+    500: {
+        error: string;
+        details?: unknown;
+    };
+};
+
+export type GetCrmTransfersError = GetCrmTransfersErrors[keyof GetCrmTransfersErrors];
+
+export type GetCrmTransfersResponses = {
+    /**
+     * GetTransfersResponse
+     *
+     * 移籍申請一覧レスポンス
+     */
+    200: {
+        transfers: Array<{
+            /**
+             * 移籍申請ID
+             */
+            id: string;
+            /**
+             * 会員ID
+             */
+            member_id: string;
+            /**
+             * 会員氏名
+             */
+            member_name: string;
+            /**
+             * 移籍元店舗ID
+             */
+            from_store_id: string;
+            /**
+             * 移籍元店舗名
+             */
+            from_store_name: string;
+            /**
+             * 移籍先店舗ID
+             */
+            to_store_id: string;
+            /**
+             * 移籍先店舗名
+             */
+            to_store_name: string;
+            /**
+             * TransferBrand
+             *
+             * Brand of the member contract: joyfit=JOYFIT, fit365=FIT365
+             */
+            brand: 'joyfit' | 'fit365';
+            /**
+             * 申請日時 (ISO 8601)
+             */
+            applied_at: string;
+            /**
+             * 移籍予定日 (ISO 8601)
+             */
+            scheduled_date: string;
+            /**
+             * TransferStatus
+             *
+             * Transfer request status: pending=申請中, from_store_approved=店舗承認済, approved=承認済, rejected=却下, completed=移籍完了
+             */
+            status: 'pending' | 'from_store_approved' | 'approved' | 'rejected' | 'completed';
+        }>;
+        /**
+         * TransferPagination
+         */
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmTransfersResponse = GetCrmTransfersResponses[keyof GetCrmTransfersResponses];

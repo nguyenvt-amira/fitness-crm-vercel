@@ -108,3 +108,89 @@ export type GetLeavesResponse = z.infer<typeof GetLeavesResponseSchema>;
 export const ErrorResponseSchema = z
   .object({ error: z.string() })
   .openapi({ title: 'LeaveErrorResponse' });
+
+// ─── Detail Schema ────────────────────────────────────────────────────────────
+
+export const LeaveDetailSchema = z
+  .object({
+    id: z.string().openapi({ example: 'LV-001', description: '申請ID' }),
+    member_id: z.string().openapi({ example: 'M-00101', description: '会員ID' }),
+    member_name: z.string().openapi({ example: '田中 次郎', description: '会員名' }),
+    brand: z.string().openapi({ example: 'JOYFIT', description: 'ブランド' }),
+    store_id: z.string().openapi({ example: 'store-006', description: '店舗ID' }),
+    store_name: z.string().openapi({ example: 'JOYFIT24新宿店', description: '店舗名' }),
+    type: LeaveTypeSchema,
+    status: LeaveStatusSchema,
+    applied_at: z.string().openapi({ example: '2026/03/20 10:15', description: '申請日時' }),
+    scheduled_date: z
+      .string()
+      .openapi({ example: '2026/04', description: '休会開始月 or 退会予定日' }),
+    end_date: z
+      .string()
+      .nullable()
+      .openapi({ example: '2026/06', description: '休会終了月（休会のみ）' }),
+    reason: z.string().openapi({ example: '海外出張のため', description: '申請理由' }),
+    applicant: z.string().openapi({ example: '田中 次郎（本人）', description: '申請者' }),
+    is_proxy_applied: z.boolean().openapi({ description: '代理申請フラグ' }),
+    proxy_applicant: z.string().nullable().openapi({ description: '代理申請者名' }),
+    consent_at: z.string().nullable().openapi({ description: '合意日時' }),
+    consent_method: z.string().nullable().openapi({ description: '合意方法' }),
+    suspension_fee: z
+      .number()
+      .nullable()
+      .openapi({ example: 1100, description: '休会費（円/月）' }),
+    applied_campaign: z.string().openapi({ example: 'なし', description: '適用キャンペーン' }),
+    unused_lessons: z.number().openapi({ example: 2, description: '未消化レッスン数' }),
+    unpaid_amount: z.number().openapi({ example: 0, description: '未納金額（円）' }),
+    created_at: z.string().openapi({ description: '作成日時' }),
+    updated_at: z.string().openapi({ description: '最終更新日時' }),
+  })
+  .openapi({ title: 'LeaveDetail' });
+
+export type LeaveDetail = z.infer<typeof LeaveDetailSchema>;
+
+export const GetLeaveDetailResponseSchema = z
+  .object({ leave: LeaveDetailSchema })
+  .openapi({ title: 'GetLeaveDetailResponse' });
+
+export type GetLeaveDetailResponse = z.infer<typeof GetLeaveDetailResponseSchema>;
+
+// ─── Action Request/Response Schemas ─────────────────────────────────────────
+
+export const ApproveLeaveRequestSchema = z
+  .object({
+    comment: z.string().optional().openapi({ description: '承認コメント（任意）' }),
+  })
+  .openapi({ title: 'ApproveLeaveRequest' });
+
+export type ApproveLeaveRequest = z.infer<typeof ApproveLeaveRequestSchema>;
+
+export const RejectLeaveRequestSchema = z
+  .object({
+    reason: z.string().min(1).openapi({ description: '却下理由' }),
+  })
+  .openapi({ title: 'RejectLeaveRequest' });
+
+export type RejectLeaveRequest = z.infer<typeof RejectLeaveRequestSchema>;
+
+export const CancelWithdrawalRequestSchema = z
+  .object({
+    comment: z.string().optional().openapi({ description: '取り消しコメント（任意）' }),
+  })
+  .openapi({ title: 'CancelWithdrawalRequest' });
+
+export type CancelWithdrawalRequest = z.infer<typeof CancelWithdrawalRequestSchema>;
+
+export const ExecuteWithdrawalRequestSchema = z
+  .object({
+    comment: z.string().optional().openapi({ description: '処理コメント（任意）' }),
+  })
+  .openapi({ title: 'ExecuteWithdrawalRequest' });
+
+export type ExecuteWithdrawalRequest = z.infer<typeof ExecuteWithdrawalRequestSchema>;
+
+export const LeaveActionResponseSchema = z
+  .object({ leave: LeaveDetailSchema })
+  .openapi({ title: 'LeaveActionResponse' });
+
+export type LeaveActionResponse = z.infer<typeof LeaveActionResponseSchema>;

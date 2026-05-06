@@ -2,6 +2,8 @@
 
 import { Suspense, useMemo, useState } from 'react';
 
+import { useRouter } from 'next/navigation';
+
 import { useQuery } from '@tanstack/react-query';
 import type { SortingState } from '@tanstack/react-table';
 
@@ -12,6 +14,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 
 import { getCrmLeavesOptions } from '@/lib/api/@tanstack/react-query.gen';
+import { navigate } from '@/lib/routes/routes.util';
 
 import { LeavesFilters } from './_components/leaves-filters';
 import { LeavesTableColumns } from './_components/leaves-table-columns';
@@ -19,6 +22,7 @@ import { LeavesFiltersProvider } from './_contexts/leaves-filters-context';
 import { useLeavesFilters } from './_hooks/use-leaves-filters';
 
 function LeavesPageContent() {
+  const router = useRouter();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const filtersHook = useLeavesFilters();
@@ -75,6 +79,7 @@ function LeavesPageContent() {
               containerClassName={
                 isFilterOpen ? 'max-h-[calc(100vh-330px)]' : 'max-h-[calc(100vh-280px)]'
               }
+              onRowClick={(row) => router.push(navigate('/members/leaves/[id]', row.id))}
               tableOptions={{
                 state: { sorting },
                 onSortingChange: handleSortingChange,

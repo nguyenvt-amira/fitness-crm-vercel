@@ -1,3 +1,7 @@
+import { CheckCircle, Clock, LucideIcon, PauseCircle, XCircle } from 'lucide-react';
+
+import { StatusTone } from '@/components/common/status-card';
+
 import { LeaveStatus, LeaveType } from '@/lib/api/types.gen';
 
 // ─── Label Maps ──────────────────────────────────────────────────────────────
@@ -48,6 +52,41 @@ export const LEAVE_STATUS_CLASSES: Record<
     badge: '',
     dot: '',
     isOutline: false,
+  },
+};
+
+export const STATUS_ICON_CONFIG: Record<
+  LeaveStatus,
+  {
+    icon: LucideIcon;
+    tone: StatusTone;
+    label: string;
+  }
+> = {
+  [LeaveStatus.SUSPENSION_SCHEDULED]: {
+    icon: Clock,
+    tone: 'warning',
+    label: LEAVE_STATUS_LABELS[LeaveStatus.SUSPENSION_SCHEDULED],
+  },
+  [LeaveStatus.SUSPENDED]: {
+    icon: PauseCircle,
+    tone: 'info',
+    label: LEAVE_STATUS_LABELS[LeaveStatus.SUSPENDED],
+  },
+  [LeaveStatus.WITHDRAWAL_SCHEDULED]: {
+    icon: Clock,
+    tone: 'destructive',
+    label: LEAVE_STATUS_LABELS[LeaveStatus.WITHDRAWAL_SCHEDULED],
+  },
+  [LeaveStatus.WITHDRAWAL_PENDING]: {
+    icon: XCircle,
+    tone: 'warning',
+    label: LEAVE_STATUS_LABELS[LeaveStatus.WITHDRAWAL_PENDING],
+  },
+  [LeaveStatus.COMPLETED]: {
+    icon: CheckCircle,
+    tone: 'info',
+    label: LEAVE_STATUS_LABELS[LeaveStatus.COMPLETED],
   },
 };
 

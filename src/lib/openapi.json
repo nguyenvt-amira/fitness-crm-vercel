@@ -15366,6 +15366,1155 @@
         }
       }
     },
+    "/crm/leaves/{id}/approve": {
+      "post": {
+        "summary": "Approve a leave/withdrawal request",
+        "description": "Approve a suspension_scheduled → suspended, or withdrawal_scheduled → withdrawal_pending",
+        "tags": ["Leaves"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "comment": {
+                    "type": "string",
+                    "description": "承認コメント（任意）"
+                  }
+                },
+                "title": "ApproveLeaveRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated leave detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "leave": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "LV-001",
+                          "description": "申請ID"
+                        },
+                        "member_id": {
+                          "type": "string",
+                          "example": "M-00101",
+                          "description": "会員ID"
+                        },
+                        "member_name": {
+                          "type": "string",
+                          "example": "田中 次郎",
+                          "description": "会員名"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "example": "JOYFIT",
+                          "description": "ブランド"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "example": "store-006",
+                          "description": "店舗ID"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "example": "JOYFIT24新宿店",
+                          "description": "店舗名"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": ["suspension", "withdrawal"],
+                          "title": "LeaveType",
+                          "description": "Leave type: suspension=休会, withdrawal=退会"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "suspension_scheduled",
+                            "suspended",
+                            "withdrawal_scheduled",
+                            "withdrawal_pending",
+                            "completed"
+                          ],
+                          "title": "LeaveStatus",
+                          "description": "Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了"
+                        },
+                        "applied_at": {
+                          "type": "string",
+                          "example": "2026/03/20 10:15",
+                          "description": "申請日時"
+                        },
+                        "scheduled_date": {
+                          "type": "string",
+                          "example": "2026/04",
+                          "description": "休会開始月 or 退会予定日"
+                        },
+                        "end_date": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "2026/06",
+                          "description": "休会終了月（休会のみ）"
+                        },
+                        "reason": {
+                          "type": "string",
+                          "example": "海外出張のため",
+                          "description": "申請理由"
+                        },
+                        "applicant": {
+                          "type": "string",
+                          "example": "田中 次郎（本人）",
+                          "description": "申請者"
+                        },
+                        "is_proxy_applied": {
+                          "type": "boolean",
+                          "description": "代理申請フラグ"
+                        },
+                        "proxy_applicant": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "代理申請者名"
+                        },
+                        "consent_at": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "合意日時"
+                        },
+                        "consent_method": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "合意方法"
+                        },
+                        "suspension_fee": {
+                          "type": "number",
+                          "nullable": true,
+                          "example": 1100,
+                          "description": "休会費（円/月）"
+                        },
+                        "applied_campaign": {
+                          "type": "string",
+                          "example": "なし",
+                          "description": "適用キャンペーン"
+                        },
+                        "unused_lessons": {
+                          "type": "number",
+                          "example": 2,
+                          "description": "未消化レッスン数"
+                        },
+                        "unpaid_amount": {
+                          "type": "number",
+                          "example": 0,
+                          "description": "未納金額（円）"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "description": "作成日時"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "description": "最終更新日時"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "member_id",
+                        "member_name",
+                        "brand",
+                        "store_id",
+                        "store_name",
+                        "type",
+                        "status",
+                        "applied_at",
+                        "scheduled_date",
+                        "end_date",
+                        "reason",
+                        "applicant",
+                        "is_proxy_applied",
+                        "proxy_applicant",
+                        "consent_at",
+                        "consent_method",
+                        "suspension_fee",
+                        "applied_campaign",
+                        "unused_lessons",
+                        "unpaid_amount",
+                        "created_at",
+                        "updated_at"
+                      ],
+                      "title": "LeaveDetail"
+                    }
+                  },
+                  "required": ["leave"],
+                  "title": "LeaveActionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid transition",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "LeaveErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Leave not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "LeaveErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/leaves/{id}/cancel-withdrawal": {
+      "post": {
+        "summary": "Cancel a scheduled withdrawal",
+        "description": "Cancel a withdrawal_scheduled request and revert the member status back to active",
+        "tags": ["Leaves"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "comment": {
+                    "type": "string",
+                    "description": "取り消しコメント（任意）"
+                  }
+                },
+                "title": "CancelWithdrawalRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated leave detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "leave": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "LV-001",
+                          "description": "申請ID"
+                        },
+                        "member_id": {
+                          "type": "string",
+                          "example": "M-00101",
+                          "description": "会員ID"
+                        },
+                        "member_name": {
+                          "type": "string",
+                          "example": "田中 次郎",
+                          "description": "会員名"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "example": "JOYFIT",
+                          "description": "ブランド"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "example": "store-006",
+                          "description": "店舗ID"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "example": "JOYFIT24新宿店",
+                          "description": "店舗名"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": ["suspension", "withdrawal"],
+                          "title": "LeaveType",
+                          "description": "Leave type: suspension=休会, withdrawal=退会"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "suspension_scheduled",
+                            "suspended",
+                            "withdrawal_scheduled",
+                            "withdrawal_pending",
+                            "completed"
+                          ],
+                          "title": "LeaveStatus",
+                          "description": "Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了"
+                        },
+                        "applied_at": {
+                          "type": "string",
+                          "example": "2026/03/20 10:15",
+                          "description": "申請日時"
+                        },
+                        "scheduled_date": {
+                          "type": "string",
+                          "example": "2026/04",
+                          "description": "休会開始月 or 退会予定日"
+                        },
+                        "end_date": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "2026/06",
+                          "description": "休会終了月（休会のみ）"
+                        },
+                        "reason": {
+                          "type": "string",
+                          "example": "海外出張のため",
+                          "description": "申請理由"
+                        },
+                        "applicant": {
+                          "type": "string",
+                          "example": "田中 次郎（本人）",
+                          "description": "申請者"
+                        },
+                        "is_proxy_applied": {
+                          "type": "boolean",
+                          "description": "代理申請フラグ"
+                        },
+                        "proxy_applicant": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "代理申請者名"
+                        },
+                        "consent_at": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "合意日時"
+                        },
+                        "consent_method": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "合意方法"
+                        },
+                        "suspension_fee": {
+                          "type": "number",
+                          "nullable": true,
+                          "example": 1100,
+                          "description": "休会費（円/月）"
+                        },
+                        "applied_campaign": {
+                          "type": "string",
+                          "example": "なし",
+                          "description": "適用キャンペーン"
+                        },
+                        "unused_lessons": {
+                          "type": "number",
+                          "example": 2,
+                          "description": "未消化レッスン数"
+                        },
+                        "unpaid_amount": {
+                          "type": "number",
+                          "example": 0,
+                          "description": "未納金額（円）"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "description": "作成日時"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "description": "最終更新日時"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "member_id",
+                        "member_name",
+                        "brand",
+                        "store_id",
+                        "store_name",
+                        "type",
+                        "status",
+                        "applied_at",
+                        "scheduled_date",
+                        "end_date",
+                        "reason",
+                        "applicant",
+                        "is_proxy_applied",
+                        "proxy_applicant",
+                        "consent_at",
+                        "consent_method",
+                        "suspension_fee",
+                        "applied_campaign",
+                        "unused_lessons",
+                        "unpaid_amount",
+                        "created_at",
+                        "updated_at"
+                      ],
+                      "title": "LeaveDetail"
+                    }
+                  },
+                  "required": ["leave"],
+                  "title": "LeaveActionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid transition",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "LeaveErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Leave not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "LeaveErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/leaves/{id}/execute-withdrawal": {
+      "post": {
+        "summary": "Manually execute a withdrawal",
+        "description": "Manually execute a withdrawal for a withdrawal_pending leave request, completing the process",
+        "tags": ["Leaves"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "comment": {
+                    "type": "string",
+                    "description": "処理コメント（任意）"
+                  }
+                },
+                "title": "ExecuteWithdrawalRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated leave detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "leave": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "LV-001",
+                          "description": "申請ID"
+                        },
+                        "member_id": {
+                          "type": "string",
+                          "example": "M-00101",
+                          "description": "会員ID"
+                        },
+                        "member_name": {
+                          "type": "string",
+                          "example": "田中 次郎",
+                          "description": "会員名"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "example": "JOYFIT",
+                          "description": "ブランド"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "example": "store-006",
+                          "description": "店舗ID"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "example": "JOYFIT24新宿店",
+                          "description": "店舗名"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": ["suspension", "withdrawal"],
+                          "title": "LeaveType",
+                          "description": "Leave type: suspension=休会, withdrawal=退会"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "suspension_scheduled",
+                            "suspended",
+                            "withdrawal_scheduled",
+                            "withdrawal_pending",
+                            "completed"
+                          ],
+                          "title": "LeaveStatus",
+                          "description": "Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了"
+                        },
+                        "applied_at": {
+                          "type": "string",
+                          "example": "2026/03/20 10:15",
+                          "description": "申請日時"
+                        },
+                        "scheduled_date": {
+                          "type": "string",
+                          "example": "2026/04",
+                          "description": "休会開始月 or 退会予定日"
+                        },
+                        "end_date": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "2026/06",
+                          "description": "休会終了月（休会のみ）"
+                        },
+                        "reason": {
+                          "type": "string",
+                          "example": "海外出張のため",
+                          "description": "申請理由"
+                        },
+                        "applicant": {
+                          "type": "string",
+                          "example": "田中 次郎（本人）",
+                          "description": "申請者"
+                        },
+                        "is_proxy_applied": {
+                          "type": "boolean",
+                          "description": "代理申請フラグ"
+                        },
+                        "proxy_applicant": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "代理申請者名"
+                        },
+                        "consent_at": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "合意日時"
+                        },
+                        "consent_method": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "合意方法"
+                        },
+                        "suspension_fee": {
+                          "type": "number",
+                          "nullable": true,
+                          "example": 1100,
+                          "description": "休会費（円/月）"
+                        },
+                        "applied_campaign": {
+                          "type": "string",
+                          "example": "なし",
+                          "description": "適用キャンペーン"
+                        },
+                        "unused_lessons": {
+                          "type": "number",
+                          "example": 2,
+                          "description": "未消化レッスン数"
+                        },
+                        "unpaid_amount": {
+                          "type": "number",
+                          "example": 0,
+                          "description": "未納金額（円）"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "description": "作成日時"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "description": "最終更新日時"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "member_id",
+                        "member_name",
+                        "brand",
+                        "store_id",
+                        "store_name",
+                        "type",
+                        "status",
+                        "applied_at",
+                        "scheduled_date",
+                        "end_date",
+                        "reason",
+                        "applicant",
+                        "is_proxy_applied",
+                        "proxy_applicant",
+                        "consent_at",
+                        "consent_method",
+                        "suspension_fee",
+                        "applied_campaign",
+                        "unused_lessons",
+                        "unpaid_amount",
+                        "created_at",
+                        "updated_at"
+                      ],
+                      "title": "LeaveDetail"
+                    }
+                  },
+                  "required": ["leave"],
+                  "title": "LeaveActionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid transition",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "LeaveErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Leave not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "LeaveErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/leaves/{id}/reject": {
+      "post": {
+        "summary": "Reject a leave/withdrawal request",
+        "description": "Reject a pending suspension or withdrawal request, reverting the member to active",
+        "tags": ["Leaves"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "却下理由"
+                  }
+                },
+                "required": ["reason"],
+                "title": "RejectLeaveRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated leave detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "leave": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "LV-001",
+                          "description": "申請ID"
+                        },
+                        "member_id": {
+                          "type": "string",
+                          "example": "M-00101",
+                          "description": "会員ID"
+                        },
+                        "member_name": {
+                          "type": "string",
+                          "example": "田中 次郎",
+                          "description": "会員名"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "example": "JOYFIT",
+                          "description": "ブランド"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "example": "store-006",
+                          "description": "店舗ID"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "example": "JOYFIT24新宿店",
+                          "description": "店舗名"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": ["suspension", "withdrawal"],
+                          "title": "LeaveType",
+                          "description": "Leave type: suspension=休会, withdrawal=退会"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "suspension_scheduled",
+                            "suspended",
+                            "withdrawal_scheduled",
+                            "withdrawal_pending",
+                            "completed"
+                          ],
+                          "title": "LeaveStatus",
+                          "description": "Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了"
+                        },
+                        "applied_at": {
+                          "type": "string",
+                          "example": "2026/03/20 10:15",
+                          "description": "申請日時"
+                        },
+                        "scheduled_date": {
+                          "type": "string",
+                          "example": "2026/04",
+                          "description": "休会開始月 or 退会予定日"
+                        },
+                        "end_date": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "2026/06",
+                          "description": "休会終了月（休会のみ）"
+                        },
+                        "reason": {
+                          "type": "string",
+                          "example": "海外出張のため",
+                          "description": "申請理由"
+                        },
+                        "applicant": {
+                          "type": "string",
+                          "example": "田中 次郎（本人）",
+                          "description": "申請者"
+                        },
+                        "is_proxy_applied": {
+                          "type": "boolean",
+                          "description": "代理申請フラグ"
+                        },
+                        "proxy_applicant": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "代理申請者名"
+                        },
+                        "consent_at": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "合意日時"
+                        },
+                        "consent_method": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "合意方法"
+                        },
+                        "suspension_fee": {
+                          "type": "number",
+                          "nullable": true,
+                          "example": 1100,
+                          "description": "休会費（円/月）"
+                        },
+                        "applied_campaign": {
+                          "type": "string",
+                          "example": "なし",
+                          "description": "適用キャンペーン"
+                        },
+                        "unused_lessons": {
+                          "type": "number",
+                          "example": 2,
+                          "description": "未消化レッスン数"
+                        },
+                        "unpaid_amount": {
+                          "type": "number",
+                          "example": 0,
+                          "description": "未納金額（円）"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "description": "作成日時"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "description": "最終更新日時"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "member_id",
+                        "member_name",
+                        "brand",
+                        "store_id",
+                        "store_name",
+                        "type",
+                        "status",
+                        "applied_at",
+                        "scheduled_date",
+                        "end_date",
+                        "reason",
+                        "applicant",
+                        "is_proxy_applied",
+                        "proxy_applicant",
+                        "consent_at",
+                        "consent_method",
+                        "suspension_fee",
+                        "applied_campaign",
+                        "unused_lessons",
+                        "unpaid_amount",
+                        "created_at",
+                        "updated_at"
+                      ],
+                      "title": "LeaveDetail"
+                    }
+                  },
+                  "required": ["leave"],
+                  "title": "LeaveActionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid transition or missing reason",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "LeaveErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Leave not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "LeaveErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/leaves/{id}": {
+      "get": {
+        "summary": "Get leave/withdrawal request detail",
+        "description": "Get full detail of a single leave or withdrawal request",
+        "tags": ["Leaves"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Leave request detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "leave": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "LV-001",
+                          "description": "申請ID"
+                        },
+                        "member_id": {
+                          "type": "string",
+                          "example": "M-00101",
+                          "description": "会員ID"
+                        },
+                        "member_name": {
+                          "type": "string",
+                          "example": "田中 次郎",
+                          "description": "会員名"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "example": "JOYFIT",
+                          "description": "ブランド"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "example": "store-006",
+                          "description": "店舗ID"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "example": "JOYFIT24新宿店",
+                          "description": "店舗名"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": ["suspension", "withdrawal"],
+                          "title": "LeaveType",
+                          "description": "Leave type: suspension=休会, withdrawal=退会"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "suspension_scheduled",
+                            "suspended",
+                            "withdrawal_scheduled",
+                            "withdrawal_pending",
+                            "completed"
+                          ],
+                          "title": "LeaveStatus",
+                          "description": "Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了"
+                        },
+                        "applied_at": {
+                          "type": "string",
+                          "example": "2026/03/20 10:15",
+                          "description": "申請日時"
+                        },
+                        "scheduled_date": {
+                          "type": "string",
+                          "example": "2026/04",
+                          "description": "休会開始月 or 退会予定日"
+                        },
+                        "end_date": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "2026/06",
+                          "description": "休会終了月（休会のみ）"
+                        },
+                        "reason": {
+                          "type": "string",
+                          "example": "海外出張のため",
+                          "description": "申請理由"
+                        },
+                        "applicant": {
+                          "type": "string",
+                          "example": "田中 次郎（本人）",
+                          "description": "申請者"
+                        },
+                        "is_proxy_applied": {
+                          "type": "boolean",
+                          "description": "代理申請フラグ"
+                        },
+                        "proxy_applicant": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "代理申請者名"
+                        },
+                        "consent_at": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "合意日時"
+                        },
+                        "consent_method": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "合意方法"
+                        },
+                        "suspension_fee": {
+                          "type": "number",
+                          "nullable": true,
+                          "example": 1100,
+                          "description": "休会費（円/月）"
+                        },
+                        "applied_campaign": {
+                          "type": "string",
+                          "example": "なし",
+                          "description": "適用キャンペーン"
+                        },
+                        "unused_lessons": {
+                          "type": "number",
+                          "example": 2,
+                          "description": "未消化レッスン数"
+                        },
+                        "unpaid_amount": {
+                          "type": "number",
+                          "example": 0,
+                          "description": "未納金額（円）"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "description": "作成日時"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "description": "最終更新日時"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "member_id",
+                        "member_name",
+                        "brand",
+                        "store_id",
+                        "store_name",
+                        "type",
+                        "status",
+                        "applied_at",
+                        "scheduled_date",
+                        "end_date",
+                        "reason",
+                        "applicant",
+                        "is_proxy_applied",
+                        "proxy_applicant",
+                        "consent_at",
+                        "consent_method",
+                        "suspension_fee",
+                        "applied_campaign",
+                        "unused_lessons",
+                        "unpaid_amount",
+                        "created_at",
+                        "updated_at"
+                      ],
+                      "title": "LeaveDetail"
+                    }
+                  },
+                  "required": ["leave"],
+                  "title": "GetLeaveDetailResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Leave request not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "LeaveErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/leaves": {
       "get": {
         "summary": "Get leaves list",
@@ -30076,516 +31225,6 @@
         }
       }
     },
-    "/crm/transfers": {
-      "get": {
-        "summary": "Get transfer requests list",
-        "description": "Get paginated list of transfer requests with filtering and sorting",
-        "tags": ["Transfers"],
-        "parameters": [
-          {
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "exclusiveMinimum": true,
-              "default": 1,
-              "description": "ページ番号",
-              "example": 1
-            },
-            "required": false,
-            "description": "ページ番号",
-            "name": "page",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "exclusiveMinimum": true,
-              "default": 20,
-              "description": "1ページあたりの件数",
-              "example": 20
-            },
-            "required": false,
-            "description": "1ページあたりの件数",
-            "name": "limit",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "description": "申請ID・会員名の検索文字列"
-            },
-            "required": false,
-            "description": "申請ID・会員名の検索文字列",
-            "name": "search",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "enum": ["pending", "from_store_approved", "approved", "rejected", "completed"],
-              "title": "TransferStatus",
-              "description": "ステータスフィルター"
-            },
-            "required": false,
-            "description": "ステータスフィルター",
-            "name": "status",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "description": "移籍元店舗IDフィルター"
-            },
-            "required": false,
-            "description": "移籍元店舗IDフィルター",
-            "name": "from_store_id",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "description": "移籍先店舗IDフィルター"
-            },
-            "required": false,
-            "description": "移籍先店舗IDフィルター",
-            "name": "to_store_id",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "enum": ["joyfit", "fit365"],
-              "title": "TransferBrand",
-              "description": "ブランドフィルター"
-            },
-            "required": false,
-            "description": "ブランドフィルター",
-            "name": "brand",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "enum": ["this_month", "last_month", "this_year"],
-              "description": "申請日期間フィルター"
-            },
-            "required": false,
-            "description": "申請日期間フィルター",
-            "name": "applied_period",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "default": "applied_at",
-              "description": "ソートカラム",
-              "example": "applied_at"
-            },
-            "required": false,
-            "description": "ソートカラム",
-            "name": "sort_by",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "enum": ["asc", "desc"],
-              "default": "desc",
-              "description": "ソート順",
-              "example": "desc"
-            },
-            "required": false,
-            "description": "ソート順",
-            "name": "sort_order",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of transfer requests",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "transfers": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "example": "TR-001",
-                            "description": "移籍申請ID"
-                          },
-                          "member_id": {
-                            "type": "string",
-                            "example": "M-12345",
-                            "description": "会員ID"
-                          },
-                          "member_name": {
-                            "type": "string",
-                            "example": "山田 太郎",
-                            "description": "会員氏名"
-                          },
-                          "from_store_id": {
-                            "type": "string",
-                            "example": "store-001",
-                            "description": "移籍元店舗ID"
-                          },
-                          "from_store_name": {
-                            "type": "string",
-                            "example": "JOYFIT池袋店",
-                            "description": "移籍元店舗名"
-                          },
-                          "to_store_id": {
-                            "type": "string",
-                            "example": "store-002",
-                            "description": "移籍先店舗ID"
-                          },
-                          "to_store_name": {
-                            "type": "string",
-                            "example": "JOYFIT新宿店",
-                            "description": "移籍先店舗名"
-                          },
-                          "brand": {
-                            "type": "string",
-                            "enum": ["joyfit", "fit365"],
-                            "title": "TransferBrand",
-                            "description": "Brand of the member contract: joyfit=JOYFIT, fit365=FIT365"
-                          },
-                          "applied_at": {
-                            "type": "string",
-                            "example": "2026-04-15T10:30:00Z",
-                            "description": "申請日時 (ISO 8601)"
-                          },
-                          "scheduled_date": {
-                            "type": "string",
-                            "example": "2026-05-01T00:00:00Z",
-                            "description": "移籍予定日 (ISO 8601)"
-                          },
-                          "status": {
-                            "type": "string",
-                            "enum": [
-                              "pending",
-                              "from_store_approved",
-                              "approved",
-                              "rejected",
-                              "completed"
-                            ],
-                            "title": "TransferStatus",
-                            "description": "Transfer request status: pending=申請中, from_store_approved=店舗承認済, approved=承認済, rejected=却下, completed=移籍完了"
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "member_id",
-                          "member_name",
-                          "from_store_id",
-                          "from_store_name",
-                          "to_store_id",
-                          "to_store_name",
-                          "brand",
-                          "applied_at",
-                          "scheduled_date",
-                          "status"
-                        ],
-                        "title": "TransferRequest",
-                        "description": "移籍申請レコード"
-                      }
-                    },
-                    "pagination": {
-                      "type": "object",
-                      "properties": {
-                        "page": {
-                          "type": "integer",
-                          "example": 1
-                        },
-                        "limit": {
-                          "type": "integer",
-                          "example": 20
-                        },
-                        "total": {
-                          "type": "integer",
-                          "example": 42
-                        },
-                        "total_pages": {
-                          "type": "integer",
-                          "example": 3
-                        }
-                      },
-                      "required": ["page", "limit", "total", "total_pages"],
-                      "title": "TransferPagination"
-                    }
-                  },
-                  "required": ["transfers", "pagination"],
-                  "title": "GetTransfersResponse",
-                  "description": "移籍申請一覧レスポンス"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request - invalid query parameters",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    },
-                    "details": {
-                      "nullable": true
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    },
-                    "details": {
-                      "nullable": true
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/crm/transfers/{id}": {
-      "get": {
-        "summary": "Get transfer request detail",
-        "description": "Get full detail of a single transfer request including approval history",
-        "tags": ["Transfers"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Transfer request detail",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "transfer": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string",
-                          "example": "TR-001",
-                          "description": "移籍申請ID"
-                        },
-                        "member_id": {
-                          "type": "string",
-                          "example": "M-12345",
-                          "description": "会員ID"
-                        },
-                        "member_name": {
-                          "type": "string",
-                          "example": "山田 太郎",
-                          "description": "会員氏名"
-                        },
-                        "from_store_id": {
-                          "type": "string",
-                          "example": "store-001",
-                          "description": "移籍元店舗ID"
-                        },
-                        "from_store_name": {
-                          "type": "string",
-                          "example": "JOYFIT池袋店",
-                          "description": "移籍元店舗名"
-                        },
-                        "to_store_id": {
-                          "type": "string",
-                          "example": "store-002",
-                          "description": "移籍先店舗ID"
-                        },
-                        "to_store_name": {
-                          "type": "string",
-                          "example": "JOYFIT新宿店",
-                          "description": "移籍先店舗名"
-                        },
-                        "brand": {
-                          "type": "string",
-                          "enum": ["joyfit", "fit365"],
-                          "title": "TransferBrand",
-                          "description": "Brand of the member contract: joyfit=JOYFIT, fit365=FIT365"
-                        },
-                        "applied_at": {
-                          "type": "string",
-                          "example": "2026-04-15T10:30:00Z",
-                          "description": "申請日時 (ISO 8601)"
-                        },
-                        "scheduled_date": {
-                          "type": "string",
-                          "example": "2026-05-01T00:00:00Z",
-                          "description": "移籍予定日 (ISO 8601)"
-                        },
-                        "status": {
-                          "type": "string",
-                          "enum": [
-                            "pending",
-                            "from_store_approved",
-                            "approved",
-                            "rejected",
-                            "completed"
-                          ],
-                          "title": "TransferStatus",
-                          "description": "Transfer request status: pending=申請中, from_store_approved=店舗承認済, approved=承認済, rejected=却下, completed=移籍完了"
-                        },
-                        "reason": {
-                          "type": "string",
-                          "example": "転居のため",
-                          "description": "移籍理由"
-                        },
-                        "applicant_name": {
-                          "type": "string",
-                          "example": "田中 太郎",
-                          "description": "申請者氏名"
-                        },
-                        "applicant_role": {
-                          "type": "string",
-                          "example": "staff",
-                          "description": "申請者ロール"
-                        },
-                        "updated_at": {
-                          "type": "string",
-                          "example": "2026-04-16T10:30:00Z",
-                          "description": "最終更新日時 (ISO 8601)"
-                        },
-                        "approval_history": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "step": {
-                                "type": "integer",
-                                "example": 1,
-                                "description": "ステップ番号（1始まり）"
-                              },
-                              "label": {
-                                "type": "string",
-                                "example": "移籍元承認",
-                                "description": "ステップラベル"
-                              },
-                              "store_type": {
-                                "type": "string",
-                                "nullable": true,
-                                "enum": ["from", "to", null],
-                                "description": "店舗種別: from=移籍元, to=移籍先, null=なし"
-                              },
-                              "completed": {
-                                "type": "boolean",
-                                "description": "完了済みかどうか"
-                              },
-                              "completed_at": {
-                                "type": "string",
-                                "nullable": true,
-                                "example": "2026-04-16T10:30:00Z",
-                                "description": "完了日時 (ISO 8601)"
-                              },
-                              "completed_by": {
-                                "type": "string",
-                                "nullable": true,
-                                "description": "完了者氏名"
-                              },
-                              "is_automatic": {
-                                "type": "boolean",
-                                "description": "システム自動実行ステップか"
-                              }
-                            },
-                            "required": [
-                              "step",
-                              "label",
-                              "store_type",
-                              "completed",
-                              "completed_at",
-                              "completed_by",
-                              "is_automatic"
-                            ],
-                            "title": "ApprovalHistoryItem",
-                            "description": "承認フロー 1ステップ"
-                          },
-                          "description": "承認ステップ履歴"
-                        }
-                      },
-                      "required": [
-                        "id",
-                        "member_id",
-                        "member_name",
-                        "from_store_id",
-                        "from_store_name",
-                        "to_store_id",
-                        "to_store_name",
-                        "brand",
-                        "applied_at",
-                        "scheduled_date",
-                        "status",
-                        "reason",
-                        "applicant_name",
-                        "applicant_role",
-                        "updated_at",
-                        "approval_history"
-                      ],
-                      "title": "TransferDetail",
-                      "description": "移籍申請詳細レコード"
-                    }
-                  },
-                  "required": ["transfer"],
-                  "title": "GetTransferDetailResponse",
-                  "description": "移籍申請詳細レスポンス"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Transfer request not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    },
-                    "details": {
-                      "nullable": true
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/crm/transfers/{id}/approve": {
       "patch": {
         "summary": "Approve transfer request",
@@ -31109,6 +31748,516 @@
           },
           "404": {
             "description": "Transfer request not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "nullable": true
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/transfers/{id}": {
+      "get": {
+        "summary": "Get transfer request detail",
+        "description": "Get full detail of a single transfer request including approval history",
+        "tags": ["Transfers"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transfer request detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "transfer": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "TR-001",
+                          "description": "移籍申請ID"
+                        },
+                        "member_id": {
+                          "type": "string",
+                          "example": "M-12345",
+                          "description": "会員ID"
+                        },
+                        "member_name": {
+                          "type": "string",
+                          "example": "山田 太郎",
+                          "description": "会員氏名"
+                        },
+                        "from_store_id": {
+                          "type": "string",
+                          "example": "store-001",
+                          "description": "移籍元店舗ID"
+                        },
+                        "from_store_name": {
+                          "type": "string",
+                          "example": "JOYFIT池袋店",
+                          "description": "移籍元店舗名"
+                        },
+                        "to_store_id": {
+                          "type": "string",
+                          "example": "store-002",
+                          "description": "移籍先店舗ID"
+                        },
+                        "to_store_name": {
+                          "type": "string",
+                          "example": "JOYFIT新宿店",
+                          "description": "移籍先店舗名"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "enum": ["joyfit", "fit365"],
+                          "title": "TransferBrand",
+                          "description": "Brand of the member contract: joyfit=JOYFIT, fit365=FIT365"
+                        },
+                        "applied_at": {
+                          "type": "string",
+                          "example": "2026-04-15T10:30:00Z",
+                          "description": "申請日時 (ISO 8601)"
+                        },
+                        "scheduled_date": {
+                          "type": "string",
+                          "example": "2026-05-01T00:00:00Z",
+                          "description": "移籍予定日 (ISO 8601)"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "pending",
+                            "from_store_approved",
+                            "approved",
+                            "rejected",
+                            "completed"
+                          ],
+                          "title": "TransferStatus",
+                          "description": "Transfer request status: pending=申請中, from_store_approved=店舗承認済, approved=承認済, rejected=却下, completed=移籍完了"
+                        },
+                        "reason": {
+                          "type": "string",
+                          "example": "転居のため",
+                          "description": "移籍理由"
+                        },
+                        "applicant_name": {
+                          "type": "string",
+                          "example": "田中 太郎",
+                          "description": "申請者氏名"
+                        },
+                        "applicant_role": {
+                          "type": "string",
+                          "example": "staff",
+                          "description": "申請者ロール"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026-04-16T10:30:00Z",
+                          "description": "最終更新日時 (ISO 8601)"
+                        },
+                        "approval_history": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "step": {
+                                "type": "integer",
+                                "example": 1,
+                                "description": "ステップ番号（1始まり）"
+                              },
+                              "label": {
+                                "type": "string",
+                                "example": "移籍元承認",
+                                "description": "ステップラベル"
+                              },
+                              "store_type": {
+                                "type": "string",
+                                "nullable": true,
+                                "enum": ["from", "to", null],
+                                "description": "店舗種別: from=移籍元, to=移籍先, null=なし"
+                              },
+                              "completed": {
+                                "type": "boolean",
+                                "description": "完了済みかどうか"
+                              },
+                              "completed_at": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "2026-04-16T10:30:00Z",
+                                "description": "完了日時 (ISO 8601)"
+                              },
+                              "completed_by": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "完了者氏名"
+                              },
+                              "is_automatic": {
+                                "type": "boolean",
+                                "description": "システム自動実行ステップか"
+                              }
+                            },
+                            "required": [
+                              "step",
+                              "label",
+                              "store_type",
+                              "completed",
+                              "completed_at",
+                              "completed_by",
+                              "is_automatic"
+                            ],
+                            "title": "ApprovalHistoryItem",
+                            "description": "承認フロー 1ステップ"
+                          },
+                          "description": "承認ステップ履歴"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "member_id",
+                        "member_name",
+                        "from_store_id",
+                        "from_store_name",
+                        "to_store_id",
+                        "to_store_name",
+                        "brand",
+                        "applied_at",
+                        "scheduled_date",
+                        "status",
+                        "reason",
+                        "applicant_name",
+                        "applicant_role",
+                        "updated_at",
+                        "approval_history"
+                      ],
+                      "title": "TransferDetail",
+                      "description": "移籍申請詳細レコード"
+                    }
+                  },
+                  "required": ["transfer"],
+                  "title": "GetTransferDetailResponse",
+                  "description": "移籍申請詳細レスポンス"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Transfer request not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "nullable": true
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/transfers": {
+      "get": {
+        "summary": "Get transfer requests list",
+        "description": "Get paginated list of transfer requests with filtering and sorting",
+        "tags": ["Transfers"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1,
+              "description": "ページ番号",
+              "example": 1
+            },
+            "required": false,
+            "description": "ページ番号",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 20,
+              "description": "1ページあたりの件数",
+              "example": 20
+            },
+            "required": false,
+            "description": "1ページあたりの件数",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "申請ID・会員名の検索文字列"
+            },
+            "required": false,
+            "description": "申請ID・会員名の検索文字列",
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["pending", "from_store_approved", "approved", "rejected", "completed"],
+              "title": "TransferStatus",
+              "description": "ステータスフィルター"
+            },
+            "required": false,
+            "description": "ステータスフィルター",
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "移籍元店舗IDフィルター"
+            },
+            "required": false,
+            "description": "移籍元店舗IDフィルター",
+            "name": "from_store_id",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "移籍先店舗IDフィルター"
+            },
+            "required": false,
+            "description": "移籍先店舗IDフィルター",
+            "name": "to_store_id",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["joyfit", "fit365"],
+              "title": "TransferBrand",
+              "description": "ブランドフィルター"
+            },
+            "required": false,
+            "description": "ブランドフィルター",
+            "name": "brand",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["this_month", "last_month", "this_year"],
+              "description": "申請日期間フィルター"
+            },
+            "required": false,
+            "description": "申請日期間フィルター",
+            "name": "applied_period",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "default": "applied_at",
+              "description": "ソートカラム",
+              "example": "applied_at"
+            },
+            "required": false,
+            "description": "ソートカラム",
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "desc",
+              "description": "ソート順",
+              "example": "desc"
+            },
+            "required": false,
+            "description": "ソート順",
+            "name": "sort_order",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of transfer requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "transfers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "TR-001",
+                            "description": "移籍申請ID"
+                          },
+                          "member_id": {
+                            "type": "string",
+                            "example": "M-12345",
+                            "description": "会員ID"
+                          },
+                          "member_name": {
+                            "type": "string",
+                            "example": "山田 太郎",
+                            "description": "会員氏名"
+                          },
+                          "from_store_id": {
+                            "type": "string",
+                            "example": "store-001",
+                            "description": "移籍元店舗ID"
+                          },
+                          "from_store_name": {
+                            "type": "string",
+                            "example": "JOYFIT池袋店",
+                            "description": "移籍元店舗名"
+                          },
+                          "to_store_id": {
+                            "type": "string",
+                            "example": "store-002",
+                            "description": "移籍先店舗ID"
+                          },
+                          "to_store_name": {
+                            "type": "string",
+                            "example": "JOYFIT新宿店",
+                            "description": "移籍先店舗名"
+                          },
+                          "brand": {
+                            "type": "string",
+                            "enum": ["joyfit", "fit365"],
+                            "title": "TransferBrand",
+                            "description": "Brand of the member contract: joyfit=JOYFIT, fit365=FIT365"
+                          },
+                          "applied_at": {
+                            "type": "string",
+                            "example": "2026-04-15T10:30:00Z",
+                            "description": "申請日時 (ISO 8601)"
+                          },
+                          "scheduled_date": {
+                            "type": "string",
+                            "example": "2026-05-01T00:00:00Z",
+                            "description": "移籍予定日 (ISO 8601)"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "pending",
+                              "from_store_approved",
+                              "approved",
+                              "rejected",
+                              "completed"
+                            ],
+                            "title": "TransferStatus",
+                            "description": "Transfer request status: pending=申請中, from_store_approved=店舗承認済, approved=承認済, rejected=却下, completed=移籍完了"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "member_id",
+                          "member_name",
+                          "from_store_id",
+                          "from_store_name",
+                          "to_store_id",
+                          "to_store_name",
+                          "brand",
+                          "applied_at",
+                          "scheduled_date",
+                          "status"
+                        ],
+                        "title": "TransferRequest",
+                        "description": "移籍申請レコード"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "limit": {
+                          "type": "integer",
+                          "example": 20
+                        },
+                        "total": {
+                          "type": "integer",
+                          "example": 42
+                        },
+                        "total_pages": {
+                          "type": "integer",
+                          "example": 3
+                        }
+                      },
+                      "required": ["page", "limit", "total", "total_pages"],
+                      "title": "TransferPagination"
+                    }
+                  },
+                  "required": ["transfers", "pagination"],
+                  "title": "GetTransfersResponse",
+                  "description": "移籍申請一覧レスポンス"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "nullable": true
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
             "content": {
               "application/json": {
                 "schema": {

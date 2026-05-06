@@ -23,6 +23,11 @@ import '@/app/api/crm/family-registrations/risk-evaluation/route';
 import '@/app/api/crm/family-registrations/route';
 import '@/app/api/crm/family-registrations/summary/route';
 // Import leaves routes
+import '@/app/api/crm/leaves/[id]/approve/route';
+import '@/app/api/crm/leaves/[id]/cancel-withdrawal/route';
+import '@/app/api/crm/leaves/[id]/execute-withdrawal/route';
+import '@/app/api/crm/leaves/[id]/reject/route';
+import '@/app/api/crm/leaves/[id]/route';
 import '@/app/api/crm/leaves/route';
 import '@/app/api/crm/main-contracts/route';
 import '@/app/api/crm/members/[id]/basic-info/route';
