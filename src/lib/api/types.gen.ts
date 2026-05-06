@@ -3700,7 +3700,7 @@ export type MembershipApplication = {
     /**
      * Application status
      */
-    status: '未審査' | '審査中' | '承認済' | '否認' | '取り消し済';
+    status: 'pending' | 'review' | 'approved' | 'rejected' | 'cancelled';
     /**
      * Whether applicant matched blacklist
      */
@@ -3772,11 +3772,11 @@ export const MembershipApplicationPaymentStatus = {
 export type MembershipApplicationPaymentStatus = typeof MembershipApplicationPaymentStatus[keyof typeof MembershipApplicationPaymentStatus];
 
 export const MembershipApplicationStatus = {
-    未審査: '未審査',
-    審査中: '審査中',
-    承認済: '承認済',
-    否認: '否認',
-    取り消し済: '取り消し済'
+    PENDING: 'pending',
+    REVIEW: 'review',
+    APPROVED: 'approved',
+    REJECTED: 'rejected',
+    CANCELLED: 'cancelled'
 } as const;
 
 export type MembershipApplicationStatus = typeof MembershipApplicationStatus[keyof typeof MembershipApplicationStatus];
@@ -3809,7 +3809,7 @@ export type GetMembershipApplicationsQuery = {
     /**
      * Filter by status
      */
-    status?: '未審査' | '審査中' | '承認済' | '否認' | '取り消し済';
+    status?: 'pending' | 'review' | 'approved' | 'rejected' | 'cancelled';
     /**
      * Filter by brand name
      */
@@ -3865,7 +3865,7 @@ export type GetMembershipApplicationsResponse = {
         /**
          * Application status
          */
-        status: '未審査' | '審査中' | '承認済' | '否認' | '取り消し済';
+        status: 'pending' | 'review' | 'approved' | 'rejected' | 'cancelled';
         /**
          * Whether applicant matched blacklist
          */
@@ -3951,7 +3951,7 @@ export type GetApplicationDetailResponse = {
         /**
          * Application status
          */
-        status: '未審査' | '審査中' | '承認済' | '否認' | '取り消し済';
+        status: 'pending' | 'review' | 'approved' | 'rejected' | 'cancelled';
         /**
          * Whether applicant matched blacklist
          */
@@ -3989,133 +3989,141 @@ export type GetApplicationDetailResponse = {
          */
         is_proxy?: boolean;
         /**
-         * Gender
+         * Applicant name (kana)
          */
-        gender?: 'male' | 'female' | 'other';
+        applicant_kana?: string;
         /**
-         * Blood type
+         * Birth date (formatted)
          */
-        blood_type?: 'A' | 'B' | 'O' | 'AB' | 'unknown';
+        birth_date?: string;
         /**
-         * Birthday (YYYY-MM-DD)
+         * Age
          */
-        birthday?: string;
+        age?: number;
         /**
-         * Applicant email
+         * Gender label
          */
-        applicant_email?: string;
+        gender_label?: string;
         /**
-         * Applicant phone number
+         * Phone (masked)
          */
-        applicant_phone?: string;
+        phone?: string;
         /**
-         * Applicant address
+         * Phone (real)
          */
-        applicant_address?: string;
+        phone_real?: string;
         /**
-         * Emergency contact name
+         * Email (masked)
          */
-        emergency_contact_name?: string;
+        email_masked?: string;
         /**
-         * Emergency contact relationship
+         * Email (real)
          */
-        emergency_contact_relationship?: string;
+        email_real?: string;
         /**
-         * Emergency contact phone
+         * Address (masked)
          */
-        emergency_contact_phone?: string;
+        address?: string;
         /**
-         * MembershipApplicationPaymentMethod
-         *
-         * Payment method
+         * Address (real)
          */
-        payment_method?: 'credit_card' | 'bank_transfer';
+        address_real?: string;
         /**
-         * MembershipApplicationPaymentStatus
-         *
-         * Payment status
+         * BL match condition labels
          */
-        payment_status?: 'pending' | 'paid' | 'failed';
+        blacklist_conditions?: Array<string>;
         /**
-         * Detailed risk information
+         * Usage start date (formatted)
          */
-        risk_details?: Array<{
-            reason: string;
-            score: number;
-            description: string;
+        usage_start_date?: string;
+        /**
+         * Monthly fee (yen)
+         */
+        monthly_fee?: number;
+        /**
+         * Selected options
+         */
+        options?: Array<string>;
+        /**
+         * Fee breakdown rows
+         */
+        fee_rows?: Array<{
+            label: string;
+            amount: number;
         }>;
         /**
-         * Application documents
+         * Payment method label
          */
-        documents?: Array<{
-            type: string;
-            url: string;
-            verified: boolean;
+        payment_method?: string;
+        /**
+         * Card last 4 digits
+         */
+        card_last4?: string;
+        /**
+         * Application source
+         */
+        application_source?: string;
+        /**
+         * Last updated (formatted)
+         */
+        updated_at?: string;
+        /**
+         * Parental consent confirmed
+         */
+        parental_consent?: boolean;
+        /**
+         * Proxy applicant name
+         */
+        proxy_applicant?: string;
+        /**
+         * Agreement date (formatted)
+         */
+        agreement_date?: string;
+        /**
+         * Approver name
+         */
+        approved_by?: string;
+        /**
+         * Approval date (formatted)
+         */
+        approved_at?: string;
+        /**
+         * Rejector name
+         */
+        rejected_by?: string;
+        /**
+         * Rejection date (formatted)
+         */
+        rejected_at?: string;
+        /**
+         * Rejection reason
+         */
+        rejected_reason?: string;
+        /**
+         * Activity timeline
+         */
+        timeline?: Array<{
+            /**
+             * Entry ID
+             */
+            id: string;
+            /**
+             * Entry kind
+             */
+            kind: 'system' | 'memo';
+            /**
+             * Date/time string (formatted)
+             */
+            date: string;
+            /**
+             * Operator name
+             */
+            operator: string;
+            /**
+             * Entry content
+             */
+            content: string;
         }>;
-        /**
-         * Contract details
-         */
-        contract_details?: {
-            plan_id: string;
-            plan_name: string;
-            start_date: string;
-            monthly_fee: number;
-            contract_period: number;
-            option_ids?: Array<string>;
-        };
-        /**
-         * EkycResult
-         *
-         * eKYC verification result
-         */
-        ekyc?: {
-            /**
-             * eKYC総合判定
-             */
-            verified: boolean;
-            /**
-             * 検証日時
-             */
-            verified_at?: string;
-            /**
-             * 顔写真（申請者撮影）URL
-             */
-            face_photo_url?: string;
-            /**
-             * 本人確認書類アップロード画像URL
-             */
-            id_document_url?: string;
-            /**
-             * 本人確認書類種別
-             */
-            document_type?: string;
-            /**
-             * 顔認証結果
-             */
-            face_match?: {
-                /**
-                 * 顔認証類似度（%）
-                 */
-                similarity: number;
-                /**
-                 * 顔認証判定結果
-                 */
-                passed: boolean;
-            };
-            /**
-             * ブラックリストチェック結果
-             */
-            blacklist_check?: {
-                /**
-                 * ブラックリスト一致有無
-                 */
-                matched: boolean;
-                /**
-                 * 一致理由
-                 */
-                reason?: string;
-            };
-        };
     };
 };
 
@@ -4253,7 +4261,7 @@ export type ApproveResponse = {
     /**
      * New application status
      */
-    status: '承認済';
+    status: 'approved';
     /**
      * Approval date and time
      */
@@ -4283,6 +4291,10 @@ export type RejectRequest = {
      */
     rejection_reason: string;
     /**
+     * Optional supplementary note
+     */
+    note?: string;
+    /**
      * Staff ID who rejected
      */
     staff_id?: string;
@@ -4305,7 +4317,7 @@ export type RejectResponse = {
     /**
      * New application status
      */
-    status: '否認';
+    status: 'rejected';
     /**
      * Rejection date and time
      */
@@ -4353,7 +4365,7 @@ export type CancelResponse = {
     /**
      * New application status
      */
-    status: '取り消し済';
+    status: 'cancelled';
     /**
      * Cancellation date and time
      */
@@ -16064,7 +16076,7 @@ export type PostCrmMembershipApplicationsByIdApproveResponses = {
         /**
          * New application status
          */
-        status: '承認済';
+        status: 'approved';
         /**
          * Approval date and time
          */
@@ -16168,7 +16180,7 @@ export type PostCrmMembershipApplicationsByIdCancelResponses = {
         /**
          * New application status
          */
-        status: '取り消し済';
+        status: 'cancelled';
         /**
          * Cancellation date and time
          */
@@ -16194,6 +16206,157 @@ export type PostCrmMembershipApplicationsByIdCancelResponses = {
 
 export type PostCrmMembershipApplicationsByIdCancelResponse = PostCrmMembershipApplicationsByIdCancelResponses[keyof PostCrmMembershipApplicationsByIdCancelResponses];
 
+export type DeleteCrmMembershipApplicationsByIdMemosByMemoIdData = {
+    body?: never;
+    path: {
+        /**
+         * Membership application ID
+         */
+        id: string;
+        /**
+         * Memo ID to delete
+         */
+        memoId: string;
+    };
+    query?: never;
+    url: '/crm/membership-applications/{id}/memos/{memoId}';
+};
+
+export type DeleteCrmMembershipApplicationsByIdMemosByMemoIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type DeleteCrmMembershipApplicationsByIdMemosByMemoIdError = DeleteCrmMembershipApplicationsByIdMemosByMemoIdErrors[keyof DeleteCrmMembershipApplicationsByIdMemosByMemoIdErrors];
+
+export type DeleteCrmMembershipApplicationsByIdMemosByMemoIdResponses = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    200: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type DeleteCrmMembershipApplicationsByIdMemosByMemoIdResponse = DeleteCrmMembershipApplicationsByIdMemosByMemoIdResponses[keyof DeleteCrmMembershipApplicationsByIdMemosByMemoIdResponses];
+
+export type PostCrmMembershipApplicationsByIdMemosData = {
+    /**
+     * CreateMemoRequest
+     *
+     * Request to create a memo for membership application
+     */
+    body?: {
+        /**
+         * Memo content
+         */
+        content: string;
+    };
+    path: {
+        /**
+         * Membership application ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/membership-applications/{id}/memos';
+};
+
+export type PostCrmMembershipApplicationsByIdMemosErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembershipApplicationsByIdMemosError = PostCrmMembershipApplicationsByIdMemosErrors[keyof PostCrmMembershipApplicationsByIdMemosErrors];
+
+export type PostCrmMembershipApplicationsByIdMemosResponses = {
+    /**
+     * CreateMemoResponse
+     *
+     * Response for creating a memo
+     */
+    200: {
+        /**
+         * Created memo ID
+         */
+        id: string;
+        /**
+         * Entry type
+         */
+        kind: 'memo';
+        /**
+         * Memo date and time
+         */
+        date: string;
+        /**
+         * Staff member who added the memo
+         */
+        operator: string;
+        /**
+         * Memo content
+         */
+        content: string;
+    };
+};
+
+export type PostCrmMembershipApplicationsByIdMemosResponse = PostCrmMembershipApplicationsByIdMemosResponses[keyof PostCrmMembershipApplicationsByIdMemosResponses];
+
 export type PostCrmMembershipApplicationsByIdRejectData = {
     /**
      * RejectRequest
@@ -16205,6 +16368,10 @@ export type PostCrmMembershipApplicationsByIdRejectData = {
          * Rejection reason
          */
         rejection_reason: string;
+        /**
+         * Optional supplementary note
+         */
+        note?: string;
         /**
          * Staff ID who rejected
          */
@@ -16276,7 +16443,7 @@ export type PostCrmMembershipApplicationsByIdRejectResponses = {
         /**
          * New application status
          */
-        status: '否認';
+        status: 'rejected';
         /**
          * Rejection date and time
          */
@@ -16357,7 +16524,7 @@ export type GetCrmMembershipApplicationsByIdResponses = {
             /**
              * Application status
              */
-            status: '未審査' | '審査中' | '承認済' | '否認' | '取り消し済';
+            status: 'pending' | 'review' | 'approved' | 'rejected' | 'cancelled';
             /**
              * Whether applicant matched blacklist
              */
@@ -16395,291 +16562,146 @@ export type GetCrmMembershipApplicationsByIdResponses = {
              */
             is_proxy?: boolean;
             /**
-             * Gender
+             * Applicant name (kana)
              */
-            gender?: 'male' | 'female' | 'other';
+            applicant_kana?: string;
             /**
-             * Blood type
+             * Birth date (formatted)
              */
-            blood_type?: 'A' | 'B' | 'O' | 'AB' | 'unknown';
+            birth_date?: string;
             /**
-             * Birthday (YYYY-MM-DD)
+             * Age
              */
-            birthday?: string;
+            age?: number;
             /**
-             * Applicant email
+             * Gender label
              */
-            applicant_email?: string;
+            gender_label?: string;
             /**
-             * Applicant phone number
+             * Phone (masked)
              */
-            applicant_phone?: string;
+            phone?: string;
             /**
-             * Applicant address
+             * Phone (real)
              */
-            applicant_address?: string;
+            phone_real?: string;
             /**
-             * Emergency contact name
+             * Email (masked)
              */
-            emergency_contact_name?: string;
+            email_masked?: string;
             /**
-             * Emergency contact relationship
+             * Email (real)
              */
-            emergency_contact_relationship?: string;
+            email_real?: string;
             /**
-             * Emergency contact phone
+             * Address (masked)
              */
-            emergency_contact_phone?: string;
+            address?: string;
             /**
-             * MembershipApplicationPaymentMethod
-             *
-             * Payment method
+             * Address (real)
              */
-            payment_method?: 'credit_card' | 'bank_transfer';
+            address_real?: string;
             /**
-             * MembershipApplicationPaymentStatus
-             *
-             * Payment status
+             * BL match condition labels
              */
-            payment_status?: 'pending' | 'paid' | 'failed';
+            blacklist_conditions?: Array<string>;
             /**
-             * Detailed risk information
+             * Usage start date (formatted)
              */
-            risk_details?: Array<{
-                reason: string;
-                score: number;
-                description: string;
+            usage_start_date?: string;
+            /**
+             * Monthly fee (yen)
+             */
+            monthly_fee?: number;
+            /**
+             * Selected options
+             */
+            options?: Array<string>;
+            /**
+             * Fee breakdown rows
+             */
+            fee_rows?: Array<{
+                label: string;
+                amount: number;
             }>;
             /**
-             * Application documents
+             * Payment method label
              */
-            documents?: Array<{
-                type: string;
-                url: string;
-                verified: boolean;
+            payment_method?: string;
+            /**
+             * Card last 4 digits
+             */
+            card_last4?: string;
+            /**
+             * Application source
+             */
+            application_source?: string;
+            /**
+             * Last updated (formatted)
+             */
+            updated_at?: string;
+            /**
+             * Parental consent confirmed
+             */
+            parental_consent?: boolean;
+            /**
+             * Proxy applicant name
+             */
+            proxy_applicant?: string;
+            /**
+             * Agreement date (formatted)
+             */
+            agreement_date?: string;
+            /**
+             * Approver name
+             */
+            approved_by?: string;
+            /**
+             * Approval date (formatted)
+             */
+            approved_at?: string;
+            /**
+             * Rejector name
+             */
+            rejected_by?: string;
+            /**
+             * Rejection date (formatted)
+             */
+            rejected_at?: string;
+            /**
+             * Rejection reason
+             */
+            rejected_reason?: string;
+            /**
+             * Activity timeline
+             */
+            timeline?: Array<{
+                /**
+                 * Entry ID
+                 */
+                id: string;
+                /**
+                 * Entry kind
+                 */
+                kind: 'system' | 'memo';
+                /**
+                 * Date/time string (formatted)
+                 */
+                date: string;
+                /**
+                 * Operator name
+                 */
+                operator: string;
+                /**
+                 * Entry content
+                 */
+                content: string;
             }>;
-            /**
-             * Contract details
-             */
-            contract_details?: {
-                plan_id: string;
-                plan_name: string;
-                start_date: string;
-                monthly_fee: number;
-                contract_period: number;
-                option_ids?: Array<string>;
-            };
-            /**
-             * EkycResult
-             *
-             * eKYC verification result
-             */
-            ekyc?: {
-                /**
-                 * eKYC総合判定
-                 */
-                verified: boolean;
-                /**
-                 * 検証日時
-                 */
-                verified_at?: string;
-                /**
-                 * 顔写真（申請者撮影）URL
-                 */
-                face_photo_url?: string;
-                /**
-                 * 本人確認書類アップロード画像URL
-                 */
-                id_document_url?: string;
-                /**
-                 * 本人確認書類種別
-                 */
-                document_type?: string;
-                /**
-                 * 顔認証結果
-                 */
-                face_match?: {
-                    /**
-                     * 顔認証類似度（%）
-                     */
-                    similarity: number;
-                    /**
-                     * 顔認証判定結果
-                     */
-                    passed: boolean;
-                };
-                /**
-                 * ブラックリストチェック結果
-                 */
-                blacklist_check?: {
-                    /**
-                     * ブラックリスト一致有無
-                     */
-                    matched: boolean;
-                    /**
-                     * 一致理由
-                     */
-                    reason?: string;
-                };
-            };
         };
     };
 };
 
 export type GetCrmMembershipApplicationsByIdResponse = GetCrmMembershipApplicationsByIdResponses[keyof GetCrmMembershipApplicationsByIdResponses];
-
-export type PatchCrmMembershipApplicationsByIdData = {
-    /**
-     * UpdateMembershipApplicationRequest
-     *
-     * Request payload for editing membership application
-     */
-    body?: {
-        /**
-         * Basic info
-         */
-        basic?: {
-            /**
-             * Applicant name
-             */
-            applicant_name?: string;
-            /**
-             * Gender
-             */
-            gender?: 'male' | 'female' | 'other' | 'unknown';
-            /**
-             * Blood type
-             */
-            blood_type?: 'A' | 'B' | 'O' | 'AB' | 'unknown';
-            /**
-             * Birthday (YYYY-MM-DD)
-             */
-            birthday?: string;
-        };
-        /**
-         * Contact info
-         */
-        contact?: {
-            /**
-             * Address
-             */
-            applicant_address?: string;
-            /**
-             * Phone
-             */
-            applicant_phone?: string;
-            /**
-             * Email
-             */
-            applicant_email?: string;
-            /**
-             * Emergency contact name
-             */
-            emergency_contact_name?: string;
-            /**
-             * Emergency contact relationship
-             */
-            emergency_contact_relationship?: string;
-            /**
-             * Emergency contact phone
-             */
-            emergency_contact_phone?: string;
-        };
-        /**
-         * Contract info
-         */
-        contract?: {
-            /**
-             * Scheduled start date (YYYY-MM-DD)
-             */
-            start_date?: string;
-            /**
-             * Plan ID
-             */
-            plan_id?: string;
-            /**
-             * Plan name
-             */
-            plan_name?: string;
-            /**
-             * Option IDs
-             */
-            option_ids?: Array<string>;
-            /**
-             * Whether to recalculate fee
-             */
-            recalculate_fee?: boolean;
-        };
-    };
-    path: {
-        /**
-         * Membership application ID
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/crm/membership-applications/{id}';
-};
-
-export type PatchCrmMembershipApplicationsByIdErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    400: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    404: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type PatchCrmMembershipApplicationsByIdError = PatchCrmMembershipApplicationsByIdErrors[keyof PatchCrmMembershipApplicationsByIdErrors];
-
-export type PatchCrmMembershipApplicationsByIdResponses = {
-    /**
-     * UpdateMembershipApplicationResponse
-     *
-     * Response for editing membership application
-     */
-    200: {
-        /**
-         * Whether the operation was successful
-         */
-        success: boolean;
-        /**
-         * Updated application (shape follows detail response)
-         */
-        application: {
-            [key: string]: unknown;
-        };
-    };
-};
-
-export type PatchCrmMembershipApplicationsByIdResponse = PatchCrmMembershipApplicationsByIdResponses[keyof PatchCrmMembershipApplicationsByIdResponses];
 
 export type GetCrmMembershipApplicationsData = {
     body?: never;
@@ -16696,7 +16718,7 @@ export type GetCrmMembershipApplicationsData = {
         /**
          * Filter by status
          */
-        status?: '未審査' | '審査中' | '承認済' | '否認' | '取り消し済';
+        status?: 'pending' | 'review' | 'approved' | 'rejected' | 'cancelled';
         /**
          * Filter by brand name
          */
@@ -16782,7 +16804,7 @@ export type GetCrmMembershipApplicationsResponses = {
             /**
              * Application status
              */
-            status: '未審査' | '審査中' | '承認済' | '否認' | '取り消し済';
+            status: 'pending' | 'review' | 'approved' | 'rejected' | 'cancelled';
             /**
              * Whether applicant matched blacklist
              */

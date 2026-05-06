@@ -70,7 +70,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const validatedBody: CancelRequest = validationResult.data;
     const { cancellation_reason, staff_id } = validatedBody;
 
-    const updated = db.membershipApplications.updateStatus(id, '取り消し済');
+    const updated = db.membershipApplications.updateStatus(id, 'cancelled');
     if (!updated) {
       return NextResponse.json({ error: 'Application not found' }, { status: 404 });
     }
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const response: CancelResponse = {
       success: true,
       application_id: id,
-      status: '取り消し済',
+      status: 'cancelled',
       cancelled_at: new Date().toISOString(),
       cancelled_by: staff_id || 'staff-001',
       cancellation_reason: cancellation_reason,

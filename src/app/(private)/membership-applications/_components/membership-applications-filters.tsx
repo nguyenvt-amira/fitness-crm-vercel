@@ -21,6 +21,14 @@ import { cn } from '@/lib/utils';
 import { BLACKLIST_OPTIONS, BRAND_OPTIONS, STATUS_OPTIONS } from '../_constants/constants';
 import { useMembershipApplicationsFiltersContext } from '../_contexts/membership-applications-filters-context';
 
+const MOCK_STORES = [
+  'FIT365八潮店',
+  'FIT365草加店',
+  'FIT365越谷店',
+  'ジョイフィット24越谷店',
+  'ジョイフィット24草加店',
+];
+
 export function MembershipApplicationsFilters() {
   const { searchInput, setSearchInput, filters, setFilters, clearFilters, hasActiveFilters } =
     useMembershipApplicationsFiltersContext();
@@ -114,6 +122,25 @@ export function MembershipApplicationsFilters() {
             </SelectContent>
           </Select>
 
+          {/* Store */}
+          <Select
+            value={filters.store || '全店舗'}
+            onValueChange={(v) => setFilters({ store: v === '全店舗' ? null : v, page: 1 })}
+          >
+            <SelectTrigger
+              className={cn('h-8 w-[180px] text-xs', filterActiveClass(filters.store, ''))}
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="全店舗">全店舗</SelectItem>
+              {MOCK_STORES.map((store) => (
+                <SelectItem key={store} value={store} className="text-xs">
+                  {store}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {/* Date range */}
           <DateRangePicker
             date={

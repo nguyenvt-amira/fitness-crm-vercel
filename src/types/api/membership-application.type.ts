@@ -1,6 +1,11 @@
 // Types for Membership Applications API (snake_case)
 
-export type MembershipApplicationStatus = '未審査' | '審査中' | '承認済' | '否認' | '取り消し済';
+export type MembershipApplicationStatus =
+  | 'pending'
+  | 'review'
+  | 'approved'
+  | 'rejected'
+  | 'cancelled';
 
 export type RiskReason =
   | 'blacklist_match'

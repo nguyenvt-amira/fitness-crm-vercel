@@ -66,16 +66,51 @@ export type MembershipApplicationDetails = Partial<{
   gender: 'male' | 'female' | 'other';
   blood_type: 'A' | 'B' | 'O' | 'AB' | 'unknown';
   birthday: string; // YYYY-MM-DD
-  // Contact
+  // New detail fields
+  applicant_kana: string;
+  birth_date: string;
+  age: number;
+  gender_label: string;
+  phone: string;
+  phone_real: string;
+  email_masked: string;
+  email_real: string;
+  address: string;
+  address_real: string;
+  blacklist_conditions: string[];
+  usage_start_date: string;
+  monthly_fee: number;
+  options: string[];
+  fee_rows: { label: string; amount: number }[];
+  payment_method: string;
+  card_last4: string;
+  application_source: string;
+  updated_at: string;
+  parental_consent: boolean;
+  proxy_applicant: string;
+  agreement_date: string;
+  approved_by: string;
+  approved_at: string;
+  rejected_by: string;
+  rejected_at: string;
+  rejected_reason: string;
+  timeline: {
+    id: string;
+    kind: 'system' | 'memo';
+    date: string;
+    operator: string;
+    content: string;
+  }[];
+  // Contact (legacy)
   applicant_email: string;
   applicant_phone: string;
   applicant_address: string;
   emergency_contact_name: string;
   emergency_contact_relationship: string;
   emergency_contact_phone: string;
-  // Contract
+  // Contract (legacy)
   contract_details: MembershipApplicationContractDetails;
-  // eKYC
+  // eKYC (legacy)
   ekyc: EkycResult;
 }>;
 
@@ -681,6 +716,12 @@ type DbType = {
       id: string,
       status: MembershipApplicationStatus,
     ): MembershipApplication | undefined;
+    addMemo(
+      id: string,
+      content: string,
+      operator: string,
+    ): MembershipApplicationDetails['timeline'] | undefined;
+    deleteMemo(id: string, memoId: string): boolean;
   };
   family: {
     _seeded: boolean;
@@ -2422,7 +2463,7 @@ function createDb() {
             store_name: 'FIT365八潮店',
             plan_name: 'レギュラー会員',
             application_date: '2026-03-30T09:15:00+09:00',
-            status: '未審査',
+            status: 'pending',
             blacklist_match: false,
             start_date: '2026-04-01',
             brand_name: 'FIT365',
@@ -2434,7 +2475,7 @@ function createDb() {
             store_name: 'FIT365草加店',
             plan_name: 'デイタイム会員',
             application_date: '2026-03-30T10:32:00+09:00',
-            status: '未審査',
+            status: 'pending',
             blacklist_match: false,
             start_date: '2026-04-02',
             brand_name: 'FIT365',
@@ -2446,7 +2487,7 @@ function createDb() {
             store_name: 'FIT365越谷店',
             plan_name: 'ナイト会員',
             application_date: '2026-03-30T11:08:00+09:00',
-            status: '未審査',
+            status: 'pending',
             blacklist_match: true,
             start_date: '2026-04-01',
             brand_name: 'FIT365',
@@ -2458,7 +2499,7 @@ function createDb() {
             store_name: 'FIT365八潮店',
             plan_name: 'ウィークエンド会員',
             application_date: '2026-03-30T11:45:00+09:00',
-            status: '未審査',
+            status: 'pending',
             blacklist_match: false,
             start_date: '2026-04-05',
             brand_name: 'FIT365',
@@ -2470,7 +2511,7 @@ function createDb() {
             store_name: 'FIT365草加店',
             plan_name: 'レギュラー会員（学生）',
             application_date: '2026-03-30T13:20:00+09:00',
-            status: '未審査',
+            status: 'pending',
             blacklist_match: false,
             start_date: '2026-04-01',
             brand_name: 'FIT365',
@@ -2482,7 +2523,7 @@ function createDb() {
             store_name: 'ジョイフィット24越谷店',
             plan_name: 'レギュラー会員',
             application_date: '2026-03-30T14:05:00+09:00',
-            status: '未審査',
+            status: 'pending',
             blacklist_match: false,
             start_date: '2026-04-01',
             brand_name: 'JOYFIT',
@@ -2494,7 +2535,7 @@ function createDb() {
             store_name: 'ジョイフィット24草加店',
             plan_name: 'デイタイム会員',
             application_date: '2026-03-30T14:50:00+09:00',
-            status: '未審査',
+            status: 'pending',
             blacklist_match: true,
             start_date: '2026-04-14',
             brand_name: 'JOYFIT',
@@ -2506,7 +2547,7 @@ function createDb() {
             store_name: 'FIT365八潮店',
             plan_name: 'レギュラー会員',
             application_date: '2026-03-30T08:05:00+09:00',
-            status: '承認済',
+            status: 'approved',
             blacklist_match: false,
             start_date: '2026-04-01',
             brand_name: 'FIT365',
@@ -2518,7 +2559,7 @@ function createDb() {
             store_name: 'FIT365越谷店',
             plan_name: 'デイタイム会員',
             application_date: '2026-03-30T07:42:00+09:00',
-            status: '承認済',
+            status: 'approved',
             blacklist_match: false,
             start_date: '2026-04-01',
             brand_name: 'FIT365',
@@ -2530,7 +2571,7 @@ function createDb() {
             store_name: 'ジョイフィット24越谷店',
             plan_name: 'ナイト会員',
             application_date: '2026-03-30T09:55:00+09:00',
-            status: '承認済',
+            status: 'approved',
             blacklist_match: false,
             start_date: '2026-04-01',
             brand_name: 'JOYFIT',
@@ -2542,7 +2583,7 @@ function createDb() {
             store_name: 'FIT365八潮店',
             plan_name: 'レギュラー会員（シニア）',
             application_date: '2026-03-29T14:20:00+09:00',
-            status: '未審査',
+            status: 'pending',
             blacklist_match: false,
             start_date: '2026-04-01',
             brand_name: 'FIT365',
@@ -2554,7 +2595,7 @@ function createDb() {
             store_name: 'FIT365越谷店',
             plan_name: 'レギュラー会員',
             application_date: '2026-03-29T09:55:00+09:00',
-            status: '否認',
+            status: 'rejected',
             blacklist_match: false,
             start_date: '2026-04-01',
             brand_name: 'FIT365',
@@ -2566,7 +2607,7 @@ function createDb() {
             store_name: 'FIT365草加店',
             plan_name: 'ウィークエンド会員',
             application_date: '2026-03-28T11:22:00+09:00',
-            status: '取り消し済',
+            status: 'cancelled',
             blacklist_match: false,
             start_date: '2026-04-01',
             brand_name: 'FIT365',
@@ -2578,7 +2619,7 @@ function createDb() {
             store_name: 'ジョイフィット24草加店',
             plan_name: 'レギュラー会員',
             application_date: '2026-03-28T08:50:00+09:00',
-            status: '承認済',
+            status: 'approved',
             blacklist_match: false,
             start_date: '2026-04-07',
             brand_name: 'JOYFIT',
@@ -2590,7 +2631,7 @@ function createDb() {
             store_name: 'FIT365八潮店',
             plan_name: 'デイタイム会員',
             application_date: '2026-03-27T16:30:00+09:00',
-            status: '否認',
+            status: 'rejected',
             blacklist_match: false,
             start_date: '2026-04-01',
             brand_name: 'FIT365',
@@ -2602,7 +2643,7 @@ function createDb() {
             store_name: 'FIT365八潮店',
             plan_name: 'レギュラー会員',
             application_date: '2026-03-30T15:40:00+09:00',
-            status: '審査中',
+            status: 'review',
             blacklist_match: true,
             start_date: '2026-04-01',
             brand_name: 'FIT365',
@@ -2614,7 +2655,7 @@ function createDb() {
             store_name: 'ジョイフィット24越谷店',
             plan_name: 'レギュラー会員（学生）',
             application_date: '2026-03-30T10:00:00+09:00',
-            status: '未審査',
+            status: 'pending',
             blacklist_match: false,
             start_date: '2026-04-01',
             brand_name: 'JOYFIT',
@@ -2627,7 +2668,7 @@ function createDb() {
             store_name: 'FIT365草加店',
             plan_name: 'レギュラー会員',
             application_date: '2026-03-30T09:00:00+09:00',
-            status: '未審査',
+            status: 'pending',
             blacklist_match: false,
             start_date: '2026-04-01',
             brand_name: 'FIT365',
@@ -2640,7 +2681,7 @@ function createDb() {
             store_name: 'ジョイフィット24越谷店',
             plan_name: 'レギュラー会員',
             application_date: '2026-03-30T12:30:00+09:00',
-            status: '未審査',
+            status: 'pending',
             blacklist_match: false,
             start_date: '2026-04-01',
             brand_name: 'JOYFIT',
@@ -2650,40 +2691,192 @@ function createDb() {
 
         this._applications.push(...seed);
 
-        // Seed detail placeholders for each application
+        // Helper: build masked phone/email/address
+        function maskPhone(real: string) {
+          return real.replace(/(\d{3})-(\d{4})-(\d{4})/, '$1-****-$3');
+        }
+        function maskEmail(real: string) {
+          const [local, domain] = real.split('@');
+          return `${local.slice(0, 2)}***@${domain}`;
+        }
+        function maskAddress(real: string) {
+          return real.replace(/(\d+-\d+-\d+)$/, '***');
+        }
+
+        // Fee rows by brand
+        const FEE_ROWS_JOYFIT = [
+          { label: '入会金', amount: 2200 },
+          { label: '登録事務手数料', amount: 3300 },
+          { label: '初月会費（日割）', amount: 990 },
+          { label: '翌月会費', amount: 7700 },
+        ];
+        const FEE_ROWS_FIT365 = [
+          { label: 'カード発行料', amount: 5500 },
+          { label: '初月会費（日割）', amount: 990 },
+          { label: '翌月会費', amount: 7700 },
+        ];
+
+        // Rich detail seed for special variants
+        const SPECIAL_DETAILS: Record<string, Record<string, unknown>> = {
+          'APP-2026-0003': {
+            blacklist_conditions: ['氏名＆生年月日一致', '電話番号一致'],
+            timeline: [
+              {
+                id: 'tl-0003-2',
+                kind: 'system',
+                date: '2026/03/25 11:00',
+                operator: 'システム',
+                content: 'ブラックリスト照合で一致を検出しました。',
+              },
+              {
+                id: 'tl-0003-1',
+                kind: 'system',
+                date: '2026/03/25 10:30',
+                operator: 'システム',
+                content: '申請受付（アプリ経由）',
+              },
+            ],
+          },
+          'APP-2026-0007': {
+            blacklist_conditions: ['氏名＆生年月日一致'],
+            timeline: [
+              {
+                id: 'tl-0007-1',
+                kind: 'system',
+                date: '2026/03/26 14:00',
+                operator: 'システム',
+                content: '申請受付（アプリ経由）',
+              },
+            ],
+          },
+          'APP-2026-0008': {
+            approved_by: '管理者A',
+            approved_at: '2026/03/26 15:30',
+            timeline: [
+              {
+                id: 'tl-0008-3',
+                kind: 'system',
+                date: '2026/03/26 15:30',
+                operator: '管理者A',
+                content: '入会申請を承認しました。会員登録完了通知を送信しました。',
+              },
+              {
+                id: 'tl-0008-2',
+                kind: 'memo',
+                date: '2026/03/26 15:00',
+                operator: '管理者A',
+                content: '本人確認書類を目視確認済み。',
+              },
+              {
+                id: 'tl-0008-1',
+                kind: 'system',
+                date: '2026/03/26 14:00',
+                operator: 'システム',
+                content: '申請受付（アプリ経由）',
+              },
+            ],
+          },
+          'APP-2026-0016': {
+            blacklist_conditions: ['氏名＆生年月日一致', '住所一致'],
+            timeline: [
+              {
+                id: 'tl-0016-1',
+                kind: 'system',
+                date: '2026/03/30 15:40',
+                operator: 'システム',
+                content: '申請受付（アプリ経由）',
+              },
+            ],
+          },
+          'APP-2026-0017': {
+            // minor
+            applicant_kana: 'ワカバヤシ ミナミ',
+            birth_date: '2009/05/15',
+            age: 16,
+            gender_label: '女性',
+            parental_consent: true,
+            timeline: [
+              {
+                id: 'tl-0017-1',
+                kind: 'system',
+                date: '2026/03/30 10:00',
+                operator: 'システム',
+                content: '申請受付（アプリ経由）',
+              },
+            ],
+          },
+          'APP-2026-0018': {
+            // proxy
+            application_source: '管理画面',
+            proxy_applicant: '管理者A（STAFF-001）',
+            agreement_date: '2026/03/30 09:00',
+            timeline: [
+              {
+                id: 'tl-0018-1',
+                kind: 'system',
+                date: '2026/03/30 09:00',
+                operator: '管理者A',
+                content: '管理画面から代理申請を登録',
+              },
+            ],
+          },
+        };
+
+        // Seed detail for every application
         for (const app of seed) {
+          const phoneReal = '090-1234-5678';
+          const emailReal = `${app.id.toLowerCase().replaceAll('-', '')}@example.jp`;
+          const addressReal = '東京都渋谷区1-2-3';
+          const special = SPECIAL_DETAILS[app.id] ?? {};
+          const feeRows = app.brand_name === 'FIT365' ? FEE_ROWS_FIT365 : FEE_ROWS_JOYFIT;
+          const monthlyFee = app.brand_name === 'FIT365' ? 7700 : 7700;
+
           this._details[app.id] = {
-            applicant_name: app.applicant_name,
-            gender: 'male',
-            blood_type: 'A',
-            birthday: '1990-01-15',
-            applicant_email: `${app.id.toLowerCase()}@example.jp`,
-            applicant_phone: '090-1234-5678',
-            applicant_address: '東京都渋谷区1-2-3',
-            emergency_contact_name: '佐藤 太郎',
-            emergency_contact_relationship: '配偶者',
-            emergency_contact_phone: '090-8765-4321',
-            contract_details: {
-              plan_id: 'plan-001',
-              plan_name: app.plan_name,
-              start_date: app.start_date,
-              option_ids: [],
-            },
-            ekyc: {
-              verified: app.status === '承認済',
-              verified_at: app.application_date,
-              face_photo_url: `https://example.com/ekyc/face/${app.id}.jpg`,
-              id_document_url: `https://example.com/ekyc/id/${app.id}.jpg`,
-              document_type: '運転免許証',
-              face_match: {
-                similarity: app.status === '承認済' ? 92 : 55,
-                passed: app.status === '承認済',
+            // Personal
+            applicant_kana: (special.applicant_kana as string) ?? 'ヤマダ タロウ',
+            birth_date: (special.birth_date as string) ?? '1990/01/15',
+            age: (special.age as number) ?? 36,
+            gender_label: (special.gender_label as string) ?? '男性',
+            phone: maskPhone(phoneReal),
+            phone_real: phoneReal,
+            email_masked: maskEmail(emailReal),
+            email_real: emailReal,
+            address: maskAddress(addressReal),
+            address_real: addressReal,
+            // Blacklist
+            blacklist_conditions: (special.blacklist_conditions as string[]) ?? [],
+            // Contract
+            usage_start_date: app.start_date.replaceAll('-', '/'),
+            monthly_fee: monthlyFee,
+            options: ['タオル'],
+            fee_rows: feeRows,
+            // Payment
+            payment_method: 'クレジットカード',
+            card_last4: '1234',
+            // Application meta
+            application_source: (special.application_source as string) ?? 'アプリ',
+            updated_at: '2026/03/30 09:20',
+            // Minor
+            parental_consent: (special.parental_consent as boolean) ?? false,
+            // Proxy
+            proxy_applicant: special.proxy_applicant as string | undefined,
+            agreement_date: special.agreement_date as string | undefined,
+            // Status feedback
+            approved_by: special.approved_by as string | undefined,
+            approved_at: special.approved_at as string | undefined,
+            rejected_by: special.rejected_by as string | undefined,
+            rejected_at: special.rejected_at as string | undefined,
+            rejected_reason: special.rejected_reason as string | undefined,
+            // Timeline
+            timeline: (special.timeline as MembershipApplicationDetails['timeline']) ?? [
+              {
+                id: `tl-${app.id}-1`,
+                kind: 'system' as const,
+                date: '2026/03/30 09:15',
+                operator: 'システム',
+                content: '申請受付（アプリ経由）',
               },
-              blacklist_check: {
-                matched: app.blacklist_match,
-                reason: app.blacklist_match ? '過去に不正利用の記録あり' : undefined,
-              },
-            } satisfies EkycResult,
+            ],
           };
         }
       },
@@ -2720,6 +2913,60 @@ function createDb() {
         if (idx === -1) return undefined;
         this._applications[idx] = { ...this._applications[idx], status };
         return this._applications[idx];
+      },
+
+      addMemo(
+        id: string,
+        content: string,
+        operator: string,
+      ): MembershipApplicationDetails['timeline'] | undefined {
+        this._seed();
+        const exists = this._applications.some((a) => a.id === id);
+        if (!exists) return undefined;
+
+        const details = this._details[id] ?? {};
+        const timeline = (details.timeline ?? []) as NonNullable<
+          MembershipApplicationDetails['timeline']
+        >;
+
+        const now = new Date();
+        const dateStr = now.toLocaleString('ja-JP', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+
+        const newMemo = {
+          id: `tl-${Date.now()}-memo`,
+          kind: 'memo' as const,
+          date: dateStr.replace(/\//g, '/'),
+          operator,
+          content,
+        };
+
+        const updatedTimeline = [newMemo, ...timeline];
+        this._details[id] = { ...details, timeline: updatedTimeline };
+
+        return updatedTimeline;
+      },
+
+      deleteMemo(id: string, memoId: string): boolean {
+        this._seed();
+        const exists = this._applications.some((a) => a.id === id);
+        if (!exists) return false;
+
+        const details = this._details[id];
+        if (!details || !details.timeline) return false;
+
+        const memoIndex = details.timeline.findIndex((entry) => entry.id === memoId);
+        if (memoIndex === -1) return false;
+
+        const updatedTimeline = details.timeline.filter((_, idx) => idx !== memoIndex);
+        this._details[id] = { ...details, timeline: updatedTimeline };
+
+        return true;
       },
     },
 

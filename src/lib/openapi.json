@@ -4924,8 +4924,8 @@
           },
           "status": {
             "type": "string",
-            "enum": ["未審査", "審査中", "承認済", "否認", "取り消し済"],
-            "example": "未審査",
+            "enum": ["pending", "review", "approved", "rejected", "cancelled"],
+            "example": "pending",
             "description": "Application status"
           },
           "blacklist_match": {
@@ -5005,7 +5005,7 @@
       },
       "MembershipApplicationStatus": {
         "type": "string",
-        "enum": ["未審査", "審査中", "承認済", "否認", "取り消し済"]
+        "enum": ["pending", "review", "approved", "rejected", "cancelled"]
       },
       "RiskReason": {
         "type": "string",
@@ -5039,8 +5039,8 @@
           },
           "status": {
             "type": "string",
-            "enum": ["未審査", "審査中", "承認済", "否認", "取り消し済"],
-            "example": "未審査",
+            "enum": ["pending", "review", "approved", "rejected", "cancelled"],
+            "example": "pending",
             "description": "Filter by status"
           },
           "brand": {
@@ -5113,8 +5113,8 @@
                 },
                 "status": {
                   "type": "string",
-                  "enum": ["未審査", "審査中", "承認済", "否認", "取り消し済"],
-                  "example": "未審査",
+                  "enum": ["pending", "review", "approved", "rejected", "cancelled"],
+                  "example": "pending",
                   "description": "Application status"
                 },
                 "blacklist_match": {
@@ -5233,8 +5233,8 @@
               },
               "status": {
                 "type": "string",
-                "enum": ["未審査", "審査中", "承認済", "否認", "取り消し済"],
-                "example": "未審査",
+                "enum": ["pending", "review", "approved", "rejected", "cancelled"],
+                "example": "pending",
                 "description": "Application status"
               },
               "blacklist_match": {
@@ -5284,213 +5284,193 @@
                 "example": false,
                 "description": "Whether this is a proxy application"
               },
-              "gender": {
+              "applicant_kana": {
                 "type": "string",
-                "enum": ["male", "female", "other"],
-                "example": "male",
-                "description": "Gender"
+                "example": "ヤマダ タロウ",
+                "description": "Applicant name (kana)"
               },
-              "blood_type": {
+              "birth_date": {
                 "type": "string",
-                "enum": ["A", "B", "O", "AB", "unknown"],
-                "example": "A",
-                "description": "Blood type"
+                "example": "1990/01/15",
+                "description": "Birth date (formatted)"
               },
-              "birthday": {
+              "age": {
+                "type": "number",
+                "example": 36,
+                "description": "Age"
+              },
+              "gender_label": {
                 "type": "string",
-                "format": "date",
-                "example": "2000-01-01",
-                "description": "Birthday (YYYY-MM-DD)"
+                "example": "男性",
+                "description": "Gender label"
               },
-              "applicant_email": {
+              "phone": {
                 "type": "string",
-                "format": "email",
-                "example": "yamada.taro@example.com",
-                "description": "Applicant email"
+                "example": "090-****-5678",
+                "description": "Phone (masked)"
               },
-              "applicant_phone": {
+              "phone_real": {
                 "type": "string",
                 "example": "090-1234-5678",
-                "description": "Applicant phone number"
+                "description": "Phone (real)"
               },
-              "applicant_address": {
+              "email_masked": {
+                "type": "string",
+                "example": "ya***@example.jp",
+                "description": "Email (masked)"
+              },
+              "email_real": {
+                "type": "string",
+                "example": "yamada@example.jp",
+                "description": "Email (real)"
+              },
+              "address": {
+                "type": "string",
+                "example": "東京都渋谷区***",
+                "description": "Address (masked)"
+              },
+              "address_real": {
                 "type": "string",
                 "example": "東京都渋谷区1-2-3",
-                "description": "Applicant address"
+                "description": "Address (real)"
               },
-              "emergency_contact_name": {
-                "type": "string",
-                "example": "佐藤 太郎",
-                "description": "Emergency contact name"
+              "blacklist_conditions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "BL match condition labels"
               },
-              "emergency_contact_relationship": {
+              "usage_start_date": {
                 "type": "string",
-                "example": "配偶者",
-                "description": "Emergency contact relationship"
+                "example": "2026/04/01",
+                "description": "Usage start date (formatted)"
               },
-              "emergency_contact_phone": {
-                "type": "string",
-                "example": "090-8765-4321",
-                "description": "Emergency contact phone"
+              "monthly_fee": {
+                "type": "number",
+                "example": 7700,
+                "description": "Monthly fee (yen)"
+              },
+              "options": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Selected options"
+              },
+              "fee_rows": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "amount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": ["label", "amount"]
+                },
+                "description": "Fee breakdown rows"
               },
               "payment_method": {
                 "type": "string",
-                "enum": ["credit_card", "bank_transfer"],
-                "title": "MembershipApplicationPaymentMethod",
-                "description": "Payment method",
-                "example": "credit_card"
+                "example": "クレジットカード",
+                "description": "Payment method label"
               },
-              "payment_status": {
+              "card_last4": {
                 "type": "string",
-                "enum": ["pending", "paid", "failed"],
-                "title": "MembershipApplicationPaymentStatus",
-                "description": "Payment status",
-                "example": "pending"
+                "example": "1234",
+                "description": "Card last 4 digits"
               },
-              "risk_details": {
+              "application_source": {
+                "type": "string",
+                "example": "アプリ",
+                "description": "Application source"
+              },
+              "updated_at": {
+                "type": "string",
+                "example": "2026/03/30 09:20",
+                "description": "Last updated (formatted)"
+              },
+              "parental_consent": {
+                "type": "boolean",
+                "example": false,
+                "description": "Parental consent confirmed"
+              },
+              "proxy_applicant": {
+                "type": "string",
+                "example": "管理者A（STAFF-001）",
+                "description": "Proxy applicant name"
+              },
+              "agreement_date": {
+                "type": "string",
+                "example": "2026/03/30 09:00",
+                "description": "Agreement date (formatted)"
+              },
+              "approved_by": {
+                "type": "string",
+                "example": "管理者A",
+                "description": "Approver name"
+              },
+              "approved_at": {
+                "type": "string",
+                "example": "2026/03/30 10:30",
+                "description": "Approval date (formatted)"
+              },
+              "rejected_by": {
+                "type": "string",
+                "example": "管理者B",
+                "description": "Rejector name"
+              },
+              "rejected_at": {
+                "type": "string",
+                "example": "2026/03/30 10:45",
+                "description": "Rejection date (formatted)"
+              },
+              "rejected_reason": {
+                "type": "string",
+                "example": "本人確認不備",
+                "description": "Rejection reason"
+              },
+              "timeline": {
                 "type": "array",
                 "items": {
                   "type": "object",
                   "properties": {
-                    "reason": {
-                      "type": "string"
+                    "id": {
+                      "type": "string",
+                      "example": "tl-001",
+                      "description": "Entry ID"
                     },
-                    "score": {
-                      "type": "number"
+                    "kind": {
+                      "type": "string",
+                      "enum": ["system", "memo"],
+                      "example": "system",
+                      "description": "Entry kind"
                     },
-                    "description": {
-                      "type": "string"
+                    "date": {
+                      "type": "string",
+                      "example": "2026/03/30 09:15",
+                      "description": "Date/time string (formatted)"
+                    },
+                    "operator": {
+                      "type": "string",
+                      "example": "管理者A",
+                      "description": "Operator name"
+                    },
+                    "content": {
+                      "type": "string",
+                      "example": "申請受付（アプリ経由）",
+                      "description": "Entry content"
                     }
                   },
-                  "required": ["reason", "score", "description"]
+                  "required": ["id", "kind", "date", "operator", "content"],
+                  "title": "TimelineEntry",
+                  "description": "A single activity timeline entry"
                 },
-                "description": "Detailed risk information"
-              },
-              "documents": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string"
-                    },
-                    "verified": {
-                      "type": "boolean"
-                    }
-                  },
-                  "required": ["type", "url", "verified"]
-                },
-                "description": "Application documents"
-              },
-              "contract_details": {
-                "type": "object",
-                "properties": {
-                  "plan_id": {
-                    "type": "string"
-                  },
-                  "plan_name": {
-                    "type": "string"
-                  },
-                  "start_date": {
-                    "type": "string",
-                    "format": "date"
-                  },
-                  "monthly_fee": {
-                    "type": "number"
-                  },
-                  "contract_period": {
-                    "type": "number"
-                  },
-                  "option_ids": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "required": [
-                  "plan_id",
-                  "plan_name",
-                  "start_date",
-                  "monthly_fee",
-                  "contract_period"
-                ],
-                "description": "Contract details"
-              },
-              "ekyc": {
-                "type": "object",
-                "properties": {
-                  "verified": {
-                    "type": "boolean",
-                    "example": true,
-                    "description": "eKYC総合判定"
-                  },
-                  "verified_at": {
-                    "type": "string",
-                    "format": "date-time",
-                    "example": "2024-01-15T10:30:00Z",
-                    "description": "検証日時"
-                  },
-                  "face_photo_url": {
-                    "type": "string",
-                    "format": "uri",
-                    "example": "https://example.com/photos/face_001.jpg",
-                    "description": "顔写真（申請者撮影）URL"
-                  },
-                  "id_document_url": {
-                    "type": "string",
-                    "format": "uri",
-                    "example": "https://example.com/photos/id_001.jpg",
-                    "description": "本人確認書類アップロード画像URL"
-                  },
-                  "document_type": {
-                    "type": "string",
-                    "example": "運転免許証",
-                    "description": "本人確認書類種別"
-                  },
-                  "face_match": {
-                    "type": "object",
-                    "properties": {
-                      "similarity": {
-                        "type": "number",
-                        "minimum": 0,
-                        "maximum": 100,
-                        "example": 92.5,
-                        "description": "顔認証類似度（%）"
-                      },
-                      "passed": {
-                        "type": "boolean",
-                        "example": true,
-                        "description": "顔認証判定結果"
-                      }
-                    },
-                    "required": ["similarity", "passed"],
-                    "description": "顔認証結果"
-                  },
-                  "blacklist_check": {
-                    "type": "object",
-                    "properties": {
-                      "matched": {
-                        "type": "boolean",
-                        "example": false,
-                        "description": "ブラックリスト一致有無"
-                      },
-                      "reason": {
-                        "type": "string",
-                        "example": "過去に不正利用の記録あり",
-                        "description": "一致理由"
-                      }
-                    },
-                    "required": ["matched"],
-                    "description": "ブラックリストチェック結果"
-                  }
-                },
-                "required": ["verified"],
-                "title": "EkycResult",
-                "description": "eKYC verification result"
+                "description": "Activity timeline"
               }
             },
             "required": [
@@ -5674,8 +5654,8 @@
           },
           "status": {
             "type": "string",
-            "enum": ["承認済"],
-            "example": "承認済",
+            "enum": ["approved"],
+            "example": "approved",
             "description": "New application status"
           },
           "approved_at": {
@@ -5721,6 +5701,11 @@
             "example": "リスクスコアが高すぎます",
             "description": "Rejection reason"
           },
+          "note": {
+            "type": "string",
+            "example": "本人確認書類の有効期限切れを確認。",
+            "description": "Optional supplementary note"
+          },
           "staff_id": {
             "type": "string",
             "example": "staff-001",
@@ -5746,8 +5731,8 @@
           },
           "status": {
             "type": "string",
-            "enum": ["否認"],
-            "example": "否認",
+            "enum": ["rejected"],
+            "example": "rejected",
             "description": "New application status"
           },
           "rejected_at": {
@@ -5812,8 +5797,8 @@
           },
           "status": {
             "type": "string",
-            "enum": ["取り消し済"],
-            "example": "取り消し済",
+            "enum": ["cancelled"],
+            "example": "cancelled",
             "description": "New application status"
           },
           "cancelled_at": {
@@ -23954,8 +23939,8 @@
                     },
                     "status": {
                       "type": "string",
-                      "enum": ["承認済"],
-                      "example": "承認済",
+                      "enum": ["approved"],
+                      "example": "approved",
                       "description": "New application status"
                     },
                     "approved_at": {
@@ -24120,8 +24105,8 @@
                     },
                     "status": {
                       "type": "string",
-                      "enum": ["取り消し済"],
-                      "example": "取り消し済",
+                      "enum": ["cancelled"],
+                      "example": "cancelled",
                       "description": "New application status"
                     },
                     "cancelled_at": {
@@ -24230,6 +24215,236 @@
         }
       }
     },
+    "/crm/membership-applications/{id}/memos/{memoId}": {
+      "delete": {
+        "summary": "Delete memo from membership application",
+        "description": "Delete a memo from the activity timeline of a membership application",
+        "tags": ["Membership Applications"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Membership application ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "memoId",
+            "in": "path",
+            "required": true,
+            "description": "Memo ID to delete",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Memo deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Application or memo not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/membership-applications/{id}/memos": {
+      "post": {
+        "summary": "Add memo to membership application",
+        "description": "Add a new memo to the activity timeline of a membership application",
+        "tags": ["Membership Applications"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Membership application ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "メモのコンテンツ",
+                    "description": "Memo content"
+                  }
+                },
+                "required": ["content"],
+                "title": "CreateMemoRequest",
+                "description": "Request to create a memo for membership application"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Memo created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "tl-1234567890-memo",
+                      "description": "Created memo ID"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": ["memo"],
+                      "example": "memo",
+                      "description": "Entry type"
+                    },
+                    "date": {
+                      "type": "string",
+                      "example": "2026/03/30 09:15",
+                      "description": "Memo date and time"
+                    },
+                    "operator": {
+                      "type": "string",
+                      "example": "管理者A",
+                      "description": "Staff member who added the memo"
+                    },
+                    "content": {
+                      "type": "string",
+                      "example": "メモのコンテンツ",
+                      "description": "Memo content"
+                    }
+                  },
+                  "required": ["id", "kind", "date", "operator", "content"],
+                  "title": "CreateMemoResponse",
+                  "description": "Response for creating a memo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Application not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/membership-applications/{id}/reject": {
       "post": {
         "summary": "Reject membership application",
@@ -24258,6 +24473,11 @@
                     "minLength": 1,
                     "example": "リスクスコアが高すぎます",
                     "description": "Rejection reason"
+                  },
+                  "note": {
+                    "type": "string",
+                    "example": "本人確認書類の有効期限切れを確認。",
+                    "description": "Optional supplementary note"
                   },
                   "staff_id": {
                     "type": "string",
@@ -24292,8 +24512,8 @@
                     },
                     "status": {
                       "type": "string",
-                      "enum": ["否認"],
-                      "example": "否認",
+                      "enum": ["rejected"],
+                      "example": "rejected",
                       "description": "New application status"
                     },
                     "rejected_at": {
@@ -24429,8 +24649,8 @@
                         },
                         "status": {
                           "type": "string",
-                          "enum": ["未審査", "審査中", "承認済", "否認", "取り消し済"],
-                          "example": "未審査",
+                          "enum": ["pending", "review", "approved", "rejected", "cancelled"],
+                          "example": "pending",
                           "description": "Application status"
                         },
                         "blacklist_match": {
@@ -24480,213 +24700,193 @@
                           "example": false,
                           "description": "Whether this is a proxy application"
                         },
-                        "gender": {
+                        "applicant_kana": {
                           "type": "string",
-                          "enum": ["male", "female", "other"],
-                          "example": "male",
-                          "description": "Gender"
+                          "example": "ヤマダ タロウ",
+                          "description": "Applicant name (kana)"
                         },
-                        "blood_type": {
+                        "birth_date": {
                           "type": "string",
-                          "enum": ["A", "B", "O", "AB", "unknown"],
-                          "example": "A",
-                          "description": "Blood type"
+                          "example": "1990/01/15",
+                          "description": "Birth date (formatted)"
                         },
-                        "birthday": {
+                        "age": {
+                          "type": "number",
+                          "example": 36,
+                          "description": "Age"
+                        },
+                        "gender_label": {
                           "type": "string",
-                          "format": "date",
-                          "example": "2000-01-01",
-                          "description": "Birthday (YYYY-MM-DD)"
+                          "example": "男性",
+                          "description": "Gender label"
                         },
-                        "applicant_email": {
+                        "phone": {
                           "type": "string",
-                          "format": "email",
-                          "example": "yamada.taro@example.com",
-                          "description": "Applicant email"
+                          "example": "090-****-5678",
+                          "description": "Phone (masked)"
                         },
-                        "applicant_phone": {
+                        "phone_real": {
                           "type": "string",
                           "example": "090-1234-5678",
-                          "description": "Applicant phone number"
+                          "description": "Phone (real)"
                         },
-                        "applicant_address": {
+                        "email_masked": {
+                          "type": "string",
+                          "example": "ya***@example.jp",
+                          "description": "Email (masked)"
+                        },
+                        "email_real": {
+                          "type": "string",
+                          "example": "yamada@example.jp",
+                          "description": "Email (real)"
+                        },
+                        "address": {
+                          "type": "string",
+                          "example": "東京都渋谷区***",
+                          "description": "Address (masked)"
+                        },
+                        "address_real": {
                           "type": "string",
                           "example": "東京都渋谷区1-2-3",
-                          "description": "Applicant address"
+                          "description": "Address (real)"
                         },
-                        "emergency_contact_name": {
-                          "type": "string",
-                          "example": "佐藤 太郎",
-                          "description": "Emergency contact name"
+                        "blacklist_conditions": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "BL match condition labels"
                         },
-                        "emergency_contact_relationship": {
+                        "usage_start_date": {
                           "type": "string",
-                          "example": "配偶者",
-                          "description": "Emergency contact relationship"
+                          "example": "2026/04/01",
+                          "description": "Usage start date (formatted)"
                         },
-                        "emergency_contact_phone": {
-                          "type": "string",
-                          "example": "090-8765-4321",
-                          "description": "Emergency contact phone"
+                        "monthly_fee": {
+                          "type": "number",
+                          "example": 7700,
+                          "description": "Monthly fee (yen)"
+                        },
+                        "options": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Selected options"
+                        },
+                        "fee_rows": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "label": {
+                                "type": "string"
+                              },
+                              "amount": {
+                                "type": "number"
+                              }
+                            },
+                            "required": ["label", "amount"]
+                          },
+                          "description": "Fee breakdown rows"
                         },
                         "payment_method": {
                           "type": "string",
-                          "enum": ["credit_card", "bank_transfer"],
-                          "title": "MembershipApplicationPaymentMethod",
-                          "description": "Payment method",
-                          "example": "credit_card"
+                          "example": "クレジットカード",
+                          "description": "Payment method label"
                         },
-                        "payment_status": {
+                        "card_last4": {
                           "type": "string",
-                          "enum": ["pending", "paid", "failed"],
-                          "title": "MembershipApplicationPaymentStatus",
-                          "description": "Payment status",
-                          "example": "pending"
+                          "example": "1234",
+                          "description": "Card last 4 digits"
                         },
-                        "risk_details": {
+                        "application_source": {
+                          "type": "string",
+                          "example": "アプリ",
+                          "description": "Application source"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026/03/30 09:20",
+                          "description": "Last updated (formatted)"
+                        },
+                        "parental_consent": {
+                          "type": "boolean",
+                          "example": false,
+                          "description": "Parental consent confirmed"
+                        },
+                        "proxy_applicant": {
+                          "type": "string",
+                          "example": "管理者A（STAFF-001）",
+                          "description": "Proxy applicant name"
+                        },
+                        "agreement_date": {
+                          "type": "string",
+                          "example": "2026/03/30 09:00",
+                          "description": "Agreement date (formatted)"
+                        },
+                        "approved_by": {
+                          "type": "string",
+                          "example": "管理者A",
+                          "description": "Approver name"
+                        },
+                        "approved_at": {
+                          "type": "string",
+                          "example": "2026/03/30 10:30",
+                          "description": "Approval date (formatted)"
+                        },
+                        "rejected_by": {
+                          "type": "string",
+                          "example": "管理者B",
+                          "description": "Rejector name"
+                        },
+                        "rejected_at": {
+                          "type": "string",
+                          "example": "2026/03/30 10:45",
+                          "description": "Rejection date (formatted)"
+                        },
+                        "rejected_reason": {
+                          "type": "string",
+                          "example": "本人確認不備",
+                          "description": "Rejection reason"
+                        },
+                        "timeline": {
                           "type": "array",
                           "items": {
                             "type": "object",
                             "properties": {
-                              "reason": {
-                                "type": "string"
+                              "id": {
+                                "type": "string",
+                                "example": "tl-001",
+                                "description": "Entry ID"
                               },
-                              "score": {
-                                "type": "number"
+                              "kind": {
+                                "type": "string",
+                                "enum": ["system", "memo"],
+                                "example": "system",
+                                "description": "Entry kind"
                               },
-                              "description": {
-                                "type": "string"
+                              "date": {
+                                "type": "string",
+                                "example": "2026/03/30 09:15",
+                                "description": "Date/time string (formatted)"
+                              },
+                              "operator": {
+                                "type": "string",
+                                "example": "管理者A",
+                                "description": "Operator name"
+                              },
+                              "content": {
+                                "type": "string",
+                                "example": "申請受付（アプリ経由）",
+                                "description": "Entry content"
                               }
                             },
-                            "required": ["reason", "score", "description"]
+                            "required": ["id", "kind", "date", "operator", "content"],
+                            "title": "TimelineEntry",
+                            "description": "A single activity timeline entry"
                           },
-                          "description": "Detailed risk information"
-                        },
-                        "documents": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string"
-                              },
-                              "url": {
-                                "type": "string"
-                              },
-                              "verified": {
-                                "type": "boolean"
-                              }
-                            },
-                            "required": ["type", "url", "verified"]
-                          },
-                          "description": "Application documents"
-                        },
-                        "contract_details": {
-                          "type": "object",
-                          "properties": {
-                            "plan_id": {
-                              "type": "string"
-                            },
-                            "plan_name": {
-                              "type": "string"
-                            },
-                            "start_date": {
-                              "type": "string",
-                              "format": "date"
-                            },
-                            "monthly_fee": {
-                              "type": "number"
-                            },
-                            "contract_period": {
-                              "type": "number"
-                            },
-                            "option_ids": {
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              }
-                            }
-                          },
-                          "required": [
-                            "plan_id",
-                            "plan_name",
-                            "start_date",
-                            "monthly_fee",
-                            "contract_period"
-                          ],
-                          "description": "Contract details"
-                        },
-                        "ekyc": {
-                          "type": "object",
-                          "properties": {
-                            "verified": {
-                              "type": "boolean",
-                              "example": true,
-                              "description": "eKYC総合判定"
-                            },
-                            "verified_at": {
-                              "type": "string",
-                              "format": "date-time",
-                              "example": "2024-01-15T10:30:00Z",
-                              "description": "検証日時"
-                            },
-                            "face_photo_url": {
-                              "type": "string",
-                              "format": "uri",
-                              "example": "https://example.com/photos/face_001.jpg",
-                              "description": "顔写真（申請者撮影）URL"
-                            },
-                            "id_document_url": {
-                              "type": "string",
-                              "format": "uri",
-                              "example": "https://example.com/photos/id_001.jpg",
-                              "description": "本人確認書類アップロード画像URL"
-                            },
-                            "document_type": {
-                              "type": "string",
-                              "example": "運転免許証",
-                              "description": "本人確認書類種別"
-                            },
-                            "face_match": {
-                              "type": "object",
-                              "properties": {
-                                "similarity": {
-                                  "type": "number",
-                                  "minimum": 0,
-                                  "maximum": 100,
-                                  "example": 92.5,
-                                  "description": "顔認証類似度（%）"
-                                },
-                                "passed": {
-                                  "type": "boolean",
-                                  "example": true,
-                                  "description": "顔認証判定結果"
-                                }
-                              },
-                              "required": ["similarity", "passed"],
-                              "description": "顔認証結果"
-                            },
-                            "blacklist_check": {
-                              "type": "object",
-                              "properties": {
-                                "matched": {
-                                  "type": "boolean",
-                                  "example": false,
-                                  "description": "ブラックリスト一致有無"
-                                },
-                                "reason": {
-                                  "type": "string",
-                                  "example": "過去に不正利用の記録あり",
-                                  "description": "一致理由"
-                                }
-                              },
-                              "required": ["matched"],
-                              "description": "ブラックリストチェック結果"
-                            }
-                          },
-                          "required": ["verified"],
-                          "title": "EkycResult",
-                          "description": "eKYC verification result"
+                          "description": "Activity timeline"
                         }
                       },
                       "required": [
@@ -24708,227 +24908,6 @@
                   "required": ["application"],
                   "title": "GetApplicationDetailResponse",
                   "description": "Response for getting application detail"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Application not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Invalid email or password",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Invalid email or password",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update membership application detail",
-        "description": "Edit membership application data (basic info, contacts, contract). Immutable fields are ignored.",
-        "tags": ["Membership Applications"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "Membership application ID",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "Editable membership application fields",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "basic": {
-                    "type": "object",
-                    "properties": {
-                      "applicant_name": {
-                        "type": "string",
-                        "minLength": 1,
-                        "example": "山田太郎",
-                        "description": "Applicant name"
-                      },
-                      "gender": {
-                        "type": "string",
-                        "enum": ["male", "female", "other", "unknown"],
-                        "example": "male",
-                        "description": "Gender"
-                      },
-                      "blood_type": {
-                        "type": "string",
-                        "enum": ["A", "B", "O", "AB", "unknown"],
-                        "example": "A",
-                        "description": "Blood type"
-                      },
-                      "birthday": {
-                        "type": "string",
-                        "format": "date",
-                        "example": "2000-01-01",
-                        "description": "Birthday (YYYY-MM-DD)"
-                      }
-                    },
-                    "description": "Basic info"
-                  },
-                  "contact": {
-                    "type": "object",
-                    "properties": {
-                      "applicant_address": {
-                        "type": "string",
-                        "example": "東京都渋谷区1-2-3",
-                        "description": "Address"
-                      },
-                      "applicant_phone": {
-                        "type": "string",
-                        "example": "090-1234-5678",
-                        "description": "Phone"
-                      },
-                      "applicant_email": {
-                        "type": "string",
-                        "format": "email",
-                        "example": "yamada.taro@example.com",
-                        "description": "Email"
-                      },
-                      "emergency_contact_name": {
-                        "type": "string",
-                        "example": "佐藤 太郎",
-                        "description": "Emergency contact name"
-                      },
-                      "emergency_contact_relationship": {
-                        "type": "string",
-                        "example": "配偶者",
-                        "description": "Emergency contact relationship"
-                      },
-                      "emergency_contact_phone": {
-                        "type": "string",
-                        "example": "090-8765-4321",
-                        "description": "Emergency contact phone"
-                      }
-                    },
-                    "description": "Contact info"
-                  },
-                  "contract": {
-                    "type": "object",
-                    "properties": {
-                      "start_date": {
-                        "type": "string",
-                        "format": "date",
-                        "example": "2024-01-20",
-                        "description": "Scheduled start date (YYYY-MM-DD)"
-                      },
-                      "plan_id": {
-                        "type": "string",
-                        "example": "plan-001",
-                        "description": "Plan ID"
-                      },
-                      "plan_name": {
-                        "type": "string",
-                        "example": "通常会員",
-                        "description": "Plan name"
-                      },
-                      "option_ids": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        },
-                        "example": ["opt-001", "opt-002"],
-                        "description": "Option IDs"
-                      },
-                      "recalculate_fee": {
-                        "type": "boolean",
-                        "example": false,
-                        "description": "Whether to recalculate fee"
-                      }
-                    },
-                    "description": "Contract info"
-                  }
-                },
-                "title": "UpdateMembershipApplicationRequest",
-                "description": "Request payload for editing membership application"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Application updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": true,
-                      "description": "Whether the operation was successful"
-                    },
-                    "application": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "nullable": true
-                      },
-                      "description": "Updated application (shape follows detail response)"
-                    }
-                  },
-                  "required": ["success", "application"],
-                  "title": "UpdateMembershipApplicationResponse",
-                  "description": "Response for editing membership application"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request - invalid request body",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Invalid email or password",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
                 }
               }
             }
@@ -25013,8 +24992,8 @@
           {
             "schema": {
               "type": "string",
-              "enum": ["未審査", "審査中", "承認済", "否認", "取り消し済"],
-              "example": "未審査",
+              "enum": ["pending", "review", "approved", "rejected", "cancelled"],
+              "example": "pending",
               "description": "Filter by status"
             },
             "required": false,
@@ -25142,8 +25121,8 @@
                           },
                           "status": {
                             "type": "string",
-                            "enum": ["未審査", "審査中", "承認済", "否認", "取り消し済"],
-                            "example": "未審査",
+                            "enum": ["pending", "review", "approved", "rejected", "cancelled"],
+                            "example": "pending",
                             "description": "Application status"
                           },
                           "blacklist_match": {

@@ -81,9 +81,9 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       return NextResponse.json({ error: 'Application not found' }, { status: 404 });
     }
 
-    const alreadyApproved = application.status === '承認済';
+    const alreadyApproved = application.status === 'approved';
 
-    db.membershipApplications.updateStatus(id, '承認済');
+    db.membershipApplications.updateStatus(id, 'approved');
 
     // Prefer edited detail fields (plan/start_date) when creating contract
     const details = db.membershipApplications.getDetails(id);
@@ -118,7 +118,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const response: ApproveResponse = {
       success: true,
       application_id: id,
-      status: '承認済',
+      status: 'approved',
       approved_at: new Date().toISOString(),
       approved_by: staff_id || 'staff-001',
       approval_reason: approval_reason || '手動承認',

@@ -69,6 +69,8 @@ import '@/app/api/crm/members/route';
 import '@/app/api/crm/members/summary/route';
 import '@/app/api/crm/membership-applications/[id]/approve/route';
 import '@/app/api/crm/membership-applications/[id]/cancel/route';
+import '@/app/api/crm/membership-applications/[id]/memos/[memoId]/route';
+import '@/app/api/crm/membership-applications/[id]/memos/route';
 import '@/app/api/crm/membership-applications/[id]/reject/route';
 import '@/app/api/crm/membership-applications/[id]/route';
 // Import membership applications routes

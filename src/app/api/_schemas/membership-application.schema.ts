@@ -1,8 +1,6 @@
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 
-import { EkycResultSchema } from './family-registration.schema';
-
 // Extend Zod with OpenAPI support
 extendZodWithOpenApi(z);
 
@@ -10,11 +8,11 @@ extendZodWithOpenApi(z);
  * Membership Application Status Schema
  */
 export const MembershipApplicationStatusSchema = z.enum([
-  '未審査',
-  '審査中',
-  '承認済',
-  '否認',
-  '取り消し済',
+  'pending',
+  'review',
+  'approved',
+  'rejected',
+  'cancelled',
 ]);
 
 /**
@@ -51,7 +49,7 @@ export const MembershipApplicationSchema = z
       description: 'Applicant name',
     }),
     status: MembershipApplicationStatusSchema.openapi({
-      example: '未審査',
+      example: 'pending',
       description: 'Application status',
     }),
     blacklist_match: z.boolean().openapi({
@@ -137,7 +135,7 @@ export const GetMembershipApplicationsQuerySchema = z
       description: 'Items per page',
     }),
     status: MembershipApplicationStatusSchema.optional().openapi({
-      example: '未審査',
+      example: 'pending',
       description: 'Filter by status',
     }),
     brand: z.string().optional().openapi({
@@ -196,94 +194,139 @@ export const GetMembershipApplicationsResponseSchema = z
   });
 
 /**
+ * Timeline Entry Schema
+ */
+export const TimelineEntrySchema = z
+  .object({
+    id: z.string().openapi({ example: 'tl-001', description: 'Entry ID' }),
+    kind: z.enum(['system', 'memo']).openapi({ example: 'system', description: 'Entry kind' }),
+    date: z.string().openapi({
+      example: '2026/03/30 09:15',
+      description: 'Date/time string (formatted)',
+    }),
+    operator: z.string().openapi({ example: '管理者A', description: 'Operator name' }),
+    content: z.string().openapi({
+      example: '申請受付（アプリ経由）',
+      description: 'Entry content',
+    }),
+  })
+  .openapi({ title: 'TimelineEntry', description: 'A single activity timeline entry' });
+
+/**
  * Get Application Detail Response Schema
  */
 export const GetApplicationDetailResponseSchema = z
   .object({
     application: MembershipApplicationSchema.extend({
-      gender: z.enum(['male', 'female', 'other']).optional().openapi({
-        example: 'male',
-        description: 'Gender',
+      // Applicant personal info
+      applicant_kana: z.string().optional().openapi({
+        example: 'ヤマダ タロウ',
+        description: 'Applicant name (kana)',
       }),
-      blood_type: z.enum(['A', 'B', 'O', 'AB', 'unknown']).optional().openapi({
-        example: 'A',
-        description: 'Blood type',
+      birth_date: z.string().optional().openapi({
+        example: '1990/01/15',
+        description: 'Birth date (formatted)',
       }),
-      birthday: z.string().date().optional().openapi({
-        example: '2000-01-01',
-        description: 'Birthday (YYYY-MM-DD)',
+      age: z.number().optional().openapi({ example: 36, description: 'Age' }),
+      gender_label: z.string().optional().openapi({ example: '男性', description: 'Gender label' }),
+      phone: z.string().optional().openapi({
+        example: '090-****-5678',
+        description: 'Phone (masked)',
       }),
-      applicant_email: z.string().email().optional().openapi({
-        example: 'yamada.taro@example.com',
-        description: 'Applicant email',
-      }),
-      applicant_phone: z.string().optional().openapi({
+      phone_real: z.string().optional().openapi({
         example: '090-1234-5678',
-        description: 'Applicant phone number',
+        description: 'Phone (real)',
       }),
-      applicant_address: z.string().optional().openapi({
+      email_masked: z.string().optional().openapi({
+        example: 'ya***@example.jp',
+        description: 'Email (masked)',
+      }),
+      email_real: z.string().optional().openapi({
+        example: 'yamada@example.jp',
+        description: 'Email (real)',
+      }),
+      address: z.string().optional().openapi({
+        example: '東京都渋谷区***',
+        description: 'Address (masked)',
+      }),
+      address_real: z.string().optional().openapi({
         example: '東京都渋谷区1-2-3',
-        description: 'Applicant address',
+        description: 'Address (real)',
       }),
-      emergency_contact_name: z.string().optional().openapi({
-        example: '佐藤 太郎',
-        description: 'Emergency contact name',
+      // Blacklist
+      blacklist_conditions: z.array(z.string()).optional().openapi({
+        description: 'BL match condition labels',
       }),
-      emergency_contact_relationship: z.string().optional().openapi({
-        example: '配偶者',
-        description: 'Emergency contact relationship',
+      // Contract
+      usage_start_date: z.string().optional().openapi({
+        example: '2026/04/01',
+        description: 'Usage start date (formatted)',
       }),
-      emergency_contact_phone: z.string().optional().openapi({
-        example: '090-8765-4321',
-        description: 'Emergency contact phone',
+      monthly_fee: z.number().optional().openapi({
+        example: 7700,
+        description: 'Monthly fee (yen)',
       }),
-      payment_method: MembershipApplicationPaymentMethodSchema.optional().openapi({
-        example: 'credit_card',
-        description: 'Payment method',
-      }),
-      payment_status: MembershipApplicationPaymentStatusSchema.optional().openapi({
-        example: 'pending',
-        description: 'Payment status',
-      }),
-      risk_details: z
-        .array(
-          z.object({
-            reason: z.string(),
-            score: z.number(),
-            description: z.string(),
-          }),
-        )
+      options: z.array(z.string()).optional().openapi({ description: 'Selected options' }),
+      // Fee rows
+      fee_rows: z
+        .array(z.object({ label: z.string(), amount: z.number() }))
         .optional()
-        .openapi({
-          description: 'Detailed risk information',
-        }),
-      documents: z
-        .array(
-          z.object({
-            type: z.string(),
-            url: z.string(),
-            verified: z.boolean(),
-          }),
-        )
-        .optional()
-        .openapi({
-          description: 'Application documents',
-        }),
-      contract_details: z
-        .object({
-          plan_id: z.string(),
-          plan_name: z.string(),
-          start_date: z.string().date(),
-          monthly_fee: z.number(),
-          contract_period: z.number(),
-          option_ids: z.array(z.string()).optional(),
-        })
-        .optional()
-        .openapi({
-          description: 'Contract details',
-        }),
-      ekyc: EkycResultSchema.optional().openapi({
-        description: 'eKYC verification result',
+        .openapi({ description: 'Fee breakdown rows' }),
+      // Payment
+      payment_method: z.string().optional().openapi({
+        example: 'クレジットカード',
+        description: 'Payment method label',
+      }),
+      card_last4: z.string().optional().openapi({
+        example: '1234',
+        description: 'Card last 4 digits',
+      }),
+      // Application meta
+      application_source: z.string().optional().openapi({
+        example: 'アプリ',
+        description: 'Application source',
+      }),
+      updated_at: z.string().optional().openapi({
+        example: '2026/03/30 09:20',
+        description: 'Last updated (formatted)',
+      }),
+      // Minor / proxy
+      parental_consent: z.boolean().optional().openapi({
+        example: false,
+        description: 'Parental consent confirmed',
+      }),
+      proxy_applicant: z.string().optional().openapi({
+        example: '管理者A（STAFF-001）',
+        description: 'Proxy applicant name',
+      }),
+      agreement_date: z.string().optional().openapi({
+        example: '2026/03/30 09:00',
+        description: 'Agreement date (formatted)',
+      }),
+      // Status feedback
+      approved_by: z.string().optional().openapi({
+        example: '管理者A',
+        description: 'Approver name',
+      }),
+      approved_at: z.string().optional().openapi({
+        example: '2026/03/30 10:30',
+        description: 'Approval date (formatted)',
+      }),
+      rejected_by: z.string().optional().openapi({
+        example: '管理者B',
+        description: 'Rejector name',
+      }),
+      rejected_at: z.string().optional().openapi({
+        example: '2026/03/30 10:45',
+        description: 'Rejection date (formatted)',
+      }),
+      rejected_reason: z.string().optional().openapi({
+        example: '本人確認不備',
+        description: 'Rejection reason',
+      }),
+      // Timeline
+      timeline: z.array(TimelineEntrySchema).optional().openapi({
+        description: 'Activity timeline',
       }),
     }).openapi({
       description: 'Application detail information',
@@ -433,8 +476,8 @@ export const ApproveResponseSchema = z
       example: 'APP-00001',
       description: 'Application ID',
     }),
-    status: z.enum(['承認済']).openapi({
-      example: '承認済',
+    status: z.enum(['approved']).openapi({
+      example: 'approved',
       description: 'New application status',
     }),
     approved_at: z.string().datetime().openapi({
@@ -468,6 +511,10 @@ export const RejectRequestSchema = z
       example: 'リスクスコアが高すぎます',
       description: 'Rejection reason',
     }),
+    note: z.string().optional().openapi({
+      example: '本人確認書類の有効期限切れを確認。',
+      description: 'Optional supplementary note',
+    }),
     staff_id: z.string().optional().openapi({
       example: 'staff-001',
       description: 'Staff ID who rejected',
@@ -491,8 +538,8 @@ export const RejectResponseSchema = z
       example: 'APP-00001',
       description: 'Application ID',
     }),
-    status: z.enum(['否認']).openapi({
-      example: '否認',
+    status: z.enum(['rejected']).openapi({
+      example: 'rejected',
       description: 'New application status',
     }),
     rejected_at: z.string().datetime().openapi({
@@ -545,8 +592,8 @@ export const CancelResponseSchema = z
       example: 'APP-00001',
       description: 'Application ID',
     }),
-    status: z.enum(['取り消し済']).openapi({
-      example: '取り消し済',
+    status: z.enum(['cancelled']).openapi({
+      example: 'cancelled',
       description: 'New application status',
     }),
     cancelled_at: z.string().datetime().openapi({
@@ -576,6 +623,83 @@ export const CancelResponseSchema = z
   });
 
 /**
+ * Memo Schema
+ */
+export const MemoSchema = z
+  .object({
+    id: z.string().openapi({
+      example: 'tl-1234567890-memo',
+      description: 'Memo ID',
+    }),
+    kind: z.enum(['memo']).openapi({
+      example: 'memo',
+      description: 'Entry type',
+    }),
+    date: z.string().openapi({
+      example: '2026/03/30 09:15',
+      description: 'Memo date and time',
+    }),
+    operator: z.string().openapi({
+      example: '管理者A',
+      description: 'Staff member who added the memo',
+    }),
+    content: z.string().openapi({
+      example: 'メモのコンテンツ',
+      description: 'Memo content',
+    }),
+  })
+  .openapi({
+    title: 'Memo',
+    description: 'Memo entry in timeline',
+  });
+
+/**
+ * Create Memo Request Schema
+ */
+export const CreateMemoRequestSchema = z
+  .object({
+    content: z.string().min(1).openapi({
+      example: 'メモのコンテンツ',
+      description: 'Memo content',
+    }),
+  })
+  .openapi({
+    title: 'CreateMemoRequest',
+    description: 'Request to create a memo for membership application',
+  });
+
+/**
+ * Create Memo Response Schema
+ */
+export const CreateMemoResponseSchema = z
+  .object({
+    id: z.string().openapi({
+      example: 'tl-1234567890-memo',
+      description: 'Created memo ID',
+    }),
+    kind: z.enum(['memo']).openapi({
+      example: 'memo',
+      description: 'Entry type',
+    }),
+    date: z.string().openapi({
+      example: '2026/03/30 09:15',
+      description: 'Memo date and time',
+    }),
+    operator: z.string().openapi({
+      example: '管理者A',
+      description: 'Staff member who added the memo',
+    }),
+    content: z.string().openapi({
+      example: 'メモのコンテンツ',
+      description: 'Memo content',
+    }),
+  })
+  .openapi({
+    title: 'CreateMemoResponse',
+    description: 'Response for creating a memo',
+  });
+
+/**
  * Error Response Schema (re-exported from auth.schema.ts for consistency)
  */
 export const ErrorResponseSchema = z
@@ -599,6 +723,7 @@ export type GetMembershipApplicationsQuery = z.infer<typeof GetMembershipApplica
 export type GetMembershipApplicationsResponse = z.infer<
   typeof GetMembershipApplicationsResponseSchema
 >;
+export type TimelineEntry = z.infer<typeof TimelineEntrySchema>;
 export type GetApplicationDetailResponse = z.infer<typeof GetApplicationDetailResponseSchema>;
 export type UpdateMembershipApplicationRequest = z.infer<
   typeof UpdateMembershipApplicationRequestSchema
@@ -612,4 +737,7 @@ export type RejectRequest = z.infer<typeof RejectRequestSchema>;
 export type RejectResponse = z.infer<typeof RejectResponseSchema>;
 export type CancelRequest = z.infer<typeof CancelRequestSchema>;
 export type CancelResponse = z.infer<typeof CancelResponseSchema>;
+export type Memo = z.infer<typeof MemoSchema>;
+export type CreateMemoRequest = z.infer<typeof CreateMemoRequestSchema>;
+export type CreateMemoResponse = z.infer<typeof CreateMemoResponseSchema>;
 export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;

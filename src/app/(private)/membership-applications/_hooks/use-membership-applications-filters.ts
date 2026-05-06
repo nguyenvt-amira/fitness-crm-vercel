@@ -9,11 +9,11 @@ import type { GetCrmMembershipApplicationsData } from '@/lib/api/types.gen';
 import type { MembershipApplicationStatus } from '@/types/api/membership-application.type';
 
 const STATUS_VALUES: MembershipApplicationStatus[] = [
-  '未審査',
-  '審査中',
-  '承認済',
-  '否認',
-  '取り消し済',
+  'pending',
+  'review',
+  'approved',
+  'rejected',
+  'cancelled',
 ];
 const BLACKLIST_VALUES = ['all', 'match', 'no_match'] as const;
 

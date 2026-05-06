@@ -8,11 +8,16 @@ import { Button } from '@/components/ui/button';
 
 import type { MembershipApplication } from '@/lib/api/types.gen';
 
-import { STATUS_BADGE_CLASSES } from '../_constants/constants';
+import { STATUS_BADGE_CLASSES, STATUS_OPTIONS } from '../_constants/constants';
 
 interface ApplicationDateHeaderProps {
   sortOrder: 'asc' | 'desc';
   onToggle: () => void;
+}
+
+function getStatusLabel(status: string): string {
+  const option = STATUS_OPTIONS.find((opt) => opt.value === status);
+  return option?.label || status;
 }
 
 function ApplicationDateHeader({ sortOrder, onToggle }: Readonly<ApplicationDateHeaderProps>) {
@@ -54,9 +59,10 @@ export function getMembershipApplicationsColumns(
       header: 'ステータス',
       cell: ({ row }) => {
         const status = row.original.status;
+        const label = getStatusLabel(status);
         return (
           <Badge variant="outline" className={`text-[10px] ${STATUS_BADGE_CLASSES[status] ?? ''}`}>
-            {status}
+            {label}
           </Badge>
         );
       },

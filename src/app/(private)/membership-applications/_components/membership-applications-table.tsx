@@ -2,6 +2,8 @@
 
 import { useMemo } from 'react';
 
+import { useRouter } from 'next/navigation';
+
 import { useQuery } from '@tanstack/react-query';
 
 import { DataTable } from '@/components/common/data-table';
@@ -18,7 +20,7 @@ import { getMembershipApplicationsColumns } from './membership-applications-tabl
 export function MembershipApplicationsTable() {
   const { queryParams, currentPage, setCurrentPage, pageSize, toggleSortOrder, filters } =
     useMembershipApplicationsFiltersContext();
-
+  const router = useRouter();
   const { data, isLoading } = useQuery(getCrmMembershipApplicationsOptions({ query: queryParams }));
 
   const columns = useMemo(
@@ -39,7 +41,7 @@ export function MembershipApplicationsTable() {
         data={applications}
         variant="simple"
         isLoading={isLoading}
-        onRowClick={(row) => navigate('/membership-applications/[id]', row.id)}
+        onRowClick={(row) => router.push(navigate('/membership-applications/[id]', row.id))}
         getRowClassName={getRowClassName}
         tableOptions={{ manualSorting: true }}
         className="rounded-none! border-none!"
