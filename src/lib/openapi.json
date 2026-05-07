@@ -12114,6 +12114,24 @@
         },
         "required": ["error"],
         "title": "LeaveErrorResponse"
+      },
+      "BlacklistRegistrationSource": {
+        "type": "string",
+        "enum": ["forced_withdrawal", "manual"],
+        "title": "BlacklistRegistrationSource",
+        "description": "How the member was added to the blacklist: forced_withdrawal=強制退会, manual=手動登録"
+      },
+      "BlacklistManualReason": {
+        "type": "string",
+        "enum": ["nuisance", "unpaid", "fraudulent_use", "other"],
+        "title": "BlacklistManualReason",
+        "description": "Reason for manual blacklist registration: nuisance=迷惑行為, unpaid=未納金, fraudulent_use=不正利用, other=その他"
+      },
+      "UnpaidFilter": {
+        "type": "string",
+        "enum": ["has_debt", "no_debt"],
+        "title": "UnpaidFilter",
+        "description": "Unpaid amount filter: has_debt=未納金あり, no_debt=未納金なし"
       }
     },
     "parameters": {}
@@ -13164,6 +13182,371 @@
                   "required": ["error"],
                   "title": "ErrorResponse",
                   "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/blacklist": {
+      "get": {
+        "summary": "Get blacklist",
+        "description": "Get paginated blacklist entries with optional filtering",
+        "tags": ["Blacklist"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "USR-00123",
+              "description": "会員番号・氏名で検索"
+            },
+            "required": false,
+            "description": "会員番号・氏名で検索",
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["forced_withdrawal", "manual"],
+              "title": "BlacklistRegistrationSource",
+              "description": "登録理由フィルター"
+            },
+            "required": false,
+            "description": "登録理由フィルター",
+            "name": "reason",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["has_debt", "no_debt"],
+              "title": "UnpaidFilter",
+              "description": "未納金フィルター"
+            },
+            "required": false,
+            "description": "未納金フィルター",
+            "name": "unpaid",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "1",
+              "description": "ページ番号"
+            },
+            "required": false,
+            "description": "ページ番号",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "20",
+              "description": "1ページあたりの件数"
+            },
+            "required": false,
+            "description": "1ページあたりの件数",
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Blacklist entries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "blacklist": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "BL-FW-001",
+                            "description": "ブラックリストID"
+                          },
+                          "memberId": {
+                            "type": "string",
+                            "example": "USR-00123",
+                            "description": "会員番号"
+                          },
+                          "memberName": {
+                            "type": "string",
+                            "example": "田中 太郎",
+                            "description": "会員氏名"
+                          },
+                          "storeName": {
+                            "type": "string",
+                            "example": "JOYFIT24新宿店",
+                            "description": "店舗名"
+                          },
+                          "registrationSource": {
+                            "type": "string",
+                            "enum": ["forced_withdrawal", "manual"],
+                            "title": "BlacklistRegistrationSource",
+                            "description": "How the member was added to the blacklist: forced_withdrawal=強制退会, manual=手動登録"
+                          },
+                          "manualReason": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": ["nuisance", "unpaid", "fraudulent_use", "other", null],
+                            "title": "BlacklistManualReason",
+                            "description": "手動登録理由（forced_withdrawalの場合はnull）"
+                          },
+                          "unpaidAmount": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "example": 9900,
+                            "description": "未納金額（円）"
+                          },
+                          "registeredAt": {
+                            "type": "string",
+                            "example": "2026-01-15T09:00:00.000Z",
+                            "description": "登録日時（ISO 8601）"
+                          },
+                          "memo": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "メモ"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "memberId",
+                          "memberName",
+                          "storeName",
+                          "registrationSource",
+                          "manualReason",
+                          "unpaidAmount",
+                          "registeredAt",
+                          "memo"
+                        ],
+                        "title": "BlacklistItem"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        },
+                        "total": {
+                          "type": "integer"
+                        },
+                        "total_pages": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": ["page", "limit", "total", "total_pages"]
+                    }
+                  },
+                  "required": ["blacklist", "pagination"],
+                  "title": "GetBlacklistResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "BlacklistErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "BlacklistErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Register blacklist entry",
+        "description": "Manually register a member on the blacklist",
+        "tags": ["Blacklist"],
+        "requestBody": {
+          "description": "Blacklist registration request body",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "memberId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "USR-00456",
+                    "description": "会員番号"
+                  },
+                  "memberName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "山田 花子",
+                    "description": "会員氏名"
+                  },
+                  "storeName": {
+                    "type": "string",
+                    "example": "JOYFIT渋谷店",
+                    "description": "店舗名（任意）"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "enum": ["nuisance", "unpaid", "fraudulent_use", "other"],
+                    "title": "BlacklistManualReason",
+                    "description": "登録理由"
+                  },
+                  "memo": {
+                    "type": "string",
+                    "description": "メモ（任意）"
+                  }
+                },
+                "required": ["memberId", "memberName", "reason"],
+                "title": "PostBlacklistBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Entry created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "blacklist": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "BL-FW-001",
+                          "description": "ブラックリストID"
+                        },
+                        "memberId": {
+                          "type": "string",
+                          "example": "USR-00123",
+                          "description": "会員番号"
+                        },
+                        "memberName": {
+                          "type": "string",
+                          "example": "田中 太郎",
+                          "description": "会員氏名"
+                        },
+                        "storeName": {
+                          "type": "string",
+                          "example": "JOYFIT24新宿店",
+                          "description": "店舗名"
+                        },
+                        "registrationSource": {
+                          "type": "string",
+                          "enum": ["forced_withdrawal", "manual"],
+                          "title": "BlacklistRegistrationSource",
+                          "description": "How the member was added to the blacklist: forced_withdrawal=強制退会, manual=手動登録"
+                        },
+                        "manualReason": {
+                          "type": "string",
+                          "nullable": true,
+                          "enum": ["nuisance", "unpaid", "fraudulent_use", "other", null],
+                          "title": "BlacklistManualReason",
+                          "description": "手動登録理由（forced_withdrawalの場合はnull）"
+                        },
+                        "unpaidAmount": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 9900,
+                          "description": "未納金額（円）"
+                        },
+                        "registeredAt": {
+                          "type": "string",
+                          "example": "2026-01-15T09:00:00.000Z",
+                          "description": "登録日時（ISO 8601）"
+                        },
+                        "memo": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "メモ"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "memberId",
+                        "memberName",
+                        "storeName",
+                        "registrationSource",
+                        "manualReason",
+                        "unpaidAmount",
+                        "registeredAt",
+                        "memo"
+                      ],
+                      "title": "BlacklistItem"
+                    }
+                  },
+                  "required": ["blacklist"],
+                  "title": "PostBlacklistResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "BlacklistErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "BlacklistErrorResponse"
                 }
               }
             }

@@ -5,6 +5,7 @@
 // Import all schemas
 import * as authSchemas from '../_schemas/auth.schema';
 import * as autoApprovalSchemas from '../_schemas/auto-approval.schema';
+import * as blacklistSchemas from '../_schemas/blacklist.schema';
 import * as brandSchemas from '../_schemas/brand.schema';
 import * as familyRegistrationSchemas from '../_schemas/family-registration.schema';
 import * as leaveSchemas from '../_schemas/leave.schema';
@@ -906,5 +907,22 @@ export function registerAllSchemas() {
   registeredSchemaMap.set(
     'LeaveErrorResponse',
     registry.register('LeaveErrorResponse', leaveSchemas.ErrorResponseSchema),
+  );
+
+  // Register blacklist schemas
+  registeredSchemaMap.set(
+    'BlacklistRegistrationSource',
+    registry.register(
+      'BlacklistRegistrationSource',
+      blacklistSchemas.BlacklistRegistrationSourceSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'BlacklistManualReason',
+    registry.register('BlacklistManualReason', blacklistSchemas.BlacklistManualReasonSchema),
+  );
+  registeredSchemaMap.set(
+    'UnpaidFilter',
+    registry.register('UnpaidFilter', blacklistSchemas.UnpaidFilterSchema),
   );
 }

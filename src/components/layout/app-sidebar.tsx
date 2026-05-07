@@ -56,6 +56,10 @@ const menuItems: MenuItem[] = [
         label: '休会・退会管理',
         href: '/members/leaves',
       },
+      {
+        label: 'ブラックリスト管理',
+        href: '/members/blacklist',
+      },
     ],
   },
   {
