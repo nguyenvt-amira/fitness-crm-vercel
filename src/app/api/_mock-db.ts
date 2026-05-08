@@ -21,6 +21,7 @@ import type {
   UpdateMarketingConsentRequest,
   UpdateMemberRequest,
 } from '@/app/api/_schemas/member.schema';
+import type { DirectEnrollmentRequest as DirectEnrollmentRequestType } from '@/app/api/_schemas/membership-application.schema';
 import type { OptionMasterListItem } from '@/app/api/_schemas/option-master.schema';
 import type { Position, StaffPermissionRecord } from '@/app/api/_schemas/position.schema';
 import type { StaffDetail, StaffListItem } from '@/app/api/_schemas/staff.schema';
@@ -653,6 +654,72 @@ function buildMemberContractData(input: {
   };
 }
 
+// ─── T-004: Enrollment Fee Master + Corporate Master types ────────────────────
+
+interface EnrollmentFeeMasterRow {
+  id: string;
+  name: string;
+  amount: number;
+  brand: string;
+  application_type: string;
+  isActive: boolean;
+}
+
+interface CorporateMasterRow {
+  id: string;
+  name: string;
+  code: string;
+}
+
+const SEED_ENROLLMENT_FEE_MASTERS: EnrollmentFeeMasterRow[] = [
+  {
+    id: 'EF001',
+    name: '標準入会金',
+    amount: 2200,
+    brand: 'JOYFIT',
+    application_type: 'normal',
+    isActive: true,
+  },
+  {
+    id: 'EF002',
+    name: 'ファミリー入会金',
+    amount: 1100,
+    brand: 'JOYFIT',
+    application_type: 'normal',
+    isActive: true,
+  },
+  {
+    id: 'EF003',
+    name: '法人入会金',
+    amount: 5500,
+    brand: '共通',
+    application_type: 'corporate',
+    isActive: true,
+  },
+  {
+    id: 'EF004',
+    name: '社員割引入会金',
+    amount: 0,
+    brand: '共通',
+    application_type: 'employee_discount',
+    isActive: true,
+  },
+  {
+    id: 'EF005',
+    name: '特別契約入会金',
+    amount: 0,
+    brand: '共通',
+    application_type: 'special_contract',
+    isActive: true,
+  },
+];
+
+const SEED_CORPORATE_MASTERS: CorporateMasterRow[] = [
+  { id: 'CORP-001', name: '株式会社サンプルA', code: 'CA001' },
+  { id: 'CORP-002', name: '株式会社サンプルB', code: 'CB002' },
+  { id: 'CORP-003', name: '株式会社サンプルC', code: 'CC003' },
+];
+
 type DbType = {
   members: {
     _members: MemberRow[];
@@ -722,6 +789,7 @@ type DbType = {
       operator: string,
     ): MembershipApplicationDetails['timeline'] | undefined;
     deleteMemo(id: string, memoId: string): boolean;
+    createDirect(data: DirectEnrollmentRequestType, blMatched: boolean): MembershipApplication;
   };
   family: {
     _seeded: boolean;
@@ -986,6 +1054,25 @@ type DbType = {
     getList(): BlacklistRow[];
     getById(id: string): BlacklistRow | undefined;
     create(input: Omit<BlacklistRow, 'id' | 'registeredAt'>): BlacklistRow;
+  };
+  enrollmentFeeMasters: {
+    _rows: EnrollmentFeeMasterRow[];
+    _seeded: boolean;
+    _seed(): void;
+    getAll(): EnrollmentFeeMasterRow[];
+    getFiltered(brand?: string, applicationType?: string): EnrollmentFeeMasterRow[];
+  };
+  corporateMasters: {
+    _rows: CorporateMasterRow[];
+    _seeded: boolean;
+    _seed(): void;
+    getAll(): CorporateMasterRow[];
+  };
+  partnerCompanies: {
+    _rows: CorporateMasterRow[];
+    _seeded: boolean;
+    _seed(): void;
+    getAll(): CorporateMasterRow[];
   };
 };
 
@@ -2967,6 +3054,35 @@ function createDb() {
         this._details[id] = { ...details, timeline: updatedTimeline };
 
         return true;
+      },
+
+      // ─── T-005: createDirect ───────────────────────────────────────────────
+      createDirect(data: DirectEnrollmentRequestType, blMatched: boolean): MembershipApplication {
+        this._seed();
+        const id = `APP-DIRECT-${Date.now()}`;
+        const newApp: MembershipApplication = {
+          id,
+          applicant_name: `${data.applicant.last_name_kanji}${data.applicant.first_name_kanji}`,
+          status: 'pending',
+          blacklist_match: blMatched,
+          brand_name: data.contract.brand,
+          store_name: data.contract.store_id,
+          plan_name: data.contract.plan_id,
+          campaign: data.contract.campaign_id ?? 'なし',
+          application_date: new Date().toISOString(),
+          start_date: data.contract.start_date,
+          is_proxy: true,
+        };
+        this._applications.push(newApp);
+        this._details[id] = {
+          applicant_name: newApp.applicant_name,
+          proxy_applicant: '管理者A（STAFF-001）',
+          agreement_date: new Date().toISOString(),
+          payment_method: data.contract.payment_method,
+          usage_start_date: data.contract.start_date,
+          timeline: [],
+        };
+        return newApp;
       },
     },
 
@@ -5337,6 +5453,59 @@ function createDb() {
         return newRow;
       },
     },
+
+    // ─── T-004: Enrollment Fee Masters ─────────────────────────────────────
+    enrollmentFeeMasters: {
+      _rows: [] as EnrollmentFeeMasterRow[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows = [...SEED_ENROLLMENT_FEE_MASTERS];
+      },
+      getAll(): EnrollmentFeeMasterRow[] {
+        this._seed();
+        return [...this._rows];
+      },
+      getFiltered(brand?: string, applicationType?: string): EnrollmentFeeMasterRow[] {
+        this._seed();
+        return this._rows.filter((r) => {
+          if (brand && r.brand !== brand && r.brand !== '共通') return false;
+          if (applicationType && r.application_type !== applicationType) return false;
+          return r.isActive;
+        });
+      },
+    },
+
+    // ─── T-004: Corporate Masters ───────────────────────────────────────────
+    corporateMasters: {
+      _rows: [] as CorporateMasterRow[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows = [...SEED_CORPORATE_MASTERS];
+      },
+      getAll(): CorporateMasterRow[] {
+        this._seed();
+        return [...this._rows];
+      },
+    },
+
+    // ─── T-004: Partner Companies ───────────────────────────────────────────
+    partnerCompanies: {
+      _rows: [] as CorporateMasterRow[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows = [...SEED_CORPORATE_MASTERS];
+      },
+      getAll(): CorporateMasterRow[] {
+        this._seed();
+        return [...this._rows];
+      },
+    },
   };
 
   // Seed mock data immediately when the singleton is first created
@@ -5346,6 +5515,9 @@ function createDb() {
   db.membershipApplications._seed();
   db.family._seed();
   db.staffs._seed();
+  db.enrollmentFeeMasters._seed();
+  db.corporateMasters._seed();
+  db.partnerCompanies._seed();
 
   return db;
 }

@@ -16703,6 +16703,269 @@ export type GetCrmMembershipApplicationsByIdResponses = {
 
 export type GetCrmMembershipApplicationsByIdResponse = GetCrmMembershipApplicationsByIdResponses[keyof GetCrmMembershipApplicationsByIdResponses];
 
+export type PostCrmMembershipApplicationsBlacklistCheckData = {
+    /**
+     * BlacklistCheckRequest
+     *
+     * Blacklist check request
+     */
+    body?: {
+        last_name_kanji: string;
+        first_name_kanji: string;
+        last_name_kana: string;
+        first_name_kana: string;
+        date_of_birth: string;
+        gender: 'male' | 'female' | 'other';
+        phone: string;
+        email: string;
+        address?: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/membership-applications/blacklist-check';
+};
+
+export type PostCrmMembershipApplicationsBlacklistCheckErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembershipApplicationsBlacklistCheckError = PostCrmMembershipApplicationsBlacklistCheckErrors[keyof PostCrmMembershipApplicationsBlacklistCheckErrors];
+
+export type PostCrmMembershipApplicationsBlacklistCheckResponses = {
+    /**
+     * BlacklistCheckResponse
+     *
+     * Blacklist check result
+     */
+    200: {
+        checked: boolean;
+        matched: boolean;
+    };
+};
+
+export type PostCrmMembershipApplicationsBlacklistCheckResponse = PostCrmMembershipApplicationsBlacklistCheckResponses[keyof PostCrmMembershipApplicationsBlacklistCheckResponses];
+
+export type GetCrmMembershipApplicationsCorporateMastersData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/membership-applications/corporate-masters';
+};
+
+export type GetCrmMembershipApplicationsCorporateMastersResponses = {
+    /**
+     * GetCorporateMastersResponse
+     *
+     * List of corporate masters
+     */
+    200: {
+        items: Array<{
+            id: string;
+            name: string;
+            code: string;
+        }>;
+    };
+};
+
+export type GetCrmMembershipApplicationsCorporateMastersResponse = GetCrmMembershipApplicationsCorporateMastersResponses[keyof GetCrmMembershipApplicationsCorporateMastersResponses];
+
+export type PostCrmMembershipApplicationsDirectData = {
+    /**
+     * DirectEnrollmentRequest
+     *
+     * Direct enrollment request body
+     */
+    body?: {
+        /**
+         * ApplicationType
+         *
+         * Enrollment application type
+         */
+        application_type: 'normal' | 'employee_discount' | 'corporate' | 'special_contract';
+        /**
+         * DirectEnrollmentApplicant
+         */
+        applicant: {
+            last_name_kanji: string;
+            first_name_kanji: string;
+            last_name_kana: string;
+            first_name_kana: string;
+            date_of_birth: string;
+            gender: 'male' | 'female' | 'other';
+            phone: string;
+            email: string;
+            address?: string;
+            face_photo_url: string;
+        };
+        /**
+         * DirectEnrollmentContract
+         */
+        contract: {
+            brand: 'FIT365' | 'JOYFIT';
+            store_id: string;
+            plan_id: string;
+            start_date: string;
+            campaign_id?: string;
+            payment_method: 'credit_card' | 'bank_transfer';
+        };
+        /**
+         * DirectEnrollmentCorporate
+         */
+        corporate?: {
+            corporate_id: string;
+            billing_pattern: string;
+            enrollment_fee_bearer: string;
+        };
+        /**
+         * DirectEnrollmentEmployeeDiscount
+         */
+        employee_discount?: {
+            partner_company_id: string;
+            employee_number: string;
+            employee_id_verified: true;
+            employment_cert_verified: true;
+            employee_id_image_url?: string;
+            employment_cert_image_url?: string;
+        };
+        /**
+         * DirectEnrollmentFees
+         */
+        fees: {
+            enrollment_fee_master_id?: string;
+            enrollment_fee_amount?: number;
+            registration_fee?: number;
+            card_issuance_fee?: number;
+            first_month_fee_prorated?: number;
+            next_month_fee?: number;
+        };
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/membership-applications/direct';
+};
+
+export type PostCrmMembershipApplicationsDirectErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembershipApplicationsDirectError = PostCrmMembershipApplicationsDirectErrors[keyof PostCrmMembershipApplicationsDirectErrors];
+
+export type PostCrmMembershipApplicationsDirectResponses = {
+    /**
+     * DirectEnrollmentResponse
+     *
+     * Direct enrollment response
+     */
+    201: {
+        applicationId: string;
+        memberId: string;
+        status: 'pending';
+    };
+};
+
+export type PostCrmMembershipApplicationsDirectResponse = PostCrmMembershipApplicationsDirectResponses[keyof PostCrmMembershipApplicationsDirectResponses];
+
+export type GetCrmMembershipApplicationsEnrollmentFeeMastersData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Filter by brand
+         */
+        brand?: string;
+        /**
+         * Filter by application type
+         */
+        applicationType?: string;
+    };
+    url: '/crm/membership-applications/enrollment-fee-masters';
+};
+
+export type GetCrmMembershipApplicationsEnrollmentFeeMastersErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMembershipApplicationsEnrollmentFeeMastersError = GetCrmMembershipApplicationsEnrollmentFeeMastersErrors[keyof GetCrmMembershipApplicationsEnrollmentFeeMastersErrors];
+
+export type GetCrmMembershipApplicationsEnrollmentFeeMastersResponses = {
+    /**
+     * GetEnrollmentFeeMastersResponse
+     *
+     * List of enrollment fee masters
+     */
+    200: {
+        items: Array<{
+            /**
+             * Fee master ID
+             */
+            id: string;
+            /**
+             * Fee name
+             */
+            name: string;
+            /**
+             * Fee amount (JPY, tax-included)
+             */
+            amount: number;
+            /**
+             * Brand (JOYFIT / FIT365 / 共通)
+             */
+            brand: string;
+            /**
+             * Application type
+             */
+            application_type: string;
+            /**
+             * Whether this master is active
+             */
+            isActive: boolean;
+        }>;
+    };
+};
+
+export type GetCrmMembershipApplicationsEnrollmentFeeMastersResponse = GetCrmMembershipApplicationsEnrollmentFeeMastersResponses[keyof GetCrmMembershipApplicationsEnrollmentFeeMastersResponses];
+
 export type GetCrmMembershipApplicationsData = {
     body?: never;
     path?: never;
@@ -20539,3 +20802,42 @@ export type GetCrmTransfersResponses = {
 };
 
 export type GetCrmTransfersResponse = GetCrmTransfersResponses[keyof GetCrmTransfersResponses];
+
+export type PostCrmUploadsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/uploads';
+};
+
+export type PostCrmUploadsErrors = {
+    /**
+     * UploadResponse
+     *
+     * Upload response with file URL
+     */
+    400: {
+        /**
+         * Uploaded file URL
+         */
+        url: string;
+    };
+};
+
+export type PostCrmUploadsError = PostCrmUploadsErrors[keyof PostCrmUploadsErrors];
+
+export type PostCrmUploadsResponses = {
+    /**
+     * UploadResponse
+     *
+     * Upload response with file URL
+     */
+    200: {
+        /**
+         * Uploaded file URL
+         */
+        url: string;
+    };
+};
+
+export type PostCrmUploadsResponse = PostCrmUploadsResponses[keyof PostCrmUploadsResponses];

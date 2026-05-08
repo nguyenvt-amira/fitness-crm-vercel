@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 
+import { cn } from '@/lib/utils';
+
 interface PageHeaderProps {
   /** BackLink or shadcn Breadcrumb */
   breadcrumb?: ReactNode;
@@ -21,6 +23,10 @@ interface PageHeaderProps {
    * デフォルトは "top-0"
    */
   stickyTopClassName?: string;
+  /**
+   * ヘッダーのクラス名
+   */
+  className?: string;
 }
 
 export function PageHeader({
@@ -31,6 +37,7 @@ export function PageHeader({
   actions,
   sticky = true,
   stickyTopClassName = 'top-0',
+  className,
 }: Readonly<PageHeaderProps>) {
   return (
     <header
@@ -38,7 +45,7 @@ export function PageHeader({
         sticky ? `sticky bg-white ${stickyTopClassName} z-10 border-b backdrop-blur-sm` : 'mb-4'
       }
     >
-      <div className="bg-muted/40 p-6 pb-3">
+      <div className={cn('bg-muted/40 p-6 pb-3', className)}>
         {breadcrumb && <div className="mb-2">{breadcrumb}</div>}
         <div className="flex items-center justify-between gap-4">
           <div className="flex min-w-0 items-center gap-2">

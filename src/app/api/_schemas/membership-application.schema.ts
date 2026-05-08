@@ -741,3 +741,227 @@ export type Memo = z.infer<typeof MemoSchema>;
 export type CreateMemoRequest = z.infer<typeof CreateMemoRequestSchema>;
 export type CreateMemoResponse = z.infer<typeof CreateMemoResponseSchema>;
 export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
+
+// ─── T-001: Enrollment Fee Master + Upload Response ───────────────────────────
+
+/**
+ * Enrollment Fee Master Schema
+ */
+export const EnrollmentFeeMasterSchema = z
+  .object({
+    id: z.string().openapi({ example: 'EF001', description: 'Fee master ID' }),
+    name: z.string().openapi({ example: '標準入会金', description: 'Fee name' }),
+    amount: z
+      .number()
+      .int()
+      .nonnegative()
+      .openapi({ example: 2200, description: 'Fee amount (JPY, tax-included)' }),
+    brand: z.string().openapi({ example: 'JOYFIT', description: 'Brand (JOYFIT / FIT365 / 共通)' }),
+    application_type: z.string().openapi({ example: 'normal', description: 'Application type' }),
+    isActive: z.boolean().openapi({ example: true, description: 'Whether this master is active' }),
+  })
+  .openapi({ title: 'EnrollmentFeeMaster', description: 'Enrollment fee master record' });
+
+export const GetEnrollmentFeeMastersQuerySchema = z.object({
+  brand: z.string().optional().openapi({ example: 'JOYFIT', description: 'Filter by brand' }),
+  applicationType: z
+    .string()
+    .optional()
+    .openapi({ example: 'normal', description: 'Filter by application type' }),
+});
+
+export const GetEnrollmentFeeMastersResponseSchema = z
+  .object({
+    items: z.array(EnrollmentFeeMasterSchema),
+  })
+  .openapi({
+    title: 'GetEnrollmentFeeMastersResponse',
+    description: 'List of enrollment fee masters',
+  });
+
+/**
+ * Upload Response Schema
+ */
+export const UploadResponseSchema = z
+  .object({
+    url: z.string().url().openapi({
+      example: 'https://cdn.mock.example.com/uploads/abc123.jpg',
+      description: 'Uploaded file URL',
+    }),
+  })
+  .openapi({ title: 'UploadResponse', description: 'Upload response with file URL' });
+
+// Type exports (T-001)
+export type EnrollmentFeeMaster = z.infer<typeof EnrollmentFeeMasterSchema>;
+export type GetEnrollmentFeeMastersQuery = z.infer<typeof GetEnrollmentFeeMastersQuerySchema>;
+export type GetEnrollmentFeeMastersResponse = z.infer<typeof GetEnrollmentFeeMastersResponseSchema>;
+export type UploadResponse = z.infer<typeof UploadResponseSchema>;
+
+// ─── T-002: BL Check + Direct Enrollment Schemas ─────────────────────────────
+
+/**
+ * Application Type
+ */
+export const ApplicationTypeSchema = z
+  .enum(['normal', 'employee_discount', 'corporate', 'special_contract'])
+  .openapi({ title: 'ApplicationType', description: 'Enrollment application type' });
+
+export type ApplicationType = z.infer<typeof ApplicationTypeSchema>;
+
+export const APPLICATION_TYPE_LABELS: Record<ApplicationType, string> = {
+  normal: '通常入会',
+  employee_discount: '社員割引入会',
+  corporate: '法人会員入会',
+  special_contract: '特別契約入会',
+};
+
+/**
+ * Blacklist Check Request / Response
+ */
+export const BlacklistCheckRequestSchema = z
+  .object({
+    last_name_kanji: z.string().min(1).max(255).openapi({ example: '山田' }),
+    first_name_kanji: z.string().min(1).max(255).openapi({ example: '太郎' }),
+    last_name_kana: z.string().min(1).max(255).openapi({ example: 'ヤマダ' }),
+    first_name_kana: z.string().min(1).max(255).openapi({ example: 'タロウ' }),
+    date_of_birth: z.string().date().openapi({ example: '1990-01-01' }),
+    gender: z.enum(['male', 'female', 'other']).openapi({ example: 'male' }),
+    phone: z.string().min(1).max(255).openapi({ example: '090-1234-5678' }),
+    email: z.string().email().max(255).openapi({ example: 'taro@example.com' }),
+    address: z.string().max(1000).optional().openapi({ example: '東京都渋谷区1-1-1' }),
+  })
+  .openapi({ title: 'BlacklistCheckRequest', description: 'Blacklist check request' });
+
+export const BlacklistCheckResponseSchema = z
+  .object({
+    checked: z.boolean().openapi({ example: true }),
+    matched: z.boolean().openapi({ example: false }),
+  })
+  .openapi({ title: 'BlacklistCheckResponse', description: 'Blacklist check result' });
+
+/**
+ * Direct Enrollment — Applicant
+ */
+export const DirectEnrollmentApplicantSchema = z
+  .object({
+    last_name_kanji: z.string().min(1, { message: '姓を入力してください' }).max(255),
+    first_name_kanji: z.string().min(1, { message: '名を入力してください' }).max(255),
+    last_name_kana: z
+      .string()
+      .min(1, { message: '姓（カナ）を入力してください' })
+      .max(255)
+      .regex(/^[\u30A0-\u30FF\s]+$/, 'カタカナで入力してください'),
+    first_name_kana: z
+      .string()
+      .min(1, { message: '名（カナ）を入力してください' })
+      .max(255)
+      .regex(/^[\u30A0-\u30FF\s]+$/, 'カタカナで入力してください'),
+    date_of_birth: z.string().min(1, { message: '生年月日を入力してください' }).date(),
+    gender: z.enum(['male', 'female', 'other']),
+    phone: z.string().min(1, { message: '電話番号を入力してください' }).max(255),
+    email: z
+      .string()
+      .min(1, { message: 'メールアドレスを入力してください' })
+      .email({ message: '有効なメールアドレスを入力してください' })
+      .max(255),
+    address: z.string().max(1000).optional(),
+    face_photo_url: z
+      .string()
+      .min(1, { message: '顔写真をアップロードしてください' })
+      .url({ message: '有効なURLを入力してください' }),
+  })
+  .openapi({ title: 'DirectEnrollmentApplicant' });
+
+/**
+ * Direct Enrollment — Contract
+ */
+export const DirectEnrollmentContractSchema = z
+  .object({
+    brand: z.enum(['FIT365', 'JOYFIT']),
+    store_id: z.string().min(1, { message: '店舗を選択してください' }),
+    plan_id: z.string().min(1, { message: 'プランを選択してください' }),
+    start_date: z.string().min(1, { message: '利用開始日を入力してください' }).date(),
+    campaign_id: z.string().optional(),
+    payment_method: z.enum(['credit_card', 'bank_transfer']),
+  })
+  .openapi({ title: 'DirectEnrollmentContract' });
+
+/**
+ * Direct Enrollment — Corporate
+ */
+export const DirectEnrollmentCorporateSchema = z
+  .object({
+    corporate_id: z.string().min(1, { message: '法人を選択してください' }),
+    billing_pattern: z.string().min(1, { message: '請求パターンを入力してください' }),
+    enrollment_fee_bearer: z.string().min(1, { message: '入会金負担者を選択してください' }),
+  })
+  .openapi({ title: 'DirectEnrollmentCorporate' });
+
+/**
+ * Direct Enrollment — Employee Discount
+ */
+export const DirectEnrollmentEmployeeDiscountSchema = z
+  .object({
+    partner_company_id: z.string().min(1, { message: '提携会社を選択してください' }),
+    employee_number: z.string().min(1, { message: '社員番号を入力してください' }).max(255),
+    employee_id_verified: z.literal(true),
+    employment_cert_verified: z.literal(true),
+    employee_id_image_url: z.string().url().optional(),
+    employment_cert_image_url: z.string().url().optional(),
+  })
+  .openapi({ title: 'DirectEnrollmentEmployeeDiscount' });
+
+/**
+ * Direct Enrollment — Fees
+ */
+export const DirectEnrollmentFeesSchema = z
+  .object({
+    // JOYFIT fields
+    enrollment_fee_master_id: z.string().optional(),
+    enrollment_fee_amount: z.number().int().nonnegative().optional(),
+    registration_fee: z.number().int().nonnegative().optional(),
+    // FIT365 fields
+    card_issuance_fee: z.number().int().nonnegative().optional(),
+    // Shared
+    first_month_fee_prorated: z.number().int().nonnegative().optional(),
+    next_month_fee: z.number().int().nonnegative().optional(),
+  })
+  .openapi({ title: 'DirectEnrollmentFees' });
+
+/**
+ * Direct Enrollment Request Base (no superRefine — applied in form)
+ */
+export const DirectEnrollmentRequestBaseSchema = z
+  .object({
+    application_type: ApplicationTypeSchema,
+    applicant: DirectEnrollmentApplicantSchema,
+    contract: DirectEnrollmentContractSchema,
+    corporate: DirectEnrollmentCorporateSchema.optional(),
+    employee_discount: DirectEnrollmentEmployeeDiscountSchema.optional(),
+    fees: DirectEnrollmentFeesSchema,
+  })
+  .openapi({ title: 'DirectEnrollmentRequest', description: 'Direct enrollment request body' });
+
+/**
+ * Direct Enrollment Response
+ */
+export const DirectEnrollmentResponseSchema = z
+  .object({
+    applicationId: z.string().openapi({ example: 'APP-DIRECT-1234567890' }),
+    memberId: z.string().openapi({ example: 'MBR-DIRECT-1234567890' }),
+    status: z.literal('pending'),
+  })
+  .openapi({ title: 'DirectEnrollmentResponse', description: 'Direct enrollment response' });
+
+// Type exports (T-002)
+export type BlacklistCheckRequest = z.infer<typeof BlacklistCheckRequestSchema>;
+export type BlacklistCheckResponse = z.infer<typeof BlacklistCheckResponseSchema>;
+export type DirectEnrollmentApplicant = z.infer<typeof DirectEnrollmentApplicantSchema>;
+export type DirectEnrollmentContract = z.infer<typeof DirectEnrollmentContractSchema>;
+export type DirectEnrollmentCorporate = z.infer<typeof DirectEnrollmentCorporateSchema>;
+export type DirectEnrollmentEmployeeDiscount = z.infer<
+  typeof DirectEnrollmentEmployeeDiscountSchema
+>;
+export type DirectEnrollmentFees = z.infer<typeof DirectEnrollmentFeesSchema>;
+export type DirectEnrollmentRequest = z.infer<typeof DirectEnrollmentRequestBaseSchema>;
+export type DirectEnrollmentResponse = z.infer<typeof DirectEnrollmentResponseSchema>;
