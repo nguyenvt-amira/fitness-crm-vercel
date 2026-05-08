@@ -120,6 +120,34 @@ export const PostBlacklistResponseSchema = z
 
 export type PostBlacklistResponse = z.infer<typeof PostBlacklistResponseSchema>;
 
+// ─── Detail Schemas ───────────────────────────────────────────────────────────
+
+export const MatchConditionsSchema = z
+  .object({
+    nameAndBirthdate: z.boolean().openapi({ description: '氏名＆生年月日一致' }),
+    email: z.boolean().openapi({ description: 'メール一致' }),
+    phone: z.boolean().openapi({ description: '電話一致' }),
+    address: z.boolean().openapi({ description: '住所一致' }),
+  })
+  .openapi({ title: 'MatchConditions' });
+
+export type MatchConditions = z.infer<typeof MatchConditionsSchema>;
+
+export const BlacklistDetailSchema = BlacklistItemSchema.extend({
+  registeredBy: z.string().openapi({ example: '佐藤 花子', description: '登録者名' }),
+  matchConditions: MatchConditionsSchema,
+}).openapi({ title: 'BlacklistDetail' });
+
+export type BlacklistDetail = z.infer<typeof BlacklistDetailSchema>;
+
+export const GetBlacklistByIdResponseSchema = z
+  .object({
+    blacklist: BlacklistDetailSchema,
+  })
+  .openapi({ title: 'GetBlacklistByIdResponse' });
+
+export type GetBlacklistByIdResponse = z.infer<typeof GetBlacklistByIdResponseSchema>;
+
 // ─── Error Schema ─────────────────────────────────────────────────────────────
 
 export const ErrorResponseSchema = z

@@ -128,6 +128,13 @@ export async function POST(request: NextRequest) {
       manualReason: data.reason,
       unpaidAmount: 0,
       memo: data.memo ?? null,
+      registeredBy: '佐藤 花子',
+      matchConditions: {
+        nameAndBirthdate: false,
+        email: false,
+        phone: false,
+        address: false,
+      },
     });
 
     return NextResponse.json({ blacklist }, { status: 201 });

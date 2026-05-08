@@ -13189,6 +13189,152 @@
         }
       }
     },
+    "/crm/blacklist/{id}": {
+      "get": {
+        "summary": "Get blacklist entry by ID",
+        "description": "Get a single blacklist entry with full detail including match conditions",
+        "tags": ["Blacklist"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Blacklist entry detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "blacklist": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "BL-FW-001",
+                          "description": "ブラックリストID"
+                        },
+                        "memberId": {
+                          "type": "string",
+                          "example": "USR-00123",
+                          "description": "会員番号"
+                        },
+                        "memberName": {
+                          "type": "string",
+                          "example": "田中 太郎",
+                          "description": "会員氏名"
+                        },
+                        "storeName": {
+                          "type": "string",
+                          "example": "JOYFIT24新宿店",
+                          "description": "店舗名"
+                        },
+                        "registrationSource": {
+                          "type": "string",
+                          "enum": ["forced_withdrawal", "manual"],
+                          "title": "BlacklistRegistrationSource",
+                          "description": "How the member was added to the blacklist: forced_withdrawal=強制退会, manual=手動登録"
+                        },
+                        "manualReason": {
+                          "type": "string",
+                          "nullable": true,
+                          "enum": ["nuisance", "unpaid", "fraudulent_use", "other", null],
+                          "title": "BlacklistManualReason",
+                          "description": "手動登録理由（forced_withdrawalの場合はnull）"
+                        },
+                        "unpaidAmount": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 9900,
+                          "description": "未納金額（円）"
+                        },
+                        "registeredAt": {
+                          "type": "string",
+                          "example": "2026-01-15T09:00:00.000Z",
+                          "description": "登録日時（ISO 8601）"
+                        },
+                        "memo": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "メモ"
+                        },
+                        "registeredBy": {
+                          "type": "string",
+                          "example": "佐藤 花子",
+                          "description": "登録者名"
+                        },
+                        "matchConditions": {
+                          "type": "object",
+                          "properties": {
+                            "nameAndBirthdate": {
+                              "type": "boolean",
+                              "description": "氏名＆生年月日一致"
+                            },
+                            "email": {
+                              "type": "boolean",
+                              "description": "メール一致"
+                            },
+                            "phone": {
+                              "type": "boolean",
+                              "description": "電話一致"
+                            },
+                            "address": {
+                              "type": "boolean",
+                              "description": "住所一致"
+                            }
+                          },
+                          "required": ["nameAndBirthdate", "email", "phone", "address"],
+                          "title": "MatchConditions"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "memberId",
+                        "memberName",
+                        "storeName",
+                        "registrationSource",
+                        "manualReason",
+                        "unpaidAmount",
+                        "registeredAt",
+                        "memo",
+                        "registeredBy",
+                        "matchConditions"
+                      ],
+                      "title": "BlacklistDetail"
+                    }
+                  },
+                  "required": ["blacklist"],
+                  "title": "GetBlacklistByIdResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "BlacklistErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/blacklist": {
       "get": {
         "summary": "Get blacklist",

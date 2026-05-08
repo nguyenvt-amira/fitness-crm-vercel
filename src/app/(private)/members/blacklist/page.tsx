@@ -2,6 +2,8 @@
 
 import { Suspense, useMemo, useState } from 'react';
 
+import { useRouter } from 'next/navigation';
+
 import { useQuery } from '@tanstack/react-query';
 import { Plus } from 'lucide-react';
 
@@ -13,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
 import { getCrmBlacklistOptions } from '@/lib/api/@tanstack/react-query.gen';
+import { navigate } from '@/lib/routes/routes.util';
 
 import { BlacklistFilters } from './_components/blacklist-filters';
 import { BlacklistRegisterSheet } from './_components/blacklist-register-sheet';
@@ -21,6 +24,7 @@ import { BlacklistFiltersProvider } from './_contexts/blacklist-filters-context'
 import { useBlacklistFilters } from './_hooks/use-blacklist-filters';
 
 function BlacklistPageContent() {
+  const router = useRouter();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
@@ -69,6 +73,7 @@ function BlacklistPageContent() {
               containerClassName={
                 isFilterOpen ? 'max-h-[calc(100vh-330px)]' : 'max-h-[calc(100vh-280px)]'
               }
+              onRowClick={(row) => router.push(navigate('/members/blacklist/[id]', row.id))}
             />
 
             {/* Pagination */}

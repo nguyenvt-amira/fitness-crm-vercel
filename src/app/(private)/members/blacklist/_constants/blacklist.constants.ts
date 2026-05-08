@@ -1,8 +1,14 @@
 import {
   BlacklistManualReason,
   BlacklistRegistrationSource,
+  type GetCrmBlacklistByIdResponse,
   UnpaidFilter,
 } from '@/lib/api/types.gen';
+
+// ─── Derived Types ────────────────────────────────────────────────────────────
+
+export type BlacklistDetail = NonNullable<GetCrmBlacklistByIdResponse>['blacklist'];
+export type MatchConditions = BlacklistDetail['matchConditions'];
 
 // ─── Label Maps ───────────────────────────────────────────────────────────────
 
@@ -52,3 +58,12 @@ export function getRegistrationSourceBadgeClass(source: BlacklistRegistrationSou
   }
   return 'bg-warning/15 text-warning border-warning/20';
 }
+
+// ─── Match Condition Labels ───────────────────────────────────────────────────
+
+export const MATCH_CONDITION_LABEL: Record<keyof MatchConditions, string> = {
+  nameAndBirthdate: '氏名＆生年月日一致',
+  email: 'メール一致',
+  phone: '電話一致',
+  address: '住所一致',
+};

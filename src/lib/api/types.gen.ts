@@ -9377,6 +9377,110 @@ export type PutCrmAutoApprovalSettingsResponses = {
 
 export type PutCrmAutoApprovalSettingsResponse = PutCrmAutoApprovalSettingsResponses[keyof PutCrmAutoApprovalSettingsResponses];
 
+export type GetCrmBlacklistByIdData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/crm/blacklist/{id}';
+};
+
+export type GetCrmBlacklistByIdErrors = {
+    /**
+     * BlacklistErrorResponse
+     *
+     * Not found
+     */
+    404: {
+        error: string;
+    };
+};
+
+export type GetCrmBlacklistByIdError = GetCrmBlacklistByIdErrors[keyof GetCrmBlacklistByIdErrors];
+
+export type GetCrmBlacklistByIdResponses = {
+    /**
+     * GetBlacklistByIdResponse
+     *
+     * Blacklist entry detail
+     */
+    200: {
+        /**
+         * BlacklistDetail
+         */
+        blacklist: {
+            /**
+             * ブラックリストID
+             */
+            id: string;
+            /**
+             * 会員番号
+             */
+            memberId: string;
+            /**
+             * 会員氏名
+             */
+            memberName: string;
+            /**
+             * 店舗名
+             */
+            storeName: string;
+            /**
+             * BlacklistRegistrationSource
+             *
+             * How the member was added to the blacklist: forced_withdrawal=強制退会, manual=手動登録
+             */
+            registrationSource: 'forced_withdrawal' | 'manual';
+            /**
+             * BlacklistManualReason
+             *
+             * 手動登録理由（forced_withdrawalの場合はnull）
+             */
+            manualReason: 'nuisance' | 'unpaid' | 'fraudulent_use' | 'other' | null;
+            /**
+             * 未納金額（円）
+             */
+            unpaidAmount: number;
+            /**
+             * 登録日時（ISO 8601）
+             */
+            registeredAt: string;
+            /**
+             * メモ
+             */
+            memo: string | null;
+            /**
+             * 登録者名
+             */
+            registeredBy: string;
+            /**
+             * MatchConditions
+             */
+            matchConditions: {
+                /**
+                 * 氏名＆生年月日一致
+                 */
+                nameAndBirthdate: boolean;
+                /**
+                 * メール一致
+                 */
+                email: boolean;
+                /**
+                 * 電話一致
+                 */
+                phone: boolean;
+                /**
+                 * 住所一致
+                 */
+                address: boolean;
+            };
+        };
+    };
+};
+
+export type GetCrmBlacklistByIdResponse = GetCrmBlacklistByIdResponses[keyof GetCrmBlacklistByIdResponses];
+
 export type GetCrmBlacklistData = {
     body?: never;
     path?: never;

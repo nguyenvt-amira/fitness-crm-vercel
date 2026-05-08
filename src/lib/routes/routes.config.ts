@@ -50,6 +50,12 @@ export const routes = {
     pattern: '/members/blacklist',
     private: true,
   },
+  '/members/blacklist/[id]': {
+    router: (id: string | number) => `/members/blacklist/${id}`,
+    filePath: '(private)/members/blacklist/[id]',
+    pattern: '/members/blacklist/:id',
+    private: true,
+  },
   '/members/create': {
     router: '/members/create',
     filePath: '(private)/members/create',
@@ -164,6 +170,7 @@ export const routeKeys = [
   '/members/[id]',
   '/members/[id]/edit',
   '/members/blacklist',
+  '/members/blacklist/[id]',
   '/members/create',
   '/members/leaves',
   '/members/leaves/[id]',
@@ -193,6 +200,7 @@ export const routePatterns = [
   '/members/:id',
   '/members/:id/edit',
   '/members/blacklist',
+  '/members/blacklist/:id',
   '/members/create',
   '/members/leaves',
   '/members/leaves/:id',

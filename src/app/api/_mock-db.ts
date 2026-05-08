@@ -2,7 +2,7 @@
  * Shared in-memory mock database for all CRM API routes.
  * All APIs should read/update data through this module so list and detail stay in sync.
  */
-import { type BlacklistItem } from '@/app/api/_schemas/blacklist.schema';
+import { type BlacklistDetail } from '@/app/api/_schemas/blacklist.schema';
 import type { BrandItem } from '@/app/api/_schemas/brand.schema';
 import type {
   EkycResult,
@@ -42,7 +42,7 @@ import type {
 } from '@/types/api/membership-application.type';
 
 export type TransferRow = TransferDetail;
-export type BlacklistRow = BlacklistItem;
+export type BlacklistRow = BlacklistDetail;
 
 export enum TransferStatus {
   Pending = 'pending', // 申請中
@@ -4861,9 +4861,17 @@ function createDb() {
             unpaidAmount: i % 3 === 0 ? (i + 1) * 3300 : 0,
             registeredAt: registeredAt.toISOString(),
             memo: null,
+            registeredBy: 'System',
+            matchConditions: {
+              nameAndBirthdate: true,
+              email: i % 2 === 0,
+              phone: i % 3 !== 0,
+              address: i % 4 === 0,
+            },
           });
         });
 
+        const staffNames = ['佐藤 花子', '鈴木 次郎', '高橋 美咲', '田中 健一', '伊藤 直子'];
         withdrawn.slice(0, 5).forEach((m, i) => {
           const registeredAt = new Date(baseDate);
           registeredAt.setDate(registeredAt.getDate() + i * 21 + 7);
@@ -4877,6 +4885,13 @@ function createDb() {
             unpaidAmount: i % 2 === 0 ? (i + 1) * 1100 : 0,
             registeredAt: registeredAt.toISOString(),
             memo: i % 2 === 0 ? '手動登録済み' : null,
+            registeredBy: staffNames[i % staffNames.length]!,
+            matchConditions: {
+              nameAndBirthdate: i % 2 === 0,
+              email: i % 3 !== 0,
+              phone: true,
+              address: i % 2 !== 0,
+            },
           });
         });
       },
