@@ -31875,6 +31875,94 @@
           }
         }
       }
+    },
+    "/crm/uploads/presign": {
+      "post": {
+        "summary": "Get pre-signed URL for direct S3 upload",
+        "tags": ["Uploads"],
+        "requestBody": {
+          "description": "Presign upload request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "enum": ["avatar", "cv", "document", "other"],
+                    "example": "avatar",
+                    "description": "Category of the file being uploaded"
+                  },
+                  "content_type": {
+                    "type": "string",
+                    "enum": ["image/jpeg", "image/png", "application/pdf"],
+                    "example": "image/jpeg",
+                    "description": "MIME type of the file"
+                  }
+                },
+                "required": ["category", "content_type"],
+                "title": "PresignUploadRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Pre-signed URL generated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "presign_url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://s3.amazonaws.com/bucket/key?X-Amz-Signature=...",
+                      "description": "Pre-signed URL to upload the file directly to S3 via HTTP PUT"
+                    },
+                    "public_url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://cdn.mock.example.com/avatar/abc123.jpg",
+                      "description": "Public URL of the file after upload"
+                    }
+                  },
+                  "required": ["presign_url", "public_url"],
+                  "title": "PresignUploadResponse",
+                  "description": "Pre-signed upload URL response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "presign_url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://s3.amazonaws.com/bucket/key?X-Amz-Signature=...",
+                      "description": "Pre-signed URL to upload the file directly to S3 via HTTP PUT"
+                    },
+                    "public_url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://cdn.mock.example.com/avatar/abc123.jpg",
+                      "description": "Public URL of the file after upload"
+                    }
+                  },
+                  "required": ["presign_url", "public_url"],
+                  "title": "PresignUploadResponse",
+                  "description": "Pre-signed upload URL response"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

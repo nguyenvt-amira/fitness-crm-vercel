@@ -42,7 +42,8 @@ export async function POST(request: NextRequest) {
     const url = `https://cdn.mock.example.com/uploads/${uuid}.${ext}`;
 
     return NextResponse.json({ url }, { status: 200 });
-  } catch {
+  } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

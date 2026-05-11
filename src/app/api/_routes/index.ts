@@ -99,6 +99,7 @@ import '@/app/api/crm/transfers/[id]/reject/route';
 import '@/app/api/crm/transfers/[id]/route';
 // Import transfers routes
 import '@/app/api/crm/transfers/route';
+import '@/app/api/crm/uploads/presign/route';
 import '@/app/api/crm/uploads/route';
 
 // Add more route imports here as you register them with OpenAPI

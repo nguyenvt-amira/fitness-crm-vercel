@@ -20841,3 +20841,64 @@ export type PostCrmUploadsResponses = {
 };
 
 export type PostCrmUploadsResponse = PostCrmUploadsResponses[keyof PostCrmUploadsResponses];
+
+export type PostCrmUploadsPresignData = {
+    /**
+     * PresignUploadRequest
+     *
+     * Presign upload request
+     */
+    body?: {
+        /**
+         * Category of the file being uploaded
+         */
+        category: 'avatar' | 'cv' | 'document' | 'other';
+        /**
+         * MIME type of the file
+         */
+        content_type: 'image/jpeg' | 'image/png' | 'application/pdf';
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/uploads/presign';
+};
+
+export type PostCrmUploadsPresignErrors = {
+    /**
+     * PresignUploadResponse
+     *
+     * Pre-signed upload URL response
+     */
+    400: {
+        /**
+         * Pre-signed URL to upload the file directly to S3 via HTTP PUT
+         */
+        presign_url: string;
+        /**
+         * Public URL of the file after upload
+         */
+        public_url: string;
+    };
+};
+
+export type PostCrmUploadsPresignError = PostCrmUploadsPresignErrors[keyof PostCrmUploadsPresignErrors];
+
+export type PostCrmUploadsPresignResponses = {
+    /**
+     * PresignUploadResponse
+     *
+     * Pre-signed upload URL response
+     */
+    200: {
+        /**
+         * Pre-signed URL to upload the file directly to S3 via HTTP PUT
+         */
+        presign_url: string;
+        /**
+         * Public URL of the file after upload
+         */
+        public_url: string;
+    };
+};
+
+export type PostCrmUploadsPresignResponse = PostCrmUploadsPresignResponses[keyof PostCrmUploadsPresignResponses];

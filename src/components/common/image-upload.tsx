@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 import { useMutation } from '@tanstack/react-query';
 import { ImagePlus, Loader2, X } from 'lucide-react';
@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 
 import { Input } from '@/components/ui/input';
 
-import { postCrmUploadsMutation } from '@/lib/api/@tanstack/react-query.gen';
+import { postCrmUploadsPresignMutation } from '@/lib/api/@tanstack/react-query.gen';
 import { cn } from '@/lib/utils';
 
 interface ImageUploadProps {
@@ -19,6 +19,7 @@ interface ImageUploadProps {
   readonly hint?: string;
   readonly disabled?: boolean;
   readonly hasError?: boolean;
+  readonly category?: 'avatar' | 'cv' | 'document' | 'other';
 }
 
 export function ImageUpload({
@@ -29,30 +30,55 @@ export function ImageUpload({
   hint,
   disabled,
   hasError,
+  category = 'avatar',
 }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isPending, setIsPending] = useState(false);
 
-  const { mutate: upload, isPending } = useMutation({
-    ...postCrmUploadsMutation(),
-    onSuccess: (data) => {
-      onUploadingChange?.(false);
-      onChange(data.url);
-    },
-    onError: () => {
-      onUploadingChange?.(false);
-      toast.error('アップロードに失敗しました');
-    },
-  });
+  const { mutateAsync: getPresignUrl } = useMutation(postCrmUploadsPresignMutation());
 
-  function handleFileChange(file: File) {
+  async function handleFileChange(file: File) {
     if (file.size > 5 * 1024 * 1024) {
       toast.error('ファイルサイズは5MB以下にしてください');
       return;
     }
-    const formData = new FormData();
-    formData.append('file', file);
+
+    const contentType = file.type as 'image/jpeg' | 'image/png';
+
+    setIsPending(true);
     onUploadingChange?.(true);
-    upload({ body: formData as never });
+
+    try {
+      // 1. Get presigned URL from backend
+      const presign = await getPresignUrl({
+        body: { category, content_type: contentType },
+      });
+
+      const presignUrl = presign?.presign_url;
+      if (!presignUrl) {
+        toast.error('アップロードに失敗しました');
+        return;
+      }
+
+      // 2. Upload file directly to S3 via PUT
+      const res = await fetch(presignUrl, {
+        method: 'PUT',
+        body: file,
+        headers: { 'Content-Type': file.type },
+      });
+
+      if (!res.ok) {
+        toast.error('アップロードに失敗しました');
+        return;
+      }
+
+      onChange(presign.public_url);
+    } catch {
+      toast.error('アップロードに失敗しました');
+    } finally {
+      setIsPending(false);
+      onUploadingChange?.(false);
+    }
   }
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
