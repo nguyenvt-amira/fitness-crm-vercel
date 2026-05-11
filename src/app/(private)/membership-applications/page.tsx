@@ -7,7 +7,7 @@ import { MembershipApplicationsOverview } from './_components/membership-applica
 import { MembershipApplicationsListSection } from './_components/membership-applications-section';
 
 const BREADCRUMB_ITEMS: BreadcrumbItemType[] = [
-  { url: '/', label: '会員管理' },
+  { url: '/members', label: '会員管理' },
   { label: '入会処理' },
 ];
 

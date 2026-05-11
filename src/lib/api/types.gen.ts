@@ -4573,8 +4573,21 @@ export type GetFamilyRegistrationDetailResponse = {
         primary_member?: {
             member_number?: string;
             status?: string;
+            member_type?: string;
+            joined_at?: string;
+            tenure_months?: number;
+            family_member_count?: number;
+            family_member_limit?: number;
             has_unpaid?: boolean;
+            has_past_unpaid?: boolean;
+            has_forced_withdrawal?: boolean;
+            monthly_usage_count?: number;
         };
+        risk_details?: Array<{
+            reason: string;
+            score: number;
+            description: string;
+        }>;
     };
 };
 
@@ -4760,7 +4773,29 @@ export type CompleteFamilyRegistrationResponse = {
  * Summary counts for family registrations
  */
 export type GetFamilyRegistrationsSummaryResponse = {
-    total: number;
+    /**
+     * 集計期間（今月/今週/全期間）
+     */
+    period: 'this_month' | 'this_week' | 'all';
+    /**
+     * 総招待数
+     */
+    total_invites: number;
+    /**
+     * 総入会件数（家族会員のみ）
+     */
+    total_completed: number;
+    /**
+     * 家族会員比率（全会員に占める割合）
+     */
+    family_member_ratio: number;
+    /**
+     * 招待承諾率
+     */
+    acceptance_rate: number;
+    /**
+     * ステータス別件数（期間フィルタ適用）
+     */
     by_status: {
         invited?: number;
         awaiting_acceptance?: number;
@@ -4772,23 +4807,105 @@ export type GetFamilyRegistrationsSummaryResponse = {
         rejected?: number;
         completed?: number;
     };
-};
-
-/**
- * GetFamilyRegistrationsDashboardResponse
- *
- * Dashboard response for family registrations (mocked)
- */
-export type GetFamilyRegistrationsDashboardResponse = {
-    month_invites: number;
-    month_completed: number;
-    acceptance_rate: number;
-    family_member_ratio: number;
+    /**
+     * 子会員数が多い親会員TOP10
+     */
     top_primary_members: Array<{
         primary_member_id: string;
         primary_member_name: string;
         family_count: number;
     }>;
+    /**
+     * 子会員の平均人数
+     */
+    avg_children_per_primary: number;
+    /**
+     * 総件数（全期間）
+     */
+    total: number;
+};
+
+/**
+ * GetFamilyRegistrationsDashboardResponse
+ *
+ * Dashboard data for family registrations (A-02-02-08)
+ */
+export type GetFamilyRegistrationsDashboardResponse = {
+    /**
+     * 集計期間
+     */
+    period: 'this_month' | 'last_3_months' | 'last_year';
+    /**
+     * 期間内の家族会員入会件数
+     */
+    month_completed: number;
+    /**
+     * 家族会員比率（全会員比）
+     */
+    family_member_ratio: number;
+    /**
+     * 家族会員の平均人数（主会員1人あたり）
+     */
+    avg_children_per_primary: number;
+    /**
+     * 自動承認率（auto_approve / 全完了件数）
+     */
+    auto_approval_rate: number;
+    /**
+     * 家族会員入会数の推移（月次）
+     */
+    monthly_trend: Array<{
+        /**
+         * YYYY-MM
+         */
+        month: string;
+        count: number;
+    }>;
+    /**
+     * 主会員種別別の家族会員比率
+     */
+    by_member_type: Array<{
+        member_type: string;
+        label: string;
+        count: number;
+        ratio: number;
+    }>;
+    /**
+     * 家族会員数の分布（1名 / 2名 / 3名以上）
+     */
+    family_size_distribution: Array<{
+        label: string;
+        count: number;
+    }>;
+    /**
+     * 関係性別の入会内訳（配偶者・子供・親など）
+     */
+    by_relationship: Array<{
+        relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
+        label: string;
+        count: number;
+    }>;
+    /**
+     * 家族会員が多い主会員TOP10
+     */
+    top_primary_members: Array<{
+        primary_member_id: string;
+        primary_member_name: string;
+        family_count: number;
+    }>;
+    /**
+     * 家族会員 vs 通常会員の平均利用回数比較
+     */
+    avg_usage_comparison: {
+        /**
+         * 家族会員の平均利用回数/月
+         */
+        family_member: number;
+        /**
+         * 通常会員の平均利用回数/月
+         */
+        regular_member: number;
+    };
 };
 
 export type PostAuthLoginData = {
@@ -5776,8 +5893,21 @@ export type GetCrmFamilyRegistrationsByIdResponses = {
             primary_member?: {
                 member_number?: string;
                 status?: string;
+                member_type?: string;
+                joined_at?: string;
+                tenure_months?: number;
+                family_member_count?: number;
+                family_member_limit?: number;
                 has_unpaid?: boolean;
+                has_past_unpaid?: boolean;
+                has_forced_withdrawal?: boolean;
+                monthly_usage_count?: number;
             };
+            risk_details?: Array<{
+                reason: string;
+                score: number;
+                description: string;
+            }>;
         };
     };
 };
@@ -5943,7 +6073,12 @@ export type PostCrmFamilyRegistrationsCheckPrimaryMemberResponse = PostCrmFamily
 export type GetCrmFamilyRegistrationsDashboardData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * 集計期間（今月/過去3ヶ月/過去1年）
+         */
+        period?: 'this_month' | 'last_3_months' | 'last_year';
+    };
     url: '/crm/family-registrations/dashboard';
 };
 
@@ -5964,18 +6099,84 @@ export type GetCrmFamilyRegistrationsDashboardResponses = {
     /**
      * GetFamilyRegistrationsDashboardResponse
      *
-     * Dashboard response for family registrations (mocked)
+     * Dashboard data for family registrations (A-02-02-08)
      */
     200: {
-        month_invites: number;
+        /**
+         * 集計期間
+         */
+        period: 'this_month' | 'last_3_months' | 'last_year';
+        /**
+         * 期間内の家族会員入会件数
+         */
         month_completed: number;
-        acceptance_rate: number;
+        /**
+         * 家族会員比率（全会員比）
+         */
         family_member_ratio: number;
+        /**
+         * 家族会員の平均人数（主会員1人あたり）
+         */
+        avg_children_per_primary: number;
+        /**
+         * 自動承認率（auto_approve / 全完了件数）
+         */
+        auto_approval_rate: number;
+        /**
+         * 家族会員入会数の推移（月次）
+         */
+        monthly_trend: Array<{
+            /**
+             * YYYY-MM
+             */
+            month: string;
+            count: number;
+        }>;
+        /**
+         * 主会員種別別の家族会員比率
+         */
+        by_member_type: Array<{
+            member_type: string;
+            label: string;
+            count: number;
+            ratio: number;
+        }>;
+        /**
+         * 家族会員数の分布（1名 / 2名 / 3名以上）
+         */
+        family_size_distribution: Array<{
+            label: string;
+            count: number;
+        }>;
+        /**
+         * 関係性別の入会内訳（配偶者・子供・親など）
+         */
+        by_relationship: Array<{
+            relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
+            label: string;
+            count: number;
+        }>;
+        /**
+         * 家族会員が多い主会員TOP10
+         */
         top_primary_members: Array<{
             primary_member_id: string;
             primary_member_name: string;
             family_count: number;
         }>;
+        /**
+         * 家族会員 vs 通常会員の平均利用回数比較
+         */
+        avg_usage_comparison: {
+            /**
+             * 家族会員の平均利用回数/月
+             */
+            family_member: number;
+            /**
+             * 通常会員の平均利用回数/月
+             */
+            regular_member: number;
+        };
     };
 };
 
@@ -6297,7 +6498,9 @@ export type PostCrmFamilyRegistrationsResponse = PostCrmFamilyRegistrationsRespo
 export type GetCrmFamilyRegistrationsSummaryData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        period?: 'this_month' | 'this_week' | 'all';
+    };
     url: '/crm/family-registrations/summary';
 };
 
@@ -6321,7 +6524,29 @@ export type GetCrmFamilyRegistrationsSummaryResponses = {
      * Summary counts for family registrations
      */
     200: {
-        total: number;
+        /**
+         * 集計期間（今月/今週/全期間）
+         */
+        period: 'this_month' | 'this_week' | 'all';
+        /**
+         * 総招待数
+         */
+        total_invites: number;
+        /**
+         * 総入会件数（家族会員のみ）
+         */
+        total_completed: number;
+        /**
+         * 家族会員比率（全会員に占める割合）
+         */
+        family_member_ratio: number;
+        /**
+         * 招待承諾率
+         */
+        acceptance_rate: number;
+        /**
+         * ステータス別件数（期間フィルタ適用）
+         */
         by_status: {
             invited?: number;
             awaiting_acceptance?: number;
@@ -6333,6 +6558,22 @@ export type GetCrmFamilyRegistrationsSummaryResponses = {
             rejected?: number;
             completed?: number;
         };
+        /**
+         * 子会員数が多い親会員TOP10
+         */
+        top_primary_members: Array<{
+            primary_member_id: string;
+            primary_member_name: string;
+            family_count: number;
+        }>;
+        /**
+         * 子会員の平均人数
+         */
+        avg_children_per_primary: number;
+        /**
+         * 総件数（全期間）
+         */
+        total: number;
     };
 };
 
@@ -8537,15 +8778,69 @@ export type GetCrmMembersByIdRelationshipsResponses = {
         /**
          * Family relationships
          */
-        family?: unknown;
+        family: {
+            role: 'primary' | 'family_child';
+            children?: Array<{
+                id: string;
+                member_number: string;
+                name: string;
+                relationship: string;
+                status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
+            }>;
+            current_count?: number;
+            max_count?: number;
+            parent?: {
+                id: string;
+                member_number: string;
+                name: string;
+                relationship: string;
+                status: 'active' | 'suspended' | 'withdrawn' | 'force_withdrawn';
+            };
+        };
         /**
          * Corporate relationships
          */
-        corporate?: unknown;
+        corporate: {
+            corporate_detail_member_id: string;
+            corporate_name: string;
+            corporate_number: string;
+            contract_type: string;
+            company_discount: {
+                applied: boolean;
+                rate_percent: number | null;
+            };
+            contact_department: string;
+            contact_name: string;
+        } | null;
         /**
          * Referral relationships
          */
-        referral?: unknown;
+        referral: {
+            as_referrer: {
+                referrals: Array<{
+                    id: string;
+                    member_number: string;
+                    name: string;
+                    referred_at: string;
+                    membership_status: string;
+                    points_status: string;
+                    points_earned: number | null;
+                }>;
+                summary: {
+                    total_referrals: number;
+                    total_points: number;
+                };
+            };
+            as_referee: {
+                referrer: {
+                    id: string;
+                    member_number: string;
+                    name: string;
+                    referred_at: string;
+                    referral_benefit: string;
+                };
+            } | null;
+        };
     };
 };
 

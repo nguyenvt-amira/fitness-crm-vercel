@@ -214,8 +214,25 @@ export const GetFamilyRegistrationDetailResponseSchema = z
         .object({
           member_number: z.string().optional(),
           status: z.string().optional(),
+          member_type: z.string().optional(),
+          joined_at: z.string().optional(),
+          tenure_months: z.number().optional(),
+          family_member_count: z.number().optional(),
+          family_member_limit: z.number().optional(),
           has_unpaid: z.boolean().optional(),
+          has_past_unpaid: z.boolean().optional(),
+          has_forced_withdrawal: z.boolean().optional(),
+          monthly_usage_count: z.number().optional(),
         })
+        .optional(),
+      risk_details: z
+        .array(
+          z.object({
+            reason: z.string(),
+            score: z.number(),
+            description: z.string(),
+          }),
+        )
         .optional(),
     }),
   })
@@ -381,33 +398,157 @@ export const BulkRejectFamilyRegistrationsResponseSchema = z
     description: 'Bulk reject family registrations response',
   });
 
+export const GetFamilyRegistrationsSummaryQuerySchema = z
+  .object({
+    period: z.enum(['this_month', 'this_week', 'all']).optional().default('this_month'),
+  })
+  .openapi({
+    title: 'GetFamilyRegistrationsSummaryQuery',
+    description: 'Query for summary period',
+  });
+
 export const GetFamilyRegistrationsSummaryResponseSchema = z
   .object({
-    total: z.number(),
-    by_status: z.record(FamilyRegistrationStatusSchema, z.number()),
+    period: z.enum(['this_month', 'this_week', 'all']).openapi({
+      example: 'this_month',
+      description: '集計期間（今月/今週/全期間）',
+    }),
+    // ── 今月のサマリ ─────────────────────────────────────────
+    total_invites: z.number().openapi({ example: 42, description: '総招待数' }),
+    total_completed: z.number().openapi({ example: 15, description: '総入会件数（家族会員のみ）' }),
+    family_member_ratio: z.number().openapi({
+      example: 0.28,
+      description: '家族会員比率（全会員に占める割合）',
+    }),
+    acceptance_rate: z.number().openapi({ example: 0.72, description: '招待承諾率' }),
+    // ── ステータス別カード ────────────────────────────────────
+    by_status: z
+      .record(FamilyRegistrationStatusSchema, z.number())
+      .openapi({ description: 'ステータス別件数（期間フィルタ適用）' }),
+    // ── 親会員別統計 ──────────────────────────────────────────
+    top_primary_members: z
+      .array(
+        z.object({
+          primary_member_id: z.string().openapi({ example: 'M-00001' }),
+          primary_member_name: z.string().openapi({ example: '山田 太郎' }),
+          family_count: z.number().openapi({ example: 3 }),
+        }),
+      )
+      .openapi({ description: '子会員数が多い親会員TOP10' }),
+    avg_children_per_primary: z.number().openapi({
+      example: 1.5,
+      description: '子会員の平均人数',
+    }),
+    // ── 全件合計（UI表示用）──────────────────────────────────
+    total: z.number().openapi({ example: 200, description: '総件数（全期間）' }),
   })
   .openapi({
     title: 'GetFamilyRegistrationsSummaryResponse',
     description: 'Summary counts for family registrations',
   });
 
+export const GetFamilyRegistrationsDashboardQuerySchema = z
+  .object({
+    period: z
+      .enum(['this_month', 'last_3_months', 'last_year'])
+      .optional()
+      .default('this_month')
+      .openapi({ description: '集計期間（今月/過去3ヶ月/過去1年）' }),
+  })
+  .openapi({
+    title: 'GetFamilyRegistrationsDashboardQuery',
+    description: 'Query parameters for family registrations dashboard',
+  });
+
 export const GetFamilyRegistrationsDashboardResponseSchema = z
   .object({
-    month_invites: z.number(),
-    month_completed: z.number(),
-    acceptance_rate: z.number(),
-    family_member_ratio: z.number(),
-    top_primary_members: z.array(
-      z.object({
-        primary_member_id: z.string(),
-        primary_member_name: z.string(),
-        family_count: z.number(),
-      }),
-    ),
+    period: z.enum(['this_month', 'last_3_months', 'last_year']).openapi({
+      example: 'this_month',
+      description: '集計期間',
+    }),
+
+    // ── サマリカード ─────────────────────────────────────────
+    month_completed: z.number().openapi({ example: 18, description: '期間内の家族会員入会件数' }),
+    family_member_ratio: z.number().openapi({
+      example: 0.28,
+      description: '家族会員比率（全会員比）',
+    }),
+    avg_children_per_primary: z.number().openapi({
+      example: 1.5,
+      description: '家族会員の平均人数（主会員1人あたり）',
+    }),
+    auto_approval_rate: z.number().openapi({
+      example: 0.72,
+      description: '自動承認率（auto_approve / 全完了件数）',
+    }),
+
+    // ── グラフ: 月次推移 ──────────────────────────────────────
+    monthly_trend: z
+      .array(
+        z.object({
+          month: z.string().openapi({ example: '2024-01', description: 'YYYY-MM' }),
+          count: z.number().openapi({ example: 12 }),
+        }),
+      )
+      .openapi({ description: '家族会員入会数の推移（月次）' }),
+
+    // ── グラフ: 主会員種別別の家族会員比率 ─────────────────────
+    by_member_type: z
+      .array(
+        z.object({
+          member_type: z.string().openapi({ example: 'regular' }),
+          label: z.string().openapi({ example: '通常会員' }),
+          count: z.number().openapi({ example: 35 }),
+          ratio: z.number().openapi({ example: 0.7 }),
+        }),
+      )
+      .openapi({ description: '主会員種別別の家族会員比率' }),
+
+    // ── グラフ: 家族会員数の分布 ──────────────────────────────
+    family_size_distribution: z
+      .array(
+        z.object({
+          label: z.string().openapi({ example: '1名' }),
+          count: z.number().openapi({ example: 20 }),
+        }),
+      )
+      .openapi({ description: '家族会員数の分布（1名 / 2名 / 3名以上）' }),
+
+    // ── グラフ: 関係性別の内訳 ────────────────────────────────
+    by_relationship: z
+      .array(
+        z.object({
+          relationship: FamilyRelationshipSchema.openapi({ example: 'spouse' }),
+          label: z.string().openapi({ example: '配偶者' }),
+          count: z.number().openapi({ example: 15 }),
+        }),
+      )
+      .openapi({ description: '関係性別の入会内訳（配偶者・子供・親など）' }),
+
+    // ── 主会員分析 ────────────────────────────────────────────
+    top_primary_members: z
+      .array(
+        z.object({
+          primary_member_id: z.string().openapi({ example: 'M-00001' }),
+          primary_member_name: z.string().openapi({ example: '山田 太郎' }),
+          family_count: z.number().openapi({ example: 3 }),
+        }),
+      )
+      .openapi({ description: '家族会員が多い主会員TOP10' }),
+    avg_usage_comparison: z
+      .object({
+        family_member: z
+          .number()
+          .openapi({ example: 8.2, description: '家族会員の平均利用回数/月' }),
+        regular_member: z
+          .number()
+          .openapi({ example: 6.5, description: '通常会員の平均利用回数/月' }),
+      })
+      .openapi({ description: '家族会員 vs 通常会員の平均利用回数比較' }),
   })
   .openapi({
     title: 'GetFamilyRegistrationsDashboardResponse',
-    description: 'Dashboard response for family registrations (mocked)',
+    description: 'Dashboard data for family registrations (A-02-02-08)',
   });
 
 export const ErrorResponseSchema = z
@@ -463,8 +604,14 @@ export type BulkRejectFamilyRegistrationsRequest = z.infer<
 export type BulkRejectFamilyRegistrationsResponse = z.infer<
   typeof BulkRejectFamilyRegistrationsResponseSchema
 >;
+export type GetFamilyRegistrationsSummaryQuery = z.infer<
+  typeof GetFamilyRegistrationsSummaryQuerySchema
+>;
 export type GetFamilyRegistrationsSummaryResponse = z.infer<
   typeof GetFamilyRegistrationsSummaryResponseSchema
+>;
+export type GetFamilyRegistrationsDashboardQuery = z.infer<
+  typeof GetFamilyRegistrationsDashboardQuerySchema
 >;
 export type GetFamilyRegistrationsDashboardResponse = z.infer<
   typeof GetFamilyRegistrationsDashboardResponseSchema
