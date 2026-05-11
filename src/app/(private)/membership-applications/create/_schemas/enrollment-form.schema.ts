@@ -35,7 +35,10 @@ export const DirectEnrollmentApplicantSchema = z.object({
     .regex(/^[\u30A0-\u30FF\s]+$/, 'カタカナで入力してください'),
   date_of_birth: z.string().min(1, { message: '生年月日を入力してください' }).check(z.iso.date()),
   gender: z.enum(['male', 'female', 'other'] as const, { error: '性別を選択してください' }),
-  phone: z.string().min(1, { message: '電話番号を入力してください' }).max(255),
+  phone: z
+    .string()
+    .min(1, { message: '電話番号を入力してください' })
+    .regex(/^\d{10,11}$/, { message: '電話番号は10〜11桁の数字で入力してください' }),
   email: z
     .string()
     .min(1, { message: 'メールアドレスを入力してください' })

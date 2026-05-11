@@ -187,7 +187,7 @@ export function EnrollmentForm() {
   return (
     <>
       <Form {...form}>
-        <form onSubmit={onSubmit} className="mx-auto flex max-w-240 flex-col gap-6">
+        <form noValidate onSubmit={onSubmit} className="mx-auto flex max-w-240 flex-col gap-6">
           <ApplicationTypeSection control={form.control} />
           <ApplicantInfoSection control={form.control} onUploadingChange={handleUploadingChange} />
           <ContractInfoSection control={form.control} onBrandChange={handleBrandChange} />
