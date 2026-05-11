@@ -3,12 +3,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
-const GENDER_LABELS: Record<string, string> = {
-  male: '男性',
-  female: '女性',
-  other: 'その他',
-  unknown: '不明',
-};
+import type { GetCrmMembershipApplicationsByIdResponse } from '@/lib/api/types.gen';
+
+import { GENDER_LABELS } from '@/types/member.type';
 
 const BLOOD_TYPE_LABELS: Record<string, string> = {
   A: 'A型',
@@ -19,18 +16,7 @@ const BLOOD_TYPE_LABELS: Record<string, string> = {
 };
 
 type MemberInfoTabProps = {
-  application: {
-    applicant_name: string;
-    gender?: string;
-    blood_type?: string;
-    birthday?: string;
-    applicant_email?: string;
-    applicant_phone?: string;
-    applicant_address?: string;
-    emergency_contact_name?: string;
-    emergency_contact_relationship?: string;
-    emergency_contact_phone?: string;
-  };
+  application: GetCrmMembershipApplicationsByIdResponse['application'];
 };
 
 function InfoRow({ label, value }: { label: string; value?: string | null }) {

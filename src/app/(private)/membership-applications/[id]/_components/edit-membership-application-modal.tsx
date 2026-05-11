@@ -81,7 +81,7 @@ export function EditMembershipApplicationModal({
     // hydrate from detail response (fields may be optional)
     form.reset({
       applicant_name: application.applicant_name,
-      gender: application.gender ?? 'unknown',
+      gender: application.gender ?? 'other',
       blood_type: application.blood_type ?? 'unknown',
       birthday: application.birthday ?? '',
       applicant_address: application.applicant_address ?? '',

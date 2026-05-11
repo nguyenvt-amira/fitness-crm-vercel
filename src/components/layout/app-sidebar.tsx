@@ -48,16 +48,16 @@ const menuItems: MenuItem[] = [
     label: '会員管理',
     icon: Users,
     href: '/members',
-    subItems: [
-      {
-        label: '移籍',
-        href: '/members/transfer',
-      },
-      {
-        label: '休会・退会',
-        href: '/members/leave-withdrawal',
-      },
-    ],
+    // subItems: [
+    //   {
+    //     label: '移籍',
+    //     href: '/members/transfer',
+    //   },
+    //   {
+    //     label: '休会・退会',
+    //     href: '/members/leave-withdrawal',
+    //   },
+    // ],
   },
   {
     label: '入会処理',

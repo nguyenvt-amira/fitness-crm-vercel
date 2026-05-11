@@ -81,13 +81,40 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       return NextResponse.json({ error: 'Application not found' }, { status: 404 });
     }
 
+    const alreadyApproved =
+      application.status === 'manual_approved' || application.status === 'auto_approved';
+
     db.membershipApplications.updateStatus(id, 'manual_approved');
 
-    const member = db.members.createFromApplication(application);
-    const { contract_id } = db.contracts.createFromApprovedApplication({
-      application,
-      member_id: member.basic_info.id,
-    });
+    // Prefer edited detail fields (plan/start_date) when creating contract
+    const details = db.membershipApplications.getDetails(id);
+    const applicationForContract = {
+      ...application,
+      ...(details?.applicant_name ? { applicant_name: details.applicant_name } : {}),
+      ...(details?.contract_details?.plan_name
+        ? { plan_name: details.contract_details.plan_name }
+        : {}),
+      ...(details?.contract_details?.start_date
+        ? { scheduled_start_date: details.contract_details.start_date }
+        : {}),
+    };
+
+    const existingContractRow = db.contracts.getByApplicationId(id);
+
+    const member_id = (() => {
+      if (existingContractRow) return existingContractRow.member_id;
+      if (alreadyApproved) return '';
+      const member = db.members.createFromApplication(details);
+      db.contracts.createFromApprovedApplication({
+        application: applicationForContract,
+        member_id: member.basic_info.id,
+      });
+      return member.basic_info.id;
+    })();
+
+    if (!member_id) {
+      return NextResponse.json({ error: 'Failed to resolve member_id' }, { status: 500 });
+    }
 
     const response: ApproveResponse = {
       success: true,
@@ -96,8 +123,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       approved_at: new Date().toISOString(),
       approved_by: staff_id || 'staff-001',
       approval_reason: approval_reason || '手動承認',
-      contract_created: true,
-      contract_id,
+      member_id,
     };
 
     return NextResponse.json(response);
