@@ -1,6 +1,7 @@
 // File generator class for creating TypeScript files
 import fs from 'fs';
 import path from 'path';
+import prettier from 'prettier';
 
 import { OUTPUT_FILES } from '../config/generator.config';
 import type { GeneratorOptions, RouteInfo } from '../types/route-generator.types';
@@ -17,14 +18,25 @@ export class FileGenerator {
   /**
    * Generate all files
    */
-  generateFiles(): void {
+  async generateFiles(): Promise<void> {
     this.ensureOutputDirectory();
 
-    const configPath = this.writeConfigFile();
-    const typePath = this.writeTypeFile();
-    const utilPath = this.writeUtilFile();
+    const configPath = await this.writeConfigFile();
+    const typePath = await this.writeTypeFile();
+    const utilPath = await this.writeUtilFile();
 
     this.logResults([configPath, typePath, utilPath]);
+  }
+
+  /**
+   * Format generated content with project Prettier config
+   */
+  private async formatContent(content: string, filePath: string): Promise<string> {
+    const prettierConfig = await prettier.resolveConfig(filePath);
+    return prettier.format(content, {
+      ...prettierConfig,
+      filepath: filePath,
+    });
   }
 
   /**
@@ -116,6 +128,8 @@ export type RouteRequiresParams<T extends RouteKey> = RouterFunction<T> extends 
 import { routes, routeKeys } from './routes.config';
 import type { RouteKey, RoutePattern, RouteConfig, RouterFunction } from './routes.type';
 
+type QueryParams = Record<string, string | number | boolean | null | undefined>;
+
 /**
  * Get route configuration by key
  */
@@ -135,16 +149,39 @@ export function getRoute(key: RouteKey): RouteConfig {
  * 
  * // Catch-all route
  * navigate('/blog/[...slug]', 'category', 'post-title') // '/blog/category/post-title'
+ *
+ * // Route with query params
+ * navigate('/users', { name: 'Henry' }) // '/users?name=Henry'
  */
 export function navigate<T extends RouteKey>(
   key: T,
-  ...params: RouterFunction<T> extends (...args: infer P) => string ? P : []
+  ...params: [...(RouterFunction<T> extends (...args: infer P) => string ? P : []), QueryParams?]
 ): string {
   const route = routes[key] as RouteConfig;
-  if (typeof route.router === 'function') {
-    return (route.router as (...args: (string | number)[]) => string)(...params as (string | number)[]);
+  const maybeQuery = params.at(-1);
+  const queryParams = typeof maybeQuery === 'object' && maybeQuery !== null && !Array.isArray(maybeQuery)
+    ? (params.pop() as QueryParams)
+    : undefined;
+
+  const basePath = typeof route.router === 'function'
+    ? (route.router as (...args: (string | number)[]) => string)(...(params as (string | number)[]))
+    : (route.router as string);
+
+  if (!queryParams) {
+    return basePath;
   }
-  return route.router as string;
+
+  const queryString = new URLSearchParams(
+    Object.entries(queryParams)
+      .filter(([, value]) => value !== undefined && value !== null)
+      .map(([queryKey, value]) => [queryKey, String(value)])
+  ).toString();
+
+  if (!queryString) {
+    return basePath;
+  }
+
+  return \`\${basePath}?\${queryString}\`;
 }
 
 /**
@@ -227,9 +264,9 @@ export function findPatternByPath(path: string): RoutePattern | undefined {
   /**
    * Write configuration file
    */
-  private writeConfigFile(): string {
+  private async writeConfigFile(): Promise<string> {
     const filePath = path.join(this.outputDir, OUTPUT_FILES.CONFIG);
-    const content = this.generateConfigContent();
+    const content = await this.formatContent(this.generateConfigContent(), filePath);
     fs.writeFileSync(filePath, content, 'utf8');
     return filePath;
   }
@@ -237,9 +274,9 @@ export function findPatternByPath(path: string): RoutePattern | undefined {
   /**
    * Write types file
    */
-  private writeTypeFile(): string {
+  private async writeTypeFile(): Promise<string> {
     const filePath = path.join(this.outputDir, OUTPUT_FILES.TYPES);
-    const content = this.generateTypeContent();
+    const content = await this.formatContent(this.generateTypeContent(), filePath);
     fs.writeFileSync(filePath, content, 'utf8');
     return filePath;
   }
@@ -247,9 +284,9 @@ export function findPatternByPath(path: string): RoutePattern | undefined {
   /**
    * Write utilities file
    */
-  private writeUtilFile(): string {
+  private async writeUtilFile(): Promise<string> {
     const filePath = path.join(this.outputDir, OUTPUT_FILES.UTILS);
-    const content = this.generateUtilContent();
+    const content = await this.formatContent(this.generateUtilContent(), filePath);
     fs.writeFileSync(filePath, content, 'utf8');
     return filePath;
   }

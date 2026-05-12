@@ -5,9 +5,12 @@
 // Import all schemas
 import * as authSchemas from '../_schemas/auth.schema';
 import * as autoApprovalSchemas from '../_schemas/auto-approval.schema';
+import * as brandSchemas from '../_schemas/brand.schema';
 import * as familyRegistrationSchemas from '../_schemas/family-registration.schema';
 import * as memberSchemas from '../_schemas/member.schema';
 import * as membershipApplicationSchemas from '../_schemas/membership-application.schema';
+import * as positionSchemas from '../_schemas/position.schema';
+import * as staffSchemas from '../_schemas/staff.schema';
 import * as storeAccessSettingsSchemas from '../_schemas/store-access-settings.schema';
 import * as storeSchemas from '../_schemas/store.schema';
 import { registry } from './register-route';
@@ -501,6 +504,27 @@ export function registerAllSchemas() {
     ),
   );
 
+  // Register position / store masters
+  registeredSchemaMap.set(
+    'PositionRoleCategory',
+    registry.register('PositionRoleCategory', positionSchemas.PositionRoleCategorySchema),
+  );
+  registeredSchemaMap.set(
+    'PositionFeatures',
+    registry.register('PositionFeatures', positionSchemas.PositionFeaturesSchema),
+  );
+  registeredSchemaMap.set(
+    'Position',
+    registry.register('Position', positionSchemas.PositionSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffPermissionRecord',
+    registry.register('StaffPermissionRecord', positionSchemas.StaffPermissionRecordSchema),
+  );
+  registeredSchemaMap.set(
+    'GetPositionsResponse',
+    registry.register('GetPositionsResponse', positionSchemas.GetPositionsResponseSchema),
+  );
   registeredSchemaMap.set(
     'StoreMainContractStatus',
     registry.register('StoreMainContractStatus', storeSchemas.StoreMainContractStatusSchema),
@@ -605,5 +629,110 @@ export function registerAllSchemas() {
       'UpdateStoreBusinessHoursResponse',
       storeSchemas.UpdateStoreBusinessHoursResponseSchema,
     ),
+  );
+  registeredSchemaMap.set('Store', registry.register('Store', storeSchemas.StoreSchema));
+
+  // Register staff enum schemas
+  registeredSchemaMap.set(
+    'StaffRole',
+    registry.register('StaffRole', staffSchemas.StaffRoleSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffLinkageType',
+    registry.register('StaffLinkageType', staffSchemas.StaffLinkageTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffLinkage',
+    registry.register('StaffLinkage', staffSchemas.StaffLinkageSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffStatus',
+    registry.register('StaffStatus', staffSchemas.StaffStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffBrand',
+    registry.register('StaffBrand', staffSchemas.StaffBrandSchema),
+  );
+  registeredSchemaMap.set(
+    'ManagedBrandCode',
+    registry.register('ManagedBrandCode', brandSchemas.ManagedBrandCodeSchema),
+  );
+  registeredSchemaMap.set(
+    'BrandItem',
+    registry.register('BrandItem', brandSchemas.BrandItemSchema),
+  );
+  registeredSchemaMap.set(
+    'GetBrandsResponse',
+    registry.register('GetBrandsResponse', brandSchemas.GetBrandsResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'UpdateBrandRequest',
+    registry.register('UpdateBrandRequest', brandSchemas.UpdateBrandRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'UpdateBrandResponse',
+    registry.register('UpdateBrandResponse', brandSchemas.UpdateBrandResponseSchema),
+  );
+
+  // Register staff schemas
+  registeredSchemaMap.set(
+    'StaffListItem',
+    registry.register('StaffListItem', staffSchemas.StaffListItemSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffPersonalInfo',
+    registry.register('StaffPersonalInfo', staffSchemas.StaffPersonalInfoSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffLoginSettings',
+    registry.register('StaffLoginSettings', staffSchemas.StaffLoginSettingsSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffAdditionalPermissions',
+    registry.register('StaffAdditionalPermissions', staffSchemas.StaffAdditionalPermissionsSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffPermissionSettings',
+    registry.register('StaffPermissionSettings', staffSchemas.StaffPermissionSettingsSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffEditableScope',
+    registry.register('StaffEditableScope', staffSchemas.StaffEditableScopeSchema),
+  );
+  registeredSchemaMap.set(
+    'StaffDetail',
+    registry.register('StaffDetail', staffSchemas.StaffDetailSchema),
+  );
+  registeredSchemaMap.set(
+    'GetStaffsQuery',
+    registry.register('GetStaffsQuery', staffSchemas.GetStaffsQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'GetStaffsResponse',
+    registry.register('GetStaffsResponse', staffSchemas.GetStaffsResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'GetStaffDetailResponse',
+    registry.register('GetStaffDetailResponse', staffSchemas.GetStaffDetailResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'UpdateStaffRequest',
+    registry.register('UpdateStaffRequest', staffSchemas.UpdateStaffRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'UpdateStaffResponse',
+    registry.register('UpdateStaffResponse', staffSchemas.UpdateStaffResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'InviteStaffRequest',
+    registry.register('InviteStaffRequest', staffSchemas.InviteStaffRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'InviteStaffResponse',
+    registry.register('InviteStaffResponse', staffSchemas.InviteStaffResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'DeleteStaffResponse',
+    registry.register('DeleteStaffResponse', staffSchemas.DeleteStaffResponseSchema),
   );
 }

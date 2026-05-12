@@ -38,7 +38,7 @@ export class RouteGenerator {
         routes,
       });
 
-      generator.generateFiles();
+      await generator.generateFiles();
 
       return routes;
     } catch (error) {

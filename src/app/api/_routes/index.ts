@@ -8,6 +8,8 @@ import '@/app/api/auth/refresh/route';
 import '@/app/api/crm/auto-approval/dashboard/route';
 // Import auto-approval routes
 import '@/app/api/crm/auto-approval/settings/route';
+// Brand master (Y-07) — OpenAPI tag: Brands
+import '@/app/api/crm/brands/route';
 import '@/app/api/crm/family-registrations/[id]/approve/route';
 import '@/app/api/crm/family-registrations/[id]/complete/route';
 import '@/app/api/crm/family-registrations/[id]/reject/route';
@@ -50,6 +52,12 @@ import '@/app/api/crm/membership-applications/bulk-reject/route';
 import '@/app/api/crm/membership-applications/route';
 import '@/app/api/crm/membership-applications/summary/route';
 import '@/app/api/crm/options/route';
+// Import staffs routes
+import '@/app/api/crm/positions/route';
+import '@/app/api/crm/staffs/[id]/route';
+import '@/app/api/crm/staffs/invite/route';
+import '@/app/api/crm/staffs/route';
+// Import stores routes
 import '@/app/api/crm/stores/[id]/access-settings/route';
 import '@/app/api/crm/stores/[id]/business-hours/route';
 import '@/app/api/crm/stores/[id]/main-contracts/[contractId]/route';

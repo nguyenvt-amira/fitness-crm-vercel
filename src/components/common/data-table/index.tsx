@@ -103,10 +103,10 @@ export function DataTable<TData, TValue>({
   if (variant === 'simple') {
     return (
       <div className={cn('overflow-hidden rounded-md border', className)}>
-        <Table>
-          <TableHeader>
+        <Table containerClassName={cn('overflow-y-auto', containerClassName)}>
+          <TableHeader className="bg-background sticky top-0 overflow-hidden">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="bg-gray-50/50">
+              <TableRow key={headerGroup.id} className="bg-neutral-50 hover:bg-neutral-100">
                 {headerGroup.headers.map((header) => {
                   const meta = header.column.columnDef.meta as Record<string, unknown> | undefined;
                   return (

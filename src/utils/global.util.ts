@@ -65,3 +65,16 @@ export async function copyToClipboard(
     console.error('Failed to copy to clipboard:', error);
   }
 }
+
+export function formatGenderLabel(gender: string | undefined) {
+  switch (gender) {
+    case 'male':
+      return '男性';
+    case 'female':
+      return '女性';
+    case 'other':
+      return 'その他';
+    default:
+      return gender;
+  }
+}

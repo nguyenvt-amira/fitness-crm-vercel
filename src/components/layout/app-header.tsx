@@ -36,7 +36,7 @@ export function AppHeader() {
         {/* User section */}
         <div className="flex items-center gap-2">
           {/* User avatar placeholder */}
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-200">
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-neutral-200">
             <User className="h-4 w-4 text-neutral-500" />
           </div>
 
