@@ -20,8 +20,7 @@ export default function ReactQueryProvider({ children }: ReactQueryProviderProps
           queries: {
             retry: false,
             refetchOnWindowFocus: false,
-            refetchOnMount: 'always',
-            staleTime: 5 * 60 * 1000,
+            refetchOnMount: false,
           },
         },
         mutationCache: new MutationCache({
