@@ -3,8 +3,8 @@
 import { type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { Authentication, AutoApproval, FamilyMembers, FamilyRegistrations, Members, MembershipApplications, type Options } from '../sdk.gen';
-import type { DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdError, DeleteCrmMembersByIdMemosByMemoIdResponse, GetCrmAutoApprovalDashboardData, GetCrmAutoApprovalDashboardError, GetCrmAutoApprovalDashboardResponse, GetCrmAutoApprovalSettingsData, GetCrmAutoApprovalSettingsError, GetCrmAutoApprovalSettingsResponse, GetCrmFamilyRegistrationsByIdData, GetCrmFamilyRegistrationsByIdError, GetCrmFamilyRegistrationsByIdResponse, GetCrmFamilyRegistrationsDashboardData, GetCrmFamilyRegistrationsDashboardError, GetCrmFamilyRegistrationsDashboardResponse, GetCrmFamilyRegistrationsData, GetCrmFamilyRegistrationsError, GetCrmFamilyRegistrationsResponse, GetCrmFamilyRegistrationsSummaryData, GetCrmFamilyRegistrationsSummaryError, GetCrmFamilyRegistrationsSummaryResponse, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoError, GetCrmMembersByIdBasicInfoResponse, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryError, GetCrmMembersByIdChangeHistoryResponse, GetCrmMembersByIdCommunicationsData, GetCrmMembersByIdCommunicationsError, GetCrmMembersByIdCommunicationsResponse, GetCrmMembersByIdContractsData, GetCrmMembersByIdContractsError, GetCrmMembersByIdContractsResponse, GetCrmMembersByIdData, GetCrmMembersByIdError, GetCrmMembersByIdMemosData, GetCrmMembersByIdMemosError, GetCrmMembersByIdMemosResponse, GetCrmMembersByIdPointsData, GetCrmMembersByIdPointsError, GetCrmMembersByIdPointsResponse, GetCrmMembersByIdRelationshipsData, GetCrmMembersByIdRelationshipsError, GetCrmMembersByIdRelationshipsResponse, GetCrmMembersByIdResponse, GetCrmMembersByIdServiceUsageData, GetCrmMembersByIdServiceUsageError, GetCrmMembersByIdServiceUsageResponse, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsError, GetCrmMembersByIdTrainingRecordsResponse, GetCrmMembersByIdUsageHistoryData, GetCrmMembersByIdUsageHistoryError, GetCrmMembersByIdUsageHistoryResponse, GetCrmMembersByMemberIdFamilyMembersData, GetCrmMembersByMemberIdFamilyMembersError, GetCrmMembersByMemberIdFamilyMembersResponse, GetCrmMembersData, GetCrmMembersError, GetCrmMembershipApplicationsByIdData, GetCrmMembershipApplicationsByIdError, GetCrmMembershipApplicationsByIdResponse, GetCrmMembershipApplicationsData, GetCrmMembershipApplicationsError, GetCrmMembershipApplicationsResponse, GetCrmMembershipApplicationsSummaryData, GetCrmMembershipApplicationsSummaryError, GetCrmMembershipApplicationsSummaryResponse, GetCrmMembersResponse, PatchCrmMembershipApplicationsByIdData, PatchCrmMembershipApplicationsByIdError, PatchCrmMembershipApplicationsByIdResponse, PostAuthLoginData, PostAuthLoginError, PostAuthLoginResponse, PostAuthRefreshData, PostAuthRefreshError, PostAuthRefreshResponse, PostCrmFamilyRegistrationsBulkApproveData, PostCrmFamilyRegistrationsBulkApproveError, PostCrmFamilyRegistrationsBulkApproveResponse, PostCrmFamilyRegistrationsBulkRejectData, PostCrmFamilyRegistrationsBulkRejectError, PostCrmFamilyRegistrationsBulkRejectResponse, PostCrmFamilyRegistrationsByIdApproveData, PostCrmFamilyRegistrationsByIdApproveError, PostCrmFamilyRegistrationsByIdApproveResponse, PostCrmFamilyRegistrationsByIdCompleteData, PostCrmFamilyRegistrationsByIdCompleteError, PostCrmFamilyRegistrationsByIdCompleteResponse, PostCrmFamilyRegistrationsByIdRejectData, PostCrmFamilyRegistrationsByIdRejectError, PostCrmFamilyRegistrationsByIdRejectResponse, PostCrmFamilyRegistrationsCheckPrimaryMemberData, PostCrmFamilyRegistrationsCheckPrimaryMemberError, PostCrmFamilyRegistrationsCheckPrimaryMemberResponse, PostCrmFamilyRegistrationsData, PostCrmFamilyRegistrationsError, PostCrmFamilyRegistrationsResponse, PostCrmFamilyRegistrationsRiskEvaluationData, PostCrmFamilyRegistrationsRiskEvaluationError, PostCrmFamilyRegistrationsRiskEvaluationResponse, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosError, PostCrmMembersByIdMemosResponse, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsAdjustError, PostCrmMembersByIdPointsAdjustResponse, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsError, PostCrmMembersByIdPointsResponse, PostCrmMembersExportData, PostCrmMembersExportError, PostCrmMembersExportResponse, PostCrmMembershipApplicationsBulkApproveData, PostCrmMembershipApplicationsBulkApproveError, PostCrmMembershipApplicationsBulkApproveResponse, PostCrmMembershipApplicationsBulkRejectData, PostCrmMembershipApplicationsBulkRejectError, PostCrmMembershipApplicationsBulkRejectResponse, PostCrmMembershipApplicationsByIdApproveData, PostCrmMembershipApplicationsByIdApproveError, PostCrmMembershipApplicationsByIdApproveResponse, PostCrmMembershipApplicationsByIdCancelData, PostCrmMembershipApplicationsByIdCancelError, PostCrmMembershipApplicationsByIdCancelResponse, PostCrmMembershipApplicationsByIdRejectData, PostCrmMembershipApplicationsByIdRejectError, PostCrmMembershipApplicationsByIdRejectResponse, PostCrmMembershipApplicationsData, PostCrmMembershipApplicationsError, PostCrmMembershipApplicationsResponse, PutCrmAutoApprovalSettingsData, PutCrmAutoApprovalSettingsError, PutCrmAutoApprovalSettingsResponse, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdBasicInfoError, PutCrmMembersByIdBasicInfoResponse, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoError, PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentError, PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdError, PutCrmMembersByIdMemosByMemoIdResponse } from '../types.gen';
+import { Authentication, AutoApproval, FamilyMembers, FamilyRegistrations, MainContracts, Members, MembershipApplications, type Options, Options2, Stores } from '../sdk.gen';
+import type { DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdError, DeleteCrmMembersByIdMemosByMemoIdResponse, DeleteCrmStoresByIdMainContractsByContractIdData, DeleteCrmStoresByIdMainContractsByContractIdError, DeleteCrmStoresByIdMainContractsByContractIdResponse, DeleteCrmStoresByIdOptionsByOptionIdData, DeleteCrmStoresByIdOptionsByOptionIdError, DeleteCrmStoresByIdOptionsByOptionIdResponse, GetCrmAutoApprovalDashboardData, GetCrmAutoApprovalDashboardError, GetCrmAutoApprovalDashboardResponse, GetCrmAutoApprovalSettingsData, GetCrmAutoApprovalSettingsError, GetCrmAutoApprovalSettingsResponse, GetCrmFamilyRegistrationsByIdData, GetCrmFamilyRegistrationsByIdError, GetCrmFamilyRegistrationsByIdResponse, GetCrmFamilyRegistrationsDashboardData, GetCrmFamilyRegistrationsDashboardError, GetCrmFamilyRegistrationsDashboardResponse, GetCrmFamilyRegistrationsData, GetCrmFamilyRegistrationsError, GetCrmFamilyRegistrationsResponse, GetCrmFamilyRegistrationsSummaryData, GetCrmFamilyRegistrationsSummaryError, GetCrmFamilyRegistrationsSummaryResponse, GetCrmMainContractsData, GetCrmMainContractsError, GetCrmMainContractsResponse, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoError, GetCrmMembersByIdBasicInfoResponse, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryError, GetCrmMembersByIdChangeHistoryResponse, GetCrmMembersByIdCommunicationsData, GetCrmMembersByIdCommunicationsError, GetCrmMembersByIdCommunicationsResponse, GetCrmMembersByIdContractsData, GetCrmMembersByIdContractsError, GetCrmMembersByIdContractsResponse, GetCrmMembersByIdData, GetCrmMembersByIdError, GetCrmMembersByIdMemosData, GetCrmMembersByIdMemosError, GetCrmMembersByIdMemosResponse, GetCrmMembersByIdPointsData, GetCrmMembersByIdPointsError, GetCrmMembersByIdPointsResponse, GetCrmMembersByIdRelationshipsData, GetCrmMembersByIdRelationshipsError, GetCrmMembersByIdRelationshipsResponse, GetCrmMembersByIdResponse, GetCrmMembersByIdServiceUsageData, GetCrmMembersByIdServiceUsageError, GetCrmMembersByIdServiceUsageResponse, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsError, GetCrmMembersByIdTrainingRecordsResponse, GetCrmMembersByIdUsageHistoryData, GetCrmMembersByIdUsageHistoryError, GetCrmMembersByIdUsageHistoryResponse, GetCrmMembersByMemberIdFamilyMembersData, GetCrmMembersByMemberIdFamilyMembersError, GetCrmMembersByMemberIdFamilyMembersResponse, GetCrmMembersData, GetCrmMembersError, GetCrmMembershipApplicationsByIdData, GetCrmMembershipApplicationsByIdError, GetCrmMembershipApplicationsByIdResponse, GetCrmMembershipApplicationsData, GetCrmMembershipApplicationsError, GetCrmMembershipApplicationsResponse, GetCrmMembershipApplicationsSummaryData, GetCrmMembershipApplicationsSummaryError, GetCrmMembershipApplicationsSummaryResponse, GetCrmMembersResponse, GetCrmOptionsData, GetCrmOptionsError, GetCrmOptionsResponse, GetCrmStoresByIdAccessSettingsData, GetCrmStoresByIdAccessSettingsError, GetCrmStoresByIdAccessSettingsResponse, GetCrmStoresByIdBusinessHoursData, GetCrmStoresByIdBusinessHoursError, GetCrmStoresByIdBusinessHoursResponse, GetCrmStoresByIdData, GetCrmStoresByIdError, GetCrmStoresByIdMainContractsData, GetCrmStoresByIdMainContractsError, GetCrmStoresByIdMainContractsResponse, GetCrmStoresByIdOptionsData, GetCrmStoresByIdOptionsError, GetCrmStoresByIdOptionsResponse, GetCrmStoresByIdResponse, GetCrmStoresData, GetCrmStoresError, GetCrmStoresResponse, PatchCrmMembershipApplicationsByIdData, PatchCrmMembershipApplicationsByIdError, PatchCrmMembershipApplicationsByIdResponse, PatchCrmStoresByIdBusinessHoursData, PatchCrmStoresByIdBusinessHoursError, PatchCrmStoresByIdBusinessHoursResponse, PatchCrmStoresByIdData, PatchCrmStoresByIdError, PatchCrmStoresByIdResponse, PostAuthLoginData, PostAuthLoginError, PostAuthLoginResponse, PostAuthRefreshData, PostAuthRefreshError, PostAuthRefreshResponse, PostCrmFamilyRegistrationsBulkApproveData, PostCrmFamilyRegistrationsBulkApproveError, PostCrmFamilyRegistrationsBulkApproveResponse, PostCrmFamilyRegistrationsBulkRejectData, PostCrmFamilyRegistrationsBulkRejectError, PostCrmFamilyRegistrationsBulkRejectResponse, PostCrmFamilyRegistrationsByIdApproveData, PostCrmFamilyRegistrationsByIdApproveError, PostCrmFamilyRegistrationsByIdApproveResponse, PostCrmFamilyRegistrationsByIdCompleteData, PostCrmFamilyRegistrationsByIdCompleteError, PostCrmFamilyRegistrationsByIdCompleteResponse, PostCrmFamilyRegistrationsByIdRejectData, PostCrmFamilyRegistrationsByIdRejectError, PostCrmFamilyRegistrationsByIdRejectResponse, PostCrmFamilyRegistrationsCheckPrimaryMemberData, PostCrmFamilyRegistrationsCheckPrimaryMemberError, PostCrmFamilyRegistrationsCheckPrimaryMemberResponse, PostCrmFamilyRegistrationsData, PostCrmFamilyRegistrationsError, PostCrmFamilyRegistrationsResponse, PostCrmFamilyRegistrationsRiskEvaluationData, PostCrmFamilyRegistrationsRiskEvaluationError, PostCrmFamilyRegistrationsRiskEvaluationResponse, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosError, PostCrmMembersByIdMemosResponse, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsAdjustError, PostCrmMembersByIdPointsAdjustResponse, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsError, PostCrmMembersByIdPointsResponse, PostCrmMembersExportData, PostCrmMembersExportError, PostCrmMembersExportResponse, PostCrmMembershipApplicationsBulkApproveData, PostCrmMembershipApplicationsBulkApproveError, PostCrmMembershipApplicationsBulkApproveResponse, PostCrmMembershipApplicationsBulkRejectData, PostCrmMembershipApplicationsBulkRejectError, PostCrmMembershipApplicationsBulkRejectResponse, PostCrmMembershipApplicationsByIdApproveData, PostCrmMembershipApplicationsByIdApproveError, PostCrmMembershipApplicationsByIdApproveResponse, PostCrmMembershipApplicationsByIdCancelData, PostCrmMembershipApplicationsByIdCancelError, PostCrmMembershipApplicationsByIdCancelResponse, PostCrmMembershipApplicationsByIdRejectData, PostCrmMembershipApplicationsByIdRejectError, PostCrmMembershipApplicationsByIdRejectResponse, PostCrmMembershipApplicationsData, PostCrmMembershipApplicationsError, PostCrmMembershipApplicationsResponse, PostCrmStoresByIdMainContractsData, PostCrmStoresByIdMainContractsError, PostCrmStoresByIdMainContractsResponse, PostCrmStoresByIdOptionsData, PostCrmStoresByIdOptionsError, PostCrmStoresByIdOptionsResponse, PostCrmStoresData, PostCrmStoresError, PostCrmStoresResponse, PutCrmAutoApprovalSettingsData, PutCrmAutoApprovalSettingsError, PutCrmAutoApprovalSettingsResponse, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdBasicInfoError, PutCrmMembersByIdBasicInfoResponse, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoError, PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentError, PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdError, PutCrmMembersByIdMemosByMemoIdResponse, PutCrmStoresByIdAccessSettingsData, PutCrmStoresByIdAccessSettingsError, PutCrmStoresByIdAccessSettingsResponse } from '../types.gen';
 
 /**
  * User login
@@ -406,6 +406,55 @@ export const getCrmFamilyRegistrationsSummaryOptions = (options?: Options<GetCrm
         return data;
     },
     queryKey: getCrmFamilyRegistrationsSummaryQueryKey(options)
+});
+
+export const getCrmMainContractsQueryKey = (options?: Options<GetCrmMainContractsData>) => createQueryKey('getCrmMainContracts', options);
+
+/**
+ * Get main contract masters
+ *
+ * Get paginated list of main contract masters (G-01)
+ */
+export const getCrmMainContractsOptions = (options?: Options<GetCrmMainContractsData>) => queryOptions<GetCrmMainContractsResponse, GetCrmMainContractsError, GetCrmMainContractsResponse, ReturnType<typeof getCrmMainContractsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await MainContracts.getCrmMainContracts({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMainContractsQueryKey(options)
+});
+
+export const getCrmMainContractsInfiniteQueryKey = (options?: Options<GetCrmMainContractsData>): QueryKey<Options<GetCrmMainContractsData>> => createQueryKey('getCrmMainContracts', options, true);
+
+/**
+ * Get main contract masters
+ *
+ * Get paginated list of main contract masters (G-01)
+ */
+export const getCrmMainContractsInfiniteOptions = (options?: Options<GetCrmMainContractsData>) => infiniteQueryOptions<GetCrmMainContractsResponse, GetCrmMainContractsError, InfiniteData<GetCrmMainContractsResponse>, QueryKey<Options<GetCrmMainContractsData>>, number | Pick<QueryKey<Options<GetCrmMainContractsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetCrmMainContractsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await MainContracts.getCrmMainContracts({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMainContractsInfiniteQueryKey(options)
 });
 
 export const getCrmMembersByIdBasicInfoQueryKey = (options: Options<GetCrmMembersByIdBasicInfoData>) => createQueryKey('getCrmMembersByIdBasicInfo', options);
@@ -1089,3 +1138,353 @@ export const getCrmMembershipApplicationsSummaryOptions = (options?: Options<Get
     },
     queryKey: getCrmMembershipApplicationsSummaryQueryKey(options)
 });
+
+export const getCrmOptionsQueryKey = (options?: Options<GetCrmOptionsData>) => createQueryKey('getCrmOptions', options);
+
+/**
+ * Get option masters
+ *
+ * Get paginated list of option masters (G-02)
+ */
+export const getCrmOptionsOptions = (options?: Options<GetCrmOptionsData>) => queryOptions<GetCrmOptionsResponse, GetCrmOptionsError, GetCrmOptionsResponse, ReturnType<typeof getCrmOptionsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Options2.getCrmOptions({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmOptionsQueryKey(options)
+});
+
+export const getCrmOptionsInfiniteQueryKey = (options?: Options<GetCrmOptionsData>): QueryKey<Options<GetCrmOptionsData>> => createQueryKey('getCrmOptions', options, true);
+
+/**
+ * Get option masters
+ *
+ * Get paginated list of option masters (G-02)
+ */
+export const getCrmOptionsInfiniteOptions = (options?: Options<GetCrmOptionsData>) => infiniteQueryOptions<GetCrmOptionsResponse, GetCrmOptionsError, InfiniteData<GetCrmOptionsResponse>, QueryKey<Options<GetCrmOptionsData>>, number | Pick<QueryKey<Options<GetCrmOptionsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetCrmOptionsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await Options2.getCrmOptions({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmOptionsInfiniteQueryKey(options)
+});
+
+export const getCrmStoresByIdAccessSettingsQueryKey = (options: Options<GetCrmStoresByIdAccessSettingsData>) => createQueryKey('getCrmStoresByIdAccessSettings', options);
+
+/**
+ * Get store access settings
+ *
+ * 入退室・相互利用設定（mock）
+ */
+export const getCrmStoresByIdAccessSettingsOptions = (options: Options<GetCrmStoresByIdAccessSettingsData>) => queryOptions<GetCrmStoresByIdAccessSettingsResponse, GetCrmStoresByIdAccessSettingsError, GetCrmStoresByIdAccessSettingsResponse, ReturnType<typeof getCrmStoresByIdAccessSettingsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Stores.getCrmStoresByIdAccessSettings({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmStoresByIdAccessSettingsQueryKey(options)
+});
+
+/**
+ * Update store access settings
+ *
+ * 入退室・相互利用設定を更新（mock）
+ */
+export const putCrmStoresByIdAccessSettingsMutation = (options?: Partial<Options<PutCrmStoresByIdAccessSettingsData>>): UseMutationOptions<PutCrmStoresByIdAccessSettingsResponse, PutCrmStoresByIdAccessSettingsError, Options<PutCrmStoresByIdAccessSettingsData>> => {
+    const mutationOptions: UseMutationOptions<PutCrmStoresByIdAccessSettingsResponse, PutCrmStoresByIdAccessSettingsError, Options<PutCrmStoresByIdAccessSettingsData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Stores.putCrmStoresByIdAccessSettings({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmStoresByIdBusinessHoursQueryKey = (options: Options<GetCrmStoresByIdBusinessHoursData>) => createQueryKey('getCrmStoresByIdBusinessHours', options);
+
+/**
+ * Get store business hours
+ *
+ * 店舗の営業時間設定（デフォルト・例外・臨時休業）を取得する
+ */
+export const getCrmStoresByIdBusinessHoursOptions = (options: Options<GetCrmStoresByIdBusinessHoursData>) => queryOptions<GetCrmStoresByIdBusinessHoursResponse, GetCrmStoresByIdBusinessHoursError, GetCrmStoresByIdBusinessHoursResponse, ReturnType<typeof getCrmStoresByIdBusinessHoursQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Stores.getCrmStoresByIdBusinessHours({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmStoresByIdBusinessHoursQueryKey(options)
+});
+
+/**
+ * Update store business hours
+ *
+ * 店舗の営業時間設定を更新する
+ */
+export const patchCrmStoresByIdBusinessHoursMutation = (options?: Partial<Options<PatchCrmStoresByIdBusinessHoursData>>): UseMutationOptions<PatchCrmStoresByIdBusinessHoursResponse, PatchCrmStoresByIdBusinessHoursError, Options<PatchCrmStoresByIdBusinessHoursData>> => {
+    const mutationOptions: UseMutationOptions<PatchCrmStoresByIdBusinessHoursResponse, PatchCrmStoresByIdBusinessHoursError, Options<PatchCrmStoresByIdBusinessHoursData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Stores.patchCrmStoresByIdBusinessHours({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Remove main contract from store
+ *
+ * 店舗から主契約の紐づけを解除する
+ */
+export const deleteCrmStoresByIdMainContractsByContractIdMutation = (options?: Partial<Options<DeleteCrmStoresByIdMainContractsByContractIdData>>): UseMutationOptions<DeleteCrmStoresByIdMainContractsByContractIdResponse, DeleteCrmStoresByIdMainContractsByContractIdError, Options<DeleteCrmStoresByIdMainContractsByContractIdData>> => {
+    const mutationOptions: UseMutationOptions<DeleteCrmStoresByIdMainContractsByContractIdResponse, DeleteCrmStoresByIdMainContractsByContractIdError, Options<DeleteCrmStoresByIdMainContractsByContractIdData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Stores.deleteCrmStoresByIdMainContractsByContractId({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmStoresByIdMainContractsQueryKey = (options: Options<GetCrmStoresByIdMainContractsData>) => createQueryKey('getCrmStoresByIdMainContracts', options);
+
+/**
+ * List main contracts by store
+ *
+ * 店舗に紐づく主契約一覧を取得する
+ */
+export const getCrmStoresByIdMainContractsOptions = (options: Options<GetCrmStoresByIdMainContractsData>) => queryOptions<GetCrmStoresByIdMainContractsResponse, GetCrmStoresByIdMainContractsError, GetCrmStoresByIdMainContractsResponse, ReturnType<typeof getCrmStoresByIdMainContractsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Stores.getCrmStoresByIdMainContracts({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmStoresByIdMainContractsQueryKey(options)
+});
+
+/**
+ * Add main contracts into store
+ *
+ * 店舗に主契約を紐づける
+ */
+export const postCrmStoresByIdMainContractsMutation = (options?: Partial<Options<PostCrmStoresByIdMainContractsData>>): UseMutationOptions<PostCrmStoresByIdMainContractsResponse, PostCrmStoresByIdMainContractsError, Options<PostCrmStoresByIdMainContractsData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmStoresByIdMainContractsResponse, PostCrmStoresByIdMainContractsError, Options<PostCrmStoresByIdMainContractsData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Stores.postCrmStoresByIdMainContracts({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Remove option from store
+ *
+ * 店舗からオプションの紐づけを解除する
+ */
+export const deleteCrmStoresByIdOptionsByOptionIdMutation = (options?: Partial<Options<DeleteCrmStoresByIdOptionsByOptionIdData>>): UseMutationOptions<DeleteCrmStoresByIdOptionsByOptionIdResponse, DeleteCrmStoresByIdOptionsByOptionIdError, Options<DeleteCrmStoresByIdOptionsByOptionIdData>> => {
+    const mutationOptions: UseMutationOptions<DeleteCrmStoresByIdOptionsByOptionIdResponse, DeleteCrmStoresByIdOptionsByOptionIdError, Options<DeleteCrmStoresByIdOptionsByOptionIdData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Stores.deleteCrmStoresByIdOptionsByOptionId({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmStoresByIdOptionsQueryKey = (options: Options<GetCrmStoresByIdOptionsData>) => createQueryKey('getCrmStoresByIdOptions', options);
+
+/**
+ * List options by store
+ *
+ * 店舗に紐づくオプション一覧を取得する
+ */
+export const getCrmStoresByIdOptionsOptions = (options: Options<GetCrmStoresByIdOptionsData>) => queryOptions<GetCrmStoresByIdOptionsResponse, GetCrmStoresByIdOptionsError, GetCrmStoresByIdOptionsResponse, ReturnType<typeof getCrmStoresByIdOptionsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Stores.getCrmStoresByIdOptions({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmStoresByIdOptionsQueryKey(options)
+});
+
+/**
+ * Add options into store
+ *
+ * 店舗にオプションを紐づける
+ */
+export const postCrmStoresByIdOptionsMutation = (options?: Partial<Options<PostCrmStoresByIdOptionsData>>): UseMutationOptions<PostCrmStoresByIdOptionsResponse, PostCrmStoresByIdOptionsError, Options<PostCrmStoresByIdOptionsData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmStoresByIdOptionsResponse, PostCrmStoresByIdOptionsError, Options<PostCrmStoresByIdOptionsData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Stores.postCrmStoresByIdOptions({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmStoresByIdQueryKey = (options: Options<GetCrmStoresByIdData>) => createQueryKey('getCrmStoresById', options);
+
+/**
+ * Get store detail
+ *
+ * Get store detail by id
+ */
+export const getCrmStoresByIdOptions = (options: Options<GetCrmStoresByIdData>) => queryOptions<GetCrmStoresByIdResponse, GetCrmStoresByIdError, GetCrmStoresByIdResponse, ReturnType<typeof getCrmStoresByIdQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Stores.getCrmStoresById({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmStoresByIdQueryKey(options)
+});
+
+/**
+ * Update store detail
+ *
+ * Update store by id
+ */
+export const patchCrmStoresByIdMutation = (options?: Partial<Options<PatchCrmStoresByIdData>>): UseMutationOptions<PatchCrmStoresByIdResponse, PatchCrmStoresByIdError, Options<PatchCrmStoresByIdData>> => {
+    const mutationOptions: UseMutationOptions<PatchCrmStoresByIdResponse, PatchCrmStoresByIdError, Options<PatchCrmStoresByIdData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Stores.patchCrmStoresById({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmStoresQueryKey = (options?: Options<GetCrmStoresData>) => createQueryKey('getCrmStores', options);
+
+/**
+ * Get stores list
+ *
+ * Get paginated list of stores with filtering and sorting
+ */
+export const getCrmStoresOptions = (options?: Options<GetCrmStoresData>) => queryOptions<GetCrmStoresResponse, GetCrmStoresError, GetCrmStoresResponse, ReturnType<typeof getCrmStoresQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Stores.getCrmStores({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmStoresQueryKey(options)
+});
+
+export const getCrmStoresInfiniteQueryKey = (options?: Options<GetCrmStoresData>): QueryKey<Options<GetCrmStoresData>> => createQueryKey('getCrmStores', options, true);
+
+/**
+ * Get stores list
+ *
+ * Get paginated list of stores with filtering and sorting
+ */
+export const getCrmStoresInfiniteOptions = (options?: Options<GetCrmStoresData>) => infiniteQueryOptions<GetCrmStoresResponse, GetCrmStoresError, InfiniteData<GetCrmStoresResponse>, QueryKey<Options<GetCrmStoresData>>, number | Pick<QueryKey<Options<GetCrmStoresData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetCrmStoresData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await Stores.getCrmStores({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmStoresInfiniteQueryKey(options)
+});
+
+/**
+ * Create store
+ *
+ * Create a new store
+ */
+export const postCrmStoresMutation = (options?: Partial<Options<PostCrmStoresData>>): UseMutationOptions<PostCrmStoresResponse, PostCrmStoresError, Options<PostCrmStoresData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmStoresResponse, PostCrmStoresError, Options<PostCrmStoresData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Stores.postCrmStores({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};

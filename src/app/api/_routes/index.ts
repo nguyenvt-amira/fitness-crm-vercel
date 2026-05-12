@@ -20,6 +20,7 @@ import '@/app/api/crm/family-registrations/risk-evaluation/route';
 // Import family registrations routes
 import '@/app/api/crm/family-registrations/route';
 import '@/app/api/crm/family-registrations/summary/route';
+import '@/app/api/crm/main-contracts/route';
 import '@/app/api/crm/members/[id]/basic-info/route';
 import '@/app/api/crm/members/[id]/change-history/route';
 import '@/app/api/crm/members/[id]/communications/route';
@@ -48,5 +49,14 @@ import '@/app/api/crm/membership-applications/bulk-reject/route';
 // Import membership applications routes
 import '@/app/api/crm/membership-applications/route';
 import '@/app/api/crm/membership-applications/summary/route';
+import '@/app/api/crm/options/route';
+import '@/app/api/crm/stores/[id]/access-settings/route';
+import '@/app/api/crm/stores/[id]/business-hours/route';
+import '@/app/api/crm/stores/[id]/main-contracts/[contractId]/route';
+import '@/app/api/crm/stores/[id]/main-contracts/route';
+import '@/app/api/crm/stores/[id]/options/[optionId]/route';
+import '@/app/api/crm/stores/[id]/options/route';
+import '@/app/api/crm/stores/[id]/route';
+import '@/app/api/crm/stores/route';
 
 // Add more route imports here as you register them with OpenAPI

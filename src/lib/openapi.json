@@ -7311,6 +7311,1281 @@
         ],
         "title": "GetFamilyRegistrationsDashboardResponse",
         "description": "Dashboard data for family registrations (A-02-02-08)"
+      },
+      "StoreMainContractStatus": {
+        "type": "string",
+        "enum": ["draft", "active", "suspended", "expired", "terminated"],
+        "title": "StoreMainContractStatus",
+        "description": "Main contract lifecycle for the store"
+      },
+      "MutualUseType": {
+        "type": "string",
+        "enum": ["none", "within_brand", "cross_brand", "custom"],
+        "title": "MutualUseType",
+        "description": "Cơ chế sử dụng lẫn nhau / mutual use type"
+      },
+      "StoreListBrand": {
+        "type": "string",
+        "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+        "title": "StoreListBrand",
+        "description": "Store brand"
+      },
+      "StoreArea": {
+        "type": "string",
+        "enum": ["kanto", "kansai", "chubu", "other"],
+        "title": "StoreArea",
+        "description": "Rough geographic area for filtering"
+      },
+      "StoreListStatus": {
+        "type": "string",
+        "enum": ["operating", "preparing", "closed_temp", "closed_perm"],
+        "title": "StoreListStatus",
+        "description": "Store operating status (list / detail)"
+      },
+      "Store": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "store-001",
+            "description": "内部ID"
+          },
+          "store_id": {
+            "type": "string",
+            "example": "S-001",
+            "description": "店舗ID (表示)"
+          },
+          "club_code": {
+            "type": "string",
+            "example": "STR-00001",
+            "description": "クラブコード"
+          },
+          "name": {
+            "type": "string",
+            "example": "Fit365八潮店",
+            "description": "店舗名"
+          },
+          "brand": {
+            "type": "string",
+            "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+            "title": "StoreListBrand",
+            "description": "ブランド"
+          },
+          "area": {
+            "type": "string",
+            "enum": ["kanto", "kansai", "chubu", "other"],
+            "title": "StoreArea",
+            "description": "エリア"
+          },
+          "operating_company_name": {
+            "type": "string",
+            "example": "株式会社ウェルネスフロンティア",
+            "description": "運営企業"
+          },
+          "postal_code": {
+            "type": "string",
+            "example": "160-0022",
+            "description": "郵便番号"
+          },
+          "prefecture": {
+            "type": "string",
+            "example": "東京都",
+            "description": "都道府県"
+          },
+          "address": {
+            "type": "string",
+            "example": "新宿区新宿3-1-1 ABCビル 2F",
+            "description": "住所"
+          },
+          "email": {
+            "type": "string",
+            "example": "shinjuku@joyfit.jp",
+            "description": "メールアドレス"
+          },
+          "phone": {
+            "type": "string",
+            "example": "03-1234-5678",
+            "description": "電話番号"
+          },
+          "accounting_code": {
+            "type": "string",
+            "example": "ACC-TK001",
+            "description": "会計コード"
+          },
+          "interview_url": {
+            "type": "string",
+            "example": "https://goo.gl/maps/indoor-shinjuku",
+            "description": "インドアビュー URL"
+          },
+          "google_map_url": {
+            "type": "string",
+            "example": "https://goo.gl/maps/shinjuku-store",
+            "description": "Google Map URL"
+          },
+          "x_url": {
+            "type": "string",
+            "example": "@joyfit24_shinjuku",
+            "description": "X URL"
+          },
+          "instagram_url": {
+            "type": "string",
+            "example": "@joyfit24_shinjuku",
+            "description": "Instagram URL"
+          },
+          "line_url": {
+            "type": "string",
+            "example": "@joyfit24shinjuku",
+            "description": "LINE URL"
+          },
+          "facebook_url": {
+            "type": "string",
+            "example": "joyfit24shinjuku",
+            "description": "Facebook URL"
+          },
+          "youtube_url": {
+            "type": "string",
+            "example": "",
+            "description": "YouTube URL"
+          },
+          "store_photos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "店舗写真 URLs"
+          },
+          "floor_map_url": {
+            "type": "string",
+            "description": "フロアマップ URL"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["operating", "preparing", "closed_temp", "closed_perm"],
+            "title": "StoreListStatus",
+            "description": "ステータス"
+          },
+          "fc_company_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "fc-001",
+            "description": "FK FC company (Y-03), null for directly managed"
+          },
+          "manager_staff_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "12",
+            "description": "FK Staff — 店舗責任者 (Y-01)"
+          },
+          "main_contract_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "ctr-store-001",
+            "description": "FK G-01 main contract"
+          },
+          "main_contract_status": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["draft", "active", "suspended", "expired", "terminated", null],
+            "title": "StoreMainContractStatus",
+            "description": "Main contract status snapshot"
+          },
+          "option_pass_price": {
+            "type": "number",
+            "example": 800,
+            "description": "1Day Pass price (staff with permission may edit)"
+          },
+          "mutual_use_enabled": {
+            "type": "boolean",
+            "description": "相互利用を有効にするか"
+          },
+          "mutual_use_type": {
+            "type": "string",
+            "enum": ["none", "within_brand", "cross_brand", "custom"],
+            "title": "MutualUseType",
+            "description": "相互利用タイプ"
+          },
+          "closing_date": {
+            "type": "string",
+            "nullable": true,
+            "example": "2027-03-31",
+            "description": "閉店日 — null while operating"
+          },
+          "locker_map_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "locker-map-001",
+            "description": "FK E-01 locker map"
+          },
+          "asset_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "asset-ph2-001",
+            "description": "FK I-01 (Phase 2)"
+          },
+          "created_by": {
+            "type": "string",
+            "example": "STF-001",
+            "description": "作成者"
+          },
+          "created_at": {
+            "type": "string",
+            "example": "2024-01-10T09:00:00Z"
+          },
+          "updated_by": {
+            "type": "string",
+            "example": "STF-002",
+            "description": "更新者"
+          },
+          "updated_at": {
+            "type": "string",
+            "example": "2026-03-01T12:00:00Z"
+          }
+        },
+        "required": [
+          "id",
+          "store_id",
+          "name",
+          "brand",
+          "status",
+          "option_pass_price",
+          "mutual_use_enabled",
+          "mutual_use_type",
+          "created_by",
+          "created_at",
+          "updated_by",
+          "updated_at"
+        ],
+        "title": "Store",
+        "description": "Store master row"
+      },
+      "GetStoresQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 30,
+            "example": 30
+          },
+          "search": {
+            "type": "string",
+            "description": "店舗名・クラブコードで検索"
+          },
+          "brand": {
+            "type": "string",
+            "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+            "title": "StoreListBrand",
+            "description": "ブランド"
+          },
+          "area": {
+            "type": "string",
+            "enum": ["kanto", "kansai", "chubu", "other"],
+            "title": "StoreArea",
+            "description": "エリア"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["operating", "preparing", "closed_temp", "closed_perm"],
+            "title": "StoreListStatus",
+            "description": "ステータス"
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": [
+              "id",
+              "store_id",
+              "name",
+              "brand",
+              "area",
+              "club_code",
+              "operating_company_name"
+            ],
+            "default": "store_id",
+            "description": "Sort field"
+          },
+          "sort_order": {
+            "type": "string",
+            "enum": ["asc", "desc"],
+            "default": "asc",
+            "description": "Sort order"
+          }
+        },
+        "title": "GetStoresQuery",
+        "description": "Query parameters for store list"
+      },
+      "GetStoresResponse": {
+        "type": "object",
+        "properties": {
+          "stores": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "store-001",
+                  "description": "内部ID"
+                },
+                "store_id": {
+                  "type": "string",
+                  "example": "S-001",
+                  "description": "店舗ID (表示)"
+                },
+                "club_code": {
+                  "type": "string",
+                  "example": "STR-00001",
+                  "description": "クラブコード"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Fit365八潮店",
+                  "description": "店舗名"
+                },
+                "brand": {
+                  "type": "string",
+                  "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                  "title": "StoreListBrand",
+                  "description": "ブランド"
+                },
+                "area": {
+                  "type": "string",
+                  "enum": ["kanto", "kansai", "chubu", "other"],
+                  "title": "StoreArea",
+                  "description": "エリア"
+                },
+                "operating_company_name": {
+                  "type": "string",
+                  "example": "株式会社ウェルネスフロンティア",
+                  "description": "運営企業"
+                },
+                "postal_code": {
+                  "type": "string",
+                  "example": "160-0022",
+                  "description": "郵便番号"
+                },
+                "prefecture": {
+                  "type": "string",
+                  "example": "東京都",
+                  "description": "都道府県"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "新宿区新宿3-1-1 ABCビル 2F",
+                  "description": "住所"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "shinjuku@joyfit.jp",
+                  "description": "メールアドレス"
+                },
+                "phone": {
+                  "type": "string",
+                  "example": "03-1234-5678",
+                  "description": "電話番号"
+                },
+                "accounting_code": {
+                  "type": "string",
+                  "example": "ACC-TK001",
+                  "description": "会計コード"
+                },
+                "interview_url": {
+                  "type": "string",
+                  "example": "https://goo.gl/maps/indoor-shinjuku",
+                  "description": "インドアビュー URL"
+                },
+                "google_map_url": {
+                  "type": "string",
+                  "example": "https://goo.gl/maps/shinjuku-store",
+                  "description": "Google Map URL"
+                },
+                "x_url": {
+                  "type": "string",
+                  "example": "@joyfit24_shinjuku",
+                  "description": "X URL"
+                },
+                "instagram_url": {
+                  "type": "string",
+                  "example": "@joyfit24_shinjuku",
+                  "description": "Instagram URL"
+                },
+                "line_url": {
+                  "type": "string",
+                  "example": "@joyfit24shinjuku",
+                  "description": "LINE URL"
+                },
+                "facebook_url": {
+                  "type": "string",
+                  "example": "joyfit24shinjuku",
+                  "description": "Facebook URL"
+                },
+                "youtube_url": {
+                  "type": "string",
+                  "example": "",
+                  "description": "YouTube URL"
+                },
+                "store_photos": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "店舗写真 URLs"
+                },
+                "floor_map_url": {
+                  "type": "string",
+                  "description": "フロアマップ URL"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["operating", "preparing", "closed_temp", "closed_perm"],
+                  "title": "StoreListStatus",
+                  "description": "ステータス"
+                },
+                "fc_company_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "fc-001",
+                  "description": "FK FC company (Y-03), null for directly managed"
+                },
+                "manager_staff_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "12",
+                  "description": "FK Staff — 店舗責任者 (Y-01)"
+                },
+                "main_contract_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "ctr-store-001",
+                  "description": "FK G-01 main contract"
+                },
+                "main_contract_status": {
+                  "type": "string",
+                  "nullable": true,
+                  "enum": ["draft", "active", "suspended", "expired", "terminated", null],
+                  "title": "StoreMainContractStatus",
+                  "description": "Main contract status snapshot"
+                },
+                "option_pass_price": {
+                  "type": "number",
+                  "example": 800,
+                  "description": "1Day Pass price (staff with permission may edit)"
+                },
+                "mutual_use_enabled": {
+                  "type": "boolean",
+                  "description": "相互利用を有効にするか"
+                },
+                "mutual_use_type": {
+                  "type": "string",
+                  "enum": ["none", "within_brand", "cross_brand", "custom"],
+                  "title": "MutualUseType",
+                  "description": "相互利用タイプ"
+                },
+                "closing_date": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "2027-03-31",
+                  "description": "閉店日 — null while operating"
+                },
+                "locker_map_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "locker-map-001",
+                  "description": "FK E-01 locker map"
+                },
+                "asset_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "asset-ph2-001",
+                  "description": "FK I-01 (Phase 2)"
+                },
+                "created_by": {
+                  "type": "string",
+                  "example": "STF-001",
+                  "description": "作成者"
+                },
+                "created_at": {
+                  "type": "string",
+                  "example": "2024-01-10T09:00:00Z"
+                },
+                "updated_by": {
+                  "type": "string",
+                  "example": "STF-002",
+                  "description": "更新者"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "example": "2026-03-01T12:00:00Z"
+                }
+              },
+              "required": [
+                "id",
+                "store_id",
+                "name",
+                "brand",
+                "status",
+                "option_pass_price",
+                "mutual_use_enabled",
+                "mutual_use_type",
+                "created_by",
+                "created_at",
+                "updated_by",
+                "updated_at"
+              ],
+              "title": "Store",
+              "description": "Store master row"
+            },
+            "description": "Stores"
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "number",
+                "example": 1
+              },
+              "limit": {
+                "type": "number",
+                "example": 30
+              },
+              "total": {
+                "type": "number",
+                "example": 10
+              },
+              "total_pages": {
+                "type": "number",
+                "example": 1
+              }
+            },
+            "required": ["page", "limit", "total", "total_pages"],
+            "title": "StorePagination"
+          }
+        },
+        "required": ["stores", "pagination"],
+        "title": "GetStoresResponse",
+        "description": "Store list response with pagination"
+      },
+      "PermittedStore": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "store_name": {
+            "type": "string"
+          },
+          "brand": {
+            "type": "string",
+            "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+            "title": "StoreListBrand",
+            "description": "Store brand"
+          },
+          "setup_date": {
+            "type": "string",
+            "description": "設定日 (yyyy/MM/dd)"
+          }
+        },
+        "required": ["id", "store_name", "brand", "setup_date"],
+        "title": "PermittedStore",
+        "description": "相互利用グループの許可店舗行"
+      },
+      "JoyUsageFee": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "option_name": {
+            "type": "string"
+          },
+          "fee": {
+            "type": "number",
+            "description": "料金（税込）"
+          }
+        },
+        "required": ["id", "option_name", "fee"],
+        "title": "JoyUsageFee",
+        "description": "どこでもJOY利用料金の行"
+      },
+      "StoreAccessSettings": {
+        "type": "object",
+        "properties": {
+          "mutual_use_enabled": {
+            "type": "boolean"
+          },
+          "start_date": {
+            "type": "string"
+          },
+          "end_date": {
+            "type": "string"
+          },
+          "under18_start_time": {
+            "type": "string"
+          },
+          "under18_end_time": {
+            "type": "string"
+          },
+          "permitted_stores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PermittedStore"
+            }
+          },
+          "joy_usage_fees": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JoyUsageFee"
+            }
+          }
+        },
+        "required": [
+          "mutual_use_enabled",
+          "start_date",
+          "end_date",
+          "under18_start_time",
+          "under18_end_time",
+          "permitted_stores",
+          "joy_usage_fees"
+        ],
+        "title": "StoreAccessSettings",
+        "description": "店舗の入退室・相互利用設定（mock）"
+      },
+      "GetStoreAccessSettingsResponse": {
+        "type": "object",
+        "properties": {
+          "mutual_use_enabled": {
+            "type": "boolean"
+          },
+          "start_date": {
+            "type": "string"
+          },
+          "end_date": {
+            "type": "string"
+          },
+          "under18_start_time": {
+            "type": "string"
+          },
+          "under18_end_time": {
+            "type": "string"
+          },
+          "permitted_stores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PermittedStore"
+            }
+          },
+          "joy_usage_fees": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JoyUsageFee"
+            }
+          }
+        },
+        "required": [
+          "mutual_use_enabled",
+          "start_date",
+          "end_date",
+          "under18_start_time",
+          "under18_end_time",
+          "permitted_stores",
+          "joy_usage_fees"
+        ],
+        "title": "GetStoreAccessSettingsResponse",
+        "description": "店舗の入退室・相互利用設定（mock）"
+      },
+      "UpdateStoreAccessSettingsRequest": {
+        "type": "object",
+        "properties": {
+          "mutual_use_enabled": {
+            "type": "boolean"
+          },
+          "start_date": {
+            "type": "string"
+          },
+          "end_date": {
+            "type": "string"
+          },
+          "under18_start_time": {
+            "type": "string"
+          },
+          "under18_end_time": {
+            "type": "string"
+          },
+          "permitted_stores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PermittedStore"
+            }
+          },
+          "joy_usage_fees": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JoyUsageFee"
+            }
+          }
+        },
+        "required": [
+          "mutual_use_enabled",
+          "start_date",
+          "end_date",
+          "under18_start_time",
+          "under18_end_time",
+          "permitted_stores",
+          "joy_usage_fees"
+        ],
+        "title": "UpdateStoreAccessSettingsRequest",
+        "description": "店舗の入退室・相互利用設定（mock）"
+      },
+      "UpdateStoreAccessSettingsResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "access_settings": {
+            "$ref": "#/components/schemas/StoreAccessSettings"
+          }
+        },
+        "required": ["message", "access_settings"],
+        "title": "UpdateStoreAccessSettingsResponse"
+      },
+      "DayOfWeek": {
+        "type": "string",
+        "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun", "holiday"],
+        "title": "DayOfWeek",
+        "description": "Day of week including holiday"
+      },
+      "DefaultHoursEntry": {
+        "type": "object",
+        "properties": {
+          "day": {
+            "type": "string",
+            "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun", "holiday"],
+            "title": "DayOfWeek",
+            "description": "Day of week including holiday"
+          },
+          "open_time": {
+            "type": "string",
+            "example": "10:00",
+            "description": "開店時刻 HH:mm"
+          },
+          "close_time": {
+            "type": "string",
+            "example": "23:00",
+            "description": "閉店時刻 HH:mm"
+          },
+          "is_closed": {
+            "type": "boolean",
+            "description": "定休日フラグ"
+          }
+        },
+        "required": ["day", "open_time", "close_time", "is_closed"],
+        "title": "DefaultHoursEntry",
+        "description": "曜日別デフォルト営業時間"
+      },
+      "ExceptionHoursEntry": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "exc-001"
+          },
+          "date": {
+            "type": "string",
+            "example": "2026-12-31",
+            "description": "例外日 YYYY-MM-DD"
+          },
+          "open_time": {
+            "type": "string",
+            "example": "10:00"
+          },
+          "close_time": {
+            "type": "string",
+            "example": "17:00"
+          }
+        },
+        "required": ["id", "date", "open_time", "close_time"],
+        "title": "ExceptionHoursEntry",
+        "description": "例外営業時間（特定日）"
+      },
+      "TemporaryClosureEntry": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "tcl-001"
+          },
+          "date": {
+            "type": "string",
+            "example": "2026-03-15",
+            "description": "臨時休業日 YYYY-MM-DD"
+          },
+          "reason": {
+            "type": "string",
+            "example": "設備点検",
+            "description": "理由"
+          }
+        },
+        "required": ["id", "date"],
+        "title": "TemporaryClosureEntry",
+        "description": "臨時休業日"
+      },
+      "StoreBusinessHours": {
+        "type": "object",
+        "properties": {
+          "store_id": {
+            "type": "string",
+            "example": "store-001"
+          },
+          "default_hours": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "day": {
+                  "type": "string",
+                  "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun", "holiday"],
+                  "title": "DayOfWeek",
+                  "description": "Day of week including holiday"
+                },
+                "open_time": {
+                  "type": "string",
+                  "example": "10:00",
+                  "description": "開店時刻 HH:mm"
+                },
+                "close_time": {
+                  "type": "string",
+                  "example": "23:00",
+                  "description": "閉店時刻 HH:mm"
+                },
+                "is_closed": {
+                  "type": "boolean",
+                  "description": "定休日フラグ"
+                }
+              },
+              "required": ["day", "open_time", "close_time", "is_closed"],
+              "title": "DefaultHoursEntry",
+              "description": "曜日別デフォルト営業時間"
+            },
+            "description": "曜日別デフォルト営業時間"
+          },
+          "exception_hours": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "exc-001"
+                },
+                "date": {
+                  "type": "string",
+                  "example": "2026-12-31",
+                  "description": "例外日 YYYY-MM-DD"
+                },
+                "open_time": {
+                  "type": "string",
+                  "example": "10:00"
+                },
+                "close_time": {
+                  "type": "string",
+                  "example": "17:00"
+                }
+              },
+              "required": ["id", "date", "open_time", "close_time"],
+              "title": "ExceptionHoursEntry",
+              "description": "例外営業時間（特定日）"
+            },
+            "description": "例外営業時間（特定日に通常と異なる時間）"
+          },
+          "temporary_closures": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "tcl-001"
+                },
+                "date": {
+                  "type": "string",
+                  "example": "2026-03-15",
+                  "description": "臨時休業日 YYYY-MM-DD"
+                },
+                "reason": {
+                  "type": "string",
+                  "example": "設備点検",
+                  "description": "理由"
+                }
+              },
+              "required": ["id", "date"],
+              "title": "TemporaryClosureEntry",
+              "description": "臨時休業日"
+            },
+            "description": "臨時休業日一覧"
+          },
+          "updated_at": {
+            "type": "string",
+            "example": "2026-03-01T12:00:00Z"
+          },
+          "updated_by": {
+            "type": "string",
+            "example": "STF-001"
+          }
+        },
+        "required": [
+          "store_id",
+          "default_hours",
+          "exception_hours",
+          "temporary_closures",
+          "updated_at",
+          "updated_by"
+        ],
+        "title": "StoreBusinessHours",
+        "description": "店舗営業時間設定"
+      },
+      "UpdateStoreBusinessHoursPayload": {
+        "type": "object",
+        "properties": {
+          "default_hours": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "day": {
+                  "type": "string",
+                  "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun", "holiday"],
+                  "title": "DayOfWeek",
+                  "description": "Day of week including holiday"
+                },
+                "open_time": {
+                  "type": "string",
+                  "example": "10:00",
+                  "description": "開店時刻 HH:mm"
+                },
+                "close_time": {
+                  "type": "string",
+                  "example": "23:00",
+                  "description": "閉店時刻 HH:mm"
+                },
+                "is_closed": {
+                  "type": "boolean",
+                  "description": "定休日フラグ"
+                }
+              },
+              "required": ["day", "open_time", "close_time", "is_closed"],
+              "title": "DefaultHoursEntry",
+              "description": "曜日別デフォルト営業時間"
+            }
+          },
+          "exception_hours": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "exc-001"
+                },
+                "date": {
+                  "type": "string",
+                  "example": "2026-12-31",
+                  "description": "例外日 YYYY-MM-DD"
+                },
+                "open_time": {
+                  "type": "string",
+                  "example": "10:00"
+                },
+                "close_time": {
+                  "type": "string",
+                  "example": "17:00"
+                }
+              },
+              "required": ["id", "date", "open_time", "close_time"],
+              "title": "ExceptionHoursEntry",
+              "description": "例外営業時間（特定日）"
+            }
+          },
+          "temporary_closures": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "tcl-001"
+                },
+                "date": {
+                  "type": "string",
+                  "example": "2026-03-15",
+                  "description": "臨時休業日 YYYY-MM-DD"
+                },
+                "reason": {
+                  "type": "string",
+                  "example": "設備点検",
+                  "description": "理由"
+                }
+              },
+              "required": ["id", "date"],
+              "title": "TemporaryClosureEntry",
+              "description": "臨時休業日"
+            }
+          }
+        },
+        "title": "UpdateStoreBusinessHoursPayload",
+        "description": "営業時間更新リクエスト"
+      },
+      "GetStoreBusinessHoursResponse": {
+        "type": "object",
+        "properties": {
+          "business_hours": {
+            "type": "object",
+            "properties": {
+              "store_id": {
+                "type": "string",
+                "example": "store-001"
+              },
+              "default_hours": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "day": {
+                      "type": "string",
+                      "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun", "holiday"],
+                      "title": "DayOfWeek",
+                      "description": "Day of week including holiday"
+                    },
+                    "open_time": {
+                      "type": "string",
+                      "example": "10:00",
+                      "description": "開店時刻 HH:mm"
+                    },
+                    "close_time": {
+                      "type": "string",
+                      "example": "23:00",
+                      "description": "閉店時刻 HH:mm"
+                    },
+                    "is_closed": {
+                      "type": "boolean",
+                      "description": "定休日フラグ"
+                    }
+                  },
+                  "required": ["day", "open_time", "close_time", "is_closed"],
+                  "title": "DefaultHoursEntry",
+                  "description": "曜日別デフォルト営業時間"
+                },
+                "description": "曜日別デフォルト営業時間"
+              },
+              "exception_hours": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "exc-001"
+                    },
+                    "date": {
+                      "type": "string",
+                      "example": "2026-12-31",
+                      "description": "例外日 YYYY-MM-DD"
+                    },
+                    "open_time": {
+                      "type": "string",
+                      "example": "10:00"
+                    },
+                    "close_time": {
+                      "type": "string",
+                      "example": "17:00"
+                    }
+                  },
+                  "required": ["id", "date", "open_time", "close_time"],
+                  "title": "ExceptionHoursEntry",
+                  "description": "例外営業時間（特定日）"
+                },
+                "description": "例外営業時間（特定日に通常と異なる時間）"
+              },
+              "temporary_closures": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "tcl-001"
+                    },
+                    "date": {
+                      "type": "string",
+                      "example": "2026-03-15",
+                      "description": "臨時休業日 YYYY-MM-DD"
+                    },
+                    "reason": {
+                      "type": "string",
+                      "example": "設備点検",
+                      "description": "理由"
+                    }
+                  },
+                  "required": ["id", "date"],
+                  "title": "TemporaryClosureEntry",
+                  "description": "臨時休業日"
+                },
+                "description": "臨時休業日一覧"
+              },
+              "updated_at": {
+                "type": "string",
+                "example": "2026-03-01T12:00:00Z"
+              },
+              "updated_by": {
+                "type": "string",
+                "example": "STF-001"
+              }
+            },
+            "required": [
+              "store_id",
+              "default_hours",
+              "exception_hours",
+              "temporary_closures",
+              "updated_at",
+              "updated_by"
+            ],
+            "title": "StoreBusinessHours",
+            "description": "店舗営業時間設定"
+          }
+        },
+        "required": ["business_hours"],
+        "title": "GetStoreBusinessHoursResponse"
+      },
+      "UpdateStoreBusinessHoursResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "営業時間を更新しました"
+          },
+          "business_hours": {
+            "type": "object",
+            "properties": {
+              "store_id": {
+                "type": "string",
+                "example": "store-001"
+              },
+              "default_hours": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "day": {
+                      "type": "string",
+                      "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun", "holiday"],
+                      "title": "DayOfWeek",
+                      "description": "Day of week including holiday"
+                    },
+                    "open_time": {
+                      "type": "string",
+                      "example": "10:00",
+                      "description": "開店時刻 HH:mm"
+                    },
+                    "close_time": {
+                      "type": "string",
+                      "example": "23:00",
+                      "description": "閉店時刻 HH:mm"
+                    },
+                    "is_closed": {
+                      "type": "boolean",
+                      "description": "定休日フラグ"
+                    }
+                  },
+                  "required": ["day", "open_time", "close_time", "is_closed"],
+                  "title": "DefaultHoursEntry",
+                  "description": "曜日別デフォルト営業時間"
+                },
+                "description": "曜日別デフォルト営業時間"
+              },
+              "exception_hours": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "exc-001"
+                    },
+                    "date": {
+                      "type": "string",
+                      "example": "2026-12-31",
+                      "description": "例外日 YYYY-MM-DD"
+                    },
+                    "open_time": {
+                      "type": "string",
+                      "example": "10:00"
+                    },
+                    "close_time": {
+                      "type": "string",
+                      "example": "17:00"
+                    }
+                  },
+                  "required": ["id", "date", "open_time", "close_time"],
+                  "title": "ExceptionHoursEntry",
+                  "description": "例外営業時間（特定日）"
+                },
+                "description": "例外営業時間（特定日に通常と異なる時間）"
+              },
+              "temporary_closures": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "tcl-001"
+                    },
+                    "date": {
+                      "type": "string",
+                      "example": "2026-03-15",
+                      "description": "臨時休業日 YYYY-MM-DD"
+                    },
+                    "reason": {
+                      "type": "string",
+                      "example": "設備点検",
+                      "description": "理由"
+                    }
+                  },
+                  "required": ["id", "date"],
+                  "title": "TemporaryClosureEntry",
+                  "description": "臨時休業日"
+                },
+                "description": "臨時休業日一覧"
+              },
+              "updated_at": {
+                "type": "string",
+                "example": "2026-03-01T12:00:00Z"
+              },
+              "updated_by": {
+                "type": "string",
+                "example": "STF-001"
+              }
+            },
+            "required": [
+              "store_id",
+              "default_hours",
+              "exception_hours",
+              "temporary_closures",
+              "updated_at",
+              "updated_by"
+            ],
+            "title": "StoreBusinessHours",
+            "description": "店舗営業時間設定"
+          }
+        },
+        "required": ["message", "business_hours"],
+        "title": "UpdateStoreBusinessHoursResponse"
       }
     },
     "parameters": {}
@@ -10395,6 +11670,261 @@
                     "error": {
                       "type": "string",
                       "example": "Failed to process request"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/main-contracts": {
+      "get": {
+        "summary": "Get main contract masters",
+        "description": "Get paginated list of main contract masters (G-01)",
+        "tags": ["Main Contracts"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 20
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "主契約名・IDで検索"
+            },
+            "required": false,
+            "description": "主契約名・IDで検索",
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "general",
+                "oneDay",
+                "family",
+                "kids",
+                "student",
+                "corporate",
+                "welfare",
+                "prepaid",
+                "special"
+              ],
+              "title": "MainContractType",
+              "description": "主契約タイプ（G-01）"
+            },
+            "required": false,
+            "description": "主契約タイプ（G-01）",
+            "name": "contract_type",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+              "title": "StoreListBrand",
+              "description": "Store brand"
+            },
+            "required": false,
+            "description": "Store brand",
+            "name": "brand",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["active", "inactive"],
+              "title": "MainContractStatus",
+              "description": "主契約の有効/無効ステータス"
+            },
+            "required": false,
+            "description": "主契約の有効/無効ステータス",
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["id", "name", "contract_type", "brand", "price_including_tax"],
+              "default": "id"
+            },
+            "required": false,
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            },
+            "required": false,
+            "name": "sort_order",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Main contract list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "main_contracts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "MC001",
+                            "description": "主契約ID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "レギュラー会員",
+                            "description": "主契約名"
+                          },
+                          "contract_type": {
+                            "type": "string",
+                            "enum": [
+                              "general",
+                              "oneDay",
+                              "family",
+                              "kids",
+                              "student",
+                              "corporate",
+                              "welfare",
+                              "prepaid",
+                              "special"
+                            ],
+                            "title": "MainContractType",
+                            "description": "契約タイプ"
+                          },
+                          "brand": {
+                            "type": "string",
+                            "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                            "title": "StoreListBrand",
+                            "description": "ブランド"
+                          },
+                          "target_store_name": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "JOYFIT24新宿店",
+                            "description": "特殊契約の場合の対象店舗名"
+                          },
+                          "price_including_tax": {
+                            "type": "number",
+                            "minimum": 0,
+                            "example": 7700,
+                            "description": "料金（税込）"
+                          },
+                          "companion_benefit_enabled": {
+                            "type": "boolean",
+                            "example": false,
+                            "description": "同伴特典フラグ"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["active", "inactive"],
+                            "title": "MainContractStatus",
+                            "description": "ステータス"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "contract_type",
+                          "brand",
+                          "price_including_tax",
+                          "companion_benefit_enabled",
+                          "status"
+                        ],
+                        "title": "MainContractListItem",
+                        "description": "主契約一覧アイテム"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "number"
+                        },
+                        "limit": {
+                          "type": "number"
+                        },
+                        "total": {
+                          "type": "number"
+                        },
+                        "total_pages": {
+                          "type": "number"
+                        }
+                      },
+                      "required": ["page", "limit", "total", "total_pages"]
+                    }
+                  },
+                  "required": ["main_contracts", "pagination"],
+                  "title": "GetMainContractsResponse",
+                  "description": "主契約一覧レスポンス"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
                     }
                   },
                   "required": ["error"],
@@ -17686,6 +19216,3004 @@
                     "error": {
                       "type": "string",
                       "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/options": {
+      "get": {
+        "summary": "Get option masters",
+        "description": "Get paginated list of option masters (G-02)",
+        "tags": ["Options"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 20
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "オプション名・IDで検索"
+            },
+            "required": false,
+            "description": "オプション名・IDで検索",
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+              "title": "StoreListBrand",
+              "description": "Store brand"
+            },
+            "required": false,
+            "description": "Store brand",
+            "name": "brand",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["standard", "metered", "auto_attached"],
+              "title": "OptionType",
+              "description": "オプション種別（通常/都次/自動付与）"
+            },
+            "required": false,
+            "description": "オプション種別（通常/都次/自動付与）",
+            "name": "option_type",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["active", "inactive"],
+              "title": "OptionStatus",
+              "description": "オプション有効/無効ステータス"
+            },
+            "required": false,
+            "description": "オプション有効/無効ステータス",
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["id", "name", "brand", "price_including_tax"],
+              "default": "id"
+            },
+            "required": false,
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            },
+            "required": false,
+            "name": "sort_order",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Option list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "options": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "OP002",
+                            "description": "オプションID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "水素水",
+                            "description": "オプション名"
+                          },
+                          "brand": {
+                            "type": "string",
+                            "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                            "title": "StoreListBrand",
+                            "description": "ブランド"
+                          },
+                          "option_type": {
+                            "type": "string",
+                            "enum": ["standard", "metered", "auto_attached"],
+                            "title": "OptionType",
+                            "description": "オプション種別"
+                          },
+                          "price_including_tax": {
+                            "type": "number",
+                            "minimum": 0,
+                            "example": 1100,
+                            "description": "料金（税込）"
+                          },
+                          "prorated_enabled": {
+                            "type": "boolean",
+                            "example": true,
+                            "description": "日割り要否"
+                          },
+                          "usage_rule": {
+                            "type": "string",
+                            "enum": [
+                              "disabled",
+                              "add_remove",
+                              "add_remove_change",
+                              "change_remove"
+                            ],
+                            "description": "利用可否ルール"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["active", "inactive"],
+                            "title": "OptionStatus",
+                            "description": "ステータス"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "brand",
+                          "option_type",
+                          "price_including_tax",
+                          "prorated_enabled",
+                          "usage_rule",
+                          "status"
+                        ],
+                        "title": "OptionMasterListItem",
+                        "description": "オプション一覧アイテム"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "number"
+                        },
+                        "limit": {
+                          "type": "number"
+                        },
+                        "total": {
+                          "type": "number"
+                        },
+                        "total_pages": {
+                          "type": "number"
+                        }
+                      },
+                      "required": ["page", "limit", "total", "total_pages"]
+                    }
+                  },
+                  "required": ["options", "pagination"],
+                  "title": "GetOptionMastersResponse",
+                  "description": "オプション一覧レスポンス"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/stores/{id}/access-settings": {
+      "get": {
+        "summary": "Get store access settings",
+        "description": "入退室・相互利用設定（mock）",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Store ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Access settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetStoreAccessSettingsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Store not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update store access settings",
+        "description": "入退室・相互利用設定を更新（mock）",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Store ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Full access settings payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStoreAccessSettingsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateStoreAccessSettingsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Store not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/stores/{id}/business-hours": {
+      "get": {
+        "summary": "Get store business hours",
+        "description": "店舗の営業時間設定（デフォルト・例外・臨時休業）を取得する",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Store ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Business hours",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "business_hours": {
+                      "type": "object",
+                      "properties": {
+                        "store_id": {
+                          "type": "string",
+                          "example": "store-001"
+                        },
+                        "default_hours": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "day": {
+                                "type": "string",
+                                "enum": [
+                                  "mon",
+                                  "tue",
+                                  "wed",
+                                  "thu",
+                                  "fri",
+                                  "sat",
+                                  "sun",
+                                  "holiday"
+                                ],
+                                "title": "DayOfWeek",
+                                "description": "Day of week including holiday"
+                              },
+                              "open_time": {
+                                "type": "string",
+                                "example": "10:00",
+                                "description": "開店時刻 HH:mm"
+                              },
+                              "close_time": {
+                                "type": "string",
+                                "example": "23:00",
+                                "description": "閉店時刻 HH:mm"
+                              },
+                              "is_closed": {
+                                "type": "boolean",
+                                "description": "定休日フラグ"
+                              }
+                            },
+                            "required": ["day", "open_time", "close_time", "is_closed"],
+                            "title": "DefaultHoursEntry",
+                            "description": "曜日別デフォルト営業時間"
+                          },
+                          "description": "曜日別デフォルト営業時間"
+                        },
+                        "exception_hours": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "exc-001"
+                              },
+                              "date": {
+                                "type": "string",
+                                "example": "2026-12-31",
+                                "description": "例外日 YYYY-MM-DD"
+                              },
+                              "open_time": {
+                                "type": "string",
+                                "example": "10:00"
+                              },
+                              "close_time": {
+                                "type": "string",
+                                "example": "17:00"
+                              }
+                            },
+                            "required": ["id", "date", "open_time", "close_time"],
+                            "title": "ExceptionHoursEntry",
+                            "description": "例外営業時間（特定日）"
+                          },
+                          "description": "例外営業時間（特定日に通常と異なる時間）"
+                        },
+                        "temporary_closures": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "tcl-001"
+                              },
+                              "date": {
+                                "type": "string",
+                                "example": "2026-03-15",
+                                "description": "臨時休業日 YYYY-MM-DD"
+                              },
+                              "reason": {
+                                "type": "string",
+                                "example": "設備点検",
+                                "description": "理由"
+                              }
+                            },
+                            "required": ["id", "date"],
+                            "title": "TemporaryClosureEntry",
+                            "description": "臨時休業日"
+                          },
+                          "description": "臨時休業日一覧"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026-03-01T12:00:00Z"
+                        },
+                        "updated_by": {
+                          "type": "string",
+                          "example": "STF-001"
+                        }
+                      },
+                      "required": [
+                        "store_id",
+                        "default_hours",
+                        "exception_hours",
+                        "temporary_closures",
+                        "updated_at",
+                        "updated_by"
+                      ],
+                      "title": "StoreBusinessHours",
+                      "description": "店舗営業時間設定"
+                    }
+                  },
+                  "required": ["business_hours"],
+                  "title": "GetStoreBusinessHoursResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Store not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update store business hours",
+        "description": "店舗の営業時間設定を更新する",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Store ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Business hours update payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "default_hours": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "day": {
+                          "type": "string",
+                          "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun", "holiday"],
+                          "title": "DayOfWeek",
+                          "description": "Day of week including holiday"
+                        },
+                        "open_time": {
+                          "type": "string",
+                          "example": "10:00",
+                          "description": "開店時刻 HH:mm"
+                        },
+                        "close_time": {
+                          "type": "string",
+                          "example": "23:00",
+                          "description": "閉店時刻 HH:mm"
+                        },
+                        "is_closed": {
+                          "type": "boolean",
+                          "description": "定休日フラグ"
+                        }
+                      },
+                      "required": ["day", "open_time", "close_time", "is_closed"],
+                      "title": "DefaultHoursEntry",
+                      "description": "曜日別デフォルト営業時間"
+                    }
+                  },
+                  "exception_hours": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "exc-001"
+                        },
+                        "date": {
+                          "type": "string",
+                          "example": "2026-12-31",
+                          "description": "例外日 YYYY-MM-DD"
+                        },
+                        "open_time": {
+                          "type": "string",
+                          "example": "10:00"
+                        },
+                        "close_time": {
+                          "type": "string",
+                          "example": "17:00"
+                        }
+                      },
+                      "required": ["id", "date", "open_time", "close_time"],
+                      "title": "ExceptionHoursEntry",
+                      "description": "例外営業時間（特定日）"
+                    }
+                  },
+                  "temporary_closures": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "tcl-001"
+                        },
+                        "date": {
+                          "type": "string",
+                          "example": "2026-03-15",
+                          "description": "臨時休業日 YYYY-MM-DD"
+                        },
+                        "reason": {
+                          "type": "string",
+                          "example": "設備点検",
+                          "description": "理由"
+                        }
+                      },
+                      "required": ["id", "date"],
+                      "title": "TemporaryClosureEntry",
+                      "description": "臨時休業日"
+                    }
+                  }
+                },
+                "title": "UpdateStoreBusinessHoursPayload",
+                "description": "営業時間更新リクエスト"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Business hours updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "営業時間を更新しました"
+                    },
+                    "business_hours": {
+                      "type": "object",
+                      "properties": {
+                        "store_id": {
+                          "type": "string",
+                          "example": "store-001"
+                        },
+                        "default_hours": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "day": {
+                                "type": "string",
+                                "enum": [
+                                  "mon",
+                                  "tue",
+                                  "wed",
+                                  "thu",
+                                  "fri",
+                                  "sat",
+                                  "sun",
+                                  "holiday"
+                                ],
+                                "title": "DayOfWeek",
+                                "description": "Day of week including holiday"
+                              },
+                              "open_time": {
+                                "type": "string",
+                                "example": "10:00",
+                                "description": "開店時刻 HH:mm"
+                              },
+                              "close_time": {
+                                "type": "string",
+                                "example": "23:00",
+                                "description": "閉店時刻 HH:mm"
+                              },
+                              "is_closed": {
+                                "type": "boolean",
+                                "description": "定休日フラグ"
+                              }
+                            },
+                            "required": ["day", "open_time", "close_time", "is_closed"],
+                            "title": "DefaultHoursEntry",
+                            "description": "曜日別デフォルト営業時間"
+                          },
+                          "description": "曜日別デフォルト営業時間"
+                        },
+                        "exception_hours": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "exc-001"
+                              },
+                              "date": {
+                                "type": "string",
+                                "example": "2026-12-31",
+                                "description": "例外日 YYYY-MM-DD"
+                              },
+                              "open_time": {
+                                "type": "string",
+                                "example": "10:00"
+                              },
+                              "close_time": {
+                                "type": "string",
+                                "example": "17:00"
+                              }
+                            },
+                            "required": ["id", "date", "open_time", "close_time"],
+                            "title": "ExceptionHoursEntry",
+                            "description": "例外営業時間（特定日）"
+                          },
+                          "description": "例外営業時間（特定日に通常と異なる時間）"
+                        },
+                        "temporary_closures": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "tcl-001"
+                              },
+                              "date": {
+                                "type": "string",
+                                "example": "2026-03-15",
+                                "description": "臨時休業日 YYYY-MM-DD"
+                              },
+                              "reason": {
+                                "type": "string",
+                                "example": "設備点検",
+                                "description": "理由"
+                              }
+                            },
+                            "required": ["id", "date"],
+                            "title": "TemporaryClosureEntry",
+                            "description": "臨時休業日"
+                          },
+                          "description": "臨時休業日一覧"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026-03-01T12:00:00Z"
+                        },
+                        "updated_by": {
+                          "type": "string",
+                          "example": "STF-001"
+                        }
+                      },
+                      "required": [
+                        "store_id",
+                        "default_hours",
+                        "exception_hours",
+                        "temporary_closures",
+                        "updated_at",
+                        "updated_by"
+                      ],
+                      "title": "StoreBusinessHours",
+                      "description": "店舗営業時間設定"
+                    }
+                  },
+                  "required": ["message", "business_hours"],
+                  "title": "UpdateStoreBusinessHoursResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Store not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/stores/{id}/main-contracts/{contractId}": {
+      "delete": {
+        "summary": "Remove main contract from store",
+        "description": "店舗から主契約の紐づけを解除する",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contractId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Main contract unlinked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "主契約の紐づけを解除しました"
+                    }
+                  },
+                  "required": ["message"],
+                  "title": "RemoveStoreMainContractResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/stores/{id}/main-contracts": {
+      "get": {
+        "summary": "List main contracts by store",
+        "description": "店舗に紐づく主契約一覧を取得する",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Store main contracts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "main_contracts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "MC001"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "レギュラー会員"
+                          },
+                          "contract_type": {
+                            "type": "string",
+                            "enum": [
+                              "general",
+                              "oneDay",
+                              "family",
+                              "kids",
+                              "student",
+                              "corporate",
+                              "welfare",
+                              "prepaid",
+                              "special"
+                            ],
+                            "title": "MainContractType",
+                            "description": "主契約タイプ（G-01）"
+                          },
+                          "price_including_tax": {
+                            "type": "number",
+                            "minimum": 0,
+                            "example": 7700
+                          },
+                          "linked_at": {
+                            "type": "string",
+                            "example": "2024/04/01",
+                            "description": "紐づけ日 (YYYY/MM/DD)"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "contract_type",
+                          "price_including_tax",
+                          "linked_at"
+                        ],
+                        "title": "StoreLinkedMainContract",
+                        "description": "店舗に紐づく主契約"
+                      }
+                    }
+                  },
+                  "required": ["main_contracts"],
+                  "title": "GetStoreMainContractsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Store not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Add main contracts into store",
+        "description": "店舗に主契約を紐づける",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Main contract IDs to link",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "main_contract_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  }
+                },
+                "required": ["main_contract_ids"],
+                "title": "AddStoreMainContractsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Linked main contracts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "主契約を紐づけました"
+                    },
+                    "main_contracts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "MC001"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "レギュラー会員"
+                          },
+                          "contract_type": {
+                            "type": "string",
+                            "enum": [
+                              "general",
+                              "oneDay",
+                              "family",
+                              "kids",
+                              "student",
+                              "corporate",
+                              "welfare",
+                              "prepaid",
+                              "special"
+                            ],
+                            "title": "MainContractType",
+                            "description": "主契約タイプ（G-01）"
+                          },
+                          "price_including_tax": {
+                            "type": "number",
+                            "minimum": 0,
+                            "example": 7700
+                          },
+                          "linked_at": {
+                            "type": "string",
+                            "example": "2024/04/01",
+                            "description": "紐づけ日 (YYYY/MM/DD)"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "contract_type",
+                          "price_including_tax",
+                          "linked_at"
+                        ],
+                        "title": "StoreLinkedMainContract",
+                        "description": "店舗に紐づく主契約"
+                      }
+                    }
+                  },
+                  "required": ["message", "main_contracts"],
+                  "title": "AddStoreMainContractsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Store not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/stores/{id}/options/{optionId}": {
+      "delete": {
+        "summary": "Remove option from store",
+        "description": "店舗からオプションの紐づけを解除する",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "optionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Option unlinked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "オプションの紐づけを解除しました"
+                    }
+                  },
+                  "required": ["message"],
+                  "title": "RemoveStoreOptionResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/stores/{id}/options": {
+      "get": {
+        "summary": "List options by store",
+        "description": "店舗に紐づくオプション一覧を取得する",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Store options",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "options": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "OP002"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "水素水"
+                          },
+                          "related_option_name": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": null
+                          },
+                          "price_including_tax": {
+                            "type": "number",
+                            "minimum": 0,
+                            "example": 1100
+                          }
+                        },
+                        "required": ["id", "name", "related_option_name", "price_including_tax"],
+                        "title": "StoreLinkedOption",
+                        "description": "店舗に紐づくオプション"
+                      }
+                    }
+                  },
+                  "required": ["options"],
+                  "title": "GetStoreOptionsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Store not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Add options into store",
+        "description": "店舗にオプションを紐づける",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Option IDs to link",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "option_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  }
+                },
+                "required": ["option_ids"],
+                "title": "AddStoreOptionsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Linked options",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "オプションを紐づけました"
+                    },
+                    "options": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "OP002"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "水素水"
+                          },
+                          "related_option_name": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": null
+                          },
+                          "price_including_tax": {
+                            "type": "number",
+                            "minimum": 0,
+                            "example": 1100
+                          }
+                        },
+                        "required": ["id", "name", "related_option_name", "price_including_tax"],
+                        "title": "StoreLinkedOption",
+                        "description": "店舗に紐づくオプション"
+                      }
+                    }
+                  },
+                  "required": ["message", "options"],
+                  "title": "AddStoreOptionsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Store not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/stores/{id}": {
+      "get": {
+        "summary": "Get store detail",
+        "description": "Get store detail by id",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Store ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Store detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "store": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "store-001",
+                          "description": "内部ID"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "example": "S-001",
+                          "description": "店舗ID (表示)"
+                        },
+                        "club_code": {
+                          "type": "string",
+                          "example": "STR-00001",
+                          "description": "クラブコード"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Fit365八潮店",
+                          "description": "店舗名"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                          "title": "StoreListBrand",
+                          "description": "ブランド"
+                        },
+                        "area": {
+                          "type": "string",
+                          "enum": ["kanto", "kansai", "chubu", "other"],
+                          "title": "StoreArea",
+                          "description": "エリア"
+                        },
+                        "operating_company_name": {
+                          "type": "string",
+                          "example": "株式会社ウェルネスフロンティア",
+                          "description": "運営企業"
+                        },
+                        "postal_code": {
+                          "type": "string",
+                          "example": "160-0022",
+                          "description": "郵便番号"
+                        },
+                        "prefecture": {
+                          "type": "string",
+                          "example": "東京都",
+                          "description": "都道府県"
+                        },
+                        "address": {
+                          "type": "string",
+                          "example": "新宿区新宿3-1-1 ABCビル 2F",
+                          "description": "住所"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "shinjuku@joyfit.jp",
+                          "description": "メールアドレス"
+                        },
+                        "phone": {
+                          "type": "string",
+                          "example": "03-1234-5678",
+                          "description": "電話番号"
+                        },
+                        "accounting_code": {
+                          "type": "string",
+                          "example": "ACC-TK001",
+                          "description": "会計コード"
+                        },
+                        "interview_url": {
+                          "type": "string",
+                          "example": "https://goo.gl/maps/indoor-shinjuku",
+                          "description": "インドアビュー URL"
+                        },
+                        "google_map_url": {
+                          "type": "string",
+                          "example": "https://goo.gl/maps/shinjuku-store",
+                          "description": "Google Map URL"
+                        },
+                        "x_url": {
+                          "type": "string",
+                          "example": "@joyfit24_shinjuku",
+                          "description": "X URL"
+                        },
+                        "instagram_url": {
+                          "type": "string",
+                          "example": "@joyfit24_shinjuku",
+                          "description": "Instagram URL"
+                        },
+                        "line_url": {
+                          "type": "string",
+                          "example": "@joyfit24shinjuku",
+                          "description": "LINE URL"
+                        },
+                        "facebook_url": {
+                          "type": "string",
+                          "example": "joyfit24shinjuku",
+                          "description": "Facebook URL"
+                        },
+                        "youtube_url": {
+                          "type": "string",
+                          "example": "",
+                          "description": "YouTube URL"
+                        },
+                        "store_photos": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "店舗写真 URLs"
+                        },
+                        "floor_map_url": {
+                          "type": "string",
+                          "description": "フロアマップ URL"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["operating", "preparing", "closed_temp", "closed_perm"],
+                          "title": "StoreListStatus",
+                          "description": "ステータス"
+                        },
+                        "fc_company_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "fc-001",
+                          "description": "FK FC company (Y-03), null for directly managed"
+                        },
+                        "manager_staff_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "12",
+                          "description": "FK Staff — 店舗責任者 (Y-01)"
+                        },
+                        "main_contract_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "ctr-store-001",
+                          "description": "FK G-01 main contract"
+                        },
+                        "main_contract_status": {
+                          "type": "string",
+                          "nullable": true,
+                          "enum": ["draft", "active", "suspended", "expired", "terminated", null],
+                          "title": "StoreMainContractStatus",
+                          "description": "Main contract status snapshot"
+                        },
+                        "option_pass_price": {
+                          "type": "number",
+                          "example": 800,
+                          "description": "1Day Pass price (staff with permission may edit)"
+                        },
+                        "mutual_use_enabled": {
+                          "type": "boolean",
+                          "description": "相互利用を有効にするか"
+                        },
+                        "mutual_use_type": {
+                          "type": "string",
+                          "enum": ["none", "within_brand", "cross_brand", "custom"],
+                          "title": "MutualUseType",
+                          "description": "相互利用タイプ"
+                        },
+                        "closing_date": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "2027-03-31",
+                          "description": "閉店日 — null while operating"
+                        },
+                        "locker_map_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "locker-map-001",
+                          "description": "FK E-01 locker map"
+                        },
+                        "asset_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "asset-ph2-001",
+                          "description": "FK I-01 (Phase 2)"
+                        },
+                        "created_by": {
+                          "type": "string",
+                          "example": "STF-001",
+                          "description": "作成者"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2024-01-10T09:00:00Z"
+                        },
+                        "updated_by": {
+                          "type": "string",
+                          "example": "STF-002",
+                          "description": "更新者"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026-03-01T12:00:00Z"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "store_id",
+                        "name",
+                        "brand",
+                        "status",
+                        "option_pass_price",
+                        "mutual_use_enabled",
+                        "mutual_use_type",
+                        "created_by",
+                        "created_at",
+                        "updated_by",
+                        "updated_at"
+                      ],
+                      "title": "Store",
+                      "description": "Store master row"
+                    }
+                  },
+                  "required": ["store"],
+                  "title": "GetStoreByIdResponse",
+                  "description": "Store detail response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Store not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update store detail",
+        "description": "Update store by id",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Store ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Store update payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "JOYFIT24新宿店"
+                  },
+                  "brand": {
+                    "type": "string",
+                    "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                    "title": "StoreListBrand",
+                    "description": "Store brand"
+                  },
+                  "area": {
+                    "type": "string",
+                    "enum": ["kanto", "kansai", "chubu", "other"],
+                    "title": "StoreArea",
+                    "description": "Rough geographic area for filtering"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["operating", "preparing", "closed_temp", "closed_perm"],
+                    "title": "StoreListStatus",
+                    "description": "Store operating status (list / detail)"
+                  },
+                  "operating_company_name": {
+                    "type": "string"
+                  },
+                  "postal_code": {
+                    "type": "string"
+                  },
+                  "prefecture": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "phone": {
+                    "type": "string"
+                  },
+                  "club_code": {
+                    "type": "string",
+                    "example": "TK-001"
+                  },
+                  "accounting_code": {
+                    "type": "string"
+                  },
+                  "is_fc": {
+                    "type": "boolean"
+                  },
+                  "interview_url": {
+                    "type": "string"
+                  },
+                  "google_map_url": {
+                    "type": "string"
+                  },
+                  "x_url": {
+                    "type": "string"
+                  },
+                  "instagram_url": {
+                    "type": "string"
+                  },
+                  "line_url": {
+                    "type": "string"
+                  },
+                  "facebook_url": {
+                    "type": "string"
+                  },
+                  "youtube_url": {
+                    "type": "string"
+                  },
+                  "store_photos": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "floor_map_url": {
+                    "type": "string"
+                  }
+                },
+                "required": ["name", "brand", "status"],
+                "title": "UpsertStorePayload",
+                "description": "Create/update payload for store"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Store updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "店舗情報を更新しました"
+                    },
+                    "store": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "store-001",
+                          "description": "内部ID"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "example": "S-001",
+                          "description": "店舗ID (表示)"
+                        },
+                        "club_code": {
+                          "type": "string",
+                          "example": "STR-00001",
+                          "description": "クラブコード"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Fit365八潮店",
+                          "description": "店舗名"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                          "title": "StoreListBrand",
+                          "description": "ブランド"
+                        },
+                        "area": {
+                          "type": "string",
+                          "enum": ["kanto", "kansai", "chubu", "other"],
+                          "title": "StoreArea",
+                          "description": "エリア"
+                        },
+                        "operating_company_name": {
+                          "type": "string",
+                          "example": "株式会社ウェルネスフロンティア",
+                          "description": "運営企業"
+                        },
+                        "postal_code": {
+                          "type": "string",
+                          "example": "160-0022",
+                          "description": "郵便番号"
+                        },
+                        "prefecture": {
+                          "type": "string",
+                          "example": "東京都",
+                          "description": "都道府県"
+                        },
+                        "address": {
+                          "type": "string",
+                          "example": "新宿区新宿3-1-1 ABCビル 2F",
+                          "description": "住所"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "shinjuku@joyfit.jp",
+                          "description": "メールアドレス"
+                        },
+                        "phone": {
+                          "type": "string",
+                          "example": "03-1234-5678",
+                          "description": "電話番号"
+                        },
+                        "accounting_code": {
+                          "type": "string",
+                          "example": "ACC-TK001",
+                          "description": "会計コード"
+                        },
+                        "interview_url": {
+                          "type": "string",
+                          "example": "https://goo.gl/maps/indoor-shinjuku",
+                          "description": "インドアビュー URL"
+                        },
+                        "google_map_url": {
+                          "type": "string",
+                          "example": "https://goo.gl/maps/shinjuku-store",
+                          "description": "Google Map URL"
+                        },
+                        "x_url": {
+                          "type": "string",
+                          "example": "@joyfit24_shinjuku",
+                          "description": "X URL"
+                        },
+                        "instagram_url": {
+                          "type": "string",
+                          "example": "@joyfit24_shinjuku",
+                          "description": "Instagram URL"
+                        },
+                        "line_url": {
+                          "type": "string",
+                          "example": "@joyfit24shinjuku",
+                          "description": "LINE URL"
+                        },
+                        "facebook_url": {
+                          "type": "string",
+                          "example": "joyfit24shinjuku",
+                          "description": "Facebook URL"
+                        },
+                        "youtube_url": {
+                          "type": "string",
+                          "example": "",
+                          "description": "YouTube URL"
+                        },
+                        "store_photos": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "店舗写真 URLs"
+                        },
+                        "floor_map_url": {
+                          "type": "string",
+                          "description": "フロアマップ URL"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["operating", "preparing", "closed_temp", "closed_perm"],
+                          "title": "StoreListStatus",
+                          "description": "ステータス"
+                        },
+                        "fc_company_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "fc-001",
+                          "description": "FK FC company (Y-03), null for directly managed"
+                        },
+                        "manager_staff_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "12",
+                          "description": "FK Staff — 店舗責任者 (Y-01)"
+                        },
+                        "main_contract_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "ctr-store-001",
+                          "description": "FK G-01 main contract"
+                        },
+                        "main_contract_status": {
+                          "type": "string",
+                          "nullable": true,
+                          "enum": ["draft", "active", "suspended", "expired", "terminated", null],
+                          "title": "StoreMainContractStatus",
+                          "description": "Main contract status snapshot"
+                        },
+                        "option_pass_price": {
+                          "type": "number",
+                          "example": 800,
+                          "description": "1Day Pass price (staff with permission may edit)"
+                        },
+                        "mutual_use_enabled": {
+                          "type": "boolean",
+                          "description": "相互利用を有効にするか"
+                        },
+                        "mutual_use_type": {
+                          "type": "string",
+                          "enum": ["none", "within_brand", "cross_brand", "custom"],
+                          "title": "MutualUseType",
+                          "description": "相互利用タイプ"
+                        },
+                        "closing_date": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "2027-03-31",
+                          "description": "閉店日 — null while operating"
+                        },
+                        "locker_map_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "locker-map-001",
+                          "description": "FK E-01 locker map"
+                        },
+                        "asset_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "asset-ph2-001",
+                          "description": "FK I-01 (Phase 2)"
+                        },
+                        "created_by": {
+                          "type": "string",
+                          "example": "STF-001",
+                          "description": "作成者"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2024-01-10T09:00:00Z"
+                        },
+                        "updated_by": {
+                          "type": "string",
+                          "example": "STF-002",
+                          "description": "更新者"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026-03-01T12:00:00Z"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "store_id",
+                        "name",
+                        "brand",
+                        "status",
+                        "option_pass_price",
+                        "mutual_use_enabled",
+                        "mutual_use_type",
+                        "created_by",
+                        "created_at",
+                        "updated_by",
+                        "updated_at"
+                      ],
+                      "title": "Store",
+                      "description": "Store master row"
+                    }
+                  },
+                  "required": ["message", "store"],
+                  "title": "UpdateStoreResponse",
+                  "description": "Store update response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Store not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/stores": {
+      "get": {
+        "summary": "Get stores list",
+        "description": "Get paginated list of stores with filtering and sorting",
+        "tags": ["Stores"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "example": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 30,
+              "example": 30
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "店舗名・クラブコードで検索"
+            },
+            "required": false,
+            "description": "店舗名・クラブコードで検索",
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+              "title": "StoreListBrand",
+              "description": "ブランド"
+            },
+            "required": false,
+            "description": "ブランド",
+            "name": "brand",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["kanto", "kansai", "chubu", "other"],
+              "title": "StoreArea",
+              "description": "エリア"
+            },
+            "required": false,
+            "description": "エリア",
+            "name": "area",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["operating", "preparing", "closed_temp", "closed_perm"],
+              "title": "StoreListStatus",
+              "description": "ステータス"
+            },
+            "required": false,
+            "description": "ステータス",
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "id",
+                "store_id",
+                "name",
+                "brand",
+                "area",
+                "club_code",
+                "operating_company_name"
+              ],
+              "default": "store_id",
+              "description": "Sort field"
+            },
+            "required": false,
+            "description": "Sort field",
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc",
+              "description": "Sort order"
+            },
+            "required": false,
+            "description": "Sort order",
+            "name": "sort_order",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of stores",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "stores": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "store-001",
+                            "description": "内部ID"
+                          },
+                          "store_id": {
+                            "type": "string",
+                            "example": "S-001",
+                            "description": "店舗ID (表示)"
+                          },
+                          "club_code": {
+                            "type": "string",
+                            "example": "STR-00001",
+                            "description": "クラブコード"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Fit365八潮店",
+                            "description": "店舗名"
+                          },
+                          "brand": {
+                            "type": "string",
+                            "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                            "title": "StoreListBrand",
+                            "description": "ブランド"
+                          },
+                          "area": {
+                            "type": "string",
+                            "enum": ["kanto", "kansai", "chubu", "other"],
+                            "title": "StoreArea",
+                            "description": "エリア"
+                          },
+                          "operating_company_name": {
+                            "type": "string",
+                            "example": "株式会社ウェルネスフロンティア",
+                            "description": "運営企業"
+                          },
+                          "postal_code": {
+                            "type": "string",
+                            "example": "160-0022",
+                            "description": "郵便番号"
+                          },
+                          "prefecture": {
+                            "type": "string",
+                            "example": "東京都",
+                            "description": "都道府県"
+                          },
+                          "address": {
+                            "type": "string",
+                            "example": "新宿区新宿3-1-1 ABCビル 2F",
+                            "description": "住所"
+                          },
+                          "email": {
+                            "type": "string",
+                            "example": "shinjuku@joyfit.jp",
+                            "description": "メールアドレス"
+                          },
+                          "phone": {
+                            "type": "string",
+                            "example": "03-1234-5678",
+                            "description": "電話番号"
+                          },
+                          "accounting_code": {
+                            "type": "string",
+                            "example": "ACC-TK001",
+                            "description": "会計コード"
+                          },
+                          "interview_url": {
+                            "type": "string",
+                            "example": "https://goo.gl/maps/indoor-shinjuku",
+                            "description": "インドアビュー URL"
+                          },
+                          "google_map_url": {
+                            "type": "string",
+                            "example": "https://goo.gl/maps/shinjuku-store",
+                            "description": "Google Map URL"
+                          },
+                          "x_url": {
+                            "type": "string",
+                            "example": "@joyfit24_shinjuku",
+                            "description": "X URL"
+                          },
+                          "instagram_url": {
+                            "type": "string",
+                            "example": "@joyfit24_shinjuku",
+                            "description": "Instagram URL"
+                          },
+                          "line_url": {
+                            "type": "string",
+                            "example": "@joyfit24shinjuku",
+                            "description": "LINE URL"
+                          },
+                          "facebook_url": {
+                            "type": "string",
+                            "example": "joyfit24shinjuku",
+                            "description": "Facebook URL"
+                          },
+                          "youtube_url": {
+                            "type": "string",
+                            "example": "",
+                            "description": "YouTube URL"
+                          },
+                          "store_photos": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "店舗写真 URLs"
+                          },
+                          "floor_map_url": {
+                            "type": "string",
+                            "description": "フロアマップ URL"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["operating", "preparing", "closed_temp", "closed_perm"],
+                            "title": "StoreListStatus",
+                            "description": "ステータス"
+                          },
+                          "fc_company_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "fc-001",
+                            "description": "FK FC company (Y-03), null for directly managed"
+                          },
+                          "manager_staff_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "12",
+                            "description": "FK Staff — 店舗責任者 (Y-01)"
+                          },
+                          "main_contract_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "ctr-store-001",
+                            "description": "FK G-01 main contract"
+                          },
+                          "main_contract_status": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": ["draft", "active", "suspended", "expired", "terminated", null],
+                            "title": "StoreMainContractStatus",
+                            "description": "Main contract status snapshot"
+                          },
+                          "option_pass_price": {
+                            "type": "number",
+                            "example": 800,
+                            "description": "1Day Pass price (staff with permission may edit)"
+                          },
+                          "mutual_use_enabled": {
+                            "type": "boolean",
+                            "description": "相互利用を有効にするか"
+                          },
+                          "mutual_use_type": {
+                            "type": "string",
+                            "enum": ["none", "within_brand", "cross_brand", "custom"],
+                            "title": "MutualUseType",
+                            "description": "相互利用タイプ"
+                          },
+                          "closing_date": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "2027-03-31",
+                            "description": "閉店日 — null while operating"
+                          },
+                          "locker_map_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "locker-map-001",
+                            "description": "FK E-01 locker map"
+                          },
+                          "asset_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "asset-ph2-001",
+                            "description": "FK I-01 (Phase 2)"
+                          },
+                          "created_by": {
+                            "type": "string",
+                            "example": "STF-001",
+                            "description": "作成者"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "example": "2024-01-10T09:00:00Z"
+                          },
+                          "updated_by": {
+                            "type": "string",
+                            "example": "STF-002",
+                            "description": "更新者"
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "example": "2026-03-01T12:00:00Z"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "store_id",
+                          "name",
+                          "brand",
+                          "status",
+                          "option_pass_price",
+                          "mutual_use_enabled",
+                          "mutual_use_type",
+                          "created_by",
+                          "created_at",
+                          "updated_by",
+                          "updated_at"
+                        ],
+                        "title": "Store",
+                        "description": "Store master row"
+                      },
+                      "description": "Stores"
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "number",
+                          "example": 1
+                        },
+                        "limit": {
+                          "type": "number",
+                          "example": 30
+                        },
+                        "total": {
+                          "type": "number",
+                          "example": 10
+                        },
+                        "total_pages": {
+                          "type": "number",
+                          "example": 1
+                        }
+                      },
+                      "required": ["page", "limit", "total", "total_pages"],
+                      "title": "StorePagination"
+                    }
+                  },
+                  "required": ["stores", "pagination"],
+                  "title": "GetStoresResponse",
+                  "description": "Store list response with pagination"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create store",
+        "description": "Create a new store",
+        "tags": ["Stores"],
+        "requestBody": {
+          "description": "Store create payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "JOYFIT24新宿店"
+                  },
+                  "brand": {
+                    "type": "string",
+                    "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                    "title": "StoreListBrand",
+                    "description": "Store brand"
+                  },
+                  "area": {
+                    "type": "string",
+                    "enum": ["kanto", "kansai", "chubu", "other"],
+                    "title": "StoreArea",
+                    "description": "Rough geographic area for filtering"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["operating", "preparing", "closed_temp", "closed_perm"],
+                    "title": "StoreListStatus",
+                    "description": "Store operating status (list / detail)"
+                  },
+                  "operating_company_name": {
+                    "type": "string"
+                  },
+                  "postal_code": {
+                    "type": "string"
+                  },
+                  "prefecture": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "phone": {
+                    "type": "string"
+                  },
+                  "club_code": {
+                    "type": "string",
+                    "example": "TK-001"
+                  },
+                  "accounting_code": {
+                    "type": "string"
+                  },
+                  "is_fc": {
+                    "type": "boolean"
+                  },
+                  "interview_url": {
+                    "type": "string"
+                  },
+                  "google_map_url": {
+                    "type": "string"
+                  },
+                  "x_url": {
+                    "type": "string"
+                  },
+                  "instagram_url": {
+                    "type": "string"
+                  },
+                  "line_url": {
+                    "type": "string"
+                  },
+                  "facebook_url": {
+                    "type": "string"
+                  },
+                  "youtube_url": {
+                    "type": "string"
+                  },
+                  "store_photos": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "floor_map_url": {
+                    "type": "string"
+                  }
+                },
+                "required": ["name", "brand", "status"],
+                "title": "UpsertStorePayload",
+                "description": "Create/update payload for store"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Store created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "店舗を作成しました"
+                    },
+                    "store": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "store-001",
+                          "description": "内部ID"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "example": "S-001",
+                          "description": "店舗ID (表示)"
+                        },
+                        "club_code": {
+                          "type": "string",
+                          "example": "STR-00001",
+                          "description": "クラブコード"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Fit365八潮店",
+                          "description": "店舗名"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                          "title": "StoreListBrand",
+                          "description": "ブランド"
+                        },
+                        "area": {
+                          "type": "string",
+                          "enum": ["kanto", "kansai", "chubu", "other"],
+                          "title": "StoreArea",
+                          "description": "エリア"
+                        },
+                        "operating_company_name": {
+                          "type": "string",
+                          "example": "株式会社ウェルネスフロンティア",
+                          "description": "運営企業"
+                        },
+                        "postal_code": {
+                          "type": "string",
+                          "example": "160-0022",
+                          "description": "郵便番号"
+                        },
+                        "prefecture": {
+                          "type": "string",
+                          "example": "東京都",
+                          "description": "都道府県"
+                        },
+                        "address": {
+                          "type": "string",
+                          "example": "新宿区新宿3-1-1 ABCビル 2F",
+                          "description": "住所"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "shinjuku@joyfit.jp",
+                          "description": "メールアドレス"
+                        },
+                        "phone": {
+                          "type": "string",
+                          "example": "03-1234-5678",
+                          "description": "電話番号"
+                        },
+                        "accounting_code": {
+                          "type": "string",
+                          "example": "ACC-TK001",
+                          "description": "会計コード"
+                        },
+                        "interview_url": {
+                          "type": "string",
+                          "example": "https://goo.gl/maps/indoor-shinjuku",
+                          "description": "インドアビュー URL"
+                        },
+                        "google_map_url": {
+                          "type": "string",
+                          "example": "https://goo.gl/maps/shinjuku-store",
+                          "description": "Google Map URL"
+                        },
+                        "x_url": {
+                          "type": "string",
+                          "example": "@joyfit24_shinjuku",
+                          "description": "X URL"
+                        },
+                        "instagram_url": {
+                          "type": "string",
+                          "example": "@joyfit24_shinjuku",
+                          "description": "Instagram URL"
+                        },
+                        "line_url": {
+                          "type": "string",
+                          "example": "@joyfit24shinjuku",
+                          "description": "LINE URL"
+                        },
+                        "facebook_url": {
+                          "type": "string",
+                          "example": "joyfit24shinjuku",
+                          "description": "Facebook URL"
+                        },
+                        "youtube_url": {
+                          "type": "string",
+                          "example": "",
+                          "description": "YouTube URL"
+                        },
+                        "store_photos": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "店舗写真 URLs"
+                        },
+                        "floor_map_url": {
+                          "type": "string",
+                          "description": "フロアマップ URL"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["operating", "preparing", "closed_temp", "closed_perm"],
+                          "title": "StoreListStatus",
+                          "description": "ステータス"
+                        },
+                        "fc_company_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "fc-001",
+                          "description": "FK FC company (Y-03), null for directly managed"
+                        },
+                        "manager_staff_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "12",
+                          "description": "FK Staff — 店舗責任者 (Y-01)"
+                        },
+                        "main_contract_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "ctr-store-001",
+                          "description": "FK G-01 main contract"
+                        },
+                        "main_contract_status": {
+                          "type": "string",
+                          "nullable": true,
+                          "enum": ["draft", "active", "suspended", "expired", "terminated", null],
+                          "title": "StoreMainContractStatus",
+                          "description": "Main contract status snapshot"
+                        },
+                        "option_pass_price": {
+                          "type": "number",
+                          "example": 800,
+                          "description": "1Day Pass price (staff with permission may edit)"
+                        },
+                        "mutual_use_enabled": {
+                          "type": "boolean",
+                          "description": "相互利用を有効にするか"
+                        },
+                        "mutual_use_type": {
+                          "type": "string",
+                          "enum": ["none", "within_brand", "cross_brand", "custom"],
+                          "title": "MutualUseType",
+                          "description": "相互利用タイプ"
+                        },
+                        "closing_date": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "2027-03-31",
+                          "description": "閉店日 — null while operating"
+                        },
+                        "locker_map_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "locker-map-001",
+                          "description": "FK E-01 locker map"
+                        },
+                        "asset_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "asset-ph2-001",
+                          "description": "FK I-01 (Phase 2)"
+                        },
+                        "created_by": {
+                          "type": "string",
+                          "example": "STF-001",
+                          "description": "作成者"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2024-01-10T09:00:00Z"
+                        },
+                        "updated_by": {
+                          "type": "string",
+                          "example": "STF-002",
+                          "description": "更新者"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026-03-01T12:00:00Z"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "store_id",
+                        "name",
+                        "brand",
+                        "status",
+                        "option_pass_price",
+                        "mutual_use_enabled",
+                        "mutual_use_type",
+                        "created_by",
+                        "created_at",
+                        "updated_by",
+                        "updated_at"
+                      ],
+                      "title": "Store",
+                      "description": "Store master row"
+                    }
+                  },
+                  "required": ["message", "store"],
+                  "title": "CreateStoreResponse",
+                  "description": "Store create response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
                       "description": "Error message"
                     }
                   },

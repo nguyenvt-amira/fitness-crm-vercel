@@ -108,8 +108,12 @@ export function DataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="bg-gray-50/50">
                 {headerGroup.headers.map((header) => {
+                  const meta = header.column.columnDef.meta as Record<string, unknown> | undefined;
                   return (
-                    <TableHead key={header.id} className="h-10 px-4">
+                    <TableHead
+                      key={header.id}
+                      className={cn('h-10 px-4 text-xs font-semibold', meta?.className as string)}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(header.column.columnDef.header, header.getContext())}
@@ -139,7 +143,14 @@ export function DataTable<TData, TValue>({
                   className={cn('h-12', onRowClick ? 'cursor-pointer' : '')}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="px-4">
+                    <TableCell
+                      key={cell.id}
+                      className={cn(
+                        'px-4 text-xs',
+                        (cell.column.columnDef.meta as Record<string, unknown> | undefined)
+                          ?.className as string,
+                      )}
+                    >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
@@ -174,7 +185,13 @@ export function DataTable<TData, TValue>({
             >
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    className={cn(
+                      (header.column.columnDef.meta as Record<string, unknown> | undefined)
+                        ?.className as string,
+                    )}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(header.column.columnDef.header, header.getContext())}
@@ -206,7 +223,13 @@ export function DataTable<TData, TValue>({
                     className={onRowClick ? 'cursor-pointer' : ''}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell
+                        key={cell.id}
+                        className={cn(
+                          (cell.column.columnDef.meta as Record<string, unknown> | undefined)
+                            ?.className as string,
+                        )}
+                      >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}

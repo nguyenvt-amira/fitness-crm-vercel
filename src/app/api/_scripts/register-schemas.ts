@@ -8,6 +8,8 @@ import * as autoApprovalSchemas from '../_schemas/auto-approval.schema';
 import * as familyRegistrationSchemas from '../_schemas/family-registration.schema';
 import * as memberSchemas from '../_schemas/member.schema';
 import * as membershipApplicationSchemas from '../_schemas/membership-application.schema';
+import * as storeAccessSettingsSchemas from '../_schemas/store-access-settings.schema';
+import * as storeSchemas from '../_schemas/store.schema';
 import { registry } from './register-route';
 
 /**
@@ -496,6 +498,112 @@ export function registerAllSchemas() {
     registry.register(
       'GetFamilyRegistrationsDashboardResponse',
       familyRegistrationSchemas.GetFamilyRegistrationsDashboardResponseSchema,
+    ),
+  );
+
+  registeredSchemaMap.set(
+    'StoreMainContractStatus',
+    registry.register('StoreMainContractStatus', storeSchemas.StoreMainContractStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'MutualUseType',
+    registry.register('MutualUseType', storeSchemas.MutualUseTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'StoreListBrand',
+    registry.register('StoreListBrand', storeSchemas.StoreListBrandSchema),
+  );
+  registeredSchemaMap.set(
+    'StoreArea',
+    registry.register('StoreArea', storeSchemas.StoreAreaSchema),
+  );
+  registeredSchemaMap.set(
+    'StoreListStatus',
+    registry.register('StoreListStatus', storeSchemas.StoreListStatusSchema),
+  );
+  registeredSchemaMap.set('Store', registry.register('Store', storeSchemas.StoreSchema));
+  registeredSchemaMap.set(
+    'GetStoresQuery',
+    registry.register('GetStoresQuery', storeSchemas.GetStoresQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'GetStoresResponse',
+    registry.register('GetStoresResponse', storeSchemas.GetStoresResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'PermittedStore',
+    registry.register('PermittedStore', storeAccessSettingsSchemas.PermittedStoreSchema),
+  );
+  registeredSchemaMap.set(
+    'JoyUsageFee',
+    registry.register('JoyUsageFee', storeAccessSettingsSchemas.JoyUsageFeeSchema),
+  );
+  registeredSchemaMap.set(
+    'StoreAccessSettings',
+    registry.register('StoreAccessSettings', storeAccessSettingsSchemas.StoreAccessSettingsSchema),
+  );
+  registeredSchemaMap.set(
+    'GetStoreAccessSettingsResponse',
+    registry.register(
+      'GetStoreAccessSettingsResponse',
+      storeAccessSettingsSchemas.GetStoreAccessSettingsResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateStoreAccessSettingsRequest',
+    registry.register(
+      'UpdateStoreAccessSettingsRequest',
+      storeAccessSettingsSchemas.UpdateStoreAccessSettingsRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateStoreAccessSettingsResponse',
+    registry.register(
+      'UpdateStoreAccessSettingsResponse',
+      storeAccessSettingsSchemas.UpdateStoreAccessSettingsResponseSchema,
+    ),
+  );
+
+  // Register business hours schemas
+  registeredSchemaMap.set(
+    'DayOfWeek',
+    registry.register('DayOfWeek', storeSchemas.DayOfWeekSchema),
+  );
+  registeredSchemaMap.set(
+    'DefaultHoursEntry',
+    registry.register('DefaultHoursEntry', storeSchemas.DefaultHoursEntrySchema),
+  );
+  registeredSchemaMap.set(
+    'ExceptionHoursEntry',
+    registry.register('ExceptionHoursEntry', storeSchemas.ExceptionHoursEntrySchema),
+  );
+  registeredSchemaMap.set(
+    'TemporaryClosureEntry',
+    registry.register('TemporaryClosureEntry', storeSchemas.TemporaryClosureEntrySchema),
+  );
+  registeredSchemaMap.set(
+    'StoreBusinessHours',
+    registry.register('StoreBusinessHours', storeSchemas.StoreBusinessHoursSchema),
+  );
+  registeredSchemaMap.set(
+    'UpdateStoreBusinessHoursPayload',
+    registry.register(
+      'UpdateStoreBusinessHoursPayload',
+      storeSchemas.UpdateStoreBusinessHoursPayloadSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetStoreBusinessHoursResponse',
+    registry.register(
+      'GetStoreBusinessHoursResponse',
+      storeSchemas.GetStoreBusinessHoursResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateStoreBusinessHoursResponse',
+    registry.register(
+      'UpdateStoreBusinessHoursResponse',
+      storeSchemas.UpdateStoreBusinessHoursResponseSchema,
     ),
   );
 }
