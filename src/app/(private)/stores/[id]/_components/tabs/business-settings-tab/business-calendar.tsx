@@ -42,7 +42,7 @@ export function BusinessCalendar({
     () => `${monthDate.getFullYear()}年${String(monthDate.getMonth() + 1).padStart(2, '0')}月`,
     [monthDate],
   );
-  console.log('japaneseHolidayMap', japaneseHolidayMap);
+
   return (
     <Card className="gap-2 py-4">
       <CardHeader className="px-4">
