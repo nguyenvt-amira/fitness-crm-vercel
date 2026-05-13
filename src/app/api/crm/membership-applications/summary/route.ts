@@ -10,6 +10,8 @@ import {
 } from '@/app/api/_schemas/membership-application.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
 
+import { RiskReason } from '@/lib/api/types.gen';
+
 // Register OpenAPI documentation for this route
 registerRoute({
   method: 'get',
@@ -158,19 +160,19 @@ export async function GET(request: NextRequest) {
     };
     for (const a of periodApplications) {
       switch (a.risk_reason) {
-        case 'ブラックリスト一致':
+        case RiskReason.BLACKLIST_MATCH:
           riskReasionsBreakdown.blacklist_match++;
           break;
-        case '重複申込':
+        case RiskReason.DUPLICATE_APPLICATION:
           riskReasionsBreakdown.duplicate_application++;
           break;
-        case '決済失敗':
+        case RiskReason.PAYMENT_FAILURE:
           riskReasionsBreakdown.payment_failure++;
           break;
-        case '高リスクスコア':
+        case RiskReason.HIGH_RISK_SCORE:
           riskReasionsBreakdown.high_risk_score++;
           break;
-        case '書類問題':
+        case RiskReason.DOCUMENT_ISSUE:
           riskReasionsBreakdown.document_issue++;
           break;
         default:

@@ -102,7 +102,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const existingContractRow = db.contracts.getByApplicationId(id);
 
     const member_id = (() => {
-      if (existingContractRow) return existingContractRow.member_id;
+      if (existingContractRow?.member_id) return existingContractRow.member_id;
       if (alreadyApproved) return '';
       const member = db.members.createFromApplication(details);
       db.contracts.createFromApprovedApplication({

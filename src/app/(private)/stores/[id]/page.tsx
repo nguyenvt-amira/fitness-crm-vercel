@@ -119,10 +119,10 @@ export default function StoreDetailPage() {
             <TabsContent value="basic" className="focus-visible:outline-none">
               <BasicInfoTab store={store} />
             </TabsContent>
-            <TabsContent value="business" className="mt-0 focus-visible:outline-none">
+            <TabsContent value="business" className="focus-visible:outline-none">
               <BusinessSettingsTab storeId={store.id} />
             </TabsContent>
-            <TabsContent value="contract" className="mt-0 focus-visible:outline-none">
+            <TabsContent value="contract" className="focus-visible:outline-none">
               <ContractTab />
             </TabsContent>
             <TabsContent value="access" className="focus-visible:outline-none">

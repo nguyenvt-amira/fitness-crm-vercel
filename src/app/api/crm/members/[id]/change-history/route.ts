@@ -79,7 +79,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           id: 'ch-002',
           date: '2024-06-01T10:00:00Z',
           event_type: '契約変更',
-          content: 'ベーシックプランからスタンダードプランに変更',
+          content: 'レギュラー会員からナイト会員に変更',
         },
         {
           id: 'ch-003',

@@ -131,7 +131,7 @@ export function BusinessSettingsTab({ storeId }: Props) {
   }
 
   return (
-    <div className="mt-6 flex flex-col gap-4 lg:flex-row">
+    <div className="flex flex-col gap-4 lg:flex-row">
       <div className="w-full lg:w-3/5">
         <BusinessCalendar
           monthDate={monthDate}

@@ -4,45 +4,57 @@ import { Suspense, useMemo, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { Table as TableInstance } from '@tanstack/react-table';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { ColumnDef, RowSelectionState, SortingState } from '@tanstack/react-table';
-import type { VisibilityState } from '@tanstack/react-table';
-import { Download, User } from 'lucide-react';
+import { Plus, Shuffle } from 'lucide-react';
+import { toast } from 'sonner';
 
-import { BreadcrumbNav } from '@/components/common/breadcrumb-nav';
+import { Loading } from '@/components/common/data-state-boundary/loading';
 import { DataTable } from '@/components/common/data-table';
+import { TablePagination } from '@/components/common/table-pagination';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { Card } from '@/components/ui/card';
 
-import { getCrmMembersInfiniteOptions } from '@/lib/api/@tanstack/react-query.gen';
-import type { GetCrmMembersResponse } from '@/lib/api/types.gen';
+import {
+  getCrmMainContractsOptions,
+  getCrmMembersOptions,
+  getCrmMembersQueryKey,
+  getCrmMembersSummaryOptions,
+  getCrmMembersSummaryQueryKey,
+  patchCrmMembersByIdContractsMainContractChangeMutation,
+} from '@/lib/api/@tanstack/react-query.gen';
+import type { GetCrmMainContractsResponse, GetCrmMembersResponse } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
+import { MemberBulkContractDialog } from './_components/member-bulk-contract-dialog';
 import { MembersFilters } from './_components/members-filters';
+import SummaryMembers from './_components/members-summary';
 import { MembersTableColumns } from './_components/members-table-columns';
 import { MembersFiltersProvider } from './_contexts/members-filters-context';
 import { useMembersFilters } from './_hooks/use-members-filters';
 
-const BREADCRUMB_ITEMS = [{ url: '/', label: '会員管理' }, { label: '会員一覧' }];
+function formatNextMonthStart() {
+  const now = new Date();
+  const nextMonthStart = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  return `${nextMonthStart.getFullYear()}年${nextMonthStart.getMonth() + 1}月${nextMonthStart.getDate()}日`;
+}
+
+type ContractOption = GetCrmMainContractsResponse['main_contracts'][number];
 
 function MembersPageContent() {
   const router = useRouter();
-  const [limit] = useState(50);
-  const [table, setTable] = useState<TableInstance<any> | null>(null);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const queryClient = useQueryClient();
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [bulkDialogOpen, setBulkDialogOpen] = useState(false);
+  const [toContract, setToContract] = useState<ContractOption | null>(null);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-  // Use custom hook for filters/sort management
-  const filtersHook = useMembersFilters();
-  const { queryParams, filters, setFilters } = filtersHook;
+  const selectedIDs = Object.keys(rowSelection);
 
-  // Sync TanStack Table sorting state with URL params
+  const filtersHook = useMembersFilters();
+  const { queryParams, filters, setFilters, currentPage, setCurrentPage, pageSize } = filtersHook;
+
   const sorting: SortingState = filters.sort_by
     ? [{ id: filters.sort_by, desc: filters.sort_order === 'desc' }]
     : [];
@@ -56,178 +68,200 @@ function MembersPageContent() {
     }
   };
 
-  const { data, isLoading, isFetching, fetchNextPage, hasNextPage } = useInfiniteQuery({
-    ...getCrmMembersInfiniteOptions({
-      query: {
-        limit,
-        ...queryParams,
-      },
-    }),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, allPages) => {
-      const currentPage = allPages.length;
-      const total_pages = lastPage.pagination?.total_pages || 0;
-      if (currentPage < total_pages) {
-        return currentPage + 1;
-      }
-      return undefined;
-    },
+  const { data: summary } = useQuery({
+    ...getCrmMembersSummaryOptions(),
   });
 
-  // Flatten members from all pages
-  const members = useMemo(() => {
-    return data?.pages.flatMap((page) => page.members || []) || [];
-  }, [data]);
+  const { data, isLoading } = useQuery({
+    ...getCrmMembersOptions({
+      query: queryParams,
+    }),
+  });
+  const { data: mainContractsData } = useQuery({
+    ...getCrmMainContractsOptions({
+      query: {
+        page: 1,
+        limit: 100,
+      },
+    }),
+  });
 
-  // Get total from first page
-  const total = data?.pages[0]?.pagination?.total || 0;
-  const totalFetched = members.length;
+  const members = useMemo(() => data?.members ?? [], [data?.members]);
+  const pagination = data?.pagination;
+  const totalMembers = pagination?.total ?? 0;
+  const totalPages = pagination?.total_pages ?? 0;
+  const page = pagination?.page ?? currentPage;
+  const limit = pagination?.limit ?? pageSize;
+  const selectedMembers = useMemo(
+    () => members.filter((member) => member.id && selectedIDs.includes(member.id)),
+    [members, selectedIDs],
+  );
+
+  const contractOptions = useMemo(() => {
+    return mainContractsData?.main_contracts ?? [];
+  }, [mainContractsData?.main_contracts]);
+
+  const handleContractChange = (contractId: string) => {
+    const nextContract = contractOptions.find((contract) => contract.id === contractId) ?? null;
+    setToContract(nextContract);
+  };
+
+  const applyDateLabel = formatNextMonthStart();
+
+  const { mutateAsync: changeMainContract, isPending: isChangingMainContract } = useMutation({
+    ...patchCrmMembersByIdContractsMainContractChangeMutation(),
+  });
+
+  const handleOpenBulkDialog = () => {
+    setToContract(null);
+    setBulkDialogOpen(true);
+  };
+
+  const handleBulkChangeContract = async () => {
+    if (!toContract || selectedIDs.length === 0) return;
+
+    const results = await Promise.allSettled(
+      selectedIDs.map((memberId) =>
+        changeMainContract({
+          path: { id: memberId },
+          body: { contract_id: toContract.id },
+        }),
+      ),
+    );
+
+    const successCount = results.filter((result) => result.status === 'fulfilled').length;
+    const failedCount = results.length - successCount;
+
+    await Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: getCrmMembersQueryKey({ query: queryParams }),
+      }),
+      queryClient.invalidateQueries({
+        queryKey: getCrmMembersSummaryQueryKey(),
+      }),
+    ]);
+
+    if (successCount > 0) {
+      toast.success(`${successCount}名の主契約を変更しました（${applyDateLabel} 適用）`);
+    }
+    if (failedCount > 0) {
+      toast.error(`${failedCount}名の主契約変更に失敗しました`);
+    }
+
+    setBulkDialogOpen(false);
+    setRowSelection({});
+    setToContract(null);
+  };
 
   const columns: ColumnDef<NonNullable<GetCrmMembersResponse['members']>[0]>[] =
     MembersTableColumns({
       onMemberClick: (memberId) => {
         router.push(navigate('/members/[id]', memberId));
       },
-      onMemoClick: (memberId) => {
-        router.push(navigate('/members/[id]', memberId) + '?tab=communications&memo=add');
-      },
     });
 
-  const selectedMemberIds = Object.keys(rowSelection);
-
-  const handleExport = () => {
-    // TODO: Implement export functionality
-    console.log('Export selected:', selectedMemberIds);
-  };
-
-  const handleBulkEmail = () => {
-    // TODO: Implement bulk email functionality
-    console.log('Bulk email to:', selectedMemberIds);
-  };
-
-  const handleQRScan = () => {
-    // TODO: Implement QR code scanning
-    console.log('QR code scan clicked');
-  };
-
   return (
-    <div className="">
-      {/* Header Section */}
-      <div className="flex flex-col gap-3 border-b px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2">
-          <User className="text-foreground size-6" />
-          <BreadcrumbNav items={BREADCRUMB_ITEMS} variant="section" />
+    <div>
+      <div className="mb-4 flex items-center justify-between px-6 pt-6">
+        <div className="flex items-center gap-4">
+          <h1 className="text-xl font-bold">会員一覧</h1>
+          <Badge variant="secondary" className="text-xs">
+            {totalMembers.toLocaleString()}名
+          </Badge>
         </div>
-        <Button variant="outline" className="w-full gap-2 sm:w-auto">
-          <Download className="size-4" />
-          あんしんサポート契約状況の出力
+        <Button
+          type="button"
+          size="sm"
+          className="gap-1"
+          onClick={() => router.push(navigate('/members/create'))}
+        >
+          <Plus className="size-4" />
+          新規登録
         </Button>
       </div>
 
-      <div className="flex flex-1 flex-col gap-2 p-4">
-        <MembersFiltersProvider value={filtersHook}>
-          <MembersFilters onQRScan={handleQRScan} />
-        </MembersFiltersProvider>
+      <div className="flex flex-1 flex-col gap-6 p-6 pt-0">
+        <SummaryMembers summary={summary} />
 
-        {/* Total Count */}
-        <div className="flex flex-col gap-3 border-t px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-base font-medium sm:text-lg">総件数: {total}人</p>
+        <Card className="gap-0 overflow-hidden rounded-xl p-0">
+          <div className="px-4 py-3">
+            <MembersFiltersProvider value={filtersHook}>
+              <MembersFilters isFilterOpen={isFilterOpen} onFilterOpenChange={setIsFilterOpen} />
+            </MembersFiltersProvider>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="w-full sm:ml-auto sm:w-auto">
-                一覧のカラム設定
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {table
-                ?.getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    checked={columnVisibility[column.id] !== false}
-                    onCheckedChange={(value) => {
-                      setColumnVisibility((prev) => ({
-                        ...prev,
-                        [column.id]: !!value,
-                      }));
-                    }}
-                  >
-                    {(column.columnDef.meta as any)?.label || column.columnDef.header}
-                  </DropdownMenuCheckboxItem>
-                ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-
-        {/* Table */}
-        <div className="relative [&_tbody_tr:last-child]:hidden">
-          {selectedMemberIds.length > 0 ? (
-            <div className="absolute top-[44px] left-9 z-50 px-4">
-              <div className="bg-background flex items-center gap-2 rounded-lg border px-3 py-2 shadow-lg">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8"
-                  onClick={() => setRowSelection({})}
-                >
-                  {selectedMemberIds.length}件選択中
+            {selectedIDs.length > 0 && (
+              <div className="bg-primary/10 border-primary/20 mt-3 flex items-center gap-3 rounded-lg border px-3 py-2">
+                <span className="text-primary text-sm font-medium">
+                  {selectedIDs.length}名選択中
+                </span>
+                <Button variant="ghost" size="sm" onClick={() => setRowSelection({})}>
+                  選択解除
                 </Button>
-
-                <Button variant="destructive" size="sm" className="h-8" onClick={handleExport}>
-                  一括エクスポート
-                </Button>
-                <Button size="sm" className="h-8" onClick={handleBulkEmail}>
-                  一括メール送信
+                <div className="bg-primary/20 h-4 w-px" />
+                <Button size="sm" className="gap-1" onClick={handleOpenBulkDialog}>
+                  <Shuffle className="size-4" />
+                  主契約を変更（{selectedIDs.length}名）
                 </Button>
               </div>
-            </div>
-          ) : null}
+            )}
+          </div>
 
           <DataTable
             columns={columns}
             data={members}
             isLoading={isLoading}
-            isFetching={isFetching}
-            variant="default"
-            totalRows={total}
-            filterRows={total}
-            totalRowsFetched={totalFetched}
-            fetchNextPage={fetchNextPage}
-            hasNextPage={hasNextPage}
-            tableOptions={{
-              onColumnVisibilityChange: setColumnVisibility,
-              onSortingChange: handleSortingChange,
-              manualSorting: true,
-              state: {
-                columnVisibility,
-                sorting,
-                rowSelection,
-              },
-              onRowSelectionChange: setRowSelection,
-            }}
+            variant="simple"
             onRowClick={(row) => {
               router.push(navigate('/members/[id]', row.id));
             }}
-            onTableReady={setTable}
-            containerClassName="h-[70vh]"
+            className="rounded-none border-x-0 border-b-0"
+            containerClassName={
+              isFilterOpen ? 'max-h-[calc(100vh-340px)]' : 'max-h-[calc(100vh-290px)]'
+            }
+            tableOptions={{
+              onSortingChange: handleSortingChange,
+              manualSorting: true,
+              state: {
+                sorting,
+                rowSelection,
+              },
+              getRowId: (originalRow) => originalRow?.id,
+              onRowSelectionChange: setRowSelection,
+            }}
           />
-        </div>
+
+          {totalMembers > 0 && (
+            <TablePagination
+              currentPage={page}
+              totalPages={totalPages}
+              total={totalMembers}
+              limit={limit}
+              onPageChange={setCurrentPage}
+              isLoading={isLoading}
+              showPageNumbers={false}
+            />
+          )}
+        </Card>
       </div>
+
+      <MemberBulkContractDialog
+        open={bulkDialogOpen}
+        onOpenChange={setBulkDialogOpen}
+        selectedMemberIds={selectedIDs}
+        selectedMembers={selectedMembers}
+        toContract={toContract}
+        onContractChange={handleContractChange}
+        contractOptions={contractOptions}
+        isChangingMainContract={isChangingMainContract}
+        onExecute={handleBulkChangeContract}
+      />
     </div>
   );
 }
 
 export default function MembersPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex flex-1 items-center justify-center">
-          <div className="text-muted-foreground">読み込み中...</div>
-        </div>
-      }
-    >
+    <Suspense fallback={<Loading />}>
       <MembersPageContent />
     </Suspense>
   );

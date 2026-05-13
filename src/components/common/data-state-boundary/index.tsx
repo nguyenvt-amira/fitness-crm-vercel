@@ -13,6 +13,7 @@ interface DataStateBoundaryProps {
   emptyDescription?: string;
   errorTitle?: string;
   children?: React.ReactNode;
+  skeleton?: React.ReactNode;
 }
 
 export function DataStateBoundary({
@@ -24,8 +25,9 @@ export function DataStateBoundary({
   emptyDescription,
   errorTitle,
   children,
+  skeleton,
 }: DataStateBoundaryProps) {
-  if (isLoading) return <Loading />;
+  if (isLoading) return skeleton ?? <Loading />;
   if (isError) return <Error title={errorTitle} onRetry={onRetry} />;
   if (isEmpty) return <Empty title={emptyTitle} description={emptyDescription} />;
 

@@ -4,20 +4,64 @@ import { z } from 'zod';
 // Extend Zod with OpenAPI support
 extendZodWithOpenApi(z);
 
+export const GetMemberMainContractLabelsResponseSchema = z
+  .object({
+    labels: z.array(z.string()).openapi({
+      description: 'Ordered main contract display names for the member form',
+    }),
+    default_label: z.string().openapi({
+      example: 'レギュラー会員',
+      description: 'Default selection when none is set',
+    }),
+  })
+  .openapi({
+    title: 'GetMemberMainContractLabelsResponse',
+    description: 'Main contract label options for member create/edit (from mock DB)',
+  });
+
+export type GetMemberMainContractLabelsResponse = z.infer<
+  typeof GetMemberMainContractLabelsResponseSchema
+>;
+
 /**
  * Member Type Schema
  */
-export const MemberTypeSchema = z.enum(['regular', 'family', 'corporate', 'company_discount']);
+export const MemberTypeSchema = z.enum(['regular', 'family', 'corporate', 'one_day_member']);
+export const ContractTypeSchema = z.enum(['regular', 'one_day_member', 'family']);
 
 /**
  * Member Status Schema
  */
-export const MemberStatusSchema = z.enum(['active', 'suspended', 'withdrawn', 'force_withdrawn']);
+export const MemberStatusSchema = z.enum([
+  'active',
+  'suspended',
+  'gate_stop',
+  'pending_withdrawal',
+  'withdrawn',
+  'force_withdrawn',
+]);
 
 /**
  * Brand Schema
  */
-export const BrandSchema = z.enum(['joyfit', 'fit365']);
+export const BrandSchema = z.enum(['joyfit', 'fit365', 'joyfit_plus', 'joyfit_yoga', 'joyfit24']);
+
+/**
+ * Main Brand Schema
+ */
+export const MainBrandSchema = z.enum(['joyfit', 'fit365']);
+
+/**
+ * Gender Schema
+ */
+export const GenderSchema = z.enum(['male', 'female', 'other']).openapi({
+  title: 'Gender',
+  description: 'Gender',
+});
+
+export const CampaignStatusSchema = z
+  .enum(['active', 'expired', 'upcoming'])
+  .openapi({ title: 'CampaignStatus', description: 'Campaign status' });
 
 /**
  * Member List Item Schema (simplified for list view)
@@ -27,6 +71,10 @@ export const MemberListItemSchema = z
     id: z.string().openapi({
       example: 'M-00001',
       description: 'Member ID',
+    }),
+    old_member_number: z.string().openapi({
+      example: 'O-M-00001',
+      description: 'Old member number',
     }),
     member_number: z.string().openapi({
       example: 'M-00001',
@@ -44,6 +92,10 @@ export const MemberListItemSchema = z
       example: 'regular',
       description: 'Member type',
     }),
+    contract_type: ContractTypeSchema.openapi({
+      example: 'regular',
+      description: 'Contract type',
+    }),
     status: MemberStatusSchema.openapi({
       example: 'active',
       description: 'Member status',
@@ -60,13 +112,13 @@ export const MemberListItemSchema = z
       example: 'fit365',
       description: 'Brand',
     }),
-    contract_plan_name: z.string().openapi({
-      example: 'ベーシックプラン',
-      description: 'Contract plan name',
+    contract_name: z.string().openapi({
+      example: 'レギュラー会員',
+      description: 'Main contract display name',
     }),
-    contract_plan_id: z.string().openapi({
+    contract_id: z.string().openapi({
       example: 'plan-001',
-      description: 'Contract plan ID',
+      description: "Member's active contract row id (references CRM contract)",
     }),
     joined_at: z.string().date().openapi({
       example: '2024-01-15',
@@ -138,7 +190,7 @@ export const GetMembersQuerySchema = z
       example: '佐藤',
       description: 'Search query (name, member number, phone, email)',
     }),
-    member_type: z.preprocess(
+    contract_type: z.preprocess(
       (val) => {
         if (val === undefined || val === null) return undefined;
         if (Array.isArray(val)) return val;
@@ -151,11 +203,11 @@ export const GetMembersQuerySchema = z
         return [val];
       },
       z
-        .array(MemberTypeSchema)
+        .array(ContractTypeSchema)
         .optional()
         .openapi({
           example: ['regular', 'family'],
-          description: 'Filter by member type (array)',
+          description: 'Filter by contract type (array)',
         }),
     ),
     status: z.preprocess(
@@ -218,26 +270,6 @@ export const GetMembersQuerySchema = z
           description: 'Filter by store ID (array)',
         }),
     ),
-    contract_plan_id: z.preprocess(
-      (val) => {
-        if (val === undefined || val === null) return undefined;
-        if (Array.isArray(val)) return val;
-        if (typeof val === 'string') {
-          return val
-            .split(',')
-            .map((s) => s.trim())
-            .filter(Boolean);
-        }
-        return [val];
-      },
-      z
-        .array(z.string())
-        .optional()
-        .openapi({
-          example: ['plan-001', 'plan-002'],
-          description: 'Filter by contract plan ID (array)',
-        }),
-    ),
     last_visit_days: z.coerce.number().int().optional().openapi({
       example: 30,
       description: 'Filter by last visit days (-1 for 3+ months)',
@@ -294,6 +326,49 @@ export const GetMembersResponseSchema = z
   });
 
 /**
+ * Members list / dashboard summary (aggregated KPIs)
+ */
+export const GetMembersSummaryResponseSchema = z
+  .object({
+    active_count: z.number().int().nonnegative().openapi({
+      example: 1250,
+      description: 'Number of active members',
+    }),
+    active_change_percent: z.number().openapi({
+      example: 2.4,
+      description: 'Month-over-month change in active members (percent)',
+    }),
+    suspended_count: z.number().int().nonnegative().openapi({
+      example: 42,
+      description: 'Number of suspended members',
+    }),
+    suspended_percent: z.number().openapi({
+      example: 3.2,
+      description: 'Suspended members as percent of total',
+    }),
+    unpaid_count: z.number().int().nonnegative().openapi({
+      example: 18,
+      description: 'Members with unpaid balance',
+    }),
+    unpaid_total_yen: z.number().int().nonnegative().openapi({
+      example: 245000,
+      description: 'Total unpaid amount in yen',
+    }),
+    scheduled_withdrawal_count: z.number().int().nonnegative().openapi({
+      example: 7,
+      description: 'Members scheduled to withdraw this month',
+    }),
+    withdrawal_rate_percent: z.number().openapi({
+      example: 1.1,
+      description: 'Withdrawal rate (percent)',
+    }),
+  })
+  .openapi({
+    title: 'GetMembersSummaryResponse',
+    description: 'Summary statistics for the members list page',
+  });
+
+/**
  * Get Member Detail Response Schema
  */
 export const MemberEmergencyContactSchema = z
@@ -310,14 +385,16 @@ export const MemberEmergencyContactSchema = z
 export const MemberBasicInfoSchema = z
   .object({
     id: z.string().openapi({ example: 'M-00001', description: 'Member ID' }),
+    old_member_number: z.string().openapi({
+      example: 'O-M-00001',
+      description: 'Old member number',
+    }),
     member_number: z.string().openapi({ example: 'M-00001', description: 'Member number' }),
     name_kanji: z.string().openapi({ example: '佐藤 花子', description: 'Name in kanji' }),
     name_kana: z.string().openapi({ example: 'サトウ ハナコ', description: 'Name in kana' }),
     birthday: z.string().openapi({ example: '1990-01-01', description: 'Birthday (ISO date)' }),
     age: z.number().int().openapi({ example: 35, description: 'Age' }),
-    gender: z
-      .enum(['male', 'female', 'other'])
-      .openapi({ example: 'female', description: 'Gender' }),
+    gender: GenderSchema.openapi({ example: 'female', description: 'Gender' }),
     postal_code: z.string().optional().openapi({ example: '1500002', description: 'Postal code' }),
     prefecture: z.string().optional().openapi({ example: '東京都', description: 'Prefecture' }),
     city: z.string().optional().openapi({ example: '渋谷区', description: 'City' }),
@@ -334,6 +411,10 @@ export const MemberBasicInfoSchema = z
     emergency_contact: MemberEmergencyContactSchema.optional().openapi({
       description: 'Emergency contact information',
     }),
+    notes: z.string().optional().openapi({
+      example: '特記事項なし',
+      description: 'Other notes',
+    }),
   })
   .openapi({
     title: 'MemberBasicInfo',
@@ -344,9 +425,14 @@ export const MemberProfileSchema = z
   .object({
     member_type: MemberTypeSchema.openapi({ example: 'regular', description: 'Member type' }),
     status: MemberStatusSchema.openapi({ example: 'active', description: 'Member status' }),
+    contract_id: z.string().optional().openapi({
+      example: 'plan-001',
+      description: "Member's active contract id (CRM contract row)",
+    }),
     store_id: z.string().openapi({ example: 'store-001', description: 'Store ID' }),
     store_name: z.string().openapi({ example: 'Fit365八潮店', description: 'Store name' }),
-    brand: BrandSchema.openapi({ example: 'fit365', description: 'Brand' }),
+    brand: BrandSchema.openapi({ example: 'joyfit_plus', description: 'Brand' }),
+    main_brand: MainBrandSchema.openapi({ example: 'joyfit', description: 'Main brand' }),
     joined_at: z.string().openapi({ example: '2024-01-15', description: 'Join date (ISO date)' }),
     withdrawn_at: z.string().optional().openapi({
       example: '2025-02-01',
@@ -435,47 +521,198 @@ export const MemberHealthInfoSchema = z
       example: '膝に負担がかかる運動は避ける',
       description: 'Exercise restrictions',
     }),
-    other_notes: z
-      .string()
-      .optional()
-      .openapi({ example: '特記事項なし', description: 'Other notes' }),
   })
   .openapi({
     title: 'MemberHealthInfo',
     description: 'Health information',
   });
 
+export const MemberProfileInfoSchema = z
+  .object({
+    contract_name: z.string().optional().openapi({
+      example: 'レギュラー会員',
+      description: 'Main contract display name',
+    }),
+    join_route: z.string().optional().openapi({
+      example: '紹介',
+      description: 'Join route',
+    }),
+    referrer_member_id: z.string().optional().openapi({
+      example: 'M-00001',
+      description: 'Referrer member ID',
+    }),
+  })
+  .openapi({
+    title: 'MemberProfileInfo',
+    description: 'Additional member profile information',
+  });
+
 export const GetMemberDetailResponseSchema = z
   .object({
-    member: z
+    basic_info: MemberBasicInfoSchema.openapi({ description: 'Basic member information' }),
+    constraints: z
       .object({
-        basic_info: MemberBasicInfoSchema.openapi({ description: 'Basic member information' }),
-        profile: MemberProfileSchema.openapi({ description: 'Member profile' }),
-        ekyc: MemberEKYCSchema.optional().openapi({ description: 'eKYC information' }),
-        consent: MemberConsentSchema.optional().openapi({ description: 'Consent information' }),
-        health_info: MemberHealthInfoSchema.optional().openapi({
-          description: 'Health information',
+        hasUnpaidFee: z.boolean().openapi({
+          example: false,
+          description: 'Whether member has unpaid fees',
         }),
-        contracts: z
-          .lazy(() => GetContractsResponseSchema)
-          .optional()
-          .openapi({ description: 'Contract information' }),
-        points: z
-          .lazy(() => GetPointsResponseSchema)
-          .optional()
-          .openapi({ description: 'Points information' }),
-        memos: z
-          .lazy(() => GetMemosResponseSchema)
-          .optional()
-          .openapi({ description: 'Staff memos' }),
+        inCancellationPeriod: z.boolean().openapi({
+          example: false,
+          description: 'Whether member is in cancellation penalty period',
+        }),
+        isOptionRestricted: z.boolean().openapi({
+          example: false,
+          description: 'Whether option actions are restricted',
+        }),
       })
       .openapi({
-        description: 'Complete member information',
+        description: 'Constraint flags for member operations',
       }),
+    profile: MemberProfileSchema.extend({
+      contract_name: z.string().optional().openapi({
+        example: 'レギュラー会員',
+        description: 'Main contract display name',
+      }),
+      join_route: z.string().optional().openapi({
+        example: '紹介',
+        description: 'Join route',
+      }),
+      referrer_member_id: z.string().optional().openapi({
+        example: 'M-00001',
+        description: 'Referrer member ID',
+      }),
+    }).openapi({ description: 'Member profile' }),
+    ekyc: MemberEKYCSchema.optional().openapi({ description: 'eKYC information' }),
+    consent: MemberConsentSchema.optional().openapi({ description: 'Consent information' }),
+    health_info: MemberHealthInfoSchema.optional().openapi({
+      description: 'Health information',
+    }),
   })
   .openapi({
     title: 'GetMemberDetailResponse',
     description: 'Response for getting member detail',
+  });
+
+/**
+ * Create Member Request Schema
+ */
+export const CreateMemberRequestSchema = z
+  .object({
+    name_kanji: z.string().min(1).openapi({
+      example: '佐藤 花子',
+      description: 'Name in kanji',
+    }),
+    name_kana: z.string().min(1).openapi({
+      example: 'サトウ ハナコ',
+      description: 'Name in kana',
+    }),
+    birthday: z.string().optional().openapi({
+      example: '1990-05-20',
+      description: 'Birthday (ISO date)',
+    }),
+    gender: GenderSchema.optional().openapi({
+      example: 'female',
+      description: 'Gender',
+    }),
+    postal_code: z.string().optional().openapi({
+      example: '1500001',
+      description: 'Postal code',
+    }),
+    prefecture: z.string().optional().openapi({
+      example: '東京都',
+      description: 'Prefecture',
+    }),
+    city: z.string().optional().openapi({
+      example: '渋谷区',
+      description: 'City',
+    }),
+    address: z.string().optional().openapi({
+      example: '神宮前1-1-1',
+      description: 'Address',
+    }),
+    building: z.string().optional().openapi({
+      example: 'サンプルビル 5F',
+      description: 'Building name',
+    }),
+    phone: z.string().min(1).openapi({
+      example: '09012345678',
+      description: 'Phone number',
+    }),
+    email: z.string().email().min(1).openapi({
+      example: 'hanako.sato@example.com',
+      description: 'Email address',
+    }),
+    emergency_contact: z
+      .object({
+        name: z.string(),
+        relationship: z.string(),
+        phone: z.string(),
+      })
+      .optional()
+      .openapi({
+        description: 'Emergency contact information',
+      }),
+    notes: z.string().optional().openapi({
+      example: '特記事項なし',
+      description: 'Other notes',
+    }),
+    profile_info: z
+      .object({
+        member_type: MemberTypeSchema.optional().openapi({
+          example: 'regular',
+          description: 'Member type',
+        }),
+        contract_name: z.string().optional().openapi({
+          example: 'レギュラー会員',
+          description: 'Main contract display name',
+        }),
+        join_date: z.string().optional().openapi({
+          example: '2024-01-15',
+          description: 'Join date (ISO date)',
+        }),
+        join_store: z.string().optional().openapi({
+          example: 'Fit365八潮店',
+          description: 'Join store name',
+        }),
+        brand: z.string().optional().openapi({
+          example: 'fit365',
+          description: 'Brand',
+        }),
+        join_route: z.string().optional().openapi({
+          example: '紹介',
+          description: 'Join route',
+        }),
+        referrer_member_id: z.string().optional().openapi({
+          example: 'M-00001',
+          description: 'Referrer member ID',
+        }),
+        photo_url: z.string().optional().openapi({
+          example: 'https://example.com/photo.jpg',
+          description: 'Member photo URL',
+        }),
+      })
+      .optional()
+      .openapi({
+        description: 'Additional member profile information',
+      }),
+  })
+  .openapi({
+    title: 'CreateMemberRequest',
+    description: 'Request payload for creating a member',
+  });
+
+export const CreateMemberResponseSchema = z
+  .object({
+    message: z.string().openapi({
+      example: 'Member created successfully',
+    }),
+    member: MemberBasicInfoSchema.openapi({
+      description: 'Created member basic info',
+    }),
+  })
+  .openapi({
+    title: 'CreateMemberResponse',
+    description: 'Response for creating a member',
   });
 
 /**
@@ -490,6 +727,14 @@ export const UpdateBasicInfoRequestSchema = z
     name_kana: z.string().optional().openapi({
       example: 'サトウ ハナコ',
       description: 'Name in kana',
+    }),
+    birthday: z.string().optional().openapi({
+      example: '1990-05-20',
+      description: 'Birthday (ISO date)',
+    }),
+    gender: GenderSchema.optional().openapi({
+      example: 'female',
+      description: 'Gender',
     }),
     postal_code: z.string().optional().openapi({
       example: '1500002',
@@ -529,6 +774,10 @@ export const UpdateBasicInfoRequestSchema = z
       .openapi({
         description: 'Emergency contact information',
       }),
+    notes: z.string().optional().openapi({
+      example: '特記事項なし',
+      description: 'Other notes',
+    }),
   })
   .openapi({
     title: 'UpdateBasicInfoRequest',
@@ -538,20 +787,10 @@ export const UpdateBasicInfoRequestSchema = z
 /**
  * Update Basic Info Response Schema
  */
-export const UpdateBasicInfoResponseSchema = z
-  .object({
-    success: z.boolean().openapi({
-      example: true,
-      description: 'Whether the update was successful',
-    }),
-    member: z.any().openapi({
-      description: 'Updated member information',
-    }),
-  })
-  .openapi({
-    title: 'UpdateBasicInfoResponse',
-    description: 'Response for updating basic info',
-  });
+export const UpdateBasicInfoResponseSchema = MemberBasicInfoSchema.openapi({
+  title: 'UpdateBasicInfoResponse',
+  description: 'Response for updating basic info',
+});
 
 /**
  * Update Health Info Request Schema
@@ -574,10 +813,6 @@ export const UpdateHealthInfoRequestSchema = z
       example: '特になし',
       description: 'Exercise restrictions',
     }),
-    other_notes: z.string().optional().openapi({
-      example: '特記事項なし',
-      description: 'Other notes',
-    }),
   })
   .openapi({
     title: 'UpdateHealthInfoRequest',
@@ -587,20 +822,10 @@ export const UpdateHealthInfoRequestSchema = z
 /**
  * Update Health Info Response Schema
  */
-export const UpdateHealthInfoResponseSchema = z
-  .object({
-    success: z.boolean().openapi({
-      example: true,
-      description: 'Whether the update was successful',
-    }),
-    member: z.any().openapi({
-      description: 'Updated member information',
-    }),
-  })
-  .openapi({
-    title: 'UpdateHealthInfoResponse',
-    description: 'Response for updating health info',
-  });
+export const UpdateHealthInfoResponseSchema = MemberHealthInfoSchema.openapi({
+  title: 'UpdateHealthInfoResponse',
+  description: 'Response for updating health info',
+});
 
 /**
  * Update Marketing Consent Request Schema
@@ -628,25 +853,77 @@ export const UpdateMarketingConsentRequestSchema = z
 /**
  * Update Marketing Consent Response Schema
  */
-export const UpdateMarketingConsentResponseSchema = z
-  .object({
-    success: z.boolean().openapi({
-      example: true,
-      description: 'Whether the update was successful',
-    }),
-    member: z.any().openapi({
-      description: 'Updated member information',
-    }),
-  })
-  .openapi({
+export const UpdateMarketingConsentResponseSchema =
+  MemberConsentSchema.shape.marketing_consent.openapi({
     title: 'UpdateMarketingConsentResponse',
     description: 'Response for updating marketing consent',
   });
 
 /**
+ * Update Member Request Schema
+ */
+export const UpdateMemberRequestSchema = z
+  .object({
+    basic_info: UpdateBasicInfoRequestSchema.optional().openapi({
+      description: 'Basic member information',
+    }),
+    profile_info: z
+      .object({
+        member_type: MemberTypeSchema.optional().openapi({
+          example: 'regular',
+          description: 'Member type',
+        }),
+        contract_name: z.string().optional().openapi({
+          example: 'レギュラー会員',
+          description: 'Main contract display name',
+        }),
+        join_date: z.string().optional().openapi({
+          example: '2024-01-15',
+          description: 'Join date (ISO date)',
+        }),
+        join_store: z.string().optional().openapi({
+          example: 'Fit365八潮店',
+          description: 'Join store name',
+        }),
+        brand: z.string().optional().openapi({
+          example: 'fit365',
+          description: 'Brand',
+        }),
+        join_route: z.string().optional().openapi({
+          example: '紹介',
+          description: 'Join route',
+        }),
+        referrer_member_id: z.string().optional().openapi({
+          example: 'M-00001',
+          description: 'Referrer member ID',
+        }),
+        photo_url: z.string().optional().openapi({
+          example: 'https://example.com/photo.jpg',
+          description: 'Member photo URL',
+        }),
+      })
+      .optional()
+      .openapi({
+        description: 'Additional member profile information',
+      }),
+  })
+  .openapi({
+    title: 'UpdateMemberRequest',
+    description: 'Request payload for updating a member',
+  });
+
+export const UpdateMemberResponseSchema = GetMemberDetailResponseSchema.openapi({
+  title: 'UpdateMemberResponse',
+  description: 'Response for updating a member',
+});
+
+/**
  * Point Adjustment Type Schema
  */
-export const PointAdjustmentTypeSchema = z.enum(['add', 'subtract']);
+export const PointAdjustmentTypeSchema = z.enum(['add', 'subtract']).openapi({
+  title: 'PointAdjustmentType',
+  description: 'Adjustment type',
+});
 
 /**
  * Point Adjustment Request Schema
@@ -680,10 +957,6 @@ export const PointAdjustmentRequestSchema = z
  */
 export const PointAdjustmentResponseSchema = z
   .object({
-    success: z.boolean().openapi({
-      example: true,
-      description: 'Whether the adjustment was successful',
-    }),
     id: z.string().openapi({
       example: 'M-00001',
       description: 'Member ID',
@@ -697,28 +970,67 @@ export const PointAdjustmentResponseSchema = z
     description: 'Response for adjusting points',
   });
 
+export const GetPointsPeriodSchema = z
+  .enum(['all', 'this_month', 'last_3_months', 'last_1_year'])
+  .openapi({
+    title: 'GetPointsPeriod',
+    description: 'Time period filter for point history',
+  });
+
+export const GetPointsQuerySchema = z
+  .object({
+    period: GetPointsPeriodSchema.optional().default('all').openapi({
+      example: 'all',
+      description: 'Point history period filter',
+    }),
+  })
+  .openapi({
+    title: 'GetPointsQuery',
+    description: 'Query parameters for getting points',
+  });
+
+export const PointHistoryItemSchema = z
+  .object({
+    id: z.string().openapi({
+      example: 'earn-001',
+      description: 'Point history ID',
+    }),
+    date: z.string().openapi({
+      example: '2025-03-10T10:00:00+09:00',
+      description: 'Point transaction datetime (ISO)',
+    }),
+    reason: z.string().openapi({
+      example: '来館',
+      description: 'Point transaction reason',
+    }),
+    points: z.number().int().nonnegative().openapi({
+      example: 100,
+      description: 'Point amount',
+    }),
+  })
+  .openapi({
+    title: 'PointHistoryItem',
+    description: 'Point history row',
+  });
+
 /**
  * Get Points Response Schema (simplified)
  */
 export const GetPointsResponseSchema = z
   .object({
-    fit365: z.any().optional().openapi({
-      description: 'FIT365 points information',
+    point_balance: z.number().int().nonnegative().openapi({
+      example: 1200,
+      description: 'Current point balance',
     }),
-    joyfit: z.any().optional().openapi({
-      description: 'JOYFIT points information',
+    period: GetPointsPeriodSchema.openapi({
+      example: 'all',
+      description: 'Applied period filter',
     }),
-    rank: z.any().optional().openapi({
-      description: 'Rank information',
+    earn_history: z.array(PointHistoryItemSchema).openapi({
+      description: 'Earn history list',
     }),
-    earn_history: z.array(z.any()).openapi({
-      description: 'Earn history',
-    }),
-    spend_history: z.array(z.any()).openapi({
-      description: 'Spend history',
-    }),
-    adjustment_history: z.array(z.any()).openapi({
-      description: 'Adjustment history',
+    spend_history: z.array(PointHistoryItemSchema).openapi({
+      description: 'Spend history list',
     }),
   })
   .openapi({
@@ -729,7 +1041,28 @@ export const GetPointsResponseSchema = z
 /**
  * Memo Type Schema
  */
-export const MemoTypeSchema = z.enum(['caution', 'vip', 'other']);
+export const MemoTypeSchema = z.enum(['caution', 'vip', 'other']).openapi({
+  title: 'MemoType',
+  description: 'Staff memo type',
+});
+
+/**
+ * Staff Memo Schema
+ */
+export const StaffMemoSchema = z
+  .object({
+    id: z.string().openapi({ example: 'memo-001', description: 'Memo ID' }),
+    date: z
+      .string()
+      .openapi({ example: '2024-11-15T10:00:00Z', description: 'Created date (ISO)' }),
+    type: MemoTypeSchema.openapi({ example: 'caution', description: 'Memo type' }),
+    content: z.string().openapi({ example: '注意事項があります', description: 'Memo content' }),
+    created_by: z.string().openapi({ example: '山田 花子', description: 'Creator name' }),
+  })
+  .openapi({
+    title: 'StaffMemo',
+    description: 'Staff memo',
+  });
 
 /**
  * Create Memo Request Schema
@@ -761,20 +1094,10 @@ export const CreateMemoRequestSchema = z
 /**
  * Create Memo Response Schema
  */
-export const CreateMemoResponseSchema = z
-  .object({
-    success: z.boolean().openapi({
-      example: true,
-      description: 'Whether the creation was successful',
-    }),
-    memo: z.any().openapi({
-      description: 'Created memo',
-    }),
-  })
-  .openapi({
-    title: 'CreateMemoResponse',
-    description: 'Response for creating a memo',
-  });
+export const CreateMemoResponseSchema = StaffMemoSchema.openapi({
+  title: 'CreateMemoResponse',
+  description: 'Response for creating a memo',
+});
 
 /**
  * Update Memo Request Schema
@@ -798,27 +1121,17 @@ export const UpdateMemoRequestSchema = z
 /**
  * Update Memo Response Schema
  */
-export const UpdateMemoResponseSchema = z
-  .object({
-    success: z.boolean().openapi({
-      example: true,
-      description: 'Whether the update was successful',
-    }),
-    memo: z.any().openapi({
-      description: 'Updated memo',
-    }),
-  })
-  .openapi({
-    title: 'UpdateMemoResponse',
-    description: 'Response for updating a memo',
-  });
+export const UpdateMemoResponseSchema = StaffMemoSchema.openapi({
+  title: 'UpdateMemoResponse',
+  description: 'Response for updating a memo',
+});
 
 /**
  * Get Memos Response Schema
  */
 export const GetMemosResponseSchema = z
   .object({
-    memos: z.array(z.any()).openapi({
+    memos: z.array(StaffMemoSchema).openapi({
       description: 'List of memos',
     }),
   })
@@ -871,15 +1184,15 @@ export const ExportMembersRequestSchema = z
     description: 'Request payload for exporting members',
   });
 
+export const ExportMembersStatusSchema = z
+  .enum(['processing', 'completed', 'failed'])
+  .openapi({ title: 'ExportMembersStatus', description: 'Export job status' });
+
 /**
  * Export Members Response Schema
  */
 export const ExportMembersResponseSchema = z
   .object({
-    success: z.boolean().openapi({
-      example: true,
-      description: 'Whether the export was successful',
-    }),
     exportId: z.string().openapi({
       example: 'export-1234567890',
       description: 'Export ID',
@@ -888,7 +1201,7 @@ export const ExportMembersResponseSchema = z
       example: 'csv',
       description: 'Export format',
     }),
-    status: z.string().openapi({
+    status: ExportMembersStatusSchema.openapi({
       example: 'processing',
       description: 'Export status',
     }),
@@ -908,12 +1221,12 @@ export const ContractChangeSchema = z
       description: 'Change date and time',
     }),
     previous_plan: z.string().openapi({
-      example: 'ベーシックプラン',
-      description: 'Previous plan name',
+      example: 'レギュラー会員',
+      description: 'Previous main contract display name',
     }),
     new_plan: z.string().openapi({
-      example: 'スタンダードプラン',
-      description: 'New plan name',
+      example: 'ナイト会員',
+      description: 'New main contract display name',
     }),
     reason: z.string().optional().openapi({
       example: 'プラン変更希望',
@@ -955,6 +1268,28 @@ export const MainContractSchema = z
     description: 'Main contract information',
   });
 
+export const GetMainContractResponseSchema = MainContractSchema.openapi({
+  title: 'GetMainContractResponse',
+  description: 'Response for getting member main contract',
+});
+
+export const ChangeMainContractRequestSchema = z
+  .object({
+    contract_id: z.string().min(1).openapi({
+      example: 'MC002',
+      description: 'New main contract id',
+    }),
+  })
+  .openapi({
+    title: 'ChangeMainContractRequest',
+    description: 'Request payload for changing member main contract',
+  });
+
+export const ChangeMainContractResponseSchema = MainContractSchema.openapi({
+  title: 'ChangeMainContractResponse',
+  description: 'Updated member main contract after change request',
+});
+
 /**
  * Option Contract Schema
  */
@@ -984,6 +1319,95 @@ export const OptionContractSchema = z
   .openapi({
     title: 'OptionContract',
     description: 'Option contract information',
+  });
+
+export const GetOptionContractsResponseSchema = z.array(OptionContractSchema).openapi({
+  title: 'GetOptionContractsResponse',
+  description: 'Response for getting member option contracts',
+});
+
+export const AddOptionContractRequestSchema = z
+  .object({
+    option_id: z.string().min(1).openapi({
+      example: 'OP002',
+      description: 'Option master id to add',
+    }),
+    apply_from: z.enum(['today', 'next_month']).openapi({
+      example: 'today',
+      description: 'When to start applying the option',
+    }),
+  })
+  .openapi({
+    title: 'AddOptionContractRequest',
+    description: 'Request payload for adding a member option contract',
+  });
+
+export const AddOptionContractResponseSchema = OptionContractSchema.openapi({
+  title: 'AddOptionContractResponse',
+  description: 'Added option contract',
+});
+
+export const ChangeOptionContractRequestSchema = z
+  .object({
+    current_option_id: z.string().min(1).openapi({
+      example: 'OP002',
+      description: 'Current option contract id',
+    }),
+    next_option_id: z.string().min(1).openapi({
+      example: 'OP003',
+      description: 'Next option master id',
+    }),
+  })
+  .openapi({
+    title: 'ChangeOptionContractRequest',
+    description: 'Request payload for changing a member option contract',
+  });
+
+export const ChangeOptionContractResponseSchema = z
+  .object({
+    removed_option_id: z.string().openapi({
+      example: 'OP002',
+      description: 'Removed option contract id',
+    }),
+    added_option: OptionContractSchema.openapi({
+      description: 'Newly added option contract',
+    }),
+  })
+  .openapi({
+    title: 'ChangeOptionContractResponse',
+    description: 'Changed option contract result',
+  });
+
+export const CancelOptionContractRequestSchema = z
+  .object({
+    option_id: z.string().min(1).openapi({
+      example: 'OP003',
+      description: 'Option contract id to cancel',
+    }),
+    cancel_timing: z.enum(['immediate', 'end_of_next_month']).openapi({
+      example: 'immediate',
+      description: 'When to cancel the option contract',
+    }),
+    reason: z.string().optional().openapi({
+      example: '利用しなくなったため',
+      description: 'Cancel reason',
+    }),
+  })
+  .openapi({
+    title: 'CancelOptionContractRequest',
+    description: 'Request payload for cancelling a member option contract',
+  });
+
+export const CancelOptionContractResponseSchema = z
+  .object({
+    cancelled_option_id: z.string().openapi({
+      example: 'OP003',
+      description: 'Cancelled option contract id',
+    }),
+  })
+  .openapi({
+    title: 'CancelOptionContractResponse',
+    description: 'Cancelled option contract result',
   });
 
 /**
@@ -1192,7 +1616,7 @@ export const CampaignSchema = z
       example: '初月月会費無料',
       description: 'Campaign content',
     }),
-    status: z.string().optional().openapi({
+    status: CampaignStatusSchema.optional().openapi({
       example: 'expired',
       description: 'Campaign status',
     }),
@@ -1217,6 +1641,378 @@ export const CampaignsSchema = z
   .openapi({
     title: 'Campaigns',
     description: 'Campaign information',
+  });
+
+/**
+ * Day Pass Record Schema
+ */
+export const DayPassRecordSchema = z
+  .object({
+    id: z.string().openapi({ example: 'dp-001', description: 'Day pass record ID' }),
+    purchased_at: z.string().openapi({
+      example: '2025-03-10',
+      description: 'Purchase date',
+    }),
+    store_name: z.string().openapi({
+      example: 'JOYFIT渋谷店',
+      description: 'Store used for the day pass',
+    }),
+    amount: z.number().openapi({ example: 1100, description: 'Purchase amount (tax included)' }),
+    expires_at: z.string().openapi({
+      example: '2025-03-10',
+      description: 'Expiry date of the day pass',
+    }),
+    status: z.enum(['used', 'unused', 'expired']).openapi({
+      title: 'DayPassStatus',
+      example: 'used',
+      description: 'Day pass status',
+    }),
+  })
+  .openapi({ title: 'DayPassRecord', description: 'Day pass purchase record' });
+
+/**
+ * Get Day Pass History Response Schema
+ */
+export const GetDayPassHistoryResponseSchema = z
+  .object({
+    day_pass_history: z.array(DayPassRecordSchema).openapi({
+      description: 'Day pass purchase history records',
+    }),
+  })
+  .openapi({
+    title: 'GetDayPassHistoryResponse',
+    description: 'Response for getting member day pass purchase history',
+  });
+
+/**
+ * Get Campaigns Response Schema
+ */
+export const GetCampaignsResponseSchema = CampaignsSchema.openapi({
+  title: 'GetCampaignsResponse',
+  description: 'Response for getting member campaigns',
+});
+
+/**
+ * Get Payment History Response Schema
+ */
+export const GetPaymentHistoryResponseSchema = z
+  .object({
+    payment_history: z.array(PaymentRecordSchema).openapi({
+      description: 'Payment history records',
+    }),
+  })
+  .openapi({
+    title: 'GetPaymentHistoryResponse',
+    description: 'Response for getting member payment history',
+  });
+
+/**
+ * Get Contract Summary Response Schema
+ */
+export const GetContractSummaryResponseSchema = z
+  .object({
+    plan_name: z.string().nullable().openapi({
+      example: 'レギュラー会員',
+      description: 'Main contract plan name',
+    }),
+    total_monthly_fee: z.number().openapi({
+      example: 9680,
+      description: 'Total monthly fee (main + options, tax included)',
+    }),
+    billing_day: z.number().int().min(1).max(31).nullable().openapi({
+      example: 27,
+      description: 'Billing day of month',
+    }),
+    payment_method: z.enum(['credit_card', 'bank_transfer']).nullable().openapi({
+      example: 'credit_card',
+      description: 'Payment method',
+    }),
+    unpaid_amount: z.number().openapi({
+      example: 0,
+      description: 'Unpaid amount (0 if none)',
+    }),
+  })
+  .openapi({
+    title: 'GetContractSummaryResponse',
+    description: 'Response for getting member contract summary',
+  });
+
+/**
+ * Get Usage Status Response Schema
+ */
+export const GetUsageStatusResponseSchema = z
+  .object({
+    monthly_visits: z.number().int().openapi({
+      example: 12,
+      description: 'Number of visits in the current month',
+    }),
+    monthly_visits_diff: z.number().int().openapi({
+      example: 3,
+      description: 'Difference in visits compared to the previous month',
+    }),
+    peak_time_slot: z.string().nullable().openapi({
+      example: '18:00-20:00',
+      description: 'Most frequently used time slot',
+    }),
+    frequent_store: z.string().nullable().openapi({
+      example: 'JOYFIT渋谷店',
+      description: 'Most frequently visited store name',
+    }),
+  })
+  .openapi({
+    title: 'GetUsageStatusResponse',
+    description: 'Response for getting member usage status',
+  });
+
+/**
+ * Get Training Records Request Schema
+ */
+export const TrainingRecordsPeriodSchema = z.enum(['all', 'this_month', 'last_3_months']).openapi({
+  title: 'TrainingRecordsPeriod',
+  description: 'Period filter for training records',
+  example: 'all',
+});
+
+export const GetTrainingRecordsPathParamsSchema = z.object({
+  id: z.string().openapi({
+    description: 'Member ID',
+    example: 'M-00001',
+  }),
+});
+
+export const GetTrainingRecordsQuerySchema = z.object({
+  period: TrainingRecordsPeriodSchema.optional().default('all'),
+});
+
+/**
+ * Get Training Records Response Schema
+ */
+export const TrainingRecordItemSchema = z
+  .object({
+    id: z.string().openapi({
+      description: 'Training record ID',
+      example: 'training-001',
+    }),
+    date: z.string().openapi({
+      description: 'Training date',
+      example: '2026-04-17',
+    }),
+    routineName: z.string().openapi({
+      description: 'Routine name',
+      example: '全身強化',
+    }),
+    durationMin: z.number().int().nonnegative().openapi({
+      description: 'Training duration in minutes',
+      example: 55,
+    }),
+    calories: z.number().int().nonnegative().openapi({
+      description: 'Calories burned',
+      example: 360,
+    }),
+  })
+  .openapi({
+    title: 'TrainingRecordItem',
+    description: 'Single training history record',
+  });
+
+export const TrainingRecordSummarySchema = z
+  .object({
+    trainingCount: z.number().int().nonnegative().openapi({
+      description: 'Number of training sessions',
+      example: 8,
+    }),
+    totalDurationMin: z.number().int().nonnegative().openapi({
+      description: 'Total duration in minutes',
+      example: 435,
+    }),
+    totalCalories: z.number().int().nonnegative().openapi({
+      description: 'Total burned calories',
+      example: 2790,
+    }),
+    mostFrequentRoutineName: z.string().nullable().openapi({
+      description: 'Most frequently trained routine',
+      example: '全身強化',
+    }),
+  })
+  .openapi({
+    title: 'TrainingRecordSummary',
+    description: 'Aggregated training summary',
+  });
+
+export const GetTrainingRecordsResponseSchema = z
+  .object({
+    summary: TrainingRecordSummarySchema.openapi({
+      description: 'Training summary',
+    }),
+    trainingHistory: z.array(TrainingRecordItemSchema).openapi({
+      description: 'Training history list',
+    }),
+  })
+  .openapi({
+    title: 'GetTrainingRecordsResponse',
+    description: 'Response for getting training records',
+  });
+
+/**
+ * Get Body Data Request Schema
+ */
+export const BodyDataSourceSchema = z.enum(['body_planner', '3d_scanner', 'manual']).openapi({
+  title: 'BodyDataSource',
+  description: 'Body data source',
+  example: 'body_planner',
+});
+
+export const GetBodyDataPathParamsSchema = z.object({
+  id: z.string().openapi({
+    description: 'Member ID',
+    example: 'M-00001',
+  }),
+});
+
+export const BodyDataLatestSummarySchema = z
+  .object({
+    date: z.string().openapi({
+      description: 'Latest measurement date',
+      example: '2026-04-17',
+    }),
+    weight: z.number().openapi({
+      description: 'Weight in kg',
+      example: 68.4,
+    }),
+    bmi: z.number().openapi({
+      description: 'Body mass index',
+      example: 22.8,
+    }),
+    fatPercent: z.number().openapi({
+      description: 'Body fat percentage',
+      example: 18.2,
+    }),
+    muscleMass: z.number().openapi({
+      description: 'Muscle mass in kg',
+      example: 29.6,
+    }),
+    basalMetabolism: z.number().int().openapi({
+      description: 'Basal metabolism in kcal',
+      example: 1580,
+    }),
+  })
+  .openapi({
+    title: 'BodyDataLatestSummary',
+    description: 'Latest body data summary',
+  });
+
+export const BodyCompositionSchema = z
+  .object({
+    source: BodyDataSourceSchema.openapi({
+      description: 'Body composition data source',
+    }),
+    weight: z.number().openapi({ description: 'Weight in kg', example: 68.4 }),
+    bmi: z.number().openapi({ description: 'Body mass index', example: 22.8 }),
+    fatPercent: z.number().openapi({ description: 'Body fat percentage', example: 18.2 }),
+    fatMass: z.number().openapi({ description: 'Body fat mass in kg', example: 12.5 }),
+    visceralFatIndex: z.number().openapi({ description: 'Visceral fat index', example: 7.4 }),
+    smi: z.number().openapi({ description: 'Skeletal muscle index', example: 7.6 }),
+    muscleMass: z.number().openapi({ description: 'Muscle mass in kg', example: 29.6 }),
+    boneMass: z.number().openapi({ description: 'Estimated bone mass in kg', example: 2.9 }),
+    waterContent: z.number().openapi({ description: 'Water content in kg', example: 41.2 }),
+    basalMetabolism: z.number().int().openapi({
+      description: 'Basal metabolism in kcal',
+      example: 1580,
+    }),
+    leanBodyMass: z.number().openapi({ description: 'Lean body mass in kg', example: 55.9 }),
+    limbLeanMass: z.number().openapi({ description: 'Limb lean mass in kg', example: 21.4 }),
+  })
+  .openapi({
+    title: 'BodyComposition',
+    description: 'Body composition data',
+  });
+
+export const BodyMeasurementSchema = z
+  .object({
+    source: BodyDataSourceSchema.openapi({
+      description: 'Body measurement data source',
+    }),
+    neck: z.number().openapi({ description: 'Neck circumference in cm', example: 37.5 }),
+    shoulder: z.number().openapi({ description: 'Shoulder width in cm', example: 47.1 }),
+    chest: z.number().openapi({ description: 'Chest circumference in cm', example: 95.4 }),
+    waistAbdomen: z.number().openapi({ description: 'Abdomen circumference in cm', example: 81.2 }),
+    upperArm: z.number().openapi({ description: 'Upper arm circumference in cm', example: 31.4 }),
+    forearm: z.number().openapi({ description: 'Forearm circumference in cm', example: 26.8 }),
+    waistHip: z.number().openapi({ description: 'Waist hip circumference in cm', example: 87.3 }),
+    hip: z.number().openapi({ description: 'Hip circumference in cm', example: 94.7 }),
+    thigh: z.number().openapi({ description: 'Thigh circumference in cm', example: 54.8 }),
+    calf: z.number().openapi({ description: 'Calf circumference in cm', example: 37.1 }),
+    height: z.number().openapi({ description: 'Height in cm', example: 173.0 }),
+  })
+  .openapi({
+    title: 'BodyMeasurement',
+    description: 'Body measurement data',
+  });
+
+export const BodyDataHistoryItemSchema = z
+  .object({
+    id: z.string().openapi({
+      description: 'Body data record ID',
+      example: 'body-001',
+    }),
+    date: z.string().openapi({
+      description: 'Measurement date',
+      example: '2026-04-17',
+    }),
+    source: BodyDataSourceSchema.openapi({
+      description: 'Data source',
+    }),
+    weight: z.number().openapi({
+      description: 'Weight in kg',
+      example: 68.4,
+    }),
+    fatPercent: z.number().openapi({
+      description: 'Body fat percentage',
+      example: 18.2,
+    }),
+  })
+  .openapi({
+    title: 'BodyDataHistoryItem',
+    description: 'Single body data history record',
+  });
+
+export const BodyWeightChartItemSchema = z
+  .object({
+    date: z.string().openapi({
+      description: 'Measurement date',
+      example: '04/17',
+    }),
+    weight: z.number().openapi({
+      description: 'Weight in kg',
+      example: 68.4,
+    }),
+  })
+  .openapi({
+    title: 'BodyWeightChartItem',
+    description: 'Body weight chart data point',
+  });
+
+export const GetBodyDataResponseSchema = z
+  .object({
+    latest: BodyDataLatestSummarySchema.openapi({
+      description: 'Latest body data summary',
+    }),
+    bodyComposition: BodyCompositionSchema.openapi({
+      description: 'Body composition details',
+    }),
+    bodyMeasurement: BodyMeasurementSchema.openapi({
+      description: 'Body measurement details',
+    }),
+    history: z.array(BodyDataHistoryItemSchema).openapi({
+      description: 'Body data history list',
+    }),
+    weightChart: z.array(BodyWeightChartItemSchema).openapi({
+      description: 'Body weight chart points',
+    }),
+  })
+  .openapi({
+    title: 'GetBodyDataResponse',
+    description: 'Response for getting member body data',
   });
 
 /**
@@ -1266,103 +2062,23 @@ export const ErrorResponseSchema = z
     description: 'Error response',
   });
 
-export const GetRelationshipsResponseSchema = z
-  .object({
-    family: z
-      .object({
-        role: z.enum(['primary', 'family_child']),
-        children: z
-          .array(
-            z.object({
-              id: z.string(),
-              member_number: z.string(),
-              name: z.string(),
-              relationship: z.string(),
-              status: MemberStatusSchema,
-            }),
-          )
-          .optional(),
-        current_count: z.number().optional(),
-        max_count: z.number().optional(),
-        parent: z
-          .object({
-            id: z.string(),
-            member_number: z.string(),
-            name: z.string(),
-            relationship: z.string(),
-            status: MemberStatusSchema,
-          })
-          .optional(),
-      })
-      .openapi({
-        description: 'Family relationships',
-      }),
-    corporate: z
-      .object({
-        corporate_detail_member_id: z.string(),
-        corporate_name: z.string(),
-        corporate_number: z.string(),
-        contract_type: z.string(),
-        company_discount: z.object({
-          applied: z.boolean(),
-          rate_percent: z.number().nullable(),
-        }),
-        contact_department: z.string(),
-        contact_name: z.string(),
-      })
-      .nullable()
-      .openapi({
-        description: 'Corporate relationships',
-      }),
-    referral: z
-      .object({
-        as_referrer: z.object({
-          referrals: z.array(
-            z.object({
-              id: z.string(),
-              member_number: z.string(),
-              name: z.string(),
-              referred_at: z.string(),
-              membership_status: z.string(),
-              points_status: z.string(),
-              points_earned: z.number().nullable(),
-            }),
-          ),
-          summary: z.object({
-            total_referrals: z.number(),
-            total_points: z.number(),
-          }),
-        }),
-        as_referee: z
-          .object({
-            referrer: z.object({
-              id: z.string(),
-              member_number: z.string(),
-              name: z.string(),
-              referred_at: z.string(),
-              referral_benefit: z.string(),
-            }),
-          })
-          .nullable(),
-      })
-      .openapi({
-        description: 'Referral relationships',
-      }),
-  })
-  .openapi({
-    title: 'GetRelationshipsResponse',
-    description: 'Response for getting relationships',
-  });
-
 // Type exports for use in route handlers
 export type MemberType = z.infer<typeof MemberTypeSchema>;
+export type ContractType = z.infer<typeof ContractTypeSchema>;
 export type MemberStatus = z.infer<typeof MemberStatusSchema>;
 export type Brand = z.infer<typeof BrandSchema>;
+export type MainBrand = z.infer<typeof MainBrandSchema>;
+export type Gender = z.infer<typeof GenderSchema>;
 export type MemberListItem = z.infer<typeof MemberListItemSchema>;
 export type Pagination = z.infer<typeof PaginationSchema>;
 export type GetMembersQuery = z.infer<typeof GetMembersQuerySchema>;
 export type GetMembersResponse = z.infer<typeof GetMembersResponseSchema>;
+export type GetMembersSummaryResponse = z.infer<typeof GetMembersSummaryResponseSchema>;
 export type GetMemberDetailResponse = z.infer<typeof GetMemberDetailResponseSchema>;
+export type CreateMemberRequest = z.infer<typeof CreateMemberRequestSchema>;
+export type CreateMemberResponse = z.infer<typeof CreateMemberResponseSchema>;
+export type UpdateMemberRequest = z.infer<typeof UpdateMemberRequestSchema>;
+export type UpdateMemberResponse = z.infer<typeof UpdateMemberResponseSchema>;
 export type UpdateBasicInfoRequest = z.infer<typeof UpdateBasicInfoRequestSchema>;
 export type UpdateBasicInfoResponse = z.infer<typeof UpdateBasicInfoResponseSchema>;
 export type UpdateHealthInfoRequest = z.infer<typeof UpdateHealthInfoRequestSchema>;
@@ -1374,6 +2090,7 @@ export type PointAdjustmentRequest = z.infer<typeof PointAdjustmentRequestSchema
 export type PointAdjustmentResponse = z.infer<typeof PointAdjustmentResponseSchema>;
 export type GetPointsResponse = z.infer<typeof GetPointsResponseSchema>;
 export type MemoType = z.infer<typeof MemoTypeSchema>;
+export type StaffMemo = z.infer<typeof StaffMemoSchema>;
 export type CreateMemoRequest = z.infer<typeof CreateMemoRequestSchema>;
 export type CreateMemoResponse = z.infer<typeof CreateMemoResponseSchema>;
 export type UpdateMemoRequest = z.infer<typeof UpdateMemoRequestSchema>;
@@ -1383,14 +2100,361 @@ export type ExportMembersRequest = z.infer<typeof ExportMembersRequestSchema>;
 export type ExportMembersResponse = z.infer<typeof ExportMembersResponseSchema>;
 export type ContractChange = z.infer<typeof ContractChangeSchema>;
 export type MainContract = z.infer<typeof MainContractSchema>;
+export type GetMainContractResponse = z.infer<typeof GetMainContractResponseSchema>;
+export type ChangeMainContractRequest = z.infer<typeof ChangeMainContractRequestSchema>;
+export type ChangeMainContractResponse = z.infer<typeof ChangeMainContractResponseSchema>;
 export type OptionContract = z.infer<typeof OptionContractSchema>;
+export type GetOptionContractsResponse = z.infer<typeof GetOptionContractsResponseSchema>;
+export type AddOptionContractRequest = z.infer<typeof AddOptionContractRequestSchema>;
+export type AddOptionContractResponse = z.infer<typeof AddOptionContractResponseSchema>;
+export type ChangeOptionContractRequest = z.infer<typeof ChangeOptionContractRequestSchema>;
+export type ChangeOptionContractResponse = z.infer<typeof ChangeOptionContractResponseSchema>;
+export type CancelOptionContractRequest = z.infer<typeof CancelOptionContractRequestSchema>;
+export type CancelOptionContractResponse = z.infer<typeof CancelOptionContractResponseSchema>;
 export type OptionChangeHistory = z.infer<typeof OptionChangeHistorySchema>;
 export type SpecialContractItem = z.infer<typeof SpecialContractItemSchema>;
 export type SpecialContracts = z.infer<typeof SpecialContractsSchema>;
 export type PaymentRecord = z.infer<typeof PaymentRecordSchema>;
 export type PaymentInfo = z.infer<typeof PaymentInfoSchema>;
 export type UnpaidInfo = z.infer<typeof UnpaidInfoSchema>;
+export type DayPassRecord = z.infer<typeof DayPassRecordSchema>;
+export type GetDayPassHistoryResponse = z.infer<typeof GetDayPassHistoryResponseSchema>;
 export type Campaign = z.infer<typeof CampaignSchema>;
 export type Campaigns = z.infer<typeof CampaignsSchema>;
+export type GetCampaignsResponse = z.infer<typeof GetCampaignsResponseSchema>;
+export type GetPaymentHistoryResponse = z.infer<typeof GetPaymentHistoryResponseSchema>;
+export type GetContractSummaryResponse = z.infer<typeof GetContractSummaryResponseSchema>;
+export type GetUsageStatusResponse = z.infer<typeof GetUsageStatusResponseSchema>;
+export type TrainingRecordsPeriod = z.infer<typeof TrainingRecordsPeriodSchema>;
+export type GetTrainingRecordsPathParams = z.infer<typeof GetTrainingRecordsPathParamsSchema>;
+export type GetTrainingRecordsQuery = z.infer<typeof GetTrainingRecordsQuerySchema>;
+export type TrainingRecordItem = z.infer<typeof TrainingRecordItemSchema>;
+export type TrainingRecordSummary = z.infer<typeof TrainingRecordSummarySchema>;
+export type GetTrainingRecordsResponse = z.infer<typeof GetTrainingRecordsResponseSchema>;
 export type GetContractsResponse = z.infer<typeof GetContractsResponseSchema>;
 export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
+
+// ─── Payment History Schemas (A-01 FR-009-a) ──────────────────────────────
+
+export const PaymentHistoryTypeSchema = z.enum(['sale', 'refund']).openapi({
+  title: 'PaymentHistoryType',
+  description: 'Payment history type: sale (売上) or refund (返金)',
+  example: 'sale',
+});
+
+export const PaymentHistoryItemSchema = z
+  .object({
+    date: z.string().openapi({
+      description: 'Date in YYYY/MM/DD format',
+      example: '2026/04/01',
+    }),
+    type: PaymentHistoryTypeSchema,
+    content: z.string().openapi({
+      description: 'Transaction content description',
+      example: '月会費（4月分）',
+    }),
+    amount: z.number().openapi({
+      description: 'Amount in JPY. Negative for refunds.',
+      example: 9900,
+    }),
+    method: z.string().openapi({
+      description: 'Payment method',
+      example: 'SBPS',
+    }),
+  })
+  .openapi({ title: 'PaymentHistoryItem' });
+
+export const PaymentHistoryListResponseSchema = z
+  .object({
+    items: z.array(PaymentHistoryItemSchema).openapi({
+      description: 'Payment history records',
+    }),
+    total: z.number().openapi({
+      description: 'Total number of records',
+    }),
+    page: z.number().openapi({
+      description: 'Current page number (1-based)',
+    }),
+    limit: z.number().openapi({
+      description: 'Number of records per page',
+    }),
+  })
+  .openapi({
+    title: 'PaymentHistoryListResponse',
+    description: 'Paginated payment history response',
+  });
+
+export type PaymentHistoryListResponse = z.infer<typeof PaymentHistoryListResponseSchema>;
+
+// ─── Billing Schemas (A-01 FR-009-b) ──────────────────────────────
+
+export const BillingStatusSchema = z
+  .enum(['pending', 'paid', 'uncollected', 'written-off'])
+  .openapi({
+    title: 'BillingStatus',
+    description:
+      'Billing status: pending (未確定), paid (入金済み), uncollected (未回収), written-off (貸倒)',
+    example: 'paid',
+  });
+
+export const BillingTypeSchema = z.enum(['monthly', 'oneTime']).openapi({
+  title: 'BillingType',
+  description: 'Billing type: monthly (月次) or oneTime (都度)',
+  example: 'monthly',
+});
+
+export const BillingItemSchema = z
+  .object({
+    month: z.string().openapi({
+      description: 'Billing month in Japanese format',
+      example: '2026年4月',
+    }),
+    type: BillingTypeSchema,
+    amount: z.number().openapi({
+      description: 'Billing amount in JPY',
+      example: 9900,
+    }),
+    status: BillingStatusSchema,
+    billingDate: z.string().openapi({
+      description: 'Billing date in YYYY/MM/DD format',
+      example: '2026/04/01',
+    }),
+  })
+  .openapi({ title: 'BillingItem' });
+
+export const GetBillingResponseSchema = z
+  .object({
+    items: z.array(BillingItemSchema).openapi({
+      description: 'Billing records',
+    }),
+    total: z.number().openapi({
+      description: 'Total number of billing records',
+    }),
+    page: z.number().openapi({
+      description: 'Current page number (1-based)',
+    }),
+    limit: z.number().openapi({
+      description: 'Number of records per page',
+    }),
+  })
+  .openapi({
+    title: 'GetBillingResponse',
+    description: 'Paginated billing list response',
+  });
+
+export type GetBillingResponse = z.infer<typeof GetBillingResponseSchema>;
+
+// ─── Payment Summary Schema (A-01 FR-009-c) ──────────────────────────────
+
+export const PaymentSummarySchema = z
+  .object({
+    currentMonthAmount: z.number().openapi({
+      description: 'Total billing amount for current month in JPY',
+      example: 9900,
+    }),
+    unpaidTotal: z.number().openapi({
+      description: 'Total unpaid/written-off amount in JPY',
+      example: 0,
+    }),
+    lastPaymentDate: z.string().nullable().openapi({
+      description: 'Last payment date in YYYY/MM/DD format, or null',
+      example: '2026/03/15',
+    }),
+    paymentMethod: z.string().openapi({
+      description: 'Current payment method',
+      example: 'SBPS',
+    }),
+  })
+  .openapi({
+    title: 'PaymentSummary',
+    description: 'Payment summary card data',
+  });
+
+export type PaymentSummary = z.infer<typeof PaymentSummarySchema>;
+
+// ─── Usage History Schemas (A-01-01-e, FR-010) ────────────────────────────
+
+export const EntryMethodSchema = z
+  .enum(['qr_code', 'ic_card', 'face_recognition', 'member_card'])
+  .openapi({
+    title: 'EntryMethod',
+    description: 'Member authentication method for entry/exit',
+    example: 'qr_code',
+  });
+
+export const VisitRowSchema = z
+  .object({
+    id: z.string().openapi({
+      description: 'Visit record ID',
+      example: 'vr-001',
+    }),
+    entry_time: z.string().openapi({
+      description: 'Entry time in ISO8601 format',
+      example: '2026-04-23T18:00:00Z',
+    }),
+    exit_time: z.string().nullable().openapi({
+      description: 'Exit time in ISO8601 format, or null if still in building',
+      example: '2026-04-23T19:30:00Z',
+    }),
+    stay_time: z.number().optional().openapi({
+      description: 'Duration of stay in minutes',
+      example: 90,
+    }),
+    store_id: z.string().openapi({
+      description: 'Store ID',
+      example: 'store-001',
+    }),
+    store_name: z.string().openapi({
+      description: 'Store name in Japanese',
+      example: 'JOYFIT渋谷店',
+    }),
+    entry_method: z.string().openapi({
+      description: 'Authentication method used for entry',
+      example: 'qr_code',
+    }),
+  })
+  .openapi({ title: 'VisitRow', description: 'Entry/exit visit record' });
+
+export const LessonReservationRowSchema = z
+  .object({
+    id: z.string().openapi({
+      description: 'Lesson reservation ID',
+      example: 'lr-001',
+    }),
+    lesson_date: z.string().openapi({
+      description: 'Lesson date in YYYY-MM-DD format',
+      example: '2026-04-23',
+    }),
+    lesson_name: z.string().openapi({
+      description: 'Lesson name in Japanese',
+      example: 'ボクシング基礎',
+    }),
+    instructor_name: z.string().openapi({
+      description: 'Instructor name in Japanese',
+      example: '田中太郎',
+    }),
+    status: z.enum(['attended', 'absent', 'cancelled', 'reserved']).openapi({
+      description: 'Lesson participation status',
+      example: 'attended',
+    }),
+  })
+  .openapi({ title: 'LessonReservationRow', description: 'Lesson reservation record' });
+
+export const MemberAccessSettingsSchema = z
+  .object({
+    auth_method: z.string().openapi({
+      description: 'Primary authentication method label',
+      example: 'QRコード',
+    }),
+    ic_card_number: z.string().nullable().openapi({
+      description: 'IC card number, or null if not registered',
+      example: 'IC-0001',
+    }),
+    qr_code: z.string().nullable().openapi({
+      description: 'QR code identifier, or null if not registered',
+      example: 'QR123456789',
+    }),
+    gate_stop: z.boolean().openapi({
+      description: 'Whether gate-stop is currently active',
+      example: false,
+    }),
+  })
+  .openapi({ title: 'MemberAccessSettings', description: 'Member access control settings' });
+
+export const GetUsageHistoryResponseSchema = z
+  .object({
+    visitRecords: z.array(VisitRowSchema).openapi({
+      description: 'Entry/exit visit history records',
+    }),
+    lessonReservations: z.array(LessonReservationRowSchema).openapi({
+      description: 'Lesson reservation history records',
+    }),
+    memberAccessSettings: MemberAccessSettingsSchema.openapi({
+      description: 'Member access control settings',
+    }),
+  })
+  .openapi({
+    title: 'GetUsageHistoryResponse',
+    description: 'Usage history tab data: visits, lessons, and access settings',
+  });
+
+export const GetUsageHistoryEntriesResponseSchema = z
+  .object({
+    items: z.array(VisitRowSchema).openapi({
+      description: 'Paginated entry/exit visit records',
+    }),
+    total: z.number().int().nonnegative().openapi({
+      description: 'Total number of entry/exit records',
+      example: 120,
+    }),
+    page: z.number().int().positive().openapi({
+      description: 'Current page number (1-based)',
+      example: 1,
+    }),
+    limit: z.number().int().positive().openapi({
+      description: 'Number of records per page',
+      example: 50,
+    }),
+  })
+  .openapi({
+    title: 'GetUsageHistoryEntriesResponse',
+    description: 'Paginated entry/exit history response',
+  });
+
+export const GetUsageHistoryLessonsResponseSchema = z
+  .object({
+    items: z.array(LessonReservationRowSchema).openapi({
+      description: 'Paginated lesson reservation records',
+    }),
+    total: z.number().int().nonnegative().openapi({
+      description: 'Total number of lesson reservation records',
+      example: 36,
+    }),
+    page: z.number().int().positive().openapi({
+      description: 'Current page number (1-based)',
+      example: 1,
+    }),
+    limit: z.number().int().positive().openapi({
+      description: 'Number of records per page',
+      example: 20,
+    }),
+  })
+  .openapi({
+    title: 'GetUsageHistoryLessonsResponse',
+    description: 'Paginated lesson reservations response',
+  });
+
+export const GetUsageHistoryAccessSettingsResponseSchema = MemberAccessSettingsSchema.openapi({
+  title: 'GetUsageHistoryAccessSettingsResponse',
+  description: 'Member access settings for usage history tab',
+});
+
+export const UsageHistoryStoreItemSchema = z
+  .object({
+    id: z.string().openapi({ description: 'Store internal ID', example: 'store-uuid-001' }),
+    store_id: z.string().openapi({ description: 'Store display ID', example: 'ST001' }),
+    name: z.string().openapi({ description: 'Store name in Japanese', example: 'JOYFIT渋谷店' }),
+  })
+  .openapi({ title: 'UsageHistoryStoreItem' });
+
+export const GetUsageHistoryStoresResponseSchema = z
+  .object({
+    stores: z.array(UsageHistoryStoreItemSchema).openapi({
+      description: "List of stores for the member's brand",
+    }),
+  })
+  .openapi({
+    title: 'GetUsageHistoryStoresResponse',
+    description: 'Stores available for usage history filtering',
+  });
+
+export type VisitRow = z.infer<typeof VisitRowSchema>;
+export type LessonReservationRow = z.infer<typeof LessonReservationRowSchema>;
+export type MemberAccessSettings = z.infer<typeof MemberAccessSettingsSchema>;
+export type GetUsageHistoryResponse = z.infer<typeof GetUsageHistoryResponseSchema>;
+export type GetUsageHistoryEntriesResponse = z.infer<typeof GetUsageHistoryEntriesResponseSchema>;
+export type GetUsageHistoryLessonsResponse = z.infer<typeof GetUsageHistoryLessonsResponseSchema>;
+export type GetUsageHistoryAccessSettingsResponse = z.infer<
+  typeof GetUsageHistoryAccessSettingsResponseSchema
+>;
+export type GetUsageHistoryStoresResponse = z.infer<typeof GetUsageHistoryStoresResponseSchema>;

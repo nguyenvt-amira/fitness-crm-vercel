@@ -1,9 +1,10 @@
 'use client';
 
-import { QrCode, Search } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { ChevronDown, ChevronUp, Search, SlidersHorizontal } from 'lucide-react';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -13,269 +14,250 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { Brand, MemberStatus, MemberType } from '@/types/member.type';
+import { getCrmStoresOptions } from '@/lib/api/@tanstack/react-query.gen';
+import { Brand, ContractType, MemberStatus } from '@/lib/api/types.gen';
 
+import { BRAND_LABELS, CONTRACT_TYPE_LABELS, MEMBER_STATUS_LABELS } from '../_constants/constants';
 import { useMembersFiltersContext } from '../_contexts/members-filters-context';
-import { BRAND_LABELS, MEMBER_STATUS_LABELS, MEMBER_TYPE_LABELS } from '../_lib/constants';
+
+const PERIOD_OPTIONS = [
+  { value: '30', label: '過去1ヶ月' },
+  { value: '90', label: '過去3ヶ月' },
+  { value: '180', label: '過去6ヶ月' },
+  { value: '365', label: '過去1年' },
+];
 
 interface MembersFiltersProps {
-  onQRScan: () => void;
+  isFilterOpen: boolean;
+  onFilterOpenChange: (open: boolean) => void;
 }
 
-// Mock stores data
-const MOCK_STORES = [
-  { id: 'store-001', name: 'Fit365八潮店' },
-  { id: 'store-002', name: 'Fit365新宿店' },
-  { id: 'store-003', name: 'Fit365渋谷店' },
-  { id: 'store-004', name: 'JOYFIT池袋店' },
-];
+function filterActiveClass(isActive: boolean) {
+  return isActive ? 'border-primary bg-primary/10 text-foreground' : '';
+}
 
-// Mock contract plans
-const MOCK_CONTRACT_PLANS = [
-  { id: 'plan-001', name: 'ベーシックプラン' },
-  { id: 'plan-002', name: 'スタンダードプラン' },
-  { id: 'plan-003', name: 'プレミアムプラン' },
-];
-
-const LAST_VISIT_OPTIONS = [
-  { value: 7, label: '1週間以内' },
-  { value: 30, label: '1ヶ月以内' },
-  { value: 90, label: '3ヶ月以内' },
-  { value: -1, label: '3ヶ月以上' }, // -1 means 90+ days
-];
-
-export function MembersFilters({ onQRScan }: MembersFiltersProps) {
+export function MembersFilters({ isFilterOpen, onFilterOpenChange }: MembersFiltersProps) {
   const { filters, searchInput, setSearchInput, updateFilter, hasActiveFilters, clearFilters } =
     useMembersFiltersContext();
+  const { data: storesRes } = useQuery({
+    ...getCrmStoresOptions({
+      query: {
+        page: 1,
+        limit: 100,
+        sort_by: 'name',
+        sort_order: 'asc',
+      },
+    }),
+  });
+  const stores = storesRes?.stores ?? [];
 
-  const { member_type, status, brand, store_id, contract_plan_id, last_visit_days, has_unpaid } =
-    filters;
+  const { contract_type, status, brand, store_id, last_visit_days } = filters;
+
+  const periodValue =
+    last_visit_days !== null && last_visit_days !== undefined ? String(last_visit_days) : 'all';
+
+  const activeFilterCount = [
+    status.length > 0,
+    contract_type.length > 0,
+    brand.length > 0,
+    store_id.length > 0,
+    last_visit_days !== null && last_visit_days !== undefined,
+  ].filter(Boolean).length;
+
   return (
-    <div className="space-y-2">
-      {/* Search Bar and Filters */}
-      <Card className="rounded-lg border p-4 shadow-sm">
-        <div className="flex flex-col gap-4">
-          {/* Search Row */}
-          <div className="flex items-center gap-2">
-            <div className="relative flex-1">
-              <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-              <Input
-                placeholder="会員番号、氏名、電話番号、メールで検索"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                className="h-9 rounded-lg pl-9"
-              />
-            </div>
-            <Button variant="outline" size="icon" onClick={onQRScan} title="QRコード読み取り">
-              <QrCode className="size-4" />
-            </Button>
-          </div>
-
-          {/* Filter Row */}
-          <div className="flex flex-wrap items-center gap-2">
-            {/* 会員種別 */}
-            <Select
-              value={member_type.length > 0 ? member_type[0] : undefined}
-              onValueChange={(value: MemberType) => {
-                // const newTypes = memberType.includes(value as MemberType)
-                //   ? memberType.filter((t) => t !== value)
-                //   : [...memberType, value as MemberType];
-                updateFilter('member_type', [value]);
-              }}
-            >
-              <SelectTrigger className="h-9 w-fit rounded-lg">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-muted-foreground text-sm">会員種別:</span>
-                  <SelectValue placeholder="すべて">
-                    {member_type.length > 0
-                      ? MEMBER_TYPE_LABELS[member_type[0] as MemberType]
-                      : null}
-                  </SelectValue>
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(MEMBER_TYPE_LABELS).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* 会員ステータス */}
-            <Select
-              value={status.length > 0 ? status[0] : undefined}
-              onValueChange={(value: MemberStatus) => {
-                // const newStatus = status.includes(value as MemberStatus)
-                //   ? status.filter((s) => s !== value)
-                //   : [...status, value as MemberStatus];
-                updateFilter('status', [value]);
-              }}
-            >
-              <SelectTrigger className="h-9 w-fit rounded-lg">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-muted-foreground text-sm">ステータス:</span>
-                  <SelectValue placeholder="すべて">
-                    {status.length > 0 ? MEMBER_STATUS_LABELS[status[0] as MemberStatus] : null}
-                  </SelectValue>
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(MEMBER_STATUS_LABELS).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* 所属店舗 */}
-            <Select
-              value={store_id.length > 0 ? store_id[0] : undefined}
-              onValueChange={(value) => {
-                // const newStores = storeId.includes(value)
-                //   ? storeId.filter((s) => s !== value)
-                //   : [...storeId, value];
-                updateFilter('store_id', [value]);
-              }}
-            >
-              <SelectTrigger className="h-9 w-fit rounded-lg">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-muted-foreground text-sm">店舗:</span>
-                  <SelectValue placeholder="すべて">
-                    {store_id.length > 0
-                      ? MOCK_STORES.find((s) => s.id === store_id[0])?.name
-                      : null}
-                  </SelectValue>
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                {MOCK_STORES.map((store) => (
-                  <SelectItem key={store.id} value={store.id}>
-                    {store.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* ブランド */}
-            <Select
-              value={brand.length > 0 ? brand[0] : undefined}
-              onValueChange={(value: Brand) => {
-                // const newBrand = brand.includes(value as Brand)
-                //   ? brand.filter((b) => b !== value)
-                //   : [...brand, value as Brand];
-                updateFilter('brand', [value]);
-              }}
-            >
-              <SelectTrigger className="h-9 w-fit rounded-lg">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-muted-foreground text-sm">ブランド:</span>
-                  <SelectValue placeholder="すべて">
-                    {brand.length > 0 ? BRAND_LABELS[brand[0] as Brand] : null}
-                  </SelectValue>
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(BRAND_LABELS).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* 契約プラン */}
-            <Select
-              value={contract_plan_id.length > 0 ? contract_plan_id[0] : undefined}
-              onValueChange={(value) => {
-                // const newPlans = contractPlanId.includes(value)
-                //   ? contractPlanId.filter((p) => p !== value)
-                //   : [...contractPlanId, value];
-                updateFilter('contract_plan_id', [value]);
-              }}
-            >
-              <SelectTrigger className="h-9 w-fit rounded-lg">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-muted-foreground text-sm">契約プラン:</span>
-                  <SelectValue placeholder="すべて">
-                    {contract_plan_id.length > 0
-                      ? MOCK_CONTRACT_PLANS.find((p) => p.id === contract_plan_id[0])?.name
-                      : null}
-                  </SelectValue>
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                {MOCK_CONTRACT_PLANS.map((plan) => (
-                  <SelectItem key={plan.id} value={plan.id}>
-                    {plan.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* 最終来館日 */}
-            <Select
-              value={last_visit_days !== null ? last_visit_days.toString() : undefined}
-              onValueChange={(value) => {
-                updateFilter('last_visit_days', value ? Number(value) : null);
-              }}
-            >
-              <SelectTrigger className="h-9 w-fit rounded-lg">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-muted-foreground text-sm">最終来館日:</span>
-                  <SelectValue placeholder="すべて">
-                    {last_visit_days !== null
-                      ? LAST_VISIT_OPTIONS.find((opt) => opt.value === last_visit_days)?.label
-                      : null}
-                  </SelectValue>
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                {LAST_VISIT_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value.toString()}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* 未納有無 */}
-            <Select
-              value={has_unpaid !== null ? (has_unpaid === true ? 'yes' : 'no') : undefined}
-              onValueChange={(value) => {
-                if (value === 'yes') {
-                  updateFilter('has_unpaid', true);
-                } else if (value === 'no') {
-                  updateFilter('has_unpaid', false);
-                } else {
-                  updateFilter('has_unpaid', null);
-                }
-              }}
-            >
-              <SelectTrigger className="h-9 w-fit rounded-lg">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-muted-foreground text-sm">未納有無:</span>
-                  <SelectValue placeholder="すべて">
-                    {has_unpaid === true ? 'あり' : has_unpaid === false ? 'なし' : null}
-                  </SelectValue>
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="yes">あり</SelectItem>
-                <SelectItem value="no">なし</SelectItem>
-              </SelectContent>
-            </Select>
-
-            {/* フィルタクリア */}
-            {hasActiveFilters && (
-              <Button variant="ghost" size="sm" onClick={clearFilters} className="h-9">
-                すべてクリア
-              </Button>
-            )}
-          </div>
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center gap-2">
+        <div className="relative max-w-[400px] flex-1">
+          <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+          <Input
+            placeholder="会員ID・氏名・カナ・電話番号・メールアドレス・旧会員番号"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            className="h-8 pl-9 text-xs"
+          />
         </div>
-      </Card>
+        <Button
+          variant={activeFilterCount > 0 ? 'default' : 'outline'}
+          size="sm"
+          className="ml-auto h-8 gap-1 text-xs"
+          onClick={() => onFilterOpenChange(!isFilterOpen)}
+        >
+          <SlidersHorizontal className="size-4" />
+          {isFilterOpen ? '閉じる' : '詳細フィルター'}
+          {activeFilterCount > 0 && (
+            <Badge variant="secondary" className="ml-0.5 h-5 px-1 text-[10px]">
+              {activeFilterCount}
+            </Badge>
+          )}
+          {isFilterOpen ? <ChevronUp className="size-3" /> : <ChevronDown className="size-3" />}
+        </Button>
+      </div>
+
+      {isFilterOpen && (
+        <div className="flex flex-wrap items-center gap-2">
+          <Select
+            value={store_id.length > 0 ? store_id[0] : 'all'}
+            onValueChange={(value) => {
+              if (value === 'all') {
+                updateFilter('store_id', []);
+              } else {
+                updateFilter('store_id', [value]);
+              }
+            }}
+          >
+            <SelectTrigger
+              size="sm"
+              className={`h-8 w-[160px] text-xs ${filterActiveClass(store_id.length > 0)}`}
+            >
+              <SelectValue>
+                {store_id.length > 0
+                  ? (stores.find((store) => store.id === store_id[0])?.name ?? store_id[0])
+                  : '全店舗'}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">全店舗</SelectItem>
+              {stores.map((store) => (
+                <SelectItem key={store.id} value={store.id}>
+                  {store.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={status.length > 0 ? status[0] : 'all'}
+            onValueChange={(value) => {
+              if (value === 'all') {
+                updateFilter('status', []);
+              } else {
+                updateFilter('status', [value as MemberStatus]);
+              }
+            }}
+          >
+            <SelectTrigger
+              size="sm"
+              className={`h-8 w-[140px] text-xs ${filterActiveClass(status.length > 0)}`}
+            >
+              <SelectValue>
+                {status.length > 0
+                  ? MEMBER_STATUS_LABELS[status[0] as MemberStatus]
+                  : '全ステータス'}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">全ステータス</SelectItem>
+              {Object.entries(MEMBER_STATUS_LABELS).map(([value, label]) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={contract_type.length > 0 ? contract_type[0] : 'all'}
+            onValueChange={(value) => {
+              if (value === 'all') {
+                updateFilter('contract_type', []);
+              } else {
+                updateFilter('contract_type', [value as ContractType]);
+              }
+            }}
+          >
+            <SelectTrigger
+              size="sm"
+              className={`h-8 w-[140px] text-xs ${filterActiveClass(contract_type.length > 0)}`}
+            >
+              <SelectValue>
+                {contract_type.length > 0
+                  ? CONTRACT_TYPE_LABELS[contract_type[0] as ContractType]
+                  : '全契約種別'}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">全契約種別</SelectItem>
+              {Object.entries(CONTRACT_TYPE_LABELS).map(([value, label]) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={brand.length > 0 ? brand[0] : 'all'}
+            onValueChange={(value) => {
+              if (value === 'all') {
+                updateFilter('brand', []);
+              } else {
+                updateFilter('brand', [value as Brand]);
+              }
+            }}
+          >
+            <SelectTrigger
+              size="sm"
+              className={`h-8 w-[140px] text-xs ${filterActiveClass(brand.length > 0)}`}
+            >
+              <SelectValue>
+                {brand.length > 0 ? BRAND_LABELS[brand[0] as Brand] : '全ブランド'}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">全ブランド</SelectItem>
+              {Object.entries(BRAND_LABELS).map(([value, label]) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={periodValue}
+            onValueChange={(value) => {
+              if (value === 'all') {
+                updateFilter('last_visit_days', null);
+              } else {
+                updateFilter('last_visit_days', parseInt(value, 10));
+              }
+            }}
+          >
+            <SelectTrigger
+              size="sm"
+              className={`h-8 w-[140px] text-xs ${filterActiveClass(
+                last_visit_days !== null && last_visit_days !== undefined,
+              )}`}
+            >
+              <SelectValue>
+                {last_visit_days !== null && last_visit_days !== undefined
+                  ? (PERIOD_OPTIONS.find((o) => o.value === String(last_visit_days))?.label ??
+                    '全期間')
+                  : '全期間'}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">全期間</SelectItem>
+              {PERIOD_OPTIONS.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {hasActiveFilters && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearFilters}
+              className="text-muted-foreground ml-auto h-8 text-xs"
+            >
+              すべてクリア
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

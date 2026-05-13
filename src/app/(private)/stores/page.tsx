@@ -8,7 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { ColumnDef, SortingState } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
 
-import { DataStateBoundary } from '@/components/common/data-state-boundary';
+import { Loading } from '@/components/common/data-state-boundary/loading';
 import { DataTable } from '@/components/common/data-table';
 import { TablePagination } from '@/components/common/table-pagination';
 import { Badge } from '@/components/ui/badge';
@@ -32,7 +32,7 @@ function StoresPageContent() {
   const { filters, setFilters, queryParams, currentPage, setCurrentPage, pageSize } = filtersHook;
   const router = useRouter();
 
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading } = useQuery({
     ...getCrmStoresOptions({
       query: queryParams,
     }),
@@ -96,45 +96,37 @@ function StoresPageContent() {
             </StoresFiltersProvider>
           </div>
 
-          <DataStateBoundary
+          <DataTable
+            columns={columns}
+            data={stores}
             isLoading={isLoading}
-            isError={isError}
-            isEmpty={stores.length === 0}
-            onRetry={() => refetch()}
-            emptyTitle="店舗がありません"
-            emptyDescription="条件を変更するか、新規登録してください。"
-            errorTitle="店舗一覧の取得に失敗しました"
-          >
-            <DataTable
-              columns={columns}
-              data={stores}
-              isLoading={false}
-              variant="simple"
-              onRowClick={(row) => {
-                router.push(navigate('/stores/[id]', row.id));
-              }}
-              className="rounded-none border-x-0 border-b-0"
-              containerClassName={
-                isFilterOpen ? 'max-h-[calc(100vh-370px)]' : 'max-h-[calc(100vh-320px)]'
-              }
-              tableOptions={{
-                onSortingChange: handleSortingChange,
-                manualSorting: true,
-                state: {
-                  sorting,
-                },
-              }}
-            />
+            variant="simple"
+            onRowClick={(row) => {
+              router.push(navigate('/stores/[id]', row.id));
+            }}
+            className="rounded-none border-x-0 border-b-0"
+            containerClassName={
+              isFilterOpen ? 'max-h-[calc(100vh-370px)]' : 'max-h-[calc(100vh-320px)]'
+            }
+            tableOptions={{
+              onSortingChange: handleSortingChange,
+              manualSorting: true,
+              state: {
+                sorting,
+              },
+            }}
+          />
 
+          {totalStores > 0 && (
             <TablePagination
               currentPage={page}
               totalPages={totalPages}
               total={totalStores}
               limit={limit}
               onPageChange={setCurrentPage}
-              isLoading={false}
+              isLoading={isLoading}
             />
-          </DataStateBoundary>
+          )}
         </Card>
       </div>
     </div>
@@ -143,13 +135,7 @@ function StoresPageContent() {
 
 export default function StoresPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex flex-1 items-center justify-center">
-          <div className="text-muted-foreground">読み込み中...</div>
-        </div>
-      }
-    >
+    <Suspense fallback={<Loading />}>
       <StoresPageContent />
     </Suspense>
   );

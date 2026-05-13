@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { db } from '@/app/api/_mock-db';
 import {
+  CreateMemberRequestSchema,
+  type CreateMemberResponse,
+  CreateMemberResponseSchema,
   ErrorResponseSchema,
   type GetMembersQuery,
   GetMembersQuerySchema,
@@ -37,6 +40,35 @@ registerRoute({
   ],
 });
 
+registerRoute({
+  method: 'post',
+  path: '/crm/members',
+  summary: 'Create member',
+  description: 'Create a new member',
+  tags: ['Members'],
+  requestBody: {
+    schema: CreateMemberRequestSchema,
+    description: 'Member create payload',
+  },
+  responses: [
+    {
+      status: 200,
+      schema: CreateMemberResponseSchema,
+      description: 'Member created successfully',
+    },
+    {
+      status: 400,
+      schema: ErrorResponseSchema,
+      description: 'Bad request - invalid request body',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
+
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
@@ -59,11 +91,10 @@ export async function GET(request: NextRequest) {
       page,
       limit,
       search = '',
-      member_type,
+      contract_type,
       status,
       brand,
       store_id,
-      contract_plan_id,
       last_visit_days,
       has_unpaid,
       sort_by = 'member_number',
@@ -91,8 +122,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    if (member_type && member_type.length > 0) {
-      filtered = filtered.filter((m) => member_type.includes(m.member_type));
+    if (contract_type && contract_type.length > 0) {
+      filtered = filtered.filter((m) => contract_type.includes(m.contract_type));
     }
 
     if (status && status.length > 0) {
@@ -106,13 +137,6 @@ export async function GET(request: NextRequest) {
     if (store_id && store_id.length > 0) {
       // Mock filter by store - in real app, filter by store_id
       filtered = filtered.filter((m) => store_id.some((id) => m.store_id?.includes(id)));
-    }
-
-    if (contract_plan_id && contract_plan_id.length > 0) {
-      // Mock filter by contract plan
-      filtered = filtered.filter((m) =>
-        contract_plan_id.some((id) => m.contract_plan_id?.includes(id)),
-      );
     }
 
     if (last_visit_days !== undefined) {
@@ -179,5 +203,28 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Error fetching members:', error);
     return NextResponse.json({ error: 'Failed to fetch members' }, { status: 500 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const validationResult = CreateMemberRequestSchema.safeParse(body);
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((issue) => issue.message).join(', ');
+      return NextResponse.json({ error: errors }, { status: 400 });
+    }
+
+    const member = db.members.create(validationResult.data);
+
+    const response: CreateMemberResponse = {
+      message: 'Member created successfully',
+      member: member.basic_info,
+    };
+
+    return NextResponse.json(response);
+  } catch (error) {
+    console.error('Error creating member:', error);
+    return NextResponse.json({ error: 'Failed to create member' }, { status: 500 });
   }
 }

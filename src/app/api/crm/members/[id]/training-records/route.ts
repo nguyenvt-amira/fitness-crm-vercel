@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { ErrorResponseSchema } from '@/app/api/_schemas/member.schema';
+import {
+  ErrorResponseSchema,
+  GetTrainingRecordsPathParamsSchema,
+  GetTrainingRecordsQuerySchema,
+  GetTrainingRecordsResponseSchema,
+} from '@/app/api/_schemas/member.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
-import { z } from 'zod';
 
 // Register OpenAPI documentation for this route
 registerRoute({
@@ -19,32 +23,21 @@ registerRoute({
       description: 'Member ID',
       schema: { type: 'string' },
     },
+    {
+      name: 'period',
+      in: 'query',
+      required: false,
+      description: 'Period filter for training records',
+      schema: {
+        type: 'string',
+        enum: ['all', 'this_month', 'last_3_months'],
+      },
+    },
   ],
   responses: [
     {
       status: 200,
-      schema: z
-        .object({
-          summary: z.any().openapi({
-            description: 'Training summary',
-          }),
-          strengthRecords: z.array(z.any()).openapi({
-            description: 'Strength training records',
-          }),
-          cardioRecords: z.array(z.any()).openapi({
-            description: 'Cardio records',
-          }),
-          bodyRecords: z.array(z.any()).openapi({
-            description: 'Body measurement records',
-          }),
-          trainingMenus: z.array(z.any()).openapi({
-            description: 'Training menus',
-          }),
-        })
-        .openapi({
-          title: 'GetTrainingRecordsResponse',
-          description: 'Response for getting training records',
-        }),
+      schema: GetTrainingRecordsResponseSchema,
       description: 'Training records',
     },
     {
@@ -62,91 +55,104 @@ registerRoute({
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = await params;
+    const parsedPath = GetTrainingRecordsPathParamsSchema.parse(await params);
+    void parsedPath.id;
+    const { period } = GetTrainingRecordsQuerySchema.parse({
+      period: request.nextUrl.searchParams.get('period') ?? undefined,
+    });
 
-    const mockData = {
-      summary: {
-        recorded_days: 15,
-        total_training_time: 1200,
-        average_training_time: 80,
-        frequent_exercises: ['ベンチプレス', 'スクワット', 'デッドリフト'],
+    const allTrainingHistory = [
+      {
+        id: 'training-001',
+        date: '2026-04-17',
+        routineName: '全身強化',
+        durationMin: 55,
+        calories: 360,
       },
-      strengthRecords: [
-        {
-          id: 'str-001',
-          date: '2025-03-10T10:00:00+09:00',
-          exercise_name: 'ベンチプレス',
-          weight: 60,
-          reps: 10,
-          sets: 3,
-          notes: 'フォーム改善',
-        },
-        {
-          id: 'str-002',
-          date: '2025-03-08T09:30:00+09:00',
-          exercise_name: 'スクワット',
-          weight: 80,
-          reps: 8,
-          sets: 3,
-        },
-      ],
-      cardioRecords: [
-        {
-          id: 'card-001',
-          date: '2025-03-10T11:00:00+09:00',
-          exercise_type: 'ランニング',
-          duration: 30,
-          distance: 5,
-          calories: 320,
-        },
-        {
-          id: 'card-002',
-          date: '2025-03-05T20:00:00+09:00',
-          exercise_type: 'バイク',
-          duration: 25,
-          distance: 12,
-          calories: 260,
-        },
-      ],
-      bodyRecords: [
-        {
-          id: 'body-001',
-          date: '2025-03-01',
-          weight: 68,
-          body_fat: 18.5,
-          muscle_mass: 52,
-          bmi: 22.1,
-          notes: 'コンディション良好',
-        },
-        {
-          id: 'body-002',
-          date: '2025-02-15',
-          weight: 69,
-          body_fat: 19,
-          muscle_mass: 51.5,
-          bmi: 22.4,
-        },
-      ],
-      trainingMenus: [
-        {
-          id: 'menu-001',
-          name: '全身トレーニングメニュー',
-          exercise_count: 8,
-          created_at: '2024-10-01T10:00:00+09:00',
-          last_used_at: '2025-03-08T10:00:00+09:00',
-        },
-        {
-          id: 'menu-002',
-          name: '下半身集中メニュー',
-          exercise_count: 5,
-          created_at: '2024-11-15T10:00:00+09:00',
-          last_used_at: '2025-03-05T09:30:00+09:00',
-        },
-      ],
-    };
+      {
+        id: 'training-002',
+        date: '2026-04-14',
+        routineName: '下半身集中',
+        durationMin: 60,
+        calories: 410,
+      },
+      {
+        id: 'training-003',
+        date: '2026-04-10',
+        routineName: '全身強化',
+        durationMin: 52,
+        calories: 345,
+      },
+      {
+        id: 'training-004',
+        date: '2026-03-24',
+        routineName: '有酸素ミックス',
+        durationMin: 40,
+        calories: 280,
+      },
+      {
+        id: 'training-005',
+        date: '2026-03-10',
+        routineName: '全身強化',
+        durationMin: 58,
+        calories: 390,
+      },
+      {
+        id: 'training-006',
+        date: '2026-02-06',
+        routineName: 'コア集中',
+        durationMin: 35,
+        calories: 240,
+      },
+      {
+        id: 'training-007',
+        date: '2026-01-20',
+        routineName: '有酸素ミックス',
+        durationMin: 45,
+        calories: 300,
+      },
+      {
+        id: 'training-008',
+        date: '2026-01-04',
+        routineName: '全身強化',
+        durationMin: 48,
+        calories: 320,
+      },
+    ];
+
+    const monthsByPeriod = period === 'this_month' ? 1 : period === 'last_3_months' ? 3 : null;
+    const now = new Date();
+    const filteredHistory =
+      monthsByPeriod === null
+        ? allTrainingHistory
+        : allTrainingHistory.filter((record) => {
+            const recordDate = new Date(record.date);
+            const monthDiff =
+              (now.getFullYear() - recordDate.getFullYear()) * 12 +
+              (now.getMonth() - recordDate.getMonth());
+            return monthDiff >= 0 && monthDiff < monthsByPeriod;
+          });
+
+    const routineCountMap = filteredHistory.reduce<Record<string, number>>((acc, item) => {
+      acc[item.routineName] = (acc[item.routineName] ?? 0) + 1;
+      return acc;
+    }, {});
+
+    const mostFrequentRoutineName =
+      Object.entries(routineCountMap).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+
+    const mockData = GetTrainingRecordsResponseSchema.parse({
+      summary: {
+        trainingCount: filteredHistory.length,
+        totalDurationMin: filteredHistory.reduce((sum, item) => sum + item.durationMin, 0),
+        totalCalories: filteredHistory.reduce((sum, item) => sum + item.calories, 0),
+        mostFrequentRoutineName,
+      },
+      trainingHistory: filteredHistory,
+    });
 
     return NextResponse.json(mockData);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch training records' }, { status: 500 });
   }
 }

@@ -346,7 +346,7 @@ export const RecentActivitySchema = z
  */
 export const DashboardSchema = z
   .object({
-    period: z.string().openapi({
+    period: z.enum(['day', 'week', 'month']).openapi({
       example: 'month',
       description: 'Time period',
     }),

@@ -4,7 +4,7 @@ import { type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutation
 
 import { client } from '../client.gen';
 import { Authentication, AutoApproval, Brands, FamilyMembers, FamilyRegistrations, MainContracts, Members, MembershipApplications, type Options, Options2, Staffs, Stores } from '../sdk.gen';
-import type { DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdError, DeleteCrmMembersByIdMemosByMemoIdResponse, DeleteCrmStaffsByIdData, DeleteCrmStaffsByIdError, DeleteCrmStaffsByIdResponse, DeleteCrmStoresByIdMainContractsByContractIdData, DeleteCrmStoresByIdMainContractsByContractIdError, DeleteCrmStoresByIdMainContractsByContractIdResponse, DeleteCrmStoresByIdOptionsByOptionIdData, DeleteCrmStoresByIdOptionsByOptionIdError, DeleteCrmStoresByIdOptionsByOptionIdResponse, GetCrmAutoApprovalDashboardData, GetCrmAutoApprovalDashboardError, GetCrmAutoApprovalDashboardResponse, GetCrmAutoApprovalSettingsData, GetCrmAutoApprovalSettingsError, GetCrmAutoApprovalSettingsResponse, GetCrmBrandsData, GetCrmBrandsError, GetCrmBrandsResponse, GetCrmFamilyRegistrationsByIdData, GetCrmFamilyRegistrationsByIdError, GetCrmFamilyRegistrationsByIdResponse, GetCrmFamilyRegistrationsDashboardData, GetCrmFamilyRegistrationsDashboardError, GetCrmFamilyRegistrationsDashboardResponse, GetCrmFamilyRegistrationsData, GetCrmFamilyRegistrationsError, GetCrmFamilyRegistrationsResponse, GetCrmFamilyRegistrationsSummaryData, GetCrmFamilyRegistrationsSummaryError, GetCrmFamilyRegistrationsSummaryResponse, GetCrmMainContractsData, GetCrmMainContractsError, GetCrmMainContractsResponse, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoError, GetCrmMembersByIdBasicInfoResponse, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryError, GetCrmMembersByIdChangeHistoryResponse, GetCrmMembersByIdCommunicationsData, GetCrmMembersByIdCommunicationsError, GetCrmMembersByIdCommunicationsResponse, GetCrmMembersByIdContractsData, GetCrmMembersByIdContractsError, GetCrmMembersByIdContractsResponse, GetCrmMembersByIdData, GetCrmMembersByIdError, GetCrmMembersByIdMemosData, GetCrmMembersByIdMemosError, GetCrmMembersByIdMemosResponse, GetCrmMembersByIdPointsData, GetCrmMembersByIdPointsError, GetCrmMembersByIdPointsResponse, GetCrmMembersByIdRelationshipsData, GetCrmMembersByIdRelationshipsError, GetCrmMembersByIdRelationshipsResponse, GetCrmMembersByIdResponse, GetCrmMembersByIdServiceUsageData, GetCrmMembersByIdServiceUsageError, GetCrmMembersByIdServiceUsageResponse, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsError, GetCrmMembersByIdTrainingRecordsResponse, GetCrmMembersByIdUsageHistoryData, GetCrmMembersByIdUsageHistoryError, GetCrmMembersByIdUsageHistoryResponse, GetCrmMembersByMemberIdFamilyMembersData, GetCrmMembersByMemberIdFamilyMembersError, GetCrmMembersByMemberIdFamilyMembersResponse, GetCrmMembersData, GetCrmMembersError, GetCrmMembershipApplicationsByIdData, GetCrmMembershipApplicationsByIdError, GetCrmMembershipApplicationsByIdResponse, GetCrmMembershipApplicationsData, GetCrmMembershipApplicationsError, GetCrmMembershipApplicationsResponse, GetCrmMembershipApplicationsSummaryData, GetCrmMembershipApplicationsSummaryError, GetCrmMembershipApplicationsSummaryResponse, GetCrmMembersResponse, GetCrmOptionsData, GetCrmOptionsError, GetCrmOptionsResponse, GetCrmPositionsData, GetCrmPositionsError, GetCrmPositionsResponse, GetCrmStaffsByIdData, GetCrmStaffsByIdError, GetCrmStaffsByIdResponse, GetCrmStaffsData, GetCrmStaffsError, GetCrmStaffsResponse, GetCrmStoresByIdAccessSettingsData, GetCrmStoresByIdAccessSettingsError, GetCrmStoresByIdAccessSettingsResponse, GetCrmStoresByIdBusinessHoursData, GetCrmStoresByIdBusinessHoursError, GetCrmStoresByIdBusinessHoursResponse, GetCrmStoresByIdData, GetCrmStoresByIdError, GetCrmStoresByIdMainContractsData, GetCrmStoresByIdMainContractsError, GetCrmStoresByIdMainContractsResponse, GetCrmStoresByIdOptionsData, GetCrmStoresByIdOptionsError, GetCrmStoresByIdOptionsResponse, GetCrmStoresByIdResponse, GetCrmStoresData, GetCrmStoresError, GetCrmStoresResponse, PatchCrmMembershipApplicationsByIdData, PatchCrmMembershipApplicationsByIdError, PatchCrmMembershipApplicationsByIdResponse, PatchCrmStaffsByIdData, PatchCrmStaffsByIdError, PatchCrmStaffsByIdResponse, PatchCrmStoresByIdBusinessHoursData, PatchCrmStoresByIdBusinessHoursError, PatchCrmStoresByIdBusinessHoursResponse, PatchCrmStoresByIdData, PatchCrmStoresByIdError, PatchCrmStoresByIdResponse, PostAuthLoginData, PostAuthLoginError, PostAuthLoginResponse, PostAuthRefreshData, PostAuthRefreshError, PostAuthRefreshResponse, PostCrmFamilyRegistrationsBulkApproveData, PostCrmFamilyRegistrationsBulkApproveError, PostCrmFamilyRegistrationsBulkApproveResponse, PostCrmFamilyRegistrationsBulkRejectData, PostCrmFamilyRegistrationsBulkRejectError, PostCrmFamilyRegistrationsBulkRejectResponse, PostCrmFamilyRegistrationsByIdApproveData, PostCrmFamilyRegistrationsByIdApproveError, PostCrmFamilyRegistrationsByIdApproveResponse, PostCrmFamilyRegistrationsByIdCompleteData, PostCrmFamilyRegistrationsByIdCompleteError, PostCrmFamilyRegistrationsByIdCompleteResponse, PostCrmFamilyRegistrationsByIdRejectData, PostCrmFamilyRegistrationsByIdRejectError, PostCrmFamilyRegistrationsByIdRejectResponse, PostCrmFamilyRegistrationsCheckPrimaryMemberData, PostCrmFamilyRegistrationsCheckPrimaryMemberError, PostCrmFamilyRegistrationsCheckPrimaryMemberResponse, PostCrmFamilyRegistrationsData, PostCrmFamilyRegistrationsError, PostCrmFamilyRegistrationsResponse, PostCrmFamilyRegistrationsRiskEvaluationData, PostCrmFamilyRegistrationsRiskEvaluationError, PostCrmFamilyRegistrationsRiskEvaluationResponse, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosError, PostCrmMembersByIdMemosResponse, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsAdjustError, PostCrmMembersByIdPointsAdjustResponse, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsError, PostCrmMembersByIdPointsResponse, PostCrmMembersExportData, PostCrmMembersExportError, PostCrmMembersExportResponse, PostCrmMembershipApplicationsBulkApproveData, PostCrmMembershipApplicationsBulkApproveError, PostCrmMembershipApplicationsBulkApproveResponse, PostCrmMembershipApplicationsBulkRejectData, PostCrmMembershipApplicationsBulkRejectError, PostCrmMembershipApplicationsBulkRejectResponse, PostCrmMembershipApplicationsByIdApproveData, PostCrmMembershipApplicationsByIdApproveError, PostCrmMembershipApplicationsByIdApproveResponse, PostCrmMembershipApplicationsByIdCancelData, PostCrmMembershipApplicationsByIdCancelError, PostCrmMembershipApplicationsByIdCancelResponse, PostCrmMembershipApplicationsByIdRejectData, PostCrmMembershipApplicationsByIdRejectError, PostCrmMembershipApplicationsByIdRejectResponse, PostCrmMembershipApplicationsData, PostCrmMembershipApplicationsError, PostCrmMembershipApplicationsResponse, PostCrmStaffsInviteData, PostCrmStaffsInviteError, PostCrmStaffsInviteResponse, PostCrmStoresByIdMainContractsData, PostCrmStoresByIdMainContractsError, PostCrmStoresByIdMainContractsResponse, PostCrmStoresByIdOptionsData, PostCrmStoresByIdOptionsError, PostCrmStoresByIdOptionsResponse, PostCrmStoresData, PostCrmStoresError, PostCrmStoresResponse, PutCrmAutoApprovalSettingsData, PutCrmAutoApprovalSettingsError, PutCrmAutoApprovalSettingsResponse, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdBasicInfoError, PutCrmMembersByIdBasicInfoResponse, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoError, PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentError, PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdError, PutCrmMembersByIdMemosByMemoIdResponse, PutCrmStoresByIdAccessSettingsData, PutCrmStoresByIdAccessSettingsError, PutCrmStoresByIdAccessSettingsResponse } from '../types.gen';
+import type { DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdError, DeleteCrmMembersByIdMemosByMemoIdResponse, DeleteCrmStaffsByIdData, DeleteCrmStaffsByIdError, DeleteCrmStaffsByIdResponse, DeleteCrmStoresByIdMainContractsByContractIdData, DeleteCrmStoresByIdMainContractsByContractIdError, DeleteCrmStoresByIdMainContractsByContractIdResponse, DeleteCrmStoresByIdOptionsByOptionIdData, DeleteCrmStoresByIdOptionsByOptionIdError, DeleteCrmStoresByIdOptionsByOptionIdResponse, GetCrmAutoApprovalDashboardData, GetCrmAutoApprovalDashboardError, GetCrmAutoApprovalDashboardResponse, GetCrmAutoApprovalSettingsData, GetCrmAutoApprovalSettingsError, GetCrmAutoApprovalSettingsResponse, GetCrmBrandsData, GetCrmBrandsError, GetCrmBrandsResponse, GetCrmFamilyRegistrationsByIdData, GetCrmFamilyRegistrationsByIdError, GetCrmFamilyRegistrationsByIdResponse, GetCrmFamilyRegistrationsDashboardData, GetCrmFamilyRegistrationsDashboardError, GetCrmFamilyRegistrationsDashboardResponse, GetCrmFamilyRegistrationsData, GetCrmFamilyRegistrationsError, GetCrmFamilyRegistrationsResponse, GetCrmFamilyRegistrationsSummaryData, GetCrmFamilyRegistrationsSummaryError, GetCrmFamilyRegistrationsSummaryResponse, GetCrmMainContractsData, GetCrmMainContractsError, GetCrmMainContractsResponse, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoError, GetCrmMembersByIdBasicInfoResponse, GetCrmMembersByIdBillingData, GetCrmMembersByIdBillingError, GetCrmMembersByIdBillingResponse, GetCrmMembersByIdBodyDataData, GetCrmMembersByIdBodyDataError, GetCrmMembersByIdBodyDataResponse, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryError, GetCrmMembersByIdChangeHistoryResponse, GetCrmMembersByIdContractsCampaignsData, GetCrmMembersByIdContractsCampaignsError, GetCrmMembersByIdContractsCampaignsResponse, GetCrmMembersByIdContractsDayPassHistoryData, GetCrmMembersByIdContractsDayPassHistoryError, GetCrmMembersByIdContractsDayPassHistoryResponse, GetCrmMembersByIdContractsMainContractData, GetCrmMembersByIdContractsMainContractError, GetCrmMembersByIdContractsMainContractResponse, GetCrmMembersByIdContractsOptionContractsData, GetCrmMembersByIdContractsOptionContractsError, GetCrmMembersByIdContractsOptionContractsResponse, GetCrmMembersByIdContractsPaymentHistoryData, GetCrmMembersByIdContractsPaymentHistoryError, GetCrmMembersByIdContractsPaymentHistoryResponse, GetCrmMembersByIdContractsSummaryData, GetCrmMembersByIdContractsSummaryError, GetCrmMembersByIdContractsSummaryResponse, GetCrmMembersByIdData, GetCrmMembersByIdError, GetCrmMembersByIdMemosData, GetCrmMembersByIdMemosError, GetCrmMembersByIdMemosResponse, GetCrmMembersByIdPaymentHistoryData, GetCrmMembersByIdPaymentHistoryError, GetCrmMembersByIdPaymentHistoryResponse, GetCrmMembersByIdPaymentSummaryData, GetCrmMembersByIdPaymentSummaryError, GetCrmMembersByIdPaymentSummaryResponse, GetCrmMembersByIdPointsData, GetCrmMembersByIdPointsError, GetCrmMembersByIdPointsResponse, GetCrmMembersByIdResponse, GetCrmMembersByIdStoresData, GetCrmMembersByIdStoresError, GetCrmMembersByIdStoresResponse, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsError, GetCrmMembersByIdTrainingRecordsResponse, GetCrmMembersByIdUsageHistoryAccessSettingsData, GetCrmMembersByIdUsageHistoryAccessSettingsError, GetCrmMembersByIdUsageHistoryAccessSettingsResponse, GetCrmMembersByIdUsageHistoryEntriesData, GetCrmMembersByIdUsageHistoryEntriesError, GetCrmMembersByIdUsageHistoryEntriesResponse, GetCrmMembersByIdUsageHistoryLessonsData, GetCrmMembersByIdUsageHistoryLessonsError, GetCrmMembersByIdUsageHistoryLessonsResponse, GetCrmMembersByIdUsageStatusData, GetCrmMembersByIdUsageStatusError, GetCrmMembersByIdUsageStatusResponse, GetCrmMembersByMemberIdFamilyMembersData, GetCrmMembersByMemberIdFamilyMembersError, GetCrmMembersByMemberIdFamilyMembersResponse, GetCrmMembersData, GetCrmMembersError, GetCrmMembershipApplicationsByIdData, GetCrmMembershipApplicationsByIdError, GetCrmMembershipApplicationsByIdResponse, GetCrmMembershipApplicationsData, GetCrmMembershipApplicationsError, GetCrmMembershipApplicationsResponse, GetCrmMembershipApplicationsSummaryData, GetCrmMembershipApplicationsSummaryError, GetCrmMembershipApplicationsSummaryResponse, GetCrmMembersMetaMainContractLabelsData, GetCrmMembersMetaMainContractLabelsError, GetCrmMembersMetaMainContractLabelsResponse, GetCrmMembersResponse, GetCrmMembersSummaryData, GetCrmMembersSummaryError, GetCrmMembersSummaryResponse, GetCrmOptionsData, GetCrmOptionsError, GetCrmOptionsResponse, GetCrmPositionsData, GetCrmPositionsError, GetCrmPositionsResponse, GetCrmStaffsByIdData, GetCrmStaffsByIdError, GetCrmStaffsByIdResponse, GetCrmStaffsData, GetCrmStaffsError, GetCrmStaffsResponse, GetCrmStoresByIdAccessSettingsData, GetCrmStoresByIdAccessSettingsError, GetCrmStoresByIdAccessSettingsResponse, GetCrmStoresByIdBusinessHoursData, GetCrmStoresByIdBusinessHoursError, GetCrmStoresByIdBusinessHoursResponse, GetCrmStoresByIdData, GetCrmStoresByIdError, GetCrmStoresByIdMainContractsData, GetCrmStoresByIdMainContractsError, GetCrmStoresByIdMainContractsResponse, GetCrmStoresByIdOptionsData, GetCrmStoresByIdOptionsError, GetCrmStoresByIdOptionsResponse, GetCrmStoresByIdResponse, GetCrmStoresData, GetCrmStoresError, GetCrmStoresResponse, PatchCrmMembersByIdContractsMainContractChangeData, PatchCrmMembersByIdContractsMainContractChangeError, PatchCrmMembersByIdContractsMainContractChangeResponse, PatchCrmMembersByIdContractsOptionContractsCancelData, PatchCrmMembersByIdContractsOptionContractsCancelError, PatchCrmMembersByIdContractsOptionContractsCancelResponse, PatchCrmMembersByIdContractsOptionContractsChangeData, PatchCrmMembersByIdContractsOptionContractsChangeError, PatchCrmMembersByIdContractsOptionContractsChangeResponse, PatchCrmMembersByIdData, PatchCrmMembersByIdError, PatchCrmMembersByIdResponse, PatchCrmMembershipApplicationsByIdData, PatchCrmMembershipApplicationsByIdError, PatchCrmMembershipApplicationsByIdResponse, PatchCrmStaffsByIdData, PatchCrmStaffsByIdError, PatchCrmStaffsByIdResponse, PatchCrmStoresByIdBusinessHoursData, PatchCrmStoresByIdBusinessHoursError, PatchCrmStoresByIdBusinessHoursResponse, PatchCrmStoresByIdData, PatchCrmStoresByIdError, PatchCrmStoresByIdResponse, PostAuthLoginData, PostAuthLoginError, PostAuthLoginResponse, PostAuthRefreshData, PostAuthRefreshError, PostAuthRefreshResponse, PostCrmFamilyRegistrationsBulkApproveData, PostCrmFamilyRegistrationsBulkApproveError, PostCrmFamilyRegistrationsBulkApproveResponse, PostCrmFamilyRegistrationsBulkRejectData, PostCrmFamilyRegistrationsBulkRejectError, PostCrmFamilyRegistrationsBulkRejectResponse, PostCrmFamilyRegistrationsByIdApproveData, PostCrmFamilyRegistrationsByIdApproveError, PostCrmFamilyRegistrationsByIdApproveResponse, PostCrmFamilyRegistrationsByIdCompleteData, PostCrmFamilyRegistrationsByIdCompleteError, PostCrmFamilyRegistrationsByIdCompleteResponse, PostCrmFamilyRegistrationsByIdRejectData, PostCrmFamilyRegistrationsByIdRejectError, PostCrmFamilyRegistrationsByIdRejectResponse, PostCrmFamilyRegistrationsCheckPrimaryMemberData, PostCrmFamilyRegistrationsCheckPrimaryMemberError, PostCrmFamilyRegistrationsCheckPrimaryMemberResponse, PostCrmFamilyRegistrationsData, PostCrmFamilyRegistrationsError, PostCrmFamilyRegistrationsResponse, PostCrmFamilyRegistrationsRiskEvaluationData, PostCrmFamilyRegistrationsRiskEvaluationError, PostCrmFamilyRegistrationsRiskEvaluationResponse, PostCrmMembersByIdContractsOptionContractsData, PostCrmMembersByIdContractsOptionContractsError, PostCrmMembersByIdContractsOptionContractsResponse, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosError, PostCrmMembersByIdMemosResponse, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsAdjustError, PostCrmMembersByIdPointsAdjustResponse, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsError, PostCrmMembersByIdPointsResponse, PostCrmMembersData, PostCrmMembersError, PostCrmMembersExportData, PostCrmMembersExportError, PostCrmMembersExportResponse, PostCrmMembershipApplicationsBulkApproveData, PostCrmMembershipApplicationsBulkApproveError, PostCrmMembershipApplicationsBulkApproveResponse, PostCrmMembershipApplicationsBulkRejectData, PostCrmMembershipApplicationsBulkRejectError, PostCrmMembershipApplicationsBulkRejectResponse, PostCrmMembershipApplicationsByIdApproveData, PostCrmMembershipApplicationsByIdApproveError, PostCrmMembershipApplicationsByIdApproveResponse, PostCrmMembershipApplicationsByIdCancelData, PostCrmMembershipApplicationsByIdCancelError, PostCrmMembershipApplicationsByIdCancelResponse, PostCrmMembershipApplicationsByIdRejectData, PostCrmMembershipApplicationsByIdRejectError, PostCrmMembershipApplicationsByIdRejectResponse, PostCrmMembershipApplicationsData, PostCrmMembershipApplicationsError, PostCrmMembershipApplicationsResponse, PostCrmMembersResponse, PostCrmStaffsInviteData, PostCrmStaffsInviteError, PostCrmStaffsInviteResponse, PostCrmStoresByIdMainContractsData, PostCrmStoresByIdMainContractsError, PostCrmStoresByIdMainContractsResponse, PostCrmStoresByIdOptionsData, PostCrmStoresByIdOptionsError, PostCrmStoresByIdOptionsResponse, PostCrmStoresData, PostCrmStoresError, PostCrmStoresResponse, PutCrmAutoApprovalSettingsData, PutCrmAutoApprovalSettingsError, PutCrmAutoApprovalSettingsResponse, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdBasicInfoError, PutCrmMembersByIdBasicInfoResponse, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoError, PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentError, PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdError, PutCrmMembersByIdMemosByMemoIdResponse, PutCrmStoresByIdAccessSettingsData, PutCrmStoresByIdAccessSettingsError, PutCrmStoresByIdAccessSettingsResponse } from '../types.gen';
 
 /**
  * User login
@@ -516,6 +516,75 @@ export const putCrmMembersByIdBasicInfoMutation = (options?: Partial<Options<Put
     return mutationOptions;
 };
 
+export const getCrmMembersByIdBillingQueryKey = (options: Options<GetCrmMembersByIdBillingData>) => createQueryKey('getCrmMembersByIdBilling', options);
+
+/**
+ * Get member billing list
+ *
+ * Get billing list (請求一覧) for a member
+ */
+export const getCrmMembersByIdBillingOptions = (options: Options<GetCrmMembersByIdBillingData>) => queryOptions<GetCrmMembersByIdBillingResponse, GetCrmMembersByIdBillingError, GetCrmMembersByIdBillingResponse, ReturnType<typeof getCrmMembersByIdBillingQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdBilling({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdBillingQueryKey(options)
+});
+
+export const getCrmMembersByIdBillingInfiniteQueryKey = (options: Options<GetCrmMembersByIdBillingData>): QueryKey<Options<GetCrmMembersByIdBillingData>> => createQueryKey('getCrmMembersByIdBilling', options, true);
+
+/**
+ * Get member billing list
+ *
+ * Get billing list (請求一覧) for a member
+ */
+export const getCrmMembersByIdBillingInfiniteOptions = (options: Options<GetCrmMembersByIdBillingData>) => infiniteQueryOptions<GetCrmMembersByIdBillingResponse, GetCrmMembersByIdBillingError, InfiniteData<GetCrmMembersByIdBillingResponse>, QueryKey<Options<GetCrmMembersByIdBillingData>>, number | Pick<QueryKey<Options<GetCrmMembersByIdBillingData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetCrmMembersByIdBillingData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await Members.getCrmMembersByIdBilling({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdBillingInfiniteQueryKey(options)
+});
+
+export const getCrmMembersByIdBodyDataQueryKey = (options: Options<GetCrmMembersByIdBodyDataData>) => createQueryKey('getCrmMembersByIdBodyData', options);
+
+/**
+ * Get member body data
+ *
+ * Get body composition, body measurements, history, and weight chart for a member
+ */
+export const getCrmMembersByIdBodyDataOptions = (options: Options<GetCrmMembersByIdBodyDataData>) => queryOptions<GetCrmMembersByIdBodyDataResponse, GetCrmMembersByIdBodyDataError, GetCrmMembersByIdBodyDataResponse, ReturnType<typeof getCrmMembersByIdBodyDataQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdBodyData({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdBodyDataQueryKey(options)
+});
+
 export const getCrmMembersByIdChangeHistoryQueryKey = (options: Options<GetCrmMembersByIdChangeHistoryData>) => createQueryKey('getCrmMembersByIdChangeHistory', options);
 
 /**
@@ -536,16 +605,16 @@ export const getCrmMembersByIdChangeHistoryOptions = (options: Options<GetCrmMem
     queryKey: getCrmMembersByIdChangeHistoryQueryKey(options)
 });
 
-export const getCrmMembersByIdMemosQueryKey = (options: Options<GetCrmMembersByIdMemosData>) => createQueryKey('getCrmMembersByIdMemos', options);
+export const getCrmMembersByIdContractsCampaignsQueryKey = (options: Options<GetCrmMembersByIdContractsCampaignsData>) => createQueryKey('getCrmMembersByIdContractsCampaigns', options);
 
 /**
- * Get member memos
+ * Get member campaigns
  *
- * Get all memos for a member
+ * Get active and historical campaign information for a member
  */
-export const getCrmMembersByIdMemosOptions = (options: Options<GetCrmMembersByIdMemosData>) => queryOptions<GetCrmMembersByIdMemosResponse, GetCrmMembersByIdMemosError, GetCrmMembersByIdMemosResponse, ReturnType<typeof getCrmMembersByIdMemosQueryKey>>({
+export const getCrmMembersByIdContractsCampaignsOptions = (options: Options<GetCrmMembersByIdContractsCampaignsData>) => queryOptions<GetCrmMembersByIdContractsCampaignsResponse, GetCrmMembersByIdContractsCampaignsError, GetCrmMembersByIdContractsCampaignsResponse, ReturnType<typeof getCrmMembersByIdContractsCampaignsQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Members.getCrmMembersByIdMemos({
+        const { data } = await Members.getCrmMembersByIdContractsCampaigns({
             ...options,
             ...queryKey[0],
             signal,
@@ -553,18 +622,38 @@ export const getCrmMembersByIdMemosOptions = (options: Options<GetCrmMembersById
         });
         return data;
     },
-    queryKey: getCrmMembersByIdMemosQueryKey(options)
+    queryKey: getCrmMembersByIdContractsCampaignsQueryKey(options)
+});
+
+export const getCrmMembersByIdContractsDayPassHistoryQueryKey = (options: Options<GetCrmMembersByIdContractsDayPassHistoryData>) => createQueryKey('getCrmMembersByIdContractsDayPassHistory', options);
+
+/**
+ * Get member day pass purchase history
+ *
+ * Get 1DayPass purchase history records for a member
+ */
+export const getCrmMembersByIdContractsDayPassHistoryOptions = (options: Options<GetCrmMembersByIdContractsDayPassHistoryData>) => queryOptions<GetCrmMembersByIdContractsDayPassHistoryResponse, GetCrmMembersByIdContractsDayPassHistoryError, GetCrmMembersByIdContractsDayPassHistoryResponse, ReturnType<typeof getCrmMembersByIdContractsDayPassHistoryQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdContractsDayPassHistory({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdContractsDayPassHistoryQueryKey(options)
 });
 
 /**
- * Create member memo
+ * Change member main contract
  *
- * Create a new memo for a member
+ * Submit a request to change the member main contract
  */
-export const postCrmMembersByIdMemosMutation = (options?: Partial<Options<PostCrmMembersByIdMemosData>>): UseMutationOptions<PostCrmMembersByIdMemosResponse, PostCrmMembersByIdMemosError, Options<PostCrmMembersByIdMemosData>> => {
-    const mutationOptions: UseMutationOptions<PostCrmMembersByIdMemosResponse, PostCrmMembersByIdMemosError, Options<PostCrmMembersByIdMemosData>> = {
+export const patchCrmMembersByIdContractsMainContractChangeMutation = (options?: Partial<Options<PatchCrmMembersByIdContractsMainContractChangeData>>): UseMutationOptions<PatchCrmMembersByIdContractsMainContractChangeResponse, PatchCrmMembersByIdContractsMainContractChangeError, Options<PatchCrmMembersByIdContractsMainContractChangeData>> => {
+    const mutationOptions: UseMutationOptions<PatchCrmMembersByIdContractsMainContractChangeResponse, PatchCrmMembersByIdContractsMainContractChangeError, Options<PatchCrmMembersByIdContractsMainContractChangeData>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await Members.postCrmMembersByIdMemos({
+            const { data } = await Members.patchCrmMembersByIdContractsMainContractChange({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -575,16 +664,16 @@ export const postCrmMembersByIdMemosMutation = (options?: Partial<Options<PostCr
     return mutationOptions;
 };
 
-export const getCrmMembersByIdCommunicationsQueryKey = (options: Options<GetCrmMembersByIdCommunicationsData>) => createQueryKey('getCrmMembersByIdCommunications', options);
+export const getCrmMembersByIdContractsMainContractQueryKey = (options: Options<GetCrmMembersByIdContractsMainContractData>) => createQueryKey('getCrmMembersByIdContractsMainContract', options);
 
 /**
- * Get member communications
+ * Get member main contract
  *
- * Get communication history for a member
+ * Get main contract information for a member
  */
-export const getCrmMembersByIdCommunicationsOptions = (options: Options<GetCrmMembersByIdCommunicationsData>) => queryOptions<GetCrmMembersByIdCommunicationsResponse, GetCrmMembersByIdCommunicationsError, GetCrmMembersByIdCommunicationsResponse, ReturnType<typeof getCrmMembersByIdCommunicationsQueryKey>>({
+export const getCrmMembersByIdContractsMainContractOptions = (options: Options<GetCrmMembersByIdContractsMainContractData>) => queryOptions<GetCrmMembersByIdContractsMainContractResponse, GetCrmMembersByIdContractsMainContractError, GetCrmMembersByIdContractsMainContractResponse, ReturnType<typeof getCrmMembersByIdContractsMainContractQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Members.getCrmMembersByIdCommunications({
+        const { data } = await Members.getCrmMembersByIdContractsMainContract({
             ...options,
             ...queryKey[0],
             signal,
@@ -592,19 +681,57 @@ export const getCrmMembersByIdCommunicationsOptions = (options: Options<GetCrmMe
         });
         return data;
     },
-    queryKey: getCrmMembersByIdCommunicationsQueryKey(options)
+    queryKey: getCrmMembersByIdContractsMainContractQueryKey(options)
 });
 
-export const getCrmMembersByIdContractsQueryKey = (options: Options<GetCrmMembersByIdContractsData>) => createQueryKey('getCrmMembersByIdContracts', options);
+/**
+ * Cancel member option contract
+ *
+ * Cancel one option contract for a member
+ */
+export const patchCrmMembersByIdContractsOptionContractsCancelMutation = (options?: Partial<Options<PatchCrmMembersByIdContractsOptionContractsCancelData>>): UseMutationOptions<PatchCrmMembersByIdContractsOptionContractsCancelResponse, PatchCrmMembersByIdContractsOptionContractsCancelError, Options<PatchCrmMembersByIdContractsOptionContractsCancelData>> => {
+    const mutationOptions: UseMutationOptions<PatchCrmMembersByIdContractsOptionContractsCancelResponse, PatchCrmMembersByIdContractsOptionContractsCancelError, Options<PatchCrmMembersByIdContractsOptionContractsCancelData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Members.patchCrmMembersByIdContractsOptionContractsCancel({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
 
 /**
- * Get member contracts
+ * Change member option contract
  *
- * Get contract information for a member
+ * Replace a current option contract with another option
  */
-export const getCrmMembersByIdContractsOptions = (options: Options<GetCrmMembersByIdContractsData>) => queryOptions<GetCrmMembersByIdContractsResponse, GetCrmMembersByIdContractsError, GetCrmMembersByIdContractsResponse, ReturnType<typeof getCrmMembersByIdContractsQueryKey>>({
+export const patchCrmMembersByIdContractsOptionContractsChangeMutation = (options?: Partial<Options<PatchCrmMembersByIdContractsOptionContractsChangeData>>): UseMutationOptions<PatchCrmMembersByIdContractsOptionContractsChangeResponse, PatchCrmMembersByIdContractsOptionContractsChangeError, Options<PatchCrmMembersByIdContractsOptionContractsChangeData>> => {
+    const mutationOptions: UseMutationOptions<PatchCrmMembersByIdContractsOptionContractsChangeResponse, PatchCrmMembersByIdContractsOptionContractsChangeError, Options<PatchCrmMembersByIdContractsOptionContractsChangeData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Members.patchCrmMembersByIdContractsOptionContractsChange({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmMembersByIdContractsOptionContractsQueryKey = (options: Options<GetCrmMembersByIdContractsOptionContractsData>) => createQueryKey('getCrmMembersByIdContractsOptionContracts', options);
+
+/**
+ * Get member option contracts
+ *
+ * Get option contracts for a member
+ */
+export const getCrmMembersByIdContractsOptionContractsOptions = (options: Options<GetCrmMembersByIdContractsOptionContractsData>) => queryOptions<GetCrmMembersByIdContractsOptionContractsResponse, GetCrmMembersByIdContractsOptionContractsError, GetCrmMembersByIdContractsOptionContractsResponse, ReturnType<typeof getCrmMembersByIdContractsOptionContractsQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Members.getCrmMembersByIdContracts({
+        const { data } = await Members.getCrmMembersByIdContractsOptionContracts({
             ...options,
             ...queryKey[0],
             signal,
@@ -612,7 +739,66 @@ export const getCrmMembersByIdContractsOptions = (options: Options<GetCrmMembers
         });
         return data;
     },
-    queryKey: getCrmMembersByIdContractsQueryKey(options)
+    queryKey: getCrmMembersByIdContractsOptionContractsQueryKey(options)
+});
+
+/**
+ * Add member option contract
+ *
+ * Add an option contract for a member
+ */
+export const postCrmMembersByIdContractsOptionContractsMutation = (options?: Partial<Options<PostCrmMembersByIdContractsOptionContractsData>>): UseMutationOptions<PostCrmMembersByIdContractsOptionContractsResponse, PostCrmMembersByIdContractsOptionContractsError, Options<PostCrmMembersByIdContractsOptionContractsData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembersByIdContractsOptionContractsResponse, PostCrmMembersByIdContractsOptionContractsError, Options<PostCrmMembersByIdContractsOptionContractsData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Members.postCrmMembersByIdContractsOptionContracts({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmMembersByIdContractsPaymentHistoryQueryKey = (options: Options<GetCrmMembersByIdContractsPaymentHistoryData>) => createQueryKey('getCrmMembersByIdContractsPaymentHistory', options);
+
+/**
+ * Get member payment history
+ *
+ * Get payment history records for a member
+ */
+export const getCrmMembersByIdContractsPaymentHistoryOptions = (options: Options<GetCrmMembersByIdContractsPaymentHistoryData>) => queryOptions<GetCrmMembersByIdContractsPaymentHistoryResponse, GetCrmMembersByIdContractsPaymentHistoryError, GetCrmMembersByIdContractsPaymentHistoryResponse, ReturnType<typeof getCrmMembersByIdContractsPaymentHistoryQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdContractsPaymentHistory({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdContractsPaymentHistoryQueryKey(options)
+});
+
+export const getCrmMembersByIdContractsSummaryQueryKey = (options: Options<GetCrmMembersByIdContractsSummaryData>) => createQueryKey('getCrmMembersByIdContractsSummary', options);
+
+/**
+ * Get member contract summary
+ *
+ * Get a compact contract summary for a member (plan name, monthly fee, billing info, unpaid amount)
+ */
+export const getCrmMembersByIdContractsSummaryOptions = (options: Options<GetCrmMembersByIdContractsSummaryData>) => queryOptions<GetCrmMembersByIdContractsSummaryResponse, GetCrmMembersByIdContractsSummaryError, GetCrmMembersByIdContractsSummaryResponse, ReturnType<typeof getCrmMembersByIdContractsSummaryQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdContractsSummary({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdContractsSummaryQueryKey(options)
 });
 
 export const getCrmMembersByMemberIdFamilyMembersQueryKey = (options: Options<GetCrmMembersByMemberIdFamilyMembersData>) => createQueryKey('getCrmMembersByMemberIdFamilyMembers', options);
@@ -673,6 +859,45 @@ export const putCrmMembersByIdMarketingConsentMutation = (options?: Partial<Opti
     return mutationOptions;
 };
 
+export const getCrmMembersByIdMemosQueryKey = (options: Options<GetCrmMembersByIdMemosData>) => createQueryKey('getCrmMembersByIdMemos', options);
+
+/**
+ * Get member memos
+ *
+ * Get all memos for a member
+ */
+export const getCrmMembersByIdMemosOptions = (options: Options<GetCrmMembersByIdMemosData>) => queryOptions<GetCrmMembersByIdMemosResponse, GetCrmMembersByIdMemosError, GetCrmMembersByIdMemosResponse, ReturnType<typeof getCrmMembersByIdMemosQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdMemos({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdMemosQueryKey(options)
+});
+
+/**
+ * Create member memo
+ *
+ * Create a new memo for a member
+ */
+export const postCrmMembersByIdMemosMutation = (options?: Partial<Options<PostCrmMembersByIdMemosData>>): UseMutationOptions<PostCrmMembersByIdMemosResponse, PostCrmMembersByIdMemosError, Options<PostCrmMembersByIdMemosData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembersByIdMemosResponse, PostCrmMembersByIdMemosError, Options<PostCrmMembersByIdMemosData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Members.postCrmMembersByIdMemos({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
 /**
  * Delete member memo
  *
@@ -710,6 +935,75 @@ export const putCrmMembersByIdMemosByMemoIdMutation = (options?: Partial<Options
     };
     return mutationOptions;
 };
+
+export const getCrmMembersByIdPaymentHistoryQueryKey = (options: Options<GetCrmMembersByIdPaymentHistoryData>) => createQueryKey('getCrmMembersByIdPaymentHistory', options);
+
+/**
+ * Get member payment history
+ *
+ * Get payment history (入出金明細) for a member with optional filtering
+ */
+export const getCrmMembersByIdPaymentHistoryOptions = (options: Options<GetCrmMembersByIdPaymentHistoryData>) => queryOptions<GetCrmMembersByIdPaymentHistoryResponse, GetCrmMembersByIdPaymentHistoryError, GetCrmMembersByIdPaymentHistoryResponse, ReturnType<typeof getCrmMembersByIdPaymentHistoryQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdPaymentHistory({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdPaymentHistoryQueryKey(options)
+});
+
+export const getCrmMembersByIdPaymentHistoryInfiniteQueryKey = (options: Options<GetCrmMembersByIdPaymentHistoryData>): QueryKey<Options<GetCrmMembersByIdPaymentHistoryData>> => createQueryKey('getCrmMembersByIdPaymentHistory', options, true);
+
+/**
+ * Get member payment history
+ *
+ * Get payment history (入出金明細) for a member with optional filtering
+ */
+export const getCrmMembersByIdPaymentHistoryInfiniteOptions = (options: Options<GetCrmMembersByIdPaymentHistoryData>) => infiniteQueryOptions<GetCrmMembersByIdPaymentHistoryResponse, GetCrmMembersByIdPaymentHistoryError, InfiniteData<GetCrmMembersByIdPaymentHistoryResponse>, QueryKey<Options<GetCrmMembersByIdPaymentHistoryData>>, number | Pick<QueryKey<Options<GetCrmMembersByIdPaymentHistoryData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetCrmMembersByIdPaymentHistoryData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await Members.getCrmMembersByIdPaymentHistory({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdPaymentHistoryInfiniteQueryKey(options)
+});
+
+export const getCrmMembersByIdPaymentSummaryQueryKey = (options: Options<GetCrmMembersByIdPaymentSummaryData>) => createQueryKey('getCrmMembersByIdPaymentSummary', options);
+
+/**
+ * Get member payment summary
+ *
+ * Get payment summary (支払いサマリー) for a member
+ */
+export const getCrmMembersByIdPaymentSummaryOptions = (options: Options<GetCrmMembersByIdPaymentSummaryData>) => queryOptions<GetCrmMembersByIdPaymentSummaryResponse, GetCrmMembersByIdPaymentSummaryError, GetCrmMembersByIdPaymentSummaryResponse, ReturnType<typeof getCrmMembersByIdPaymentSummaryQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdPaymentSummary({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdPaymentSummaryQueryKey(options)
+});
 
 /**
  * Adjust member points
@@ -769,26 +1063,6 @@ export const postCrmMembersByIdPointsMutation = (options?: Partial<Options<PostC
     return mutationOptions;
 };
 
-export const getCrmMembersByIdRelationshipsQueryKey = (options: Options<GetCrmMembersByIdRelationshipsData>) => createQueryKey('getCrmMembersByIdRelationships', options);
-
-/**
- * Get member relationships
- *
- * Get relationship information for a member (family, corporate, referral)
- */
-export const getCrmMembersByIdRelationshipsOptions = (options: Options<GetCrmMembersByIdRelationshipsData>) => queryOptions<GetCrmMembersByIdRelationshipsResponse, GetCrmMembersByIdRelationshipsError, GetCrmMembersByIdRelationshipsResponse, ReturnType<typeof getCrmMembersByIdRelationshipsQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Members.getCrmMembersByIdRelationships({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmMembersByIdRelationshipsQueryKey(options)
-});
-
 export const getCrmMembersByIdQueryKey = (options: Options<GetCrmMembersByIdData>) => createQueryKey('getCrmMembersById', options);
 
 /**
@@ -809,16 +1083,35 @@ export const getCrmMembersByIdOptions = (options: Options<GetCrmMembersByIdData>
     queryKey: getCrmMembersByIdQueryKey(options)
 });
 
-export const getCrmMembersByIdServiceUsageQueryKey = (options: Options<GetCrmMembersByIdServiceUsageData>) => createQueryKey('getCrmMembersByIdServiceUsage', options);
+/**
+ * Update member detail
+ *
+ * Update member detail (basic info, profile info)
+ */
+export const patchCrmMembersByIdMutation = (options?: Partial<Options<PatchCrmMembersByIdData>>): UseMutationOptions<PatchCrmMembersByIdResponse, PatchCrmMembersByIdError, Options<PatchCrmMembersByIdData>> => {
+    const mutationOptions: UseMutationOptions<PatchCrmMembersByIdResponse, PatchCrmMembersByIdError, Options<PatchCrmMembersByIdData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Members.patchCrmMembersById({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmMembersByIdStoresQueryKey = (options: Options<GetCrmMembersByIdStoresData>) => createQueryKey('getCrmMembersByIdStores', options);
 
 /**
- * Get member service usage
+ * Get stores available for member's brand
  *
- * Get service usage information for a member
+ * Get all stores belonging to the same brand as the member, used for filtering entry/exit history
  */
-export const getCrmMembersByIdServiceUsageOptions = (options: Options<GetCrmMembersByIdServiceUsageData>) => queryOptions<GetCrmMembersByIdServiceUsageResponse, GetCrmMembersByIdServiceUsageError, GetCrmMembersByIdServiceUsageResponse, ReturnType<typeof getCrmMembersByIdServiceUsageQueryKey>>({
+export const getCrmMembersByIdStoresOptions = (options: Options<GetCrmMembersByIdStoresData>) => queryOptions<GetCrmMembersByIdStoresResponse, GetCrmMembersByIdStoresError, GetCrmMembersByIdStoresResponse, ReturnType<typeof getCrmMembersByIdStoresQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Members.getCrmMembersByIdServiceUsage({
+        const { data } = await Members.getCrmMembersByIdStores({
             ...options,
             ...queryKey[0],
             signal,
@@ -826,7 +1119,7 @@ export const getCrmMembersByIdServiceUsageOptions = (options: Options<GetCrmMemb
         });
         return data;
     },
-    queryKey: getCrmMembersByIdServiceUsageQueryKey(options)
+    queryKey: getCrmMembersByIdStoresQueryKey(options)
 });
 
 export const getCrmMembersByIdTrainingRecordsQueryKey = (options: Options<GetCrmMembersByIdTrainingRecordsData>) => createQueryKey('getCrmMembersByIdTrainingRecords', options);
@@ -849,16 +1142,16 @@ export const getCrmMembersByIdTrainingRecordsOptions = (options: Options<GetCrmM
     queryKey: getCrmMembersByIdTrainingRecordsQueryKey(options)
 });
 
-export const getCrmMembersByIdUsageHistoryQueryKey = (options: Options<GetCrmMembersByIdUsageHistoryData>) => createQueryKey('getCrmMembersByIdUsageHistory', options);
+export const getCrmMembersByIdUsageHistoryAccessSettingsQueryKey = (options: Options<GetCrmMembersByIdUsageHistoryAccessSettingsData>) => createQueryKey('getCrmMembersByIdUsageHistoryAccessSettings', options);
 
 /**
- * Get member usage history
+ * Get member usage history access settings
  *
- * Get usage history for a member
+ * Get access settings block data for usage history tab
  */
-export const getCrmMembersByIdUsageHistoryOptions = (options: Options<GetCrmMembersByIdUsageHistoryData>) => queryOptions<GetCrmMembersByIdUsageHistoryResponse, GetCrmMembersByIdUsageHistoryError, GetCrmMembersByIdUsageHistoryResponse, ReturnType<typeof getCrmMembersByIdUsageHistoryQueryKey>>({
+export const getCrmMembersByIdUsageHistoryAccessSettingsOptions = (options: Options<GetCrmMembersByIdUsageHistoryAccessSettingsData>) => queryOptions<GetCrmMembersByIdUsageHistoryAccessSettingsResponse, GetCrmMembersByIdUsageHistoryAccessSettingsError, GetCrmMembersByIdUsageHistoryAccessSettingsResponse, ReturnType<typeof getCrmMembersByIdUsageHistoryAccessSettingsQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Members.getCrmMembersByIdUsageHistory({
+        const { data } = await Members.getCrmMembersByIdUsageHistoryAccessSettings({
             ...options,
             ...queryKey[0],
             signal,
@@ -866,7 +1159,125 @@ export const getCrmMembersByIdUsageHistoryOptions = (options: Options<GetCrmMemb
         });
         return data;
     },
-    queryKey: getCrmMembersByIdUsageHistoryQueryKey(options)
+    queryKey: getCrmMembersByIdUsageHistoryAccessSettingsQueryKey(options)
+});
+
+export const getCrmMembersByIdUsageHistoryEntriesQueryKey = (options: Options<GetCrmMembersByIdUsageHistoryEntriesData>) => createQueryKey('getCrmMembersByIdUsageHistoryEntries', options);
+
+/**
+ * Get member entry/exit history
+ *
+ * Get paginated entry/exit history records with store and period filters
+ */
+export const getCrmMembersByIdUsageHistoryEntriesOptions = (options: Options<GetCrmMembersByIdUsageHistoryEntriesData>) => queryOptions<GetCrmMembersByIdUsageHistoryEntriesResponse, GetCrmMembersByIdUsageHistoryEntriesError, GetCrmMembersByIdUsageHistoryEntriesResponse, ReturnType<typeof getCrmMembersByIdUsageHistoryEntriesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdUsageHistoryEntries({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdUsageHistoryEntriesQueryKey(options)
+});
+
+export const getCrmMembersByIdUsageHistoryEntriesInfiniteQueryKey = (options: Options<GetCrmMembersByIdUsageHistoryEntriesData>): QueryKey<Options<GetCrmMembersByIdUsageHistoryEntriesData>> => createQueryKey('getCrmMembersByIdUsageHistoryEntries', options, true);
+
+/**
+ * Get member entry/exit history
+ *
+ * Get paginated entry/exit history records with store and period filters
+ */
+export const getCrmMembersByIdUsageHistoryEntriesInfiniteOptions = (options: Options<GetCrmMembersByIdUsageHistoryEntriesData>) => infiniteQueryOptions<GetCrmMembersByIdUsageHistoryEntriesResponse, GetCrmMembersByIdUsageHistoryEntriesError, InfiniteData<GetCrmMembersByIdUsageHistoryEntriesResponse>, QueryKey<Options<GetCrmMembersByIdUsageHistoryEntriesData>>, number | Pick<QueryKey<Options<GetCrmMembersByIdUsageHistoryEntriesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetCrmMembersByIdUsageHistoryEntriesData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await Members.getCrmMembersByIdUsageHistoryEntries({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdUsageHistoryEntriesInfiniteQueryKey(options)
+});
+
+export const getCrmMembersByIdUsageHistoryLessonsQueryKey = (options: Options<GetCrmMembersByIdUsageHistoryLessonsData>) => createQueryKey('getCrmMembersByIdUsageHistoryLessons', options);
+
+/**
+ * Get member lesson reservation history
+ *
+ * Get paginated lesson reservation history records
+ */
+export const getCrmMembersByIdUsageHistoryLessonsOptions = (options: Options<GetCrmMembersByIdUsageHistoryLessonsData>) => queryOptions<GetCrmMembersByIdUsageHistoryLessonsResponse, GetCrmMembersByIdUsageHistoryLessonsError, GetCrmMembersByIdUsageHistoryLessonsResponse, ReturnType<typeof getCrmMembersByIdUsageHistoryLessonsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdUsageHistoryLessons({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdUsageHistoryLessonsQueryKey(options)
+});
+
+export const getCrmMembersByIdUsageHistoryLessonsInfiniteQueryKey = (options: Options<GetCrmMembersByIdUsageHistoryLessonsData>): QueryKey<Options<GetCrmMembersByIdUsageHistoryLessonsData>> => createQueryKey('getCrmMembersByIdUsageHistoryLessons', options, true);
+
+/**
+ * Get member lesson reservation history
+ *
+ * Get paginated lesson reservation history records
+ */
+export const getCrmMembersByIdUsageHistoryLessonsInfiniteOptions = (options: Options<GetCrmMembersByIdUsageHistoryLessonsData>) => infiniteQueryOptions<GetCrmMembersByIdUsageHistoryLessonsResponse, GetCrmMembersByIdUsageHistoryLessonsError, InfiniteData<GetCrmMembersByIdUsageHistoryLessonsResponse>, QueryKey<Options<GetCrmMembersByIdUsageHistoryLessonsData>>, number | Pick<QueryKey<Options<GetCrmMembersByIdUsageHistoryLessonsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetCrmMembersByIdUsageHistoryLessonsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await Members.getCrmMembersByIdUsageHistoryLessons({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdUsageHistoryLessonsInfiniteQueryKey(options)
+});
+
+export const getCrmMembersByIdUsageStatusQueryKey = (options: Options<GetCrmMembersByIdUsageStatusData>) => createQueryKey('getCrmMembersByIdUsageStatus', options);
+
+/**
+ * Get member usage status
+ *
+ * Get visit counts and usage patterns for a member
+ */
+export const getCrmMembersByIdUsageStatusOptions = (options: Options<GetCrmMembersByIdUsageStatusData>) => queryOptions<GetCrmMembersByIdUsageStatusResponse, GetCrmMembersByIdUsageStatusError, GetCrmMembersByIdUsageStatusResponse, ReturnType<typeof getCrmMembersByIdUsageStatusQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersByIdUsageStatus({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersByIdUsageStatusQueryKey(options)
 });
 
 /**
@@ -887,6 +1298,26 @@ export const postCrmMembersExportMutation = (options?: Partial<Options<PostCrmMe
     };
     return mutationOptions;
 };
+
+export const getCrmMembersMetaMainContractLabelsQueryKey = (options?: Options<GetCrmMembersMetaMainContractLabelsData>) => createQueryKey('getCrmMembersMetaMainContractLabels', options);
+
+/**
+ * Member form main contract labels
+ *
+ * Returns ordered main contract display names for member create/edit (mock DB master).
+ */
+export const getCrmMembersMetaMainContractLabelsOptions = (options?: Options<GetCrmMembersMetaMainContractLabelsData>) => queryOptions<GetCrmMembersMetaMainContractLabelsResponse, GetCrmMembersMetaMainContractLabelsError, GetCrmMembersMetaMainContractLabelsResponse, ReturnType<typeof getCrmMembersMetaMainContractLabelsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersMetaMainContractLabels({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersMetaMainContractLabelsQueryKey(options)
+});
 
 export const getCrmMembersQueryKey = (options?: Options<GetCrmMembersData>) => createQueryKey('getCrmMembers', options);
 
@@ -935,6 +1366,45 @@ export const getCrmMembersInfiniteOptions = (options?: Options<GetCrmMembersData
         return data;
     },
     queryKey: getCrmMembersInfiniteQueryKey(options)
+});
+
+/**
+ * Create member
+ *
+ * Create a new member
+ */
+export const postCrmMembersMutation = (options?: Partial<Options<PostCrmMembersData>>): UseMutationOptions<PostCrmMembersResponse, PostCrmMembersError, Options<PostCrmMembersData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembersResponse, PostCrmMembersError, Options<PostCrmMembersData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Members.postCrmMembers({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmMembersSummaryQueryKey = (options?: Options<GetCrmMembersSummaryData>) => createQueryKey('getCrmMembersSummary', options);
+
+/**
+ * Get members summary
+ *
+ * Aggregate KPI statistics for the members list dashboard
+ */
+export const getCrmMembersSummaryOptions = (options?: Options<GetCrmMembersSummaryData>) => queryOptions<GetCrmMembersSummaryResponse, GetCrmMembersSummaryError, GetCrmMembersSummaryResponse, ReturnType<typeof getCrmMembersSummaryQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Members.getCrmMembersSummary({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmMembersSummaryQueryKey(options)
 });
 
 /**
