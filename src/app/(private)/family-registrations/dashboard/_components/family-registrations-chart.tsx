@@ -62,8 +62,7 @@ interface FamilyRegistrationsChartProps {
 
 export function FamilyRegistrationsChart({ period }: FamilyRegistrationsChartProps) {
   // const { data: summaryData } = useQuery(getCrmFamilyRegistrationsSummaryOptions());
-  const { isLoading, data: dashboardData } = useQuery(getCrmFamilyRegistrationsDashboardOptions());
-  console.log(dashboardData);
+  const { isLoading } = useQuery(getCrmFamilyRegistrationsDashboardOptions());
 
   if (isLoading) {
     return (
