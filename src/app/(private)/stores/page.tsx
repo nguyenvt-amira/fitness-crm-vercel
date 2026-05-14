@@ -10,14 +10,16 @@ import { Plus } from 'lucide-react';
 
 import { Loading } from '@/components/common/data-state-boundary/loading';
 import { DataTable } from '@/components/common/data-table';
+import { RoleGatedButton } from '@/components/common/role-gated-button';
 import { TablePagination } from '@/components/common/table-pagination';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
 import { getCrmStoresOptions } from '@/lib/api/@tanstack/react-query.gen';
 import type { GetCrmStoresResponse } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
+
+import { Permission } from '@/types/permission.type';
 
 import { StoresFilters } from './_components/stores-filters';
 import { StoresTableColumns } from './_components/stores-table-columns';
@@ -71,13 +73,13 @@ function StoresPageContent() {
 
   return (
     <div className="">
-      <div className="flex flex-col flex-row items-center justify-between gap-3 px-6 py-6 pb-0">
+      <div className="flex flex-row items-center justify-between gap-3 px-6 py-6 pb-0">
         <div className="flex items-center gap-4">
           <h1 className="text-xl font-bold">店舗管理</h1>
           <Badge variant="secondary">{totalStores}件</Badge>
-          {/* <span className="text-muted-foreground text-sm">{totalStores}件</span> */}
         </div>
-        <Button
+        <RoleGatedButton
+          requiredPermission={Permission.StoresCreate}
           type="button"
           size="sm"
           className="gap-1"
@@ -85,7 +87,7 @@ function StoresPageContent() {
         >
           <Plus className="size-4" />
           新規登録
-        </Button>
+        </RoleGatedButton>
       </div>
 
       <div className="flex flex-1 flex-col gap-4 p-6 pt-4">

@@ -33,6 +33,9 @@ export enum Permission {
   StoresCreate = 'stores.create',
   StoresEdit = 'stores.edit',
   StoresDelete = 'stores.delete',
+  StoresConfigContract = 'stores.config-contract',
+  StoresConfigAccess = 'stores.config-access',
+  StoresConfigBusiness = 'stores.config-business',
 
   // Positions
   PositionsCreate = 'positions.create',

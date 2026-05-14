@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 
 import { Plus, Search, X } from 'lucide-react';
 
+import { RoleGatedButton } from '@/components/common/role-gated-button';
 import { Button } from '@/components/ui/button';
 import {
   Drawer,
@@ -14,6 +15,8 @@ import {
   DrawerTitle,
 } from '@/components/ui/drawer';
 import { Input } from '@/components/ui/input';
+
+import { Permission } from '@/types/permission.type';
 
 import { DrawerListItem } from './drawer-list-item';
 
@@ -77,7 +80,8 @@ export function BindItemsDrawer<TItem extends BindDrawerItem>({
 
   return (
     <>
-      <Button
+      <RoleGatedButton
+        requiredPermission={Permission.StoresConfigContract}
         type="button"
         variant="outline"
         size="sm"
@@ -86,7 +90,7 @@ export function BindItemsDrawer<TItem extends BindDrawerItem>({
       >
         <Plus className="size-3.5" />
         紐づけ追加
-      </Button>
+      </RoleGatedButton>
 
       <Drawer
         direction="right"

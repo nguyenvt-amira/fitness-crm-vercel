@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { Link2Off } from 'lucide-react';
 
+import { RoleGatedButton } from '@/components/common/role-gated-button';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,7 +16,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
+
+import { Permission } from '@/types/permission.type';
 
 interface RemoveActionButtonProps {
   readonly dialogTitle: string;
@@ -35,7 +37,8 @@ export function RemoveActionButton({
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button
+        <RoleGatedButton
+          requiredPermission={Permission.StoresConfigContract}
           type="button"
           variant="ghost"
           size="icon"
@@ -43,7 +46,7 @@ export function RemoveActionButton({
           aria-label="紐づけを解除"
         >
           <Link2Off className="size-4" />
-        </Button>
+        </RoleGatedButton>
       </AlertDialogTrigger>
       <AlertDialogContent className="max-w-sm">
         <AlertDialogHeader>

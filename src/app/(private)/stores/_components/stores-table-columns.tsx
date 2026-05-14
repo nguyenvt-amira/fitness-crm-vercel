@@ -4,17 +4,19 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { Check, MoreHorizontal, Pencil } from 'lucide-react';
 
 import { DataTableColumnHeader } from '@/components/common/data-table/data-table-column-header';
+import { RoleGatedMenuItem } from '@/components/common/role-gated-menu-item';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
 import type { GetCrmStoresResponse } from '@/lib/api/types.gen';
 import { cn } from '@/lib/utils';
+
+import { Permission } from '@/types/permission.type';
 
 import {
   STORE_AREA_LABELS,
@@ -47,7 +49,8 @@ function ActionsCell({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
-        <DropdownMenuItem
+        <RoleGatedMenuItem
+          requiredPermission={Permission.StoresEdit}
           onClick={(e) => {
             e.stopPropagation();
             onEditClick?.(storeId);
@@ -55,7 +58,7 @@ function ActionsCell({
         >
           <Pencil className="size-4" />
           編集
-        </DropdownMenuItem>
+        </RoleGatedMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

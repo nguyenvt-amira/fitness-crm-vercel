@@ -4,11 +4,14 @@ import { useEffect, useState } from 'react';
 
 import { Clock3, Pencil } from 'lucide-react';
 
+import { RoleGatedButton } from '@/components/common/role-gated-button';
 import { Button } from '@/components/ui/button';
 import { CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 
 import type { PatchCrmStoresByIdBusinessHoursData } from '@/lib/api/types.gen';
+
+import { Permission } from '@/types/permission.type';
 
 import { type BusinessHours, DAY_LABELS, DAY_ORDER } from './business-hours-shared';
 
@@ -103,10 +106,16 @@ export function BusinessHoursSettings({
               </Button>
             </div>
           ) : (
-            <Button size="sm" variant="outline" className="gap-1" onClick={startEdit}>
+            <RoleGatedButton
+              requiredPermission={Permission.StoresConfigBusiness}
+              size="sm"
+              variant="outline"
+              className="gap-1"
+              onClick={startEdit}
+            >
               <Pencil className="size-3" />
               編集
-            </Button>
+            </RoleGatedButton>
           )}
         </div>
       </CardHeader>
