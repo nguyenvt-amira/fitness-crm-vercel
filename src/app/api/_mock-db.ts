@@ -672,6 +672,7 @@ export interface UserRow {
   email: string;
   password: string;
   name: string;
+  staff_id?: string; // link to staff if applicable
   role: 'System' | 'Headquarter' | 'Manager' | 'Staff' | 'Trainer' | 'Observer';
 }
 
@@ -688,6 +689,7 @@ const SEED_USERS: UserRow[] = [
     email: 'staff@example.com',
     password: 'password123',
     name: 'Staff User',
+    staff_id: 'STF-001',
     role: 'Staff',
   },
   {

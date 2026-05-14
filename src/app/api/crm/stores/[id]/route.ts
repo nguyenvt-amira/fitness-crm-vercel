@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { getAllowedStoreIds, getAuthUserFromRequest } from '@/app/api/_lib/auth';
 import { db } from '@/app/api/_mock-db';
 import {
   ErrorResponseSchema,
@@ -64,7 +65,18 @@ registerRoute({
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const authResult = getAuthUserFromRequest(_request);
+    if (!authResult.ok) {
+      return NextResponse.json({ error: authResult.error }, { status: authResult.status });
+    }
+
     const { id } = await params;
+
+    const allowedStoreIds = getAllowedStoreIds(authResult.user);
+    if (allowedStoreIds !== null && !allowedStoreIds.includes(id)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const store = db.stores.getById(id);
     if (!store) {
       return NextResponse.json({ error: '店舗が見つかりません' }, { status: 404 });
