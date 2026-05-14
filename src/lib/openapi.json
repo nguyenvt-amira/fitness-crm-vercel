@@ -11490,6 +11490,69 @@
         }
       }
     },
+    "/auth/me": {
+      "get": {
+        "summary": "Get current user",
+        "description": "Returns the authenticated user profile decoded from the Bearer token",
+        "tags": ["Authentication"],
+        "responses": {
+          "200": {
+            "description": "Current user profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "U-001",
+                      "description": "User ID"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email",
+                      "example": "admin@example.com"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Admin User"
+                    },
+                    "role": {
+                      "type": "string",
+                      "enum": ["System", "Headquarter", "Manager", "Staff", "Trainer", "Observer"],
+                      "example": "Headquarter"
+                    }
+                  },
+                  "required": ["id", "email", "name", "role"],
+                  "title": "MeResponse",
+                  "description": "Current authenticated user"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/auth/refresh": {
       "post": {
         "summary": "Refresh access token",
@@ -31826,56 +31889,6 @@
         }
       }
     },
-    "/crm/uploads": {
-      "post": {
-        "summary": "Upload image file",
-        "tags": ["Uploads"],
-        "responses": {
-          "200": {
-            "description": "Upload successful",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "url": {
-                      "type": "string",
-                      "format": "uri",
-                      "example": "https://cdn.mock.example.com/uploads/abc123.jpg",
-                      "description": "Uploaded file URL"
-                    }
-                  },
-                  "required": ["url"],
-                  "title": "UploadResponse",
-                  "description": "Upload response with file URL"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "url": {
-                      "type": "string",
-                      "format": "uri",
-                      "example": "https://cdn.mock.example.com/uploads/abc123.jpg",
-                      "description": "Uploaded file URL"
-                    }
-                  },
-                  "required": ["url"],
-                  "title": "UploadResponse",
-                  "description": "Upload response with file URL"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/crm/uploads/presign": {
       "post": {
         "summary": "Get pre-signed URL for direct S3 upload",
@@ -31957,6 +31970,56 @@
                   "required": ["presign_url", "public_url"],
                   "title": "PresignUploadResponse",
                   "description": "Pre-signed upload URL response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/uploads": {
+      "post": {
+        "summary": "Upload image file",
+        "tags": ["Uploads"],
+        "responses": {
+          "200": {
+            "description": "Upload successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://cdn.mock.example.com/uploads/abc123.jpg",
+                      "description": "Uploaded file URL"
+                    }
+                  },
+                  "required": ["url"],
+                  "title": "UploadResponse",
+                  "description": "Upload response with file URL"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://cdn.mock.example.com/uploads/abc123.jpg",
+                      "description": "Uploaded file URL"
+                    }
+                  },
+                  "required": ["url"],
+                  "title": "UploadResponse",
+                  "description": "Upload response with file URL"
                 }
               }
             }

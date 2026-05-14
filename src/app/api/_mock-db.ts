@@ -665,6 +665,61 @@ interface EnrollmentFeeMasterRow {
   isActive: boolean;
 }
 
+// ─── User (auth) row ─────────────────────────────────────────────────────────
+
+export interface UserRow {
+  id: string;
+  email: string;
+  password: string;
+  name: string;
+  role: 'System' | 'Headquarter' | 'Manager' | 'Staff' | 'Trainer' | 'Observer';
+}
+
+const SEED_USERS: UserRow[] = [
+  {
+    id: 'U-001',
+    email: 'admin@example.com',
+    password: 'password123',
+    name: 'Admin User',
+    role: 'Headquarter',
+  },
+  {
+    id: 'U-002',
+    email: 'staff@example.com',
+    password: 'password123',
+    name: 'Staff User',
+    role: 'Staff',
+  },
+  {
+    id: 'U-003',
+    email: 'manager@example.com',
+    password: 'password123',
+    name: 'Manager User',
+    role: 'Manager',
+  },
+  {
+    id: 'U-004',
+    email: 'trainer@example.com',
+    password: 'password123',
+    name: 'Trainer User',
+    role: 'Trainer',
+  },
+  {
+    id: 'U-005',
+    email: 'observer@example.com',
+    password: 'password123',
+    name: 'Observer User',
+    role: 'Observer',
+  },
+  {
+    id: 'U-000',
+    email: 'system@example.com',
+    password: 'password123',
+    name: 'System Admin',
+    role: 'System',
+  },
+];
+
 interface CorporateMasterRow {
   id: string;
   name: string;
@@ -1073,6 +1128,13 @@ type DbType = {
     _seeded: boolean;
     _seed(): void;
     getAll(): CorporateMasterRow[];
+  };
+  users: {
+    _rows: UserRow[];
+    _seeded: boolean;
+    _seed(): void;
+    getByEmail(email: string): UserRow | undefined;
+    getById(id: string): UserRow | undefined;
   };
 };
 
@@ -5506,6 +5568,25 @@ function createDb() {
         return [...this._rows];
       },
     },
+
+    // ─── Users (auth) ────────────────────────────────────────────────────────
+    users: {
+      _rows: [] as UserRow[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows = [...SEED_USERS];
+      },
+      getByEmail(email: string): UserRow | undefined {
+        this._seed();
+        return this._rows.find((u) => u.email === email);
+      },
+      getById(id: string): UserRow | undefined {
+        this._seed();
+        return this._rows.find((u) => u.id === id);
+      },
+    },
   };
 
   // Seed mock data immediately when the singleton is first created
@@ -5518,6 +5599,7 @@ function createDb() {
   db.enrollmentFeeMasters._seed();
   db.corporateMasters._seed();
   db.partnerCompanies._seed();
+  db.users._seed();
 
   return db;
 }

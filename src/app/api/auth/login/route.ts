@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { db } from '@/app/api/_mock-db';
 import {
   ErrorResponseSchema,
   type LoginRequest,
@@ -9,7 +10,6 @@ import {
   type Token,
 } from '@/app/api/_schemas/auth.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
-import { z } from 'zod';
 
 // Register OpenAPI documentation for this route
 registerRoute({
@@ -46,27 +46,8 @@ registerRoute({
   ],
 });
 
-// Mock user database
-const MOCK_USERS = [
-  {
-    email: 'admin@example.com',
-    password: 'password123',
-    companyId: 1,
-  },
-  {
-    email: 'staff@example.com',
-    password: 'password123',
-    companyId: 2,
-  },
-  {
-    email: 'user@example.com',
-    password: 'password123',
-    companyId: null,
-  },
-];
-
 // Simple JWT-like token generator (mock)
-function generateToken(payload: Record<string, any>): string {
+function generateToken(payload: Record<string, unknown>): string {
   const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
   const body = btoa(JSON.stringify(payload));
   const signature = btoa('mock-signature');
@@ -86,27 +67,25 @@ export async function POST(request: NextRequest) {
 
     const validatedBody: LoginRequest = validationResult.data;
 
-    // Find user in mock database
-    const user = MOCK_USERS.find(
-      (u) => u.email === validatedBody.email && u.password === validatedBody.password,
-    );
-
-    if (!user) {
+    // Find user from shared mock DB
+    const user = db.users.getByEmail(validatedBody.email);
+    if (!user || user.password !== validatedBody.password) {
       return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
     }
 
     // Generate tokens
     const accessTokenPayload = {
-      sub: validatedBody.email,
-      email: validatedBody.email,
-      company_id: user.companyId,
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + 86400, // 1 day
     };
 
     const refreshTokenPayload = {
-      sub: validatedBody.email,
-      email: validatedBody.email,
+      id: user.id,
+      email: user.email,
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + 86400 * 7, // 7 days
     };
@@ -115,7 +94,6 @@ export async function POST(request: NextRequest) {
       access_token: generateToken(accessTokenPayload),
       refresh_token: generateToken(refreshTokenPayload),
       token_type: 'Bearer',
-      company_id: user.companyId,
     };
 
     const response: LoginResponse = {

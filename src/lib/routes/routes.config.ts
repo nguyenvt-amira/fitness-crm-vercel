@@ -8,6 +8,12 @@ export const routes = {
     pattern: '/',
     private: true,
   },
+  '/403': {
+    router: '/403',
+    filePath: '(private)/403',
+    pattern: '/403',
+    private: true,
+  },
   '/family-registrations': {
     router: '/family-registrations',
     filePath: '(private)/family-registrations',
@@ -152,12 +158,6 @@ export const routes = {
     pattern: '/stores/create',
     private: true,
   },
-  '/403': {
-    router: '/403',
-    filePath: '(public)/403',
-    pattern: '/403',
-    private: false,
-  },
   '/login': {
     router: '/login',
     filePath: '(public)/login',
@@ -169,6 +169,7 @@ export const routes = {
 // List of all route keys
 export const routeKeys = [
   '/',
+  '/403',
   '/family-registrations',
   '/family-registrations/[id]',
   '/family-registrations/dashboard',
@@ -193,13 +194,13 @@ export const routeKeys = [
   '/stores/[id]',
   '/stores/[id]/edit',
   '/stores/create',
-  '/403',
   '/login',
 ] as const;
 
 // List of all route patterns
 export const routePatterns = [
   '/',
+  '/403',
   '/family-registrations',
   '/family-registrations/:id',
   '/family-registrations/dashboard',
@@ -224,6 +225,5 @@ export const routePatterns = [
   '/stores/:id',
   '/stores/:id/edit',
   '/stores/create',
-  '/403',
   '/login',
 ] as const;

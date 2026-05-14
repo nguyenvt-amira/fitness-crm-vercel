@@ -104,9 +104,14 @@ export default class ClientRequestService {
       this.#promise = null;
       resolve(accessToken);
       const expiration = getTokenExpiration(sessionResponse?.data?.refresh_token as string);
+      // Add 1 day (24h) to the expiration if available
+      let cookieExpires = expiration;
+      if (cookieExpires) {
+        cookieExpires = new Date(cookieExpires.getTime() + 24 * 60 * 60 * 1000);
+      }
       cookies.set(CookieNames.Session, sessionResponse?.data, {
         path: '/',
-        ...(expiration ? { expires: expiration } : {}),
+        ...(cookieExpires ? { expires: cookieExpires } : {}),
       });
       return await this.#refetchRequest(accessToken, request, response);
     } catch {

@@ -8291,6 +8291,48 @@ export type PostAuthLoginResponses = {
 
 export type PostAuthLoginResponse = PostAuthLoginResponses[keyof PostAuthLoginResponses];
 
+export type GetAuthMeData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/auth/me';
+};
+
+export type GetAuthMeErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetAuthMeError = GetAuthMeErrors[keyof GetAuthMeErrors];
+
+export type GetAuthMeResponses = {
+    /**
+     * MeResponse
+     *
+     * Current authenticated user
+     */
+    200: {
+        /**
+         * User ID
+         */
+        id: string;
+        email: string;
+        name: string;
+        role: 'System' | 'Headquarter' | 'Manager' | 'Staff' | 'Trainer' | 'Observer';
+    };
+};
+
+export type GetAuthMeResponse = GetAuthMeResponses[keyof GetAuthMeResponses];
+
 export type PostAuthRefreshData = {
     /**
      * RefreshRequest
@@ -20803,45 +20845,6 @@ export type GetCrmTransfersResponses = {
 
 export type GetCrmTransfersResponse = GetCrmTransfersResponses[keyof GetCrmTransfersResponses];
 
-export type PostCrmUploadsData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/crm/uploads';
-};
-
-export type PostCrmUploadsErrors = {
-    /**
-     * UploadResponse
-     *
-     * Upload response with file URL
-     */
-    400: {
-        /**
-         * Uploaded file URL
-         */
-        url: string;
-    };
-};
-
-export type PostCrmUploadsError = PostCrmUploadsErrors[keyof PostCrmUploadsErrors];
-
-export type PostCrmUploadsResponses = {
-    /**
-     * UploadResponse
-     *
-     * Upload response with file URL
-     */
-    200: {
-        /**
-         * Uploaded file URL
-         */
-        url: string;
-    };
-};
-
-export type PostCrmUploadsResponse = PostCrmUploadsResponses[keyof PostCrmUploadsResponses];
-
 export type PostCrmUploadsPresignData = {
     /**
      * PresignUploadRequest
@@ -20902,3 +20905,42 @@ export type PostCrmUploadsPresignResponses = {
 };
 
 export type PostCrmUploadsPresignResponse = PostCrmUploadsPresignResponses[keyof PostCrmUploadsPresignResponses];
+
+export type PostCrmUploadsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/uploads';
+};
+
+export type PostCrmUploadsErrors = {
+    /**
+     * UploadResponse
+     *
+     * Upload response with file URL
+     */
+    400: {
+        /**
+         * Uploaded file URL
+         */
+        url: string;
+    };
+};
+
+export type PostCrmUploadsError = PostCrmUploadsErrors[keyof PostCrmUploadsErrors];
+
+export type PostCrmUploadsResponses = {
+    /**
+     * UploadResponse
+     *
+     * Upload response with file URL
+     */
+    200: {
+        /**
+         * Uploaded file URL
+         */
+        url: string;
+    };
+};
+
+export type PostCrmUploadsResponse = PostCrmUploadsResponses[keyof PostCrmUploadsResponses];

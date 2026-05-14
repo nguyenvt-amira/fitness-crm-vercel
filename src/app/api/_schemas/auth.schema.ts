@@ -126,3 +126,19 @@ export type RefreshRequest = z.infer<typeof RefreshRequestSchema>;
 export type RefreshResponse = z.infer<typeof RefreshResponseSchema>;
 export type Token = z.infer<typeof TokenSchema>;
 export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
+
+/**
+ * GET /auth/me — current authenticated user
+ */
+export const MeResponseSchema = z
+  .object({
+    id: z.string().openapi({ example: 'U-001', description: 'User ID' }),
+    email: z.string().email().openapi({ example: 'admin@example.com' }),
+    name: z.string().openapi({ example: 'Admin User' }),
+    role: z
+      .enum(['System', 'Headquarter', 'Manager', 'Staff', 'Trainer', 'Observer'])
+      .openapi({ example: 'Headquarter' }),
+  })
+  .openapi({ title: 'MeResponse', description: 'Current authenticated user' });
+
+export type MeResponse = z.infer<typeof MeResponseSchema>;

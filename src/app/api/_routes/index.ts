@@ -4,6 +4,7 @@
  */
 // Import auth routes
 import '@/app/api/auth/login/route';
+import '@/app/api/auth/me/route';
 import '@/app/api/auth/refresh/route';
 import '@/app/api/crm/auto-approval/dashboard/route';
 // Import auto-approval routes
