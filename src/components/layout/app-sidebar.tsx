@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 
 import { useAuthUser } from '@/contexts/auth-user.context';
@@ -156,15 +157,19 @@ export function AppSidebar() {
   const role = (user?.role as UserRole) ?? null;
 
   return (
-    <Sidebar className="border-none">
-      <SidebarHeader className="py-5 pr-0 pl-6">
-        <span className="text-sidebar-foreground text-xl leading-7 font-bold tracking-[0.025em]">
-          LOGO
-        </span>
+    <Sidebar className="border-sidebar-border border-r">
+      <SidebarHeader className="border-sidebar-border h-14 flex-row items-center border-b px-6 py-0">
+        <Image
+          src={'/logo-yamauchi.svg'}
+          alt="YAMAUCHI"
+          width={207}
+          height={28}
+          className="h-7 w-auto"
+        />
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup className="p-2">
+        <SidebarGroup>
           <SidebarGroupContent>
             {isLoading ? (
               <div className="space-y-0.5 p-2">

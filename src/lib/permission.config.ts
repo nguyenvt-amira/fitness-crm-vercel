@@ -17,7 +17,7 @@ export const PAGE_ROLES: Partial<Record<RoutePattern, readonly UserRole[]>> = {
   // Staffs
   '/staffs': [UserRole.System, UserRole.Headquarter, UserRole.Manager, UserRole.Staff],
   '/staffs/:id': [UserRole.System, UserRole.Headquarter, UserRole.Manager, UserRole.Staff],
-  '/staffs/:id/edit': [UserRole.System, UserRole.Headquarter],
+  '/staffs/:id/edit': [UserRole.System, UserRole.Headquarter, UserRole.Staff],
 
   // Stores
   '/stores': [UserRole.System, UserRole.Headquarter, UserRole.Manager, UserRole.Staff],

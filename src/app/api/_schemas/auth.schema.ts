@@ -138,6 +138,7 @@ export const MeResponseSchema = z
     role: z
       .enum(['System', 'Headquarter', 'Manager', 'Staff', 'Trainer', 'Observer'])
       .openapi({ example: 'Headquarter' }),
+    position: z.string().openapi({ example: '本部管理者' }),
   })
   .openapi({ title: 'MeResponse', description: 'Current authenticated user' });
 

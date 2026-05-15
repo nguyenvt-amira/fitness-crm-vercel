@@ -6,6 +6,7 @@
 import '@/app/api/auth/login/route';
 import '@/app/api/auth/me/route';
 import '@/app/api/auth/refresh/route';
+import '@/app/api/auth/switch-user/route';
 import '@/app/api/crm/auto-approval/dashboard/route';
 // Import auto-approval routes
 import '@/app/api/crm/auto-approval/settings/route';
@@ -102,5 +103,6 @@ import '@/app/api/crm/transfers/[id]/route';
 import '@/app/api/crm/transfers/route';
 import '@/app/api/crm/uploads/presign/route';
 import '@/app/api/crm/uploads/route';
+import '@/app/api/crm/users/route';
 
 // Add more route imports here as you register them with OpenAPI

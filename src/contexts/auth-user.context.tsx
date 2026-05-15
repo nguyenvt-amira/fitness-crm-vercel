@@ -54,6 +54,7 @@ export function AuthUserProvider({ children }: { children: ReactNode }) {
             name: user.name,
             email: user.email,
             role: user.role as UserRole,
+            position: user.position,
           }
         : null,
       isLoading,

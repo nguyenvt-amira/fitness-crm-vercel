@@ -40,6 +40,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       email: user.email,
       name: user.name,
       role: user.role,
+      position: user.position,
     };
 
     return NextResponse.json(body, { status: 200 });

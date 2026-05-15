@@ -8328,6 +8328,7 @@ export type GetAuthMeResponses = {
         email: string;
         name: string;
         role: 'System' | 'Headquarter' | 'Manager' | 'Staff' | 'Trainer' | 'Observer';
+        position: string;
     };
 };
 
@@ -8415,6 +8416,64 @@ export type PostAuthRefreshResponses = {
 };
 
 export type PostAuthRefreshResponse = PostAuthRefreshResponses[keyof PostAuthRefreshResponses];
+
+export type PostAuthSwitchUserData = {
+    /**
+     * SwitchUserRequest
+     *
+     * Target user ID
+     */
+    body?: {
+        user_id: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/auth/switch-user';
+};
+
+export type PostAuthSwitchUserErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Bad request
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * User not found
+     */
+    404: {
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Internal server error
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type PostAuthSwitchUserError = PostAuthSwitchUserErrors[keyof PostAuthSwitchUserErrors];
+
+export type PostAuthSwitchUserResponses = {
+    /**
+     * SwitchUserResponse
+     *
+     * New tokens for the target user
+     */
+    200: {
+        access_token: string;
+        refresh_token: string;
+        token_type: string;
+    };
+};
+
+export type PostAuthSwitchUserResponse = PostAuthSwitchUserResponses[keyof PostAuthSwitchUserResponses];
 
 export type GetCrmAutoApprovalDashboardData = {
     body?: never;
@@ -20944,3 +21003,42 @@ export type PostCrmUploadsResponses = {
 };
 
 export type PostCrmUploadsResponse = PostCrmUploadsResponses[keyof PostCrmUploadsResponses];
+
+export type GetCrmUsersData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/users';
+};
+
+export type GetCrmUsersErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Internal server error
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type GetCrmUsersError = GetCrmUsersErrors[keyof GetCrmUsersErrors];
+
+export type GetCrmUsersResponses = {
+    /**
+     * GetUsersResponse
+     *
+     * List of demo users
+     */
+    200: {
+        users: Array<{
+            id: string;
+            name: string;
+            email: string;
+            role: 'System' | 'Headquarter' | 'Manager' | 'Staff' | 'Trainer' | 'Observer';
+            position: string;
+        }>;
+    };
+};
+
+export type GetCrmUsersResponse = GetCrmUsersResponses[keyof GetCrmUsersResponses];

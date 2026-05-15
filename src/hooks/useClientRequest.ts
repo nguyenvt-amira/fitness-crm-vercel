@@ -51,11 +51,6 @@ export default function useClientRequest() {
             return response;
           }
           return await clientRequest.handleRefreshToken(response, request as ApiRequest, options);
-        case 403:
-          if (typeof window !== 'undefined') {
-            window.location.href = '/403';
-          }
-          return response;
         default:
           return response;
       }
