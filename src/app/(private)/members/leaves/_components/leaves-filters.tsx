@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/select';
 
 import { getCrmStoresOptions } from '@/lib/api/@tanstack/react-query.gen';
+import { Brand } from '@/lib/api/types.gen';
 
 import { BRAND_LABELS } from '../../_constants/constants';
 import {
@@ -91,12 +92,12 @@ export function LeavesFilters({ isFilterOpen, onFilterOpenChange }: LeavesFilter
             onValueChange={(v) =>
               updateFilter('type', v === 'all' ? null : (v as 'suspension' | 'withdrawal'))
             }
+            items={LEAVE_TYPE_OPTIONS}
           >
             <SelectTrigger className={`h-8 w-27.5 text-xs ${filterActiveClass(!!filters.type)}`}>
               <SelectValue placeholder="全種別" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">全種別</SelectItem>
               {LEAVE_TYPE_OPTIONS.map((opt) => (
                 <SelectItem key={opt.value} value={opt.value}>
                   {opt.label}
@@ -111,12 +112,12 @@ export function LeavesFilters({ isFilterOpen, onFilterOpenChange }: LeavesFilter
             onValueChange={(v) =>
               updateFilter('status', v === 'all' ? null : (v as typeof filters.status))
             }
+            items={LEAVE_STATUS_OPTIONS}
           >
             <SelectTrigger className={`h-8 w-40 text-xs ${filterActiveClass(!!filters.status)}`}>
               <SelectValue placeholder="全ステータス" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">全ステータス</SelectItem>
               {LEAVE_STATUS_OPTIONS.map((opt) => (
                 <SelectItem key={opt.value} value={opt.value}>
                   {opt.label}
@@ -153,7 +154,9 @@ export function LeavesFilters({ isFilterOpen, onFilterOpenChange }: LeavesFilter
             onValueChange={(v) => updateFilter('brand', v === 'all' ? null : v)}
           >
             <SelectTrigger className={`h-8 w-32.5 text-xs ${filterActiveClass(!!filters.brand)}`}>
-              <SelectValue placeholder="全ブランド" />
+              <SelectValue>
+                {filters.brand ? BRAND_LABELS[filters.brand as Brand] : '全ブランド'}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">全ブランド</SelectItem>
@@ -174,6 +177,7 @@ export function LeavesFilters({ isFilterOpen, onFilterOpenChange }: LeavesFilter
                 v === 'all' ? null : (v as typeof filters.scheduled_period),
               )
             }
+            items={SCHEDULED_PERIOD_OPTIONS}
           >
             <SelectTrigger
               className={`h-8 w-30 text-xs ${filterActiveClass(!!filters.scheduled_period)}`}
@@ -181,7 +185,6 @@ export function LeavesFilters({ isFilterOpen, onFilterOpenChange }: LeavesFilter
               <SelectValue placeholder="全期間" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">全期間</SelectItem>
               {SCHEDULED_PERIOD_OPTIONS.map((opt) => (
                 <SelectItem key={opt.value} value={opt.value}>
                   {opt.label}

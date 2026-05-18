@@ -90,6 +90,7 @@ export function MembershipApplicationsFilters() {
                 page: 1,
               })
             }
+            items={STATUS_OPTIONS}
           >
             <SelectTrigger
               className={cn('h-8 w-35 text-xs', filterActiveClass(filters.status, ''))}
@@ -166,6 +167,7 @@ export function MembershipApplicationsFilters() {
           <Select
             value={filters.blacklist}
             onValueChange={(v) => setFilters({ blacklist: v as typeof filters.blacklist, page: 1 })}
+            items={BLACKLIST_OPTIONS}
           >
             <SelectTrigger
               className={cn('h-8 w-42 text-xs', filterActiveClass(filters.blacklist, 'all'))}

@@ -90,7 +90,7 @@ export function CancelMenuDropdown({ app }: Readonly<CancelMenuDropdownProps>) {
           <MoreHorizontal className="size-4" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem variant="destructive" asChild onClick={handleCancelButtonClick}>
+          <DropdownMenuItem variant="destructive" onClick={handleCancelButtonClick}>
             <div className="flex items-center gap-2">
               <X className="size-4" />
               申請を取り消す

@@ -117,7 +117,7 @@ export function MembersTableColumns({
         if (!memberId) return null;
         return (
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger>
               <Button
                 variant="ghost"
                 size="icon"

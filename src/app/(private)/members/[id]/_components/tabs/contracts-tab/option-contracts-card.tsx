@@ -343,7 +343,10 @@ export function OptionContractsCard({
                 <Label htmlFor="option-change-to" className="text-sm font-medium">
                   変更先オプション <span className="text-destructive ml-1 text-xs">*</span>
                 </Label>
-                <Select value={optionChangeToId} onValueChange={setOptionChangeToId}>
+                <Select
+                  value={optionChangeToId}
+                  onValueChange={(value) => setOptionChangeToId(value ?? '')}
+                >
                   <SelectTrigger id="option-change-to" className="h-9 text-sm">
                     <SelectValue placeholder="選択してください" />
                   </SelectTrigger>
@@ -539,7 +542,11 @@ export function OptionContractsCard({
                 <Label htmlFor="option-select" className="text-sm font-medium">
                   追加するオプション <span className="text-destructive ml-1 text-xs">*</span>
                 </Label>
-                <Select value={selectedOptionId} onValueChange={setSelectedOptionId}>
+                <Select
+                  value={selectedOptionId}
+                  onValueChange={(value) => setSelectedOptionId(value ?? '')}
+                  items={availableOptions}
+                >
                   <SelectTrigger
                     id="option-select"
                     className="h-9 text-sm"

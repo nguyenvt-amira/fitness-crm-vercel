@@ -56,10 +56,12 @@ export function TransferDetailInfo({ transfer }: Readonly<{ transfer: TransferDe
 
           <Field label="会員名">
             <div className="flex items-center gap-1">
-              <Button variant="link" className="h-auto p-0 text-sm font-medium" asChild>
-                <Link href={navigate('/members/[id]', transfer.member_id)}>
-                  {transfer.member_name}
-                </Link>
+              <Button
+                variant="link"
+                className="h-auto p-0 text-sm font-medium"
+                render={<Link href={navigate('/members/[id]', transfer.member_id)} />}
+              >
+                {transfer.member_name}
               </Button>
               <ArrowRight className="text-muted-foreground size-3" />
             </div>

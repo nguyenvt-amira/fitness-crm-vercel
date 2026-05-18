@@ -227,7 +227,7 @@ export function AppSidebar() {
                         {!parentAllowed ? (
                           <TooltipProvider>
                             <Tooltip>
-                              <TooltipTrigger asChild>
+                              <TooltipTrigger>
                                 <span className="w-full">{parentButton}</span>
                               </TooltipTrigger>
                               <TooltipContent side="right">
@@ -276,7 +276,7 @@ export function AppSidebar() {
                                   {!subAllowed ? (
                                     <TooltipProvider>
                                       <Tooltip>
-                                        <TooltipTrigger asChild>
+                                        <TooltipTrigger>
                                           <span className="w-full">{subButton}</span>
                                         </TooltipTrigger>
                                         <TooltipContent side="right">
@@ -313,7 +313,7 @@ export function AppSidebar() {
                       {!allowed ? (
                         <TooltipProvider>
                           <Tooltip>
-                            <TooltipTrigger asChild>
+                            <TooltipTrigger>
                               <span className="w-full">{leafButton}</span>
                             </TooltipTrigger>
                             <TooltipContent side="right">

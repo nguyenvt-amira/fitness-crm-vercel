@@ -1,6 +1,6 @@
 import { ButtonProps } from '@base-ui/react';
 import type { Column } from '@tanstack/react-table';
-import { ChevronDown, ChevronUp, MoveDown, MoveUp } from 'lucide-react';
+import { MoveDown, MoveUp } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 

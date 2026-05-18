@@ -228,7 +228,7 @@ export default function MemberDetailPage() {
                       再入会
                     </Button>
                     <DropdownMenu modal={false}>
-                      <DropdownMenuTrigger asChild>
+                      <DropdownMenuTrigger>
                         <Button
                           variant="outline"
                           size="icon"
@@ -250,7 +250,7 @@ export default function MemberDetailPage() {
                 )}
                 {!isWithdrawnStatus && (
                   <DropdownMenu modal={false}>
-                    <DropdownMenuTrigger asChild>
+                    <DropdownMenuTrigger>
                       <Button
                         variant="outline"
                         size="icon"

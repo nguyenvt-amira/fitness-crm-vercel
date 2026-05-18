@@ -326,11 +326,12 @@ export function AccessSettingsTab({ storeId }: Readonly<{ storeId: string }>) {
                   <div className="space-y-1.5">
                     <p className="text-muted-foreground text-xs">18歳未満入館可能時間（開始）</p>
                     <Select
-                      value={draftSettings.under18_start_time}
+                      value={draftSettings.under18_start_time ?? ''}
                       onValueChange={(value) =>
                         setDraftSettings((prev) => {
                           if (!prev) return prev;
-                          return { ...prev, under18_start_time: value };
+                          const finalValue = value ?? '';
+                          return { ...prev, under18_start_time: finalValue };
                         })
                       }
                     >
@@ -349,11 +350,12 @@ export function AccessSettingsTab({ storeId }: Readonly<{ storeId: string }>) {
                   <div className="space-y-1.5">
                     <p className="text-muted-foreground text-xs">18歳未満入館可能時間（終了）</p>
                     <Select
-                      value={draftSettings.under18_end_time}
+                      value={draftSettings.under18_end_time ?? ''}
                       onValueChange={(value) =>
                         setDraftSettings((prev) => {
                           if (!prev) return prev;
-                          return { ...prev, under18_end_time: value };
+                          const finalValue = value ?? '';
+                          return { ...prev, under18_end_time: finalValue };
                         })
                       }
                     >
@@ -443,8 +445,9 @@ export function AccessSettingsTab({ storeId }: Readonly<{ storeId: string }>) {
                               <Select
                                 value={row.brand}
                                 onValueChange={(value) =>
-                                  handleUpdatePermittedRow(row.id, 'brand', value)
+                                  handleUpdatePermittedRow(row.id, 'brand', value ?? row.brand)
                                 }
+                                items={STORE_BRAND_LABELS}
                               >
                                 <SelectTrigger>
                                   <SelectValue placeholder="ブランドを選択" />

@@ -94,11 +94,12 @@ export function StaffsFilters({ isFilterOpen, onFilterOpenChange }: StaffsFilter
                 filters.position_id != null ? String(filters.position_id) : ALL_POSITIONS_VALUE
               }
               onValueChange={(value) => {
-                if (value === ALL_POSITIONS_VALUE) {
+                const newValue = value ?? ALL_POSITIONS_VALUE;
+                if (newValue === ALL_POSITIONS_VALUE) {
                   updateFilter('position_id', null);
                   return;
                 }
-                const n = Number.parseInt(value, 10);
+                const n = Number.parseInt(newValue, 10);
                 updateFilter('position_id', Number.isNaN(n) ? null : n);
               }}
             >
@@ -132,9 +133,10 @@ export function StaffsFilters({ isFilterOpen, onFilterOpenChange }: StaffsFilter
 
             {/* ブランド — labels from Y-07 API when available, else constants */}
             <Select
-              value={filters.brand ?? undefined}
-              onValueChange={(value: StaffBrand) => {
-                updateFilter('brand', value);
+              value={filters.brand ?? ''}
+              onValueChange={(value) => {
+                const newValue = value ?? '';
+                updateFilter('brand', (newValue as StaffBrand) || null);
               }}
             >
               <SelectTrigger className="h-9 w-fit min-w-[140px] rounded-lg">
@@ -159,9 +161,10 @@ export function StaffsFilters({ isFilterOpen, onFilterOpenChange }: StaffsFilter
 
             {/* ステータス */}
             <Select
-              value={filters.status ?? undefined}
-              onValueChange={(value: StaffStatus) => {
-                updateFilter('status', value);
+              value={filters.status ?? ''}
+              onValueChange={(value) => {
+                const newValue = value ?? '';
+                updateFilter('status', (newValue as StaffStatus) || null);
               }}
             >
               <SelectTrigger className="h-9 w-fit rounded-lg">

@@ -92,17 +92,24 @@ export const STATUS_ICON_CONFIG: Record<
 
 // ─── Filter Option Lists ──────────────────────────────────────────────────────
 
-export const LEAVE_TYPE_OPTIONS = Object.values(LeaveType).map((value) => ({
-  value,
-  label: LEAVE_TYPE_LABELS[value],
-}));
+export const LEAVE_TYPE_OPTIONS = [
+  { value: 'all', label: '全種別' },
+  ...Object.values(LeaveType).map((value) => ({
+    value,
+    label: LEAVE_TYPE_LABELS[value],
+  })),
+];
 
-export const LEAVE_STATUS_OPTIONS = Object.values(LeaveStatus).map((value) => ({
-  value,
-  label: LEAVE_STATUS_LABELS[value],
-}));
+export const LEAVE_STATUS_OPTIONS = [
+  { value: 'all', label: '全ステータス' },
+  ...Object.values(LeaveStatus).map((value) => ({
+    value,
+    label: LEAVE_STATUS_LABELS[value],
+  })),
+];
 
 export const SCHEDULED_PERIOD_OPTIONS = [
+  { value: 'all', label: '全期間' },
   { value: 'current_month', label: '今月' },
   { value: 'next_month', label: '来月' },
   { value: 'current_year', label: '今年' },

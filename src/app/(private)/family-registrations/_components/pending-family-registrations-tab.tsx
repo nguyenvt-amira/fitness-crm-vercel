@@ -35,6 +35,11 @@ import {
 } from './approve-family-registration-modal';
 import { RejectFamilyRegistrationModal } from './reject-family-registration-modal';
 
+const SORT_OPTIONS = [
+  { value: 'created_at', label: '申請日時' },
+  { value: 'risk_score', label: 'リスク' },
+];
+
 const createColumns = (args: {
   onApprove: (row: FamilyRegistration) => void;
   onReject: (row: FamilyRegistration) => void;
@@ -294,14 +299,18 @@ export function PendingFamilyRegistrationsTab({
             <Select
               value={sortBy}
               onValueChange={(v) => setSortBy(v as 'created_at' | 'risk_score')}
+              items={SORT_OPTIONS}
             >
               <SelectTrigger className="h-9 w-[180px]">
                 <span className="text-muted-foreground">並び替え:</span>
                 <SelectValue placeholder="created_at" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="created_at">申請日時</SelectItem>
-                <SelectItem value="risk_score">リスク</SelectItem>
+                {SORT_OPTIONS.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

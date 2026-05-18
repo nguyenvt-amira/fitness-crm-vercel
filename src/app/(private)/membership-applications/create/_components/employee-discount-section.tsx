@@ -34,6 +34,10 @@ export function EmployeeDiscountSection({
 }: EmployeeDiscountSectionProps) {
   const { data } = useQuery(getCrmMembershipApplicationsCorporateMastersOptions());
   const partnerCompanies = data?.items ?? [];
+  const partnerCompanyItems = partnerCompanies.map((c) => ({
+    value: c.id,
+    label: c.name,
+  }));
   const now = format(new Date(), 'yyyy/MM/dd HH:mm');
 
   return (
@@ -52,7 +56,11 @@ export function EmployeeDiscountSection({
                 <FormLabel>
                   提携企業<span className="text-destructive ml-0.5">*</span>
                 </FormLabel>
-                <Select onValueChange={field.onChange} value={field.value ?? ''}>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value ?? ''}
+                  items={partnerCompanyItems}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="選択してください" />

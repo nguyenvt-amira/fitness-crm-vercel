@@ -64,7 +64,7 @@ export function FamilyRegistrationRiskDetailsSection({
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
       <Card>
-        <CollapsibleTrigger asChild className="block">
+        <CollapsibleTrigger className="block">
           <CardHeader className="cursor-pointer select-none">
             <CardTitle className="flex items-center gap-2">
               <AlertTriangle className="text-destructive size-5" />

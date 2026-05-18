@@ -155,7 +155,11 @@ export function BlacklistRegisterSheet({ open, onOpenChange }: BlacklistRegister
                         登録理由
                         <span className="text-destructive ml-2">*</span>
                       </FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        items={reasonOptions}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="理由を選択してください" />

@@ -30,7 +30,11 @@ export function LoginSettingsSection() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>ログイン元</FormLabel>
-              <Select value={field.value} onValueChange={field.onChange}>
+              <Select
+                value={field.value}
+                onValueChange={field.onChange}
+                items={[{ value: 'email', label: 'メール' }]}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="選択" />

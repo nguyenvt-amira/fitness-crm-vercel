@@ -72,6 +72,7 @@ export function PointsTab({ memberId, brand }: { memberId: string; brand: Brand 
                     <Select
                       value={period}
                       onValueChange={(value) => setPeriod(value as PointHistoryPeriod)}
+                      items={PERIOD_OPTIONS}
                     >
                       <SelectTrigger className="h-8 w-36 text-xs">
                         <SelectValue />

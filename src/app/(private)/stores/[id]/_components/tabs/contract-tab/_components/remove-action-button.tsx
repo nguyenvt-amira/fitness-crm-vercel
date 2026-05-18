@@ -36,7 +36,7 @@ export function RemoveActionButton({
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>
+      <AlertDialogTrigger>
         <RoleGatedButton
           requiredPermission={Permission.StoresConfigContract}
           type="button"

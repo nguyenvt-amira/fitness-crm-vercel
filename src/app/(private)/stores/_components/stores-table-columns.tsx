@@ -43,7 +43,7 @@ function ActionsCell({
 }) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger>
         <Button variant="ghost" size="sm" onClick={(e) => e.stopPropagation()}>
           <MoreHorizontal className="size-4" />
         </Button>

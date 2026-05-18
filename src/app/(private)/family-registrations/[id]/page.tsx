@@ -82,7 +82,7 @@ export default function FamilyRegistrationDetailPage() {
             エクスポート
           </Button>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger>
               <Button variant="outline" size="default" className="gap-2">
                 その他の操作
                 <ChevronDown className="size-4" />

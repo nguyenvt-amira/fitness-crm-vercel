@@ -73,12 +73,12 @@ export function BlacklistFilters({ isFilterOpen, onFilterOpenChange }: Blacklist
             onValueChange={(v) =>
               updateFilter('reason', v === 'all' ? null : (v as typeof filters.reason))
             }
+            items={BLACKLIST_REGISTRATION_SOURCE_OPTIONS}
           >
             <SelectTrigger className={`h-8 w-32 text-xs ${filterActiveClass(!!filters.reason)}`}>
               <SelectValue placeholder="全登録理由" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">全登録理由</SelectItem>
               {BLACKLIST_REGISTRATION_SOURCE_OPTIONS.map((opt) => (
                 <SelectItem key={opt.value} value={opt.value}>
                   {opt.label}
@@ -93,12 +93,12 @@ export function BlacklistFilters({ isFilterOpen, onFilterOpenChange }: Blacklist
             onValueChange={(v) =>
               updateFilter('unpaid', v === 'all' ? null : (v as typeof filters.unpaid))
             }
+            items={UNPAID_FILTER_OPTIONS}
           >
             <SelectTrigger className={`h-8 w-36 text-xs ${filterActiveClass(!!filters.unpaid)}`}>
               <SelectValue placeholder="未納金：全件" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">未納金：全件</SelectItem>
               {UNPAID_FILTER_OPTIONS.map((opt) => (
                 <SelectItem key={opt.value} value={opt.value}>
                   {opt.label}

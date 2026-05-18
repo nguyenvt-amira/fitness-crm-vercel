@@ -48,8 +48,11 @@ export function BreadcrumbNav({ items, variant = 'default' }: Readonly<Breadcrum
           <Fragment key={index}>
             <BreadcrumbItem>
               {'url' in item && item.url != null ? (
-                <BreadcrumbLink asChild className={cn(isSection && sectionLinkClass)}>
-                  <Link href={item.url}>{item.label}</Link>
+                <BreadcrumbLink
+                  render={<Link href={item.url} />}
+                  className={cn(isSection && sectionLinkClass)}
+                >
+                  {item.label}
                 </BreadcrumbLink>
               ) : (
                 <BreadcrumbPage className={cn(isSection && sectionPageClass)}>

@@ -19,10 +19,10 @@ interface ApplicationTypeSectionProps {
   readonly control: Control<DirectEnrollmentFormValues>;
 }
 
-const APPLICATION_TYPE_OPTIONS = Object.entries(APPLICATION_TYPE_LABELS) as [
-  ApplicationType,
-  string,
-][];
+const APPLICATION_TYPE_OPTIONS = Object.entries(APPLICATION_TYPE_LABELS).map(([value, label]) => ({
+  value: value as ApplicationType,
+  label,
+}));
 
 export function ApplicationTypeSection({ control }: ApplicationTypeSectionProps) {
   return (
@@ -40,16 +40,20 @@ export function ApplicationTypeSection({ control }: ApplicationTypeSectionProps)
                 <FormLabel>
                   申請種別<span className="text-destructive ml-0.5">*</span>
                 </FormLabel>
-                <Select onValueChange={field.onChange} value={field.value ?? ''}>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value ?? ''}
+                  items={APPLICATION_TYPE_OPTIONS}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="選択してください" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {APPLICATION_TYPE_OPTIONS.map(([value, label]) => (
-                      <SelectItem key={value} value={value}>
-                        {label}
+                    {APPLICATION_TYPE_OPTIONS.map((item) => (
+                      <SelectItem key={item.value} value={item.value}>
+                        {item.label}
                       </SelectItem>
                     ))}
                   </SelectContent>

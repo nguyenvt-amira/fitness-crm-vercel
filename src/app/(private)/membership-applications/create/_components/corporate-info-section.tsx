@@ -33,6 +33,7 @@ const BILLING_PATTERN_OPTIONS_JOYFIT = [
 export function CorporateInfoSection({ control, brand }: CorporateInfoSectionProps) {
   const { data } = useQuery(getCrmMembershipApplicationsCorporateMastersOptions());
   const corporates = data?.items ?? [];
+  const corporateItems = corporates.map((c) => ({ value: c.id, label: c.name }));
   const isFit365 = brand === 'FIT365';
   const corporateId = useWatch({ control: control, name: 'corporate.corporate_id' });
 
@@ -52,7 +53,11 @@ export function CorporateInfoSection({ control, brand }: CorporateInfoSectionPro
                 <FormLabel>
                   法人名<span className="text-destructive ml-0.5">*</span>
                 </FormLabel>
-                <Select onValueChange={field.onChange} value={field.value ?? ''}>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value ?? ''}
+                  items={corporateItems}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="選択してください" />
@@ -98,7 +103,11 @@ export function CorporateInfoSection({ control, brand }: CorporateInfoSectionPro
                     placeholder="法人宛請求はCRMの管理対象外です（別システムで管理）"
                   />
                 ) : (
-                  <Select onValueChange={field.onChange} value={field.value ?? ''}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value ?? ''}
+                    items={BILLING_PATTERN_OPTIONS_JOYFIT}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="選択してください" />
@@ -133,7 +142,14 @@ export function CorporateInfoSection({ control, brand }: CorporateInfoSectionPro
                     className="bg-muted"
                   />
                 ) : (
-                  <Select onValueChange={field.onChange} value={field.value ?? ''}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value ?? ''}
+                    items={[
+                      { value: 'corporate', label: '企業負担' },
+                      { value: 'individual', label: '個人負担' },
+                    ]}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="選択してください" />
