@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/select';
 
 import {
-  BLACKLIST_MANUAL_REASON_OPTIONS,
+  BLACKLIST_REGISTRATION_SOURCE_OPTIONS,
   UNPAID_FILTER_OPTIONS,
 } from '../_constants/blacklist.constants';
 import { useBlacklistFiltersContext } from '../_contexts/blacklist-filters-context';
@@ -79,7 +79,7 @@ export function BlacklistFilters({ isFilterOpen, onFilterOpenChange }: Blacklist
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">全登録理由</SelectItem>
-              {BLACKLIST_MANUAL_REASON_OPTIONS.map((opt) => (
+              {BLACKLIST_REGISTRATION_SOURCE_OPTIONS.map((opt) => (
                 <SelectItem key={opt.value} value={opt.value}>
                   {opt.label}
                 </SelectItem>
