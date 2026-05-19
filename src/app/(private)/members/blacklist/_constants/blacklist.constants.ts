@@ -38,13 +38,6 @@ export const BLACKLIST_REGISTRATION_SOURCE_OPTIONS = Object.values(BlacklistRegi
   }),
 );
 
-export const BLACKLIST_MANUAL_REASON_OPTIONS = Object.values(BlacklistManualReason).map(
-  (value) => ({
-    value,
-    label: BLACKLIST_MANUAL_REASON_LABEL[value],
-  }),
-);
-
 export const UNPAID_FILTER_OPTIONS = Object.values(UnpaidFilter).map((value) => ({
   value,
   label: UNPAID_FILTER_LABEL[value],
