@@ -2574,6 +2574,56 @@ export const WithdrawCancelResponseSchema = z
 
 export type WithdrawCancelResponse = z.infer<typeof WithdrawCancelResponseSchema>;
 
+// ===== Gate Stop =====
+
+export const GateStopReasonSchema = z
+  .enum(['nuisance', 'unpaid', 'fraudulent_use', 'other'])
+  .openapi({
+    title: 'GateStopReason',
+    description:
+      'Reason for gate stop: nuisance=迷惑行為, unpaid=未納金, fraudulent_use=不正利用, other=その他',
+  });
+
+export const GateStopScopeSchema = z.enum(['all_stores', 'own_store_only']).openapi({
+  title: 'GateStopScope',
+  description: 'Scope of gate stop: all_stores=全店舗入館不可, own_store_only=自店舗のみ入館不可',
+});
+
+export const GateStopRequestSchema = z
+  .object({
+    scope: GateStopScopeSchema.openapi({ description: 'Gate stop scope' }),
+    reason: GateStopReasonSchema.openapi({ description: 'Reason for gate stop' }),
+    terminal_message: z.string().optional().openapi({
+      example: 'スタッフにお声がけください',
+      description: 'Message to display on gate terminal (optional)',
+    }),
+    lock_after_message: z.boolean().openapi({
+      example: false,
+      description: 'Whether to deny entry even after member confirms the message',
+    }),
+  })
+  .openapi({
+    title: 'GateStopRequest',
+    description: 'Request body for setting gate stop on a member',
+  });
+
+export const GateStopResponseSchema = z
+  .object({
+    success: z.boolean(),
+    member_id: z.string(),
+    scope: GateStopScopeSchema,
+    reason: GateStopReasonSchema,
+  })
+  .openapi({
+    title: 'GateStopResponse',
+    description: 'Result of gate stop setting',
+  });
+
+export type GateStopReason = z.infer<typeof GateStopReasonSchema>;
+export type GateStopScope = z.infer<typeof GateStopScopeSchema>;
+export type GateStopRequest = z.infer<typeof GateStopRequestSchema>;
+export type GateStopResponse = z.infer<typeof GateStopResponseSchema>;
+
 export type VisitRow = z.infer<typeof VisitRowSchema>;
 export type LessonReservationRow = z.infer<typeof LessonReservationRowSchema>;
 export type MemberAccessSettings = z.infer<typeof MemberAccessSettingsSchema>;

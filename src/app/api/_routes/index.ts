@@ -49,6 +49,7 @@ import '@/app/api/crm/members/[id]/contracts/option-contracts/route';
 import '@/app/api/crm/members/[id]/contracts/payment-history/route';
 import '@/app/api/crm/members/[id]/contracts/summary/route';
 import '@/app/api/crm/members/[id]/family-members/route';
+import '@/app/api/crm/members/[id]/gate-stop/route';
 import '@/app/api/crm/members/[id]/health-info/route';
 import '@/app/api/crm/members/[id]/marketing-consent/route';
 import '@/app/api/crm/members/[id]/memos/[memoId]/route';

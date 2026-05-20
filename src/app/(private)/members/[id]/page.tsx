@@ -6,13 +6,13 @@ import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigat
 
 import { formatDate } from '@/utils/format.util';
 import { useQuery } from '@tanstack/react-query';
-import { MoreHorizontal, Pencil, User, UserCheck } from 'lucide-react';
+import { MoreHorizontal, Pencil, ShieldAlert, User, UserCheck } from 'lucide-react';
 
 import { BreadcrumbNav } from '@/components/common/breadcrumb-nav';
 import { DataStateBoundary } from '@/components/common/data-state-boundary';
 import { RoleGatedButton } from '@/components/common/role-gated-button';
 import { RoleGatedMenuItem } from '@/components/common/role-gated-menu-item';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -35,6 +35,7 @@ import { Permission } from '@/types/permission.type';
 import { GENDER_CLASSES, MEMBER_STATUS_CLASSES, MEMBER_TYPE_LABELS } from '../_constants/constants';
 import { MEMBER_STATUS_LABELS } from '../_constants/constants';
 import { GENDER_LABELS } from '../_constants/constants';
+import { GateStopSetSheet } from './_components/gate-stop-set-sheet';
 import { PersonalDataDeleteDialog } from './_components/personal-data-delete-dialog';
 import { ReEnrollSheet } from './_components/re-enroll-sheet';
 import { BasicInfoTab } from './_components/tabs/basic-info-tab';
@@ -79,6 +80,7 @@ export default function MemberDetailPage() {
   const [showWithdrawSheet, setShowWithdrawSheet] = useState(false);
   const [showPersonalDataDeleteDialog, setShowPersonalDataDeleteDialog] = useState(false);
   const [showWithdrawCancelDialog, setShowWithdrawCancelDialog] = useState(false);
+  const [showGateStopSetSheet, setShowGateStopSetSheet] = useState(false);
 
   const {
     data: member,
@@ -127,10 +129,7 @@ export default function MemberDetailPage() {
     // TODO: Open transfer apply sheet
     console.log('Transfer apply');
   };
-  const handleGateStopSetting = () => {
-    // TODO: Open gate stop setting sheet
-    console.log('Gate stop setting');
-  };
+
   const handleForceWithdraw = () => {
     // TODO: Open force-withdraw dialog
     console.log('Force withdraw');
@@ -170,7 +169,17 @@ export default function MemberDetailPage() {
       </div>
 
       {/* Header */}
-      <div className="bg-card shrink-0 border-b p-4">
+      <div className="p-4">
+        {/* Alert for gate stop status */}
+        {member.profile.status === MemberStatus.GATE_STOP && (
+          <Alert className="border-destructive/50 bg-destructive/10 mb-4">
+            <ShieldAlert className="text-destructive size-4" />
+            <AlertDescription className="text-xs">
+              ゲートストップ中 — 全店舗への入館が制限されています
+            </AlertDescription>
+          </Alert>
+        )}
+
         <Card className="mb-0 py-4">
           <CardContent className="flex flex-col gap-3 px-4 py-3">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -308,7 +317,7 @@ export default function MemberDetailPage() {
                           {/* A-01「ゲートストップ」: HQ/Sys/Mgr ○、Staff 自店舗のみ、Trainer/Observer × */}
                           <RoleGatedMenuItem
                             requiredPermission={Permission.MembersGateStop}
-                            onClick={handleGateStopSetting}
+                            onClick={() => setShowGateStopSetSheet(true)}
                           >
                             ゲートストップ設定
                           </RoleGatedMenuItem>
@@ -340,7 +349,7 @@ export default function MemberDetailPage() {
                           <DropdownMenuSeparator />
                           <RoleGatedMenuItem
                             requiredPermission={Permission.MembersGateStop}
-                            onClick={handleGateStopSetting}
+                            onClick={() => setShowGateStopSetSheet(true)}
                           >
                             ゲートストップ設定
                           </RoleGatedMenuItem>
@@ -357,10 +366,7 @@ export default function MemberDetailPage() {
                       {member.profile.status === MemberStatus.GATE_STOP && (
                         <>
                           {/* ゲートストップ解除: HQ/Sys/Mgr ○、Staff 自店舗のみ、Trainer/Observer × */}
-                          <RoleGatedMenuItem
-                            requiredPermission={Permission.MembersGateStop}
-                            onClick={handleGateStopSetting}
-                          >
+                          <RoleGatedMenuItem requiredPermission={Permission.MembersGateStop}>
                             ゲートストップ解除
                           </RoleGatedMenuItem>
                           <RoleGatedMenuItem
@@ -389,7 +395,7 @@ export default function MemberDetailPage() {
                           </RoleGatedMenuItem>
                           <RoleGatedMenuItem
                             requiredPermission={Permission.MembersGateStop}
-                            onClick={handleGateStopSetting}
+                            onClick={() => setShowGateStopSetSheet(true)}
                           >
                             ゲートストップ設定
                           </RoleGatedMenuItem>
@@ -401,12 +407,6 @@ export default function MemberDetailPage() {
               </div>
             </div>
             <Separator />
-            {member.profile.status === MemberStatus.GATE_STOP && (
-              <Alert className="border-destructive/50 bg-destructive/10">
-                <AlertTitle>ゲートストップ中</AlertTitle>
-                <AlertDescription>全店舗への入館が制限されています。</AlertDescription>
-              </Alert>
-            )}
 
             <dl className="grid grid-cols-1 gap-x-6 gap-y-3 md:grid-cols-2 xl:grid-cols-4">
               <div>
@@ -462,7 +462,7 @@ export default function MemberDetailPage() {
           onValueChange={handleTabChange}
           className="flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden"
         >
-          <div className="shrink-0 overflow-x-auto overflow-y-hidden pt-4 pb-2">
+          <div className="shrink-0 overflow-x-auto overflow-y-hidden">
             <TabsList className="inline-flex min-w-max">
               <TabsTrigger value="basic">基本情報</TabsTrigger>
               <TabsTrigger value="contracts">契約操作</TabsTrigger>
@@ -535,6 +535,12 @@ export default function MemberDetailPage() {
       <WithdrawCancelDialog
         open={showWithdrawCancelDialog}
         onOpenChange={setShowWithdrawCancelDialog}
+        memberId={memberId}
+      />
+
+      <GateStopSetSheet
+        open={showGateStopSetSheet}
+        onOpenChange={setShowGateStopSetSheet}
         memberId={memberId}
       />
     </div>
