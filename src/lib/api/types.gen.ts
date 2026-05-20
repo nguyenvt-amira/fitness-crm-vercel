@@ -1558,6 +1558,17 @@ export type GetMemberDetailResponse = {
          */
         is_black_listed: boolean;
         /**
+         * Current gate stop info (null when not gate-stopped)
+         */
+        gate_stop_info?: {
+            scope: 'all_stores' | 'own_store_only';
+            reason: 'nuisance' | 'unpaid' | 'fraudulent_use' | 'other';
+            terminal_message?: string;
+            lock_after_message: boolean;
+            set_at: string;
+            set_by: string;
+        } | null;
+        /**
          * Main contract display name
          */
         contract_name?: string;
@@ -8219,6 +8230,38 @@ export const WithdrawReason = {
 export type WithdrawReason = typeof WithdrawReason[keyof typeof WithdrawReason];
 
 /**
+ * GateStopInfo
+ *
+ * Current gate stop settings for a member
+ */
+export type GateStopInfo = {
+    /**
+     * Gate stop scope
+     */
+    scope: 'all_stores' | 'own_store_only';
+    /**
+     * Reason for gate stop
+     */
+    reason: 'nuisance' | 'unpaid' | 'fraudulent_use' | 'other';
+    /**
+     * Message displayed on gate terminal
+     */
+    terminal_message?: string;
+    /**
+     * Whether entry is denied even after confirming the message
+     */
+    lock_after_message: boolean;
+    /**
+     * Datetime the gate stop was set (ISO 8601)
+     */
+    set_at: string;
+    /**
+     * Name of the staff who set the gate stop
+     */
+    set_by: string;
+};
+
+/**
  * GateStopReason
  *
  * Reason for gate stop: nuisance=迷惑行為, unpaid=未納金, fraudulent_use=不正利用, other=その他
@@ -8299,6 +8342,53 @@ export type GateStopResponse = {
      * Reason for gate stop: nuisance=迷惑行為, unpaid=未納金, fraudulent_use=不正利用, other=その他
      */
     reason: 'nuisance' | 'unpaid' | 'fraudulent_use' | 'other';
+};
+
+/**
+ * GateStopReleaseReason
+ *
+ * Reason for releasing gate stop: issue_resolved=問題解決済み, wrong_setting=誤設定, identity_confirmed=本人確認完了, other=その他
+ */
+export const GateStopReleaseReason = {
+    ISSUE_RESOLVED: 'issue_resolved',
+    WRONG_SETTING: 'wrong_setting',
+    IDENTITY_CONFIRMED: 'identity_confirmed',
+    OTHER: 'other'
+} as const;
+
+/**
+ * GateStopReleaseReason
+ *
+ * Reason for releasing gate stop: issue_resolved=問題解決済み, wrong_setting=誤設定, identity_confirmed=本人確認完了, other=その他
+ */
+export type GateStopReleaseReason = typeof GateStopReleaseReason[keyof typeof GateStopReleaseReason];
+
+/**
+ * GateStopReleaseRequest
+ *
+ * Request body for releasing gate stop on a member
+ */
+export type GateStopReleaseRequest = {
+    /**
+     * GateStopReleaseReason
+     *
+     * Reason for releasing gate stop
+     */
+    reason: 'issue_resolved' | 'wrong_setting' | 'identity_confirmed' | 'other';
+    /**
+     * Additional detail for the release reason (optional)
+     */
+    detail?: string;
+};
+
+/**
+ * GateStopReleaseResponse
+ *
+ * Result of gate stop release
+ */
+export type GateStopReleaseResponse = {
+    success: boolean;
+    member_id: string;
 };
 
 export type PostAuthLoginData = {
@@ -13244,6 +13334,210 @@ export type GetCrmMembersByMemberIdFamilyMembersResponses = {
 
 export type GetCrmMembersByMemberIdFamilyMembersResponse = GetCrmMembersByMemberIdFamilyMembersResponses[keyof GetCrmMembersByMemberIdFamilyMembersResponses];
 
+export type DeleteCrmMembersByIdGateStopData = {
+    /**
+     * GateStopReleaseRequest
+     *
+     * Request body for releasing gate stop on a member
+     */
+    body?: {
+        /**
+         * GateStopReleaseReason
+         *
+         * Reason for releasing gate stop
+         */
+        reason: 'issue_resolved' | 'wrong_setting' | 'identity_confirmed' | 'other';
+        /**
+         * Additional detail for the release reason (optional)
+         */
+        detail?: string;
+    };
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/gate-stop';
+};
+
+export type DeleteCrmMembersByIdGateStopErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type DeleteCrmMembersByIdGateStopError = DeleteCrmMembersByIdGateStopErrors[keyof DeleteCrmMembersByIdGateStopErrors];
+
+export type DeleteCrmMembersByIdGateStopResponses = {
+    /**
+     * GateStopReleaseResponse
+     *
+     * Result of gate stop release
+     */
+    200: {
+        success: boolean;
+        member_id: string;
+    };
+};
+
+export type DeleteCrmMembersByIdGateStopResponse = DeleteCrmMembersByIdGateStopResponses[keyof DeleteCrmMembersByIdGateStopResponses];
+
+export type PostCrmMembersByIdGateStopData = {
+    /**
+     * GateStopRequest
+     *
+     * Request body for setting gate stop on a member
+     */
+    body?: {
+        /**
+         * GateStopScope
+         *
+         * Gate stop scope
+         */
+        scope: 'all_stores' | 'own_store_only';
+        /**
+         * GateStopReason
+         *
+         * Reason for gate stop
+         */
+        reason: 'nuisance' | 'unpaid' | 'fraudulent_use' | 'other';
+        /**
+         * Message to display on gate terminal (optional)
+         */
+        terminal_message?: string;
+        /**
+         * Whether to deny entry even after member confirms the message
+         */
+        lock_after_message: boolean;
+    };
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/gate-stop';
+};
+
+export type PostCrmMembersByIdGateStopErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembersByIdGateStopError = PostCrmMembersByIdGateStopErrors[keyof PostCrmMembersByIdGateStopErrors];
+
+export type PostCrmMembersByIdGateStopResponses = {
+    /**
+     * GateStopResponse
+     *
+     * Result of gate stop setting
+     */
+    200: {
+        success: boolean;
+        member_id: string;
+        /**
+         * GateStopScope
+         *
+         * Scope of gate stop: all_stores=全店舗入館不可, own_store_only=自店舗のみ入館不可
+         */
+        scope: 'all_stores' | 'own_store_only';
+        /**
+         * GateStopReason
+         *
+         * Reason for gate stop: nuisance=迷惑行為, unpaid=未納金, fraudulent_use=不正利用, other=その他
+         */
+        reason: 'nuisance' | 'unpaid' | 'fraudulent_use' | 'other';
+    };
+};
+
+export type PostCrmMembersByIdGateStopResponse = PostCrmMembersByIdGateStopResponses[keyof PostCrmMembersByIdGateStopResponses];
+
 export type PutCrmMembersByIdHealthInfoData = {
     /**
      * UpdateHealthInfoRequest
@@ -14648,6 +14942,17 @@ export type GetCrmMembersByIdResponses = {
              */
             is_black_listed: boolean;
             /**
+             * Current gate stop info (null when not gate-stopped)
+             */
+            gate_stop_info?: {
+                scope: 'all_stores' | 'own_store_only';
+                reason: 'nuisance' | 'unpaid' | 'fraudulent_use' | 'other';
+                terminal_message?: string;
+                lock_after_message: boolean;
+                set_at: string;
+                set_by: string;
+            } | null;
+            /**
              * Main contract display name
              */
             contract_name?: string;
@@ -15094,6 +15399,17 @@ export type PatchCrmMembersByIdResponses = {
              * Blacklisted status
              */
             is_black_listed: boolean;
+            /**
+             * Current gate stop info (null when not gate-stopped)
+             */
+            gate_stop_info?: {
+                scope: 'all_stores' | 'own_store_only';
+                reason: 'nuisance' | 'unpaid' | 'fraudulent_use' | 'other';
+                terminal_message?: string;
+                lock_after_message: boolean;
+                set_at: string;
+                set_by: string;
+            } | null;
             /**
              * Main contract display name
              */
@@ -15736,119 +16052,6 @@ export type GetCrmMembersByIdUsageStatusResponses = {
 };
 
 export type GetCrmMembersByIdUsageStatusResponse = GetCrmMembersByIdUsageStatusResponses[keyof GetCrmMembersByIdUsageStatusResponses];
-
-export type PostCrmMembersByIdGateStopData = {
-    /**
-     * GateStopRequest
-     *
-     * Request body for setting gate stop on a member
-     */
-    body?: {
-        /**
-         * GateStopScope
-         *
-         * Gate stop scope
-         */
-        scope: 'all_stores' | 'own_store_only';
-        /**
-         * GateStopReason
-         *
-         * Reason for gate stop
-         */
-        reason: 'nuisance' | 'unpaid' | 'fraudulent_use' | 'other';
-        /**
-         * Message to display on gate terminal (optional)
-         */
-        terminal_message?: string;
-        /**
-         * Whether to deny entry even after member confirms the message
-         */
-        lock_after_message: boolean;
-    };
-    path: {
-        /**
-         * Member ID
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/crm/members/{id}/gate-stop';
-};
-
-export type PostCrmMembersByIdGateStopErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    400: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    404: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    409: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type PostCrmMembersByIdGateStopError = PostCrmMembersByIdGateStopErrors[keyof PostCrmMembersByIdGateStopErrors];
-
-export type PostCrmMembersByIdGateStopResponses = {
-    /**
-     * GateStopResponse
-     *
-     * Result of gate stop setting
-     */
-    200: {
-        success: boolean;
-        member_id: string;
-        /**
-         * GateStopScope
-         *
-         * Scope of gate stop: all_stores=全店舗入館不可, own_store_only=自店舗のみ入館不可
-         */
-        scope: 'all_stores' | 'own_store_only';
-        /**
-         * GateStopReason
-         *
-         * Reason for gate stop: nuisance=迷惑行為, unpaid=未納金, fraudulent_use=不正利用, other=その他
-         */
-        reason: 'nuisance' | 'unpaid' | 'fraudulent_use' | 'other';
-    };
-};
-
-export type PostCrmMembersByIdGateStopResponse = PostCrmMembersByIdGateStopResponses[keyof PostCrmMembersByIdGateStopResponses];
 
 export type PostCrmMembersByIdWithdrawCancelData = {
     body?: never;

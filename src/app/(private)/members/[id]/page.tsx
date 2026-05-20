@@ -35,6 +35,7 @@ import { Permission } from '@/types/permission.type';
 import { GENDER_CLASSES, MEMBER_STATUS_CLASSES, MEMBER_TYPE_LABELS } from '../_constants/constants';
 import { MEMBER_STATUS_LABELS } from '../_constants/constants';
 import { GENDER_LABELS } from '../_constants/constants';
+import { GateStopReleaseSheet } from './_components/gate-stop-release-sheet';
 import { GateStopSetSheet } from './_components/gate-stop-set-sheet';
 import { PersonalDataDeleteDialog } from './_components/personal-data-delete-dialog';
 import { ReEnrollSheet } from './_components/re-enroll-sheet';
@@ -81,6 +82,7 @@ export default function MemberDetailPage() {
   const [showPersonalDataDeleteDialog, setShowPersonalDataDeleteDialog] = useState(false);
   const [showWithdrawCancelDialog, setShowWithdrawCancelDialog] = useState(false);
   const [showGateStopSetSheet, setShowGateStopSetSheet] = useState(false);
+  const [showGateStopReleaseSheet, setShowGateStopReleaseSheet] = useState(false);
 
   const {
     data: member,
@@ -366,7 +368,10 @@ export default function MemberDetailPage() {
                       {member.profile.status === MemberStatus.GATE_STOP && (
                         <>
                           {/* ゲートストップ解除: HQ/Sys/Mgr ○、Staff 自店舗のみ、Trainer/Observer × */}
-                          <RoleGatedMenuItem requiredPermission={Permission.MembersGateStop}>
+                          <RoleGatedMenuItem
+                            requiredPermission={Permission.MembersGateStop}
+                            onClick={() => setShowGateStopReleaseSheet(true)}
+                          >
                             ゲートストップ解除
                           </RoleGatedMenuItem>
                           <RoleGatedMenuItem
@@ -542,6 +547,13 @@ export default function MemberDetailPage() {
         open={showGateStopSetSheet}
         onOpenChange={setShowGateStopSetSheet}
         memberId={memberId}
+      />
+
+      <GateStopReleaseSheet
+        open={showGateStopReleaseSheet}
+        onOpenChange={setShowGateStopReleaseSheet}
+        memberId={memberId}
+        gateStopInfo={member.profile.gate_stop_info}
       />
     </div>
   );

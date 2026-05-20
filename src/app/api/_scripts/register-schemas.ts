@@ -878,6 +878,10 @@ export function registerAllSchemas() {
 
   // Register gate stop schemas
   registeredSchemaMap.set(
+    'GateStopInfo',
+    registry.register('GateStopInfo', memberSchemas.GateStopInfoSchema),
+  );
+  registeredSchemaMap.set(
     'GateStopReason',
     registry.register('GateStopReason', memberSchemas.GateStopReasonSchema),
   );
@@ -892,5 +896,17 @@ export function registerAllSchemas() {
   registeredSchemaMap.set(
     'GateStopResponse',
     registry.register('GateStopResponse', memberSchemas.GateStopResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'GateStopReleaseReason',
+    registry.register('GateStopReleaseReason', memberSchemas.GateStopReleaseReasonSchema),
+  );
+  registeredSchemaMap.set(
+    'GateStopReleaseRequest',
+    registry.register('GateStopReleaseRequest', memberSchemas.GateStopReleaseRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'GateStopReleaseResponse',
+    registry.register('GateStopReleaseResponse', memberSchemas.GateStopReleaseResponseSchema),
   );
 }
