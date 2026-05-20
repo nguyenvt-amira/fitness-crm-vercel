@@ -18,6 +18,14 @@ export enum Permission {
   MembersCreate = 'members.create',
   MembersEdit = 'members.edit',
   MembersDelete = 'members.delete',
+  MembersPersonalDataEdit = 'members.personal-data-edit',
+  MembersPersonalDataDelete = 'members.personal-data-delete',
+  MembersReEnroll = 'members.re-enroll',
+  MembersSuspend = 'members.suspend',
+  MembersWithdraw = 'members.withdraw',
+  MembersTransfer = 'members.transfer',
+  MembersGateStop = 'members.gate-stop',
+  MembersForceWithdraw = 'members.force-withdraw',
 
   // Membership applications
   MembershipApplicationsCreate = 'membership-applications.create',

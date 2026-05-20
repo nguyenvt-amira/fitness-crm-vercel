@@ -30,7 +30,7 @@ import { getCrmMembersByIdOptions } from '@/lib/api/@tanstack/react-query.gen';
 import { MemberStatus } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
-import { UserRole } from '@/types/permission.type';
+import { Permission } from '@/types/permission.type';
 
 import { GENDER_CLASSES, MEMBER_STATUS_CLASSES, MEMBER_TYPE_LABELS } from '../_constants/constants';
 import { MEMBER_STATUS_LABELS } from '../_constants/constants';
@@ -224,7 +224,7 @@ export default function MemberDetailPage() {
                 {!isWithdrawnStatus && (
                   <RoleGatedButton
                     size="sm"
-                    allowedRoles={[UserRole.Headquarter, UserRole.System]}
+                    requiredPermission={Permission.MembersPersonalDataEdit}
                     className="gap-1"
                     onClick={handleEdit}
                   >
@@ -236,12 +236,7 @@ export default function MemberDetailPage() {
                   <>
                     {/* C-01「管理画面入会」: HQ/Sys/Mgr/Staff ○、Trainer/Observer × */}
                     <RoleGatedButton
-                      allowedRoles={[
-                        UserRole.Headquarter,
-                        UserRole.System,
-                        UserRole.Manager,
-                        UserRole.Staff,
-                      ]}
+                      requiredPermission={Permission.MembersReEnroll}
                       denyTooltip="再入会登録の権限がありません"
                       size="sm"
                       onClick={handleReEnroll}
@@ -256,7 +251,7 @@ export default function MemberDetailPage() {
                       <DropdownMenuContent align="end">
                         {/* A-01「個人情報変更」: HQ/Sys のみ */}
                         <RoleGatedMenuItem
-                          allowedRoles={[UserRole.Headquarter, UserRole.System]}
+                          requiredPermission={Permission.MembersPersonalDataDelete}
                           variant="destructive"
                           onClick={handlePersonalDataDelete}
                         >
@@ -276,12 +271,7 @@ export default function MemberDetailPage() {
                         <>
                           {/* A-01「ステータス変更」: HQ/Sys/Mgr/Staff ○、Trainer/Observer × */}
                           <RoleGatedMenuItem
-                            allowedRoles={[
-                              UserRole.Headquarter,
-                              UserRole.System,
-                              UserRole.Manager,
-                              UserRole.Staff,
-                            ]}
+                            requiredPermission={Permission.MembersSuspend}
                             disabled={member.constraints.hasUnpaidFee}
                             onClick={handleSuspend}
                           >
@@ -295,24 +285,14 @@ export default function MemberDetailPage() {
                             </div>
                           </RoleGatedMenuItem>
                           <RoleGatedMenuItem
-                            allowedRoles={[
-                              UserRole.Headquarter,
-                              UserRole.System,
-                              UserRole.Manager,
-                              UserRole.Staff,
-                            ]}
+                            requiredPermission={Permission.MembersWithdraw}
                             onClick={handleWithdraw}
                           >
                             退会申請
                           </RoleGatedMenuItem>
                           {/* A-02「承認・否認」: HQ/Sys/Mgr/Staff ○、Trainer/Observer × */}
                           <RoleGatedMenuItem
-                            allowedRoles={[
-                              UserRole.Headquarter,
-                              UserRole.System,
-                              UserRole.Manager,
-                              UserRole.Staff,
-                            ]}
+                            requiredPermission={Permission.MembersTransfer}
                             disabled={
                               member.constraints.hasUnpaidFee ||
                               member.constraints.inCancellationPeriod
@@ -337,12 +317,7 @@ export default function MemberDetailPage() {
                           <DropdownMenuSeparator />
                           {/* A-01「ゲートストップ」: HQ/Sys/Mgr ○、Staff 自店舗のみ、Trainer/Observer × */}
                           <RoleGatedMenuItem
-                            allowedRoles={[
-                              UserRole.Headquarter,
-                              UserRole.System,
-                              UserRole.Manager,
-                              UserRole.Staff,
-                            ]}
+                            requiredPermission={Permission.MembersGateStop}
                             onClick={handleGateStopSetting}
                           >
                             ゲートストップ設定
@@ -350,7 +325,7 @@ export default function MemberDetailPage() {
                           <DropdownMenuSeparator />
                           {/* A-01「BL管理（強制退会）」: HQ/Sys のみ */}
                           <RoleGatedMenuItem
-                            allowedRoles={[UserRole.Headquarter, UserRole.System]}
+                            requiredPermission={Permission.MembersForceWithdraw}
                             className="text-destructive"
                             onClick={handleForceWithdraw}
                           >
@@ -361,42 +336,27 @@ export default function MemberDetailPage() {
                       {member.profile.status === MemberStatus.SUSPENDED && (
                         <>
                           <RoleGatedMenuItem
-                            allowedRoles={[
-                              UserRole.Headquarter,
-                              UserRole.System,
-                              UserRole.Manager,
-                              UserRole.Staff,
-                            ]}
+                            requiredPermission={Permission.MembersSuspend}
                             onClick={handleLeaveRelease}
                           >
                             休会解除
                           </RoleGatedMenuItem>
                           <RoleGatedMenuItem
-                            allowedRoles={[
-                              UserRole.Headquarter,
-                              UserRole.System,
-                              UserRole.Manager,
-                              UserRole.Staff,
-                            ]}
+                            requiredPermission={Permission.MembersWithdraw}
                             onClick={handleWithdraw}
                           >
                             退会申請
                           </RoleGatedMenuItem>
                           <DropdownMenuSeparator />
                           <RoleGatedMenuItem
-                            allowedRoles={[
-                              UserRole.Headquarter,
-                              UserRole.System,
-                              UserRole.Manager,
-                              UserRole.Staff,
-                            ]}
+                            requiredPermission={Permission.MembersGateStop}
                             onClick={handleGateStopSetting}
                           >
                             ゲートストップ設定
                           </RoleGatedMenuItem>
                           <DropdownMenuSeparator />
                           <RoleGatedMenuItem
-                            allowedRoles={[UserRole.Headquarter, UserRole.System]}
+                            requiredPermission={Permission.MembersForceWithdraw}
                             className="text-destructive"
                             onClick={handleForceWithdraw}
                           >
@@ -408,30 +368,20 @@ export default function MemberDetailPage() {
                         <>
                           {/* ゲートストップ解除: HQ/Sys/Mgr ○、Staff 自店舗のみ、Trainer/Observer × */}
                           <RoleGatedMenuItem
-                            allowedRoles={[
-                              UserRole.Headquarter,
-                              UserRole.System,
-                              UserRole.Manager,
-                              UserRole.Staff,
-                            ]}
+                            requiredPermission={Permission.MembersGateStop}
                             onClick={handleGateStopSetting}
                           >
                             ゲートストップ解除
                           </RoleGatedMenuItem>
                           <RoleGatedMenuItem
-                            allowedRoles={[
-                              UserRole.Headquarter,
-                              UserRole.System,
-                              UserRole.Manager,
-                              UserRole.Staff,
-                            ]}
+                            requiredPermission={Permission.MembersWithdraw}
                             onClick={handleWithdraw}
                           >
                             退会申請
                           </RoleGatedMenuItem>
                           <DropdownMenuSeparator />
                           <RoleGatedMenuItem
-                            allowedRoles={[UserRole.Headquarter, UserRole.System]}
+                            requiredPermission={Permission.MembersForceWithdraw}
                             className="text-destructive"
                             onClick={handleForceWithdraw}
                           >
@@ -442,23 +392,13 @@ export default function MemberDetailPage() {
                       {member.profile.status === MemberStatus.PENDING_WITHDRAWAL && (
                         <>
                           <RoleGatedMenuItem
-                            allowedRoles={[
-                              UserRole.Headquarter,
-                              UserRole.System,
-                              UserRole.Manager,
-                              UserRole.Staff,
-                            ]}
+                            requiredPermission={Permission.MembersWithdraw}
                             onClick={handleCancelWithdraw}
                           >
                             退会取り消し
                           </RoleGatedMenuItem>
                           <RoleGatedMenuItem
-                            allowedRoles={[
-                              UserRole.Headquarter,
-                              UserRole.System,
-                              UserRole.Manager,
-                              UserRole.Staff,
-                            ]}
+                            requiredPermission={Permission.MembersGateStop}
                             onClick={handleGateStopSetting}
                           >
                             ゲートストップ設定
