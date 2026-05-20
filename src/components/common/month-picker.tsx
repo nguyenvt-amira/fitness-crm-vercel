@@ -81,18 +81,20 @@ export function MonthPicker({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className={cn(
-            'w-44 justify-between gap-2 font-normal',
-            !value && 'text-muted-foreground',
-            hasError && 'border-destructive focus-visible:ring-destructive/20',
-          )}
-        >
-          {value ? formatDisplay(value) : placeholder}
-          <CalendarIcon className="size-3.5 shrink-0" />
-        </Button>
+      <PopoverTrigger
+        render={
+          <Button
+            variant="outline"
+            className={cn(
+              'w-44 justify-between gap-2 font-normal',
+              !value && 'text-muted-foreground',
+              hasError && 'border-destructive focus-visible:ring-destructive/20',
+            )}
+          />
+        }
+      >
+        {value ? formatDisplay(value) : placeholder}
+        <CalendarIcon className="size-3.5 shrink-0" />
       </PopoverTrigger>
       <PopoverContent className="w-64 p-3" align="start">
         {/* Year navigation */}

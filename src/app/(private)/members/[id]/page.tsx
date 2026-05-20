@@ -258,7 +258,7 @@ export default function MemberDetailPage() {
                         <RoleGatedMenuItem
                           allowedRoles={[UserRole.Headquarter, UserRole.System]}
                           variant="destructive"
-                          onSelect={handlePersonalDataDelete}
+                          onClick={handlePersonalDataDelete}
                         >
                           個人情報削除
                         </RoleGatedMenuItem>
@@ -283,7 +283,7 @@ export default function MemberDetailPage() {
                               UserRole.Staff,
                             ]}
                             disabled={member.constraints.hasUnpaidFee}
-                            onSelect={handleSuspend}
+                            onClick={handleSuspend}
                           >
                             <div className="flex flex-col">
                               <span>休会申請</span>
@@ -301,7 +301,7 @@ export default function MemberDetailPage() {
                               UserRole.Manager,
                               UserRole.Staff,
                             ]}
-                            onSelect={handleWithdraw}
+                            onClick={handleWithdraw}
                           >
                             退会申請
                           </RoleGatedMenuItem>
@@ -317,7 +317,7 @@ export default function MemberDetailPage() {
                               member.constraints.hasUnpaidFee ||
                               member.constraints.inCancellationPeriod
                             }
-                            onSelect={handleTransfer}
+                            onClick={handleTransfer}
                           >
                             <div className="flex flex-col">
                               <span>移籍申請</span>
@@ -343,7 +343,7 @@ export default function MemberDetailPage() {
                               UserRole.Manager,
                               UserRole.Staff,
                             ]}
-                            onSelect={handleGateStopSetting}
+                            onClick={handleGateStopSetting}
                           >
                             ゲートストップ設定
                           </RoleGatedMenuItem>
@@ -352,7 +352,7 @@ export default function MemberDetailPage() {
                           <RoleGatedMenuItem
                             allowedRoles={[UserRole.Headquarter, UserRole.System]}
                             className="text-destructive"
-                            onSelect={handleForceWithdraw}
+                            onClick={handleForceWithdraw}
                           >
                             強制退会
                           </RoleGatedMenuItem>
@@ -367,7 +367,7 @@ export default function MemberDetailPage() {
                               UserRole.Manager,
                               UserRole.Staff,
                             ]}
-                            onSelect={handleLeaveRelease}
+                            onClick={handleLeaveRelease}
                           >
                             休会解除
                           </RoleGatedMenuItem>
@@ -378,7 +378,7 @@ export default function MemberDetailPage() {
                               UserRole.Manager,
                               UserRole.Staff,
                             ]}
-                            onSelect={handleWithdraw}
+                            onClick={handleWithdraw}
                           >
                             退会申請
                           </RoleGatedMenuItem>
@@ -390,7 +390,7 @@ export default function MemberDetailPage() {
                               UserRole.Manager,
                               UserRole.Staff,
                             ]}
-                            onSelect={handleGateStopSetting}
+                            onClick={handleGateStopSetting}
                           >
                             ゲートストップ設定
                           </RoleGatedMenuItem>
@@ -398,7 +398,7 @@ export default function MemberDetailPage() {
                           <RoleGatedMenuItem
                             allowedRoles={[UserRole.Headquarter, UserRole.System]}
                             className="text-destructive"
-                            onSelect={handleForceWithdraw}
+                            onClick={handleForceWithdraw}
                           >
                             強制退会
                           </RoleGatedMenuItem>
@@ -414,7 +414,7 @@ export default function MemberDetailPage() {
                               UserRole.Manager,
                               UserRole.Staff,
                             ]}
-                            onSelect={handleGateStopSetting}
+                            onClick={handleGateStopSetting}
                           >
                             ゲートストップ解除
                           </RoleGatedMenuItem>
@@ -425,7 +425,7 @@ export default function MemberDetailPage() {
                               UserRole.Manager,
                               UserRole.Staff,
                             ]}
-                            onSelect={handleWithdraw}
+                            onClick={handleWithdraw}
                           >
                             退会申請
                           </RoleGatedMenuItem>
@@ -433,7 +433,7 @@ export default function MemberDetailPage() {
                           <RoleGatedMenuItem
                             allowedRoles={[UserRole.Headquarter, UserRole.System]}
                             className="text-destructive"
-                            onSelect={handleForceWithdraw}
+                            onClick={handleForceWithdraw}
                           >
                             強制退会
                           </RoleGatedMenuItem>
@@ -448,7 +448,7 @@ export default function MemberDetailPage() {
                               UserRole.Manager,
                               UserRole.Staff,
                             ]}
-                            onSelect={handleCancelWithdraw}
+                            onClick={handleCancelWithdraw}
                           >
                             退会取り消し
                           </RoleGatedMenuItem>
@@ -459,7 +459,7 @@ export default function MemberDetailPage() {
                               UserRole.Manager,
                               UserRole.Staff,
                             ]}
-                            onSelect={handleGateStopSetting}
+                            onClick={handleGateStopSetting}
                           >
                             ゲートストップ設定
                           </RoleGatedMenuItem>
