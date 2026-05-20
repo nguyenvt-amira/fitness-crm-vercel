@@ -46,17 +46,15 @@ import { WithdrawReason } from '@/lib/api/types.gen';
 
 import { ProxyApplicationSection } from './proxy-application-section';
 
-// ── Label map ─────────────────────────────────────────────────────────────────
-export const WITHDRAW_REASON_LABELS: Record<WithdrawReason, string> = {
-  [WithdrawReason.RELOCATION]: '転居',
-  [WithdrawReason.INCONVENIENT_ACCESS]: '通いにくくなった',
-  [WithdrawReason.COST]: '料金',
-  [WithdrawReason.HEALTH_REASON]: '健康上の理由',
-  [WithdrawReason.CANCELLATION_BEFORE_USE]: '入会取り消し（利用開始前）',
-  [WithdrawReason.OTHER]: 'その他',
-};
-
-const WITHDRAW_REASON_OPTIONS = Object.values(WithdrawReason) as WithdrawReason[];
+// ── WITHDRAW REASON OPTIONS─────────────────────────────────────────────────────────────────
+const WITHDRAW_REASON_OPTIONS: { value: WithdrawReason; label: string }[] = [
+  { value: WithdrawReason.RELOCATION, label: '転居' },
+  { value: WithdrawReason.INCONVENIENT_ACCESS, label: '通いにくくなった' },
+  { value: WithdrawReason.COST, label: '料金' },
+  { value: WithdrawReason.HEALTH_REASON, label: '健康上の理由' },
+  { value: WithdrawReason.CANCELLATION_BEFORE_USE, label: '入会取り消し（利用開始前）' },
+  { value: WithdrawReason.OTHER, label: 'その他' },
+];
 
 // ── Zod form schema ───────────────────────────────────────────────────────────
 const withdrawFormSchema = z
@@ -258,10 +256,7 @@ export function WithdrawSheet({ open, onOpenChange, memberId }: Readonly<Withdra
                           field.onChange(val);
                           setReason(val);
                         }}
-                        items={WITHDRAW_REASON_OPTIONS.map((value) => ({
-                          value,
-                          label: WITHDRAW_REASON_LABELS[value],
-                        }))}
+                        items={WITHDRAW_REASON_OPTIONS}
                       >
                         <FormControl>
                           <SelectTrigger id="retire-reason" className="h-9 text-sm">
@@ -269,9 +264,9 @@ export function WithdrawSheet({ open, onOpenChange, memberId }: Readonly<Withdra
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {WITHDRAW_REASON_OPTIONS.map((value) => (
-                            <SelectItem key={value} value={value}>
-                              {WITHDRAW_REASON_LABELS[value]}
+                          {WITHDRAW_REASON_OPTIONS.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
                             </SelectItem>
                           ))}
                         </SelectContent>
