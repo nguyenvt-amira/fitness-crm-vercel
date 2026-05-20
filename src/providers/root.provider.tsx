@@ -17,7 +17,7 @@ export const RootProvider = ({ children }: RootProviderProps) => {
   return (
     <NuqsAdapter>
       <ReactQueryProvider>
-        <Toaster />
+        <Toaster richColors />
         {children}
       </ReactQueryProvider>
     </NuqsAdapter>
