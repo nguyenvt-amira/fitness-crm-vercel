@@ -45,6 +45,7 @@ import { PaymentHistoryTab } from './_components/tabs/payment-history-tab';
 import { PointsTab } from './_components/tabs/points-tab';
 import { TrainingRecordsTab } from './_components/tabs/training-records-tab';
 import { UsageHistoryTab } from './_components/tabs/usage-history-tab';
+import { WithdrawSheet } from './_components/withdraw-sheet';
 
 const BREADCRUMB_ITEMS = [{ url: '/members', label: '会員一覧' }, { label: '会員詳細' }];
 const TABS = [
@@ -74,6 +75,7 @@ export default function MemberDetailPage() {
   const activeTab = isMemberTab(tab) ? tab : 'basic';
 
   const [showReEnrollSheet, setShowReEnrollSheet] = useState(false);
+  const [showWithdrawSheet, setShowWithdrawSheet] = useState(false);
   const [showPersonalDataDeleteDialog, setShowPersonalDataDeleteDialog] = useState(false);
 
   const {
@@ -120,8 +122,7 @@ export default function MemberDetailPage() {
   };
 
   const handleWithdraw = () => {
-    // TODO: Navigate to withdraw page (A-02-05)
-    console.log('Withdraw membership');
+    setShowWithdrawSheet(true);
   };
   const handleReEnroll = () => {
     setShowReEnrollSheet(true);
@@ -527,6 +528,12 @@ export default function MemberDetailPage() {
         memberId={memberId}
         withdrawnAt={member.profile.withdrawn_at}
         lastPlan={member.profile.contract_id ? 'レギュラー会員 ¥7,700/月' : undefined}
+      />
+
+      <WithdrawSheet
+        open={showWithdrawSheet}
+        onOpenChange={setShowWithdrawSheet}
+        memberId={memberId}
       />
 
       <PersonalDataDeleteDialog

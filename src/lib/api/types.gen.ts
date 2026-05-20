@@ -8197,6 +8197,27 @@ export const UnpaidFilter = { HAS_DEBT: 'has_debt', NO_DEBT: 'no_debt' } as cons
  */
 export type UnpaidFilter = typeof UnpaidFilter[keyof typeof UnpaidFilter];
 
+/**
+ * WithdrawReason
+ *
+ * Reason for withdrawal
+ */
+export const WithdrawReason = {
+    RELOCATION: 'relocation',
+    INCONVENIENT_ACCESS: 'inconvenient_access',
+    COST: 'cost',
+    HEALTH_REASON: 'health_reason',
+    CANCELLATION_BEFORE_USE: 'cancellation_before_use',
+    OTHER: 'other'
+} as const;
+
+/**
+ * WithdrawReason
+ *
+ * Reason for withdrawal
+ */
+export type WithdrawReason = typeof WithdrawReason[keyof typeof WithdrawReason];
+
 export type PostAuthLoginData = {
     /**
      * LoginRequest
@@ -15632,6 +15653,115 @@ export type GetCrmMembersByIdUsageStatusResponses = {
 };
 
 export type GetCrmMembersByIdUsageStatusResponse = GetCrmMembersByIdUsageStatusResponses[keyof GetCrmMembersByIdUsageStatusResponses];
+
+export type PostCrmMembersByIdWithdrawData = {
+    /**
+     * WithdrawRequest
+     *
+     * Submit a withdrawal request for a member
+     */
+    body?: {
+        /**
+         * Scheduled withdrawal date (YYYY-MM-DD)
+         */
+        scheduled_date: string;
+        /**
+         * WithdrawReason
+         *
+         * Withdrawal reason
+         */
+        reason: 'relocation' | 'inconvenient_access' | 'cost' | 'health_reason' | 'cancellation_before_use' | 'other';
+        /**
+         * Additional detail when reason is その他
+         */
+        reason_detail?: string;
+        /**
+         * Whether a staff member is submitting on behalf of the member
+         */
+        is_proxy: boolean;
+        /**
+         * Datetime of agreement (required when is_proxy is true)
+         */
+        proxy_agreed_at?: string;
+        /**
+         * Method of agreement when proxy (来店 / 電話 / メール / LINE)
+         */
+        proxy_method?: string;
+    };
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/withdraw';
+};
+
+export type PostCrmMembersByIdWithdrawErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembersByIdWithdrawError = PostCrmMembersByIdWithdrawErrors[keyof PostCrmMembersByIdWithdrawErrors];
+
+export type PostCrmMembersByIdWithdrawResponses = {
+    /**
+     * WithdrawResponse
+     *
+     * Result of withdrawal request
+     */
+    200: {
+        success: boolean;
+        member_id: string;
+        scheduled_date: string;
+        reason: string;
+    };
+};
+
+export type PostCrmMembersByIdWithdrawResponse = PostCrmMembersByIdWithdrawResponses[keyof PostCrmMembersByIdWithdrawResponses];
 
 export type PostCrmMembersExportData = {
     /**
