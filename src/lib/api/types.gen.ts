@@ -15654,6 +15654,70 @@ export type GetCrmMembersByIdUsageStatusResponses = {
 
 export type GetCrmMembersByIdUsageStatusResponse = GetCrmMembersByIdUsageStatusResponses[keyof GetCrmMembersByIdUsageStatusResponses];
 
+export type PostCrmMembersByIdWithdrawCancelData = {
+    body?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/withdraw-cancel';
+};
+
+export type PostCrmMembersByIdWithdrawCancelErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembersByIdWithdrawCancelError = PostCrmMembersByIdWithdrawCancelErrors[keyof PostCrmMembersByIdWithdrawCancelErrors];
+
+export type PostCrmMembersByIdWithdrawCancelResponses = {
+    /**
+     * WithdrawCancelResponse
+     *
+     * Result of cancelling a pending withdrawal
+     */
+    200: {
+        success: boolean;
+        member_id: string;
+    };
+};
+
+export type PostCrmMembersByIdWithdrawCancelResponse = PostCrmMembersByIdWithdrawCancelResponses[keyof PostCrmMembersByIdWithdrawCancelResponses];
+
 export type PostCrmMembersByIdWithdrawData = {
     /**
      * WithdrawRequest

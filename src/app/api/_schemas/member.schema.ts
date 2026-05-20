@@ -2562,6 +2562,18 @@ export const WithdrawResponseSchema = z
 export type WithdrawRequest = z.infer<typeof WithdrawRequestSchema>;
 export type WithdrawResponse = z.infer<typeof WithdrawResponseSchema>;
 
+export const WithdrawCancelResponseSchema = z
+  .object({
+    success: z.boolean(),
+    member_id: z.string(),
+  })
+  .openapi({
+    title: 'WithdrawCancelResponse',
+    description: 'Result of cancelling a pending withdrawal',
+  });
+
+export type WithdrawCancelResponse = z.infer<typeof WithdrawCancelResponseSchema>;
+
 export type VisitRow = z.infer<typeof VisitRowSchema>;
 export type LessonReservationRow = z.infer<typeof LessonReservationRowSchema>;
 export type MemberAccessSettings = z.infer<typeof MemberAccessSettingsSchema>;
