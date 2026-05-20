@@ -6,19 +6,19 @@ import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigat
 
 import { formatDate } from '@/utils/format.util';
 import { useQuery } from '@tanstack/react-query';
-import { MoreHorizontal, Pencil, PlayCircle, User, UserCheck } from 'lucide-react';
+import { MoreHorizontal, Pencil, User, UserCheck } from 'lucide-react';
 
 import { BreadcrumbNav } from '@/components/common/breadcrumb-nav';
 import { DataStateBoundary } from '@/components/common/data-state-boundary';
+import { RoleGatedButton } from '@/components/common/role-gated-button';
+import { RoleGatedMenuItem } from '@/components/common/role-gated-menu-item';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
@@ -30,9 +30,13 @@ import { getCrmMembersByIdOptions } from '@/lib/api/@tanstack/react-query.gen';
 import { MemberStatus } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
+import { UserRole } from '@/types/permission.type';
+
 import { GENDER_CLASSES, MEMBER_STATUS_CLASSES, MEMBER_TYPE_LABELS } from '../_constants/constants';
 import { MEMBER_STATUS_LABELS } from '../_constants/constants';
 import { GENDER_LABELS } from '../_constants/constants';
+import { PersonalDataDeleteDialog } from './_components/personal-data-delete-dialog';
+import { ReEnrollSheet } from './_components/re-enroll-sheet';
 import { BasicInfoTab } from './_components/tabs/basic-info-tab';
 import { BodyDataTab } from './_components/tabs/body-data-tab';
 // import { ChangeHistoryTab } from './_components/tabs/change-history-tab';
@@ -68,6 +72,9 @@ export default function MemberDetailPage() {
 
   const memberId = params.id as string;
   const activeTab = isMemberTab(tab) ? tab : 'basic';
+
+  const [showReEnrollSheet, setShowReEnrollSheet] = useState(false);
+  const [showPersonalDataDeleteDialog, setShowPersonalDataDeleteDialog] = useState(false);
 
   const {
     data: member,
@@ -117,12 +124,10 @@ export default function MemberDetailPage() {
     console.log('Withdraw membership');
   };
   const handleReEnroll = () => {
-    // TODO: Open re-enroll sheet
-    console.log('Re-enroll member');
+    setShowReEnrollSheet(true);
   };
   const handlePersonalDataDelete = () => {
-    // TODO: Open personal data delete dialog
-    console.log('Delete personal data');
+    setShowPersonalDataDeleteDialog(true);
   };
   const handleTransfer = () => {
     // TODO: Open transfer apply sheet
@@ -215,54 +220,68 @@ export default function MemberDetailPage() {
                 </div>
               </div>
               <div className="flex shrink-0 items-center gap-2">
+                {/* Actions by status */}
                 {!isWithdrawnStatus && (
-                  <Button size="sm" className="gap-1" onClick={handleEdit}>
+                  <RoleGatedButton
+                    size="sm"
+                    allowedRoles={[UserRole.Headquarter, UserRole.System]}
+                    className="gap-1"
+                    onClick={handleEdit}
+                  >
                     <Pencil className="size-4" />
                     編集
-                  </Button>
+                  </RoleGatedButton>
                 )}
                 {isWithdrawnStatus && (
                   <>
-                    <Button size="sm" className="gap-1" onClick={handleReEnroll}>
-                      <UserCheck className="size-4" />
+                    {/* C-01「管理画面入会」: HQ/Sys/Mgr/Staff ○、Trainer/Observer × */}
+                    <RoleGatedButton
+                      allowedRoles={[
+                        UserRole.Headquarter,
+                        UserRole.System,
+                        UserRole.Manager,
+                        UserRole.Staff,
+                      ]}
+                      denyTooltip="再入会登録の権限がありません"
+                      size="sm"
+                      onClick={handleReEnroll}
+                    >
+                      <UserCheck className="mr-1 size-4" />
                       再入会
-                    </Button>
+                    </RoleGatedButton>
                     <DropdownMenu modal={false}>
-                      <DropdownMenuTrigger>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="border-input bg-background hover:bg-accent hover:text-accent-foreground size-8"
-                        >
-                          <MoreHorizontal className="size-4" />
-                        </Button>
+                      <DropdownMenuTrigger className="border-input bg-background hover:bg-accent hover:text-accent-foreground flex size-8 items-center justify-center rounded-md border">
+                        <MoreHorizontal className="size-4" />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          className="text-destructive"
+                        {/* A-01「個人情報変更」: HQ/Sys のみ */}
+                        <RoleGatedMenuItem
+                          allowedRoles={[UserRole.Headquarter, UserRole.System]}
+                          variant="destructive"
                           onSelect={handlePersonalDataDelete}
                         >
                           個人情報削除
-                        </DropdownMenuItem>
+                        </RoleGatedMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </>
                 )}
                 {!isWithdrawnStatus && (
                   <DropdownMenu modal={false}>
-                    <DropdownMenuTrigger>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="border-input bg-background hover:bg-accent hover:text-accent-foreground size-8"
-                      >
-                        <MoreHorizontal className="size-4" />
-                      </Button>
+                    <DropdownMenuTrigger className="border-input bg-background hover:bg-accent hover:text-accent-foreground flex size-8 items-center justify-center rounded-md border">
+                      <MoreHorizontal className="size-4" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       {member.profile.status === MemberStatus.ACTIVE && (
                         <>
-                          <DropdownMenuItem
+                          {/* A-01「ステータス変更」: HQ/Sys/Mgr/Staff ○、Trainer/Observer × */}
+                          <RoleGatedMenuItem
+                            allowedRoles={[
+                              UserRole.Headquarter,
+                              UserRole.System,
+                              UserRole.Manager,
+                              UserRole.Staff,
+                            ]}
                             disabled={member.constraints.hasUnpaidFee}
                             onSelect={handleSuspend}
                           >
@@ -274,9 +293,26 @@ export default function MemberDetailPage() {
                                 </span>
                               )}
                             </div>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onSelect={handleWithdraw}>退会申請</DropdownMenuItem>
-                          <DropdownMenuItem
+                          </RoleGatedMenuItem>
+                          <RoleGatedMenuItem
+                            allowedRoles={[
+                              UserRole.Headquarter,
+                              UserRole.System,
+                              UserRole.Manager,
+                              UserRole.Staff,
+                            ]}
+                            onSelect={handleWithdraw}
+                          >
+                            退会申請
+                          </RoleGatedMenuItem>
+                          {/* A-02「承認・否認」: HQ/Sys/Mgr/Staff ○、Trainer/Observer × */}
+                          <RoleGatedMenuItem
+                            allowedRoles={[
+                              UserRole.Headquarter,
+                              UserRole.System,
+                              UserRole.Manager,
+                              UserRole.Staff,
+                            ]}
                             disabled={
                               member.constraints.hasUnpaidFee ||
                               member.constraints.inCancellationPeriod
@@ -297,44 +333,137 @@ export default function MemberDetailPage() {
                                   </span>
                                 )}
                             </div>
-                          </DropdownMenuItem>
+                          </RoleGatedMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem onSelect={handleGateStopSetting}>
+                          {/* A-01「ゲートストップ」: HQ/Sys/Mgr ○、Staff 自店舗のみ、Trainer/Observer × */}
+                          <RoleGatedMenuItem
+                            allowedRoles={[
+                              UserRole.Headquarter,
+                              UserRole.System,
+                              UserRole.Manager,
+                              UserRole.Staff,
+                            ]}
+                            onSelect={handleGateStopSetting}
+                          >
                             ゲートストップ設定
-                          </DropdownMenuItem>
+                          </RoleGatedMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem
+                          {/* A-01「BL管理（強制退会）」: HQ/Sys のみ */}
+                          <RoleGatedMenuItem
+                            allowedRoles={[UserRole.Headquarter, UserRole.System]}
                             className="text-destructive"
                             onSelect={handleForceWithdraw}
                           >
                             強制退会
-                          </DropdownMenuItem>
+                          </RoleGatedMenuItem>
                         </>
                       )}
                       {member.profile.status === MemberStatus.SUSPENDED && (
                         <>
-                          <DropdownMenuItem onSelect={handleLeaveRelease}>
-                            <PlayCircle className="size-4" />
+                          <RoleGatedMenuItem
+                            allowedRoles={[
+                              UserRole.Headquarter,
+                              UserRole.System,
+                              UserRole.Manager,
+                              UserRole.Staff,
+                            ]}
+                            onSelect={handleLeaveRelease}
+                          >
                             休会解除
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onSelect={handleWithdraw}>退会申請</DropdownMenuItem>
+                          </RoleGatedMenuItem>
+                          <RoleGatedMenuItem
+                            allowedRoles={[
+                              UserRole.Headquarter,
+                              UserRole.System,
+                              UserRole.Manager,
+                              UserRole.Staff,
+                            ]}
+                            onSelect={handleWithdraw}
+                          >
+                            退会申請
+                          </RoleGatedMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem onSelect={handleGateStopSetting}>
+                          <RoleGatedMenuItem
+                            allowedRoles={[
+                              UserRole.Headquarter,
+                              UserRole.System,
+                              UserRole.Manager,
+                              UserRole.Staff,
+                            ]}
+                            onSelect={handleGateStopSetting}
+                          >
                             ゲートストップ設定
-                          </DropdownMenuItem>
+                          </RoleGatedMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem
+                          <RoleGatedMenuItem
+                            allowedRoles={[UserRole.Headquarter, UserRole.System]}
                             className="text-destructive"
                             onSelect={handleForceWithdraw}
                           >
                             強制退会
-                          </DropdownMenuItem>
+                          </RoleGatedMenuItem>
+                        </>
+                      )}
+                      {member.profile.status === MemberStatus.GATE_STOP && (
+                        <>
+                          {/* ゲートストップ解除: HQ/Sys/Mgr ○、Staff 自店舗のみ、Trainer/Observer × */}
+                          <RoleGatedMenuItem
+                            allowedRoles={[
+                              UserRole.Headquarter,
+                              UserRole.System,
+                              UserRole.Manager,
+                              UserRole.Staff,
+                            ]}
+                            onSelect={handleGateStopSetting}
+                          >
+                            ゲートストップ解除
+                          </RoleGatedMenuItem>
+                          <RoleGatedMenuItem
+                            allowedRoles={[
+                              UserRole.Headquarter,
+                              UserRole.System,
+                              UserRole.Manager,
+                              UserRole.Staff,
+                            ]}
+                            onSelect={handleWithdraw}
+                          >
+                            退会申請
+                          </RoleGatedMenuItem>
+                          <DropdownMenuSeparator />
+                          <RoleGatedMenuItem
+                            allowedRoles={[UserRole.Headquarter, UserRole.System]}
+                            className="text-destructive"
+                            onSelect={handleForceWithdraw}
+                          >
+                            強制退会
+                          </RoleGatedMenuItem>
                         </>
                       )}
                       {member.profile.status === MemberStatus.PENDING_WITHDRAWAL && (
-                        <DropdownMenuItem onSelect={handleCancelWithdraw}>
-                          退会取り消し
-                        </DropdownMenuItem>
+                        <>
+                          <RoleGatedMenuItem
+                            allowedRoles={[
+                              UserRole.Headquarter,
+                              UserRole.System,
+                              UserRole.Manager,
+                              UserRole.Staff,
+                            ]}
+                            onSelect={handleCancelWithdraw}
+                          >
+                            退会取り消し
+                          </RoleGatedMenuItem>
+                          <RoleGatedMenuItem
+                            allowedRoles={[
+                              UserRole.Headquarter,
+                              UserRole.System,
+                              UserRole.Manager,
+                              UserRole.Staff,
+                            ]}
+                            onSelect={handleGateStopSetting}
+                          >
+                            ゲートストップ設定
+                          </RoleGatedMenuItem>
+                        </>
                       )}
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -451,6 +580,21 @@ export default function MemberDetailPage() {
           </ScrollArea>
         </Tabs>
       </div>
+
+      <ReEnrollSheet
+        open={showReEnrollSheet}
+        onOpenChange={setShowReEnrollSheet}
+        memberId={memberId}
+        withdrawnAt={member.profile.withdrawn_at}
+        lastPlan={member.profile.contract_id ? 'レギュラー会員 ¥7,700/月' : undefined}
+      />
+
+      <PersonalDataDeleteDialog
+        open={showPersonalDataDeleteDialog}
+        onOpenChange={setShowPersonalDataDeleteDialog}
+        memberId={memberId}
+        isBlacklisted={member.profile.is_black_listed}
+      />
     </div>
   );
 }

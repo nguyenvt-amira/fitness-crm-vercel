@@ -843,6 +843,7 @@ type DbType = {
     ): Member | undefined;
     updateHealthInfo(id: string, body: UpdateHealthInfoRequest): Member | undefined;
     updateMarketingConsent(id: string, body: UpdateMarketingConsentRequest): Member | undefined;
+    anonymizePersonalData(id: string): Member | undefined;
   };
   contracts: {
     _seeded: boolean;
@@ -1176,6 +1177,7 @@ type DbType = {
 
 declare global {
   var __fitnessDb_v9: DbType | undefined;
+  var __fitnessDb_v10: DbType | undefined;
 }
 
 // ─── Mock Payment History Data (A-01 FR-009-a) ──────────────────────────────
@@ -2489,6 +2491,29 @@ function createDb() {
               ...(current.consent?.marketing_consent ?? { email: false, sms: false, push: false }),
               ...body,
             },
+          },
+        };
+        this._members[idx] = updated;
+        return updated;
+      },
+      anonymizePersonalData(id: string): Member | undefined {
+        this._seed();
+        const idx = this._members.findIndex((m) => m.basic_info.id === id);
+        if (idx === -1) return undefined;
+        const current = this._members[idx];
+        const updated: MemberRow = {
+          ...current,
+          basic_info: {
+            ...current.basic_info,
+            name_kanji: '削除済み 会員',
+            name_kana: 'サクジョズミ カイイン',
+            email: 'deleted@example.com',
+            phone: '000-0000-0000',
+            postal_code: '000-0000',
+            prefecture: '',
+            city: '',
+            address: '',
+            building: '',
           },
         };
         this._members[idx] = updated;
@@ -5648,4 +5673,4 @@ function createDb() {
 // Without this, each route handler gets its own module instance and mutations are invisible
 // across routes.
 // Bump this key whenever the seed logic changes to force a fresh re-seed.
-export const db: DbType = (globalThis.__fitnessDb_v9 ??= createDb() as unknown as DbType);
+export const db: DbType = (globalThis.__fitnessDb_v10 ??= createDb() as unknown as DbType);

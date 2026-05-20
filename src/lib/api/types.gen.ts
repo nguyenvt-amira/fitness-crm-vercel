@@ -13859,6 +13859,71 @@ export type GetCrmMembersByIdPaymentSummaryResponses = {
 
 export type GetCrmMembersByIdPaymentSummaryResponse = GetCrmMembersByIdPaymentSummaryResponses[keyof GetCrmMembersByIdPaymentSummaryResponses];
 
+export type DeleteCrmMembersByIdPersonalDataData = {
+    body?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/personal-data';
+};
+
+export type DeleteCrmMembersByIdPersonalDataErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    403: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type DeleteCrmMembersByIdPersonalDataError = DeleteCrmMembersByIdPersonalDataErrors[keyof DeleteCrmMembersByIdPersonalDataErrors];
+
+export type DeleteCrmMembersByIdPersonalDataResponses = {
+    /**
+     * DeletePersonalDataResponse
+     *
+     * Result of personal data anonymisation
+     */
+    200: {
+        success: boolean;
+        member_id: string;
+        message: string;
+    };
+};
+
+export type DeleteCrmMembersByIdPersonalDataResponse = DeleteCrmMembersByIdPersonalDataResponses[keyof DeleteCrmMembersByIdPersonalDataResponses];
+
 export type PostCrmMembersByIdPointsAdjustData = {
     /**
      * PointAdjustmentRequest
@@ -14180,6 +14245,102 @@ export type PostCrmMembersByIdPointsResponses = {
 };
 
 export type PostCrmMembersByIdPointsResponse = PostCrmMembersByIdPointsResponses[keyof PostCrmMembersByIdPointsResponses];
+
+export type PostCrmMembersByIdReEnrollData = {
+    /**
+     * ReEnrollRequest
+     *
+     * Re-enroll a withdrawn member
+     */
+    body?: {
+        /**
+         * Re-enrollment month (YYYY-MM)
+         */
+        re_enroll_month: string;
+        /**
+         * Selected membership plan
+         */
+        plan: string;
+        /**
+         * Whether the enrollment fee is waived
+         */
+        fee_waived: boolean;
+    };
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/re-enroll';
+};
+
+export type PostCrmMembersByIdReEnrollErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembersByIdReEnrollError = PostCrmMembersByIdReEnrollErrors[keyof PostCrmMembersByIdReEnrollErrors];
+
+export type PostCrmMembersByIdReEnrollResponses = {
+    /**
+     * ReEnrollResponse
+     *
+     * Result of re-enrollment
+     */
+    200: {
+        success: boolean;
+        member_id: string;
+        re_enroll_month: string;
+        plan: string;
+        fee_waived: boolean;
+    };
+};
+
+export type PostCrmMembersByIdReEnrollResponse = PostCrmMembersByIdReEnrollResponses[keyof PostCrmMembersByIdReEnrollResponses];
 
 export type GetCrmMembersByIdData = {
     body?: never;
