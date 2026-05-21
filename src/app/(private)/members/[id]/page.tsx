@@ -37,6 +37,7 @@ import { MEMBER_STATUS_LABELS } from '../_constants/constants';
 import { GENDER_LABELS } from '../_constants/constants';
 import { GateStopReleaseSheet } from './_components/gate-stop-release-sheet';
 import { GateStopSetSheet } from './_components/gate-stop-set-sheet';
+import { LeaveSheet } from './_components/leave-sheet';
 import { PersonalDataDeleteDialog } from './_components/personal-data-delete-dialog';
 import { ReEnrollSheet } from './_components/re-enroll-sheet';
 import { BasicInfoTab } from './_components/tabs/basic-info-tab';
@@ -79,6 +80,7 @@ export default function MemberDetailPage() {
 
   const [showReEnrollSheet, setShowReEnrollSheet] = useState(false);
   const [showWithdrawSheet, setShowWithdrawSheet] = useState(false);
+  const [showLeaveSheet, setShowLeaveSheet] = useState(false);
   const [showPersonalDataDeleteDialog, setShowPersonalDataDeleteDialog] = useState(false);
   const [showWithdrawCancelDialog, setShowWithdrawCancelDialog] = useState(false);
   const [showGateStopSetSheet, setShowGateStopSetSheet] = useState(false);
@@ -120,11 +122,6 @@ export default function MemberDetailPage() {
 
   const handleEdit = () => {
     router.push(navigate('/members/[id]/edit', memberId));
-  };
-
-  const handleSuspend = () => {
-    // TODO: Navigate to suspend page (A-02-06)
-    console.log('Suspend membership');
   };
 
   const handleTransfer = () => {
@@ -274,7 +271,7 @@ export default function MemberDetailPage() {
                           <RoleGatedMenuItem
                             requiredPermission={Permission.MembersSuspend}
                             disabled={member.constraints.hasUnpaidFee}
-                            onClick={handleSuspend}
+                            onClick={() => setShowLeaveSheet(true)}
                           >
                             <div className="flex flex-col">
                               <span>休会申請</span>
@@ -522,6 +519,13 @@ export default function MemberDetailPage() {
         memberId={memberId}
         withdrawnAt={member.profile.withdrawn_at}
         lastPlan={member.profile.contract_id ? 'レギュラー会員 ¥7,700/月' : undefined}
+      />
+
+      <LeaveSheet
+        open={showLeaveSheet}
+        onOpenChange={setShowLeaveSheet}
+        memberId={memberId}
+        hasUnpaidFee={member.constraints.hasUnpaidFee}
       />
 
       <WithdrawSheet

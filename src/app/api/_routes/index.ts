@@ -62,6 +62,7 @@ import '@/app/api/crm/members/[id]/points/route';
 import '@/app/api/crm/members/[id]/re-enroll/route';
 import '@/app/api/crm/members/[id]/route';
 import '@/app/api/crm/members/[id]/stores/route';
+import '@/app/api/crm/members/[id]/suspend/route';
 import '@/app/api/crm/members/[id]/training-records/route';
 import '@/app/api/crm/members/[id]/usage-history/access-settings/route';
 import '@/app/api/crm/members/[id]/usage-history/entries/route';

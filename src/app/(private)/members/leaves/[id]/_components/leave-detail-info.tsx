@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 
+import { formatDatetimeISO } from '@/utils/format.util';
 import { Check, Clock } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
@@ -39,6 +40,7 @@ export function LeaveDetailInfo({ leave }: Readonly<{ leave: LeaveDetail }>) {
 
           <Field label="会員名">
             <Button
+              nativeButton={false}
               variant="link"
               className="h-auto p-0 text-sm font-medium"
               render={<Link href={navigate('/members/[id]', leave.member_id)} />}
@@ -184,7 +186,7 @@ export function LeaveProxyInfo({ leave }: Readonly<{ leave: LeaveDetail }>) {
       <CardContent className="px-4">
         <div className="grid grid-cols-2 gap-x-8 gap-y-4">
           <Field label="代理申請者">{leave.proxy_applicant ?? '—'}</Field>
-          <Field label="合意日時">{leave.consent_at ?? '—'}</Field>
+          <Field label="合意日時">{formatDatetimeISO(leave.consent_at) ?? '—'}</Field>
           <Field label="合意方法">{leave.consent_method ?? '—'}</Field>
         </div>
       </CardContent>

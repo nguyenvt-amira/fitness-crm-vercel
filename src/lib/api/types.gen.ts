@@ -15605,6 +15605,113 @@ export type GetCrmMembersByIdStoresResponses = {
 
 export type GetCrmMembersByIdStoresResponse = GetCrmMembersByIdStoresResponses[keyof GetCrmMembersByIdStoresResponses];
 
+export type PostCrmMembersByIdSuspendData = {
+    /**
+     * SuspendRequest
+     *
+     * Submit a suspension (休会) request for an active member
+     */
+    body?: {
+        /**
+         * Suspension start month (YYYY-MM)
+         */
+        start_month: string;
+        /**
+         * Suspension end month (YYYY-MM)
+         */
+        end_month: string;
+        /**
+         * Reason for suspension (optional)
+         */
+        reason?: string;
+        /**
+         * Whether a staff member is submitting on behalf of the member
+         */
+        is_proxy: boolean;
+        /**
+         * Datetime of agreement (required when is_proxy is true)
+         */
+        proxy_agreed_at?: string;
+        /**
+         * Method of agreement when proxy
+         */
+        proxy_method?: string;
+    };
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/suspend';
+};
+
+export type PostCrmMembersByIdSuspendErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembersByIdSuspendError = PostCrmMembersByIdSuspendErrors[keyof PostCrmMembersByIdSuspendErrors];
+
+export type PostCrmMembersByIdSuspendResponses = {
+    /**
+     * SuspendResponse
+     *
+     * Result of suspension request
+     */
+    200: {
+        success: boolean;
+        member_id: string;
+        start_month: string;
+        end_month: string;
+    };
+};
+
+export type PostCrmMembersByIdSuspendResponse = PostCrmMembersByIdSuspendResponses[keyof PostCrmMembersByIdSuspendResponses];
+
 export type GetCrmMembersByIdTrainingRecordsData = {
     body?: never;
     path: {
