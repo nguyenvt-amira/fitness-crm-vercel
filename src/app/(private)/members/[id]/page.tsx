@@ -37,6 +37,7 @@ import { MEMBER_STATUS_LABELS } from '../_constants/constants';
 import { GENDER_LABELS } from '../_constants/constants';
 import { GateStopReleaseSheet } from './_components/gate-stop-release-sheet';
 import { GateStopSetSheet } from './_components/gate-stop-set-sheet';
+import { LeaveReleaseSheet } from './_components/leave-release-sheet';
 import { LeaveSheet } from './_components/leave-sheet';
 import { PersonalDataDeleteDialog } from './_components/personal-data-delete-dialog';
 import { ReEnrollSheet } from './_components/re-enroll-sheet';
@@ -85,6 +86,7 @@ export default function MemberDetailPage() {
   const [showWithdrawCancelDialog, setShowWithdrawCancelDialog] = useState(false);
   const [showGateStopSetSheet, setShowGateStopSetSheet] = useState(false);
   const [showGateStopReleaseSheet, setShowGateStopReleaseSheet] = useState(false);
+  const [showLeaveReleaseSheet, setShowLeaveReleaseSheet] = useState(false);
 
   const {
     data: member,
@@ -132,10 +134,6 @@ export default function MemberDetailPage() {
   const handleForceWithdraw = () => {
     // TODO: Open force-withdraw dialog
     console.log('Force withdraw');
-  };
-  const handleLeaveRelease = () => {
-    // TODO: Open leave release sheet
-    console.log('Leave release');
   };
 
   const memberStatusLabel = MEMBER_STATUS_LABELS[member.profile.status];
@@ -335,7 +333,7 @@ export default function MemberDetailPage() {
                         <>
                           <RoleGatedMenuItem
                             requiredPermission={Permission.MembersSuspend}
-                            onClick={handleLeaveRelease}
+                            onClick={() => setShowLeaveReleaseSheet(true)}
                           >
                             休会解除
                           </RoleGatedMenuItem>
@@ -526,6 +524,12 @@ export default function MemberDetailPage() {
         onOpenChange={setShowLeaveSheet}
         memberId={memberId}
         hasUnpaidFee={member.constraints.hasUnpaidFee}
+      />
+
+      <LeaveReleaseSheet
+        open={showLeaveReleaseSheet}
+        onOpenChange={setShowLeaveReleaseSheet}
+        memberId={memberId}
       />
 
       <WithdrawSheet

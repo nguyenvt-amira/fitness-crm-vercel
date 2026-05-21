@@ -860,6 +860,7 @@ type DbType = {
       proxy_agreed_at?: string;
       proxy_method?: string;
     }): Member | undefined;
+    handleSuspendRelease(input: { id: string; resume_month: string }): Member | undefined;
     setGateStop(input: {
       id: string;
       scope: string;
@@ -1158,6 +1159,7 @@ type DbType = {
     _seed(): void;
     list(): LeaveListItem[];
     getById(id: string): LeaveDetail | undefined;
+    getActiveSuspensionByMemberId(memberId: string): LeaveDetail | undefined;
     approve(id: string, comment?: string): LeaveDetail | undefined;
     reject(id: string, reason: string): LeaveDetail | undefined;
     cancelWithdrawal(id: string, comment?: string): LeaveDetail | undefined;
@@ -2563,6 +2565,41 @@ function createDb() {
         this._members[idx] = updated;
         return updated;
       },
+      handleSuspendRelease(input: { id: string; resume_month: string }): Member | undefined {
+        this._seed();
+        const idx = this._members.findIndex((m) => m.basic_info.id === input.id);
+        if (idx === -1) return undefined;
+        // Mark the active suspension leave record as completed
+        const suspensionLeave = db.memberLeaves
+          .list()
+          .find(
+            (l) =>
+              l.member_id === input.id &&
+              l.type === 'suspension' &&
+              (l.status === 'suspended' || l.status === 'suspension_scheduled'),
+          );
+        if (suspensionLeave) {
+          db.memberLeaves._updateDetail(suspensionLeave.id, { status: 'completed' });
+          // Manually sync list row without triggering member status change
+          const listIdx = db.memberLeaves._rows.findIndex((r) => r.id === suspensionLeave.id);
+          if (listIdx !== -1) {
+            db.memberLeaves._rows[listIdx] = {
+              ...db.memberLeaves._rows[listIdx]!,
+              status: 'completed',
+            };
+          }
+        }
+        const updated: MemberRow = {
+          ...this._members[idx]!,
+          profile: {
+            ...this._members[idx]!.profile,
+            status: MemberStatus.ACTIVE,
+          },
+        };
+        this._members[idx] = updated;
+        return updated;
+      },
+
       handleWithdrawal(input: {
         id: string;
         scheduled_date: string;
@@ -5527,6 +5564,16 @@ function createDb() {
       getById(id: string): LeaveDetail | undefined {
         this._seed();
         return this._details[id];
+      },
+      getActiveSuspensionByMemberId(memberId: string): LeaveDetail | undefined {
+        this._seed();
+        const row = this._rows.find(
+          (r) =>
+            r.member_id === memberId &&
+            r.type === 'suspension' &&
+            (r.status === 'suspended' || r.status === 'suspension_scheduled'),
+        );
+        return row ? this._details[row.id] : undefined;
       },
       _updateDetail(id: string, patch: Partial<LeaveDetail>): LeaveDetail | undefined {
         const detail = this._details[id];

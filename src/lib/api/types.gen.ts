@@ -15605,6 +15605,92 @@ export type GetCrmMembersByIdStoresResponses = {
 
 export type GetCrmMembersByIdStoresResponse = GetCrmMembersByIdStoresResponses[keyof GetCrmMembersByIdStoresResponses];
 
+export type PostCrmMembersByIdSuspendReleaseData = {
+    /**
+     * SuspendReleaseRequest
+     *
+     * Release a suspension and specify the month billing resumes
+     */
+    body?: {
+        /**
+         * Month from which billing resumes (YYYY/MM)
+         */
+        resume_month: string;
+    };
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/suspend-release';
+};
+
+export type PostCrmMembersByIdSuspendReleaseErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembersByIdSuspendReleaseError = PostCrmMembersByIdSuspendReleaseErrors[keyof PostCrmMembersByIdSuspendReleaseErrors];
+
+export type PostCrmMembersByIdSuspendReleaseResponses = {
+    /**
+     * SuspendReleaseResponse
+     *
+     * Result of suspension release
+     */
+    200: {
+        success: boolean;
+        member_id: string;
+        resume_month: string;
+    };
+};
+
+export type PostCrmMembersByIdSuspendReleaseResponse = PostCrmMembersByIdSuspendReleaseResponses[keyof PostCrmMembersByIdSuspendReleaseResponses];
+
 export type PostCrmMembersByIdSuspendData = {
     /**
      * SuspendRequest
@@ -15711,6 +15797,154 @@ export type PostCrmMembersByIdSuspendResponses = {
 };
 
 export type PostCrmMembersByIdSuspendResponse = PostCrmMembersByIdSuspendResponses[keyof PostCrmMembersByIdSuspendResponses];
+
+export type GetCrmMembersByIdSuspensionLeaveData = {
+    body?: never;
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/suspension-leave';
+};
+
+export type GetCrmMembersByIdSuspensionLeaveErrors = {
+    /**
+     * LeaveErrorResponse
+     *
+     * Member not found
+     */
+    404: {
+        error: string;
+    };
+    /**
+     * LeaveErrorResponse
+     *
+     * Internal server error
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type GetCrmMembersByIdSuspensionLeaveError = GetCrmMembersByIdSuspensionLeaveErrors[keyof GetCrmMembersByIdSuspensionLeaveErrors];
+
+export type GetCrmMembersByIdSuspensionLeaveResponses = {
+    /**
+     * GetMemberActiveSuspensionResponse
+     *
+     * Active suspension detail (null when no active suspension)
+     */
+    200: {
+        /**
+         * LeaveDetail
+         *
+         * Active suspension detail, or null if no active suspension
+         */
+        suspension: {
+            /**
+             * 申請ID
+             */
+            id: string;
+            /**
+             * 会員ID
+             */
+            member_id: string;
+            /**
+             * 会員名
+             */
+            member_name: string;
+            /**
+             * ブランド
+             */
+            brand: string;
+            /**
+             * 店舗ID
+             */
+            store_id: string;
+            /**
+             * 店舗名
+             */
+            store_name: string;
+            /**
+             * LeaveType
+             *
+             * Leave type: suspension=休会, withdrawal=退会
+             */
+            type: 'suspension' | 'withdrawal';
+            /**
+             * LeaveStatus
+             *
+             * Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了
+             */
+            status: 'suspension_scheduled' | 'suspended' | 'withdrawal_scheduled' | 'withdrawal_pending' | 'completed';
+            /**
+             * 申請日時
+             */
+            applied_at: string;
+            /**
+             * 休会開始月 or 退会予定日
+             */
+            scheduled_date: string;
+            /**
+             * 休会終了月（休会のみ）
+             */
+            end_date: string | null;
+            /**
+             * 申請理由
+             */
+            reason: string;
+            /**
+             * 申請者
+             */
+            applicant: string;
+            /**
+             * 代理申請フラグ
+             */
+            is_proxy_applied: boolean;
+            /**
+             * 代理申請者名
+             */
+            proxy_applicant: string | null;
+            /**
+             * 合意日時
+             */
+            consent_at: string | null;
+            /**
+             * 合意方法
+             */
+            consent_method: string | null;
+            /**
+             * 休会費（円/月）
+             */
+            suspension_fee: number | null;
+            /**
+             * 適用キャンペーン
+             */
+            applied_campaign: string;
+            /**
+             * 未消化レッスン数
+             */
+            unused_lessons: number;
+            /**
+             * 未納金額（円）
+             */
+            unpaid_amount: number;
+            /**
+             * 作成日時
+             */
+            created_at: string;
+            /**
+             * 最終更新日時
+             */
+            updated_at: string;
+        } | null;
+    };
+};
+
+export type GetCrmMembersByIdSuspensionLeaveResponse = GetCrmMembersByIdSuspensionLeaveResponses[keyof GetCrmMembersByIdSuspensionLeaveResponses];
 
 export type GetCrmMembersByIdTrainingRecordsData = {
     body?: never;

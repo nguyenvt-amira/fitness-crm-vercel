@@ -155,6 +155,18 @@ export const GetLeaveDetailResponseSchema = z
 
 export type GetLeaveDetailResponse = z.infer<typeof GetLeaveDetailResponseSchema>;
 
+export const GetMemberActiveSuspensionResponseSchema = z
+  .object({
+    suspension: LeaveDetailSchema.nullable().openapi({
+      description: 'Active suspension detail, or null if no active suspension',
+    }),
+  })
+  .openapi({ title: 'GetMemberActiveSuspensionResponse' });
+
+export type GetMemberActiveSuspensionResponse = z.infer<
+  typeof GetMemberActiveSuspensionResponseSchema
+>;
+
 // ─── Action Request/Response Schemas ─────────────────────────────────────────
 
 export const ApproveLeaveRequestSchema = z

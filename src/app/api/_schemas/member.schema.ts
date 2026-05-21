@@ -2749,6 +2749,34 @@ export const SuspendResponseSchema = z
 export type SuspendRequest = z.infer<typeof SuspendRequestSchema>;
 export type SuspendResponse = z.infer<typeof SuspendResponseSchema>;
 
+// ===== Suspend Release (休会解除) =====
+
+export const SuspendReleaseRequestSchema = z
+  .object({
+    resume_month: z.string().openapi({
+      example: '2026/07',
+      description: 'Month from which billing resumes (YYYY/MM)',
+    }),
+  })
+  .openapi({
+    title: 'SuspendReleaseRequest',
+    description: 'Release a suspension and specify the month billing resumes',
+  });
+
+export const SuspendReleaseResponseSchema = z
+  .object({
+    success: z.boolean(),
+    member_id: z.string(),
+    resume_month: z.string(),
+  })
+  .openapi({
+    title: 'SuspendReleaseResponse',
+    description: 'Result of suspension release',
+  });
+
+export type SuspendReleaseRequest = z.infer<typeof SuspendReleaseRequestSchema>;
+export type SuspendReleaseResponse = z.infer<typeof SuspendReleaseResponseSchema>;
+
 export type VisitRow = z.infer<typeof VisitRowSchema>;
 export type LessonReservationRow = z.infer<typeof LessonReservationRowSchema>;
 export type MemberAccessSettings = z.infer<typeof MemberAccessSettingsSchema>;
