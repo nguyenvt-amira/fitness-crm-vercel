@@ -49,6 +49,7 @@ import { PaymentHistoryTab } from './_components/tabs/payment-history-tab';
 import { PointsTab } from './_components/tabs/points-tab';
 import { TrainingRecordsTab } from './_components/tabs/training-records-tab';
 import { UsageHistoryTab } from './_components/tabs/usage-history-tab';
+import { TransferSheet } from './_components/transfer-sheet';
 import { WithdrawCancelDialog } from './_components/withdraw-cancel-dialog';
 import { WithdrawSheet } from './_components/withdraw-sheet';
 
@@ -87,6 +88,7 @@ export default function MemberDetailPage() {
   const [showGateStopSetSheet, setShowGateStopSetSheet] = useState(false);
   const [showGateStopReleaseSheet, setShowGateStopReleaseSheet] = useState(false);
   const [showLeaveReleaseSheet, setShowLeaveReleaseSheet] = useState(false);
+  const [showTransferSheet, setShowTransferSheet] = useState(false);
 
   const {
     data: member,
@@ -124,11 +126,6 @@ export default function MemberDetailPage() {
 
   const handleEdit = () => {
     router.push(navigate('/members/[id]/edit', memberId));
-  };
-
-  const handleTransfer = () => {
-    // TODO: Open transfer apply sheet
-    console.log('Transfer apply');
   };
 
   const handleForceWithdraw = () => {
@@ -293,7 +290,7 @@ export default function MemberDetailPage() {
                               member.constraints.hasUnpaidFee ||
                               member.constraints.inCancellationPeriod
                             }
-                            onClick={handleTransfer}
+                            onClick={() => setShowTransferSheet(true)}
                           >
                             <div className="flex flex-col">
                               <span>移籍申請</span>
@@ -562,6 +559,16 @@ export default function MemberDetailPage() {
         onOpenChange={setShowGateStopReleaseSheet}
         memberId={memberId}
         gateStopInfo={member.profile.gate_stop_info}
+      />
+
+      <TransferSheet
+        open={showTransferSheet}
+        onOpenChange={setShowTransferSheet}
+        memberId={memberId}
+        currentStoreId={member.profile.store_id}
+        currentStoreName={member.profile.store_name}
+        hasUnpaidFee={member.constraints.hasUnpaidFee}
+        inCancellationPeriod={member.constraints.inCancellationPeriod}
       />
     </div>
   );

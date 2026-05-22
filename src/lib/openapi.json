@@ -23864,6 +23864,187 @@
         }
       }
     },
+    "/crm/members/{id}/transfer": {
+      "post": {
+        "summary": "Submit a transfer request for a member",
+        "description": "Submit a transfer application (移籍申請) for an active member",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Transfer request payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "to_store_id": {
+                    "type": "string",
+                    "example": "store-002",
+                    "description": "移籍先店舗ID"
+                  },
+                  "to_store_name": {
+                    "type": "string",
+                    "example": "JOYFIT新宿店",
+                    "description": "移籍先店舗名"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "example": "転居のため",
+                    "description": "移籍理由（任意）"
+                  },
+                  "is_proxy": {
+                    "type": "boolean",
+                    "example": false,
+                    "description": "スタッフが代理申請するかどうか"
+                  },
+                  "proxy_agreed_at": {
+                    "type": "string",
+                    "example": "2026-05-19T10:00",
+                    "description": "合意日時（代理申請時に必須）"
+                  },
+                  "proxy_method": {
+                    "type": "string",
+                    "example": "来店",
+                    "description": "合意方法（代理申請時）"
+                  }
+                },
+                "required": ["to_store_id", "to_store_name", "is_proxy"],
+                "title": "TransferRequestBody",
+                "description": "移籍申請リクエスト"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Transfer request accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "member_id": {
+                      "type": "string"
+                    },
+                    "transfer_id": {
+                      "type": "string"
+                    },
+                    "to_store_id": {
+                      "type": "string"
+                    },
+                    "to_store_name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "member_id",
+                    "transfer_id",
+                    "to_store_id",
+                    "to_store_name"
+                  ],
+                  "title": "TransferResponse",
+                  "description": "移籍申請結果"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Member is not in a state that allows transfer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/members/{id}/usage-history/access-settings": {
       "get": {
         "summary": "Get member usage history access settings",

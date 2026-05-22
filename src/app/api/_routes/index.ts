@@ -66,6 +66,7 @@ import '@/app/api/crm/members/[id]/suspend-release/route';
 import '@/app/api/crm/members/[id]/suspend/route';
 import '@/app/api/crm/members/[id]/suspension-leave/route';
 import '@/app/api/crm/members/[id]/training-records/route';
+import '@/app/api/crm/members/[id]/transfer/route';
 import '@/app/api/crm/members/[id]/usage-history/access-settings/route';
 import '@/app/api/crm/members/[id]/usage-history/entries/route';
 import '@/app/api/crm/members/[id]/usage-history/lessons/route';
