@@ -2586,6 +2586,35 @@ export const WithdrawCancelResponseSchema = z
 
 export type WithdrawCancelResponse = z.infer<typeof WithdrawCancelResponseSchema>;
 
+// ===== Force Withdraw (強制退会) =====
+
+export const ForceWithdrawRequestSchema = z
+  .object({
+    reason: z.string().min(1).openapi({
+      example: '2ヶ月連続未納のため強制退会',
+      description: '強制退会の理由',
+    }),
+  })
+  .openapi({
+    title: 'ForceWithdrawRequest',
+    description:
+      '強制退会リクエスト。会員ステータスをforce_withdrawnに更新し、ブラックリストに自動登録する。',
+  });
+
+export const ForceWithdrawResponseSchema = z
+  .object({
+    success: z.boolean(),
+    member_id: z.string(),
+    blacklist_id: z.string(),
+  })
+  .openapi({
+    title: 'ForceWithdrawResponse',
+    description: '強制退会処理結果',
+  });
+
+export type ForceWithdrawRequest = z.infer<typeof ForceWithdrawRequestSchema>;
+export type ForceWithdrawResponse = z.infer<typeof ForceWithdrawResponseSchema>;
+
 // ===== Gate Stop =====
 
 export const GateStopInfoSchema = z

@@ -35,6 +35,7 @@ import { Permission } from '@/types/permission.type';
 import { GENDER_CLASSES, MEMBER_STATUS_CLASSES, MEMBER_TYPE_LABELS } from '../_constants/constants';
 import { MEMBER_STATUS_LABELS } from '../_constants/constants';
 import { GENDER_LABELS } from '../_constants/constants';
+import { ForceRetireDialog } from './_components/force-retire-dialog';
 import { GateStopReleaseSheet } from './_components/gate-stop-release-sheet';
 import { GateStopSetSheet } from './_components/gate-stop-set-sheet';
 import { LeaveReleaseSheet } from './_components/leave-release-sheet';
@@ -89,6 +90,7 @@ export default function MemberDetailPage() {
   const [showGateStopReleaseSheet, setShowGateStopReleaseSheet] = useState(false);
   const [showLeaveReleaseSheet, setShowLeaveReleaseSheet] = useState(false);
   const [showTransferSheet, setShowTransferSheet] = useState(false);
+  const [showForceRetireDialog, setShowForceRetireDialog] = useState(false);
 
   const {
     data: member,
@@ -126,11 +128,6 @@ export default function MemberDetailPage() {
 
   const handleEdit = () => {
     router.push(navigate('/members/[id]/edit', memberId));
-  };
-
-  const handleForceWithdraw = () => {
-    // TODO: Open force-withdraw dialog
-    console.log('Force withdraw');
   };
 
   const memberStatusLabel = MEMBER_STATUS_LABELS[member.profile.status];
@@ -320,7 +317,7 @@ export default function MemberDetailPage() {
                           <RoleGatedMenuItem
                             requiredPermission={Permission.MembersForceWithdraw}
                             className="text-destructive"
-                            onClick={handleForceWithdraw}
+                            onClick={() => setShowForceRetireDialog(true)}
                           >
                             強制退会
                           </RoleGatedMenuItem>
@@ -351,7 +348,7 @@ export default function MemberDetailPage() {
                           <RoleGatedMenuItem
                             requiredPermission={Permission.MembersForceWithdraw}
                             className="text-destructive"
-                            onClick={handleForceWithdraw}
+                            onClick={() => setShowForceRetireDialog(true)}
                           >
                             強制退会
                           </RoleGatedMenuItem>
@@ -376,7 +373,7 @@ export default function MemberDetailPage() {
                           <RoleGatedMenuItem
                             requiredPermission={Permission.MembersForceWithdraw}
                             className="text-destructive"
-                            onClick={handleForceWithdraw}
+                            onClick={() => setShowForceRetireDialog(true)}
                           >
                             強制退会
                           </RoleGatedMenuItem>
@@ -508,68 +505,95 @@ export default function MemberDetailPage() {
         </Tabs>
       </div>
 
-      <ReEnrollSheet
-        open={showReEnrollSheet}
-        onOpenChange={setShowReEnrollSheet}
-        memberId={memberId}
-        withdrawnAt={member.profile.withdrawn_at}
-        lastPlan={member.profile.contract_id ? 'レギュラー会員 ¥7,700/月' : undefined}
-      />
+      {showReEnrollSheet && (
+        <ReEnrollSheet
+          open={showReEnrollSheet}
+          onOpenChange={setShowReEnrollSheet}
+          memberId={memberId}
+          withdrawnAt={member.profile.withdrawn_at}
+          lastPlan={member.profile.contract_id ? 'レギュラー会員 ¥7,700/月' : undefined}
+        />
+      )}
 
-      <LeaveSheet
-        open={showLeaveSheet}
-        onOpenChange={setShowLeaveSheet}
-        memberId={memberId}
-        hasUnpaidFee={member.constraints.hasUnpaidFee}
-      />
+      {showLeaveSheet && (
+        <LeaveSheet
+          open={showLeaveSheet}
+          onOpenChange={setShowLeaveSheet}
+          memberId={memberId}
+          hasUnpaidFee={member.constraints.hasUnpaidFee}
+        />
+      )}
 
-      <LeaveReleaseSheet
-        open={showLeaveReleaseSheet}
-        onOpenChange={setShowLeaveReleaseSheet}
-        memberId={memberId}
-      />
+      {showLeaveReleaseSheet && (
+        <LeaveReleaseSheet
+          open={showLeaveReleaseSheet}
+          onOpenChange={setShowLeaveReleaseSheet}
+          memberId={memberId}
+        />
+      )}
 
-      <WithdrawSheet
-        open={showWithdrawSheet}
-        onOpenChange={setShowWithdrawSheet}
-        memberId={memberId}
-      />
+      {showWithdrawSheet && (
+        <WithdrawSheet
+          open={showWithdrawSheet}
+          onOpenChange={setShowWithdrawSheet}
+          memberId={memberId}
+        />
+      )}
 
-      <PersonalDataDeleteDialog
-        open={showPersonalDataDeleteDialog}
-        onOpenChange={setShowPersonalDataDeleteDialog}
-        memberId={memberId}
-        isBlacklisted={member.profile.is_black_listed}
-      />
+      {showPersonalDataDeleteDialog && (
+        <PersonalDataDeleteDialog
+          open={showPersonalDataDeleteDialog}
+          onOpenChange={setShowPersonalDataDeleteDialog}
+          memberId={memberId}
+          isBlacklisted={member.profile.is_black_listed}
+        />
+      )}
 
-      <WithdrawCancelDialog
-        open={showWithdrawCancelDialog}
-        onOpenChange={setShowWithdrawCancelDialog}
-        memberId={memberId}
-      />
+      {showWithdrawCancelDialog && (
+        <WithdrawCancelDialog
+          open={showWithdrawCancelDialog}
+          onOpenChange={setShowWithdrawCancelDialog}
+          memberId={memberId}
+        />
+      )}
 
-      <GateStopSetSheet
-        open={showGateStopSetSheet}
-        onOpenChange={setShowGateStopSetSheet}
-        memberId={memberId}
-      />
+      {showGateStopSetSheet && (
+        <GateStopSetSheet
+          open={showGateStopSetSheet}
+          onOpenChange={setShowGateStopSetSheet}
+          memberId={memberId}
+        />
+      )}
 
-      <GateStopReleaseSheet
-        open={showGateStopReleaseSheet}
-        onOpenChange={setShowGateStopReleaseSheet}
-        memberId={memberId}
-        gateStopInfo={member.profile.gate_stop_info}
-      />
+      {showGateStopReleaseSheet && (
+        <GateStopReleaseSheet
+          open={showGateStopReleaseSheet}
+          onOpenChange={setShowGateStopReleaseSheet}
+          memberId={memberId}
+          gateStopInfo={member.profile.gate_stop_info}
+        />
+      )}
 
-      <TransferSheet
-        open={showTransferSheet}
-        onOpenChange={setShowTransferSheet}
-        memberId={memberId}
-        currentStoreId={member.profile.store_id}
-        currentStoreName={member.profile.store_name}
-        hasUnpaidFee={member.constraints.hasUnpaidFee}
-        inCancellationPeriod={member.constraints.inCancellationPeriod}
-      />
+      {showTransferSheet && (
+        <TransferSheet
+          open={showTransferSheet}
+          onOpenChange={setShowTransferSheet}
+          memberId={memberId}
+          currentStoreId={member.profile.store_id}
+          currentStoreName={member.profile.store_name}
+          hasUnpaidFee={member.constraints.hasUnpaidFee}
+          inCancellationPeriod={member.constraints.inCancellationPeriod}
+        />
+      )}
+
+      {showForceRetireDialog && (
+        <ForceRetireDialog
+          open={showForceRetireDialog}
+          onOpenChange={setShowForceRetireDialog}
+          memberId={memberId}
+          memberBrand={member.profile.main_brand}
+        />
+      )}
     </div>
   );
 }

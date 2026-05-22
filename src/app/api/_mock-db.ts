@@ -851,6 +851,10 @@ type DbType = {
       scheduled_date: string;
       reason: string;
     }): Member | undefined;
+    handleForceWithdrawal(input: {
+      id: string;
+      reason: string;
+    }): { member: Member; blacklistId: string } | undefined;
     handleTransfer(input: {
       id: string;
       to_store_id: string;
@@ -2645,6 +2649,54 @@ function createDb() {
         };
         this._members[idx] = updated;
         return updated;
+      },
+
+      handleForceWithdrawal(input: {
+        id: string;
+        reason: string;
+      }): { member: Member; blacklistId: string } | undefined {
+        this._seed();
+        const idx = this._members.findIndex((m) => m.basic_info.id === input.id);
+        if (idx === -1) return undefined;
+        const member = this._members[idx]!;
+
+        // Create a leave record
+        db.memberLeaves.create({
+          member_id: input.id,
+          scheduled_date: new Date().toISOString().slice(0, 10),
+          reason: input.reason,
+        });
+
+        // Update member status to force_withdrawn
+        const updated: MemberRow = {
+          ...member,
+          profile: {
+            ...member.profile,
+            status: MemberStatus.FORCE_WITHDRAWN,
+            is_black_listed: true,
+          },
+        };
+        this._members[idx] = updated;
+
+        // Register to blacklist
+        const blRow = db.memberBlacklist.create({
+          memberId: member.basic_info.member_number,
+          memberName: member.basic_info.name_kanji,
+          storeName: member.profile.store_name,
+          registrationSource: 'forced_withdrawal',
+          manualReason: null,
+          unpaidAmount: 0,
+          memo: input.reason,
+          registeredBy: 'System',
+          matchConditions: {
+            nameAndBirthdate: true,
+            email: false,
+            phone: false,
+            address: false,
+          },
+        });
+
+        return { member: updated, blacklistId: blRow.id };
       },
 
       handleTransfer(input: {

@@ -13273,6 +13273,92 @@ export type GetCrmMembersByIdContractsSummaryResponses = {
 
 export type GetCrmMembersByIdContractsSummaryResponse = GetCrmMembersByIdContractsSummaryResponses[keyof GetCrmMembersByIdContractsSummaryResponses];
 
+export type PostCrmMembersByIdForceWithdrawData = {
+    /**
+     * ForceWithdrawRequest
+     *
+     * 強制退会リクエスト。会員ステータスをforce_withdrawnに更新し、ブラックリストに自動登録する。
+     */
+    body?: {
+        /**
+         * 強制退会の理由
+         */
+        reason: string;
+    };
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/force-withdraw';
+};
+
+export type PostCrmMembersByIdForceWithdrawErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembersByIdForceWithdrawError = PostCrmMembersByIdForceWithdrawErrors[keyof PostCrmMembersByIdForceWithdrawErrors];
+
+export type PostCrmMembersByIdForceWithdrawResponses = {
+    /**
+     * ForceWithdrawResponse
+     *
+     * 強制退会処理結果
+     */
+    200: {
+        success: boolean;
+        member_id: string;
+        blacklist_id: string;
+    };
+};
+
+export type PostCrmMembersByIdForceWithdrawResponse = PostCrmMembersByIdForceWithdrawResponses[keyof PostCrmMembersByIdForceWithdrawResponses];
+
 export type GetCrmMembersByMemberIdFamilyMembersData = {
     body?: never;
     path: {

@@ -113,6 +113,7 @@ export async function GET(request: NextRequest) {
       filtered = filtered.filter(
         (m) =>
           m.member_number.toLowerCase().includes(searchLower) ||
+          m.old_member_number.toLowerCase().includes(searchLower) ||
           m.name_kanji.includes(search) ||
           m.name_kana.includes(search) ||
           m.name_kanji.includes(searchNorm) ||
