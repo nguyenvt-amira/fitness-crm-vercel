@@ -160,6 +160,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LeavesApprove,
     Permission.BlacklistCreate,
     Permission.BlacklistDelete,
+    Permission.ContractsEdit,
   ],
 
   [UserRole.Manager]: [

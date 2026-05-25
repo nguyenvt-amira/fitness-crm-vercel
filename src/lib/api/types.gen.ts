@@ -5316,6 +5316,308 @@ export type GetPositionsResponse = {
 };
 
 /**
+ * MainContractType
+ *
+ * 主契約タイプ（G-01）
+ */
+export const MainContractType = {
+    GENERAL: 'general',
+    ONE_DAY: 'oneDay',
+    FAMILY: 'family',
+    KIDS: 'kids',
+    STUDENT: 'student',
+    CORPORATE: 'corporate',
+    WELFARE: 'welfare',
+    PREPAID: 'prepaid',
+    SPECIAL: 'special'
+} as const;
+
+/**
+ * MainContractType
+ *
+ * 主契約タイプ（G-01）
+ */
+export type MainContractType = typeof MainContractType[keyof typeof MainContractType];
+
+/**
+ * MainContractStatus
+ *
+ * 主契約の有効/無効ステータス
+ */
+export const MainContractStatus = { ACTIVE: 'active', INACTIVE: 'inactive' } as const;
+
+/**
+ * MainContractStatus
+ *
+ * 主契約の有効/無効ステータス
+ */
+export type MainContractStatus = typeof MainContractStatus[keyof typeof MainContractStatus];
+
+/**
+ * MainContractOtherStoreUsage
+ *
+ * 他店舗利用範囲
+ */
+export const MainContractOtherStoreUsage = {
+    ALL: 'all',
+    DIRECT: 'direct',
+    NONE: 'none'
+} as const;
+
+/**
+ * MainContractOtherStoreUsage
+ *
+ * 他店舗利用範囲
+ */
+export type MainContractOtherStoreUsage = typeof MainContractOtherStoreUsage[keyof typeof MainContractOtherStoreUsage];
+
+/**
+ * MainContractListItem
+ *
+ * 主契約一覧アイテム
+ */
+export type MainContractListItem = {
+    /**
+     * 主契約ID
+     */
+    id: string;
+    /**
+     * 主契約名
+     */
+    name: string;
+    /**
+     * コード
+     */
+    code: string;
+    /**
+     * 旧コード
+     */
+    old_code?: string | null;
+    /**
+     * MainContractType
+     *
+     * 契約タイプ
+     */
+    contract_type: 'general' | 'oneDay' | 'family' | 'kids' | 'student' | 'corporate' | 'welfare' | 'prepaid' | 'special';
+    /**
+     * StoreListBrand
+     *
+     * ブランド
+     */
+    brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * 親主契約名
+     */
+    parent_contract_name?: string | null;
+    /**
+     * 利用開始日
+     */
+    start_date: string;
+    /**
+     * 特殊契約の場合の対象店舗名
+     */
+    target_store_name?: string | null;
+    /**
+     * 料金（税込）
+     */
+    price_including_tax: number;
+    /**
+     * 休会時請求額
+     */
+    suspension_fee: number;
+    /**
+     * 回数上限
+     */
+    monthly_limit?: number | null;
+    /**
+     * 税率
+     */
+    tax_rate: number;
+    /**
+     * 休会可能月
+     */
+    suspendable_months: string;
+    /**
+     * 退会可能月
+     */
+    cancellable_months: string;
+    /**
+     * 有効契約数
+     */
+    active_contracts: number;
+    /**
+     * MainContractOtherStoreUsage
+     *
+     * 他店舗利用
+     */
+    other_store_usage: 'all' | 'direct' | 'none';
+    /**
+     * 同伴特典フラグ
+     */
+    companion_benefit_enabled: boolean;
+    /**
+     * 利用可能店舗数
+     */
+    enabled_stores: number;
+    /**
+     * 総店舗数
+     */
+    total_stores: number;
+    /**
+     * MainContractStatus
+     *
+     * ステータス
+     */
+    status: 'active' | 'inactive';
+};
+
+/**
+ * GetMainContractsQuery
+ *
+ * 主契約一覧取得クエリ
+ */
+export type GetMainContractsQuery = {
+    page?: number;
+    limit?: number;
+    /**
+     * 主契約名・IDで検索
+     */
+    search?: string;
+    /**
+     * MainContractType
+     *
+     * 主契約タイプ（G-01）
+     */
+    contract_type?: 'general' | 'oneDay' | 'family' | 'kids' | 'student' | 'corporate' | 'welfare' | 'prepaid' | 'special';
+    /**
+     * StoreListBrand
+     *
+     * Store brand
+     */
+    brand?: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * MainContractStatus
+     *
+     * 主契約の有効/無効ステータス
+     */
+    status?: 'active' | 'inactive';
+    /**
+     * 同伴特典の有無でフィルタリング
+     */
+    companion_benefit_enabled?: boolean | null;
+    sort_by?: 'id' | 'name' | 'code' | 'contract_type' | 'start_date' | 'price_including_tax' | 'suspension_fee' | 'monthly_limit' | 'tax_rate' | 'active_contracts' | 'enabled_stores' | 'status';
+    sort_order?: 'asc' | 'desc';
+};
+
+/**
+ * GetMainContractsResponse
+ *
+ * 主契約一覧レスポンス
+ */
+export type GetMainContractsResponse = {
+    main_contracts: Array<{
+        /**
+         * 主契約ID
+         */
+        id: string;
+        /**
+         * 主契約名
+         */
+        name: string;
+        /**
+         * コード
+         */
+        code: string;
+        /**
+         * 旧コード
+         */
+        old_code?: string | null;
+        /**
+         * MainContractType
+         *
+         * 契約タイプ
+         */
+        contract_type: 'general' | 'oneDay' | 'family' | 'kids' | 'student' | 'corporate' | 'welfare' | 'prepaid' | 'special';
+        /**
+         * StoreListBrand
+         *
+         * ブランド
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * 親主契約名
+         */
+        parent_contract_name?: string | null;
+        /**
+         * 利用開始日
+         */
+        start_date: string;
+        /**
+         * 特殊契約の場合の対象店舗名
+         */
+        target_store_name?: string | null;
+        /**
+         * 料金（税込）
+         */
+        price_including_tax: number;
+        /**
+         * 休会時請求額
+         */
+        suspension_fee: number;
+        /**
+         * 回数上限
+         */
+        monthly_limit?: number | null;
+        /**
+         * 税率
+         */
+        tax_rate: number;
+        /**
+         * 休会可能月
+         */
+        suspendable_months: string;
+        /**
+         * 退会可能月
+         */
+        cancellable_months: string;
+        /**
+         * 有効契約数
+         */
+        active_contracts: number;
+        /**
+         * MainContractOtherStoreUsage
+         *
+         * 他店舗利用
+         */
+        other_store_usage: 'all' | 'direct' | 'none';
+        /**
+         * 同伴特典フラグ
+         */
+        companion_benefit_enabled: boolean;
+        /**
+         * 利用可能店舗数
+         */
+        enabled_stores: number;
+        /**
+         * 総店舗数
+         */
+        total_stores: number;
+        /**
+         * MainContractStatus
+         *
+         * ステータス
+         */
+        status: 'active' | 'inactive';
+    }>;
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        total_pages: number;
+    };
+};
+
+/**
  * StoreMainContractStatus
  *
  * Main contract lifecycle for the store
@@ -11495,7 +11797,11 @@ export type GetCrmMainContractsData = {
          * 主契約の有効/無効ステータス
          */
         status?: 'active' | 'inactive';
-        sort_by?: 'id' | 'name' | 'contract_type' | 'brand' | 'price_including_tax';
+        /**
+         * 同伴特典の有無でフィルタリング
+         */
+        companion_benefit_enabled?: boolean | null;
+        sort_by?: 'id' | 'name' | 'code' | 'contract_type' | 'start_date' | 'price_including_tax' | 'suspension_fee' | 'monthly_limit' | 'tax_rate' | 'active_contracts' | 'enabled_stores' | 'status';
         sort_order?: 'asc' | 'desc';
     };
     url: '/crm/main-contracts';
@@ -11545,6 +11851,14 @@ export type GetCrmMainContractsResponses = {
              */
             name: string;
             /**
+             * コード
+             */
+            code: string;
+            /**
+             * 旧コード
+             */
+            old_code?: string | null;
+            /**
              * MainContractType
              *
              * 契約タイプ
@@ -11557,6 +11871,14 @@ export type GetCrmMainContractsResponses = {
              */
             brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
             /**
+             * 親主契約名
+             */
+            parent_contract_name?: string | null;
+            /**
+             * 利用開始日
+             */
+            start_date: string;
+            /**
              * 特殊契約の場合の対象店舗名
              */
             target_store_name?: string | null;
@@ -11565,9 +11887,47 @@ export type GetCrmMainContractsResponses = {
              */
             price_including_tax: number;
             /**
+             * 休会時請求額
+             */
+            suspension_fee: number;
+            /**
+             * 回数上限
+             */
+            monthly_limit?: number | null;
+            /**
+             * 税率
+             */
+            tax_rate: number;
+            /**
+             * 休会可能月
+             */
+            suspendable_months: string;
+            /**
+             * 退会可能月
+             */
+            cancellable_months: string;
+            /**
+             * 有効契約数
+             */
+            active_contracts: number;
+            /**
+             * MainContractOtherStoreUsage
+             *
+             * 他店舗利用
+             */
+            other_store_usage: 'all' | 'direct' | 'none';
+            /**
              * 同伴特典フラグ
              */
             companion_benefit_enabled: boolean;
+            /**
+             * 利用可能店舗数
+             */
+            enabled_stores: number;
+            /**
+             * 総店舗数
+             */
+            total_stores: number;
             /**
              * MainContractStatus
              *
@@ -13273,6 +13633,67 @@ export type GetCrmMembersByIdContractsSummaryResponses = {
 
 export type GetCrmMembersByIdContractsSummaryResponse = GetCrmMembersByIdContractsSummaryResponses[keyof GetCrmMembersByIdContractsSummaryResponses];
 
+export type GetCrmMembersByMemberIdFamilyMembersData = {
+    body?: never;
+    path: {
+        /**
+         * Primary member id
+         */
+        member_id: string;
+    };
+    query?: never;
+    url: '/crm/members/{member_id}/family-members';
+};
+
+export type GetCrmMembersByMemberIdFamilyMembersErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+};
+
+export type GetCrmMembersByMemberIdFamilyMembersError = GetCrmMembersByMemberIdFamilyMembersErrors[keyof GetCrmMembersByMemberIdFamilyMembersErrors];
+
+export type GetCrmMembersByMemberIdFamilyMembersResponses = {
+    /**
+     * GetFamilyMembersResponse
+     *
+     * Response for getting primary member family members
+     */
+    200: {
+        members: Array<{
+            /**
+             * Child member id
+             */
+            id: string;
+            /**
+             * Member number
+             */
+            member_number: string;
+            name_kanji: string;
+            relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
+            joined_at: string;
+            status: 'active' | 'suspended' | 'withdrawn';
+            /**
+             * Monthly fee (JPY)
+             */
+            monthly_fee: number;
+            store_id: string;
+            store_name: string;
+        }>;
+        /**
+         * Brand setting family_member_limit
+         */
+        limit: number;
+    };
+};
+
+export type GetCrmMembersByMemberIdFamilyMembersResponse = GetCrmMembersByMemberIdFamilyMembersResponses[keyof GetCrmMembersByMemberIdFamilyMembersResponses];
+
 export type PostCrmMembersByIdForceWithdrawData = {
     /**
      * ForceWithdrawRequest
@@ -13358,67 +13779,6 @@ export type PostCrmMembersByIdForceWithdrawResponses = {
 };
 
 export type PostCrmMembersByIdForceWithdrawResponse = PostCrmMembersByIdForceWithdrawResponses[keyof PostCrmMembersByIdForceWithdrawResponses];
-
-export type GetCrmMembersByMemberIdFamilyMembersData = {
-    body?: never;
-    path: {
-        /**
-         * Primary member id
-         */
-        member_id: string;
-    };
-    query?: never;
-    url: '/crm/members/{member_id}/family-members';
-};
-
-export type GetCrmMembersByMemberIdFamilyMembersErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    404: {
-        error: string;
-    };
-};
-
-export type GetCrmMembersByMemberIdFamilyMembersError = GetCrmMembersByMemberIdFamilyMembersErrors[keyof GetCrmMembersByMemberIdFamilyMembersErrors];
-
-export type GetCrmMembersByMemberIdFamilyMembersResponses = {
-    /**
-     * GetFamilyMembersResponse
-     *
-     * Response for getting primary member family members
-     */
-    200: {
-        members: Array<{
-            /**
-             * Child member id
-             */
-            id: string;
-            /**
-             * Member number
-             */
-            member_number: string;
-            name_kanji: string;
-            relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandparent' | 'grandchild';
-            joined_at: string;
-            status: 'active' | 'suspended' | 'withdrawn';
-            /**
-             * Monthly fee (JPY)
-             */
-            monthly_fee: number;
-            store_id: string;
-            store_name: string;
-        }>;
-        /**
-         * Brand setting family_member_limit
-         */
-        limit: number;
-    };
-};
-
-export type GetCrmMembersByMemberIdFamilyMembersResponse = GetCrmMembersByMemberIdFamilyMembersResponses[keyof GetCrmMembersByMemberIdFamilyMembersResponses];
 
 export type DeleteCrmMembersByIdGateStopData = {
     /**

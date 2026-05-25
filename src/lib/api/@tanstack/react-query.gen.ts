@@ -1073,25 +1073,6 @@ export const getCrmMembersByIdContractsSummaryOptions = (options: Options<GetCrm
     queryKey: getCrmMembersByIdContractsSummaryQueryKey(options)
 });
 
-/**
- * 強制退会を実行する
- *
- * 会員ステータスを force_withdrawn に更新し、退会記録とブラックリスト登録を同時に行う。
- */
-export const postCrmMembersByIdForceWithdrawMutation = (options?: Partial<Options<PostCrmMembersByIdForceWithdrawData>>): UseMutationOptions<PostCrmMembersByIdForceWithdrawResponse, PostCrmMembersByIdForceWithdrawError, Options<PostCrmMembersByIdForceWithdrawData>> => {
-    const mutationOptions: UseMutationOptions<PostCrmMembersByIdForceWithdrawResponse, PostCrmMembersByIdForceWithdrawError, Options<PostCrmMembersByIdForceWithdrawData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await Members.postCrmMembersByIdForceWithdraw({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
 export const getCrmMembersByMemberIdFamilyMembersQueryKey = (options: Options<GetCrmMembersByMemberIdFamilyMembersData>) => createQueryKey('getCrmMembersByMemberIdFamilyMembers', options);
 
 /**
@@ -1111,6 +1092,25 @@ export const getCrmMembersByMemberIdFamilyMembersOptions = (options: Options<Get
     },
     queryKey: getCrmMembersByMemberIdFamilyMembersQueryKey(options)
 });
+
+/**
+ * 強制退会を実行する
+ *
+ * 会員ステータスを force_withdrawn に更新し、退会記録とブラックリスト登録を同時に行う。
+ */
+export const postCrmMembersByIdForceWithdrawMutation = (options?: Partial<Options<PostCrmMembersByIdForceWithdrawData>>): UseMutationOptions<PostCrmMembersByIdForceWithdrawResponse, PostCrmMembersByIdForceWithdrawError, Options<PostCrmMembersByIdForceWithdrawData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmMembersByIdForceWithdrawResponse, PostCrmMembersByIdForceWithdrawError, Options<PostCrmMembersByIdForceWithdrawData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Members.postCrmMembersByIdForceWithdraw({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
 
 /**
  * Release gate stop for a member

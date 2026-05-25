@@ -40,7 +40,17 @@ export async function GET(request: NextRequest) {
     }
 
     const query: GetMainContractsQuery = validationResult.data;
-    const { page, limit, search, contract_type, brand, status, sort_by, sort_order } = query;
+    const {
+      page,
+      limit,
+      search,
+      contract_type,
+      brand,
+      status,
+      companion_benefit_enabled,
+      sort_by,
+      sort_order,
+    } = query;
 
     let filtered: MainContractListItem[] = [...db.mainContracts.getList()];
 
@@ -48,7 +58,10 @@ export async function GET(request: NextRequest) {
       const keyword = search.toLowerCase().trim();
       filtered = filtered.filter(
         (item) =>
-          item.id.toLowerCase().includes(keyword) || item.name.toLowerCase().includes(keyword),
+          item.id.toLowerCase().includes(keyword) ||
+          item.name.toLowerCase().includes(keyword) ||
+          item.code.toLowerCase().includes(keyword) ||
+          (item.old_code ?? '').toLowerCase().includes(keyword),
       );
     }
     if (contract_type) {
@@ -59,6 +72,11 @@ export async function GET(request: NextRequest) {
     }
     if (status) {
       filtered = filtered.filter((item) => item.status === status);
+    }
+    if (companion_benefit_enabled !== undefined) {
+      filtered = filtered.filter(
+        (item) => item.companion_benefit_enabled === companion_benefit_enabled,
+      );
     }
 
     filtered.sort((a, b) => {

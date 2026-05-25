@@ -7543,6 +7543,455 @@
         "title": "GetPositionsResponse",
         "description": "List of staff positions for filters and forms"
       },
+      "MainContractType": {
+        "type": "string",
+        "enum": [
+          "general",
+          "oneDay",
+          "family",
+          "kids",
+          "student",
+          "corporate",
+          "welfare",
+          "prepaid",
+          "special"
+        ],
+        "title": "MainContractType",
+        "description": "主契約タイプ（G-01）"
+      },
+      "MainContractStatus": {
+        "type": "string",
+        "enum": ["active", "inactive"],
+        "title": "MainContractStatus",
+        "description": "主契約の有効/無効ステータス"
+      },
+      "MainContractOtherStoreUsage": {
+        "type": "string",
+        "enum": ["all", "direct", "none"],
+        "title": "MainContractOtherStoreUsage",
+        "description": "他店舗利用範囲"
+      },
+      "MainContractListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "MC001",
+            "description": "主契約ID"
+          },
+          "name": {
+            "type": "string",
+            "example": "レギュラー会員",
+            "description": "主契約名"
+          },
+          "code": {
+            "type": "string",
+            "example": "REG-001",
+            "description": "コード"
+          },
+          "old_code": {
+            "type": "string",
+            "nullable": true,
+            "example": "OLD-REG-001",
+            "description": "旧コード"
+          },
+          "contract_type": {
+            "type": "string",
+            "enum": [
+              "general",
+              "oneDay",
+              "family",
+              "kids",
+              "student",
+              "corporate",
+              "welfare",
+              "prepaid",
+              "special"
+            ],
+            "title": "MainContractType",
+            "description": "契約タイプ"
+          },
+          "brand": {
+            "type": "string",
+            "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+            "title": "StoreListBrand",
+            "description": "ブランド"
+          },
+          "parent_contract_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "レギュラー会員",
+            "description": "親主契約名"
+          },
+          "start_date": {
+            "type": "string",
+            "example": "2024/04/01",
+            "description": "利用開始日"
+          },
+          "target_store_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "JOYFIT24新宿店",
+            "description": "特殊契約の場合の対象店舗名"
+          },
+          "price_including_tax": {
+            "type": "number",
+            "minimum": 0,
+            "example": 7700,
+            "description": "料金（税込）"
+          },
+          "suspension_fee": {
+            "type": "number",
+            "minimum": 0,
+            "example": 1100,
+            "description": "休会時請求額"
+          },
+          "monthly_limit": {
+            "type": "integer",
+            "nullable": true,
+            "minimum": 0,
+            "example": 8,
+            "description": "回数上限"
+          },
+          "tax_rate": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "example": 10,
+            "description": "税率"
+          },
+          "suspendable_months": {
+            "type": "string",
+            "example": "1〜3月",
+            "description": "休会可能月"
+          },
+          "cancellable_months": {
+            "type": "string",
+            "example": "毎月",
+            "description": "退会可能月"
+          },
+          "active_contracts": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 1250,
+            "description": "有効契約数"
+          },
+          "other_store_usage": {
+            "type": "string",
+            "enum": ["all", "direct", "none"],
+            "title": "MainContractOtherStoreUsage",
+            "description": "他店舗利用"
+          },
+          "companion_benefit_enabled": {
+            "type": "boolean",
+            "example": false,
+            "description": "同伴特典フラグ"
+          },
+          "enabled_stores": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 10,
+            "description": "利用可能店舗数"
+          },
+          "total_stores": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 12,
+            "description": "総店舗数"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive"],
+            "title": "MainContractStatus",
+            "description": "ステータス"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "code",
+          "contract_type",
+          "brand",
+          "start_date",
+          "price_including_tax",
+          "suspension_fee",
+          "tax_rate",
+          "suspendable_months",
+          "cancellable_months",
+          "active_contracts",
+          "other_store_usage",
+          "companion_benefit_enabled",
+          "enabled_stores",
+          "total_stores",
+          "status"
+        ],
+        "title": "MainContractListItem",
+        "description": "主契約一覧アイテム"
+      },
+      "GetMainContractsQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 20
+          },
+          "search": {
+            "type": "string",
+            "description": "主契約名・IDで検索"
+          },
+          "contract_type": {
+            "type": "string",
+            "enum": [
+              "general",
+              "oneDay",
+              "family",
+              "kids",
+              "student",
+              "corporate",
+              "welfare",
+              "prepaid",
+              "special"
+            ],
+            "title": "MainContractType",
+            "description": "主契約タイプ（G-01）"
+          },
+          "brand": {
+            "type": "string",
+            "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+            "title": "StoreListBrand",
+            "description": "Store brand"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive"],
+            "title": "MainContractStatus",
+            "description": "主契約の有効/無効ステータス"
+          },
+          "companion_benefit_enabled": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "同伴特典の有無でフィルタリング"
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": [
+              "id",
+              "name",
+              "code",
+              "contract_type",
+              "start_date",
+              "price_including_tax",
+              "suspension_fee",
+              "monthly_limit",
+              "tax_rate",
+              "active_contracts",
+              "enabled_stores",
+              "status"
+            ],
+            "default": "id"
+          },
+          "sort_order": {
+            "type": "string",
+            "enum": ["asc", "desc"],
+            "default": "asc"
+          }
+        },
+        "title": "GetMainContractsQuery",
+        "description": "主契約一覧取得クエリ"
+      },
+      "GetMainContractsResponse": {
+        "type": "object",
+        "properties": {
+          "main_contracts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "MC001",
+                  "description": "主契約ID"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "レギュラー会員",
+                  "description": "主契約名"
+                },
+                "code": {
+                  "type": "string",
+                  "example": "REG-001",
+                  "description": "コード"
+                },
+                "old_code": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "OLD-REG-001",
+                  "description": "旧コード"
+                },
+                "contract_type": {
+                  "type": "string",
+                  "enum": [
+                    "general",
+                    "oneDay",
+                    "family",
+                    "kids",
+                    "student",
+                    "corporate",
+                    "welfare",
+                    "prepaid",
+                    "special"
+                  ],
+                  "title": "MainContractType",
+                  "description": "契約タイプ"
+                },
+                "brand": {
+                  "type": "string",
+                  "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                  "title": "StoreListBrand",
+                  "description": "ブランド"
+                },
+                "parent_contract_name": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "レギュラー会員",
+                  "description": "親主契約名"
+                },
+                "start_date": {
+                  "type": "string",
+                  "example": "2024/04/01",
+                  "description": "利用開始日"
+                },
+                "target_store_name": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "JOYFIT24新宿店",
+                  "description": "特殊契約の場合の対象店舗名"
+                },
+                "price_including_tax": {
+                  "type": "number",
+                  "minimum": 0,
+                  "example": 7700,
+                  "description": "料金（税込）"
+                },
+                "suspension_fee": {
+                  "type": "number",
+                  "minimum": 0,
+                  "example": 1100,
+                  "description": "休会時請求額"
+                },
+                "monthly_limit": {
+                  "type": "integer",
+                  "nullable": true,
+                  "minimum": 0,
+                  "example": 8,
+                  "description": "回数上限"
+                },
+                "tax_rate": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "example": 10,
+                  "description": "税率"
+                },
+                "suspendable_months": {
+                  "type": "string",
+                  "example": "1〜3月",
+                  "description": "休会可能月"
+                },
+                "cancellable_months": {
+                  "type": "string",
+                  "example": "毎月",
+                  "description": "退会可能月"
+                },
+                "active_contracts": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "example": 1250,
+                  "description": "有効契約数"
+                },
+                "other_store_usage": {
+                  "type": "string",
+                  "enum": ["all", "direct", "none"],
+                  "title": "MainContractOtherStoreUsage",
+                  "description": "他店舗利用"
+                },
+                "companion_benefit_enabled": {
+                  "type": "boolean",
+                  "example": false,
+                  "description": "同伴特典フラグ"
+                },
+                "enabled_stores": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "example": 10,
+                  "description": "利用可能店舗数"
+                },
+                "total_stores": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "example": 12,
+                  "description": "総店舗数"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["active", "inactive"],
+                  "title": "MainContractStatus",
+                  "description": "ステータス"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "code",
+                "contract_type",
+                "brand",
+                "start_date",
+                "price_including_tax",
+                "suspension_fee",
+                "tax_rate",
+                "suspendable_months",
+                "cancellable_months",
+                "active_contracts",
+                "other_store_usage",
+                "companion_benefit_enabled",
+                "enabled_stores",
+                "total_stores",
+                "status"
+              ],
+              "title": "MainContractListItem",
+              "description": "主契約一覧アイテム"
+            }
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "number"
+              },
+              "limit": {
+                "type": "number"
+              },
+              "total": {
+                "type": "number"
+              },
+              "total_pages": {
+                "type": "number"
+              }
+            },
+            "required": ["page", "limit", "total", "total_pages"]
+          }
+        },
+        "required": ["main_contracts", "pagination"],
+        "title": "GetMainContractsResponse",
+        "description": "主契約一覧レスポンス"
+      },
       "StoreMainContractStatus": {
         "type": "string",
         "enum": ["draft", "active", "suspended", "expired", "terminated"],
@@ -16978,8 +17427,32 @@
           },
           {
             "schema": {
+              "type": "boolean",
+              "nullable": true,
+              "description": "同伴特典の有無でフィルタリング"
+            },
+            "required": false,
+            "description": "同伴特典の有無でフィルタリング",
+            "name": "companion_benefit_enabled",
+            "in": "query"
+          },
+          {
+            "schema": {
               "type": "string",
-              "enum": ["id", "name", "contract_type", "brand", "price_including_tax"],
+              "enum": [
+                "id",
+                "name",
+                "code",
+                "contract_type",
+                "start_date",
+                "price_including_tax",
+                "suspension_fee",
+                "monthly_limit",
+                "tax_rate",
+                "active_contracts",
+                "enabled_stores",
+                "status"
+              ],
               "default": "id"
             },
             "required": false,
@@ -17020,6 +17493,17 @@
                             "example": "レギュラー会員",
                             "description": "主契約名"
                           },
+                          "code": {
+                            "type": "string",
+                            "example": "REG-001",
+                            "description": "コード"
+                          },
+                          "old_code": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "OLD-REG-001",
+                            "description": "旧コード"
+                          },
                           "contract_type": {
                             "type": "string",
                             "enum": [
@@ -17042,6 +17526,17 @@
                             "title": "StoreListBrand",
                             "description": "ブランド"
                           },
+                          "parent_contract_name": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "レギュラー会員",
+                            "description": "親主契約名"
+                          },
+                          "start_date": {
+                            "type": "string",
+                            "example": "2024/04/01",
+                            "description": "利用開始日"
+                          },
                           "target_store_name": {
                             "type": "string",
                             "nullable": true,
@@ -17054,10 +17549,64 @@
                             "example": 7700,
                             "description": "料金（税込）"
                           },
+                          "suspension_fee": {
+                            "type": "number",
+                            "minimum": 0,
+                            "example": 1100,
+                            "description": "休会時請求額"
+                          },
+                          "monthly_limit": {
+                            "type": "integer",
+                            "nullable": true,
+                            "minimum": 0,
+                            "example": 8,
+                            "description": "回数上限"
+                          },
+                          "tax_rate": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 100,
+                            "example": 10,
+                            "description": "税率"
+                          },
+                          "suspendable_months": {
+                            "type": "string",
+                            "example": "1〜3月",
+                            "description": "休会可能月"
+                          },
+                          "cancellable_months": {
+                            "type": "string",
+                            "example": "毎月",
+                            "description": "退会可能月"
+                          },
+                          "active_contracts": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "example": 1250,
+                            "description": "有効契約数"
+                          },
+                          "other_store_usage": {
+                            "type": "string",
+                            "enum": ["all", "direct", "none"],
+                            "title": "MainContractOtherStoreUsage",
+                            "description": "他店舗利用"
+                          },
                           "companion_benefit_enabled": {
                             "type": "boolean",
                             "example": false,
                             "description": "同伴特典フラグ"
+                          },
+                          "enabled_stores": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "example": 10,
+                            "description": "利用可能店舗数"
+                          },
+                          "total_stores": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "example": 12,
+                            "description": "総店舗数"
                           },
                           "status": {
                             "type": "string",
@@ -17069,10 +17618,20 @@
                         "required": [
                           "id",
                           "name",
+                          "code",
                           "contract_type",
                           "brand",
+                          "start_date",
                           "price_including_tax",
+                          "suspension_fee",
+                          "tax_rate",
+                          "suspendable_months",
+                          "cancellable_months",
+                          "active_contracts",
+                          "other_store_usage",
                           "companion_benefit_enabled",
+                          "enabled_stores",
+                          "total_stores",
                           "status"
                         ],
                         "title": "MainContractListItem",
@@ -19658,6 +20217,135 @@
         }
       }
     },
+    "/crm/members/{member_id}/family-members": {
+      "get": {
+        "summary": "Get primary member family members",
+        "description": "Get family members linked to a primary member",
+        "tags": ["Family Members"],
+        "parameters": [
+          {
+            "name": "member_id",
+            "in": "path",
+            "required": true,
+            "description": "Primary member id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Family members list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "members": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "M-00010",
+                            "description": "Child member id"
+                          },
+                          "member_number": {
+                            "type": "string",
+                            "example": "M-00010",
+                            "description": "Member number"
+                          },
+                          "name_kanji": {
+                            "type": "string",
+                            "example": "山田 花子"
+                          },
+                          "relationship": {
+                            "type": "string",
+                            "enum": [
+                              "spouse",
+                              "child",
+                              "parent",
+                              "sibling",
+                              "grandparent",
+                              "grandchild"
+                            ],
+                            "example": "child"
+                          },
+                          "joined_at": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2024-01-15"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["active", "suspended", "withdrawn"],
+                            "example": "active"
+                          },
+                          "monthly_fee": {
+                            "type": "number",
+                            "example": 0,
+                            "description": "Monthly fee (JPY)"
+                          },
+                          "store_id": {
+                            "type": "string",
+                            "example": "store-001"
+                          },
+                          "store_name": {
+                            "type": "string",
+                            "example": "Fit365八潮店"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "member_number",
+                          "name_kanji",
+                          "relationship",
+                          "joined_at",
+                          "status",
+                          "monthly_fee",
+                          "store_id",
+                          "store_name"
+                        ],
+                        "title": "FamilyMember",
+                        "description": "Family member list item"
+                      }
+                    },
+                    "limit": {
+                      "type": "number",
+                      "example": 3,
+                      "description": "Brand setting family_member_limit"
+                    }
+                  },
+                  "required": ["members", "limit"],
+                  "title": "GetFamilyMembersResponse",
+                  "description": "Response for getting primary member family members"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Primary member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/members/{id}/force-withdraw": {
       "post": {
         "summary": "強制退会を実行する",
@@ -19791,135 +20479,6 @@
                       "type": "string",
                       "example": "Failed to process request",
                       "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/crm/members/{member_id}/family-members": {
-      "get": {
-        "summary": "Get primary member family members",
-        "description": "Get family members linked to a primary member",
-        "tags": ["Family Members"],
-        "parameters": [
-          {
-            "name": "member_id",
-            "in": "path",
-            "required": true,
-            "description": "Primary member id",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Family members list",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "members": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "example": "M-00010",
-                            "description": "Child member id"
-                          },
-                          "member_number": {
-                            "type": "string",
-                            "example": "M-00010",
-                            "description": "Member number"
-                          },
-                          "name_kanji": {
-                            "type": "string",
-                            "example": "山田 花子"
-                          },
-                          "relationship": {
-                            "type": "string",
-                            "enum": [
-                              "spouse",
-                              "child",
-                              "parent",
-                              "sibling",
-                              "grandparent",
-                              "grandchild"
-                            ],
-                            "example": "child"
-                          },
-                          "joined_at": {
-                            "type": "string",
-                            "format": "date",
-                            "example": "2024-01-15"
-                          },
-                          "status": {
-                            "type": "string",
-                            "enum": ["active", "suspended", "withdrawn"],
-                            "example": "active"
-                          },
-                          "monthly_fee": {
-                            "type": "number",
-                            "example": 0,
-                            "description": "Monthly fee (JPY)"
-                          },
-                          "store_id": {
-                            "type": "string",
-                            "example": "store-001"
-                          },
-                          "store_name": {
-                            "type": "string",
-                            "example": "Fit365八潮店"
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "member_number",
-                          "name_kanji",
-                          "relationship",
-                          "joined_at",
-                          "status",
-                          "monthly_fee",
-                          "store_id",
-                          "store_name"
-                        ],
-                        "title": "FamilyMember",
-                        "description": "Family member list item"
-                      }
-                    },
-                    "limit": {
-                      "type": "number",
-                      "example": 3,
-                      "description": "Brand setting family_member_limit"
-                    }
-                  },
-                  "required": ["members", "limit"],
-                  "title": "GetFamilyMembersResponse",
-                  "description": "Response for getting primary member family members"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Primary member not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request"
                     }
                   },
                   "required": ["error"],

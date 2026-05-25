@@ -62,6 +62,9 @@ export enum Permission {
   // Blacklist
   BlacklistCreate = 'blacklist.create',
   BlacklistDelete = 'blacklist.delete',
+
+  // Contracts
+  ContractsEdit = 'contracts.edit',
 }
 
 /** Authenticated user stored in context */

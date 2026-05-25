@@ -45,7 +45,7 @@ export function PageHeader({
         sticky ? `sticky bg-white ${stickyTopClassName} z-10 border-b backdrop-blur-sm` : 'mb-4'
       }
     >
-      <div className={cn('bg-muted/40 p-6 pb-3', className)}>
+      <div className={cn('bg-muted/40 px-6 py-4', className)}>
         {breadcrumb && <div className="mb-2">{breadcrumb}</div>}
         <div className="flex items-center justify-between gap-4">
           <div className="flex min-w-0 items-center gap-2">
