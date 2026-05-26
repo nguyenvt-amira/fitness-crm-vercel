@@ -33,6 +33,7 @@ import { useAuthUser } from '@/contexts/auth-user.context';
 
 import { Badge } from '@/components/ui/badge';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { cn } from '@/lib/utils';
 
@@ -45,6 +46,8 @@ interface RoleGatedMenuItemProps extends ComponentProps<typeof DropdownMenuItem>
   requiredPermission?: Permission;
   /** Badge label shown when access is denied (default: "本部") */
   denyBadge?: string;
+  /** Optional tooltip shown even when the user is allowed (e.g. to explain why the button might be disabled) */
+  tooltip?: string;
   children: ReactNode;
 }
 
@@ -55,6 +58,8 @@ export function RoleGatedMenuItem({
   children,
   onClick,
   className,
+  disabled,
+  tooltip: externalTooltip,
   ...props
 }: RoleGatedMenuItemProps) {
   const { hasRole, hasPermission } = useAuthUser();
@@ -63,27 +68,63 @@ export function RoleGatedMenuItem({
   const permissionAllowed = requiredPermission ? hasPermission(requiredPermission) : true;
   const allowed = roleAllowed && permissionAllowed;
 
+  // Case 1: no permission → disabled + badge, no tooltip
+  // Case 2: has permission + parent disabled + tooltip → disabled + show tooltip
+  // Case 3: has permission + not disabled → normal click
+  const isDisabled = !allowed || !!disabled;
+  const tooltipContent = allowed ? externalTooltip : null;
+
   return (
-    <DropdownMenuItem
-      {...props}
-      className={cn(!allowed && 'cursor-not-allowed opacity-50', className)}
-      onClick={(e) => {
-        if (!allowed) {
-          e.preventDefault();
-          return;
-        }
-        onClick?.(e);
-      }}
-    >
-      {children}
-      {!allowed && (
-        <Badge
-          variant="outline"
-          className="border-border text-muted-foreground ml-auto h-4 shrink-0 rounded-sm px-1 text-[9px]"
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <div
+              className={cn(
+                isDisabled && 'inline-flex cursor-not-allowed',
+                !isDisabled && className,
+              )}
+              onClickCapture={
+                isDisabled
+                  ? (e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }
+                  : undefined
+              }
+            />
+          }
         >
-          {denyBadge}
-        </Badge>
-      )}
-    </DropdownMenuItem>
+          <DropdownMenuItem
+            {...props}
+            className={className}
+            onClick={(e) => {
+              if (isDisabled) {
+                e.preventDefault();
+                e.stopPropagation();
+                return;
+              }
+              onClick?.(e);
+            }}
+            disabled={isDisabled}
+          >
+            {children}
+            {!allowed && (
+              <Badge
+                variant="outline"
+                className="border-border text-muted-foreground ml-auto h-4 shrink-0 rounded-sm px-1 text-[9px]"
+              >
+                {denyBadge}
+              </Badge>
+            )}
+          </DropdownMenuItem>
+        </TooltipTrigger>
+        {tooltipContent && (
+          <TooltipContent>
+            <p className="text-xs">{tooltipContent}</p>
+          </TooltipContent>
+        )}
+      </Tooltip>
+    </TooltipProvider>
   );
 }

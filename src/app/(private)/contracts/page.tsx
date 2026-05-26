@@ -2,6 +2,8 @@
 
 import { Suspense, useMemo, useState } from 'react';
 
+import { useRouter } from 'next/navigation';
+
 import { useQuery } from '@tanstack/react-query';
 import type { ColumnDef, SortingState } from '@tanstack/react-table';
 
@@ -14,6 +16,7 @@ import { Card } from '@/components/ui/card';
 
 import { getCrmMainContractsOptions } from '@/lib/api/@tanstack/react-query.gen';
 import type { GetCrmMainContractsResponse } from '@/lib/api/types.gen';
+import { navigate } from '@/lib/routes/routes.util';
 
 import { ContractsFilters } from './_components/contracts-filters';
 import { ContractsTableColumns } from './_components/contracts-table-columns';
@@ -24,6 +27,7 @@ type MainContractRow = GetCrmMainContractsResponse['main_contracts'][number];
 
 function ContractsPageContent() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const router = useRouter();
   const filtersHook = useContractsFilters();
   const { filters, setFilters, queryParams, currentPage, setCurrentPage, pageSize, setPageSize } =
     filtersHook;
@@ -86,6 +90,7 @@ function ContractsPageContent() {
             containerClassName={
               isFilterOpen ? 'max-h-[calc(100vh-330px)]' : 'max-h-[calc(100vh-286px)]'
             }
+            onRowClick={(row) => router.push(navigate('/contracts/[id]', row.id))}
             tableOptions={{
               onSortingChange: handleSortingChange,
               manualSorting: true,

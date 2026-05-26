@@ -10,7 +10,11 @@ import type {
   FamilyRelationship,
 } from '@/app/api/_schemas/family-registration.schema';
 import type { LeaveDetail, LeaveListItem } from '@/app/api/_schemas/leave.schema';
-import type { MainContractListItem } from '@/app/api/_schemas/main-contract.schema';
+import type {
+  MainContractChangeHistoryItem,
+  MainContractDetail,
+  MainContractListItem,
+} from '@/app/api/_schemas/main-contract.schema';
 import type {
   ContractType,
   CreateMemberRequest,
@@ -1067,9 +1071,14 @@ type DbType = {
   getMemberRelationships(memberId: string): unknown;
   mainContracts: {
     _rows: MainContractListItem[];
+    _details: Record<string, MainContractDetail>;
+    _changeHistory: Record<string, MainContractChangeHistoryItem[]>;
     _seeded: boolean;
     _seed(): void;
     getList(): MainContractListItem[];
+    getById(id: string): MainContractDetail | undefined;
+    getChangeHistory(id: string): MainContractChangeHistoryItem[];
+    delete(id: string): boolean;
   };
   optionMasters: {
     _rows: OptionMasterListItem[];
@@ -4673,6 +4682,180 @@ function createDb() {
       getList(): MainContractListItem[] {
         this._seed();
         return [...this._rows];
+      },
+      _details: {} as Record<string, MainContractDetail>,
+      _changeHistory: {} as Record<string, MainContractChangeHistoryItem[]>,
+      getById(id: string): MainContractDetail | undefined {
+        this._seed();
+        if (Object.keys(this._details).length === 0) {
+          // Build detail map from list rows with extended fields
+          const detailExtras: Record<string, Partial<MainContractDetail>> = {
+            MC001: {
+              changeability: '可能',
+              previous_contract: null,
+              billing_enabled: true,
+              modifiable: '可能',
+              initial_payment_months: 1,
+              same_day_cancellation: false,
+              family_contract_allowed: false,
+              suspension_monthly_limit: null,
+              usage_schedule: '終日（24時間）',
+              company: null,
+              regulation: null,
+              public_name: 'レギュラー（全時間利用可）',
+              public_description:
+                '全時間帯利用可能な標準的な会員プラン。24時間いつでも全店舗のトレーニング施設を利用できます。初心者から上級者まで幅広い会員層に対応。',
+              memo: null,
+              usage_hours_by_day: [
+                { day: '月', from: '06:00', to: '23:00', all_day: false },
+                { day: '火', from: '06:00', to: '23:00', all_day: false },
+                { day: '水', from: '06:00', to: '23:00', all_day: false },
+                { day: '木', from: '06:00', to: '23:00', all_day: false },
+                { day: '金', from: '06:00', to: '23:00', all_day: false },
+                { day: '土', from: '08:00', to: '21:00', all_day: false },
+                { day: '日', from: '08:00', to: '21:00', all_day: false },
+              ],
+              accounting_code: 'ACC-101',
+              age_restriction: '16歳以上',
+              gender_restriction: '制限なし',
+              store_range: '全店舗（12店舗）',
+              thumbnail_url: null,
+              description:
+                '全時間帯利用可能な標準的な会員プラン。24時間いつでも全店舗のトレーニング施設を利用できます。初心者から上級者まで幅広い会員層に対応。',
+              created_at: '2024/03/15 10:00',
+              updated_at: '2026/02/28 14:30',
+              parent_contract_id: 'MC000',
+              parent_contract_name: 'スタンダード会員',
+              child_contracts: [
+                { id: 'MC001-A', name: 'レギュラー会員（学生）' },
+                { id: 'MC001-B', name: 'レギュラー会員（シニア）' },
+              ],
+            },
+            MC009: {
+              changeability: '可能',
+              previous_contract: null,
+              billing_enabled: true,
+              modifiable: '可能',
+              initial_payment_months: 1,
+              same_day_cancellation: false,
+              family_contract_allowed: false,
+              suspension_monthly_limit: null,
+              usage_schedule: '終日（24時間）',
+              company: null,
+              regulation: null,
+              public_name: 'プレミアム（全時間利用可・特典付）',
+              public_description:
+                'プレミアム会員専用の最上位プラン。全時間帯利用可・同伴特典あり。',
+              memo: null,
+              usage_hours_by_day: [
+                { day: '月', from: '00:00', to: '23:59', all_day: true },
+                { day: '火', from: '00:00', to: '23:59', all_day: true },
+                { day: '水', from: '00:00', to: '23:59', all_day: true },
+                { day: '木', from: '00:00', to: '23:59', all_day: true },
+                { day: '金', from: '00:00', to: '23:59', all_day: true },
+                { day: '土', from: '00:00', to: '23:59', all_day: true },
+                { day: '日', from: '00:00', to: '23:59', all_day: true },
+              ],
+              accounting_code: 'ACC-901',
+              age_restriction: '16歳以上',
+              gender_restriction: '制限なし',
+              store_range: '全店舗（12店舗）',
+              thumbnail_url: null,
+              description: 'プレミアム会員専用の最上位プラン。全時間帯利用可・同伴特典あり。',
+              created_at: '2024/12/15 10:00',
+              updated_at: '2026/01/10 14:30',
+              parent_contract_id: null,
+              parent_contract_name: null,
+              child_contracts: [],
+            },
+          };
+          for (const row of this._rows) {
+            const extras = detailExtras[row.id] ?? {
+              changeability: '可能',
+              previous_contract: null,
+              billing_enabled: true,
+              modifiable: '可能',
+              initial_payment_months: 1,
+              same_day_cancellation: false,
+              family_contract_allowed: false,
+              suspension_monthly_limit: null,
+              usage_schedule: '終日（24時間）',
+              company: null,
+              regulation: null,
+              public_name: row.name,
+              public_description: '',
+              memo: null,
+              usage_hours_by_day: [
+                { day: '月', from: '06:00', to: '23:00', all_day: false },
+                { day: '火', from: '06:00', to: '23:00', all_day: false },
+                { day: '水', from: '06:00', to: '23:00', all_day: false },
+                { day: '木', from: '06:00', to: '23:00', all_day: false },
+                { day: '金', from: '06:00', to: '23:00', all_day: false },
+                { day: '土', from: '08:00', to: '21:00', all_day: false },
+                { day: '日', from: '08:00', to: '21:00', all_day: false },
+              ],
+              accounting_code: 'ACC-000',
+              age_restriction: '16歳以上',
+              gender_restriction: '制限なし',
+              store_range: `全店舗（${row.total_stores}店舗）`,
+              thumbnail_url: null,
+              description: '',
+              created_at: '2024/04/01 10:00',
+              updated_at: '2024/04/01 10:00',
+              parent_contract_id: row.parent_contract_name ? 'MC000' : null,
+              parent_contract_name: row.parent_contract_name ?? null,
+              child_contracts: [],
+            };
+            this._details[row.id] = { ...row, ...extras } as MainContractDetail;
+          }
+        }
+        return this._details[id];
+      },
+      getChangeHistory(id: string): MainContractChangeHistoryItem[] {
+        const defaultHistory: MainContractChangeHistoryItem[] = [
+          {
+            date: '2026/02/28 14:30',
+            user: '管理者A',
+            field: '説明文',
+            from: '全時間帯利用可能な標準的な会員プラン。',
+            to: '全時間帯利用可能な標準的な会員プラン。24時間いつでも全店舗のトレーニング施設を利用できます...',
+          },
+          {
+            date: '2025/10/01 09:00',
+            user: '管理者B',
+            field: '料金（税込）',
+            from: '¥7,150',
+            to: '¥7,700',
+          },
+          {
+            date: '2025/07/01 10:00',
+            user: '管理者C',
+            field: '最低契約期間',
+            from: '1ヶ月',
+            to: '3ヶ月',
+          },
+          {
+            date: '2025/04/01 10:00',
+            user: '管理者A',
+            field: 'ステータス',
+            from: '無効',
+            to: '有効',
+          },
+          { date: '2024/03/15 10:00', user: '管理者A', field: null, from: null, to: '新規作成' },
+        ];
+        if (!this._changeHistory[id]) {
+          this._changeHistory[id] = defaultHistory;
+        }
+        return this._changeHistory[id];
+      },
+      delete(id: string): boolean {
+        this._seed();
+        const idx = this._rows.findIndex((r) => r.id === id);
+        if (idx === -1) return false;
+        this._rows.splice(idx, 1);
+        delete this._details[id];
+        delete this._changeHistory[id];
+        return true;
       },
     },
     optionMasters: {

@@ -34,6 +34,8 @@ import '@/app/api/crm/leaves/[id]/execute-withdrawal/route';
 import '@/app/api/crm/leaves/[id]/reject/route';
 import '@/app/api/crm/leaves/[id]/route';
 import '@/app/api/crm/leaves/route';
+import '@/app/api/crm/main-contracts/[id]/change-history/route';
+import '@/app/api/crm/main-contracts/[id]/route';
 import '@/app/api/crm/main-contracts/route';
 import '@/app/api/crm/members/[id]/basic-info/route';
 import '@/app/api/crm/members/[id]/billing/route';

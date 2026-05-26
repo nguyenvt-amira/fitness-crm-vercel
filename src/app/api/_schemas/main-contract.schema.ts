@@ -165,3 +165,114 @@ export const GetMainContractsResponseSchema = z
 export type MainContractListItem = z.infer<typeof MainContractListItemSchema>;
 export type GetMainContractsQuery = z.infer<typeof GetMainContractsQuerySchema>;
 export type GetMainContractsResponse = z.infer<typeof GetMainContractsResponseSchema>;
+
+// ─────────────────────────────────────────────
+// Detail schemas
+// ─────────────────────────────────────────────
+
+export const UsageHoursByDaySchema = z
+  .object({
+    day: z.string().openapi({ example: '月' }),
+    from: z.string().openapi({ example: '06:00' }),
+    to: z.string().openapi({ example: '23:00' }),
+    all_day: z.boolean(),
+  })
+  .openapi({ title: 'UsageHoursByDay' });
+
+export const MainContractDetailSchema = z
+  .object({
+    id: z.string(),
+    name: z.string(),
+    code: z.string(),
+    old_code: z.string().nullable(),
+    contract_type: MainContractTypeSchema,
+    brand: StoreListBrandSchema,
+    status: MainContractStatusSchema,
+    companion_benefit_enabled: z.boolean(),
+    other_store_usage: MainContractOtherStoreUsageSchema,
+    changeability: z.string(),
+    previous_contract: z.string().nullable(),
+    billing_enabled: z.boolean(),
+    modifiable: z.string(),
+    initial_payment_months: z.number().int(),
+    same_day_cancellation: z.boolean(),
+    family_contract_allowed: z.boolean(),
+    suspension_monthly_limit: z.number().int().nullable(),
+    usage_schedule: z.string(),
+    company: z.string().nullable(),
+    regulation: z.string().nullable(),
+    public_name: z.string(),
+    public_description: z.string(),
+    memo: z.string().nullable(),
+    price_including_tax: z.number(),
+    suspension_fee: z.number(),
+    tax_rate: z.number(),
+    start_date: z.string(),
+    monthly_limit: z.number().int().nullable(),
+    usage_hours_by_day: z.array(UsageHoursByDaySchema),
+    suspendable_months: z.string(),
+    cancellable_months: z.string(),
+    accounting_code: z.string(),
+    age_restriction: z.string(),
+    gender_restriction: z.string(),
+    store_range: z.string(),
+    thumbnail_url: z.string().nullable(),
+    description: z.string(),
+    created_at: z.string(),
+    updated_at: z.string(),
+    active_contracts: z.number().int(),
+    enabled_stores: z.number().int(),
+    total_stores: z.number().int(),
+    target_store_name: z.string().nullable(),
+    parent_contract_id: z.string().nullable(),
+    parent_contract_name: z.string().nullable(),
+    child_contracts: z.array(z.object({ id: z.string(), name: z.string() })),
+  })
+  .openapi({ title: 'MainContractDetail', description: '主契約詳細' });
+
+export const GetMainContractDetailResponseSchema = z
+  .object({ main_contract: MainContractDetailSchema })
+  .openapi({ title: 'GetMainContractDetailResponse' });
+
+export type MainContractDetail = z.infer<typeof MainContractDetailSchema>;
+export type GetMainContractDetailResponse = z.infer<typeof GetMainContractDetailResponseSchema>;
+
+// ─────────────────────────────────────────────
+// Change history schemas
+// ─────────────────────────────────────────────
+
+export const MainContractChangeHistoryItemSchema = z
+  .object({
+    date: z.string().openapi({ example: '2026/02/28 14:30' }),
+    user: z.string().openapi({ example: '管理者A' }),
+    field: z.string().nullable(),
+    from: z.string().nullable(),
+    to: z.string(),
+  })
+  .openapi({ title: 'MainContractChangeHistoryItem' });
+
+export const GetMainContractChangeHistoryResponseSchema = z
+  .object({ history: z.array(MainContractChangeHistoryItemSchema) })
+  .openapi({ title: 'GetMainContractChangeHistoryResponse' });
+
+export type MainContractChangeHistoryItem = z.infer<typeof MainContractChangeHistoryItemSchema>;
+export type GetMainContractChangeHistoryResponse = z.infer<
+  typeof GetMainContractChangeHistoryResponseSchema
+>;
+
+// ─────────────────────────────────────────────
+// Delete schemas
+// ─────────────────────────────────────────────
+
+export const DeleteMainContractRequestSchema = z
+  .object({
+    reason: z.string().min(1, '削除理由は必須です').openapi({ example: '廃止のため' }),
+  })
+  .openapi({ title: 'DeleteMainContractRequest' });
+
+export const DeleteMainContractResponseSchema = z
+  .object({ message: z.string().openapi({ example: '主契約を削除しました' }) })
+  .openapi({ title: 'DeleteMainContractResponse' });
+
+export type DeleteMainContractRequest = z.infer<typeof DeleteMainContractRequestSchema>;
+export type DeleteMainContractResponse = z.infer<typeof DeleteMainContractResponseSchema>;

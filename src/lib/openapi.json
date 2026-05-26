@@ -17342,6 +17342,558 @@
         }
       }
     },
+    "/crm/main-contracts/{id}/change-history": {
+      "get": {
+        "summary": "Get main contract change history",
+        "description": "Get change history for a specific main contract master",
+        "tags": ["Main Contracts"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Main contract ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Change history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "history": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "date": {
+                            "type": "string",
+                            "example": "2026/02/28 14:30"
+                          },
+                          "user": {
+                            "type": "string",
+                            "example": "管理者A"
+                          },
+                          "field": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "from": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "to": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["date", "user", "field", "from", "to"],
+                        "title": "MainContractChangeHistoryItem"
+                      }
+                    }
+                  },
+                  "required": ["history"],
+                  "title": "GetMainContractChangeHistoryResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/main-contracts/{id}": {
+      "get": {
+        "summary": "Get main contract detail",
+        "description": "Get detailed information about a specific main contract master",
+        "tags": ["Main Contracts"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Main contract ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Main contract detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "main_contract": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "code": {
+                          "type": "string"
+                        },
+                        "old_code": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "contract_type": {
+                          "type": "string",
+                          "enum": [
+                            "general",
+                            "oneDay",
+                            "family",
+                            "kids",
+                            "student",
+                            "corporate",
+                            "welfare",
+                            "prepaid",
+                            "special"
+                          ],
+                          "title": "MainContractType",
+                          "description": "主契約タイプ（G-01）"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                          "title": "StoreListBrand",
+                          "description": "Store brand"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "MainContractStatus",
+                          "description": "主契約の有効/無効ステータス"
+                        },
+                        "companion_benefit_enabled": {
+                          "type": "boolean"
+                        },
+                        "other_store_usage": {
+                          "type": "string",
+                          "enum": ["all", "direct", "none"],
+                          "title": "MainContractOtherStoreUsage",
+                          "description": "他店舗利用範囲"
+                        },
+                        "changeability": {
+                          "type": "string"
+                        },
+                        "previous_contract": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "billing_enabled": {
+                          "type": "boolean"
+                        },
+                        "modifiable": {
+                          "type": "string"
+                        },
+                        "initial_payment_months": {
+                          "type": "integer"
+                        },
+                        "same_day_cancellation": {
+                          "type": "boolean"
+                        },
+                        "family_contract_allowed": {
+                          "type": "boolean"
+                        },
+                        "suspension_monthly_limit": {
+                          "type": "integer",
+                          "nullable": true
+                        },
+                        "usage_schedule": {
+                          "type": "string"
+                        },
+                        "company": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "regulation": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "public_name": {
+                          "type": "string"
+                        },
+                        "public_description": {
+                          "type": "string"
+                        },
+                        "memo": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "price_including_tax": {
+                          "type": "number"
+                        },
+                        "suspension_fee": {
+                          "type": "number"
+                        },
+                        "tax_rate": {
+                          "type": "number"
+                        },
+                        "start_date": {
+                          "type": "string"
+                        },
+                        "monthly_limit": {
+                          "type": "integer",
+                          "nullable": true
+                        },
+                        "usage_hours_by_day": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "day": {
+                                "type": "string",
+                                "example": "月"
+                              },
+                              "from": {
+                                "type": "string",
+                                "example": "06:00"
+                              },
+                              "to": {
+                                "type": "string",
+                                "example": "23:00"
+                              },
+                              "all_day": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": ["day", "from", "to", "all_day"],
+                            "title": "UsageHoursByDay"
+                          }
+                        },
+                        "suspendable_months": {
+                          "type": "string"
+                        },
+                        "cancellable_months": {
+                          "type": "string"
+                        },
+                        "accounting_code": {
+                          "type": "string"
+                        },
+                        "age_restriction": {
+                          "type": "string"
+                        },
+                        "gender_restriction": {
+                          "type": "string"
+                        },
+                        "store_range": {
+                          "type": "string"
+                        },
+                        "thumbnail_url": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "created_at": {
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "type": "string"
+                        },
+                        "active_contracts": {
+                          "type": "integer"
+                        },
+                        "enabled_stores": {
+                          "type": "integer"
+                        },
+                        "total_stores": {
+                          "type": "integer"
+                        },
+                        "target_store_name": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "parent_contract_id": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "parent_contract_name": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "child_contracts": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              }
+                            },
+                            "required": ["id", "name"]
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "code",
+                        "old_code",
+                        "contract_type",
+                        "brand",
+                        "status",
+                        "companion_benefit_enabled",
+                        "other_store_usage",
+                        "changeability",
+                        "previous_contract",
+                        "billing_enabled",
+                        "modifiable",
+                        "initial_payment_months",
+                        "same_day_cancellation",
+                        "family_contract_allowed",
+                        "suspension_monthly_limit",
+                        "usage_schedule",
+                        "company",
+                        "regulation",
+                        "public_name",
+                        "public_description",
+                        "memo",
+                        "price_including_tax",
+                        "suspension_fee",
+                        "tax_rate",
+                        "start_date",
+                        "monthly_limit",
+                        "usage_hours_by_day",
+                        "suspendable_months",
+                        "cancellable_months",
+                        "accounting_code",
+                        "age_restriction",
+                        "gender_restriction",
+                        "store_range",
+                        "thumbnail_url",
+                        "description",
+                        "created_at",
+                        "updated_at",
+                        "active_contracts",
+                        "enabled_stores",
+                        "total_stores",
+                        "target_store_name",
+                        "parent_contract_id",
+                        "parent_contract_name",
+                        "child_contracts"
+                      ],
+                      "title": "MainContractDetail",
+                      "description": "主契約詳細"
+                    }
+                  },
+                  "required": ["main_contract"],
+                  "title": "GetMainContractDetailResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a main contract",
+        "description": "Delete a main contract master by ID. Only allowed when active_contracts = 0 and child_contracts is empty.",
+        "tags": ["Main Contracts"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Main contract ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "削除理由",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "廃止のため"
+                  }
+                },
+                "required": ["reason"],
+                "title": "DeleteMainContractRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "主契約を削除しました"
+                    }
+                  },
+                  "required": ["message"],
+                  "title": "DeleteMainContractResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or deletion blocked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/main-contracts": {
       "get": {
         "summary": "Get main contract masters",

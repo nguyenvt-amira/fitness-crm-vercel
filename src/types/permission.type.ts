@@ -65,6 +65,7 @@ export enum Permission {
 
   // Contracts
   ContractsEdit = 'contracts.edit',
+  ContractsDelete = 'contracts.delete',
 }
 
 /** Authenticated user stored in context */

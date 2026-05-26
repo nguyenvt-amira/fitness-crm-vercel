@@ -20,6 +20,12 @@ export const routes = {
     pattern: '/contracts',
     private: true,
   },
+  '/contracts/[id]': {
+    router: (id: string | number) => `/contracts/${id}`,
+    filePath: '(private)/contracts/[id]',
+    pattern: '/contracts/:id',
+    private: true,
+  },
   '/family-registrations': {
     router: '/family-registrations',
     filePath: '(private)/family-registrations',
@@ -177,6 +183,7 @@ export const routeKeys = [
   '/',
   '/403',
   '/contracts',
+  '/contracts/[id]',
   '/family-registrations',
   '/family-registrations/[id]',
   '/family-registrations/dashboard',
@@ -209,6 +216,7 @@ export const routePatterns = [
   '/',
   '/403',
   '/contracts',
+  '/contracts/:id',
   '/family-registrations',
   '/family-registrations/:id',
   '/family-registrations/dashboard',

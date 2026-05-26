@@ -11769,6 +11769,266 @@ export type GetCrmLeavesResponses = {
 
 export type GetCrmLeavesResponse = GetCrmLeavesResponses[keyof GetCrmLeavesResponses];
 
+export type GetCrmMainContractsByIdChangeHistoryData = {
+    body?: never;
+    path: {
+        /**
+         * Main contract ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/main-contracts/{id}/change-history';
+};
+
+export type GetCrmMainContractsByIdChangeHistoryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMainContractsByIdChangeHistoryError = GetCrmMainContractsByIdChangeHistoryErrors[keyof GetCrmMainContractsByIdChangeHistoryErrors];
+
+export type GetCrmMainContractsByIdChangeHistoryResponses = {
+    /**
+     * GetMainContractChangeHistoryResponse
+     *
+     * Change history
+     */
+    200: {
+        history: Array<{
+            date: string;
+            user: string;
+            field: string | null;
+            from: string | null;
+            to: string;
+        }>;
+    };
+};
+
+export type GetCrmMainContractsByIdChangeHistoryResponse = GetCrmMainContractsByIdChangeHistoryResponses[keyof GetCrmMainContractsByIdChangeHistoryResponses];
+
+export type DeleteCrmMainContractsByIdData = {
+    /**
+     * DeleteMainContractRequest
+     *
+     * 削除理由
+     */
+    body?: {
+        reason: string;
+    };
+    path: {
+        /**
+         * Main contract ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/main-contracts/{id}';
+};
+
+export type DeleteCrmMainContractsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type DeleteCrmMainContractsByIdError = DeleteCrmMainContractsByIdErrors[keyof DeleteCrmMainContractsByIdErrors];
+
+export type DeleteCrmMainContractsByIdResponses = {
+    /**
+     * DeleteMainContractResponse
+     *
+     * Deleted successfully
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type DeleteCrmMainContractsByIdResponse = DeleteCrmMainContractsByIdResponses[keyof DeleteCrmMainContractsByIdResponses];
+
+export type GetCrmMainContractsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Main contract ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/main-contracts/{id}';
+};
+
+export type GetCrmMainContractsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmMainContractsByIdError = GetCrmMainContractsByIdErrors[keyof GetCrmMainContractsByIdErrors];
+
+export type GetCrmMainContractsByIdResponses = {
+    /**
+     * GetMainContractDetailResponse
+     *
+     * Main contract detail
+     */
+    200: {
+        /**
+         * MainContractDetail
+         *
+         * 主契約詳細
+         */
+        main_contract: {
+            id: string;
+            name: string;
+            code: string;
+            old_code: string | null;
+            /**
+             * MainContractType
+             *
+             * 主契約タイプ（G-01）
+             */
+            contract_type: 'general' | 'oneDay' | 'family' | 'kids' | 'student' | 'corporate' | 'welfare' | 'prepaid' | 'special';
+            /**
+             * StoreListBrand
+             *
+             * Store brand
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * MainContractStatus
+             *
+             * 主契約の有効/無効ステータス
+             */
+            status: 'active' | 'inactive';
+            companion_benefit_enabled: boolean;
+            /**
+             * MainContractOtherStoreUsage
+             *
+             * 他店舗利用範囲
+             */
+            other_store_usage: 'all' | 'direct' | 'none';
+            changeability: string;
+            previous_contract: string | null;
+            billing_enabled: boolean;
+            modifiable: string;
+            initial_payment_months: number;
+            same_day_cancellation: boolean;
+            family_contract_allowed: boolean;
+            suspension_monthly_limit: number | null;
+            usage_schedule: string;
+            company: string | null;
+            regulation: string | null;
+            public_name: string;
+            public_description: string;
+            memo: string | null;
+            price_including_tax: number;
+            suspension_fee: number;
+            tax_rate: number;
+            start_date: string;
+            monthly_limit: number | null;
+            usage_hours_by_day: Array<{
+                day: string;
+                from: string;
+                to: string;
+                all_day: boolean;
+            }>;
+            suspendable_months: string;
+            cancellable_months: string;
+            accounting_code: string;
+            age_restriction: string;
+            gender_restriction: string;
+            store_range: string;
+            thumbnail_url: string | null;
+            description: string;
+            created_at: string;
+            updated_at: string;
+            active_contracts: number;
+            enabled_stores: number;
+            total_stores: number;
+            target_store_name: string | null;
+            parent_contract_id: string | null;
+            parent_contract_name: string | null;
+            child_contracts: Array<{
+                id: string;
+                name: string;
+            }>;
+        };
+    };
+};
+
+export type GetCrmMainContractsByIdResponse = GetCrmMainContractsByIdResponses[keyof GetCrmMainContractsByIdResponses];
+
 export type GetCrmMainContractsData = {
     body?: never;
     path?: never;
