@@ -81,5 +81,10 @@ import '@/app/api/crm/stores/[id]/options/[optionId]/route';
 import '@/app/api/crm/stores/[id]/options/route';
 import '@/app/api/crm/stores/[id]/route';
 import '@/app/api/crm/stores/route';
+import '@/app/api/crm/transfers/[id]/approve/route';
+import '@/app/api/crm/transfers/[id]/reject/route';
+import '@/app/api/crm/transfers/[id]/route';
+// Import transfers routes
+import '@/app/api/crm/transfers/route';
 
 // Add more route imports here as you register them with OpenAPI
