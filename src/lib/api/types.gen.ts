@@ -8631,6 +8631,53 @@ export type LeaveErrorResponse = {
     error: string;
 };
 
+/**
+ * BlacklistRegistrationSource
+ *
+ * How the member was added to the blacklist: forced_withdrawal=強制退会, manual=手動登録
+ */
+export const BlacklistRegistrationSource = { FORCED_WITHDRAWAL: 'forced_withdrawal', MANUAL: 'manual' } as const;
+
+/**
+ * BlacklistRegistrationSource
+ *
+ * How the member was added to the blacklist: forced_withdrawal=強制退会, manual=手動登録
+ */
+export type BlacklistRegistrationSource = typeof BlacklistRegistrationSource[keyof typeof BlacklistRegistrationSource];
+
+/**
+ * BlacklistManualReason
+ *
+ * Reason for manual blacklist registration: nuisance=迷惑行為, unpaid=未納金, fraudulent_use=不正利用, other=その他
+ */
+export const BlacklistManualReason = {
+    NUISANCE: 'nuisance',
+    UNPAID: 'unpaid',
+    FRAUDULENT_USE: 'fraudulent_use',
+    OTHER: 'other'
+} as const;
+
+/**
+ * BlacklistManualReason
+ *
+ * Reason for manual blacklist registration: nuisance=迷惑行為, unpaid=未納金, fraudulent_use=不正利用, other=その他
+ */
+export type BlacklistManualReason = typeof BlacklistManualReason[keyof typeof BlacklistManualReason];
+
+/**
+ * UnpaidFilter
+ *
+ * Unpaid amount filter: has_debt=未納金あり, no_debt=未納金なし
+ */
+export const UnpaidFilter = { HAS_DEBT: 'has_debt', NO_DEBT: 'no_debt' } as const;
+
+/**
+ * UnpaidFilter
+ *
+ * Unpaid amount filter: has_debt=未納金あり, no_debt=未納金なし
+ */
+export type UnpaidFilter = typeof UnpaidFilter[keyof typeof UnpaidFilter];
+
 export type PostAuthLoginData = {
     /**
      * LoginRequest
@@ -9329,6 +9376,336 @@ export type PutCrmAutoApprovalSettingsResponses = {
 };
 
 export type PutCrmAutoApprovalSettingsResponse = PutCrmAutoApprovalSettingsResponses[keyof PutCrmAutoApprovalSettingsResponses];
+
+export type GetCrmBlacklistByIdData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/crm/blacklist/{id}';
+};
+
+export type GetCrmBlacklistByIdErrors = {
+    /**
+     * BlacklistErrorResponse
+     *
+     * Not found
+     */
+    404: {
+        error: string;
+    };
+};
+
+export type GetCrmBlacklistByIdError = GetCrmBlacklistByIdErrors[keyof GetCrmBlacklistByIdErrors];
+
+export type GetCrmBlacklistByIdResponses = {
+    /**
+     * GetBlacklistByIdResponse
+     *
+     * Blacklist entry detail
+     */
+    200: {
+        /**
+         * BlacklistDetail
+         */
+        blacklist: {
+            /**
+             * ブラックリストID
+             */
+            id: string;
+            /**
+             * 会員番号
+             */
+            memberId: string;
+            /**
+             * 会員氏名
+             */
+            memberName: string;
+            /**
+             * 店舗名
+             */
+            storeName: string;
+            /**
+             * BlacklistRegistrationSource
+             *
+             * How the member was added to the blacklist: forced_withdrawal=強制退会, manual=手動登録
+             */
+            registrationSource: 'forced_withdrawal' | 'manual';
+            /**
+             * BlacklistManualReason
+             *
+             * 手動登録理由（forced_withdrawalの場合はnull）
+             */
+            manualReason: 'nuisance' | 'unpaid' | 'fraudulent_use' | 'other' | null;
+            /**
+             * 未納金額（円）
+             */
+            unpaidAmount: number;
+            /**
+             * 登録日時（ISO 8601）
+             */
+            registeredAt: string;
+            /**
+             * メモ
+             */
+            memo: string | null;
+            /**
+             * 登録者名
+             */
+            registeredBy: string;
+            /**
+             * MatchConditions
+             */
+            matchConditions: {
+                /**
+                 * 氏名＆生年月日一致
+                 */
+                nameAndBirthdate: boolean;
+                /**
+                 * メール一致
+                 */
+                email: boolean;
+                /**
+                 * 電話一致
+                 */
+                phone: boolean;
+                /**
+                 * 住所一致
+                 */
+                address: boolean;
+            };
+        };
+    };
+};
+
+export type GetCrmBlacklistByIdResponse = GetCrmBlacklistByIdResponses[keyof GetCrmBlacklistByIdResponses];
+
+export type GetCrmBlacklistData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * 会員番号・氏名で検索
+         */
+        search?: string;
+        /**
+         * BlacklistRegistrationSource
+         *
+         * 登録理由フィルター
+         */
+        reason?: 'forced_withdrawal' | 'manual';
+        /**
+         * UnpaidFilter
+         *
+         * 未納金フィルター
+         */
+        unpaid?: 'has_debt' | 'no_debt';
+        /**
+         * ページ番号
+         */
+        page?: string;
+        /**
+         * 1ページあたりの件数
+         */
+        limit?: string;
+    };
+    url: '/crm/blacklist';
+};
+
+export type GetCrmBlacklistErrors = {
+    /**
+     * BlacklistErrorResponse
+     *
+     * Bad request
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * BlacklistErrorResponse
+     *
+     * Internal server error
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type GetCrmBlacklistError = GetCrmBlacklistErrors[keyof GetCrmBlacklistErrors];
+
+export type GetCrmBlacklistResponses = {
+    /**
+     * GetBlacklistResponse
+     *
+     * Blacklist entries
+     */
+    200: {
+        blacklist: Array<{
+            /**
+             * ブラックリストID
+             */
+            id: string;
+            /**
+             * 会員番号
+             */
+            memberId: string;
+            /**
+             * 会員氏名
+             */
+            memberName: string;
+            /**
+             * 店舗名
+             */
+            storeName: string;
+            /**
+             * BlacklistRegistrationSource
+             *
+             * How the member was added to the blacklist: forced_withdrawal=強制退会, manual=手動登録
+             */
+            registrationSource: 'forced_withdrawal' | 'manual';
+            /**
+             * BlacklistManualReason
+             *
+             * 手動登録理由（forced_withdrawalの場合はnull）
+             */
+            manualReason: 'nuisance' | 'unpaid' | 'fraudulent_use' | 'other' | null;
+            /**
+             * 未納金額（円）
+             */
+            unpaidAmount: number;
+            /**
+             * 登録日時（ISO 8601）
+             */
+            registeredAt: string;
+            /**
+             * メモ
+             */
+            memo: string | null;
+        }>;
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmBlacklistResponse = GetCrmBlacklistResponses[keyof GetCrmBlacklistResponses];
+
+export type PostCrmBlacklistData = {
+    /**
+     * PostBlacklistBody
+     *
+     * Blacklist registration request body
+     */
+    body?: {
+        /**
+         * 会員番号
+         */
+        memberId: string;
+        /**
+         * 会員氏名
+         */
+        memberName: string;
+        /**
+         * 店舗名（任意）
+         */
+        storeName?: string;
+        /**
+         * BlacklistManualReason
+         *
+         * 登録理由
+         */
+        reason: 'nuisance' | 'unpaid' | 'fraudulent_use' | 'other';
+        /**
+         * メモ（任意）
+         */
+        memo?: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/blacklist';
+};
+
+export type PostCrmBlacklistErrors = {
+    /**
+     * BlacklistErrorResponse
+     *
+     * Bad request
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * BlacklistErrorResponse
+     *
+     * Internal server error
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type PostCrmBlacklistError = PostCrmBlacklistErrors[keyof PostCrmBlacklistErrors];
+
+export type PostCrmBlacklistResponses = {
+    /**
+     * PostBlacklistResponse
+     *
+     * Entry created
+     */
+    201: {
+        /**
+         * BlacklistItem
+         */
+        blacklist: {
+            /**
+             * ブラックリストID
+             */
+            id: string;
+            /**
+             * 会員番号
+             */
+            memberId: string;
+            /**
+             * 会員氏名
+             */
+            memberName: string;
+            /**
+             * 店舗名
+             */
+            storeName: string;
+            /**
+             * BlacklistRegistrationSource
+             *
+             * How the member was added to the blacklist: forced_withdrawal=強制退会, manual=手動登録
+             */
+            registrationSource: 'forced_withdrawal' | 'manual';
+            /**
+             * BlacklistManualReason
+             *
+             * 手動登録理由（forced_withdrawalの場合はnull）
+             */
+            manualReason: 'nuisance' | 'unpaid' | 'fraudulent_use' | 'other' | null;
+            /**
+             * 未納金額（円）
+             */
+            unpaidAmount: number;
+            /**
+             * 登録日時（ISO 8601）
+             */
+            registeredAt: string;
+            /**
+             * メモ
+             */
+            memo: string | null;
+        };
+    };
+};
+
+export type PostCrmBlacklistResponse = PostCrmBlacklistResponses[keyof PostCrmBlacklistResponses];
 
 export type GetCrmBrandsData = {
     body?: never;

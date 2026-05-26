@@ -2,6 +2,7 @@
  * Shared in-memory mock database for all CRM API routes.
  * All APIs should read/update data through this module so list and detail stay in sync.
  */
+import { type BlacklistDetail } from '@/app/api/_schemas/blacklist.schema';
 import type { BrandItem } from '@/app/api/_schemas/brand.schema';
 import type {
   EkycResult,
@@ -41,6 +42,7 @@ import type {
 } from '@/types/api/membership-application.type';
 
 export type TransferRow = TransferDetail;
+export type BlacklistRow = BlacklistDetail;
 
 export enum TransferStatus {
   Pending = 'pending', // 申請中
@@ -937,6 +939,14 @@ type DbType = {
     cancelWithdrawal(id: string, comment?: string): LeaveDetail | undefined;
     executeWithdrawal(id: string, comment?: string): LeaveDetail | undefined;
   };
+  memberBlacklist: {
+    _rows: BlacklistRow[];
+    _seeded: boolean;
+    _seed(): void;
+    getList(): BlacklistRow[];
+    getById(id: string): BlacklistRow | undefined;
+    create(input: Omit<BlacklistRow, 'id' | 'registeredAt'>): BlacklistRow;
+  };
 };
 
 declare global {
@@ -1829,7 +1839,7 @@ function createDb() {
                   'withdrawn',
                   'gate_stop',
                   'pending_withdrawal',
-                  'active',
+                  'force_withdrawn',
                 ] as MemberProfile['status'][]
               )[i % 6],
               contract_type: resolveContractTypeFromMemberType(memberType),
@@ -4812,6 +4822,96 @@ function createDb() {
         if (!detail) return undefined;
         if (detail.status !== 'withdrawal_pending') return undefined;
         return this._updateDetail(id, { status: 'completed' });
+      },
+    },
+    memberBlacklist: {
+      _rows: [] as BlacklistRow[],
+      _seeded: false,
+      _seed() {
+        if (this._seeded) return;
+        this._seeded = true;
+        db.members._seed();
+
+        const forceWithdrawn = db.members._members.filter(
+          (m) => m.profile.status === MemberStatus.FORCE_WITHDRAWN,
+        );
+        const withdrawn = db.members._members.filter(
+          (m) => m.profile.status === MemberStatus.WITHDRAWN,
+        );
+
+        const manualReasons: BlacklistRow['manualReason'][] = [
+          'nuisance',
+          'unpaid',
+          'fraudulent_use',
+          'other',
+        ];
+
+        const baseDate = new Date('2026-01-01');
+
+        forceWithdrawn.forEach((m, i) => {
+          const registeredAt = new Date(baseDate);
+          registeredAt.setDate(registeredAt.getDate() + i * 14);
+          this._rows.push({
+            id: `BL-FW-${String(i + 1).padStart(3, '0')}`,
+            memberId: m.basic_info.member_number,
+            memberName: m.basic_info.name_kanji,
+            storeName: m.profile.store_name,
+            registrationSource: 'forced_withdrawal',
+            manualReason: null,
+            unpaidAmount: i % 3 === 0 ? (i + 1) * 3300 : 0,
+            registeredAt: registeredAt.toISOString(),
+            memo: null,
+            registeredBy: 'System',
+            matchConditions: {
+              nameAndBirthdate: true,
+              email: i % 2 === 0,
+              phone: i % 3 !== 0,
+              address: i % 4 === 0,
+            },
+          });
+        });
+
+        const staffNames = ['佐藤 花子', '鈴木 次郎', '高橋 美咲', '田中 健一', '伊藤 直子'];
+        withdrawn.slice(0, 5).forEach((m, i) => {
+          const registeredAt = new Date(baseDate);
+          registeredAt.setDate(registeredAt.getDate() + i * 21 + 7);
+          this._rows.push({
+            id: `BL-MN-${String(i + 1).padStart(3, '0')}`,
+            memberId: m.basic_info.member_number,
+            memberName: m.basic_info.name_kanji,
+            storeName: m.profile.store_name,
+            registrationSource: 'manual',
+            manualReason: manualReasons[i % manualReasons.length]!,
+            unpaidAmount: i % 2 === 0 ? (i + 1) * 1100 : 0,
+            registeredAt: registeredAt.toISOString(),
+            memo: i % 2 === 0 ? '手動登録済み' : null,
+            registeredBy: staffNames[i % staffNames.length]!,
+            matchConditions: {
+              nameAndBirthdate: i % 2 === 0,
+              email: i % 3 !== 0,
+              phone: true,
+              address: i % 2 !== 0,
+            },
+          });
+        });
+      },
+      getList(): BlacklistRow[] {
+        this._seed();
+        return this._rows;
+      },
+      getById(id: string): BlacklistRow | undefined {
+        this._seed();
+        return this._rows.find((r) => r.id === id);
+      },
+      create(input: Omit<BlacklistRow, 'id' | 'registeredAt'>): BlacklistRow {
+        this._seed();
+        const newRow: BlacklistRow = {
+          ...input,
+          id: `BL-${Date.now()}`,
+          registeredAt: new Date().toISOString(),
+        };
+        this._rows.push(newRow);
+        return newRow;
       },
     },
   };

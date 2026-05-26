@@ -8,6 +8,9 @@ import '@/app/api/auth/refresh/route';
 import '@/app/api/crm/auto-approval/dashboard/route';
 // Import auto-approval routes
 import '@/app/api/crm/auto-approval/settings/route';
+import '@/app/api/crm/blacklist/[id]/route';
+// Blacklist (A-01 FR-015)
+import '@/app/api/crm/blacklist/route';
 // Brand master (Y-07) — OpenAPI tag: Brands
 import '@/app/api/crm/brands/route';
 import '@/app/api/crm/family-registrations/[id]/approve/route';
