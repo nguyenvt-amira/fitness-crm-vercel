@@ -8,6 +8,7 @@ import type {
   FamilyRegistrationStatus,
   FamilyRelationship,
 } from '@/app/api/_schemas/family-registration.schema';
+import type { LeaveDetail, LeaveListItem } from '@/app/api/_schemas/leave.schema';
 import type { MainContractListItem } from '@/app/api/_schemas/main-contract.schema';
 import type {
   ContractType,
@@ -923,6 +924,18 @@ type DbType = {
     getById(id: string): TransferRow | undefined;
     approve(id: string, comment?: string): TransferRow | undefined;
     reject(id: string, comment?: string): TransferRow | undefined;
+  };
+  memberLeaves: {
+    _rows: LeaveListItem[];
+    _details: Record<string, LeaveDetail>;
+    _seeded: boolean;
+    _seed(): void;
+    list(): LeaveListItem[];
+    getById(id: string): LeaveDetail | undefined;
+    approve(id: string, comment?: string): LeaveDetail | undefined;
+    reject(id: string, reason: string): LeaveDetail | undefined;
+    cancelWithdrawal(id: string, comment?: string): LeaveDetail | undefined;
+    executeWithdrawal(id: string, comment?: string): LeaveDetail | undefined;
   };
 };
 
@@ -4558,6 +4571,247 @@ function createDb() {
         const updated: TransferRow = { ...row, status: TransferStatus.Rejected, updated_at: now };
         this._rows[idx] = updated;
         return updated;
+      },
+    },
+    memberLeaves: {
+      _rows: [] as LeaveListItem[],
+      _details: {} as Record<string, LeaveDetail>,
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        db.members._seed();
+
+        const targetStatuses = new Set<string>([
+          MemberStatus.SUSPENDED,
+          MemberStatus.PENDING_WITHDRAWAL,
+          MemberStatus.WITHDRAWN,
+          MemberStatus.FORCE_WITHDRAWN,
+        ]);
+
+        const candidates = db.members._members.filter((m) => targetStatuses.has(m.profile.status));
+
+        // Deterministic date helpers
+        const baseDate = new Date('2026-01-01');
+        const toJpDate = (d: Date): string =>
+          `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+        const toJpMonth = (d: Date): string =>
+          `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}`;
+
+        this._rows = candidates.map((m, i) => {
+          const memberStatus = m.profile.status;
+          const appliedDate = new Date(baseDate);
+          appliedDate.setDate(appliedDate.getDate() + i * 7);
+
+          const scheduledDate = new Date(appliedDate);
+          scheduledDate.setDate(scheduledDate.getDate() + 14);
+
+          let leaveStatus: LeaveListItem['status'];
+          let leaveType: LeaveListItem['type'];
+          let endDate: string | null = null;
+          let unpaidAmount = 0;
+
+          if (memberStatus === MemberStatus.SUSPENDED) {
+            leaveType = 'suspension';
+            leaveStatus = i % 2 === 0 ? 'suspended' : 'suspension_scheduled';
+            const endD = new Date(scheduledDate);
+            endD.setMonth(endD.getMonth() + 2);
+            endDate = toJpMonth(endD);
+            unpaidAmount = i % 5 === 0 ? 1100 * ((i % 3) + 1) : 0;
+          } else if (memberStatus === MemberStatus.PENDING_WITHDRAWAL) {
+            leaveType = 'withdrawal';
+            leaveStatus = 'withdrawal_pending';
+            unpaidAmount = i % 3 === 0 ? 7700 : 0;
+          } else if (memberStatus === MemberStatus.WITHDRAWN) {
+            leaveType = 'withdrawal';
+            leaveStatus = i % 2 === 0 ? 'withdrawal_scheduled' : 'withdrawal_pending';
+            unpaidAmount = 0;
+          } else {
+            // FORCE_WITHDRAWN
+            leaveType = 'withdrawal';
+            leaveStatus = 'completed';
+            unpaidAmount = 0;
+          }
+
+          const scheduledDateStr =
+            leaveType === 'suspension' ? toJpMonth(scheduledDate) : toJpDate(scheduledDate);
+
+          return {
+            id: `LV-${String(i + 1).padStart(3, '0')}`,
+            member_id: m.basic_info.id,
+            member_name: m.basic_info.name_kanji,
+            brand: m.profile.brand,
+            store_id: m.profile.store_id,
+            store_name: m.profile.store_name,
+            type: leaveType,
+            status: leaveStatus,
+            applied_at: toJpDate(appliedDate),
+            scheduled_date: scheduledDateStr,
+            end_date: endDate,
+            unpaid_amount: unpaidAmount,
+          } satisfies LeaveListItem;
+        });
+
+        // Build detail records from list rows
+        const consentMethods = ['来店', 'オンライン', '電話'];
+        this._rows.forEach((row, i) => {
+          const appliedDateTime = `${row.applied_at} ${String(9 + (i % 8)).padStart(2, '0')}:${String((i * 7) % 60).padStart(2, '0')}`;
+          const isProxy = i % 3 === 0;
+          this._details[row.id] = {
+            id: row.id,
+            member_id: row.member_id,
+            member_name: row.member_name,
+            brand: row.brand,
+            store_id: row.store_id,
+            store_name: row.store_name,
+            type: row.type,
+            status: row.status,
+            applied_at: appliedDateTime,
+            scheduled_date: row.scheduled_date,
+            end_date: row.end_date,
+            reason: [
+              '海外出張のため',
+              '体調不良のため',
+              '育児のため',
+              '経済的理由のため',
+              '転居のため',
+            ][i % 5]!,
+            applicant: isProxy ? `${row.member_name}（本人）` : `${row.member_name}（本人）`,
+            is_proxy_applied: isProxy,
+            proxy_applicant: isProxy ? `スタッフ${i + 1}（スタッフ）` : null,
+            consent_at: isProxy
+              ? `${row.applied_at} ${String(9 + (i % 8)).padStart(2, '0')}:00`
+              : null,
+            consent_method: isProxy ? (consentMethods[i % 3] ?? '来店') : null,
+            suspension_fee: row.type === 'suspension' ? 1100 : null,
+            applied_campaign: 'なし',
+            unused_lessons: (i * 2) % 5,
+            unpaid_amount: row.unpaid_amount,
+            created_at: appliedDateTime,
+            updated_at: appliedDateTime,
+          } satisfies LeaveDetail;
+        });
+      },
+      list(): LeaveListItem[] {
+        this._seed();
+        return this._rows;
+      },
+      getById(id: string): LeaveDetail | undefined {
+        this._seed();
+        return this._details[id];
+      },
+      _updateDetail(id: string, patch: Partial<LeaveDetail>): LeaveDetail | undefined {
+        const detail = this._details[id];
+        if (!detail) return undefined;
+        const now = new Date()
+          .toLocaleString('ja-JP', {
+            timeZone: 'Asia/Tokyo',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+          })
+          .replace(/\//g, '/')
+          .replace(',', '');
+        const updated: LeaveDetail = { ...detail, ...patch, updated_at: now };
+        this._details[id] = updated;
+        // Sync list row status
+        const listIdx = this._rows.findIndex((r) => r.id === id);
+        if (listIdx !== -1 && patch.status) {
+          this._rows[listIdx] = { ...this._rows[listIdx]!, status: patch.status };
+        }
+        // Sync member status if needed
+        if (patch.status && updated.member_id) {
+          const memberIdx = db.members._members.findIndex(
+            (m) => m.basic_info.id === updated.member_id,
+          );
+          if (memberIdx !== -1) {
+            let memberStatus: MemberStatus | null = null;
+            if (patch.status === 'suspended') memberStatus = 'suspended';
+            else if (patch.status === 'suspension_scheduled') memberStatus = 'active';
+            else if (patch.status === 'withdrawal_pending') memberStatus = 'pending_withdrawal';
+            else if (patch.status === 'completed') memberStatus = 'force_withdrawn';
+            if (memberStatus) {
+              db.members._members[memberIdx] = {
+                ...db.members._members[memberIdx]!,
+                profile: {
+                  ...db.members._members[memberIdx]!.profile,
+                  status: memberStatus,
+                },
+              };
+            }
+          }
+        }
+        return updated;
+      },
+      approve(id: string, _comment?: string): LeaveDetail | undefined {
+        this._seed();
+        const detail = this._details[id];
+        if (!detail) return undefined;
+        let nextStatus: LeaveDetail['status'] | null = null;
+        if (detail.type === 'suspension' && detail.status === 'suspension_scheduled') {
+          nextStatus = 'suspended';
+        } else if (detail.type === 'withdrawal' && detail.status === 'withdrawal_scheduled') {
+          nextStatus = 'withdrawal_pending';
+        } else {
+          return undefined; // invalid transition
+        }
+        return this._updateDetail(id, { status: nextStatus });
+      },
+      reject(id: string, _reason: string): LeaveDetail | undefined {
+        this._seed();
+        const detail = this._details[id];
+        if (!detail) return undefined;
+        const canReject =
+          detail.status === 'suspension_scheduled' || detail.status === 'withdrawal_scheduled';
+        if (!canReject) return undefined;
+        // On reject: revert member to active, remove the leave record from active list
+        const nextStatus: LeaveDetail['status'] = 'completed'; // mark as completed (rejected)
+        const updated = this._updateDetail(id, { status: nextStatus });
+        // Revert member to active
+        if (updated?.member_id) {
+          const memberIdx = db.members._members.findIndex(
+            (m) => m.basic_info.id === updated.member_id,
+          );
+          if (memberIdx !== -1) {
+            db.members._members[memberIdx] = {
+              ...db.members._members[memberIdx]!,
+              profile: {
+                ...db.members._members[memberIdx]!.profile,
+                status: 'active',
+              },
+            };
+          }
+        }
+        return updated;
+      },
+      cancelWithdrawal(id: string, _comment?: string): LeaveDetail | undefined {
+        this._seed();
+        const detail = this._details[id];
+        if (!detail) return undefined;
+        if (detail.status !== 'withdrawal_scheduled') return undefined;
+        // Cancel: revert to active
+        const updated = this._updateDetail(id, { status: 'completed' });
+        if (updated?.member_id) {
+          const memberIdx = db.members._members.findIndex(
+            (m) => m.basic_info.id === updated.member_id,
+          );
+          if (memberIdx !== -1) {
+            db.members._members[memberIdx] = {
+              ...db.members._members[memberIdx]!,
+              profile: { ...db.members._members[memberIdx]!.profile, status: 'active' },
+            };
+          }
+        }
+        return updated;
+      },
+      executeWithdrawal(id: string, _comment?: string): LeaveDetail | undefined {
+        this._seed();
+        const detail = this._details[id];
+        if (!detail) return undefined;
+        if (detail.status !== 'withdrawal_pending') return undefined;
+        return this._updateDetail(id, { status: 'completed' });
       },
     },
   };

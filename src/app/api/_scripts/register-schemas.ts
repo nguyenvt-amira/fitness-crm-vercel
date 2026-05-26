@@ -7,6 +7,7 @@ import * as authSchemas from '../_schemas/auth.schema';
 import * as autoApprovalSchemas from '../_schemas/auto-approval.schema';
 import * as brandSchemas from '../_schemas/brand.schema';
 import * as familyRegistrationSchemas from '../_schemas/family-registration.schema';
+import * as leaveSchemas from '../_schemas/leave.schema';
 import * as memberSchemas from '../_schemas/member.schema';
 import * as membershipApplicationSchemas from '../_schemas/membership-application.schema';
 import * as positionSchemas from '../_schemas/position.schema';
@@ -879,5 +880,31 @@ export function registerAllSchemas() {
   registeredSchemaMap.set(
     'DeleteStaffResponse',
     registry.register('DeleteStaffResponse', staffSchemas.DeleteStaffResponseSchema),
+  );
+
+  // Register leave schemas
+  registeredSchemaMap.set(
+    'LeaveType',
+    registry.register('LeaveType', leaveSchemas.LeaveTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'LeaveStatus',
+    registry.register('LeaveStatus', leaveSchemas.LeaveStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'LeaveListItem',
+    registry.register('LeaveListItem', leaveSchemas.LeaveListItemSchema),
+  );
+  registeredSchemaMap.set(
+    'GetLeavesQuery',
+    registry.register('GetLeavesQuery', leaveSchemas.GetLeavesQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'GetLeavesResponse',
+    registry.register('GetLeavesResponse', leaveSchemas.GetLeavesResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'LeaveErrorResponse',
+    registry.register('LeaveErrorResponse', leaveSchemas.ErrorResponseSchema),
   );
 }
