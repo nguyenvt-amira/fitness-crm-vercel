@@ -5,10 +5,6 @@ import { ErrorResponseSchema } from '@/app/api/_schemas/auth.schema';
 import {
   GetApplicationDetailResponse,
   GetApplicationDetailResponseSchema,
-  type UpdateMembershipApplicationRequest,
-  UpdateMembershipApplicationRequestSchema,
-  type UpdateMembershipApplicationResponse,
-  UpdateMembershipApplicationResponseSchema,
 } from '@/app/api/_schemas/membership-application.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
 
@@ -47,50 +43,6 @@ registerRoute({
   ],
 });
 
-registerRoute({
-  method: 'patch',
-  path: '/crm/membership-applications/{id}',
-  summary: 'Update membership application detail',
-  description:
-    'Edit membership application data (basic info, contacts, contract). Immutable fields are ignored.',
-  tags: ['Membership Applications'],
-  parameters: [
-    {
-      name: 'id',
-      in: 'path',
-      required: true,
-      description: 'Membership application ID',
-      schema: { type: 'string' },
-    },
-  ],
-  requestBody: {
-    schema: UpdateMembershipApplicationRequestSchema,
-    description: 'Editable membership application fields',
-  },
-  responses: [
-    {
-      status: 200,
-      schema: UpdateMembershipApplicationResponseSchema,
-      description: 'Application updated successfully',
-    },
-    {
-      status: 400,
-      schema: ErrorResponseSchema,
-      description: 'Bad request - invalid request body',
-    },
-    {
-      status: 404,
-      schema: ErrorResponseSchema,
-      description: 'Application not found',
-    },
-    {
-      status: 500,
-      schema: ErrorResponseSchema,
-      description: 'Internal server error',
-    },
-  ],
-});
-
 // GET /api/crm/membership-applications/{id} - 詳細取得
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -101,111 +53,56 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'Application not found' }, { status: 404 });
     }
 
-    const details = db.membershipApplications.getDetails(id);
+    const details = db.membershipApplications.getDetails(id) as Record<string, unknown>;
 
     const response: GetApplicationDetailResponse = {
       application: {
         ...application,
-        ...(details as any),
-        payment_method: 'クレジットカード',
-        payment_status: 'pending',
-        risk_details: [
+        applicant_kana: (details.applicant_kana as string) ?? 'ヤマダ タロウ',
+        birth_date: (details.birth_date as string) ?? '1990/01/15',
+        age: (details.age as number) ?? 36,
+        gender_label: (details.gender_label as string) ?? '男性',
+        phone: (details.phone as string) ?? '090-****-5678',
+        phone_real: (details.phone_real as string) ?? '090-1234-5678',
+        email_masked: (details.email_masked as string) ?? 'ya***@example.jp',
+        email_real: (details.email_real as string) ?? 'yamada@example.jp',
+        address: (details.address as string) ?? '東京都渋谷区***',
+        address_real: (details.address_real as string) ?? '東京都渋谷区1-2-3',
+        blacklist_conditions: (details.blacklist_conditions as string[]) ?? [],
+        usage_start_date:
+          (details.usage_start_date as string) ?? application.start_date.replaceAll('-', '/'),
+        monthly_fee: (details.monthly_fee as number) ?? 7700,
+        options: (details.options as string[]) ?? [],
+        fee_rows: (details.fee_rows as { label: string; amount: number }[]) ?? [],
+        payment_method: (details.payment_method as string) ?? 'クレジットカード',
+        card_last4: (details.card_last4 as string) ?? '1234',
+        application_source: (details.application_source as string) ?? 'アプリ',
+        updated_at: (details.updated_at as string) ?? '2026/03/30 09:20',
+        is_minor: application.is_minor ?? false,
+        parental_consent: (details.parental_consent as boolean) ?? false,
+        is_proxy: application.is_proxy ?? false,
+        proxy_applicant: details.proxy_applicant as string | undefined,
+        agreement_date: details.agreement_date as string | undefined,
+        approved_by: details.approved_by as string | undefined,
+        approved_at: details.approved_at as string | undefined,
+        rejected_by: details.rejected_by as string | undefined,
+        rejected_at: details.rejected_at as string | undefined,
+        rejected_reason: details.rejected_reason as string | undefined,
+        timeline: (details.timeline as GetApplicationDetailResponse['application']['timeline']) ?? [
           {
-            reason: application.risk_reason,
-            score: application.risk_score,
-            description: 'リスク詳細の説明',
+            id: 'tl-default-1',
+            kind: 'system',
+            date: '2026/03/30 09:15',
+            operator: 'システム',
+            content: '申請受付（アプリ経由）',
           },
         ],
-        documents: [
-          { type: '身分証明書', url: '/documents/identity.jpg', verified: true },
-          { type: '顔写真', url: '/documents/photo.jpg', verified: true },
-        ],
-        contract_details: {
-          plan_id: details?.contract_details?.plan_id ?? 'plan-001',
-          plan_name: details?.contract_details?.plan_name ?? application.plan_name,
-          start_date: details?.contract_details?.start_date ?? application.scheduled_start_date,
-          monthly_fee: 5000,
-          contract_period: 12,
-          option_ids: details?.contract_details?.option_ids ?? [],
-        } as any,
-        ekyc: (details as any)?.ekyc,
       },
     };
+
     return NextResponse.json(response);
   } catch (error) {
     console.error('Error fetching application detail:', error);
     return NextResponse.json({ error: 'Failed to fetch application detail' }, { status: 500 });
-  }
-}
-
-// PATCH /api/crm/membership-applications/{id} - 編集
-export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const { id } = await params;
-    const existing = db.membershipApplications.getById(id);
-    if (!existing) {
-      return NextResponse.json({ error: 'Application not found' }, { status: 404 });
-    }
-
-    const body = await request.json();
-    const validationResult = UpdateMembershipApplicationRequestSchema.safeParse(body);
-    if (!validationResult.success) {
-      const errors = validationResult.error.issues.map((issue) => issue.message).join(', ');
-      return NextResponse.json({ error: errors }, { status: 400 });
-    }
-
-    const validatedBody: UpdateMembershipApplicationRequest = validationResult.data;
-
-    // Update base list fields where applicable
-    if (validatedBody.basic?.applicant_name) {
-      // Keep list view in sync by updating the base record too
-      // (status/id/etc are immutable and not handled here)
-      (existing as any).applicant_name = validatedBody.basic.applicant_name;
-    }
-    if (validatedBody.contract?.start_date) {
-      (existing as any).scheduled_start_date = validatedBody.contract.start_date;
-    }
-    if (validatedBody.contract?.plan_name) {
-      (existing as any).plan_name = validatedBody.contract.plan_name;
-    }
-
-    // Persist editable detail fields
-    const contractPatch = validatedBody.contract
-      ? {
-          contract_details: {
-            ...(validatedBody.contract.plan_id ? { plan_id: validatedBody.contract.plan_id } : {}),
-            ...(validatedBody.contract.plan_name
-              ? { plan_name: validatedBody.contract.plan_name }
-              : {}),
-            ...(validatedBody.contract.start_date
-              ? { start_date: validatedBody.contract.start_date }
-              : {}),
-            ...(validatedBody.contract.option_ids
-              ? { option_ids: validatedBody.contract.option_ids }
-              : {}),
-          },
-        }
-      : {};
-
-    db.membershipApplications.updateDetails(id, {
-      ...(validatedBody.basic ?? {}),
-      ...(validatedBody.contact ?? {}),
-      ...contractPatch,
-    });
-
-    const details = db.membershipApplications.getDetails(id);
-
-    const response: UpdateMembershipApplicationResponse = {
-      success: true,
-      application: {
-        ...existing,
-        ...(details as any),
-      },
-    };
-
-    return NextResponse.json(response);
-  } catch (error) {
-    console.error('Error updating application detail:', error);
-    return NextResponse.json({ error: 'Failed to update application detail' }, { status: 500 });
   }
 }

@@ -69,13 +69,16 @@ import '@/app/api/crm/members/route';
 import '@/app/api/crm/members/summary/route';
 import '@/app/api/crm/membership-applications/[id]/approve/route';
 import '@/app/api/crm/membership-applications/[id]/cancel/route';
+import '@/app/api/crm/membership-applications/[id]/memos/[memoId]/route';
+import '@/app/api/crm/membership-applications/[id]/memos/route';
 import '@/app/api/crm/membership-applications/[id]/reject/route';
 import '@/app/api/crm/membership-applications/[id]/route';
-import '@/app/api/crm/membership-applications/bulk-approve/route';
-import '@/app/api/crm/membership-applications/bulk-reject/route';
+import '@/app/api/crm/membership-applications/blacklist-check/route';
+import '@/app/api/crm/membership-applications/corporate-masters/route';
+import '@/app/api/crm/membership-applications/direct/route';
+import '@/app/api/crm/membership-applications/enrollment-fee-masters/route';
 // Import membership applications routes
 import '@/app/api/crm/membership-applications/route';
-import '@/app/api/crm/membership-applications/summary/route';
 import '@/app/api/crm/options/route';
 // Import staffs routes
 import '@/app/api/crm/positions/route';
@@ -96,5 +99,7 @@ import '@/app/api/crm/transfers/[id]/reject/route';
 import '@/app/api/crm/transfers/[id]/route';
 // Import transfers routes
 import '@/app/api/crm/transfers/route';
+import '@/app/api/crm/uploads/presign/route';
+import '@/app/api/crm/uploads/route';
 
 // Add more route imports here as you register them with OpenAPI

@@ -21,7 +21,12 @@ export const storeFormSchema = z.object({
   prefecture: z.string().optional(),
   address: z.string().optional(),
   email: z.string().email('正しいメールアドレスを入力してください').optional().or(z.literal('')),
-  phone: z.string().optional(),
+  phone: z
+    .union([
+      z.literal(''),
+      z.string().regex(/^\d{10,11}$/, '電話番号は10〜11桁の数字で入力してください'),
+    ])
+    .optional(),
   club_code: z.string().transform((val) => (val === '' ? undefined : val)),
   accounting_code: z.string().optional(),
   is_fc: z.boolean(),

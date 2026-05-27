@@ -59,6 +59,8 @@ interface TablePaginationProps {
   isLoading?: boolean;
   /** Show page numbers */
   showPageNumbers?: boolean;
+  /** Additional class for the container */
+  className?: string;
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -71,13 +73,14 @@ export function TablePagination({
   onPageChange,
   isLoading = false,
   showPageNumbers = true,
+  className,
 }: TablePaginationProps) {
   const startItem = total === 0 ? 0 : (currentPage - 1) * limit + 1;
   const endItem = Math.min(currentPage * limit, total);
   const pageNumbers = getPageNumbers(currentPage, totalPages);
 
   return (
-    <div className="flex items-center justify-between border-t px-4 py-3">
+    <div className={cn('flex items-center justify-between border-t px-4 py-3', className)}>
       {/* Summary text */}
       <p className="text-muted-foreground text-xs">
         {isLoading ? (

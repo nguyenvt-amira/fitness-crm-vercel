@@ -4914,94 +4914,82 @@
         "properties": {
           "id": {
             "type": "string",
-            "example": "APP-00001",
+            "example": "APP-2026-0001",
             "description": "Application ID"
           },
           "applicant_name": {
             "type": "string",
-            "example": "山田太郎",
+            "example": "山田 太郎",
             "description": "Applicant name"
-          },
-          "applied_at": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2024-01-15T12:30:00Z",
-            "description": "Application date and time"
-          },
-          "elapsed_time": {
-            "type": "string",
-            "example": "3日9時間経過",
-            "description": "Elapsed time since application"
-          },
-          "risk_score": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 100,
-            "example": 61,
-            "description": "Risk score (0-100)"
-          },
-          "risk_reason": {
-            "type": "string",
-            "enum": [
-              "blacklist_match",
-              "duplicate_application",
-              "payment_failure",
-              "high_risk_score",
-              "document_issue",
-              "other"
-            ],
-            "example": "blacklist_match",
-            "description": "Risk reason"
-          },
-          "plan_name": {
-            "type": "string",
-            "example": "通常会員",
-            "description": "Plan name"
-          },
-          "scheduled_start_date": {
-            "type": "string",
-            "format": "date",
-            "example": "2024-01-20",
-            "description": "Scheduled start date"
           },
           "status": {
             "type": "string",
-            "enum": [
-              "payment_failed",
-              "pending",
-              "auto_approved",
-              "manual_approved",
-              "rejected",
-              "cancelled"
-            ],
+            "enum": ["pending", "review", "approved", "rejected", "cancelled"],
             "example": "pending",
             "description": "Application status"
           },
-          "payment_failed_deadline": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2024-01-22T12:30:00Z",
-            "description": "Payment failed deadline"
+          "blacklist_match": {
+            "type": "boolean",
+            "example": false,
+            "description": "Whether applicant matched blacklist"
           },
-          "pending_deadline": {
+          "brand_name": {
+            "type": "string",
+            "example": "FIT365",
+            "description": "Brand name"
+          },
+          "store_name": {
+            "type": "string",
+            "example": "FIT365八潮店",
+            "description": "Store name"
+          },
+          "plan_name": {
+            "type": "string",
+            "example": "レギュラー会員",
+            "description": "Plan name"
+          },
+          "campaign": {
+            "type": "string",
+            "example": "春の入会キャンペーン",
+            "description": "Campaign name (なし when none)"
+          },
+          "application_date": {
             "type": "string",
             "format": "date-time",
-            "example": "2024-01-22T12:30:00Z",
-            "description": "Pending deadline"
+            "example": "2026-03-30T09:15:00+09:00",
+            "description": "Application date and time"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-04-01",
+            "description": "Scheduled start date"
+          },
+          "is_minor": {
+            "type": "boolean",
+            "example": false,
+            "description": "Whether applicant is a minor"
+          },
+          "is_proxy": {
+            "type": "boolean",
+            "example": false,
+            "description": "Whether this is a proxy application"
           }
         },
         "required": [
           "id",
           "applicant_name",
-          "applied_at",
-          "risk_score",
-          "risk_reason",
+          "status",
+          "blacklist_match",
+          "brand_name",
+          "store_name",
           "plan_name",
-          "scheduled_start_date",
-          "status"
+          "campaign",
+          "application_date",
+          "start_date"
         ],
         "title": "MembershipApplication",
-        "description": "Membership application information"
+        "description": "Membership application list item"
       },
       "MembershipApplicationPaymentMethod": {
         "type": "string",
@@ -5017,14 +5005,7 @@
       },
       "MembershipApplicationStatus": {
         "type": "string",
-        "enum": [
-          "payment_failed",
-          "pending",
-          "auto_approved",
-          "manual_approved",
-          "rejected",
-          "cancelled"
-        ]
+        "enum": ["pending", "review", "approved", "rejected", "cancelled"]
       },
       "RiskReason": {
         "type": "string",
@@ -5058,35 +5039,42 @@
           },
           "status": {
             "type": "string",
-            "enum": [
-              "payment_failed",
-              "pending",
-              "auto_approved",
-              "manual_approved",
-              "rejected",
-              "cancelled"
-            ],
+            "enum": ["pending", "review", "approved", "rejected", "cancelled"],
             "example": "pending",
             "description": "Filter by status"
           },
-          "risk_reason": {
+          "brand": {
             "type": "string",
-            "enum": [
-              "blacklist_match",
-              "duplicate_application",
-              "payment_failure",
-              "high_risk_score",
-              "document_issue",
-              "other"
-            ],
-            "example": "blacklist_match",
-            "description": "Filter by risk reason"
+            "example": "FIT365",
+            "description": "Filter by brand name"
+          },
+          "store": {
+            "type": "string",
+            "example": "FIT365八潮店",
+            "description": "Filter by store name"
+          },
+          "blacklist": {
+            "type": "string",
+            "enum": ["all", "match", "no_match"],
+            "default": "all",
+            "example": "all",
+            "description": "Filter by blacklist match"
+          },
+          "date_from": {
+            "type": "string",
+            "example": "2026-03-24",
+            "description": "Application date range start (YYYY-MM-DD)"
+          },
+          "date_to": {
+            "type": "string",
+            "example": "2026-03-30",
+            "description": "Application date range end (YYYY-MM-DD)"
           },
           "sort_by": {
             "type": "string",
-            "enum": ["applied_at", "risk_score", "pending_deadline"],
-            "default": "applied_at",
-            "example": "applied_at",
+            "enum": ["application_date"],
+            "default": "application_date",
+            "example": "application_date",
             "description": "Sort field"
           },
           "sort_order": {
@@ -5099,7 +5087,7 @@
           "search": {
             "type": "string",
             "example": "山田",
-            "description": "Search query"
+            "description": "Search query (ID or name)"
           }
         },
         "title": "GetMembershipApplicationsQuery",
@@ -5115,94 +5103,82 @@
               "properties": {
                 "id": {
                   "type": "string",
-                  "example": "APP-00001",
+                  "example": "APP-2026-0001",
                   "description": "Application ID"
                 },
                 "applicant_name": {
                   "type": "string",
-                  "example": "山田太郎",
+                  "example": "山田 太郎",
                   "description": "Applicant name"
-                },
-                "applied_at": {
-                  "type": "string",
-                  "format": "date-time",
-                  "example": "2024-01-15T12:30:00Z",
-                  "description": "Application date and time"
-                },
-                "elapsed_time": {
-                  "type": "string",
-                  "example": "3日9時間経過",
-                  "description": "Elapsed time since application"
-                },
-                "risk_score": {
-                  "type": "number",
-                  "minimum": 0,
-                  "maximum": 100,
-                  "example": 61,
-                  "description": "Risk score (0-100)"
-                },
-                "risk_reason": {
-                  "type": "string",
-                  "enum": [
-                    "blacklist_match",
-                    "duplicate_application",
-                    "payment_failure",
-                    "high_risk_score",
-                    "document_issue",
-                    "other"
-                  ],
-                  "example": "blacklist_match",
-                  "description": "Risk reason"
-                },
-                "plan_name": {
-                  "type": "string",
-                  "example": "通常会員",
-                  "description": "Plan name"
-                },
-                "scheduled_start_date": {
-                  "type": "string",
-                  "format": "date",
-                  "example": "2024-01-20",
-                  "description": "Scheduled start date"
                 },
                 "status": {
                   "type": "string",
-                  "enum": [
-                    "payment_failed",
-                    "pending",
-                    "auto_approved",
-                    "manual_approved",
-                    "rejected",
-                    "cancelled"
-                  ],
+                  "enum": ["pending", "review", "approved", "rejected", "cancelled"],
                   "example": "pending",
                   "description": "Application status"
                 },
-                "payment_failed_deadline": {
-                  "type": "string",
-                  "format": "date-time",
-                  "example": "2024-01-22T12:30:00Z",
-                  "description": "Payment failed deadline"
+                "blacklist_match": {
+                  "type": "boolean",
+                  "example": false,
+                  "description": "Whether applicant matched blacklist"
                 },
-                "pending_deadline": {
+                "brand_name": {
+                  "type": "string",
+                  "example": "FIT365",
+                  "description": "Brand name"
+                },
+                "store_name": {
+                  "type": "string",
+                  "example": "FIT365八潮店",
+                  "description": "Store name"
+                },
+                "plan_name": {
+                  "type": "string",
+                  "example": "レギュラー会員",
+                  "description": "Plan name"
+                },
+                "campaign": {
+                  "type": "string",
+                  "example": "春の入会キャンペーン",
+                  "description": "Campaign name (なし when none)"
+                },
+                "application_date": {
                   "type": "string",
                   "format": "date-time",
-                  "example": "2024-01-22T12:30:00Z",
-                  "description": "Pending deadline"
+                  "example": "2026-03-30T09:15:00+09:00",
+                  "description": "Application date and time"
+                },
+                "start_date": {
+                  "type": "string",
+                  "format": "date",
+                  "example": "2026-04-01",
+                  "description": "Scheduled start date"
+                },
+                "is_minor": {
+                  "type": "boolean",
+                  "example": false,
+                  "description": "Whether applicant is a minor"
+                },
+                "is_proxy": {
+                  "type": "boolean",
+                  "example": false,
+                  "description": "Whether this is a proxy application"
                 }
               },
               "required": [
                 "id",
                 "applicant_name",
-                "applied_at",
-                "risk_score",
-                "risk_reason",
+                "status",
+                "blacklist_match",
+                "brand_name",
+                "store_name",
                 "plan_name",
-                "scheduled_start_date",
-                "status"
+                "campaign",
+                "application_date",
+                "start_date"
               ],
               "title": "MembershipApplication",
-              "description": "Membership application information"
+              "description": "Membership application list item"
             },
             "description": "List of membership applications"
           },
@@ -5239,742 +5215,6 @@
         "title": "GetMembershipApplicationsResponse",
         "description": "Response for getting membership applications"
       },
-      "AutoJudgeRequest": {
-        "type": "object",
-        "properties": {
-          "application_ids": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "minItems": 1,
-            "example": ["APP-00001", "APP-00002"],
-            "description": "List of application IDs to auto-judge"
-          }
-        },
-        "required": ["application_ids"],
-        "title": "AutoJudgeRequest",
-        "description": "Request payload for auto-judge"
-      },
-      "AutoJudgeResponse": {
-        "type": "object",
-        "properties": {
-          "results": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "application_id": {
-                  "type": "string",
-                  "example": "APP-00001",
-                  "description": "Application ID"
-                },
-                "approved": {
-                  "type": "boolean",
-                  "example": true,
-                  "description": "Whether the application was approved"
-                },
-                "risk_score": {
-                  "type": "number",
-                  "minimum": 0,
-                  "maximum": 100,
-                  "example": 45,
-                  "description": "Risk score"
-                },
-                "reason": {
-                  "type": "string",
-                  "example": "自動承認",
-                  "description": "Reason for the decision"
-                }
-              },
-              "required": ["application_id", "approved", "risk_score", "reason"],
-              "title": "AutoJudgeResult",
-              "description": "Auto-judge result for a single application"
-            },
-            "description": "Auto-judge results"
-          },
-          "summary": {
-            "type": "object",
-            "properties": {
-              "total": {
-                "type": "number",
-                "example": 2,
-                "description": "Total number of applications"
-              },
-              "approved": {
-                "type": "number",
-                "example": 1,
-                "description": "Number of approved applications"
-              },
-              "rejected": {
-                "type": "number",
-                "example": 1,
-                "description": "Number of rejected applications"
-              }
-            },
-            "required": ["total", "approved", "rejected"],
-            "description": "Summary of auto-judge results"
-          }
-        },
-        "required": ["results", "summary"],
-        "title": "AutoJudgeResponse",
-        "description": "Response for auto-judge operation"
-      },
-      "GetSummaryQuery": {
-        "type": "object",
-        "properties": {
-          "period": {
-            "type": "string",
-            "enum": ["day", "week", "month"],
-            "default": "month",
-            "example": "month",
-            "description": "Time period"
-          },
-          "start_date": {
-            "type": "string",
-            "format": "date",
-            "example": "2024-01-01",
-            "description": "Start date (overrides period)"
-          },
-          "end_date": {
-            "type": "string",
-            "format": "date",
-            "example": "2024-01-31",
-            "description": "End date (overrides period)"
-          }
-        },
-        "title": "GetSummaryQuery",
-        "description": "Query parameters for getting summary"
-      },
-      "GetSummaryResponse": {
-        "type": "object",
-        "properties": {
-          "summary": {
-            "type": "object",
-            "properties": {
-              "total_applications": {
-                "type": "number",
-                "example": 1234,
-                "description": "Total number of applications"
-              },
-              "auto_approval_rate": {
-                "type": "number",
-                "example": 82.5,
-                "description": "Auto approval rate (%)"
-              },
-              "auto_approval_count": {
-                "type": "number",
-                "example": 678,
-                "description": "Number of auto-approved applications"
-              },
-              "avg_processing_time": {
-                "type": "string",
-                "example": "1h23m",
-                "description": "Average processing time"
-              },
-              "payment_failed_count": {
-                "type": "number",
-                "example": 3,
-                "description": "Number of payment failed applications"
-              },
-              "payment_failed_deadline": {
-                "type": "string",
-                "format": "date-time",
-                "example": "2024-01-31T23:59:59Z",
-                "description": "Payment failed deadline"
-              },
-              "pending_count": {
-                "type": "number",
-                "example": 12,
-                "description": "Number of pending applications"
-              },
-              "pending_deadline": {
-                "type": "string",
-                "format": "date-time",
-                "example": "2024-01-31T23:59:59Z",
-                "description": "Pending deadline"
-              },
-              "risk_reasons_breakdown": {
-                "type": "object",
-                "properties": {
-                  "blacklist_match": {
-                    "type": "number",
-                    "example": 2,
-                    "description": "Blacklist match count"
-                  },
-                  "duplicate_application": {
-                    "type": "number",
-                    "example": 5,
-                    "description": "Duplicate application count"
-                  },
-                  "payment_failure": {
-                    "type": "number",
-                    "example": 3,
-                    "description": "Payment failure count"
-                  },
-                  "high_risk_score": {
-                    "type": "number",
-                    "example": 2,
-                    "description": "High risk score count"
-                  },
-                  "document_issue": {
-                    "type": "number",
-                    "example": 0,
-                    "description": "Document issue count"
-                  },
-                  "other": {
-                    "type": "number",
-                    "example": 0,
-                    "description": "Other risk reasons count"
-                  }
-                },
-                "required": [
-                  "blacklist_match",
-                  "duplicate_application",
-                  "payment_failure",
-                  "high_risk_score",
-                  "document_issue",
-                  "other"
-                ],
-                "title": "RiskReasonsBreakdown",
-                "description": "Breakdown of risk reasons"
-              },
-              "auto_approved_today_count": {
-                "type": "number",
-                "example": 163,
-                "description": "Number of auto-approved applications today"
-              },
-              "auto_approved_today_rate": {
-                "type": "number",
-                "example": 85,
-                "description": "Auto approval rate today (%)"
-              },
-              "manual_approved_count": {
-                "type": "number",
-                "example": 21,
-                "description": "Number of manually approved applications"
-              },
-              "rejected_count": {
-                "type": "number",
-                "example": 1,
-                "description": "Total number of rejected applications"
-              },
-              "rejected_auto_count": {
-                "type": "number",
-                "example": 0,
-                "description": "Number of auto-rejected applications"
-              },
-              "rejected_manual_count": {
-                "type": "number",
-                "example": 1,
-                "description": "Number of manually rejected applications"
-              },
-              "date_range_start": {
-                "type": "string",
-                "format": "date-time",
-                "example": "2024-01-01T00:00:00Z",
-                "description": "Date range start"
-              },
-              "date_range_end": {
-                "type": "string",
-                "format": "date-time",
-                "example": "2024-01-31T23:59:59Z",
-                "description": "Date range end"
-              }
-            },
-            "required": [
-              "total_applications",
-              "auto_approval_rate",
-              "auto_approval_count",
-              "avg_processing_time",
-              "payment_failed_count",
-              "pending_count",
-              "risk_reasons_breakdown",
-              "auto_approved_today_count",
-              "auto_approved_today_rate",
-              "manual_approved_count",
-              "rejected_count",
-              "rejected_auto_count",
-              "rejected_manual_count",
-              "date_range_start",
-              "date_range_end"
-            ],
-            "title": "MembershipApplicationSummary",
-            "description": "Summary information"
-          },
-          "alerts": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "title": {
-                  "type": "string",
-                  "example": "要確認の入会申し込みが12件あります。",
-                  "description": "Alert title"
-                },
-                "description": {
-                  "type": "string",
-                  "example": "承認もしくは却下の操作を行なってください。",
-                  "description": "Alert description"
-                },
-                "type": {
-                  "type": "string",
-                  "enum": ["payment_failed", "pending", "high_risk", "all"],
-                  "example": "pending",
-                  "description": "Alert type"
-                },
-                "count": {
-                  "type": "number",
-                  "example": 12,
-                  "description": "Number of items"
-                },
-                "deadline": {
-                  "type": "string",
-                  "format": "date-time",
-                  "example": "2024-01-31T23:59:59Z",
-                  "description": "Deadline"
-                }
-              },
-              "required": ["title", "description", "type", "count"],
-              "title": "MembershipApplicationAlert",
-              "description": "Alert information"
-            },
-            "description": "List of alerts"
-          }
-        },
-        "required": ["summary", "alerts"],
-        "title": "GetSummaryResponse",
-        "description": "Response for getting summary"
-      },
-      "MembershipApplicationSummary": {
-        "type": "object",
-        "properties": {
-          "total_applications": {
-            "type": "number",
-            "example": 1234,
-            "description": "Total number of applications"
-          },
-          "auto_approval_rate": {
-            "type": "number",
-            "example": 82.5,
-            "description": "Auto approval rate (%)"
-          },
-          "auto_approval_count": {
-            "type": "number",
-            "example": 678,
-            "description": "Number of auto-approved applications"
-          },
-          "avg_processing_time": {
-            "type": "string",
-            "example": "1h23m",
-            "description": "Average processing time"
-          },
-          "payment_failed_count": {
-            "type": "number",
-            "example": 3,
-            "description": "Number of payment failed applications"
-          },
-          "payment_failed_deadline": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2024-01-31T23:59:59Z",
-            "description": "Payment failed deadline"
-          },
-          "pending_count": {
-            "type": "number",
-            "example": 12,
-            "description": "Number of pending applications"
-          },
-          "pending_deadline": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2024-01-31T23:59:59Z",
-            "description": "Pending deadline"
-          },
-          "risk_reasons_breakdown": {
-            "type": "object",
-            "properties": {
-              "blacklist_match": {
-                "type": "number",
-                "example": 2,
-                "description": "Blacklist match count"
-              },
-              "duplicate_application": {
-                "type": "number",
-                "example": 5,
-                "description": "Duplicate application count"
-              },
-              "payment_failure": {
-                "type": "number",
-                "example": 3,
-                "description": "Payment failure count"
-              },
-              "high_risk_score": {
-                "type": "number",
-                "example": 2,
-                "description": "High risk score count"
-              },
-              "document_issue": {
-                "type": "number",
-                "example": 0,
-                "description": "Document issue count"
-              },
-              "other": {
-                "type": "number",
-                "example": 0,
-                "description": "Other risk reasons count"
-              }
-            },
-            "required": [
-              "blacklist_match",
-              "duplicate_application",
-              "payment_failure",
-              "high_risk_score",
-              "document_issue",
-              "other"
-            ],
-            "title": "RiskReasonsBreakdown",
-            "description": "Breakdown of risk reasons"
-          },
-          "auto_approved_today_count": {
-            "type": "number",
-            "example": 163,
-            "description": "Number of auto-approved applications today"
-          },
-          "auto_approved_today_rate": {
-            "type": "number",
-            "example": 85,
-            "description": "Auto approval rate today (%)"
-          },
-          "manual_approved_count": {
-            "type": "number",
-            "example": 21,
-            "description": "Number of manually approved applications"
-          },
-          "rejected_count": {
-            "type": "number",
-            "example": 1,
-            "description": "Total number of rejected applications"
-          },
-          "rejected_auto_count": {
-            "type": "number",
-            "example": 0,
-            "description": "Number of auto-rejected applications"
-          },
-          "rejected_manual_count": {
-            "type": "number",
-            "example": 1,
-            "description": "Number of manually rejected applications"
-          },
-          "date_range_start": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2024-01-01T00:00:00Z",
-            "description": "Date range start"
-          },
-          "date_range_end": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2024-01-31T23:59:59Z",
-            "description": "Date range end"
-          }
-        },
-        "required": [
-          "total_applications",
-          "auto_approval_rate",
-          "auto_approval_count",
-          "avg_processing_time",
-          "payment_failed_count",
-          "pending_count",
-          "risk_reasons_breakdown",
-          "auto_approved_today_count",
-          "auto_approved_today_rate",
-          "manual_approved_count",
-          "rejected_count",
-          "rejected_auto_count",
-          "rejected_manual_count",
-          "date_range_start",
-          "date_range_end"
-        ],
-        "title": "MembershipApplicationSummary",
-        "description": "Summary of membership applications"
-      },
-      "MembershipApplicationAlert": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "example": "要確認の入会申し込みが12件あります。",
-            "description": "Alert title"
-          },
-          "description": {
-            "type": "string",
-            "example": "承認もしくは却下の操作を行なってください。",
-            "description": "Alert description"
-          },
-          "type": {
-            "type": "string",
-            "enum": ["payment_failed", "pending", "high_risk", "all"],
-            "example": "pending",
-            "description": "Alert type"
-          },
-          "count": {
-            "type": "number",
-            "example": 12,
-            "description": "Number of items"
-          },
-          "deadline": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2024-01-31T23:59:59Z",
-            "description": "Deadline"
-          }
-        },
-        "required": ["title", "description", "type", "count"],
-        "title": "MembershipApplicationAlert",
-        "description": "Alert information"
-      },
-      "RiskReasonsBreakdown": {
-        "type": "object",
-        "properties": {
-          "blacklist_match": {
-            "type": "number",
-            "example": 2,
-            "description": "Blacklist match count"
-          },
-          "duplicate_application": {
-            "type": "number",
-            "example": 5,
-            "description": "Duplicate application count"
-          },
-          "payment_failure": {
-            "type": "number",
-            "example": 3,
-            "description": "Payment failure count"
-          },
-          "high_risk_score": {
-            "type": "number",
-            "example": 2,
-            "description": "High risk score count"
-          },
-          "document_issue": {
-            "type": "number",
-            "example": 0,
-            "description": "Document issue count"
-          },
-          "other": {
-            "type": "number",
-            "example": 0,
-            "description": "Other risk reasons count"
-          }
-        },
-        "required": [
-          "blacklist_match",
-          "duplicate_application",
-          "payment_failure",
-          "high_risk_score",
-          "document_issue",
-          "other"
-        ],
-        "title": "RiskReasonsBreakdown",
-        "description": "Breakdown of risk reasons"
-      },
-      "BulkApproveRequest": {
-        "type": "object",
-        "properties": {
-          "application_ids": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "minItems": 1,
-            "example": ["APP-00001", "APP-00002"],
-            "description": "List of application IDs to approve"
-          },
-          "approval_reason": {
-            "type": "string",
-            "example": "一括承認",
-            "description": "Approval reason"
-          }
-        },
-        "required": ["application_ids"],
-        "title": "BulkApproveRequest",
-        "description": "Request payload for bulk approval"
-      },
-      "BulkApproveResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "example": true,
-            "description": "Whether the operation was successful"
-          },
-          "results": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "application_id": {
-                  "type": "string",
-                  "example": "APP-00001",
-                  "description": "Application ID"
-                },
-                "approved": {
-                  "type": "boolean",
-                  "example": true,
-                  "description": "Whether the application was approved"
-                },
-                "approved_at": {
-                  "type": "string",
-                  "format": "date-time",
-                  "example": "2024-01-15T12:30:00Z",
-                  "description": "Approval date and time"
-                }
-              },
-              "required": ["application_id", "approved", "approved_at"],
-              "title": "BulkApproveResult",
-              "description": "Bulk approve result for a single application"
-            },
-            "description": "Bulk approve results"
-          },
-          "summary": {
-            "type": "object",
-            "properties": {
-              "total": {
-                "type": "number",
-                "example": 2,
-                "description": "Total number of applications"
-              },
-              "approved": {
-                "type": "number",
-                "example": 2,
-                "description": "Number of approved applications"
-              },
-              "failed": {
-                "type": "number",
-                "example": 0,
-                "description": "Number of failed applications"
-              }
-            },
-            "required": ["total", "approved", "failed"],
-            "description": "Summary of bulk approve results"
-          },
-          "approval_reason": {
-            "type": "string",
-            "example": "一括承認",
-            "description": "Approval reason"
-          }
-        },
-        "required": ["success", "results", "summary"],
-        "title": "BulkApproveResponse",
-        "description": "Response for bulk approve operation"
-      },
-      "BulkRejectRequest": {
-        "type": "object",
-        "properties": {
-          "application_ids": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "minItems": 1,
-            "example": ["APP-00001", "APP-00002"],
-            "description": "List of application IDs to reject"
-          },
-          "rejection_reason": {
-            "type": "string",
-            "minLength": 1,
-            "example": "リスクスコアが高すぎます",
-            "description": "Rejection reason"
-          },
-          "staff_id": {
-            "type": "string",
-            "example": "staff-001",
-            "description": "Staff ID who rejected"
-          }
-        },
-        "required": ["application_ids", "rejection_reason"],
-        "title": "BulkRejectRequest",
-        "description": "Request payload for bulk rejection"
-      },
-      "BulkRejectResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "example": true,
-            "description": "Whether the operation was successful"
-          },
-          "results": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "application_id": {
-                  "type": "string",
-                  "example": "APP-00001",
-                  "description": "Application ID"
-                },
-                "rejected": {
-                  "type": "boolean",
-                  "example": true,
-                  "description": "Whether the application was rejected"
-                },
-                "rejected_at": {
-                  "type": "string",
-                  "format": "date-time",
-                  "example": "2024-01-15T12:30:00Z",
-                  "description": "Rejection date and time"
-                },
-                "error": {
-                  "type": "string",
-                  "example": "Application not found",
-                  "description": "Error message if rejection failed for this item"
-                }
-              },
-              "required": ["application_id", "rejected"],
-              "title": "BulkRejectResult",
-              "description": "Bulk reject result for a single application"
-            },
-            "description": "Bulk reject results"
-          },
-          "summary": {
-            "type": "object",
-            "properties": {
-              "total": {
-                "type": "number",
-                "example": 2,
-                "description": "Total number of applications"
-              },
-              "rejected": {
-                "type": "number",
-                "example": 2,
-                "description": "Number of rejected applications"
-              },
-              "failed": {
-                "type": "number",
-                "example": 0,
-                "description": "Number of failed applications"
-              }
-            },
-            "required": ["total", "rejected", "failed"],
-            "description": "Summary of bulk reject results"
-          },
-          "rejection_reason": {
-            "type": "string",
-            "example": "リスクスコアが高すぎます",
-            "description": "Rejection reason"
-          },
-          "rejected_by": {
-            "type": "string",
-            "example": "staff-001",
-            "description": "Staff ID who rejected"
-          }
-        },
-        "required": ["success", "results", "summary", "rejection_reason", "rejected_by"],
-        "title": "BulkRejectResponse",
-        "description": "Response for bulk reject operation"
-      },
       "GetApplicationDetailResponse": {
         "type": "object",
         "properties": {
@@ -5983,299 +5223,267 @@
             "properties": {
               "id": {
                 "type": "string",
-                "example": "APP-00001",
+                "example": "APP-2026-0001",
                 "description": "Application ID"
               },
               "applicant_name": {
                 "type": "string",
-                "example": "山田太郎",
+                "example": "山田 太郎",
                 "description": "Applicant name"
-              },
-              "applied_at": {
-                "type": "string",
-                "format": "date-time",
-                "example": "2024-01-15T12:30:00Z",
-                "description": "Application date and time"
-              },
-              "elapsed_time": {
-                "type": "string",
-                "example": "3日9時間経過",
-                "description": "Elapsed time since application"
-              },
-              "risk_score": {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 100,
-                "example": 61,
-                "description": "Risk score (0-100)"
-              },
-              "risk_reason": {
-                "type": "string",
-                "enum": [
-                  "blacklist_match",
-                  "duplicate_application",
-                  "payment_failure",
-                  "high_risk_score",
-                  "document_issue",
-                  "other"
-                ],
-                "example": "blacklist_match",
-                "description": "Risk reason"
-              },
-              "plan_name": {
-                "type": "string",
-                "example": "通常会員",
-                "description": "Plan name"
-              },
-              "scheduled_start_date": {
-                "type": "string",
-                "format": "date",
-                "example": "2024-01-20",
-                "description": "Scheduled start date"
               },
               "status": {
                 "type": "string",
-                "enum": [
-                  "payment_failed",
-                  "pending",
-                  "auto_approved",
-                  "manual_approved",
-                  "rejected",
-                  "cancelled"
-                ],
+                "enum": ["pending", "review", "approved", "rejected", "cancelled"],
                 "example": "pending",
                 "description": "Application status"
               },
-              "payment_failed_deadline": {
+              "blacklist_match": {
+                "type": "boolean",
+                "example": false,
+                "description": "Whether applicant matched blacklist"
+              },
+              "brand_name": {
+                "type": "string",
+                "example": "FIT365",
+                "description": "Brand name"
+              },
+              "store_name": {
+                "type": "string",
+                "example": "FIT365八潮店",
+                "description": "Store name"
+              },
+              "plan_name": {
+                "type": "string",
+                "example": "レギュラー会員",
+                "description": "Plan name"
+              },
+              "campaign": {
+                "type": "string",
+                "example": "春の入会キャンペーン",
+                "description": "Campaign name (なし when none)"
+              },
+              "application_date": {
                 "type": "string",
                 "format": "date-time",
-                "example": "2024-01-22T12:30:00Z",
-                "description": "Payment failed deadline"
+                "example": "2026-03-30T09:15:00+09:00",
+                "description": "Application date and time"
               },
-              "pending_deadline": {
-                "type": "string",
-                "format": "date-time",
-                "example": "2024-01-22T12:30:00Z",
-                "description": "Pending deadline"
-              },
-              "gender": {
-                "type": "string",
-                "enum": ["male", "female", "other"],
-                "example": "male",
-                "description": "Gender"
-              },
-              "blood_type": {
-                "type": "string",
-                "enum": ["A", "B", "O", "AB", "unknown"],
-                "example": "A",
-                "description": "Blood type"
-              },
-              "birthday": {
+              "start_date": {
                 "type": "string",
                 "format": "date",
-                "example": "2000-01-01",
-                "description": "Birthday (YYYY-MM-DD)"
+                "example": "2026-04-01",
+                "description": "Scheduled start date"
               },
-              "applicant_email": {
+              "is_minor": {
+                "type": "boolean",
+                "example": false,
+                "description": "Whether applicant is a minor"
+              },
+              "is_proxy": {
+                "type": "boolean",
+                "example": false,
+                "description": "Whether this is a proxy application"
+              },
+              "applicant_kana": {
                 "type": "string",
-                "format": "email",
-                "example": "yamada.taro@example.com",
-                "description": "Applicant email"
+                "example": "ヤマダ タロウ",
+                "description": "Applicant name (kana)"
               },
-              "applicant_phone": {
+              "birth_date": {
+                "type": "string",
+                "example": "1990/01/15",
+                "description": "Birth date (formatted)"
+              },
+              "age": {
+                "type": "number",
+                "example": 36,
+                "description": "Age"
+              },
+              "gender_label": {
+                "type": "string",
+                "example": "男性",
+                "description": "Gender label"
+              },
+              "phone": {
+                "type": "string",
+                "example": "090-****-5678",
+                "description": "Phone (masked)"
+              },
+              "phone_real": {
                 "type": "string",
                 "example": "090-1234-5678",
-                "description": "Applicant phone number"
+                "description": "Phone (real)"
               },
-              "applicant_address": {
+              "email_masked": {
+                "type": "string",
+                "example": "ya***@example.jp",
+                "description": "Email (masked)"
+              },
+              "email_real": {
+                "type": "string",
+                "example": "yamada@example.jp",
+                "description": "Email (real)"
+              },
+              "address": {
+                "type": "string",
+                "example": "東京都渋谷区***",
+                "description": "Address (masked)"
+              },
+              "address_real": {
                 "type": "string",
                 "example": "東京都渋谷区1-2-3",
-                "description": "Applicant address"
+                "description": "Address (real)"
               },
-              "emergency_contact_name": {
-                "type": "string",
-                "example": "佐藤 太郎",
-                "description": "Emergency contact name"
+              "blacklist_conditions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "BL match condition labels"
               },
-              "emergency_contact_relationship": {
+              "usage_start_date": {
                 "type": "string",
-                "example": "配偶者",
-                "description": "Emergency contact relationship"
+                "example": "2026/04/01",
+                "description": "Usage start date (formatted)"
               },
-              "emergency_contact_phone": {
-                "type": "string",
-                "example": "090-8765-4321",
-                "description": "Emergency contact phone"
+              "monthly_fee": {
+                "type": "number",
+                "example": 7700,
+                "description": "Monthly fee (yen)"
+              },
+              "options": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Selected options"
+              },
+              "fee_rows": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "amount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": ["label", "amount"]
+                },
+                "description": "Fee breakdown rows"
               },
               "payment_method": {
                 "type": "string",
-                "enum": ["credit_card", "bank_transfer"],
-                "title": "MembershipApplicationPaymentMethod",
-                "description": "Payment method",
-                "example": "credit_card"
+                "example": "クレジットカード",
+                "description": "Payment method label"
               },
-              "payment_status": {
+              "card_last4": {
                 "type": "string",
-                "enum": ["pending", "paid", "failed"],
-                "title": "MembershipApplicationPaymentStatus",
-                "description": "Payment status",
-                "example": "pending"
+                "example": "1234",
+                "description": "Card last 4 digits"
               },
-              "risk_details": {
+              "application_source": {
+                "type": "string",
+                "example": "アプリ",
+                "description": "Application source"
+              },
+              "updated_at": {
+                "type": "string",
+                "example": "2026/03/30 09:20",
+                "description": "Last updated (formatted)"
+              },
+              "parental_consent": {
+                "type": "boolean",
+                "example": false,
+                "description": "Parental consent confirmed"
+              },
+              "proxy_applicant": {
+                "type": "string",
+                "example": "管理者A（STAFF-001）",
+                "description": "Proxy applicant name"
+              },
+              "agreement_date": {
+                "type": "string",
+                "example": "2026/03/30 09:00",
+                "description": "Agreement date (formatted)"
+              },
+              "approved_by": {
+                "type": "string",
+                "example": "管理者A",
+                "description": "Approver name"
+              },
+              "approved_at": {
+                "type": "string",
+                "example": "2026/03/30 10:30",
+                "description": "Approval date (formatted)"
+              },
+              "rejected_by": {
+                "type": "string",
+                "example": "管理者B",
+                "description": "Rejector name"
+              },
+              "rejected_at": {
+                "type": "string",
+                "example": "2026/03/30 10:45",
+                "description": "Rejection date (formatted)"
+              },
+              "rejected_reason": {
+                "type": "string",
+                "example": "本人確認不備",
+                "description": "Rejection reason"
+              },
+              "timeline": {
                 "type": "array",
                 "items": {
                   "type": "object",
                   "properties": {
-                    "reason": {
-                      "type": "string"
+                    "id": {
+                      "type": "string",
+                      "example": "tl-001",
+                      "description": "Entry ID"
                     },
-                    "score": {
-                      "type": "number"
+                    "kind": {
+                      "type": "string",
+                      "enum": ["system", "memo"],
+                      "example": "system",
+                      "description": "Entry kind"
                     },
-                    "description": {
-                      "type": "string"
+                    "date": {
+                      "type": "string",
+                      "example": "2026/03/30 09:15",
+                      "description": "Date/time string (formatted)"
+                    },
+                    "operator": {
+                      "type": "string",
+                      "example": "管理者A",
+                      "description": "Operator name"
+                    },
+                    "content": {
+                      "type": "string",
+                      "example": "申請受付（アプリ経由）",
+                      "description": "Entry content"
                     }
                   },
-                  "required": ["reason", "score", "description"]
+                  "required": ["id", "kind", "date", "operator", "content"],
+                  "title": "TimelineEntry",
+                  "description": "A single activity timeline entry"
                 },
-                "description": "Detailed risk information"
-              },
-              "documents": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string"
-                    },
-                    "url": {
-                      "type": "string"
-                    },
-                    "verified": {
-                      "type": "boolean"
-                    }
-                  },
-                  "required": ["type", "url", "verified"]
-                },
-                "description": "Application documents"
-              },
-              "contract_details": {
-                "type": "object",
-                "properties": {
-                  "plan_id": {
-                    "type": "string"
-                  },
-                  "plan_name": {
-                    "type": "string"
-                  },
-                  "start_date": {
-                    "type": "string",
-                    "format": "date"
-                  },
-                  "monthly_fee": {
-                    "type": "number"
-                  },
-                  "contract_period": {
-                    "type": "number"
-                  },
-                  "option_ids": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "required": [
-                  "plan_id",
-                  "plan_name",
-                  "start_date",
-                  "monthly_fee",
-                  "contract_period"
-                ],
-                "description": "Contract details"
-              },
-              "ekyc": {
-                "type": "object",
-                "properties": {
-                  "verified": {
-                    "type": "boolean",
-                    "example": true,
-                    "description": "eKYC総合判定"
-                  },
-                  "verified_at": {
-                    "type": "string",
-                    "format": "date-time",
-                    "example": "2024-01-15T10:30:00Z",
-                    "description": "検証日時"
-                  },
-                  "face_photo_url": {
-                    "type": "string",
-                    "format": "uri",
-                    "example": "https://example.com/photos/face_001.jpg",
-                    "description": "顔写真（申請者撮影）URL"
-                  },
-                  "id_document_url": {
-                    "type": "string",
-                    "format": "uri",
-                    "example": "https://example.com/photos/id_001.jpg",
-                    "description": "本人確認書類アップロード画像URL"
-                  },
-                  "document_type": {
-                    "type": "string",
-                    "example": "運転免許証",
-                    "description": "本人確認書類種別"
-                  },
-                  "face_match": {
-                    "type": "object",
-                    "properties": {
-                      "similarity": {
-                        "type": "number",
-                        "minimum": 0,
-                        "maximum": 100,
-                        "example": 92.5,
-                        "description": "顔認証類似度（%）"
-                      },
-                      "passed": {
-                        "type": "boolean",
-                        "example": true,
-                        "description": "顔認証判定結果"
-                      }
-                    },
-                    "required": ["similarity", "passed"],
-                    "description": "顔認証結果"
-                  },
-                  "blacklist_check": {
-                    "type": "object",
-                    "properties": {
-                      "matched": {
-                        "type": "boolean",
-                        "example": false,
-                        "description": "ブラックリスト一致有無"
-                      },
-                      "reason": {
-                        "type": "string",
-                        "example": "過去に不正利用の記録あり",
-                        "description": "一致理由"
-                      }
-                    },
-                    "required": ["matched"],
-                    "description": "ブラックリストチェック結果"
-                  }
-                },
-                "required": ["verified"],
-                "title": "EkycResult",
-                "description": "eKYC verification result"
+                "description": "Activity timeline"
               }
             },
             "required": [
               "id",
               "applicant_name",
-              "applied_at",
-              "risk_score",
-              "risk_reason",
+              "status",
+              "blacklist_match",
+              "brand_name",
+              "store_name",
               "plan_name",
-              "scheduled_start_date",
-              "status"
+              "campaign",
+              "application_date",
+              "start_date"
             ],
             "title": "MembershipApplication",
             "description": "Application detail information"
@@ -6446,8 +5654,8 @@
           },
           "status": {
             "type": "string",
-            "enum": ["manual_approved"],
-            "example": "manual_approved",
+            "enum": ["approved"],
+            "example": "approved",
             "description": "New application status"
           },
           "approved_at": {
@@ -6492,6 +5700,11 @@
             "minLength": 1,
             "example": "リスクスコアが高すぎます",
             "description": "Rejection reason"
+          },
+          "note": {
+            "type": "string",
+            "example": "本人確認書類の有効期限切れを確認。",
+            "description": "Optional supplementary note"
           },
           "staff_id": {
             "type": "string",
@@ -24726,8 +23939,8 @@
                     },
                     "status": {
                       "type": "string",
-                      "enum": ["manual_approved"],
-                      "example": "manual_approved",
+                      "enum": ["approved"],
+                      "example": "approved",
                       "description": "New application status"
                     },
                     "approved_at": {
@@ -25002,6 +24215,236 @@
         }
       }
     },
+    "/crm/membership-applications/{id}/memos/{memoId}": {
+      "delete": {
+        "summary": "Delete memo from membership application",
+        "description": "Delete a memo from the activity timeline of a membership application",
+        "tags": ["Membership Applications"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Membership application ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "memoId",
+            "in": "path",
+            "required": true,
+            "description": "Memo ID to delete",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Memo deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Application or memo not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/membership-applications/{id}/memos": {
+      "post": {
+        "summary": "Add memo to membership application",
+        "description": "Add a new memo to the activity timeline of a membership application",
+        "tags": ["Membership Applications"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Membership application ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "メモのコンテンツ",
+                    "description": "Memo content"
+                  }
+                },
+                "required": ["content"],
+                "title": "CreateMemoRequest",
+                "description": "Request to create a memo for membership application"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Memo created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "tl-1234567890-memo",
+                      "description": "Created memo ID"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": ["memo"],
+                      "example": "memo",
+                      "description": "Entry type"
+                    },
+                    "date": {
+                      "type": "string",
+                      "example": "2026/03/30 09:15",
+                      "description": "Memo date and time"
+                    },
+                    "operator": {
+                      "type": "string",
+                      "example": "管理者A",
+                      "description": "Staff member who added the memo"
+                    },
+                    "content": {
+                      "type": "string",
+                      "example": "メモのコンテンツ",
+                      "description": "Memo content"
+                    }
+                  },
+                  "required": ["id", "kind", "date", "operator", "content"],
+                  "title": "CreateMemoResponse",
+                  "description": "Response for creating a memo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Application not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/membership-applications/{id}/reject": {
       "post": {
         "summary": "Reject membership application",
@@ -25030,6 +24473,11 @@
                     "minLength": 1,
                     "example": "リスクスコアが高すぎます",
                     "description": "Rejection reason"
+                  },
+                  "note": {
+                    "type": "string",
+                    "example": "本人確認書類の有効期限切れを確認。",
+                    "description": "Optional supplementary note"
                   },
                   "staff_id": {
                     "type": "string",
@@ -25191,299 +24639,267 @@
                       "properties": {
                         "id": {
                           "type": "string",
-                          "example": "APP-00001",
+                          "example": "APP-2026-0001",
                           "description": "Application ID"
                         },
                         "applicant_name": {
                           "type": "string",
-                          "example": "山田太郎",
+                          "example": "山田 太郎",
                           "description": "Applicant name"
-                        },
-                        "applied_at": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2024-01-15T12:30:00Z",
-                          "description": "Application date and time"
-                        },
-                        "elapsed_time": {
-                          "type": "string",
-                          "example": "3日9時間経過",
-                          "description": "Elapsed time since application"
-                        },
-                        "risk_score": {
-                          "type": "number",
-                          "minimum": 0,
-                          "maximum": 100,
-                          "example": 61,
-                          "description": "Risk score (0-100)"
-                        },
-                        "risk_reason": {
-                          "type": "string",
-                          "enum": [
-                            "blacklist_match",
-                            "duplicate_application",
-                            "payment_failure",
-                            "high_risk_score",
-                            "document_issue",
-                            "other"
-                          ],
-                          "example": "blacklist_match",
-                          "description": "Risk reason"
-                        },
-                        "plan_name": {
-                          "type": "string",
-                          "example": "通常会員",
-                          "description": "Plan name"
-                        },
-                        "scheduled_start_date": {
-                          "type": "string",
-                          "format": "date",
-                          "example": "2024-01-20",
-                          "description": "Scheduled start date"
                         },
                         "status": {
                           "type": "string",
-                          "enum": [
-                            "payment_failed",
-                            "pending",
-                            "auto_approved",
-                            "manual_approved",
-                            "rejected",
-                            "cancelled"
-                          ],
+                          "enum": ["pending", "review", "approved", "rejected", "cancelled"],
                           "example": "pending",
                           "description": "Application status"
                         },
-                        "payment_failed_deadline": {
+                        "blacklist_match": {
+                          "type": "boolean",
+                          "example": false,
+                          "description": "Whether applicant matched blacklist"
+                        },
+                        "brand_name": {
+                          "type": "string",
+                          "example": "FIT365",
+                          "description": "Brand name"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "example": "FIT365八潮店",
+                          "description": "Store name"
+                        },
+                        "plan_name": {
+                          "type": "string",
+                          "example": "レギュラー会員",
+                          "description": "Plan name"
+                        },
+                        "campaign": {
+                          "type": "string",
+                          "example": "春の入会キャンペーン",
+                          "description": "Campaign name (なし when none)"
+                        },
+                        "application_date": {
                           "type": "string",
                           "format": "date-time",
-                          "example": "2024-01-22T12:30:00Z",
-                          "description": "Payment failed deadline"
+                          "example": "2026-03-30T09:15:00+09:00",
+                          "description": "Application date and time"
                         },
-                        "pending_deadline": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2024-01-22T12:30:00Z",
-                          "description": "Pending deadline"
-                        },
-                        "gender": {
-                          "type": "string",
-                          "enum": ["male", "female", "other"],
-                          "example": "male",
-                          "description": "Gender"
-                        },
-                        "blood_type": {
-                          "type": "string",
-                          "enum": ["A", "B", "O", "AB", "unknown"],
-                          "example": "A",
-                          "description": "Blood type"
-                        },
-                        "birthday": {
+                        "start_date": {
                           "type": "string",
                           "format": "date",
-                          "example": "2000-01-01",
-                          "description": "Birthday (YYYY-MM-DD)"
+                          "example": "2026-04-01",
+                          "description": "Scheduled start date"
                         },
-                        "applicant_email": {
+                        "is_minor": {
+                          "type": "boolean",
+                          "example": false,
+                          "description": "Whether applicant is a minor"
+                        },
+                        "is_proxy": {
+                          "type": "boolean",
+                          "example": false,
+                          "description": "Whether this is a proxy application"
+                        },
+                        "applicant_kana": {
                           "type": "string",
-                          "format": "email",
-                          "example": "yamada.taro@example.com",
-                          "description": "Applicant email"
+                          "example": "ヤマダ タロウ",
+                          "description": "Applicant name (kana)"
                         },
-                        "applicant_phone": {
+                        "birth_date": {
+                          "type": "string",
+                          "example": "1990/01/15",
+                          "description": "Birth date (formatted)"
+                        },
+                        "age": {
+                          "type": "number",
+                          "example": 36,
+                          "description": "Age"
+                        },
+                        "gender_label": {
+                          "type": "string",
+                          "example": "男性",
+                          "description": "Gender label"
+                        },
+                        "phone": {
+                          "type": "string",
+                          "example": "090-****-5678",
+                          "description": "Phone (masked)"
+                        },
+                        "phone_real": {
                           "type": "string",
                           "example": "090-1234-5678",
-                          "description": "Applicant phone number"
+                          "description": "Phone (real)"
                         },
-                        "applicant_address": {
+                        "email_masked": {
+                          "type": "string",
+                          "example": "ya***@example.jp",
+                          "description": "Email (masked)"
+                        },
+                        "email_real": {
+                          "type": "string",
+                          "example": "yamada@example.jp",
+                          "description": "Email (real)"
+                        },
+                        "address": {
+                          "type": "string",
+                          "example": "東京都渋谷区***",
+                          "description": "Address (masked)"
+                        },
+                        "address_real": {
                           "type": "string",
                           "example": "東京都渋谷区1-2-3",
-                          "description": "Applicant address"
+                          "description": "Address (real)"
                         },
-                        "emergency_contact_name": {
-                          "type": "string",
-                          "example": "佐藤 太郎",
-                          "description": "Emergency contact name"
+                        "blacklist_conditions": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "BL match condition labels"
                         },
-                        "emergency_contact_relationship": {
+                        "usage_start_date": {
                           "type": "string",
-                          "example": "配偶者",
-                          "description": "Emergency contact relationship"
+                          "example": "2026/04/01",
+                          "description": "Usage start date (formatted)"
                         },
-                        "emergency_contact_phone": {
-                          "type": "string",
-                          "example": "090-8765-4321",
-                          "description": "Emergency contact phone"
+                        "monthly_fee": {
+                          "type": "number",
+                          "example": 7700,
+                          "description": "Monthly fee (yen)"
+                        },
+                        "options": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Selected options"
+                        },
+                        "fee_rows": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "label": {
+                                "type": "string"
+                              },
+                              "amount": {
+                                "type": "number"
+                              }
+                            },
+                            "required": ["label", "amount"]
+                          },
+                          "description": "Fee breakdown rows"
                         },
                         "payment_method": {
                           "type": "string",
-                          "enum": ["credit_card", "bank_transfer"],
-                          "title": "MembershipApplicationPaymentMethod",
-                          "description": "Payment method",
-                          "example": "credit_card"
+                          "example": "クレジットカード",
+                          "description": "Payment method label"
                         },
-                        "payment_status": {
+                        "card_last4": {
                           "type": "string",
-                          "enum": ["pending", "paid", "failed"],
-                          "title": "MembershipApplicationPaymentStatus",
-                          "description": "Payment status",
-                          "example": "pending"
+                          "example": "1234",
+                          "description": "Card last 4 digits"
                         },
-                        "risk_details": {
+                        "application_source": {
+                          "type": "string",
+                          "example": "アプリ",
+                          "description": "Application source"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026/03/30 09:20",
+                          "description": "Last updated (formatted)"
+                        },
+                        "parental_consent": {
+                          "type": "boolean",
+                          "example": false,
+                          "description": "Parental consent confirmed"
+                        },
+                        "proxy_applicant": {
+                          "type": "string",
+                          "example": "管理者A（STAFF-001）",
+                          "description": "Proxy applicant name"
+                        },
+                        "agreement_date": {
+                          "type": "string",
+                          "example": "2026/03/30 09:00",
+                          "description": "Agreement date (formatted)"
+                        },
+                        "approved_by": {
+                          "type": "string",
+                          "example": "管理者A",
+                          "description": "Approver name"
+                        },
+                        "approved_at": {
+                          "type": "string",
+                          "example": "2026/03/30 10:30",
+                          "description": "Approval date (formatted)"
+                        },
+                        "rejected_by": {
+                          "type": "string",
+                          "example": "管理者B",
+                          "description": "Rejector name"
+                        },
+                        "rejected_at": {
+                          "type": "string",
+                          "example": "2026/03/30 10:45",
+                          "description": "Rejection date (formatted)"
+                        },
+                        "rejected_reason": {
+                          "type": "string",
+                          "example": "本人確認不備",
+                          "description": "Rejection reason"
+                        },
+                        "timeline": {
                           "type": "array",
                           "items": {
                             "type": "object",
                             "properties": {
-                              "reason": {
-                                "type": "string"
+                              "id": {
+                                "type": "string",
+                                "example": "tl-001",
+                                "description": "Entry ID"
                               },
-                              "score": {
-                                "type": "number"
+                              "kind": {
+                                "type": "string",
+                                "enum": ["system", "memo"],
+                                "example": "system",
+                                "description": "Entry kind"
                               },
-                              "description": {
-                                "type": "string"
+                              "date": {
+                                "type": "string",
+                                "example": "2026/03/30 09:15",
+                                "description": "Date/time string (formatted)"
+                              },
+                              "operator": {
+                                "type": "string",
+                                "example": "管理者A",
+                                "description": "Operator name"
+                              },
+                              "content": {
+                                "type": "string",
+                                "example": "申請受付（アプリ経由）",
+                                "description": "Entry content"
                               }
                             },
-                            "required": ["reason", "score", "description"]
+                            "required": ["id", "kind", "date", "operator", "content"],
+                            "title": "TimelineEntry",
+                            "description": "A single activity timeline entry"
                           },
-                          "description": "Detailed risk information"
-                        },
-                        "documents": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string"
-                              },
-                              "url": {
-                                "type": "string"
-                              },
-                              "verified": {
-                                "type": "boolean"
-                              }
-                            },
-                            "required": ["type", "url", "verified"]
-                          },
-                          "description": "Application documents"
-                        },
-                        "contract_details": {
-                          "type": "object",
-                          "properties": {
-                            "plan_id": {
-                              "type": "string"
-                            },
-                            "plan_name": {
-                              "type": "string"
-                            },
-                            "start_date": {
-                              "type": "string",
-                              "format": "date"
-                            },
-                            "monthly_fee": {
-                              "type": "number"
-                            },
-                            "contract_period": {
-                              "type": "number"
-                            },
-                            "option_ids": {
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              }
-                            }
-                          },
-                          "required": [
-                            "plan_id",
-                            "plan_name",
-                            "start_date",
-                            "monthly_fee",
-                            "contract_period"
-                          ],
-                          "description": "Contract details"
-                        },
-                        "ekyc": {
-                          "type": "object",
-                          "properties": {
-                            "verified": {
-                              "type": "boolean",
-                              "example": true,
-                              "description": "eKYC総合判定"
-                            },
-                            "verified_at": {
-                              "type": "string",
-                              "format": "date-time",
-                              "example": "2024-01-15T10:30:00Z",
-                              "description": "検証日時"
-                            },
-                            "face_photo_url": {
-                              "type": "string",
-                              "format": "uri",
-                              "example": "https://example.com/photos/face_001.jpg",
-                              "description": "顔写真（申請者撮影）URL"
-                            },
-                            "id_document_url": {
-                              "type": "string",
-                              "format": "uri",
-                              "example": "https://example.com/photos/id_001.jpg",
-                              "description": "本人確認書類アップロード画像URL"
-                            },
-                            "document_type": {
-                              "type": "string",
-                              "example": "運転免許証",
-                              "description": "本人確認書類種別"
-                            },
-                            "face_match": {
-                              "type": "object",
-                              "properties": {
-                                "similarity": {
-                                  "type": "number",
-                                  "minimum": 0,
-                                  "maximum": 100,
-                                  "example": 92.5,
-                                  "description": "顔認証類似度（%）"
-                                },
-                                "passed": {
-                                  "type": "boolean",
-                                  "example": true,
-                                  "description": "顔認証判定結果"
-                                }
-                              },
-                              "required": ["similarity", "passed"],
-                              "description": "顔認証結果"
-                            },
-                            "blacklist_check": {
-                              "type": "object",
-                              "properties": {
-                                "matched": {
-                                  "type": "boolean",
-                                  "example": false,
-                                  "description": "ブラックリスト一致有無"
-                                },
-                                "reason": {
-                                  "type": "string",
-                                  "example": "過去に不正利用の記録あり",
-                                  "description": "一致理由"
-                                }
-                              },
-                              "required": ["matched"],
-                              "description": "ブラックリストチェック結果"
-                            }
-                          },
-                          "required": ["verified"],
-                          "title": "EkycResult",
-                          "description": "eKYC verification result"
+                          "description": "Activity timeline"
                         }
                       },
                       "required": [
                         "id",
                         "applicant_name",
-                        "applied_at",
-                        "risk_score",
-                        "risk_reason",
+                        "status",
+                        "blacklist_match",
+                        "brand_name",
+                        "store_name",
                         "plan_name",
-                        "scheduled_start_date",
-                        "status"
+                        "campaign",
+                        "application_date",
+                        "start_date"
                       ],
                       "title": "MembershipApplication",
                       "description": "Application detail information"
@@ -25537,341 +24953,414 @@
             }
           }
         }
-      },
-      "patch": {
-        "summary": "Update membership application detail",
-        "description": "Edit membership application data (basic info, contacts, contract). Immutable fields are ignored.",
+      }
+    },
+    "/crm/membership-applications/blacklist-check": {
+      "post": {
+        "summary": "Blacklist check",
         "tags": ["Membership Applications"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "Membership application ID",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "requestBody": {
-          "description": "Editable membership application fields",
+          "description": "Applicant info for BL check",
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "basic": {
+                  "last_name_kanji": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "山田"
+                  },
+                  "first_name_kanji": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "太郎"
+                  },
+                  "last_name_kana": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "ヤマダ"
+                  },
+                  "first_name_kana": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "タロウ"
+                  },
+                  "date_of_birth": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "1990-01-01"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "enum": ["male", "female", "other"],
+                    "example": "male"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "090-1234-5678"
+                  },
+                  "email": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "format": "email",
+                    "example": "taro@example.com"
+                  },
+                  "address": {
+                    "type": "string",
+                    "maxLength": 1000,
+                    "example": "東京都渋谷区1-1-1"
+                  }
+                },
+                "required": [
+                  "last_name_kanji",
+                  "first_name_kanji",
+                  "last_name_kana",
+                  "first_name_kana",
+                  "date_of_birth",
+                  "gender",
+                  "phone",
+                  "email"
+                ],
+                "title": "BlacklistCheckRequest",
+                "description": "Blacklist check request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Blacklist check result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "checked": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "matched": {
+                      "type": "boolean",
+                      "example": false
+                    }
+                  },
+                  "required": ["checked", "matched"],
+                  "title": "BlacklistCheckResponse",
+                  "description": "Blacklist check result"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/membership-applications/corporate-masters": {
+      "get": {
+        "summary": "Get corporate masters",
+        "tags": ["Membership Applications"],
+        "responses": {
+          "200": {
+            "description": "List of corporate masters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["id", "name", "code"],
+                        "title": "CorporateMaster"
+                      }
+                    }
+                  },
+                  "required": ["items"],
+                  "title": "GetCorporateMastersResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/membership-applications/direct": {
+      "post": {
+        "summary": "Submit direct enrollment application",
+        "tags": ["Membership Applications"],
+        "requestBody": {
+          "description": "Direct enrollment request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "application_type": {
+                    "type": "string",
+                    "enum": ["normal", "employee_discount", "corporate", "special_contract"],
+                    "title": "ApplicationType",
+                    "description": "Enrollment application type"
+                  },
+                  "applicant": {
                     "type": "object",
                     "properties": {
-                      "applicant_name": {
+                      "last_name_kanji": {
                         "type": "string",
                         "minLength": 1,
-                        "example": "山田太郎",
-                        "description": "Applicant name"
+                        "maxLength": 255
+                      },
+                      "first_name_kanji": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 255
+                      },
+                      "last_name_kana": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 255,
+                        "pattern": "^[\\u30A0-\\u30FF\\s]+$"
+                      },
+                      "first_name_kana": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 255,
+                        "pattern": "^[\\u30A0-\\u30FF\\s]+$"
+                      },
+                      "date_of_birth": {
+                        "type": "string",
+                        "minLength": 1,
+                        "format": "date"
                       },
                       "gender": {
                         "type": "string",
-                        "enum": ["male", "female", "other", "unknown"],
-                        "example": "male",
-                        "description": "Gender"
+                        "enum": ["male", "female", "other"]
                       },
-                      "blood_type": {
+                      "phone": {
                         "type": "string",
-                        "enum": ["A", "B", "O", "AB", "unknown"],
-                        "example": "A",
-                        "description": "Blood type"
+                        "minLength": 1,
+                        "maxLength": 255
                       },
-                      "birthday": {
+                      "email": {
                         "type": "string",
-                        "format": "date",
-                        "example": "2000-01-01",
-                        "description": "Birthday (YYYY-MM-DD)"
+                        "minLength": 1,
+                        "maxLength": 255,
+                        "format": "email"
+                      },
+                      "address": {
+                        "type": "string",
+                        "maxLength": 1000
+                      },
+                      "face_photo_url": {
+                        "type": "string",
+                        "minLength": 1,
+                        "format": "uri"
                       }
                     },
-                    "description": "Basic info"
-                  },
-                  "contact": {
-                    "type": "object",
-                    "properties": {
-                      "applicant_address": {
-                        "type": "string",
-                        "example": "東京都渋谷区1-2-3",
-                        "description": "Address"
-                      },
-                      "applicant_phone": {
-                        "type": "string",
-                        "example": "090-1234-5678",
-                        "description": "Phone"
-                      },
-                      "applicant_email": {
-                        "type": "string",
-                        "format": "email",
-                        "example": "yamada.taro@example.com",
-                        "description": "Email"
-                      },
-                      "emergency_contact_name": {
-                        "type": "string",
-                        "example": "佐藤 太郎",
-                        "description": "Emergency contact name"
-                      },
-                      "emergency_contact_relationship": {
-                        "type": "string",
-                        "example": "配偶者",
-                        "description": "Emergency contact relationship"
-                      },
-                      "emergency_contact_phone": {
-                        "type": "string",
-                        "example": "090-8765-4321",
-                        "description": "Emergency contact phone"
-                      }
-                    },
-                    "description": "Contact info"
+                    "required": [
+                      "last_name_kanji",
+                      "first_name_kanji",
+                      "last_name_kana",
+                      "first_name_kana",
+                      "date_of_birth",
+                      "gender",
+                      "phone",
+                      "email",
+                      "face_photo_url"
+                    ],
+                    "title": "DirectEnrollmentApplicant"
                   },
                   "contract": {
                     "type": "object",
                     "properties": {
-                      "start_date": {
+                      "brand": {
                         "type": "string",
-                        "format": "date",
-                        "example": "2024-01-20",
-                        "description": "Scheduled start date (YYYY-MM-DD)"
+                        "enum": ["FIT365", "JOYFIT"]
+                      },
+                      "store_id": {
+                        "type": "string",
+                        "minLength": 1
                       },
                       "plan_id": {
                         "type": "string",
-                        "example": "plan-001",
-                        "description": "Plan ID"
+                        "minLength": 1
                       },
-                      "plan_name": {
+                      "start_date": {
                         "type": "string",
-                        "example": "通常会員",
-                        "description": "Plan name"
+                        "minLength": 1,
+                        "format": "date"
                       },
-                      "option_ids": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        },
-                        "example": ["opt-001", "opt-002"],
-                        "description": "Option IDs"
+                      "campaign_id": {
+                        "type": "string"
                       },
-                      "recalculate_fee": {
-                        "type": "boolean",
-                        "example": false,
-                        "description": "Whether to recalculate fee"
+                      "payment_method": {
+                        "type": "string",
+                        "enum": ["credit_card", "bank_transfer"]
                       }
                     },
-                    "description": "Contract info"
+                    "required": ["brand", "store_id", "plan_id", "start_date", "payment_method"],
+                    "title": "DirectEnrollmentContract"
+                  },
+                  "corporate": {
+                    "type": "object",
+                    "properties": {
+                      "corporate_id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "billing_pattern": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "enrollment_fee_bearer": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": ["corporate_id", "billing_pattern", "enrollment_fee_bearer"],
+                    "title": "DirectEnrollmentCorporate"
+                  },
+                  "employee_discount": {
+                    "type": "object",
+                    "properties": {
+                      "partner_company_id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "employee_number": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 255
+                      },
+                      "employee_id_verified": {
+                        "type": "boolean",
+                        "enum": [true]
+                      },
+                      "employment_cert_verified": {
+                        "type": "boolean",
+                        "enum": [true]
+                      },
+                      "employee_id_image_url": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "employment_cert_image_url": {
+                        "type": "string",
+                        "format": "uri"
+                      }
+                    },
+                    "required": [
+                      "partner_company_id",
+                      "employee_number",
+                      "employee_id_verified",
+                      "employment_cert_verified"
+                    ],
+                    "title": "DirectEnrollmentEmployeeDiscount"
+                  },
+                  "fees": {
+                    "type": "object",
+                    "properties": {
+                      "enrollment_fee_master_id": {
+                        "type": "string"
+                      },
+                      "enrollment_fee_amount": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "registration_fee": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "card_issuance_fee": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "first_month_fee_prorated": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "next_month_fee": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    },
+                    "title": "DirectEnrollmentFees"
                   }
                 },
-                "title": "UpdateMembershipApplicationRequest",
-                "description": "Request payload for editing membership application"
+                "required": ["application_type", "applicant", "contract", "fees"],
+                "title": "DirectEnrollmentRequest",
+                "description": "Direct enrollment request body"
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Application updated successfully",
+          "201": {
+            "description": "Application created",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": true,
-                      "description": "Whether the operation was successful"
+                    "applicationId": {
+                      "type": "string",
+                      "example": "APP-DIRECT-1234567890"
                     },
-                    "application": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "nullable": true
-                      },
-                      "description": "Updated application (shape follows detail response)"
+                    "memberId": {
+                      "type": "string",
+                      "example": "MBR-DIRECT-1234567890"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": ["pending"]
                     }
                   },
-                  "required": ["success", "application"],
-                  "title": "UpdateMembershipApplicationResponse",
-                  "description": "Response for editing membership application"
+                  "required": ["applicationId", "memberId", "status"],
+                  "title": "DirectEnrollmentResponse",
+                  "description": "Direct enrollment response"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request - invalid request body",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Invalid email or password",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Application not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Invalid email or password",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Invalid email or password",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/crm/membership-applications/bulk-approve": {
-      "post": {
-        "summary": "Bulk approve membership applications",
-        "description": "Approve multiple membership applications at once",
-        "tags": ["Membership Applications"],
-        "requestBody": {
-          "description": "List of application IDs to approve",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "application_ids": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "minItems": 1,
-                    "example": ["APP-00001", "APP-00002"],
-                    "description": "List of application IDs to approve"
-                  },
-                  "approval_reason": {
-                    "type": "string",
-                    "example": "一括承認",
-                    "description": "Approval reason"
-                  }
-                },
-                "required": ["application_ids"],
-                "title": "BulkApproveRequest",
-                "description": "Request payload for bulk approval"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Bulk approval results",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": true,
-                      "description": "Whether the operation was successful"
-                    },
-                    "results": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "application_id": {
-                            "type": "string",
-                            "example": "APP-00001",
-                            "description": "Application ID"
-                          },
-                          "approved": {
-                            "type": "boolean",
-                            "example": true,
-                            "description": "Whether the application was approved"
-                          },
-                          "approved_at": {
-                            "type": "string",
-                            "format": "date-time",
-                            "example": "2024-01-15T12:30:00Z",
-                            "description": "Approval date and time"
-                          }
-                        },
-                        "required": ["application_id", "approved", "approved_at"],
-                        "title": "BulkApproveResult",
-                        "description": "Bulk approve result for a single application"
-                      },
-                      "description": "Bulk approve results"
-                    },
-                    "summary": {
-                      "type": "object",
-                      "properties": {
-                        "total": {
-                          "type": "number",
-                          "example": 2,
-                          "description": "Total number of applications"
-                        },
-                        "approved": {
-                          "type": "number",
-                          "example": 2,
-                          "description": "Number of approved applications"
-                        },
-                        "failed": {
-                          "type": "number",
-                          "example": 0,
-                          "description": "Number of failed applications"
-                        }
-                      },
-                      "required": ["total", "approved", "failed"],
-                      "description": "Summary of bulk approve results"
-                    },
-                    "approval_reason": {
-                      "type": "string",
-                      "example": "一括承認",
-                      "description": "Approval reason"
-                    }
-                  },
-                  "required": ["success", "results", "summary"],
-                  "title": "BulkApproveResponse",
-                  "description": "Response for bulk approve operation"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request - invalid request body",
+            "description": "Bad request",
             "content": {
               "application/json": {
                 "schema": {
@@ -25890,8 +25379,8 @@
               }
             }
           },
-          "500": {
-            "description": "Internal server error",
+          "409": {
+            "description": "Duplicate active member by email",
             "content": {
               "application/json": {
                 "schema": {
@@ -25913,154 +25402,101 @@
         }
       }
     },
-    "/crm/membership-applications/bulk-reject": {
-      "post": {
-        "summary": "Bulk reject membership applications",
-        "description": "Reject multiple membership applications at once",
+    "/crm/membership-applications/enrollment-fee-masters": {
+      "get": {
+        "summary": "Get enrollment fee masters",
         "tags": ["Membership Applications"],
-        "requestBody": {
-          "description": "List of application IDs to reject",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "application_ids": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "minItems": 1,
-                    "example": ["APP-00001", "APP-00002"],
-                    "description": "List of application IDs to reject"
-                  },
-                  "rejection_reason": {
-                    "type": "string",
-                    "minLength": 1,
-                    "example": "リスクスコアが高すぎます",
-                    "description": "Rejection reason"
-                  },
-                  "staff_id": {
-                    "type": "string",
-                    "example": "staff-001",
-                    "description": "Staff ID who rejected"
-                  }
-                },
-                "required": ["application_ids", "rejection_reason"],
-                "title": "BulkRejectRequest",
-                "description": "Request payload for bulk rejection"
-              }
-            }
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "JOYFIT",
+              "description": "Filter by brand"
+            },
+            "required": false,
+            "description": "Filter by brand",
+            "name": "brand",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "normal",
+              "description": "Filter by application type"
+            },
+            "required": false,
+            "description": "Filter by application type",
+            "name": "applicationType",
+            "in": "query"
           }
-        },
+        ],
         "responses": {
           "200": {
-            "description": "Bulk rejection results",
+            "description": "List of enrollment fee masters",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": true,
-                      "description": "Whether the operation was successful"
-                    },
-                    "results": {
+                    "items": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "properties": {
-                          "application_id": {
+                          "id": {
                             "type": "string",
-                            "example": "APP-00001",
-                            "description": "Application ID"
+                            "example": "EF001",
+                            "description": "Fee master ID"
                           },
-                          "rejected": {
+                          "name": {
+                            "type": "string",
+                            "example": "標準入会金",
+                            "description": "Fee name"
+                          },
+                          "amount": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "example": 2200,
+                            "description": "Fee amount (JPY, tax-included)"
+                          },
+                          "brand": {
+                            "type": "string",
+                            "example": "JOYFIT",
+                            "description": "Brand (JOYFIT / FIT365 / 共通)"
+                          },
+                          "application_type": {
+                            "type": "string",
+                            "example": "normal",
+                            "description": "Application type"
+                          },
+                          "isActive": {
                             "type": "boolean",
                             "example": true,
-                            "description": "Whether the application was rejected"
-                          },
-                          "rejected_at": {
-                            "type": "string",
-                            "format": "date-time",
-                            "example": "2024-01-15T12:30:00Z",
-                            "description": "Rejection date and time"
-                          },
-                          "error": {
-                            "type": "string",
-                            "example": "Application not found",
-                            "description": "Error message if rejection failed for this item"
+                            "description": "Whether this master is active"
                           }
                         },
-                        "required": ["application_id", "rejected"],
-                        "title": "BulkRejectResult",
-                        "description": "Bulk reject result for a single application"
-                      },
-                      "description": "Bulk reject results"
-                    },
-                    "summary": {
-                      "type": "object",
-                      "properties": {
-                        "total": {
-                          "type": "number",
-                          "example": 2,
-                          "description": "Total number of applications"
-                        },
-                        "rejected": {
-                          "type": "number",
-                          "example": 2,
-                          "description": "Number of rejected applications"
-                        },
-                        "failed": {
-                          "type": "number",
-                          "example": 0,
-                          "description": "Number of failed applications"
-                        }
-                      },
-                      "required": ["total", "rejected", "failed"],
-                      "description": "Summary of bulk reject results"
-                    },
-                    "rejection_reason": {
-                      "type": "string",
-                      "example": "リスクスコアが高すぎます",
-                      "description": "Rejection reason"
-                    },
-                    "rejected_by": {
-                      "type": "string",
-                      "example": "staff-001",
-                      "description": "Staff ID who rejected"
+                        "required": [
+                          "id",
+                          "name",
+                          "amount",
+                          "brand",
+                          "application_type",
+                          "isActive"
+                        ],
+                        "title": "EnrollmentFeeMaster",
+                        "description": "Enrollment fee master record"
+                      }
                     }
                   },
-                  "required": ["success", "results", "summary", "rejection_reason", "rejected_by"],
-                  "title": "BulkRejectResponse",
-                  "description": "Response for bulk reject operation"
+                  "required": ["items"],
+                  "title": "GetEnrollmentFeeMastersResponse",
+                  "description": "List of enrollment fee masters"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad request - invalid request body",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
+            "description": "Bad request",
             "content": {
               "application/json": {
                 "schema": {
@@ -26119,14 +25555,7 @@
           {
             "schema": {
               "type": "string",
-              "enum": [
-                "payment_failed",
-                "pending",
-                "auto_approved",
-                "manual_approved",
-                "rejected",
-                "cancelled"
-              ],
+              "enum": ["pending", "review", "approved", "rejected", "cancelled"],
               "example": "pending",
               "description": "Filter by status"
             },
@@ -26138,28 +25567,66 @@
           {
             "schema": {
               "type": "string",
-              "enum": [
-                "blacklist_match",
-                "duplicate_application",
-                "payment_failure",
-                "high_risk_score",
-                "document_issue",
-                "other"
-              ],
-              "example": "blacklist_match",
-              "description": "Filter by risk reason"
+              "example": "FIT365",
+              "description": "Filter by brand name"
             },
             "required": false,
-            "description": "Filter by risk reason",
-            "name": "risk_reason",
+            "description": "Filter by brand name",
+            "name": "brand",
             "in": "query"
           },
           {
             "schema": {
               "type": "string",
-              "enum": ["applied_at", "risk_score", "pending_deadline"],
-              "default": "applied_at",
-              "example": "applied_at",
+              "example": "FIT365八潮店",
+              "description": "Filter by store name"
+            },
+            "required": false,
+            "description": "Filter by store name",
+            "name": "store",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["all", "match", "no_match"],
+              "default": "all",
+              "example": "all",
+              "description": "Filter by blacklist match"
+            },
+            "required": false,
+            "description": "Filter by blacklist match",
+            "name": "blacklist",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "2026-03-24",
+              "description": "Application date range start (YYYY-MM-DD)"
+            },
+            "required": false,
+            "description": "Application date range start (YYYY-MM-DD)",
+            "name": "date_from",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "2026-03-30",
+              "description": "Application date range end (YYYY-MM-DD)"
+            },
+            "required": false,
+            "description": "Application date range end (YYYY-MM-DD)",
+            "name": "date_to",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["application_date"],
+              "default": "application_date",
+              "example": "application_date",
               "description": "Sort field"
             },
             "required": false,
@@ -26184,10 +25651,10 @@
             "schema": {
               "type": "string",
               "example": "山田",
-              "description": "Search query"
+              "description": "Search query (ID or name)"
             },
             "required": false,
-            "description": "Search query",
+            "description": "Search query (ID or name)",
             "name": "search",
             "in": "query"
           }
@@ -26207,94 +25674,82 @@
                         "properties": {
                           "id": {
                             "type": "string",
-                            "example": "APP-00001",
+                            "example": "APP-2026-0001",
                             "description": "Application ID"
                           },
                           "applicant_name": {
                             "type": "string",
-                            "example": "山田太郎",
+                            "example": "山田 太郎",
                             "description": "Applicant name"
-                          },
-                          "applied_at": {
-                            "type": "string",
-                            "format": "date-time",
-                            "example": "2024-01-15T12:30:00Z",
-                            "description": "Application date and time"
-                          },
-                          "elapsed_time": {
-                            "type": "string",
-                            "example": "3日9時間経過",
-                            "description": "Elapsed time since application"
-                          },
-                          "risk_score": {
-                            "type": "number",
-                            "minimum": 0,
-                            "maximum": 100,
-                            "example": 61,
-                            "description": "Risk score (0-100)"
-                          },
-                          "risk_reason": {
-                            "type": "string",
-                            "enum": [
-                              "blacklist_match",
-                              "duplicate_application",
-                              "payment_failure",
-                              "high_risk_score",
-                              "document_issue",
-                              "other"
-                            ],
-                            "example": "blacklist_match",
-                            "description": "Risk reason"
-                          },
-                          "plan_name": {
-                            "type": "string",
-                            "example": "通常会員",
-                            "description": "Plan name"
-                          },
-                          "scheduled_start_date": {
-                            "type": "string",
-                            "format": "date",
-                            "example": "2024-01-20",
-                            "description": "Scheduled start date"
                           },
                           "status": {
                             "type": "string",
-                            "enum": [
-                              "payment_failed",
-                              "pending",
-                              "auto_approved",
-                              "manual_approved",
-                              "rejected",
-                              "cancelled"
-                            ],
+                            "enum": ["pending", "review", "approved", "rejected", "cancelled"],
                             "example": "pending",
                             "description": "Application status"
                           },
-                          "payment_failed_deadline": {
-                            "type": "string",
-                            "format": "date-time",
-                            "example": "2024-01-22T12:30:00Z",
-                            "description": "Payment failed deadline"
+                          "blacklist_match": {
+                            "type": "boolean",
+                            "example": false,
+                            "description": "Whether applicant matched blacklist"
                           },
-                          "pending_deadline": {
+                          "brand_name": {
+                            "type": "string",
+                            "example": "FIT365",
+                            "description": "Brand name"
+                          },
+                          "store_name": {
+                            "type": "string",
+                            "example": "FIT365八潮店",
+                            "description": "Store name"
+                          },
+                          "plan_name": {
+                            "type": "string",
+                            "example": "レギュラー会員",
+                            "description": "Plan name"
+                          },
+                          "campaign": {
+                            "type": "string",
+                            "example": "春の入会キャンペーン",
+                            "description": "Campaign name (なし when none)"
+                          },
+                          "application_date": {
                             "type": "string",
                             "format": "date-time",
-                            "example": "2024-01-22T12:30:00Z",
-                            "description": "Pending deadline"
+                            "example": "2026-03-30T09:15:00+09:00",
+                            "description": "Application date and time"
+                          },
+                          "start_date": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2026-04-01",
+                            "description": "Scheduled start date"
+                          },
+                          "is_minor": {
+                            "type": "boolean",
+                            "example": false,
+                            "description": "Whether applicant is a minor"
+                          },
+                          "is_proxy": {
+                            "type": "boolean",
+                            "example": false,
+                            "description": "Whether this is a proxy application"
                           }
                         },
                         "required": [
                           "id",
                           "applicant_name",
-                          "applied_at",
-                          "risk_score",
-                          "risk_reason",
+                          "status",
+                          "blacklist_match",
+                          "brand_name",
+                          "store_name",
                           "plan_name",
-                          "scheduled_start_date",
-                          "status"
+                          "campaign",
+                          "application_date",
+                          "start_date"
                         ],
                         "title": "MembershipApplication",
-                        "description": "Membership application information"
+                        "description": "Membership application list item"
                       },
                       "description": "List of membership applications"
                     },
@@ -26330,443 +25785,6 @@
                   "required": ["applications", "pagination"],
                   "title": "GetMembershipApplicationsResponse",
                   "description": "Response for getting membership applications"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request - invalid query parameters",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Auto-judge membership applications",
-        "description": "Execute auto-judge on multiple membership applications",
-        "tags": ["Membership Applications"],
-        "requestBody": {
-          "description": "List of application IDs to auto-judge",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "application_ids": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "minItems": 1,
-                    "example": ["APP-00001", "APP-00002"],
-                    "description": "List of application IDs to auto-judge"
-                  }
-                },
-                "required": ["application_ids"],
-                "title": "AutoJudgeRequest",
-                "description": "Request payload for auto-judge"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Auto-judge results",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "results": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "application_id": {
-                            "type": "string",
-                            "example": "APP-00001",
-                            "description": "Application ID"
-                          },
-                          "approved": {
-                            "type": "boolean",
-                            "example": true,
-                            "description": "Whether the application was approved"
-                          },
-                          "risk_score": {
-                            "type": "number",
-                            "minimum": 0,
-                            "maximum": 100,
-                            "example": 45,
-                            "description": "Risk score"
-                          },
-                          "reason": {
-                            "type": "string",
-                            "example": "自動承認",
-                            "description": "Reason for the decision"
-                          }
-                        },
-                        "required": ["application_id", "approved", "risk_score", "reason"],
-                        "title": "AutoJudgeResult",
-                        "description": "Auto-judge result for a single application"
-                      },
-                      "description": "Auto-judge results"
-                    },
-                    "summary": {
-                      "type": "object",
-                      "properties": {
-                        "total": {
-                          "type": "number",
-                          "example": 2,
-                          "description": "Total number of applications"
-                        },
-                        "approved": {
-                          "type": "number",
-                          "example": 1,
-                          "description": "Number of approved applications"
-                        },
-                        "rejected": {
-                          "type": "number",
-                          "example": 1,
-                          "description": "Number of rejected applications"
-                        }
-                      },
-                      "required": ["total", "approved", "rejected"],
-                      "description": "Summary of auto-judge results"
-                    }
-                  },
-                  "required": ["results", "summary"],
-                  "title": "AutoJudgeResponse",
-                  "description": "Response for auto-judge operation"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request - invalid request body",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/crm/membership-applications/summary": {
-      "get": {
-        "summary": "Get membership applications summary",
-        "description": "Get summary statistics and alerts for membership applications",
-        "tags": ["Membership Applications"],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "enum": ["day", "week", "month"],
-              "default": "month",
-              "example": "month",
-              "description": "Time period"
-            },
-            "required": false,
-            "description": "Time period",
-            "name": "period",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "format": "date",
-              "example": "2024-01-01",
-              "description": "Start date (overrides period)"
-            },
-            "required": false,
-            "description": "Start date (overrides period)",
-            "name": "start_date",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "format": "date",
-              "example": "2024-01-31",
-              "description": "End date (overrides period)"
-            },
-            "required": false,
-            "description": "End date (overrides period)",
-            "name": "end_date",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Summary and alerts",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "summary": {
-                      "type": "object",
-                      "properties": {
-                        "total_applications": {
-                          "type": "number",
-                          "example": 1234,
-                          "description": "Total number of applications"
-                        },
-                        "auto_approval_rate": {
-                          "type": "number",
-                          "example": 82.5,
-                          "description": "Auto approval rate (%)"
-                        },
-                        "auto_approval_count": {
-                          "type": "number",
-                          "example": 678,
-                          "description": "Number of auto-approved applications"
-                        },
-                        "avg_processing_time": {
-                          "type": "string",
-                          "example": "1h23m",
-                          "description": "Average processing time"
-                        },
-                        "payment_failed_count": {
-                          "type": "number",
-                          "example": 3,
-                          "description": "Number of payment failed applications"
-                        },
-                        "payment_failed_deadline": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2024-01-31T23:59:59Z",
-                          "description": "Payment failed deadline"
-                        },
-                        "pending_count": {
-                          "type": "number",
-                          "example": 12,
-                          "description": "Number of pending applications"
-                        },
-                        "pending_deadline": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2024-01-31T23:59:59Z",
-                          "description": "Pending deadline"
-                        },
-                        "risk_reasons_breakdown": {
-                          "type": "object",
-                          "properties": {
-                            "blacklist_match": {
-                              "type": "number",
-                              "example": 2,
-                              "description": "Blacklist match count"
-                            },
-                            "duplicate_application": {
-                              "type": "number",
-                              "example": 5,
-                              "description": "Duplicate application count"
-                            },
-                            "payment_failure": {
-                              "type": "number",
-                              "example": 3,
-                              "description": "Payment failure count"
-                            },
-                            "high_risk_score": {
-                              "type": "number",
-                              "example": 2,
-                              "description": "High risk score count"
-                            },
-                            "document_issue": {
-                              "type": "number",
-                              "example": 0,
-                              "description": "Document issue count"
-                            },
-                            "other": {
-                              "type": "number",
-                              "example": 0,
-                              "description": "Other risk reasons count"
-                            }
-                          },
-                          "required": [
-                            "blacklist_match",
-                            "duplicate_application",
-                            "payment_failure",
-                            "high_risk_score",
-                            "document_issue",
-                            "other"
-                          ],
-                          "title": "RiskReasonsBreakdown",
-                          "description": "Breakdown of risk reasons"
-                        },
-                        "auto_approved_today_count": {
-                          "type": "number",
-                          "example": 163,
-                          "description": "Number of auto-approved applications today"
-                        },
-                        "auto_approved_today_rate": {
-                          "type": "number",
-                          "example": 85,
-                          "description": "Auto approval rate today (%)"
-                        },
-                        "manual_approved_count": {
-                          "type": "number",
-                          "example": 21,
-                          "description": "Number of manually approved applications"
-                        },
-                        "rejected_count": {
-                          "type": "number",
-                          "example": 1,
-                          "description": "Total number of rejected applications"
-                        },
-                        "rejected_auto_count": {
-                          "type": "number",
-                          "example": 0,
-                          "description": "Number of auto-rejected applications"
-                        },
-                        "rejected_manual_count": {
-                          "type": "number",
-                          "example": 1,
-                          "description": "Number of manually rejected applications"
-                        },
-                        "date_range_start": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2024-01-01T00:00:00Z",
-                          "description": "Date range start"
-                        },
-                        "date_range_end": {
-                          "type": "string",
-                          "format": "date-time",
-                          "example": "2024-01-31T23:59:59Z",
-                          "description": "Date range end"
-                        }
-                      },
-                      "required": [
-                        "total_applications",
-                        "auto_approval_rate",
-                        "auto_approval_count",
-                        "avg_processing_time",
-                        "payment_failed_count",
-                        "pending_count",
-                        "risk_reasons_breakdown",
-                        "auto_approved_today_count",
-                        "auto_approved_today_rate",
-                        "manual_approved_count",
-                        "rejected_count",
-                        "rejected_auto_count",
-                        "rejected_manual_count",
-                        "date_range_start",
-                        "date_range_end"
-                      ],
-                      "title": "MembershipApplicationSummary",
-                      "description": "Summary information"
-                    },
-                    "alerts": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "title": {
-                            "type": "string",
-                            "example": "要確認の入会申し込みが12件あります。",
-                            "description": "Alert title"
-                          },
-                          "description": {
-                            "type": "string",
-                            "example": "承認もしくは却下の操作を行なってください。",
-                            "description": "Alert description"
-                          },
-                          "type": {
-                            "type": "string",
-                            "enum": ["payment_failed", "pending", "high_risk", "all"],
-                            "example": "pending",
-                            "description": "Alert type"
-                          },
-                          "count": {
-                            "type": "number",
-                            "example": 12,
-                            "description": "Number of items"
-                          },
-                          "deadline": {
-                            "type": "string",
-                            "format": "date-time",
-                            "example": "2024-01-31T23:59:59Z",
-                            "description": "Deadline"
-                          }
-                        },
-                        "required": ["title", "description", "type", "count"],
-                        "title": "MembershipApplicationAlert",
-                        "description": "Alert information"
-                      },
-                      "description": "List of alerts"
-                    }
-                  },
-                  "required": ["summary", "alerts"],
-                  "title": "GetSummaryResponse",
-                  "description": "Response for getting summary"
                 }
               }
             }
@@ -32801,6 +31819,144 @@
                   },
                   "required": ["error"],
                   "title": "ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/uploads": {
+      "post": {
+        "summary": "Upload image file",
+        "tags": ["Uploads"],
+        "responses": {
+          "200": {
+            "description": "Upload successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://cdn.mock.example.com/uploads/abc123.jpg",
+                      "description": "Uploaded file URL"
+                    }
+                  },
+                  "required": ["url"],
+                  "title": "UploadResponse",
+                  "description": "Upload response with file URL"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://cdn.mock.example.com/uploads/abc123.jpg",
+                      "description": "Uploaded file URL"
+                    }
+                  },
+                  "required": ["url"],
+                  "title": "UploadResponse",
+                  "description": "Upload response with file URL"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/uploads/presign": {
+      "post": {
+        "summary": "Get pre-signed URL for direct S3 upload",
+        "tags": ["Uploads"],
+        "requestBody": {
+          "description": "Presign upload request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "enum": ["avatar", "cv", "document", "other"],
+                    "example": "avatar",
+                    "description": "Category of the file being uploaded"
+                  },
+                  "content_type": {
+                    "type": "string",
+                    "enum": ["image/jpeg", "image/png", "application/pdf"],
+                    "example": "image/jpeg",
+                    "description": "MIME type of the file"
+                  }
+                },
+                "required": ["category", "content_type"],
+                "title": "PresignUploadRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Pre-signed URL generated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "presign_url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://s3.amazonaws.com/bucket/key?X-Amz-Signature=...",
+                      "description": "Pre-signed URL to upload the file directly to S3 via HTTP PUT"
+                    },
+                    "public_url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://cdn.mock.example.com/avatar/abc123.jpg",
+                      "description": "Public URL of the file after upload"
+                    }
+                  },
+                  "required": ["presign_url", "public_url"],
+                  "title": "PresignUploadResponse",
+                  "description": "Pre-signed upload URL response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "presign_url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://s3.amazonaws.com/bucket/key?X-Amz-Signature=...",
+                      "description": "Pre-signed URL to upload the file directly to S3 via HTTP PUT"
+                    },
+                    "public_url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://cdn.mock.example.com/avatar/abc123.jpg",
+                      "description": "Public URL of the file after upload"
+                    }
+                  },
+                  "required": ["presign_url", "public_url"],
+                  "title": "PresignUploadResponse",
+                  "description": "Pre-signed upload URL response"
                 }
               }
             }

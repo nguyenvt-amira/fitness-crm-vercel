@@ -26,7 +26,11 @@ export const staffEditFormSchema = z.object({
   first_name_kana: z.string().optional().or(z.literal('')),
   gender: z.enum(['male', 'female', 'other']).optional().or(z.literal('')),
   birthday: z.string().optional().or(z.literal('')),
-  phone: z.string().optional().or(z.literal('')),
+  phone: z
+    .string()
+    .regex(/^\d{10,11}$/, '電話番号は10〜11桁の数字で入力してください')
+    .optional()
+    .or(z.literal('')),
   email: z.string().email('メール形式が正しくありません'),
   postal_code: z.string().optional().or(z.literal('')),
   prefecture: z.string().optional().or(z.literal('')),

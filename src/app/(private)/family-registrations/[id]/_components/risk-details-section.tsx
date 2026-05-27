@@ -21,7 +21,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Separator } from '@/components/ui/separator';
 
-import { GetCrmMembershipApplicationsByIdResponse } from '@/lib/api';
+import { GetCrmFamilyRegistrationsByIdResponse } from '@/lib/api';
 
 type RiskDetailsSectionProps = {
   riskScore: number;
@@ -31,7 +31,15 @@ type RiskDetailsSectionProps = {
     score: number;
     description: string;
   }>;
-  ekyc?: GetCrmMembershipApplicationsByIdResponse['application']['ekyc'];
+  ekyc?: {
+    verified: boolean;
+    verified_at?: string;
+    face_photo_url?: string;
+    id_document_url?: string;
+    document_type?: string;
+    face_match?: { similarity: number; passed: boolean };
+    blacklist_check?: { matched: boolean; reason?: string };
+  };
 };
 
 export function FamilyRegistrationRiskDetailsSection({

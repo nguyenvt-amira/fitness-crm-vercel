@@ -399,62 +399,6 @@ export function registerAllSchemas() {
     ),
   );
   registeredSchemaMap.set(
-    'AutoJudgeRequest',
-    registry.register('AutoJudgeRequest', membershipApplicationSchemas.AutoJudgeRequestSchema),
-  );
-  registeredSchemaMap.set(
-    'AutoJudgeResponse',
-    registry.register('AutoJudgeResponse', membershipApplicationSchemas.AutoJudgeResponseSchema),
-  );
-  registeredSchemaMap.set(
-    'GetSummaryQuery',
-    registry.register('GetSummaryQuery', membershipApplicationSchemas.GetSummaryQuerySchema),
-  );
-  registeredSchemaMap.set(
-    'GetSummaryResponse',
-    registry.register('GetSummaryResponse', membershipApplicationSchemas.GetSummaryResponseSchema),
-  );
-  registeredSchemaMap.set(
-    'MembershipApplicationSummary',
-    registry.register(
-      'MembershipApplicationSummary',
-      membershipApplicationSchemas.MembershipApplicationSummarySchema,
-    ),
-  );
-  registeredSchemaMap.set(
-    'MembershipApplicationAlert',
-    registry.register(
-      'MembershipApplicationAlert',
-      membershipApplicationSchemas.MembershipApplicationAlertSchema,
-    ),
-  );
-  registeredSchemaMap.set(
-    'RiskReasonsBreakdown',
-    registry.register(
-      'RiskReasonsBreakdown',
-      membershipApplicationSchemas.RiskReasonsBreakdownSchema,
-    ),
-  );
-  registeredSchemaMap.set(
-    'BulkApproveRequest',
-    registry.register('BulkApproveRequest', membershipApplicationSchemas.BulkApproveRequestSchema),
-  );
-  registeredSchemaMap.set(
-    'BulkApproveResponse',
-    registry.register(
-      'BulkApproveResponse',
-      membershipApplicationSchemas.BulkApproveResponseSchema,
-    ),
-  );
-  registeredSchemaMap.set(
-    'BulkRejectRequest',
-    registry.register('BulkRejectRequest', membershipApplicationSchemas.BulkRejectRequestSchema),
-  );
-  registeredSchemaMap.set(
-    'BulkRejectResponse',
-    registry.register('BulkRejectResponse', membershipApplicationSchemas.BulkRejectResponseSchema),
-  );
-  registeredSchemaMap.set(
     'GetApplicationDetailResponse',
     registry.register(
       'GetApplicationDetailResponse',

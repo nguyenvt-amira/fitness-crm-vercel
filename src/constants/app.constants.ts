@@ -1,5 +1,6 @@
 export const PAGE_SIZE = 20;
-
+export const TEXT_MAX_LENGTH = 255;
+export const TEXTAREA_MAX_LENGTH = 1000;
 export const PREFECTURES = [
   '北海道',
   '青森県',

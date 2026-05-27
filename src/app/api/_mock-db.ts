@@ -21,6 +21,7 @@ import type {
   UpdateMarketingConsentRequest,
   UpdateMemberRequest,
 } from '@/app/api/_schemas/member.schema';
+import type { DirectEnrollmentRequest as DirectEnrollmentRequestType } from '@/app/api/_schemas/membership-application.schema';
 import type { OptionMasterListItem } from '@/app/api/_schemas/option-master.schema';
 import type { Position, StaffPermissionRecord } from '@/app/api/_schemas/position.schema';
 import type { StaffDetail, StaffListItem } from '@/app/api/_schemas/staff.schema';
@@ -38,7 +39,6 @@ import { Brand, MainBrand, MemberStatus, MemberType } from '@/lib/api/types.gen'
 import type {
   MembershipApplication,
   MembershipApplicationStatus,
-  RiskReason,
 } from '@/types/api/membership-application.type';
 
 export type TransferRow = TransferDetail;
@@ -67,16 +67,51 @@ export type MembershipApplicationDetails = Partial<{
   gender: 'male' | 'female' | 'other';
   blood_type: 'A' | 'B' | 'O' | 'AB' | 'unknown';
   birthday: string; // YYYY-MM-DD
-  // Contact
+  // New detail fields
+  applicant_kana: string;
+  birth_date: string;
+  age: number;
+  gender_label: string;
+  phone: string;
+  phone_real: string;
+  email_masked: string;
+  email_real: string;
+  address: string;
+  address_real: string;
+  blacklist_conditions: string[];
+  usage_start_date: string;
+  monthly_fee: number;
+  options: string[];
+  fee_rows: { label: string; amount: number }[];
+  payment_method: string;
+  card_last4: string;
+  application_source: string;
+  updated_at: string;
+  parental_consent: boolean;
+  proxy_applicant: string;
+  agreement_date: string;
+  approved_by: string;
+  approved_at: string;
+  rejected_by: string;
+  rejected_at: string;
+  rejected_reason: string;
+  timeline: {
+    id: string;
+    kind: 'system' | 'memo';
+    date: string;
+    operator: string;
+    content: string;
+  }[];
+  // Contact (legacy)
   applicant_email: string;
   applicant_phone: string;
   applicant_address: string;
   emergency_contact_name: string;
   emergency_contact_relationship: string;
   emergency_contact_phone: string;
-  // Contract
+  // Contract (legacy)
   contract_details: MembershipApplicationContractDetails;
-  // eKYC
+  // eKYC (legacy)
   ekyc: EkycResult;
 }>;
 
@@ -619,6 +654,72 @@ function buildMemberContractData(input: {
   };
 }
 
+// ─── T-004: Enrollment Fee Master + Corporate Master types ────────────────────
+
+interface EnrollmentFeeMasterRow {
+  id: string;
+  name: string;
+  amount: number;
+  brand: string;
+  application_type: string;
+  isActive: boolean;
+}
+
+interface CorporateMasterRow {
+  id: string;
+  name: string;
+  code: string;
+}
+
+const SEED_ENROLLMENT_FEE_MASTERS: EnrollmentFeeMasterRow[] = [
+  {
+    id: 'EF001',
+    name: '標準入会金',
+    amount: 2200,
+    brand: 'JOYFIT',
+    application_type: 'normal',
+    isActive: true,
+  },
+  {
+    id: 'EF002',
+    name: 'ファミリー入会金',
+    amount: 1100,
+    brand: 'JOYFIT',
+    application_type: 'normal',
+    isActive: true,
+  },
+  {
+    id: 'EF003',
+    name: '法人入会金',
+    amount: 5500,
+    brand: '共通',
+    application_type: 'corporate',
+    isActive: true,
+  },
+  {
+    id: 'EF004',
+    name: '社員割引入会金',
+    amount: 0,
+    brand: '共通',
+    application_type: 'employee_discount',
+    isActive: true,
+  },
+  {
+    id: 'EF005',
+    name: '特別契約入会金',
+    amount: 0,
+    brand: '共通',
+    application_type: 'special_contract',
+    isActive: true,
+  },
+];
+
+const SEED_CORPORATE_MASTERS: CorporateMasterRow[] = [
+  { id: 'CORP-001', name: '株式会社サンプルA', code: 'CA001' },
+  { id: 'CORP-002', name: '株式会社サンプルB', code: 'CB002' },
+  { id: 'CORP-003', name: '株式会社サンプルC', code: 'CC003' },
+];
+
 type DbType = {
   members: {
     _members: MemberRow[];
@@ -682,6 +783,13 @@ type DbType = {
       id: string,
       status: MembershipApplicationStatus,
     ): MembershipApplication | undefined;
+    addMemo(
+      id: string,
+      content: string,
+      operator: string,
+    ): MembershipApplicationDetails['timeline'] | undefined;
+    deleteMemo(id: string, memoId: string): boolean;
+    createDirect(data: DirectEnrollmentRequestType, blMatched: boolean): MembershipApplication;
   };
   family: {
     _seeded: boolean;
@@ -946,6 +1054,25 @@ type DbType = {
     getList(): BlacklistRow[];
     getById(id: string): BlacklistRow | undefined;
     create(input: Omit<BlacklistRow, 'id' | 'registeredAt'>): BlacklistRow;
+  };
+  enrollmentFeeMasters: {
+    _rows: EnrollmentFeeMasterRow[];
+    _seeded: boolean;
+    _seed(): void;
+    getAll(): EnrollmentFeeMasterRow[];
+    getFiltered(brand?: string, applicationType?: string): EnrollmentFeeMasterRow[];
+  };
+  corporateMasters: {
+    _rows: CorporateMasterRow[];
+    _seeded: boolean;
+    _seed(): void;
+    getAll(): CorporateMasterRow[];
+  };
+  partnerCompanies: {
+    _rows: CorporateMasterRow[];
+    _seeded: boolean;
+    _seed(): void;
+    getAll(): CorporateMasterRow[];
   };
 };
 
@@ -2391,7 +2518,7 @@ function createDb() {
 
         const data = buildMemberContractData({
           plan_name: displayName,
-          start_date: application.scheduled_start_date,
+          start_date: application.start_date,
           monthly_fee: monthlyFee,
           created_at: createdAt,
         });
@@ -2415,99 +2542,428 @@ function createDb() {
       _seed(): void {
         if (this._seeded) return;
         this._seeded = true;
-        db.mainContracts._seed();
-        const plans = db.mainContracts.getList().map((contract) => contract.name);
-        const riskReasons: RiskReason[] = [
-          'blacklist_match',
-          'duplicate_application',
-          'payment_failure',
-          'high_risk_score',
-          'document_issue',
-        ];
-        const statuses: MembershipApplicationStatus[] = [
-          'pending',
-          'payment_failed',
-          'auto_approved',
-          'manual_approved',
-          'rejected',
-        ];
-        const now = new Date();
-        for (let i = 1; i <= 200; i++) {
-          const appliedDate = new Date(now);
-          appliedDate.setDate(appliedDate.getDate() - (i % 10));
-          appliedDate.setHours(12 - (i % 12), i % 60, 0, 0);
-          // Same calendar day + setHours can land *after* `now` (e.g. today 02:00 when now is 01:00).
-          // Membership applications must not have applied_at in the future.
-          if (appliedDate.getTime() > now.getTime()) {
-            appliedDate.setTime(now.getTime() - (i % 1440) * 60 * 1000 - 1000);
-          }
-          const scheduledStart = new Date(appliedDate);
-          scheduledStart.setDate(scheduledStart.getDate() + 5);
-          const elapsedHours = Math.floor(
-            (now.getTime() - appliedDate.getTime()) / (1000 * 60 * 60),
-          );
-          const elapsedDays = Math.floor(elapsedHours / 24);
-          const remainingHours = elapsedHours % 24;
-          const elapsedTime =
-            elapsedDays > 0
-              ? `${elapsedDays}日${remainingHours}時間経過`
-              : `${elapsedHours}時間経過`;
-          const status = statuses[i % statuses.length];
-          const deadline = new Date(appliedDate);
-          deadline.setDate(deadline.getDate() + 7);
-          this._applications.push({
-            id: `APP-${String(i).padStart(5, '0')}`,
-            applicant_name: `会員登録${String(i).padStart(3, '0')}`,
-            applied_at: appliedDate.toISOString(),
-            elapsed_time: elapsedTime,
-            risk_score: 30 + (i % 70),
-            risk_reason: riskReasons[i % riskReasons.length],
-            plan_name: plans[i % plans.length],
-            scheduled_start_date: scheduledStart.toISOString().split('T')[0],
-            status,
-            ...(status === 'payment_failed' && { payment_failed_deadline: deadline.toISOString() }),
-            ...(status === 'pending' && { pending_deadline: deadline.toISOString() }),
-          });
 
-          const id = `APP-${String(i).padStart(5, '0')}`;
-          const ekycVerified =
-            status === 'auto_approved' || status === 'manual_approved' || i % 3 !== 0;
-          const faceSimilarity = ekycVerified ? 88 + (i % 12) : 40 + (i % 30);
-          // Seed editable detail fields (used by detail/edit screen)
-          this._details[id] = {
-            applicant_name: `会員登録${String(i).padStart(3, '0')}`,
-            gender: i % 2 === 0 ? 'male' : 'female',
-            blood_type: (['A', 'B', 'O', 'AB'] as const)[i % 4],
-            birthday: `199${i % 10}-0${(i % 9) + 1}-15`,
-            applicant_email: `applicant${String(i).padStart(5, '0')}@example.jp`,
-            applicant_phone: '090-1234-5678',
-            applicant_address: '東京都渋谷区1-2-3',
-            emergency_contact_name: '佐藤 太郎',
-            emergency_contact_relationship: '配偶者',
-            emergency_contact_phone: '090-8765-4321',
-            contract_details: {
-              plan_id: `plan-00${(i % 3) + 1}`,
-              plan_name: plans[i % plans.length],
-              start_date: scheduledStart.toISOString().split('T')[0],
-              option_ids: [],
-            },
-            ekyc: {
-              verified: ekycVerified,
-              verified_at: appliedDate.toISOString(),
-              face_photo_url: `https://example.com/ekyc/face/APP-${String(i).padStart(5, '0')}.jpg`,
-              id_document_url: `https://example.com/ekyc/id/APP-${String(i).padStart(5, '0')}.jpg`,
-              document_type: (
-                ['運転免許証', 'マイナンバーカード', 'パスポート', '健康保険証'] as const
-              )[i % 4],
-              face_match: {
-                similarity: faceSimilarity,
-                passed: faceSimilarity >= 80,
+        const seed: MembershipApplication[] = [
+          {
+            id: 'APP-2026-0001',
+            applicant_name: '山田 太郎',
+            store_name: 'FIT365八潮店',
+            plan_name: 'レギュラー会員',
+            application_date: '2026-03-30T09:15:00+09:00',
+            status: 'pending',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: '春の入会キャンペーン',
+          },
+          {
+            id: 'APP-2026-0002',
+            applicant_name: '佐藤 花子',
+            store_name: 'FIT365草加店',
+            plan_name: 'デイタイム会員',
+            application_date: '2026-03-30T10:32:00+09:00',
+            status: 'pending',
+            blacklist_match: false,
+            start_date: '2026-04-02',
+            brand_name: 'FIT365',
+            campaign: 'なし',
+          },
+          {
+            id: 'APP-2026-0003',
+            applicant_name: '鈴木 一郎',
+            store_name: 'FIT365越谷店',
+            plan_name: 'ナイト会員',
+            application_date: '2026-03-30T11:08:00+09:00',
+            status: 'pending',
+            blacklist_match: true,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: 'なし',
+          },
+          {
+            id: 'APP-2026-0004',
+            applicant_name: '田中 美咲',
+            store_name: 'FIT365八潮店',
+            plan_name: 'ウィークエンド会員',
+            application_date: '2026-03-30T11:45:00+09:00',
+            status: 'pending',
+            blacklist_match: false,
+            start_date: '2026-04-05',
+            brand_name: 'FIT365',
+            campaign: '春の入会キャンペーン',
+          },
+          {
+            id: 'APP-2026-0005',
+            applicant_name: '伊藤 健二',
+            store_name: 'FIT365草加店',
+            plan_name: 'レギュラー会員（学生）',
+            application_date: '2026-03-30T13:20:00+09:00',
+            status: 'pending',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: '学生割引キャンペーン',
+          },
+          {
+            id: 'APP-2026-0006',
+            applicant_name: '松本 奈々',
+            store_name: 'ジョイフィット24越谷店',
+            plan_name: 'レギュラー会員',
+            application_date: '2026-03-30T14:05:00+09:00',
+            status: 'pending',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'JOYFIT',
+            campaign: 'なし',
+          },
+          {
+            id: 'APP-2026-0007',
+            applicant_name: '高橋 正男',
+            store_name: 'ジョイフィット24草加店',
+            plan_name: 'デイタイム会員',
+            application_date: '2026-03-30T14:50:00+09:00',
+            status: 'pending',
+            blacklist_match: true,
+            start_date: '2026-04-14',
+            brand_name: 'JOYFIT',
+            campaign: '春の入会キャンペーン',
+          },
+          {
+            id: 'APP-2026-0008',
+            applicant_name: '渡辺 由美子',
+            store_name: 'FIT365八潮店',
+            plan_name: 'レギュラー会員',
+            application_date: '2026-03-30T08:05:00+09:00',
+            status: 'approved',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: 'なし',
+          },
+          {
+            id: 'APP-2026-0009',
+            applicant_name: '中村 拓也',
+            store_name: 'FIT365越谷店',
+            plan_name: 'デイタイム会員',
+            application_date: '2026-03-30T07:42:00+09:00',
+            status: 'approved',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: 'なし',
+          },
+          {
+            id: 'APP-2026-0010',
+            applicant_name: '小林 優子',
+            store_name: 'ジョイフィット24越谷店',
+            plan_name: 'ナイト会員',
+            application_date: '2026-03-30T09:55:00+09:00',
+            status: 'approved',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'JOYFIT',
+            campaign: '法人会員キャンペーン',
+          },
+          {
+            id: 'APP-2026-0011',
+            applicant_name: '加藤 次郎',
+            store_name: 'FIT365八潮店',
+            plan_name: 'レギュラー会員（シニア）',
+            application_date: '2026-03-29T14:20:00+09:00',
+            status: 'pending',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: 'シニア割引キャンペーン',
+          },
+          {
+            id: 'APP-2026-0012',
+            applicant_name: '吉田 恵子',
+            store_name: 'FIT365越谷店',
+            plan_name: 'レギュラー会員',
+            application_date: '2026-03-29T09:55:00+09:00',
+            status: 'rejected',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: 'なし',
+          },
+          {
+            id: 'APP-2026-0013',
+            applicant_name: '山本 直人',
+            store_name: 'FIT365草加店',
+            plan_name: 'ウィークエンド会員',
+            application_date: '2026-03-28T11:22:00+09:00',
+            status: 'cancelled',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: 'なし',
+          },
+          {
+            id: 'APP-2026-0014',
+            applicant_name: '木村 幸子',
+            store_name: 'ジョイフィット24草加店',
+            plan_name: 'レギュラー会員',
+            application_date: '2026-03-28T08:50:00+09:00',
+            status: 'approved',
+            blacklist_match: false,
+            start_date: '2026-04-07',
+            brand_name: 'JOYFIT',
+            campaign: 'なし',
+          },
+          {
+            id: 'APP-2026-0015',
+            applicant_name: '石川 雄介',
+            store_name: 'FIT365八潮店',
+            plan_name: 'デイタイム会員',
+            application_date: '2026-03-27T16:30:00+09:00',
+            status: 'rejected',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: '春の入会キャンペーン',
+          },
+          {
+            id: 'APP-2026-0016',
+            applicant_name: '前田 由香',
+            store_name: 'FIT365八潮店',
+            plan_name: 'レギュラー会員',
+            application_date: '2026-03-30T15:40:00+09:00',
+            status: 'review',
+            blacklist_match: true,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: '学生割引キャンペーン',
+          },
+          {
+            id: 'APP-2026-0017',
+            applicant_name: '若林 みなみ',
+            store_name: 'ジョイフィット24越谷店',
+            plan_name: 'レギュラー会員（学生）',
+            application_date: '2026-03-30T10:00:00+09:00',
+            status: 'pending',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'JOYFIT',
+            campaign: '学生割引キャンペーン',
+            is_minor: true,
+          },
+          {
+            id: 'APP-2026-0018',
+            applicant_name: '青木 太一',
+            store_name: 'FIT365草加店',
+            plan_name: 'レギュラー会員',
+            application_date: '2026-03-30T09:00:00+09:00',
+            status: 'pending',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'FIT365',
+            campaign: 'なし',
+            is_proxy: true,
+          },
+          {
+            id: 'APP-2026-0019',
+            applicant_name: '小川 拓海',
+            store_name: 'ジョイフィット24越谷店',
+            plan_name: 'レギュラー会員',
+            application_date: '2026-03-30T12:30:00+09:00',
+            status: 'pending',
+            blacklist_match: false,
+            start_date: '2026-04-01',
+            brand_name: 'JOYFIT',
+            campaign: 'なし',
+          },
+        ];
+
+        this._applications.push(...seed);
+
+        // Helper: build masked phone/email/address
+        function maskPhone(real: string) {
+          return real.replace(/(\d{3})-(\d{4})-(\d{4})/, '$1-****-$3');
+        }
+        function maskEmail(real: string) {
+          const [local, domain] = real.split('@');
+          return `${local.slice(0, 2)}***@${domain}`;
+        }
+        function maskAddress(real: string) {
+          return real.replace(/(\d+-\d+-\d+)$/, '***');
+        }
+
+        // Fee rows by brand
+        const FEE_ROWS_JOYFIT = [
+          { label: '入会金', amount: 2200 },
+          { label: '登録事務手数料', amount: 3300 },
+          { label: '初月会費（日割）', amount: 990 },
+          { label: '翌月会費', amount: 7700 },
+        ];
+        const FEE_ROWS_FIT365 = [
+          { label: 'カード発行料', amount: 5500 },
+          { label: '初月会費（日割）', amount: 990 },
+          { label: '翌月会費', amount: 7700 },
+        ];
+
+        // Rich detail seed for special variants
+        const SPECIAL_DETAILS: Record<string, Record<string, unknown>> = {
+          'APP-2026-0003': {
+            blacklist_conditions: ['氏名＆生年月日一致', '電話番号一致'],
+            timeline: [
+              {
+                id: 'tl-0003-2',
+                kind: 'system',
+                date: '2026/03/25 11:00',
+                operator: 'システム',
+                content: 'ブラックリスト照合で一致を検出しました。',
               },
-              blacklist_check: {
-                matched: !ekycVerified && i % 5 === 0,
-                reason: !ekycVerified && i % 5 === 0 ? '過去に不正利用の記録あり' : undefined,
+              {
+                id: 'tl-0003-1',
+                kind: 'system',
+                date: '2026/03/25 10:30',
+                operator: 'システム',
+                content: '申請受付（アプリ経由）',
               },
-            } satisfies EkycResult,
+            ],
+          },
+          'APP-2026-0007': {
+            blacklist_conditions: ['氏名＆生年月日一致'],
+            timeline: [
+              {
+                id: 'tl-0007-1',
+                kind: 'system',
+                date: '2026/03/26 14:00',
+                operator: 'システム',
+                content: '申請受付（アプリ経由）',
+              },
+            ],
+          },
+          'APP-2026-0008': {
+            approved_by: '管理者A',
+            approved_at: '2026/03/26 15:30',
+            timeline: [
+              {
+                id: 'tl-0008-3',
+                kind: 'system',
+                date: '2026/03/26 15:30',
+                operator: '管理者A',
+                content: '入会申請を承認しました。会員登録完了通知を送信しました。',
+              },
+              {
+                id: 'tl-0008-2',
+                kind: 'memo',
+                date: '2026/03/26 15:00',
+                operator: '管理者A',
+                content: '本人確認書類を目視確認済み。',
+              },
+              {
+                id: 'tl-0008-1',
+                kind: 'system',
+                date: '2026/03/26 14:00',
+                operator: 'システム',
+                content: '申請受付（アプリ経由）',
+              },
+            ],
+          },
+          'APP-2026-0016': {
+            blacklist_conditions: ['氏名＆生年月日一致', '住所一致'],
+            timeline: [
+              {
+                id: 'tl-0016-1',
+                kind: 'system',
+                date: '2026/03/30 15:40',
+                operator: 'システム',
+                content: '申請受付（アプリ経由）',
+              },
+            ],
+          },
+          'APP-2026-0017': {
+            // minor
+            applicant_kana: 'ワカバヤシ ミナミ',
+            birth_date: '2009/05/15',
+            age: 16,
+            gender_label: '女性',
+            parental_consent: true,
+            timeline: [
+              {
+                id: 'tl-0017-1',
+                kind: 'system',
+                date: '2026/03/30 10:00',
+                operator: 'システム',
+                content: '申請受付（アプリ経由）',
+              },
+            ],
+          },
+          'APP-2026-0018': {
+            // proxy
+            application_source: '管理画面',
+            proxy_applicant: '管理者A（STAFF-001）',
+            agreement_date: '2026/03/30 09:00',
+            timeline: [
+              {
+                id: 'tl-0018-1',
+                kind: 'system',
+                date: '2026/03/30 09:00',
+                operator: '管理者A',
+                content: '管理画面から代理申請を登録',
+              },
+            ],
+          },
+        };
+
+        // Seed detail for every application
+        for (const app of seed) {
+          const phoneReal = '090-1234-5678';
+          const emailReal = `${app.id.toLowerCase().replaceAll('-', '')}@example.jp`;
+          const addressReal = '東京都渋谷区1-2-3';
+          const special = SPECIAL_DETAILS[app.id] ?? {};
+          const feeRows = app.brand_name === 'FIT365' ? FEE_ROWS_FIT365 : FEE_ROWS_JOYFIT;
+          const monthlyFee = app.brand_name === 'FIT365' ? 7700 : 7700;
+
+          this._details[app.id] = {
+            // Personal
+            applicant_kana: (special.applicant_kana as string) ?? 'ヤマダ タロウ',
+            birth_date: (special.birth_date as string) ?? '1990/01/15',
+            age: (special.age as number) ?? 36,
+            gender_label: (special.gender_label as string) ?? '男性',
+            phone: maskPhone(phoneReal),
+            phone_real: phoneReal,
+            email_masked: maskEmail(emailReal),
+            email_real: emailReal,
+            address: maskAddress(addressReal),
+            address_real: addressReal,
+            // Blacklist
+            blacklist_conditions: (special.blacklist_conditions as string[]) ?? [],
+            // Contract
+            usage_start_date: app.start_date.replaceAll('-', '/'),
+            monthly_fee: monthlyFee,
+            options: ['タオル'],
+            fee_rows: feeRows,
+            // Payment
+            payment_method: 'クレジットカード',
+            card_last4: '1234',
+            // Application meta
+            application_source: (special.application_source as string) ?? 'アプリ',
+            updated_at: '2026/03/30 09:20',
+            // Minor
+            parental_consent: (special.parental_consent as boolean) ?? false,
+            // Proxy
+            proxy_applicant: special.proxy_applicant as string | undefined,
+            agreement_date: special.agreement_date as string | undefined,
+            // Status feedback
+            approved_by: special.approved_by as string | undefined,
+            approved_at: special.approved_at as string | undefined,
+            rejected_by: special.rejected_by as string | undefined,
+            rejected_at: special.rejected_at as string | undefined,
+            rejected_reason: special.rejected_reason as string | undefined,
+            // Timeline
+            timeline: (special.timeline as MembershipApplicationDetails['timeline']) ?? [
+              {
+                id: `tl-${app.id}-1`,
+                kind: 'system' as const,
+                date: '2026/03/30 09:15',
+                operator: 'システム',
+                content: '申請受付（アプリ経由）',
+              },
+            ],
           };
         }
       },
@@ -2544,6 +3000,89 @@ function createDb() {
         if (idx === -1) return undefined;
         this._applications[idx] = { ...this._applications[idx], status };
         return this._applications[idx];
+      },
+
+      addMemo(
+        id: string,
+        content: string,
+        operator: string,
+      ): MembershipApplicationDetails['timeline'] | undefined {
+        this._seed();
+        const exists = this._applications.some((a) => a.id === id);
+        if (!exists) return undefined;
+
+        const details = this._details[id] ?? {};
+        const timeline = (details.timeline ?? []) as NonNullable<
+          MembershipApplicationDetails['timeline']
+        >;
+
+        const now = new Date();
+        const dateStr = now.toLocaleString('ja-JP', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+
+        const newMemo = {
+          id: `tl-${Date.now()}-memo`,
+          kind: 'memo' as const,
+          date: dateStr.replace(/\//g, '/'),
+          operator,
+          content,
+        };
+
+        const updatedTimeline = [newMemo, ...timeline];
+        this._details[id] = { ...details, timeline: updatedTimeline };
+
+        return updatedTimeline;
+      },
+
+      deleteMemo(id: string, memoId: string): boolean {
+        this._seed();
+        const exists = this._applications.some((a) => a.id === id);
+        if (!exists) return false;
+
+        const details = this._details[id];
+        if (!details || !details.timeline) return false;
+
+        const memoIndex = details.timeline.findIndex((entry) => entry.id === memoId);
+        if (memoIndex === -1) return false;
+
+        const updatedTimeline = details.timeline.filter((_, idx) => idx !== memoIndex);
+        this._details[id] = { ...details, timeline: updatedTimeline };
+
+        return true;
+      },
+
+      // ─── T-005: createDirect ───────────────────────────────────────────────
+      createDirect(data: DirectEnrollmentRequestType, blMatched: boolean): MembershipApplication {
+        this._seed();
+        const id = `APP-DIRECT-${Date.now()}`;
+        const newApp: MembershipApplication = {
+          id,
+          applicant_name: `${data.applicant.last_name_kanji}${data.applicant.first_name_kanji}`,
+          status: 'pending',
+          blacklist_match: blMatched,
+          brand_name: data.contract.brand,
+          store_name: data.contract.store_id,
+          plan_name: data.contract.plan_id,
+          campaign: data.contract.campaign_id ?? 'なし',
+          application_date: new Date().toISOString(),
+          start_date: data.contract.start_date,
+          is_proxy: true,
+        };
+        this._applications.push(newApp);
+        this._details[id] = {
+          applicant_name: newApp.applicant_name,
+          proxy_applicant: '管理者A（STAFF-001）',
+          agreement_date: new Date().toISOString(),
+          payment_method: data.contract.payment_method,
+          usage_start_date: data.contract.start_date,
+          timeline: [],
+        };
+        return newApp;
       },
     },
 
@@ -4914,6 +5453,59 @@ function createDb() {
         return newRow;
       },
     },
+
+    // ─── T-004: Enrollment Fee Masters ─────────────────────────────────────
+    enrollmentFeeMasters: {
+      _rows: [] as EnrollmentFeeMasterRow[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows = [...SEED_ENROLLMENT_FEE_MASTERS];
+      },
+      getAll(): EnrollmentFeeMasterRow[] {
+        this._seed();
+        return [...this._rows];
+      },
+      getFiltered(brand?: string, applicationType?: string): EnrollmentFeeMasterRow[] {
+        this._seed();
+        return this._rows.filter((r) => {
+          if (brand && r.brand !== brand && r.brand !== '共通') return false;
+          if (applicationType && r.application_type !== applicationType) return false;
+          return r.isActive;
+        });
+      },
+    },
+
+    // ─── T-004: Corporate Masters ───────────────────────────────────────────
+    corporateMasters: {
+      _rows: [] as CorporateMasterRow[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows = [...SEED_CORPORATE_MASTERS];
+      },
+      getAll(): CorporateMasterRow[] {
+        this._seed();
+        return [...this._rows];
+      },
+    },
+
+    // ─── T-004: Partner Companies ───────────────────────────────────────────
+    partnerCompanies: {
+      _rows: [] as CorporateMasterRow[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows = [...SEED_CORPORATE_MASTERS];
+      },
+      getAll(): CorporateMasterRow[] {
+        this._seed();
+        return [...this._rows];
+      },
+    },
   };
 
   // Seed mock data immediately when the singleton is first created
@@ -4923,6 +5515,9 @@ function createDb() {
   db.membershipApplications._seed();
   db.family._seed();
   db.staffs._seed();
+  db.enrollmentFeeMasters._seed();
+  db.corporateMasters._seed();
+  db.partnerCompanies._seed();
 
   return db;
 }

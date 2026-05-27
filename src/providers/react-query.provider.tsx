@@ -43,6 +43,5 @@ export default function ReactQueryProvider({ children }: ReactQueryProviderProps
 
   // Initialize client request
   useClientRequest();
-  console.log('queryClient', queryClient);
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }
