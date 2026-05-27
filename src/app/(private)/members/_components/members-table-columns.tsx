@@ -117,15 +117,11 @@ export function MembersTableColumns({
         if (!memberId) return null;
         return (
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-8"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <MoreHorizontal className="size-4" />
-              </Button>
+            <DropdownMenuTrigger
+              render={<Button variant="ghost" size="sm" />}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <MoreHorizontal className="size-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
               <DropdownMenuItem

@@ -12029,6 +12029,220 @@ export type GetCrmMainContractsByIdResponses = {
 
 export type GetCrmMainContractsByIdResponse = GetCrmMainContractsByIdResponses[keyof GetCrmMainContractsByIdResponses];
 
+export type PatchCrmMainContractsByIdData = {
+    /**
+     * UpsertMainContractBody
+     *
+     * 主契約作成・更新リクエスト
+     */
+    body?: {
+        name: string;
+        code: string;
+        /**
+         * MainContractType
+         *
+         * 主契約タイプ（G-01）
+         */
+        contract_type: 'general' | 'oneDay' | 'family' | 'kids' | 'student' | 'corporate' | 'welfare' | 'prepaid' | 'special';
+        /**
+         * StoreListBrand
+         *
+         * Store brand
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * MainContractStatus
+         *
+         * 主契約の有効/無効ステータス
+         */
+        status?: 'active' | 'inactive';
+        /**
+         * MainContractOtherStoreUsage
+         *
+         * 他店舗利用範囲
+         */
+        other_store_usage?: 'all' | 'direct' | 'none';
+        companion_benefit_enabled?: boolean;
+        parent_contract_id?: string | null;
+        old_code?: string | null;
+        mutual_use?: boolean;
+        public_name?: string;
+        description?: string;
+        company?: string | null;
+        regulation?: string | null;
+        public_description?: string;
+        memo?: string | null;
+        price_including_tax?: number;
+        suspension_fee?: number;
+        tax_rate?: number;
+        accounting_code?: string;
+        enrollment_fee?: number;
+        handling_fee?: number;
+        card_fee?: number;
+        security_fee?: number;
+        maintenance_fee?: number;
+        start_date?: string;
+        monthly_limit?: number | null;
+        suspension_monthly_limit?: number | null;
+        usage_hours_by_day?: Array<{
+            day: string;
+            from: string;
+            to: string;
+            all_day: boolean;
+        }>;
+        suspendable_months?: string;
+        cancellable_months?: string;
+        initial_payment_months?: number;
+        age_restriction?: string;
+        gender_restriction?: string;
+        changeability?: string;
+        billing_enabled?: boolean;
+        modifiable?: string;
+        same_day_cancellation?: boolean;
+        family_contract_allowed?: boolean;
+    };
+    path: {
+        /**
+         * Main contract ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/main-contracts/{id}';
+};
+
+export type PatchCrmMainContractsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PatchCrmMainContractsByIdError = PatchCrmMainContractsByIdErrors[keyof PatchCrmMainContractsByIdErrors];
+
+export type PatchCrmMainContractsByIdResponses = {
+    /**
+     * UpdateMainContractResponse
+     *
+     * Updated successfully
+     */
+    200: {
+        message: string;
+        /**
+         * MainContractDetail
+         *
+         * 主契約詳細
+         */
+        main_contract: {
+            id: string;
+            name: string;
+            code: string;
+            old_code: string | null;
+            /**
+             * MainContractType
+             *
+             * 主契約タイプ（G-01）
+             */
+            contract_type: 'general' | 'oneDay' | 'family' | 'kids' | 'student' | 'corporate' | 'welfare' | 'prepaid' | 'special';
+            /**
+             * StoreListBrand
+             *
+             * Store brand
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * MainContractStatus
+             *
+             * 主契約の有効/無効ステータス
+             */
+            status: 'active' | 'inactive';
+            companion_benefit_enabled: boolean;
+            /**
+             * MainContractOtherStoreUsage
+             *
+             * 他店舗利用範囲
+             */
+            other_store_usage: 'all' | 'direct' | 'none';
+            changeability: string;
+            previous_contract: string | null;
+            billing_enabled: boolean;
+            modifiable: string;
+            initial_payment_months: number;
+            same_day_cancellation: boolean;
+            family_contract_allowed: boolean;
+            suspension_monthly_limit: number | null;
+            usage_schedule: string;
+            company: string | null;
+            regulation: string | null;
+            public_name: string;
+            public_description: string;
+            memo: string | null;
+            price_including_tax: number;
+            suspension_fee: number;
+            tax_rate: number;
+            start_date: string;
+            monthly_limit: number | null;
+            usage_hours_by_day: Array<{
+                day: string;
+                from: string;
+                to: string;
+                all_day: boolean;
+            }>;
+            suspendable_months: string;
+            cancellable_months: string;
+            accounting_code: string;
+            age_restriction: string;
+            gender_restriction: string;
+            store_range: string;
+            thumbnail_url: string | null;
+            description: string;
+            created_at: string;
+            updated_at: string;
+            active_contracts: number;
+            enabled_stores: number;
+            total_stores: number;
+            target_store_name: string | null;
+            parent_contract_id: string | null;
+            parent_contract_name: string | null;
+            child_contracts: Array<{
+                id: string;
+                name: string;
+            }>;
+        };
+    };
+};
+
+export type PatchCrmMainContractsByIdResponse = PatchCrmMainContractsByIdResponses[keyof PatchCrmMainContractsByIdResponses];
+
 export type GetCrmMainContractsData = {
     body?: never;
     path?: never;
@@ -12205,6 +12419,204 @@ export type GetCrmMainContractsResponses = {
 };
 
 export type GetCrmMainContractsResponse = GetCrmMainContractsResponses[keyof GetCrmMainContractsResponses];
+
+export type PostCrmMainContractsData = {
+    /**
+     * UpsertMainContractBody
+     *
+     * 主契約作成・更新リクエスト
+     */
+    body?: {
+        name: string;
+        code: string;
+        /**
+         * MainContractType
+         *
+         * 主契約タイプ（G-01）
+         */
+        contract_type: 'general' | 'oneDay' | 'family' | 'kids' | 'student' | 'corporate' | 'welfare' | 'prepaid' | 'special';
+        /**
+         * StoreListBrand
+         *
+         * Store brand
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * MainContractStatus
+         *
+         * 主契約の有効/無効ステータス
+         */
+        status?: 'active' | 'inactive';
+        /**
+         * MainContractOtherStoreUsage
+         *
+         * 他店舗利用範囲
+         */
+        other_store_usage?: 'all' | 'direct' | 'none';
+        companion_benefit_enabled?: boolean;
+        parent_contract_id?: string | null;
+        old_code?: string | null;
+        mutual_use?: boolean;
+        public_name?: string;
+        description?: string;
+        company?: string | null;
+        regulation?: string | null;
+        public_description?: string;
+        memo?: string | null;
+        price_including_tax?: number;
+        suspension_fee?: number;
+        tax_rate?: number;
+        accounting_code?: string;
+        enrollment_fee?: number;
+        handling_fee?: number;
+        card_fee?: number;
+        security_fee?: number;
+        maintenance_fee?: number;
+        start_date?: string;
+        monthly_limit?: number | null;
+        suspension_monthly_limit?: number | null;
+        usage_hours_by_day?: Array<{
+            day: string;
+            from: string;
+            to: string;
+            all_day: boolean;
+        }>;
+        suspendable_months?: string;
+        cancellable_months?: string;
+        initial_payment_months?: number;
+        age_restriction?: string;
+        gender_restriction?: string;
+        changeability?: string;
+        billing_enabled?: boolean;
+        modifiable?: string;
+        same_day_cancellation?: boolean;
+        family_contract_allowed?: boolean;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/main-contracts';
+};
+
+export type PostCrmMainContractsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMainContractsError = PostCrmMainContractsErrors[keyof PostCrmMainContractsErrors];
+
+export type PostCrmMainContractsResponses = {
+    /**
+     * CreateMainContractResponse
+     *
+     * Created
+     */
+    201: {
+        message: string;
+        /**
+         * MainContractDetail
+         *
+         * 主契約詳細
+         */
+        main_contract: {
+            id: string;
+            name: string;
+            code: string;
+            old_code: string | null;
+            /**
+             * MainContractType
+             *
+             * 主契約タイプ（G-01）
+             */
+            contract_type: 'general' | 'oneDay' | 'family' | 'kids' | 'student' | 'corporate' | 'welfare' | 'prepaid' | 'special';
+            /**
+             * StoreListBrand
+             *
+             * Store brand
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * MainContractStatus
+             *
+             * 主契約の有効/無効ステータス
+             */
+            status: 'active' | 'inactive';
+            companion_benefit_enabled: boolean;
+            /**
+             * MainContractOtherStoreUsage
+             *
+             * 他店舗利用範囲
+             */
+            other_store_usage: 'all' | 'direct' | 'none';
+            changeability: string;
+            previous_contract: string | null;
+            billing_enabled: boolean;
+            modifiable: string;
+            initial_payment_months: number;
+            same_day_cancellation: boolean;
+            family_contract_allowed: boolean;
+            suspension_monthly_limit: number | null;
+            usage_schedule: string;
+            company: string | null;
+            regulation: string | null;
+            public_name: string;
+            public_description: string;
+            memo: string | null;
+            price_including_tax: number;
+            suspension_fee: number;
+            tax_rate: number;
+            start_date: string;
+            monthly_limit: number | null;
+            usage_hours_by_day: Array<{
+                day: string;
+                from: string;
+                to: string;
+                all_day: boolean;
+            }>;
+            suspendable_months: string;
+            cancellable_months: string;
+            accounting_code: string;
+            age_restriction: string;
+            gender_restriction: string;
+            store_range: string;
+            thumbnail_url: string | null;
+            description: string;
+            created_at: string;
+            updated_at: string;
+            active_contracts: number;
+            enabled_stores: number;
+            total_stores: number;
+            target_store_name: string | null;
+            parent_contract_id: string | null;
+            parent_contract_name: string | null;
+            child_contracts: Array<{
+                id: string;
+                name: string;
+            }>;
+        };
+    };
+};
+
+export type PostCrmMainContractsResponse = PostCrmMainContractsResponses[keyof PostCrmMainContractsResponses];
 
 export type GetCrmMembersByIdBasicInfoData = {
     body?: never;

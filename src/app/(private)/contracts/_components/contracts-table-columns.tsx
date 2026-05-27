@@ -1,5 +1,7 @@
 'use client';
+import { useRouter } from 'next/navigation';
 
+import { formatDateYYYYMMDD } from '@/utils/date.util';
 import type { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal, Pencil, Store } from 'lucide-react';
 
@@ -7,6 +9,7 @@ import { BrandBadge } from '@/components/common/brand-badge';
 import { DataTableColumnHeader } from '@/components/common/data-table/data-table-column-header';
 import { RoleGatedMenuItem } from '@/components/common/role-gated-menu-item';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +17,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import type { Brand, GetCrmMainContractsResponse } from '@/lib/api/types.gen';
+import { navigate } from '@/lib/routes/routes.util';
 
 import { Permission } from '@/types/permission.type';
 
@@ -31,7 +35,8 @@ function formatYen(value: number): string {
   return `¥${value.toLocaleString()}`;
 }
 
-export function ContractsTableColumns(): ColumnDef<MainContractRow>[] {
+export function useContractsTableColumns(): ColumnDef<MainContractRow>[] {
+  const router = useRouter();
   return [
     {
       accessorKey: 'id',
@@ -115,7 +120,9 @@ export function ContractsTableColumns(): ColumnDef<MainContractRow>[] {
     {
       accessorKey: 'start_date',
       header: ({ column }) => <DataTableColumnHeader column={column} title="利用開始日" />,
-      cell: ({ row }) => <span className="text-xs">{row.original.start_date}</span>,
+      cell: ({ row }) => (
+        <span className="text-xs">{formatDateYYYYMMDD(row.original.start_date)}</span>
+      ),
       meta: {
         className: 'min-w-[110px]',
       },
@@ -269,19 +276,31 @@ export function ContractsTableColumns(): ColumnDef<MainContractRow>[] {
     {
       id: 'actions',
       header: '',
-      cell: () => (
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <MoreHorizontal className="size-4" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
-            <RoleGatedMenuItem requiredPermission={Permission.ContractsEdit} onClick={() => {}}>
-              <Pencil className="size-4" />
-              編集
-            </RoleGatedMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ),
+      cell: ({ row }) => {
+        const contractId = row.original.id || '';
+        if (!contractId) return null;
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={<Button variant="ghost" size="sm" />}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <MoreHorizontal className="size-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+              <RoleGatedMenuItem
+                requiredPermission={Permission.ContractsEdit}
+                onClick={() => {
+                  router.push(navigate('/contracts/[id]/edit', contractId));
+                }}
+              >
+                <Pencil className="size-4" />
+                編集
+              </RoleGatedMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
       enableSorting: false,
       meta: {
         className: 'w-10',

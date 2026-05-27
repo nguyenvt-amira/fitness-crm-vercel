@@ -1079,6 +1079,8 @@ type DbType = {
     getById(id: string): MainContractDetail | undefined;
     getChangeHistory(id: string): MainContractChangeHistoryItem[];
     delete(id: string): boolean;
+    add(contract: MainContractDetail): void;
+    update(id: string, data: Partial<MainContractDetail>): MainContractDetail | undefined;
   };
   optionMasters: {
     _rows: OptionMasterListItem[];
@@ -4856,6 +4858,65 @@ function createDb() {
         delete this._details[id];
         delete this._changeHistory[id];
         return true;
+      },
+      add(contract: MainContractDetail): void {
+        this._seed();
+        const listItem: MainContractListItem = {
+          id: contract.id,
+          name: contract.name,
+          code: contract.code,
+          old_code: contract.old_code,
+          contract_type: contract.contract_type,
+          brand: contract.brand,
+          parent_contract_name: contract.parent_contract_name,
+          start_date: contract.start_date,
+          target_store_name: contract.target_store_name,
+          price_including_tax: contract.price_including_tax,
+          suspension_fee: contract.suspension_fee,
+          monthly_limit: contract.monthly_limit,
+          tax_rate: contract.tax_rate,
+          suspendable_months: contract.suspendable_months,
+          cancellable_months: contract.cancellable_months,
+          active_contracts: contract.active_contracts,
+          other_store_usage: contract.other_store_usage,
+          companion_benefit_enabled: contract.companion_benefit_enabled,
+          enabled_stores: contract.enabled_stores,
+          total_stores: contract.total_stores,
+          status: contract.status,
+        };
+        this._rows.push(listItem);
+        this._details[contract.id] = contract;
+      },
+      update(id: string, data: Partial<MainContractDetail>): MainContractDetail | undefined {
+        this._seed();
+        const existing = this._details[id];
+        if (!existing) return undefined;
+        const updated = { ...existing, ...data, id, updated_at: new Date().toISOString() };
+        this._details[id] = updated;
+        // update list row
+        const idx = this._rows.findIndex((r) => r.id === id);
+        if (idx !== -1) {
+          this._rows[idx] = {
+            ...this._rows[idx],
+            name: updated.name,
+            code: updated.code,
+            old_code: updated.old_code,
+            contract_type: updated.contract_type,
+            brand: updated.brand,
+            status: updated.status,
+            companion_benefit_enabled: updated.companion_benefit_enabled,
+            other_store_usage: updated.other_store_usage,
+            price_including_tax: updated.price_including_tax,
+            suspension_fee: updated.suspension_fee,
+            monthly_limit: updated.monthly_limit,
+            tax_rate: updated.tax_rate,
+            start_date: updated.start_date,
+            suspendable_months: updated.suspendable_months,
+            cancellable_months: updated.cancellable_months,
+            parent_contract_name: updated.parent_contract_name,
+          };
+        }
+        return updated;
       },
     },
     optionMasters: {

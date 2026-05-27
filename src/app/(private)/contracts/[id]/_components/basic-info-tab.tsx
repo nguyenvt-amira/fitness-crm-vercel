@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 
+import { formatDateYYYYMMDD_HHMM } from '@/utils/date.util';
 import { Check, ImageIcon, Network } from 'lucide-react';
 
 import { BrandBadge } from '@/components/common/brand-badge';
@@ -31,7 +32,7 @@ export function BasicInfoTab({ contract }: BasicInfoTabProps) {
   const isActive = contract.status === MainContractStatus.ACTIVE;
 
   return (
-    <div className="flex gap-4">
+    <div className="flex items-start gap-4">
       {/* Left (60%) */}
       <div className="flex w-[60%] flex-col gap-4">
         <Card>
@@ -149,7 +150,10 @@ export function BasicInfoTab({ contract }: BasicInfoTabProps) {
             label={
               MAIN_CONTRACT_STATUS_LABELS[contract.status as MainContractStatus] ?? contract.status
             }
-            meta={[`作成: ${contract.created_at}`, `更新: ${contract.updated_at}`]}
+            meta={[
+              `作成: ${formatDateYYYYMMDD_HHMM(contract.created_at)}`,
+              `更新: ${formatDateYYYYMMDD_HHMM(contract.updated_at)}`,
+            ]}
           />
 
           <Card>

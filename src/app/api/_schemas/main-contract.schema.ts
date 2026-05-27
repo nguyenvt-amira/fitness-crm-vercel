@@ -261,6 +261,72 @@ export type GetMainContractChangeHistoryResponse = z.infer<
 >;
 
 // ─────────────────────────────────────────────
+// Create / Update schemas
+// ─────────────────────────────────────────────
+
+export const UpsertMainContractBodySchema = z
+  .object({
+    name: z.string().min(1, '主契約名は必須です'),
+    code: z.string().min(1, 'コードは必須です'),
+    contract_type: MainContractTypeSchema,
+    brand: StoreListBrandSchema,
+    status: MainContractStatusSchema.optional().default('active'),
+    other_store_usage: MainContractOtherStoreUsageSchema.optional(),
+    companion_benefit_enabled: z.boolean().optional().default(false),
+    parent_contract_id: z.string().nullable().optional(),
+    old_code: z.string().nullable().optional(),
+    mutual_use: z.boolean().optional().default(false),
+    public_name: z.string().optional(),
+    description: z.string().optional(),
+    company: z.string().nullable().optional(),
+    regulation: z.string().nullable().optional(),
+    public_description: z.string().optional(),
+    memo: z.string().nullable().optional(),
+    price_including_tax: z.number().nonnegative().optional(),
+    suspension_fee: z.number().nonnegative().optional(),
+    tax_rate: z.number().optional(),
+    accounting_code: z.string().optional(),
+    enrollment_fee: z.number().nonnegative().optional(),
+    handling_fee: z.number().nonnegative().optional(),
+    card_fee: z.number().nonnegative().optional(),
+    security_fee: z.number().nonnegative().optional(),
+    maintenance_fee: z.number().nonnegative().optional(),
+    start_date: z.string().optional(),
+    monthly_limit: z.number().int().nonnegative().nullable().optional(),
+    suspension_monthly_limit: z.number().int().nonnegative().nullable().optional(),
+    usage_hours_by_day: z.array(UsageHoursByDaySchema).optional(),
+    suspendable_months: z.string().optional(),
+    cancellable_months: z.string().optional(),
+    initial_payment_months: z.number().int().nonnegative().optional(),
+    age_restriction: z.string().optional(),
+    gender_restriction: z.string().optional(),
+    changeability: z.string().optional(),
+    billing_enabled: z.boolean().optional().default(false),
+    modifiable: z.string().optional(),
+    same_day_cancellation: z.boolean().optional().default(false),
+    family_contract_allowed: z.boolean().optional().default(false),
+  })
+  .openapi({ title: 'UpsertMainContractBody', description: '主契約作成・更新リクエスト' });
+
+export const CreateMainContractResponseSchema = z
+  .object({
+    message: z.string(),
+    main_contract: MainContractDetailSchema,
+  })
+  .openapi({ title: 'CreateMainContractResponse' });
+
+export const UpdateMainContractResponseSchema = z
+  .object({
+    message: z.string(),
+    main_contract: MainContractDetailSchema,
+  })
+  .openapi({ title: 'UpdateMainContractResponse' });
+
+export type UpsertMainContractBody = z.infer<typeof UpsertMainContractBodySchema>;
+export type CreateMainContractResponse = z.infer<typeof CreateMainContractResponseSchema>;
+export type UpdateMainContractResponse = z.infer<typeof UpdateMainContractResponseSchema>;
+
+// ─────────────────────────────────────────────
 // Delete schemas
 // ─────────────────────────────────────────────
 

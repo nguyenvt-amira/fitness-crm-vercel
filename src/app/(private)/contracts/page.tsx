@@ -1,29 +1,30 @@
 'use client';
 
-import { Suspense, useMemo, useState } from 'react';
+import { Suspense, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
 import { useQuery } from '@tanstack/react-query';
-import type { ColumnDef, SortingState } from '@tanstack/react-table';
+import type { SortingState } from '@tanstack/react-table';
+import { Plus } from 'lucide-react';
 
 import { Loading } from '@/components/common/data-state-boundary/loading';
 import { DataTable } from '@/components/common/data-table';
 import { PageHeader } from '@/components/common/page-header';
+import { RoleGatedButton } from '@/components/common/role-gated-button';
 import { TablePaginationWithSize } from '@/components/common/table-pagination-with-size';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 
 import { getCrmMainContractsOptions } from '@/lib/api/@tanstack/react-query.gen';
-import type { GetCrmMainContractsResponse } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
+import { Permission } from '@/types/permission.type';
+
 import { ContractsFilters } from './_components/contracts-filters';
-import { ContractsTableColumns } from './_components/contracts-table-columns';
+import { useContractsTableColumns } from './_components/contracts-table-columns';
 import { ContractsFiltersProvider } from './_contexts/contracts-filters-context';
 import { useContractsFilters } from './_hooks/use-contracts-filters';
-
-type MainContractRow = GetCrmMainContractsResponse['main_contracts'][number];
 
 function ContractsPageContent() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -60,7 +61,7 @@ function ContractsPageContent() {
     });
   };
 
-  const columns: ColumnDef<MainContractRow>[] = useMemo(() => ContractsTableColumns(), []);
+  const columns = useContractsTableColumns();
 
   return (
     <>
@@ -70,6 +71,15 @@ function ContractsPageContent() {
           <Badge variant="outline" className="text-xs">
             {totalContracts}件
           </Badge>
+        }
+        actions={
+          <RoleGatedButton
+            requiredPermission={Permission.ContractsCreate}
+            onClick={() => router.push(navigate('/contracts/create'))}
+          >
+            <Plus className="size-4" />
+            新規登録
+          </RoleGatedButton>
         }
       />
 
