@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { getAllowedStoreIds, getAuthUserFromRequest } from '@/app/api/_lib/auth';
 import { db } from '@/app/api/_mock-db';
 import {
   CreateStoreResponseSchema,
@@ -46,6 +47,16 @@ registerRoute({
 
 export async function GET(request: NextRequest) {
   try {
+    const authResult = getAuthUserFromRequest(request);
+    if (!authResult.ok) {
+      return NextResponse.json({ error: authResult.error }, { status: authResult.status });
+    }
+    const allowedStoreIds = getAllowedStoreIds(authResult.user);
+    // Empty array means the role has no access to any store
+    if (allowedStoreIds !== null && allowedStoreIds.length === 0) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const searchParams = request.nextUrl.searchParams;
     const queryObj: Record<string, string | undefined> = {};
     searchParams.forEach((value, key) => {
@@ -71,6 +82,11 @@ export async function GET(request: NextRequest) {
     } = query;
 
     let filtered: Store[] = [...db.stores.getList()];
+
+    // Restrict Staff users to only their linked stores
+    if (allowedStoreIds !== null) {
+      filtered = filtered.filter((s) => allowedStoreIds.includes(s.id));
+    }
 
     if (search) {
       const q = search.toLowerCase().trim();

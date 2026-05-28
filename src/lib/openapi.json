@@ -11490,6 +11490,73 @@
         }
       }
     },
+    "/auth/me": {
+      "get": {
+        "summary": "Get current user",
+        "description": "Returns the authenticated user profile decoded from the Bearer token",
+        "tags": ["Authentication"],
+        "responses": {
+          "200": {
+            "description": "Current user profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "U-001",
+                      "description": "User ID"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email",
+                      "example": "admin@example.com"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Admin User"
+                    },
+                    "role": {
+                      "type": "string",
+                      "enum": ["System", "Headquarter", "Manager", "Staff", "Trainer", "Observer"],
+                      "example": "Headquarter"
+                    },
+                    "position": {
+                      "type": "string",
+                      "example": "本部管理者"
+                    }
+                  },
+                  "required": ["id", "email", "name", "role", "position"],
+                  "title": "MeResponse",
+                  "description": "Current authenticated user"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/auth/refresh": {
       "post": {
         "summary": "Refresh access token",
@@ -11609,6 +11676,108 @@
                   "required": ["error"],
                   "title": "ErrorResponse",
                   "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/switch-user": {
+      "post": {
+        "summary": "Switch demo user",
+        "description": "Switch the current session to a different demo user (demo mode only)",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "description": "Target user ID",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "U-001"
+                  }
+                },
+                "required": ["user_id"],
+                "title": "SwitchUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "New tokens for the target user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token": {
+                      "type": "string"
+                    },
+                    "refresh_token": {
+                      "type": "string"
+                    },
+                    "token_type": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["access_token", "refresh_token", "token_type"],
+                  "title": "SwitchUserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse"
                 }
               }
             }
@@ -31826,56 +31995,6 @@
         }
       }
     },
-    "/crm/uploads": {
-      "post": {
-        "summary": "Upload image file",
-        "tags": ["Uploads"],
-        "responses": {
-          "200": {
-            "description": "Upload successful",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "url": {
-                      "type": "string",
-                      "format": "uri",
-                      "example": "https://cdn.mock.example.com/uploads/abc123.jpg",
-                      "description": "Uploaded file URL"
-                    }
-                  },
-                  "required": ["url"],
-                  "title": "UploadResponse",
-                  "description": "Upload response with file URL"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "url": {
-                      "type": "string",
-                      "format": "uri",
-                      "example": "https://cdn.mock.example.com/uploads/abc123.jpg",
-                      "description": "Uploaded file URL"
-                    }
-                  },
-                  "required": ["url"],
-                  "title": "UploadResponse",
-                  "description": "Upload response with file URL"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/crm/uploads/presign": {
       "post": {
         "summary": "Get pre-signed URL for direct S3 upload",
@@ -31957,6 +32076,135 @@
                   "required": ["presign_url", "public_url"],
                   "title": "PresignUploadResponse",
                   "description": "Pre-signed upload URL response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/uploads": {
+      "post": {
+        "summary": "Upload image file",
+        "tags": ["Uploads"],
+        "responses": {
+          "200": {
+            "description": "Upload successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://cdn.mock.example.com/uploads/abc123.jpg",
+                      "description": "Uploaded file URL"
+                    }
+                  },
+                  "required": ["url"],
+                  "title": "UploadResponse",
+                  "description": "Upload response with file URL"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://cdn.mock.example.com/uploads/abc123.jpg",
+                      "description": "Uploaded file URL"
+                    }
+                  },
+                  "required": ["url"],
+                  "title": "UploadResponse",
+                  "description": "Upload response with file URL"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/users": {
+      "get": {
+        "summary": "Get demo users list",
+        "description": "Returns all demo users for the role-switch feature (demo mode only)",
+        "tags": ["Users"],
+        "responses": {
+          "200": {
+            "description": "List of demo users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "users": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "U-001"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "本部 花子"
+                          },
+                          "email": {
+                            "type": "string",
+                            "format": "email",
+                            "example": "admin@example.com"
+                          },
+                          "role": {
+                            "type": "string",
+                            "enum": [
+                              "System",
+                              "Headquarter",
+                              "Manager",
+                              "Staff",
+                              "Trainer",
+                              "Observer"
+                            ],
+                            "example": "Headquarter"
+                          },
+                          "position": {
+                            "type": "string",
+                            "example": "本部管理者"
+                          }
+                        },
+                        "required": ["id", "name", "email", "role", "position"],
+                        "title": "DemoUser"
+                      }
+                    }
+                  },
+                  "required": ["users"],
+                  "title": "GetUsersResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse"
                 }
               }
             }

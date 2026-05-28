@@ -47,9 +47,14 @@ function LoginForm() {
         return;
       }
       const expiration = getTokenExpiration(token);
-      cookies.set(CookieNames.Session, JSON.stringify({ token: data.token }), {
+      // Add 1 day (24h) to the expiration if available
+      let cookieExpires = expiration;
+      if (cookieExpires) {
+        cookieExpires = new Date(cookieExpires.getTime() + 24 * 60 * 60 * 1000);
+      }
+      cookies.set(CookieNames.Session, data.token, {
         path: '/',
-        ...(expiration ? { expires: expiration } : {}),
+        ...(cookieExpires ? { expires: cookieExpires } : {}),
       });
 
       // Show success toast

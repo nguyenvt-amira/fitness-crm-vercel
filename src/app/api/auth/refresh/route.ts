@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { db } from '@/app/api/_mock-db';
 import {
   ErrorResponseSchema,
   type RefreshRequest,
   RefreshRequestSchema,
   type RefreshResponse,
   RefreshResponseSchema,
-  Token,
+  type Token,
 } from '@/app/api/_schemas/auth.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
 
@@ -46,7 +47,7 @@ registerRoute({
 });
 
 // Simple JWT-like token generator (mock)
-function generateToken(payload: Record<string, any>): string {
+function generateToken(payload: Record<string, unknown>): string {
   const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
   const body = btoa(JSON.stringify(payload));
   const signature = btoa('mock-signature');
@@ -54,12 +55,11 @@ function generateToken(payload: Record<string, any>): string {
 }
 
 // Mock function to decode token (simplified)
-function decodeToken(token: string): any {
+function decodeToken(token: string): Record<string, unknown> | null {
   try {
     const parts = token.split('.');
     if (parts.length !== 3) return null;
-    const body = JSON.parse(atob(parts[1]));
-    return body;
+    return JSON.parse(atob(parts[1])) as Record<string, unknown>;
   } catch {
     return null;
   }
@@ -80,29 +80,35 @@ export async function POST(request: NextRequest) {
 
     // Decode refresh token to get user info
     const decoded = decodeToken(validatedBody.refresh_token);
-    if (!decoded || !decoded.email) {
+    if (!decoded || typeof decoded.id !== 'string') {
       return NextResponse.json({ error: 'Invalid refresh token' }, { status: 401 });
     }
 
     // Check if token is expired
     const now = Math.floor(Date.now() / 1000);
-    if (decoded.exp && decoded.exp < now) {
+    if (typeof decoded.exp === 'number' && decoded.exp < now) {
       return NextResponse.json({ error: 'Refresh token expired' }, { status: 401 });
+    }
+
+    // Look up the user to get fresh data (role may have changed)
+    const user = db.users.getById(decoded.id);
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 401 });
     }
 
     // Generate new tokens
     const accessTokenPayload = {
-      sub: decoded.email,
-      email: decoded.email,
-      company_id: decoded.company_id,
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
       iat: now,
       exp: now + 3600, // 1 hour
     };
 
     const refreshTokenPayload = {
-      sub: decoded.email,
-      email: decoded.email,
-      company_id: decoded.company_id,
+      id: user.id,
+      email: user.email,
       iat: now,
       exp: now + 86400 * 7, // 7 days
     };
@@ -111,15 +117,12 @@ export async function POST(request: NextRequest) {
       access_token: generateToken(accessTokenPayload),
       refresh_token: generateToken(refreshTokenPayload),
       token_type: 'Bearer',
-      company_id: decoded.company_id,
     };
 
-    // Return response matching the expected format
     const response: RefreshResponse = {
       accessToken: token.access_token,
       refresh_token: token.refresh_token,
       token_type: token.token_type,
-      company_id: token.company_id,
     };
 
     return NextResponse.json(response);

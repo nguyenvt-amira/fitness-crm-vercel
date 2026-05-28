@@ -9,14 +9,16 @@ import { Circle, Pencil, TriangleAlert } from 'lucide-react';
 
 import { BreadcrumbNav } from '@/components/common/breadcrumb-nav';
 import { DataStateBoundary } from '@/components/common/data-state-boundary';
+import { RoleGatedButton } from '@/components/common/role-gated-button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { getCrmStoresByIdOptions } from '@/lib/api/@tanstack/react-query.gen';
 import { navigate } from '@/lib/routes/routes.util';
+
+import { Permission } from '@/types/permission.type';
 
 import { STORE_STATUS_BADGE_CLASSES, STORE_STATUS_LABELS } from '../_constants/constants';
 import { AccessSettingsTab } from './_components/tabs/access-settings-tab';
@@ -102,7 +104,8 @@ export default function StoreDetailPage() {
               </TabsTrigger>
             </TabsList>
             {activeTab === 'basic' && (
-              <Button
+              <RoleGatedButton
+                requiredPermission={Permission.StoresEdit}
                 type="button"
                 variant="outline"
                 size="sm"
@@ -111,7 +114,7 @@ export default function StoreDetailPage() {
               >
                 <Pencil className="size-4" />
                 基本情報を編集
-              </Button>
+              </RoleGatedButton>
             )}
           </div>
 

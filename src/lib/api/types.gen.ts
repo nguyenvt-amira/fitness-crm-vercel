@@ -8291,6 +8291,49 @@ export type PostAuthLoginResponses = {
 
 export type PostAuthLoginResponse = PostAuthLoginResponses[keyof PostAuthLoginResponses];
 
+export type GetAuthMeData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/auth/me';
+};
+
+export type GetAuthMeErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetAuthMeError = GetAuthMeErrors[keyof GetAuthMeErrors];
+
+export type GetAuthMeResponses = {
+    /**
+     * MeResponse
+     *
+     * Current authenticated user
+     */
+    200: {
+        /**
+         * User ID
+         */
+        id: string;
+        email: string;
+        name: string;
+        role: 'System' | 'Headquarter' | 'Manager' | 'Staff' | 'Trainer' | 'Observer';
+        position: string;
+    };
+};
+
+export type GetAuthMeResponse = GetAuthMeResponses[keyof GetAuthMeResponses];
+
 export type PostAuthRefreshData = {
     /**
      * RefreshRequest
@@ -8373,6 +8416,64 @@ export type PostAuthRefreshResponses = {
 };
 
 export type PostAuthRefreshResponse = PostAuthRefreshResponses[keyof PostAuthRefreshResponses];
+
+export type PostAuthSwitchUserData = {
+    /**
+     * SwitchUserRequest
+     *
+     * Target user ID
+     */
+    body?: {
+        user_id: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/auth/switch-user';
+};
+
+export type PostAuthSwitchUserErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Bad request
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * User not found
+     */
+    404: {
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Internal server error
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type PostAuthSwitchUserError = PostAuthSwitchUserErrors[keyof PostAuthSwitchUserErrors];
+
+export type PostAuthSwitchUserResponses = {
+    /**
+     * SwitchUserResponse
+     *
+     * New tokens for the target user
+     */
+    200: {
+        access_token: string;
+        refresh_token: string;
+        token_type: string;
+    };
+};
+
+export type PostAuthSwitchUserResponse = PostAuthSwitchUserResponses[keyof PostAuthSwitchUserResponses];
 
 export type GetCrmAutoApprovalDashboardData = {
     body?: never;
@@ -20803,45 +20904,6 @@ export type GetCrmTransfersResponses = {
 
 export type GetCrmTransfersResponse = GetCrmTransfersResponses[keyof GetCrmTransfersResponses];
 
-export type PostCrmUploadsData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/crm/uploads';
-};
-
-export type PostCrmUploadsErrors = {
-    /**
-     * UploadResponse
-     *
-     * Upload response with file URL
-     */
-    400: {
-        /**
-         * Uploaded file URL
-         */
-        url: string;
-    };
-};
-
-export type PostCrmUploadsError = PostCrmUploadsErrors[keyof PostCrmUploadsErrors];
-
-export type PostCrmUploadsResponses = {
-    /**
-     * UploadResponse
-     *
-     * Upload response with file URL
-     */
-    200: {
-        /**
-         * Uploaded file URL
-         */
-        url: string;
-    };
-};
-
-export type PostCrmUploadsResponse = PostCrmUploadsResponses[keyof PostCrmUploadsResponses];
-
 export type PostCrmUploadsPresignData = {
     /**
      * PresignUploadRequest
@@ -20902,3 +20964,81 @@ export type PostCrmUploadsPresignResponses = {
 };
 
 export type PostCrmUploadsPresignResponse = PostCrmUploadsPresignResponses[keyof PostCrmUploadsPresignResponses];
+
+export type PostCrmUploadsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/uploads';
+};
+
+export type PostCrmUploadsErrors = {
+    /**
+     * UploadResponse
+     *
+     * Upload response with file URL
+     */
+    400: {
+        /**
+         * Uploaded file URL
+         */
+        url: string;
+    };
+};
+
+export type PostCrmUploadsError = PostCrmUploadsErrors[keyof PostCrmUploadsErrors];
+
+export type PostCrmUploadsResponses = {
+    /**
+     * UploadResponse
+     *
+     * Upload response with file URL
+     */
+    200: {
+        /**
+         * Uploaded file URL
+         */
+        url: string;
+    };
+};
+
+export type PostCrmUploadsResponse = PostCrmUploadsResponses[keyof PostCrmUploadsResponses];
+
+export type GetCrmUsersData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/users';
+};
+
+export type GetCrmUsersErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Internal server error
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type GetCrmUsersError = GetCrmUsersErrors[keyof GetCrmUsersErrors];
+
+export type GetCrmUsersResponses = {
+    /**
+     * GetUsersResponse
+     *
+     * List of demo users
+     */
+    200: {
+        users: Array<{
+            id: string;
+            name: string;
+            email: string;
+            role: 'System' | 'Headquarter' | 'Manager' | 'Staff' | 'Trainer' | 'Observer';
+            position: string;
+        }>;
+    };
+};
+
+export type GetCrmUsersResponse = GetCrmUsersResponses[keyof GetCrmUsersResponses];

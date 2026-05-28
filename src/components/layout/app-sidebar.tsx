@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-
+import { useAuthUser } from '@/contexts/auth-user.context';
 import { Home, type LucideIcon, Settings, UserPlus, Users } from 'lucide-react';
 
+import { Badge } from '@/components/ui/badge';
 import {
   Sidebar,
   SidebarContent,
@@ -20,22 +20,34 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
+import { canRoleAccessPage, isPageHqOnly } from '@/lib/permission.config';
+import type { RoutePattern } from '@/lib/routes/routes.type';
 import { getRoutePattern } from '@/lib/routes/routes.util';
 
-import { Collapsible, CollapsibleContent } from '../ui/collapsible';
+import { UserRole } from '@/types/permission.type';
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
 
 type SubItem = {
   label: string;
-  href: string;
+  href: RoutePattern;
 };
 
 type MenuItem = {
   label: string;
   icon: LucideIcon;
-  href?: string;
+  href: RoutePattern;
   subItems?: SubItem[];
 };
+
+// ---------------------------------------------------------------------------
+// Menu definition
+// ---------------------------------------------------------------------------
 
 const menuItems: MenuItem[] = [
   {
@@ -48,18 +60,9 @@ const menuItems: MenuItem[] = [
     icon: Users,
     href: '/members',
     subItems: [
-      {
-        label: '移籍管理',
-        href: '/members/transfers',
-      },
-      {
-        label: '休会・退会管理',
-        href: '/members/leaves',
-      },
-      {
-        label: 'ブラックリスト管理',
-        href: '/members/blacklist',
-      },
+      { label: '移籍管理', href: '/members/transfers' },
+      { label: '休会・退会管理', href: '/members/leaves' },
+      { label: 'ブラックリスト管理', href: '/members/blacklist' },
     ],
   },
   {
@@ -71,253 +74,242 @@ const menuItems: MenuItem[] = [
     label: '家族入会',
     icon: UserPlus,
     href: getRoutePattern('/family-registrations'),
-    subItems: [
-      {
-        label: 'ダッシュボード',
-        href: '/family-registrations/dashboard',
-      },
-    ],
+    subItems: [{ label: 'ダッシュボード', href: '/family-registrations/dashboard' }],
   },
-  // {
-  //   label: '入退館',
-  //   icon: DoorOpen,
-  //   href: getRoutePattern('/checkin'),
-  //   subItems: [
-  //     {
-  //       label: '入退館履歴',
-  //       href: getRoutePattern('/checkin/histories'),
-  //     },
-  //   ],
-  // },
-  // {
-  //   label: 'レッスン',
-  //   icon: Calendar,
-  //   href: '/lessons',
-  // },
-  // {
-  //   label: '施設設備管理',
-  //   icon: Settings,
-  //   href: '/facilities',
-  // },
-  // {
-  //   label: '売上',
-  //   icon: CircleDollarSign,
-  //   href: '/sales',
-  //   subItems: [
-  //     {
-  //       label: '返金手続き一覧',
-  //       href: '/sales/refund-procedures',
-  //     },
-  //   ],
-  // },
-  // {
-  //   label: '商材・施策',
-  //   icon: Package,
-  //   href: '/products',
-  //   subItems: [
-  //     {
-  //       label: '主契約',
-  //       href: '/products/main-contract',
-  //     },
-  //     {
-  //       label: 'オプション',
-  //       href: '/products/options',
-  //     },
-  //     {
-  //       label: 'キャンペーン',
-  //       href: '/products/campaigns',
-  //     },
-  //     {
-  //       label: 'アンケート',
-  //       href: '/products/questionnaires',
-  //     },
-  //     {
-  //       label: '入会金',
-  //       href: '/products/enrollment-fee',
-  //     },
-  //   ],
-  // },
-  // {
-  //   label: 'コンテンツ',
-  //   icon: Image,
-  //   href: '/content',
-  //   subItems: [
-  //     {
-  //       label: '店舗ページ管理',
-  //       href: '/content/store-pages',
-  //     },
-  //     {
-  //       label: '告知・ブログ管理',
-  //       href: '/content/announcements-blog',
-  //     },
-  //     {
-  //       label: '通知管理',
-  //       href: '/content/notifications',
-  //     },
-  //   ],
-  // },
   {
-    href: '/staffs',
-    icon: Settings,
     label: 'スタッフ管理',
+    icon: Settings,
+    href: '/staffs',
     subItems: [
-      {
-        label: 'スタッフ管理',
-        href: '/staffs',
-      },
-
-      {
-        label: '店舗管理',
-        href: '/stores',
-      },
+      { label: 'スタッフ管理', href: '/staffs' },
+      { label: '店舗管理', href: '/stores' },
     ],
   },
 ];
 
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
 /**
- * Check if a pathname matches a menu item's href or any of its sub-items' hrefs.
- * Uses segment-aware matching to support breadcrumb navigation
- * (e.g., /members/123 keeps /members active) while avoiding false positives
- * (e.g., /membership-applications should NOT match /members).
+ * Returns true if the current pathname is under a menu item or any of its sub-items.
+ * Uses segment-aware prefix matching to avoid false positives
+ * (e.g. /membership-applications must not match /members).
  */
 function checkItemActive(pathname: string, item: MenuItem): boolean {
-  if (item.href) {
-    if (item.href === '/') return pathname === '/';
-    if (pathname === item.href || pathname.startsWith(item.href + '/')) return true;
-  }
+  if (item.href === '/') return pathname === '/';
+  if (pathname === item.href || pathname.startsWith(item.href + '/')) return true;
   return (
     item.subItems?.some((sub) => pathname === sub.href || pathname.startsWith(sub.href + '/')) ??
     false
   );
 }
 
+/**
+ * Returns true if any sub-item itself (not just the parent) matches the current pathname.
+ * Used to decide whether the parent button should receive the active highlight.
+ */
+function checkAnySubActive(pathname: string, item: MenuItem): boolean {
+  return (
+    item.subItems?.some((sub) => pathname === sub.href || pathname.startsWith(sub.href + '/')) ??
+    false
+  );
+}
+
+/**
+ * Returns true if the current user can access the given route pattern.
+ * Returns false while the user is still loading to prevent premature access.
+ * Routes not listed in PAGE_PERMISSIONS are unrestricted (always allowed once loaded).
+ */
+function canAccess(href: RoutePattern, role: UserRole | null, isLoading: boolean): boolean {
+  if (isLoading) return false; // deny everything until we know the role
+  if (href === '/' || !role) return true;
+  return canRoleAccessPage(role, href as Parameters<typeof canRoleAccessPage>[1]);
+}
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
+
 export function AppSidebar() {
   const pathname = usePathname();
-
-  // Controlled accordion state — only one item can be open at a time
-  const [openIndex, setOpenIndex] = useState<number | null>(() => {
-    const idx = menuItems.findIndex(
-      (item) => !!item.subItems?.length && checkItemActive(pathname, item),
-    );
-    return idx >= 0 ? idx : null;
-  });
-
-  // Sync open state when pathname changes (adjusting state during render)
-  const [prevPathname, setPrevPathname] = useState(pathname);
-  if (prevPathname !== pathname) {
-    setPrevPathname(pathname);
-    const activeIdx = menuItems.findIndex(
-      (item) => !!item.subItems?.length && checkItemActive(pathname, item),
-    );
-    setOpenIndex(activeIdx >= 0 ? activeIdx : null);
-  }
-
-  /**
-   * Handle menu item click:
-   * - Items with subitems → always open (accordion switches)
-   * - Items without subitems → close any open accordion
-   */
-  const handleMenuItemClick = (index: number, hasSubItems: boolean) => {
-    if (hasSubItems) {
-      setOpenIndex(index);
-    } else {
-      setOpenIndex(null);
-    }
-  };
+  const router = useRouter();
+  const { user, isLoading } = useAuthUser();
+  const role = (user?.role as UserRole) ?? null;
 
   return (
-    <Sidebar className="border-none">
-      <SidebarHeader className="py-5 pr-0 pl-6">
-        <span className="text-sidebar-foreground text-xl leading-7 font-bold tracking-[0.025em]">
-          LOGO
-        </span>
+    <Sidebar className="border-sidebar-border border-r">
+      <SidebarHeader className="border-sidebar-border h-14 flex-row items-center border-b px-6 py-0">
+        <Image
+          src={'/logo-yamauchi.svg'}
+          alt="YAMAUCHI"
+          width={207}
+          height={28}
+          className="h-7 w-auto"
+        />
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup className="p-2">
+        <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
-              {menuItems.map((item, index) => {
-                const Icon = item.icon;
-                const active = checkItemActive(pathname, item);
-                const hasSubItems = !!(item.subItems && item.subItems.length > 0);
-                const isOpen = openIndex === index;
+            {isLoading ? (
+              <div className="space-y-0.5 p-2">
+                {menuItems.map((_, i) => (
+                  <div key={i} className="flex items-center gap-3 rounded-md px-2 py-1.5">
+                    <Skeleton className="bg-sidebar-foreground/10 h-5 w-5 shrink-0 rounded-sm" />
+                    <Skeleton
+                      className="bg-sidebar-foreground/10 h-3.5 rounded-sm"
+                      style={{ width: `${48 + ((i * 17) % 36)}%` }}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <SidebarMenu>
+                {menuItems.map((item) => {
+                  const Icon = item.icon;
+                  const active = checkItemActive(pathname, item);
+                  const hasSubItems = !!item.subItems?.length;
+                  const allowed = canAccess(item.href, role, isLoading);
+                  // Deny reason for tooltip
+                  const denyReason = isPageHqOnly(item.href)
+                    ? '本部権限が必要です'
+                    : 'このロールでは操作できません';
 
-                if (hasSubItems) {
-                  const anySubActive =
-                    item.subItems?.some(
-                      (sub) => pathname === sub.href || pathname.startsWith(sub.href + '/'),
-                    ) ?? false;
-                  const focused = active || isOpen;
-                  // Parent gets accent bg only when focused AND no subitem is active
-                  const parentActive = focused && !anySubActive;
-                  return (
-                    <Collapsible key={item.label} open={isOpen}>
-                      <SidebarMenuItem>
-                        {item.href ? (
-                          <SidebarMenuButton asChild isActive={parentActive}>
-                            <Link href={item.href} onClick={() => handleMenuItemClick(index, true)}>
-                              <Icon />
-                              <span>{item.label}</span>
-                            </Link>
-                          </SidebarMenuButton>
+                  if (hasSubItems) {
+                    const anySubActive = checkAnySubActive(pathname, item);
+                    // Parent button is highlighted only when the group is active but no sub-item is
+                    const parentActive = active && !anySubActive;
+
+                    // First sub-item the current user can access (used as fallback navigation target)
+                    const firstAllowedSub = item.subItems!.find((sub) =>
+                      canAccess(sub.href, role, isLoading),
+                    );
+                    // Parent is intractable if the user can access the parent href OR any sub-item
+                    const parentAllowed = allowed || !!firstAllowedSub;
+                    // Navigate to parent href if allowed, otherwise fall back to first accessible sub
+                    const parentTarget = allowed ? item.href : (firstAllowedSub?.href ?? item.href);
+
+                    const parentButton = (
+                      <SidebarMenuButton
+                        isActive={parentActive}
+                        className={
+                          !parentAllowed ? 'cursor-not-allowed opacity-40' : 'cursor-pointer'
+                        }
+                        onClick={() => parentAllowed && router.push(parentTarget)}
+                      >
+                        <Icon className="size-5" />
+                        <span>{item.label}</span>
+                      </SidebarMenuButton>
+                    );
+
+                    return (
+                      <SidebarMenuItem key={item.href}>
+                        {!parentAllowed ? (
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="w-full">{parentButton}</span>
+                              </TooltipTrigger>
+                              <TooltipContent side="right">
+                                <p className="text-xs">{denyReason}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         ) : (
-                          <SidebarMenuButton asChild isActive={parentActive}>
-                            <Link
-                              href={item.subItems![0].href}
-                              onClick={() => handleMenuItemClick(index, true)}
-                            >
-                              <Icon />
-                              <span>{item.label}</span>
-                            </Link>
-                          </SidebarMenuButton>
+                          parentButton
                         )}
 
-                        <CollapsibleContent>
+                        {active && (
                           <SidebarMenuSub>
-                            {item.subItems?.map((subItem) => {
+                            {item.subItems!.map((sub) => {
                               const subActive =
-                                pathname === subItem.href ||
-                                pathname.startsWith(subItem.href + '/');
+                                pathname === sub.href || pathname.startsWith(sub.href + '/');
+                              const subAllowed = canAccess(sub.href, role, isLoading);
+                              const subHqOnly = isPageHqOnly(sub.href);
+                              const subDenyReason = subHqOnly
+                                ? '本部権限が必要です'
+                                : 'このロールでは操作できません';
+
+                              const subButton = (
+                                <SidebarMenuSubButton
+                                  isActive={subActive}
+                                  className={
+                                    subAllowed ? 'cursor-pointer' : 'cursor-not-allowed opacity-40'
+                                  }
+                                  onClick={() => subAllowed && router.push(sub.href)}
+                                >
+                                  <span>{sub.label}</span>
+                                  {/* Show "本部" badge only for HQ-only routes when access is denied */}
+                                  {!subAllowed && subHqOnly && (
+                                    <Badge
+                                      variant="outline"
+                                      className="border-sidebar-border/60 text-sidebar-foreground/70 ml-auto h-4 shrink-0 rounded-sm px-1 text-[10px]"
+                                    >
+                                      本部
+                                    </Badge>
+                                  )}
+                                </SidebarMenuSubButton>
+                              );
+
                               return (
-                                <SidebarMenuSubItem key={subItem.href}>
-                                  <SidebarMenuSubButton asChild isActive={subActive}>
-                                    <Link href={subItem.href}>
-                                      <span>{subItem.label}</span>
-                                    </Link>
-                                  </SidebarMenuSubButton>
+                                <SidebarMenuSubItem key={sub.href}>
+                                  {!subAllowed ? (
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <span className="w-full">{subButton}</span>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="right">
+                                          <p className="text-xs">{subDenyReason}</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  ) : (
+                                    subButton
+                                  )}
                                 </SidebarMenuSubItem>
                               );
                             })}
                           </SidebarMenuSub>
-                        </CollapsibleContent>
+                        )}
                       </SidebarMenuItem>
-                    </Collapsible>
-                  );
-                }
+                    );
+                  }
 
-                return (
-                  <SidebarMenuItem key={item.label}>
-                    {item.href ? (
-                      <SidebarMenuButton asChild isActive={active}>
-                        <Link href={item.href} onClick={() => handleMenuItemClick(index, false)}>
-                          <Icon />
-                          <span>{item.label}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    ) : (
-                      <SidebarMenuButton
-                        isActive={active}
-                        onClick={() => handleMenuItemClick(index, false)}
-                      >
-                        <Icon />
-                        <span>{item.label}</span>
-                      </SidebarMenuButton>
-                    )}
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
+                  // Leaf item (no sub-items)
+                  const leafButton = (
+                    <SidebarMenuButton
+                      isActive={active}
+                      className={!allowed ? 'cursor-not-allowed opacity-40' : 'cursor-pointer'}
+                      onClick={() => allowed && router.push(item.href)}
+                    >
+                      <Icon className="size-5" />
+                      <span>{item.label}</span>
+                    </SidebarMenuButton>
+                  );
+
+                  return (
+                    <SidebarMenuItem key={item.href}>
+                      {!allowed ? (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="w-full">{leafButton}</span>
+                            </TooltipTrigger>
+                            <TooltipContent side="right">
+                              <p className="text-xs">{denyReason}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ) : (
+                        leafButton
+                      )}
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            )}
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

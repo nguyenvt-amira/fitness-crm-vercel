@@ -8,6 +8,7 @@ import { Check, Pencil, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { DataStateBoundary } from '@/components/common/data-state-boundary';
+import { RoleGatedButton } from '@/components/common/role-gated-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -41,6 +42,8 @@ import type {
   PermittedStore,
 } from '@/lib/api/types.gen';
 import { StoreListBrand } from '@/lib/api/types.gen';
+
+import { Permission } from '@/types/permission.type';
 
 import { STORE_BRAND_LABELS } from '../../../../_constants/constants';
 
@@ -252,10 +255,16 @@ export function AccessSettingsTab({ storeId }: Readonly<{ storeId: string }>) {
             </Button>
           </>
         ) : (
-          <Button variant="outline" size="sm" className="gap-1.5" onClick={handleStartEditSettings}>
+          <RoleGatedButton
+            requiredPermission={Permission.StoresConfigAccess}
+            variant="outline"
+            size="sm"
+            className="gap-1.5"
+            onClick={handleStartEditSettings}
+          >
             <Pencil className="size-3.5" />
             編集
-          </Button>
+          </RoleGatedButton>
         )}
       </div>
       <div className="min-h-0 flex-1 space-y-5 overflow-y-auto pr-1">

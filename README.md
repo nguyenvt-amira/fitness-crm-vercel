@@ -74,11 +74,11 @@ npm run dev
 
 ## テスト用アカウント
 
-| メールアドレス    | パスワード  |
-| ----------------- | ----------- |
-| admin@example.com | password123 |
-| staff@example.com | password123 |
-| user@example.com  | password123 |
+| メールアドレス      | パスワード  |
+| ------------------- | ----------- |
+| admin@example.com   | password123 |
+| staff@example.com   | password123 |
+| manager@example.com | password123 |
 
 ## リンター / フォーマッター
 

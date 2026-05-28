@@ -4,8 +4,11 @@ import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } fro
 
 import { CalendarDays, Pencil, Plus, Trash2 } from 'lucide-react';
 
+import { RoleGatedButton } from '@/components/common/role-gated-button';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+
+import { Permission } from '@/types/permission.type';
 
 import type { BusinessHoursPatchVars } from './business-hours-settings';
 import type { BusinessHours } from './business-hours-shared';
@@ -134,7 +137,8 @@ export const ExceptionHoursSettings = forwardRef<ExceptionHoursSettingsHandle, P
       <div className="border-t px-4 pt-4">
         <div className="mb-2 flex items-center justify-between">
           <p className="text-xs font-medium">例外営業時間設定</p>
-          <Button
+          <RoleGatedButton
+            requiredPermission={Permission.StoresConfigBusiness}
             type="button"
             size="sm"
             variant="ghost"
@@ -143,7 +147,7 @@ export const ExceptionHoursSettings = forwardRef<ExceptionHoursSettingsHandle, P
           >
             <Plus className="size-3" />
             日付追加
-          </Button>
+          </RoleGatedButton>
         </div>
         <div className="flex flex-col gap-2">
           {entries.map((entry) => {
@@ -233,7 +237,8 @@ export const ExceptionHoursSettings = forwardRef<ExceptionHoursSettingsHandle, P
                       </Button>
                     </div>
                   ) : (
-                    <Button
+                    <RoleGatedButton
+                      requiredPermission={Permission.StoresConfigBusiness}
                       type="button"
                       size="icon"
                       variant="ghost"
@@ -241,9 +246,11 @@ export const ExceptionHoursSettings = forwardRef<ExceptionHoursSettingsHandle, P
                       onClick={() => startEdit(entry.id)}
                     >
                       <Pencil className="size-3" />
-                    </Button>
+                    </RoleGatedButton>
                   )}
-                  <Button
+
+                  <RoleGatedButton
+                    requiredPermission={Permission.StoresConfigBusiness}
                     type="button"
                     size="icon"
                     variant="ghost"
@@ -252,7 +259,7 @@ export const ExceptionHoursSettings = forwardRef<ExceptionHoursSettingsHandle, P
                     disabled={isPending}
                   >
                     <Trash2 className="text-destructive size-3" />
-                  </Button>
+                  </RoleGatedButton>
                 </div>
               </div>
             );
