@@ -23,7 +23,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-import { PAGE_ROLES, canRoleAccessPage } from '@/lib/permission.config';
+import { canRoleAccessPage, isPageHqOnly } from '@/lib/permission.config';
 import type { RoutePattern } from '@/lib/routes/routes.type';
 import { getRoutePattern } from '@/lib/routes/routes.util';
 
@@ -117,33 +117,14 @@ function checkAnySubActive(pathname: string, item: MenuItem): boolean {
 }
 
 /**
- * Returns true if the current user's role can access the given route pattern.
- * Routes not listed in PAGE_ROLES are unrestricted (always allowed).
- */
-/**
  * Returns true if the current user can access the given route pattern.
  * Returns false while the user is still loading to prevent premature access.
- * Routes not listed in PAGE_ROLES are unrestricted (always allowed once loaded).
+ * Routes not listed in PAGE_PERMISSIONS are unrestricted (always allowed once loaded).
  */
 function canAccess(href: RoutePattern, role: UserRole | null, isLoading: boolean): boolean {
   if (isLoading) return false; // deny everything until we know the role
   if (href === '/' || !role) return true;
   return canRoleAccessPage(role, href as Parameters<typeof canRoleAccessPage>[1]);
-}
-
-/**
- * Returns true if the given route is restricted to Headquarter/System only.
- * Used to decide whether to show the "本部" badge on denied sub-items.
- */
-function isHqOnly(href: RoutePattern): boolean {
-  const allowed = PAGE_ROLES[href as keyof typeof PAGE_ROLES];
-  if (!allowed) return false;
-  return (
-    allowed.length <= 2 &&
-    (allowed as readonly UserRole[]).every(
-      (r) => r === UserRole.System || r === UserRole.Headquarter,
-    )
-  );
 }
 
 // ---------------------------------------------------------------------------
@@ -191,7 +172,7 @@ export function AppSidebar() {
                   const hasSubItems = !!item.subItems?.length;
                   const allowed = canAccess(item.href, role, isLoading);
                   // Deny reason for tooltip
-                  const denyReason = isHqOnly(item.href)
+                  const denyReason = isPageHqOnly(item.href)
                     ? '本部権限が必要です'
                     : 'このロールでは操作できません';
 
@@ -245,7 +226,7 @@ export function AppSidebar() {
                               const subActive =
                                 pathname === sub.href || pathname.startsWith(sub.href + '/');
                               const subAllowed = canAccess(sub.href, role, isLoading);
-                              const subHqOnly = isHqOnly(sub.href);
+                              const subHqOnly = isPageHqOnly(sub.href);
                               const subDenyReason = subHqOnly
                                 ? '本部権限が必要です'
                                 : 'このロールでは操作できません';
