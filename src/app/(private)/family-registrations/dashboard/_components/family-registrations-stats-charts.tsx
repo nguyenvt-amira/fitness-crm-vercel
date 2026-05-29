@@ -112,7 +112,7 @@ export function FamilyRegistrationsStatsCharts({ period }: FamilyRegistrationsSt
     );
   }
 
-  const monthlyTrend = data?.monthly_trend ?? [];
+  // const monthlyTrend = data?.monthly_trend ?? [];
   const byMemberType = data?.by_member_type ?? [];
   const familySizeDist = data?.family_size_distribution ?? [];
   const byRelationship = data?.by_relationship ?? [];

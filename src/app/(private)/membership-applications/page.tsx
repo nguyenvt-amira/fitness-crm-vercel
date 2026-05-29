@@ -36,6 +36,7 @@ function MembershipApplicationsPageContent() {
             <p className="text-muted-foreground text-sm">全店舗</p>
           </div>
           <Button
+            nativeButton={false}
             render={
               <Link href={navigate('/membership-applications/create')}>
                 <Plus className="mr-2 size-4" />

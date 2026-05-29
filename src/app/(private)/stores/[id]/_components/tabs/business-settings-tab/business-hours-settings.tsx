@@ -93,7 +93,7 @@ export function BusinessHoursSettings({
 
   return (
     <>
-      <CardHeader className="gap-4 border-b px-4 pb-0!">
+      <CardHeader className="gap-4 border-b">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm">営業時間設定</CardTitle>
           {editingDefaults ? (

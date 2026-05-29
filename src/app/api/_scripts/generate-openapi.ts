@@ -10,18 +10,12 @@
  *   or
  *   tsx src/lib/openapi/scripts/generate-openapi.ts
  */
-import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'fs';
-import { dirname, join, relative } from 'path';
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'fs';
+import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-interface RouteInfo {
-  path: string;
-  methods: string[];
-  filePath: string;
-}
 
 /**
  * Extract HTTP methods from route file
@@ -106,7 +100,7 @@ async function generateOpenApiSpec() {
       const existingContent = readFileSync(outputPath, 'utf-8');
       spec = JSON.parse(existingContent);
       console.log('✓ Loaded existing openapi.json');
-    } catch (error) {
+    } catch {
       console.warn('⚠ Could not parse existing openapi.json, creating new one');
     }
   }
@@ -124,7 +118,7 @@ async function generateOpenApiSpec() {
           files.push(fullPath);
         }
       }
-    } catch (error) {
+    } catch {
       // Ignore errors for directories we can't read
     }
     return files;

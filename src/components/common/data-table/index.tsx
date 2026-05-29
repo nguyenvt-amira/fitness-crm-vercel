@@ -78,6 +78,7 @@ export function DataTable<TData, TValue>({
   tableSize = 'default',
   getRowClassName,
 }: Readonly<DataTableProps<TData, TValue>>) {
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,

@@ -10,7 +10,7 @@
  *   or
  *   tsx src/lib/openapi/scripts/generate-openapi-from-zod.ts
  */
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { writeFileSync } from 'fs';
 import { dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
 

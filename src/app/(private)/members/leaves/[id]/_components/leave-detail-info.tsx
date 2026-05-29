@@ -39,6 +39,7 @@ export function LeaveDetailInfo({ leave }: Readonly<{ leave: LeaveDetail }>) {
 
           <Field label="会員名">
             <Button
+              nativeButton={false}
               variant="link"
               className="h-auto p-0 text-sm font-medium"
               render={<Link href={navigate('/members/[id]', leave.member_id)} />}
