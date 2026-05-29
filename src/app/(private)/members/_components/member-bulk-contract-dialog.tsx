@@ -66,7 +66,10 @@ export function MemberBulkContractDialog({
               変更先の主契約
               <span className="text-destructive ml-1">*</span>
             </Label>
-            <Select value={toContract?.id ?? undefined} onValueChange={onContractChange}>
+            <Select
+              value={toContract?.id ?? ''}
+              onValueChange={(value) => onContractChange(value ?? '')}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="選択してください" />
               </SelectTrigger>

@@ -20,6 +20,12 @@ import {
 import { STAFF_ROLE_LABELS, StaffRole } from '../../../_constants/constants';
 import type { StaffEditFormValues } from '../_schemas/staff-edit-form.schema';
 
+const GENDER_OPTIONS = [
+  { value: 'male', label: '男性' },
+  { value: 'female', label: '女性' },
+  { value: 'other', label: 'その他' },
+];
+
 export function PersonalInfoSection() {
   const form = useFormContext<StaffEditFormValues>();
   return (
@@ -95,16 +101,22 @@ export function PersonalInfoSection() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>性別</FormLabel>
-              <Select value={field.value ?? ''} onValueChange={field.onChange}>
+              <Select
+                value={field.value ?? ''}
+                onValueChange={field.onChange}
+                items={GENDER_OPTIONS}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="選択" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="male">男性</SelectItem>
-                  <SelectItem value="female">女性</SelectItem>
-                  <SelectItem value="other">その他</SelectItem>
+                  {GENDER_OPTIONS.map((item) => (
+                    <SelectItem key={item.value} value={item.value}>
+                      {item.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -138,7 +150,7 @@ export function PersonalInfoSection() {
               <FormLabel>
                 ロール<span className="text-destructive ml-0.5">*</span>
               </FormLabel>
-              <Select value={field.value} onValueChange={field.onChange}>
+              <Select value={field.value} onValueChange={field.onChange} items={STAFF_ROLE_LABELS}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="選択" />

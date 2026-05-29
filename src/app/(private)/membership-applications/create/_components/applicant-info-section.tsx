@@ -128,7 +128,11 @@ export function ApplicantInfoSection({ control, onUploadingChange }: ApplicantIn
                 <FormLabel>
                   性別<span className="text-destructive ml-0.5">*</span>
                 </FormLabel>
-                <Select onValueChange={field.onChange} value={field.value ?? ''}>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value ?? ''}
+                  items={GENDER_LABELS}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="選択してください" />

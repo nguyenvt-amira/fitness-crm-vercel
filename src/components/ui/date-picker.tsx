@@ -34,19 +34,21 @@ export function DatePicker({
 }: Readonly<DatePickerProps>) {
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className={cn(
-            'justify-between gap-2 text-left font-medium',
-            !date && 'text-muted-foreground',
-            hasError && 'border-destructive text-destructive! focus-visible:ring-destructive/20',
-          )}
-          disabled={disabled}
-        >
-          {date ? format(date, 'yyyy/MM/dd', { locale: ja }) : placeholder}
-          <CalendarIcon className="h-3 w-3" />
-        </Button>
+      <PopoverTrigger
+        render={
+          <Button
+            variant="outline"
+            className={cn(
+              'justify-between gap-2 text-left font-medium',
+              !date && 'text-muted-foreground',
+              hasError && 'border-destructive text-destructive! focus-visible:ring-destructive/20',
+            )}
+            disabled={disabled}
+          />
+        }
+      >
+        {date ? format(date, 'yyyy/MM/dd', { locale: ja }) : placeholder}
+        <CalendarIcon className="h-3 w-3" />
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar

@@ -5,7 +5,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
-import { Camera, Check, ChevronsUpDown } from 'lucide-react';
+import { Camera, ChevronsUpDown } from 'lucide-react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -40,6 +40,14 @@ import { cn } from '@/lib/utils';
 import { BRAND_LABELS, GENDER_LABELS, MEMBER_TYPE_LABELS } from '../_constants/constants';
 import { JOIN_ROUTE_OPTIONS, type MemberFormValues } from '../_schemas/member-form.schema';
 
+const EMERGENCY_CONTACT_RELATIONSHIP_OPTIONS = [
+  { value: '父', label: '父' },
+  { value: '母', label: '母' },
+  { value: '配偶者', label: '配偶者' },
+  { value: '兄弟姉妹', label: '兄弟姉妹' },
+  { value: 'その他', label: 'その他' },
+];
+
 export function MembersForm() {
   const form = useFormContext<MemberFormValues>();
   const joinRoute = useWatch({ control: form.control, name: 'join_route' });
@@ -70,7 +78,10 @@ export function MembersForm() {
       },
     }),
   });
-  const storeOptions = storesRes?.stores ?? [];
+  const storeOptions = (storesRes?.stores ?? []).map((store) => ({
+    value: store.id,
+    label: store.name,
+  }));
 
   const referrerCandidates = useMemo(
     () =>
@@ -224,6 +235,7 @@ export function MembersForm() {
                     value={field.value}
                     onValueChange={field.onChange}
                     key={`gender-${field.value ?? 'empty'}`}
+                    items={GENDER_LABELS}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -251,26 +263,25 @@ export function MembersForm() {
               <FormItem className="max-w-[400px]">
                 <FormLabel>会員種別</FormLabel>
                 <Popover open={memberTypeOpen} onOpenChange={setMemberTypeOpen}>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <button
-                        type="button"
-                        aria-expanded={memberTypeOpen}
-                        className={cn(
-                          'border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm',
-                        )}
-                      >
-                        {field.value
-                          ? MEMBER_TYPE_LABELS[field.value as MemberType]
-                          : '会員種別を選択'}
-                        <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
-                      </button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent
-                    className="w-[var(--radix-popover-trigger-width)] p-0"
-                    align="start"
-                  >
+                  <PopoverTrigger
+                    render={
+                      <FormControl>
+                        <button
+                          type="button"
+                          aria-expanded={memberTypeOpen}
+                          className={cn(
+                            'border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm',
+                          )}
+                        >
+                          {field.value
+                            ? MEMBER_TYPE_LABELS[field.value as MemberType]
+                            : '会員種別を選択'}
+                          <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+                        </button>
+                      </FormControl>
+                    }
+                  ></PopoverTrigger>
+                  <PopoverContent className="w-(--anchor-width) p-0" align="start">
                     <Command>
                       <CommandInput placeholder="会員種別を検索..." className="h-9" />
                       <CommandList>
@@ -280,18 +291,13 @@ export function MembersForm() {
                             <CommandItem
                               key={option}
                               value={option}
+                              data-checked={field.value === option}
                               onSelect={(value) => {
                                 field.onChange(value === field.value ? '' : value);
                                 setMemberTypeOpen(false);
                               }}
                             >
                               {MEMBER_TYPE_LABELS[option]}
-                              <Check
-                                className={cn(
-                                  'ml-auto size-4',
-                                  field.value === option ? 'opacity-100' : 'opacity-0',
-                                )}
-                              />
                             </CommandItem>
                           ))}
                         </CommandGroup>
@@ -411,6 +417,7 @@ export function MembersForm() {
                   value={field.value ?? ''}
                   onValueChange={field.onChange}
                   key={`emergency-contact-relationship-${field.value ?? 'empty'}`}
+                  items={EMERGENCY_CONTACT_RELATIONSHIP_OPTIONS}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -418,11 +425,11 @@ export function MembersForm() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="父">父</SelectItem>
-                    <SelectItem value="母">母</SelectItem>
-                    <SelectItem value="配偶者">配偶者</SelectItem>
-                    <SelectItem value="兄弟姉妹">兄弟姉妹</SelectItem>
-                    <SelectItem value="その他">その他</SelectItem>
+                    {EMERGENCY_CONTACT_RELATIONSHIP_OPTIONS.map((item) => (
+                      <SelectItem key={item.value} value={item.value}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -499,6 +506,7 @@ export function MembersForm() {
                   value={field.value ?? ''}
                   onValueChange={field.onChange}
                   key={`join-store-${field.value ?? 'empty'}`}
+                  items={storeOptions}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -507,8 +515,8 @@ export function MembersForm() {
                   </FormControl>
                   <SelectContent>
                     {storeOptions.map((store) => (
-                      <SelectItem key={store.id} value={store.id}>
-                        {store.name}
+                      <SelectItem key={store.value} value={store.value}>
+                        {store.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -528,6 +536,7 @@ export function MembersForm() {
                   value={field.value ?? ''}
                   onValueChange={field.onChange}
                   key={`brand-${field.value ?? 'empty'}`}
+                  items={BRAND_LABELS}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -589,24 +598,23 @@ export function MembersForm() {
                   <FormItem>
                     <FormLabel>紹介者</FormLabel>
                     <Popover open={referrerOpen} onOpenChange={setReferrerOpen}>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <button
-                            type="button"
-                            aria-expanded={referrerOpen}
-                            className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm"
-                          >
-                            {selected
-                              ? `${selected.name}（${selected.id}）`
-                              : '紹介者を検索（会員ID・氏名）'}
-                            <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
-                          </button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent
-                        className="w-[var(--radix-popover-trigger-width)] p-0"
-                        align="start"
-                      >
+                      <PopoverTrigger
+                        render={
+                          <FormControl>
+                            <button
+                              type="button"
+                              aria-expanded={referrerOpen}
+                              className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm"
+                            >
+                              {selected
+                                ? `${selected.name}（${selected.id}）`
+                                : '紹介者を検索（会員ID・氏名）'}
+                              <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+                            </button>
+                          </FormControl>
+                        }
+                      ></PopoverTrigger>
+                      <PopoverContent className="w-(--anchor-width) p-0" align="start">
                         <Command>
                           <CommandInput placeholder="会員IDまたは氏名で検索" className="h-9" />
                           <CommandList>
@@ -616,6 +624,7 @@ export function MembersForm() {
                                 <CommandItem
                                   key={candidate.id}
                                   value={`${candidate.id} ${candidate.name}`}
+                                  data-checked={field.value === candidate.id}
                                   onSelect={() => {
                                     field.onChange(
                                       candidate.id === field.value ? '' : candidate.id,
@@ -635,12 +644,6 @@ export function MembersForm() {
                                   <span className="text-muted-foreground text-xs">
                                     {candidate.storeName}
                                   </span>
-                                  <Check
-                                    className={cn(
-                                      'ml-auto size-4',
-                                      field.value === candidate.id ? 'opacity-100' : 'opacity-0',
-                                    )}
-                                  />
                                 </CommandItem>
                               ))}
                             </CommandGroup>

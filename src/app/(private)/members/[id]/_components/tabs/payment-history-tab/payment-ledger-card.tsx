@@ -33,22 +33,22 @@ interface PaymentLedgerCardProps {
   readonly memberId: string;
 }
 
-const PERIOD_LABELS: Record<string, string> = {
-  all: '全期間',
-  thisMonth: '今月',
-  lastMonth: '先月',
-  '3months': '過去3ヶ月',
-  '6months': '過去6ヶ月',
-};
-
-const TYPE_LABELS: Record<string, string> = {
-  all: '全種別',
-  sale: '売上',
-  refund: '返金',
-};
-
 type PaymentPeriod = 'all' | 'thisMonth' | 'lastMonth' | '3months' | '6months';
 type PaymentType = 'all' | 'sale' | 'refund';
+
+const PERIOD_OPTIONS: Array<{ value: PaymentPeriod; label: string }> = [
+  { value: 'all', label: '全期間' },
+  { value: 'thisMonth', label: '今月' },
+  { value: 'lastMonth', label: '先月' },
+  { value: '3months', label: '過去3ヶ月' },
+  { value: '6months', label: '過去6ヶ月' },
+];
+
+const TYPE_OPTIONS: Array<{ value: PaymentType; label: string }> = [
+  { value: 'all', label: '全種別' },
+  { value: 'sale', label: '売上' },
+  { value: 'refund', label: '返金' },
+];
 
 export function PaymentLedgerCard({ memberId }: PaymentLedgerCardProps) {
   const [period, setPeriod] = useState<PaymentPeriod>('all');
@@ -62,13 +62,13 @@ export function PaymentLedgerCard({ memberId }: PaymentLedgerCardProps) {
     }),
   );
 
-  const handlePeriodChange = useCallback((nextPeriod: PaymentPeriod) => {
-    setPeriod(nextPeriod);
+  const handlePeriodChange = useCallback((nextPeriod: PaymentPeriod | null) => {
+    setPeriod(nextPeriod ?? 'all');
     setPage(1);
   }, []);
 
-  const handleTypeChange = useCallback((nextType: PaymentType) => {
-    setType(nextType);
+  const handleTypeChange = useCallback((nextType: PaymentType | null) => {
+    setType(nextType ?? 'all');
     setPage(1);
   }, []);
 
@@ -118,26 +118,28 @@ export function PaymentLedgerCard({ memberId }: PaymentLedgerCardProps) {
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm">入出金明細</CardTitle>
             <div className="flex items-center gap-2">
-              <Select value={period} onValueChange={handlePeriodChange}>
+              <Select value={period} onValueChange={handlePeriodChange} items={PERIOD_OPTIONS}>
                 <SelectTrigger className="h-8 w-36 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">全期間</SelectItem>
-                  <SelectItem value="thisMonth">今月</SelectItem>
-                  <SelectItem value="lastMonth">先月</SelectItem>
-                  <SelectItem value="3months">過去3ヶ月</SelectItem>
-                  <SelectItem value="6months">過去6ヶ月</SelectItem>
+                  {PERIOD_OPTIONS.map((item) => (
+                    <SelectItem key={item.value} value={item.value}>
+                      {item.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
-              <Select value={type} onValueChange={handleTypeChange}>
+              <Select value={type} onValueChange={handleTypeChange} items={TYPE_OPTIONS}>
                 <SelectTrigger className="h-8 w-28 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">全種別</SelectItem>
-                  <SelectItem value="sale">売上</SelectItem>
-                  <SelectItem value="refund">返金</SelectItem>
+                  {TYPE_OPTIONS.map((item) => (
+                    <SelectItem key={item.value} value={item.value}>
+                      {item.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>

@@ -77,15 +77,19 @@ export function BasicInfoTab({ member }: { member: GetMemberDetailResponse }) {
                 <div>
                   <p className="text-muted-foreground mb-1 text-xs">紹介者</p>
                   {referrerMemberId ? (
-                    <Button variant="link" className="h-auto p-0 text-sm font-medium" asChild>
-                      <Link
-                        href={navigate('/members/[id]', referrerMemberId, {
-                          parentMemberId: currentMemberId,
-                          parentName: currentMemberName,
-                        })}
-                      >
-                        {referrerMemberId}
-                      </Link>
+                    <Button
+                      variant="link"
+                      className="h-auto p-0 text-sm font-medium"
+                      render={
+                        <Link
+                          href={navigate('/members/[id]', referrerMemberId, {
+                            parentMemberId: currentMemberId,
+                            parentName: currentMemberName,
+                          })}
+                        />
+                      }
+                    >
+                      {referrerMemberId}
                     </Button>
                   ) : (
                     <p className="text-muted-foreground text-sm font-medium">—</p>

@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { formatDate } from '@/utils/format.util';
@@ -228,14 +226,16 @@ export default function MemberDetailPage() {
                       再入会
                     </Button>
                     <DropdownMenu modal={false}>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="border-input bg-background hover:bg-accent hover:text-accent-foreground size-8"
-                        >
-                          <MoreHorizontal className="size-4" />
-                        </Button>
+                      <DropdownMenuTrigger
+                        render={
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="border-input bg-background hover:bg-accent hover:text-accent-foreground size-8"
+                          />
+                        }
+                      >
+                        <MoreHorizontal className="size-4" />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem
@@ -250,14 +250,16 @@ export default function MemberDetailPage() {
                 )}
                 {!isWithdrawnStatus && (
                   <DropdownMenu modal={false}>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="border-input bg-background hover:bg-accent hover:text-accent-foreground size-8"
-                      >
-                        <MoreHorizontal className="size-4" />
-                      </Button>
+                    <DropdownMenuTrigger
+                      render={
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="border-input bg-background hover:bg-accent hover:text-accent-foreground size-8"
+                        />
+                      }
+                    >
+                      <MoreHorizontal className="size-4" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       {member.profile.status === MemberStatus.ACTIVE && (

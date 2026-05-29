@@ -73,7 +73,16 @@ export function EntryExitTable(props: EntryExitTableProps) {
     }),
   );
 
-  const stores = useMemo(() => storesData?.stores ?? [], [storesData?.stores]);
+  const stores = useMemo(
+    () => [
+      { value: 'all', label: '全店舗' },
+      ...(storesData?.stores ?? []).map((store) => ({
+        value: store.id,
+        label: store.name,
+      })),
+    ],
+    [storesData?.stores],
+  );
 
   const isLoading = isEntriesLoading || isStoresLoading;
   const isError = isEntriesError;
@@ -107,18 +116,18 @@ export function EntryExitTable(props: EntryExitTableProps) {
             <Select
               value={storeFilter}
               onValueChange={(value) => {
-                setStoreFilter(value);
+                setStoreFilter(value ?? 'all');
                 setPage(1);
               }}
+              items={stores}
             >
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="店舗を選択" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">全店舗</SelectItem>
                 {stores.map((store) => (
-                  <SelectItem key={store.id} value={store.id}>
-                    {store.name}
+                  <SelectItem key={store.value} value={store.value}>
+                    {store.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -130,6 +139,7 @@ export function EntryExitTable(props: EntryExitTableProps) {
                 setPeriodFilter(value as 'this_month' | 'last_month' | '3months' | '6months');
                 setPage(1);
               }}
+              items={PERIOD_OPTIONS}
             >
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="期間を選択" />

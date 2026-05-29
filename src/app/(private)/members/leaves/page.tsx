@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useMemo, useState } from 'react';
+import { Suspense, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
@@ -51,7 +51,7 @@ function LeavesPageContent() {
   const total = data?.total ?? 0;
   const pageSize = filtersHook.pageSize;
 
-  const columns = useMemo(() => LeavesTableColumns(), []);
+  const columns = LeavesTableColumns();
 
   return (
     <LeavesFiltersProvider value={filtersHook}>

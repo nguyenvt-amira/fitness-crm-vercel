@@ -16,17 +16,19 @@ import {
 import { useTransferFiltersContext } from '../_contexts/transfer-filters-context';
 
 const MOCK_STORES = [
-  { id: 'store-joyfit-001', name: 'JOYFIT池袋店' },
-  { id: 'store-joyfit-002', name: 'JOYFIT新宿店' },
-  { id: 'store-joyfit-003', name: 'JOYFIT渋谷店' },
-  { id: 'store-joyfit-004', name: 'JOYFIT横浜店' },
-  { id: 'store-fit365-001', name: 'FIT365八潮店' },
-  { id: 'store-fit365-002', name: 'FIT365川口店' },
-  { id: 'store-fit365-003', name: 'FIT365大宮店' },
-  { id: 'store-fit365-004', name: 'FIT365越谷店' },
+  { value: 'all', label: '全店舗（移籍先）' },
+  { value: 'store-joyfit-001', label: 'JOYFIT池袋店' },
+  { value: 'store-joyfit-002', label: 'JOYFIT新宿店' },
+  { value: 'store-joyfit-003', label: 'JOYFIT渋谷店' },
+  { value: 'store-joyfit-004', label: 'JOYFIT横浜店' },
+  { value: 'store-fit365-001', label: 'FIT365八潮店' },
+  { value: 'store-fit365-002', label: 'FIT365川口店' },
+  { value: 'store-fit365-003', label: 'FIT365大宮店' },
+  { value: 'store-fit365-004', label: 'FIT365越谷店' },
 ];
 
 const STATUS_OPTIONS = [
+  { value: 'all', label: '全ステータス' },
   { value: 'pending', label: '申請中' },
   { value: 'from_store_approved', label: '店舗承認済' },
   { value: 'approved', label: '承認済' },
@@ -35,9 +37,16 @@ const STATUS_OPTIONS = [
 ];
 
 const APPLIED_PERIOD_OPTIONS = [
+  { value: 'all', label: '全期間' },
   { value: 'this_month', label: '今月' },
   { value: 'last_month', label: '先月' },
   { value: 'this_year', label: '今年' },
+];
+
+const BRAND_OPTIONS = [
+  { value: 'all', label: '全ブランド' },
+  { value: 'joyfit', label: 'JOYFIT' },
+  { value: 'fit365', label: 'FIT365' },
 ];
 
 function filterActiveClass(isActive: boolean) {
@@ -102,6 +111,7 @@ export function TransferFilters({
             onValueChange={(v) =>
               updateFilter('status', v === 'all' ? null : (v as typeof filters.status))
             }
+            items={STATUS_OPTIONS}
           >
             <SelectTrigger
               className={`h-8 w-[140px] text-xs ${filterActiveClass(filters.status !== null)}`}
@@ -109,7 +119,6 @@ export function TransferFilters({
               <SelectValue placeholder="全ステータス" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">全ステータス</SelectItem>
               {STATUS_OPTIONS.map((opt) => (
                 <SelectItem key={opt.value} value={opt.value} className="text-xs">
                   {opt.label}
@@ -122,6 +131,7 @@ export function TransferFilters({
           <Select
             value={filters.from_store_id ?? 'all'}
             onValueChange={(v) => updateFilter('from_store_id', v === 'all ' ? null : v)}
+            items={MOCK_STORES}
           >
             <SelectTrigger
               className={`h-8 w-[160px] text-xs ${filterActiveClass(filters.from_store_id !== null)}`}
@@ -129,10 +139,9 @@ export function TransferFilters({
               <SelectValue placeholder="全店舗（移籍元）" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">全店舗（移籍元）</SelectItem>
               {MOCK_STORES.map((store) => (
-                <SelectItem key={store.id} value={store.id} className="text-xs">
-                  {store.name}
+                <SelectItem key={store.value} value={store.value} className="text-xs">
+                  {store.label}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -142,6 +151,7 @@ export function TransferFilters({
           <Select
             value={filters.to_store_id ?? 'all'}
             onValueChange={(v) => updateFilter('to_store_id', v === 'all' ? null : v)}
+            items={MOCK_STORES}
           >
             <SelectTrigger
               className={`h-8 w-[160px] text-xs ${filterActiveClass(filters.to_store_id !== null)}`}
@@ -149,10 +159,9 @@ export function TransferFilters({
               <SelectValue placeholder="全店舗（移籍先）" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">全店舗（移籍先）</SelectItem>
               {MOCK_STORES.map((store) => (
-                <SelectItem key={store.id} value={store.id} className="text-xs">
-                  {store.name}
+                <SelectItem key={store.value} value={store.value} className="text-xs">
+                  {store.label}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -164,6 +173,7 @@ export function TransferFilters({
             onValueChange={(v) =>
               updateFilter('brand', v === 'all' ? null : (v as typeof filters.brand))
             }
+            items={BRAND_OPTIONS}
           >
             <SelectTrigger
               className={`h-8 w-[130px] text-xs ${filterActiveClass(filters.brand !== null)}`}
@@ -171,13 +181,15 @@ export function TransferFilters({
               <SelectValue placeholder="全ブランド" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">全ブランド</SelectItem>
-              <SelectItem value="joyfit" className="text-xs">
-                JOYFIT
-              </SelectItem>
-              <SelectItem value="fit365" className="text-xs">
-                FIT365
-              </SelectItem>
+              {BRAND_OPTIONS.map((item) => (
+                <SelectItem
+                  key={item.value}
+                  value={item.value}
+                  className={item.value !== 'all' ? 'text-xs' : ''}
+                >
+                  {item.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
@@ -190,6 +202,7 @@ export function TransferFilters({
                 v === 'all' ? null : (v as typeof filters.applied_period),
               )
             }
+            items={APPLIED_PERIOD_OPTIONS}
           >
             <SelectTrigger
               className={`h-8 w-[120px] text-xs ${filterActiveClass(filters.applied_period !== null)}`}
@@ -197,7 +210,6 @@ export function TransferFilters({
               <SelectValue placeholder="全期間" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">全期間</SelectItem>
               {APPLIED_PERIOD_OPTIONS.map((opt) => (
                 <SelectItem key={opt.value} value={opt.value} className="text-xs">
                   {opt.label}

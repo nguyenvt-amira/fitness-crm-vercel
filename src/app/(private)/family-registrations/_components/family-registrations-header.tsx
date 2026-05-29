@@ -1,6 +1,6 @@
 'use client';
 
-import { BookUser, Users } from 'lucide-react';
+import { BookUser } from 'lucide-react';
 
 import { type BreadcrumbItemType, BreadcrumbNav } from '@/components/common/breadcrumb-nav';
 

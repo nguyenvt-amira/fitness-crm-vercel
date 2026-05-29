@@ -52,9 +52,9 @@ export function TextWithTooltip({ text, className, lines }: Readonly<TextWithToo
   }, [lines]);
 
   return (
-    <TooltipProvider delayDuration={100} disableHoverableContent>
+    <TooltipProvider delay={100}>
       <Tooltip>
-        <TooltipTrigger disabled={!isTruncated} asChild>
+        <TooltipTrigger disabled={!isTruncated}>
           <div
             ref={textRef}
             className={cn(lineClampClass, !isTruncated && 'pointer-events-none', className)}

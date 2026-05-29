@@ -98,14 +98,16 @@ export function StaffDeleteAction({ staffId, trigger, onOpenChange }: StaffDelet
 
   return (
     <AlertDialog open={open} onOpenChange={handleOpenChange}>
-      <AlertDialogTrigger asChild>
-        {trigger ?? (
-          <Button variant="destructive" size="sm" disabled={deleteMutation.isPending}>
-            <Trash2 className="mr-2 size-4" />
-            削除
-          </Button>
-        )}
-      </AlertDialogTrigger>
+      {trigger ?? (
+        <AlertDialogTrigger
+          render={
+            <Button variant="destructive" size="sm" disabled={deleteMutation.isPending}>
+              <Trash2 className="mr-2 size-4" />
+              削除
+            </Button>
+          }
+        ></AlertDialogTrigger>
+      )}
 
       <AlertDialogContent>
         <AlertDialogHeader>

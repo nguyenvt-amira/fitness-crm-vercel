@@ -31,17 +31,21 @@ export const UNPAID_FILTER_LABEL: Record<UnpaidFilter, string> = {
 
 // ─── Filter Option Lists ──────────────────────────────────────────────────────
 
-export const BLACKLIST_REGISTRATION_SOURCE_OPTIONS = Object.values(BlacklistRegistrationSource).map(
-  (value) => ({
+export const BLACKLIST_REGISTRATION_SOURCE_OPTIONS = [
+  { value: 'all', label: '全登録理由' },
+  ...Object.values(BlacklistRegistrationSource).map((value) => ({
     value,
     label: BLACKLIST_REGISTRATION_SOURCE_LABEL[value],
-  }),
-);
+  })),
+];
 
-export const UNPAID_FILTER_OPTIONS = Object.values(UnpaidFilter).map((value) => ({
-  value,
-  label: UNPAID_FILTER_LABEL[value],
-}));
+export const UNPAID_FILTER_OPTIONS = [
+  { value: 'all', label: '未納金：全件' },
+  ...Object.values(UnpaidFilter).map((value) => ({
+    value,
+    label: UNPAID_FILTER_LABEL[value],
+  })),
+];
 
 // ─── Badge classes ────────────────────────────────────────────────────────────
 

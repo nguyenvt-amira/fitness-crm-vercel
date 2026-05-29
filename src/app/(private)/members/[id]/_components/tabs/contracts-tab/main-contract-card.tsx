@@ -207,7 +207,11 @@ export function MainContractCard({ memberId }: MainContractCardProps) {
                 <Label htmlFor="plan-select" className="text-sm font-medium">
                   変更先プラン <span className="text-destructive ml-1 text-xs">*</span>
                 </Label>
-                <Select value={selectedContractId} onValueChange={setSelectedContractId}>
+                <Select
+                  value={selectedContractId}
+                  onValueChange={(value) => setSelectedContractId(value ?? '')}
+                  items={availablePlans}
+                >
                   <SelectTrigger
                     id="plan-select"
                     className="h-9 text-sm"

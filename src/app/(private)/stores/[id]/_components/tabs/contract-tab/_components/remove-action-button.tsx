@@ -36,18 +36,20 @@ export function RemoveActionButton({
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>
-        <RoleGatedButton
-          requiredPermission={Permission.StoresConfigContract}
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="text-destructive/80 hover:text-destructive size-7"
-          aria-label="紐づけを解除"
-        >
-          <Link2Off className="size-4" />
-        </RoleGatedButton>
-      </AlertDialogTrigger>
+      <AlertDialogTrigger
+        render={
+          <RoleGatedButton
+            requiredPermission={Permission.StoresConfigContract}
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="text-destructive/80 hover:text-destructive size-7"
+            aria-label="紐づけを解除"
+          >
+            <Link2Off className="size-4" />
+          </RoleGatedButton>
+        }
+      ></AlertDialogTrigger>
       <AlertDialogContent className="max-w-sm">
         <AlertDialogHeader>
           <AlertDialogTitle>{dialogTitle}</AlertDialogTitle>

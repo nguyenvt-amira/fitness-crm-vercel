@@ -112,7 +112,7 @@ export function FamilyRegistrationsStatsCharts({ period }: FamilyRegistrationsSt
     );
   }
 
-  const monthlyTrend = data?.monthly_trend ?? [];
+  // const monthlyTrend = data?.monthly_trend ?? [];
   const byMemberType = data?.by_member_type ?? [];
   const familySizeDist = data?.family_size_distribution ?? [];
   const byRelationship = data?.by_relationship ?? [];
@@ -183,10 +183,11 @@ export function FamilyRegistrationsStatsCharts({ period }: FamilyRegistrationsSt
                   innerRadius={36}
                   paddingAngle={2}
                   label={({ cx, cy, midAngle, outerRadius: or, percent }) => {
-                    if (percent < 0.05) return null;
+                    if (percent == null || percent < 0.05) return null;
+                    const safeMidAngle = midAngle ?? 0;
                     const RAD = Math.PI / 180;
-                    const x = cx + (or + 14) * Math.cos(-midAngle * RAD);
-                    const y = cy + (or + 14) * Math.sin(-midAngle * RAD);
+                    const x = cx + (or + 14) * Math.cos(-safeMidAngle * RAD);
+                    const y = cy + (or + 14) * Math.sin(-safeMidAngle * RAD);
                     return (
                       <text
                         x={x}
@@ -281,10 +282,11 @@ export function FamilyRegistrationsStatsCharts({ period }: FamilyRegistrationsSt
                   outerRadius={72}
                   paddingAngle={2}
                   label={({ cx, cy, midAngle, outerRadius: or, percent }) => {
-                    if (percent < 0.05) return null;
+                    if (percent == null || percent < 0.05) return null;
+                    const safeMidAngle = midAngle ?? 0;
                     const RAD = Math.PI / 180;
-                    const x = cx + (or + 14) * Math.cos(-midAngle * RAD);
-                    const y = cy + (or + 14) * Math.sin(-midAngle * RAD);
+                    const x = cx + (or + 14) * Math.cos(-safeMidAngle * RAD);
+                    const y = cy + (or + 14) * Math.sin(-safeMidAngle * RAD);
                     return (
                       <text
                         x={x}

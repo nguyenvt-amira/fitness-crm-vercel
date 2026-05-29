@@ -139,6 +139,7 @@ export function StoreForm() {
                   key={`brand-${field.value ?? 'empty'}`}
                   value={field.value ? field.value : undefined}
                   onValueChange={field.onChange}
+                  items={STORE_BRAND_LABELS}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -186,6 +187,7 @@ export function StoreForm() {
                   key={`area-${field.value ?? 'empty'}`}
                   value={field.value ? field.value : undefined}
                   onValueChange={field.onChange}
+                  items={STORE_AREA_LABELS}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -349,6 +351,7 @@ export function StoreForm() {
                   key={`status-${field.value ?? 'empty'}`}
                   value={field.value}
                   onValueChange={field.onChange}
+                  items={STORE_STATUS_LABELS}
                 >
                   <FormControl>
                     <SelectTrigger>

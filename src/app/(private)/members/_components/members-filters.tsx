@@ -98,10 +98,11 @@ export function MembersFilters({ isFilterOpen, onFilterOpenChange }: MembersFilt
           <Select
             value={store_id.length > 0 ? store_id[0] : 'all'}
             onValueChange={(value) => {
-              if (value === 'all') {
+              const newValue = value ?? 'all';
+              if (newValue === 'all') {
                 updateFilter('store_id', []);
               } else {
-                updateFilter('store_id', [value]);
+                updateFilter('store_id', [newValue]);
               }
             }}
           >
@@ -124,7 +125,6 @@ export function MembersFilters({ isFilterOpen, onFilterOpenChange }: MembersFilt
               ))}
             </SelectContent>
           </Select>
-
           <Select
             value={status.length > 0 ? status[0] : 'all'}
             onValueChange={(value) => {
@@ -154,7 +154,6 @@ export function MembersFilters({ isFilterOpen, onFilterOpenChange }: MembersFilt
               ))}
             </SelectContent>
           </Select>
-
           <Select
             value={contract_type.length > 0 ? contract_type[0] : 'all'}
             onValueChange={(value) => {
@@ -184,7 +183,6 @@ export function MembersFilters({ isFilterOpen, onFilterOpenChange }: MembersFilt
               ))}
             </SelectContent>
           </Select>
-
           <Select
             value={brand.length > 0 ? brand[0] : 'all'}
             onValueChange={(value) => {
@@ -212,14 +210,14 @@ export function MembersFilters({ isFilterOpen, onFilterOpenChange }: MembersFilt
               ))}
             </SelectContent>
           </Select>
-
           <Select
             value={periodValue}
             onValueChange={(value) => {
-              if (value === 'all') {
+              const newValue = value ?? 'all';
+              if (newValue === 'all') {
                 updateFilter('last_visit_days', null);
               } else {
-                updateFilter('last_visit_days', parseInt(value, 10));
+                updateFilter('last_visit_days', parseInt(newValue, 10));
               }
             }}
           >
@@ -245,7 +243,6 @@ export function MembersFilters({ isFilterOpen, onFilterOpenChange }: MembersFilt
               ))}
             </SelectContent>
           </Select>
-
           {hasActiveFilters && (
             <Button
               variant="ghost"

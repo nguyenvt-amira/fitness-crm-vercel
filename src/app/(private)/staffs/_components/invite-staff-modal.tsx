@@ -52,9 +52,12 @@ interface InviteStaffModalProps {
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DEFAULT_BRAND = StaffBrand.ALL;
 const DEFAULT_ROLE = StaffRole.STAFF;
-const STAFF_ROLE_OPTIONS = (Object.values(StaffRole) as StaffRole[]).filter(
-  (role) => role !== StaffRole.SYSTEM,
-);
+const STAFF_ROLE_OPTIONS = (Object.values(StaffRole) as StaffRole[])
+  .filter((role) => role !== StaffRole.SYSTEM)
+  .map((role) => ({
+    value: role,
+    label: STAFF_ROLE_LABELS[role],
+  }));
 
 export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) {
   const queryClient = useQueryClient();
@@ -63,7 +66,11 @@ export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) 
     ...getCrmBrandsOptions(),
     enabled: open,
   });
-  const apiBrands = brandsRes?.brands ?? [];
+  const apiBrands =
+    brandsRes?.brands?.map((brand) => ({
+      value: brand.code,
+      label: brand.display_name,
+    })) ?? [];
 
   const form = useForm<InviteStaffFormValues>({
     resolver: zodResolver(inviteStaffSchema),
@@ -231,6 +238,7 @@ export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) 
                         <Select
                           value={field.value}
                           onValueChange={(value) => field.onChange(value as StaffRole)}
+                          items={STAFF_ROLE_OPTIONS}
                         >
                           <FormControl>
                             <SelectTrigger className="w-full" size="sm">
@@ -239,8 +247,8 @@ export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) 
                           </FormControl>
                           <SelectContent>
                             {STAFF_ROLE_OPTIONS.map((role) => (
-                              <SelectItem key={role} value={role}>
-                                {STAFF_ROLE_LABELS[role]}
+                              <SelectItem key={role.value} value={role.value}>
+                                {role.label}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -257,7 +265,11 @@ export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) 
                         <FormLabel className="text-muted-foreground text-xs">
                           招待時のブランド
                         </FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          items={apiBrands}
+                        >
                           <FormControl>
                             <SelectTrigger className="w-full" size="sm">
                               <SelectValue placeholder="ブランドを選択" />
@@ -265,8 +277,8 @@ export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) 
                           </FormControl>
                           <SelectContent>
                             {apiBrands.map((brand) => (
-                              <SelectItem key={brand.code} value={brand.code}>
-                                {brand.display_name}
+                              <SelectItem key={brand.value} value={brand.value}>
+                                {brand.label}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -340,14 +352,15 @@ export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) 
                             onValueChange={(value) =>
                               updateInviteItem(index, 'role', value as StaffRole)
                             }
+                            items={STAFF_ROLE_OPTIONS}
                           >
                             <SelectTrigger className="w-[148px]" size="sm">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
                               {STAFF_ROLE_OPTIONS.map((role) => (
-                                <SelectItem key={role} value={role}>
-                                  {STAFF_ROLE_LABELS[role]}
+                                <SelectItem key={role.value} value={role.value}>
+                                  {role.label}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -358,14 +371,15 @@ export function InviteStaffModal({ open, onOpenChange }: InviteStaffModalProps) 
                             onValueChange={(value) =>
                               updateInviteItem(index, 'brand', value as StaffBrand)
                             }
+                            items={apiBrands}
                           >
                             <SelectTrigger className="w-[128px]" size="sm">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
                               {apiBrands.map((brand) => (
-                                <SelectItem key={brand.code} value={brand.code}>
-                                  {brand.display_name}
+                                <SelectItem key={brand.value} value={brand.value}>
+                                  {brand.label}
                                 </SelectItem>
                               ))}
                             </SelectContent>

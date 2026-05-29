@@ -18,6 +18,13 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
+const REJECT_REASON_OPTIONS = [
+  { value: '本人確認不備', label: '本人確認不備' },
+  { value: '年齢制限', label: '年齢制限' },
+  { value: 'ブラックリスト該当', label: 'ブラックリスト該当' },
+  { value: 'その他', label: 'その他' },
+];
+
 interface RejectDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -46,15 +53,20 @@ export function RejectDialog({
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <Label className="text-sm">否認理由</Label>
-            <Select value={rejectReason} onValueChange={onRejectReasonChange}>
+            <Select
+              value={rejectReason}
+              onValueChange={(value) => onRejectReasonChange(value ?? '')}
+              items={REJECT_REASON_OPTIONS}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="否認理由を選択してください" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="本人確認不備">本人確認不備</SelectItem>
-                <SelectItem value="年齢制限">年齢制限</SelectItem>
-                <SelectItem value="ブラックリスト該当">ブラックリスト該当</SelectItem>
-                <SelectItem value="その他">その他</SelectItem>
+                {REJECT_REASON_OPTIONS.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

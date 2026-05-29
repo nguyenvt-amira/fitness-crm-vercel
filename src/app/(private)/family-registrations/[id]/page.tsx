@@ -82,11 +82,11 @@ export default function FamilyRegistrationDetailPage() {
             エクスポート
           </Button>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="default" className="gap-2">
-                その他の操作
-                <ChevronDown className="size-4" />
-              </Button>
+            <DropdownMenuTrigger
+              render={<Button variant="outline" size="default" className="gap-2" />}
+            >
+              その他の操作
+              <ChevronDown className="size-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => toast.info('準備中です')}>

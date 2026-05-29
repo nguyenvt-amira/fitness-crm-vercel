@@ -44,9 +44,32 @@ const PLAN_OPTIONS: Record<'FIT365' | 'JOYFIT', { value: string; label: string }
   ],
 };
 
+const BRAND_OPTIONS = [
+  { value: 'FIT365', label: 'FIT365' },
+  { value: 'JOYFIT', label: 'JOYFIT' },
+];
+
+const CAMPAIGN_OPTIONS = [
+  { value: 'none', label: 'なし' },
+  { value: 'SPRING2026', label: '春の入会キャンペーン' },
+  { value: 'STUDENT', label: '学生割引キャンペーン' },
+  { value: 'NEW_LIFE', label: '新生活応援' },
+  { value: 'SENIOR', label: 'シニア割引キャンペーン' },
+  { value: 'CORPORATE', label: '法人会員キャンペーン' },
+];
+
+const PAYMENT_METHOD_OPTIONS = [
+  { value: 'credit_card', label: 'クレジットカード（SBPS）' },
+  { value: 'bank_transfer', label: '口座振替（JACCS）' },
+];
+
 export function ContractInfoSection({ control, onBrandChange }: ContractInfoSectionProps) {
   const { data: storesData } = useQuery(getCrmStoresOptions());
-  const stores = storesData?.stores ?? [];
+  const stores =
+    storesData?.stores?.map((s) => ({
+      value: s.id,
+      label: s.name,
+    })) ?? [];
   const brand = useWatch({ control: control, name: 'contract.brand' });
   return (
     <Card>
@@ -70,6 +93,7 @@ export function ContractInfoSection({ control, onBrandChange }: ContractInfoSect
                     onBrandChange?.(v as 'FIT365' | 'JOYFIT');
                   }}
                   value={field.value ?? ''}
+                  items={BRAND_OPTIONS}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -77,8 +101,11 @@ export function ContractInfoSection({ control, onBrandChange }: ContractInfoSect
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="FIT365">FIT365</SelectItem>
-                    <SelectItem value="JOYFIT">JOYFIT</SelectItem>
+                    {BRAND_OPTIONS.map((item) => (
+                      <SelectItem key={item.value} value={item.value}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -94,7 +121,7 @@ export function ContractInfoSection({ control, onBrandChange }: ContractInfoSect
                 <FormLabel>
                   入会店舗<span className="text-destructive ml-0.5">*</span>
                 </FormLabel>
-                <Select onValueChange={field.onChange} value={field.value ?? ''}>
+                <Select onValueChange={field.onChange} value={field.value ?? ''} items={stores}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="選択してください" />
@@ -102,8 +129,8 @@ export function ContractInfoSection({ control, onBrandChange }: ContractInfoSect
                   </FormControl>
                   <SelectContent>
                     {stores.map((s) => (
-                      <SelectItem key={s.id} value={s.id}>
-                        {s.name}
+                      <SelectItem key={s.value} value={s.value}>
+                        {s.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -121,7 +148,11 @@ export function ContractInfoSection({ control, onBrandChange }: ContractInfoSect
                 <FormLabel>
                   プラン<span className="text-destructive ml-0.5">*</span>
                 </FormLabel>
-                <Select onValueChange={field.onChange} value={field.value ?? ''}>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value ?? ''}
+                  items={PLAN_OPTIONS[brand ?? 'FIT365'] ?? []}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="選択してください" />
@@ -167,19 +198,22 @@ export function ContractInfoSection({ control, onBrandChange }: ContractInfoSect
             render={({ field }) => (
               <FormItem>
                 <FormLabel>適用キャンペーン</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value ?? 'none'}>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value ?? 'none'}
+                  items={CAMPAIGN_OPTIONS}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="なし" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="none">なし</SelectItem>
-                    <SelectItem value="SPRING2026">春の入会キャンペーン</SelectItem>
-                    <SelectItem value="STUDENT">学生割引キャンペーン</SelectItem>
-                    <SelectItem value="NEW_LIFE">新生活応援</SelectItem>
-                    <SelectItem value="SENIOR">シニア割引キャンペーン</SelectItem>
-                    <SelectItem value="CORPORATE">法人会員キャンペーン</SelectItem>
+                    {CAMPAIGN_OPTIONS.map((item) => (
+                      <SelectItem key={item.value} value={item.value}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -195,15 +229,22 @@ export function ContractInfoSection({ control, onBrandChange }: ContractInfoSect
                 <FormLabel>
                   決済方法<span className="text-destructive ml-0.5">*</span>
                 </FormLabel>
-                <Select onValueChange={field.onChange} value={field.value ?? ''}>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value ?? ''}
+                  items={PAYMENT_METHOD_OPTIONS}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="選択してください" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="credit_card">クレジットカード（SBPS）</SelectItem>
-                    <SelectItem value="bank_transfer">口座振替（JACCS）</SelectItem>
+                    {PAYMENT_METHOD_OPTIONS.map((item) => (
+                      <SelectItem key={item.value} value={item.value}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />

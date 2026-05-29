@@ -35,10 +35,11 @@ import { staffRoleFromPositionRoleCategory } from '../../../_utils/position-role
 import type { StaffEditFormValues } from '../_schemas/staff-edit-form.schema';
 
 const STORES = [
-  { id: 'store-001', name: '全店舗' },
-  { id: 'store-002', name: 'JOYFIT新宿店' },
-  { id: 'store-003', name: 'JOYFIT24梅田店' },
-  { id: 'store-004', name: 'FIT365八潮店' },
+  { value: 'all_stores', label: '全店舗' },
+  { value: 'store-001', label: '全店舗' },
+  { value: 'store-002', label: 'JOYFIT新宿店' },
+  { value: 'store-003', label: 'JOYFIT24梅田店' },
+  { value: 'store-004', label: 'FIT365八潮店' },
 ];
 
 export function PermissionSettingsSection() {
@@ -74,7 +75,8 @@ export function PermissionSettingsSection() {
                 <Select
                   value={field.value != null ? String(field.value) : ''}
                   onValueChange={(value) => {
-                    const id = Number.parseInt(value, 10);
+                    const strValue = value ?? '';
+                    const id = Number.parseInt(strValue, 10);
                     field.onChange(Number.isNaN(id) ? undefined : id);
                     const pos = positions.find((p) => p.id === id);
                     if (pos) {
@@ -193,7 +195,11 @@ export function PermissionSettingsSection() {
                         name={`editable_scopes.${index}.brand`}
                         render={({ field, fieldState }) => (
                           <FormItem>
-                            <Select value={field.value ?? ''} onValueChange={field.onChange}>
+                            <Select
+                              value={field.value ?? ''}
+                              onValueChange={field.onChange}
+                              items={STAFF_BRAND_LABELS}
+                            >
                               <FormControl>
                                 <SelectTrigger aria-invalid={!!fieldState.error}>
                                   <SelectValue placeholder="選択" />
@@ -226,35 +232,39 @@ export function PermissionSettingsSection() {
                               ? currentStoreId
                               : 'all_stores';
 
-                          const handleChange = (val: string) => {
-                            if (val === 'all_stores') {
+                          const handleChange = (val: string | null) => {
+                            const newVal = val ?? 'all_stores';
+                            if (newVal === 'all_stores') {
                               field.onChange('all_stores');
                               form.setValue(`editable_scopes.${index}.store_id`, '');
                               form.setValue(`editable_scopes.${index}.store_name`, '');
                             } else {
-                              const store = STORES.find((s) => s.id === val);
+                              const store = STORES.find((s) => s.value === newVal);
                               field.onChange('specific_store');
-                              form.setValue(`editable_scopes.${index}.store_id`, val);
+                              form.setValue(`editable_scopes.${index}.store_id`, newVal);
                               form.setValue(
                                 `editable_scopes.${index}.store_name`,
-                                store?.name ?? '',
+                                store?.label ?? '',
                               );
                             }
                           };
 
                           return (
                             <FormItem>
-                              <Select value={compositeValue} onValueChange={handleChange}>
+                              <Select
+                                value={compositeValue}
+                                onValueChange={handleChange}
+                                items={STORES}
+                              >
                                 <FormControl>
                                   <SelectTrigger aria-invalid={!!fieldState.error}>
                                     <SelectValue placeholder="選択" />
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="all_stores">全店舗</SelectItem>
                                   {STORES.map((store) => (
-                                    <SelectItem key={store.id} value={store.id}>
-                                      {store.name}
+                                    <SelectItem key={store.value} value={store.value}>
+                                      {store.label}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>

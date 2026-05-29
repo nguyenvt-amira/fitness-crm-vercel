@@ -21,8 +21,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Separator } from '@/components/ui/separator';
 
-import { GetCrmFamilyRegistrationsByIdResponse } from '@/lib/api';
-
 type RiskDetailsSectionProps = {
   riskScore: number;
   riskReason: string;
@@ -64,7 +62,7 @@ export function FamilyRegistrationRiskDetailsSection({
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
       <Card>
-        <CollapsibleTrigger asChild className="block">
+        <CollapsibleTrigger className="block">
           <CardHeader className="cursor-pointer select-none">
             <CardTitle className="flex items-center gap-2">
               <AlertTriangle className="text-destructive size-5" />

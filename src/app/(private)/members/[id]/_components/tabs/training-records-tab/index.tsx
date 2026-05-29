@@ -70,6 +70,7 @@ export function TrainingRecordsTab({ memberId }: { memberId: string }) {
                   <Select
                     value={period}
                     onValueChange={(value) => setPeriod(value as TrainingRecordsPeriod)}
+                    items={PERIOD_OPTIONS}
                   >
                     <SelectTrigger className="h-8 w-32 text-xs">
                       <SelectValue />

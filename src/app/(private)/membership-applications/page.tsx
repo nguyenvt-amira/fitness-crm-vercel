@@ -35,12 +35,15 @@ function MembershipApplicationsPageContent() {
             <h1 className="text-xl font-bold">入会申請管理</h1>
             <p className="text-muted-foreground text-sm">全店舗</p>
           </div>
-          <Button asChild>
-            <Link href={navigate('/membership-applications/create')}>
-              <Plus className="mr-2 size-4" />
-              新規入会登録
-            </Link>
-          </Button>
+          <Button
+            nativeButton={false}
+            render={
+              <Link href={navigate('/membership-applications/create')}>
+                <Plus className="mr-2 size-4" />
+                新規入会登録
+              </Link>
+            }
+          />
         </div>
 
         <div className="flex flex-col gap-6">
