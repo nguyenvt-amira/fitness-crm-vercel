@@ -1177,7 +1177,6 @@ type DbType = {
 
 declare global {
   var __fitnessDb_v9: DbType | undefined;
-  var __fitnessDb_v10: DbType | undefined;
 }
 
 // ─── Mock Payment History Data (A-01 FR-009-a) ──────────────────────────────
@@ -5679,4 +5678,4 @@ function createDb() {
 // Without this, each route handler gets its own module instance and mutations are invisible
 // across routes.
 // Bump this key whenever the seed logic changes to force a fresh re-seed.
-export const db: DbType = (globalThis.__fitnessDb_v10 ??= createDb() as unknown as DbType);
+export const db: DbType = (globalThis.__fitnessDb_v9 ??= createDb() as unknown as DbType);
