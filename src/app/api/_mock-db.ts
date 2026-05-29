@@ -5174,6 +5174,7 @@ function createDb() {
       getById(id: string): TransferRow | undefined {
         return this._rows.find((r) => r.id === id);
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       approve(id: string, _comment?: string): TransferRow | undefined {
         const idx = this._rows.findIndex((r) => r.id === id);
         if (idx === -1) return undefined;
@@ -5207,6 +5208,7 @@ function createDb() {
         this._rows[idx] = updated;
         return updated;
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       reject(id: string, _comment?: string): TransferRow | undefined {
         const idx = this._rows.findIndex((r) => r.id === id);
         if (idx === -1) return undefined;
@@ -5392,6 +5394,7 @@ function createDb() {
         }
         return updated;
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       approve(id: string, _comment?: string): LeaveDetail | undefined {
         this._seed();
         const detail = this._details[id];
@@ -5406,6 +5409,7 @@ function createDb() {
         }
         return this._updateDetail(id, { status: nextStatus });
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       reject(id: string, _reason: string): LeaveDetail | undefined {
         this._seed();
         const detail = this._details[id];
@@ -5433,6 +5437,7 @@ function createDb() {
         }
         return updated;
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       cancelWithdrawal(id: string, _comment?: string): LeaveDetail | undefined {
         this._seed();
         const detail = this._details[id];
@@ -5453,6 +5458,7 @@ function createDb() {
         }
         return updated;
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       executeWithdrawal(id: string, _comment?: string): LeaveDetail | undefined {
         this._seed();
         const detail = this._details[id];

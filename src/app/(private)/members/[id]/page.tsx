@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { formatDate } from '@/utils/format.util';
