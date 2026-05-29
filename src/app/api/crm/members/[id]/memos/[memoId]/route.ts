@@ -4,7 +4,6 @@ import {
   ErrorResponseSchema,
   type UpdateMemoRequest,
   UpdateMemoRequestSchema,
-  type UpdateMemoResponse,
   UpdateMemoResponseSchema,
 } from '@/app/api/_schemas/member.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';

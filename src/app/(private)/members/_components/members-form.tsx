@@ -5,7 +5,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
-import { Camera, Check, ChevronsUpDown } from 'lucide-react';
+import { Camera, ChevronsUpDown } from 'lucide-react';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -263,26 +263,25 @@ export function MembersForm() {
               <FormItem className="max-w-[400px]">
                 <FormLabel>会員種別</FormLabel>
                 <Popover open={memberTypeOpen} onOpenChange={setMemberTypeOpen}>
-                  <PopoverTrigger>
-                    <FormControl>
-                      <button
-                        type="button"
-                        aria-expanded={memberTypeOpen}
-                        className={cn(
-                          'border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm',
-                        )}
-                      >
-                        {field.value
-                          ? MEMBER_TYPE_LABELS[field.value as MemberType]
-                          : '会員種別を選択'}
-                        <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
-                      </button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent
-                    className="w-[var(--radix-popover-trigger-width)] p-0"
-                    align="start"
-                  >
+                  <PopoverTrigger
+                    render={
+                      <FormControl>
+                        <button
+                          type="button"
+                          aria-expanded={memberTypeOpen}
+                          className={cn(
+                            'border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm',
+                          )}
+                        >
+                          {field.value
+                            ? MEMBER_TYPE_LABELS[field.value as MemberType]
+                            : '会員種別を選択'}
+                          <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+                        </button>
+                      </FormControl>
+                    }
+                  ></PopoverTrigger>
+                  <PopoverContent className="w-(--anchor-width) p-0" align="start">
                     <Command>
                       <CommandInput placeholder="会員種別を検索..." className="h-9" />
                       <CommandList>
@@ -292,18 +291,13 @@ export function MembersForm() {
                             <CommandItem
                               key={option}
                               value={option}
+                              data-checked={field.value === option}
                               onSelect={(value) => {
                                 field.onChange(value === field.value ? '' : value);
                                 setMemberTypeOpen(false);
                               }}
                             >
                               {MEMBER_TYPE_LABELS[option]}
-                              <Check
-                                className={cn(
-                                  'ml-auto size-4',
-                                  field.value === option ? 'opacity-100' : 'opacity-0',
-                                )}
-                              />
                             </CommandItem>
                           ))}
                         </CommandGroup>
@@ -604,24 +598,23 @@ export function MembersForm() {
                   <FormItem>
                     <FormLabel>紹介者</FormLabel>
                     <Popover open={referrerOpen} onOpenChange={setReferrerOpen}>
-                      <PopoverTrigger>
-                        <FormControl>
-                          <button
-                            type="button"
-                            aria-expanded={referrerOpen}
-                            className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm"
-                          >
-                            {selected
-                              ? `${selected.name}（${selected.id}）`
-                              : '紹介者を検索（会員ID・氏名）'}
-                            <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
-                          </button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent
-                        className="w-[var(--radix-popover-trigger-width)] p-0"
-                        align="start"
-                      >
+                      <PopoverTrigger
+                        render={
+                          <FormControl>
+                            <button
+                              type="button"
+                              aria-expanded={referrerOpen}
+                              className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm"
+                            >
+                              {selected
+                                ? `${selected.name}（${selected.id}）`
+                                : '紹介者を検索（会員ID・氏名）'}
+                              <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+                            </button>
+                          </FormControl>
+                        }
+                      ></PopoverTrigger>
+                      <PopoverContent className="w-(--anchor-width) p-0" align="start">
                         <Command>
                           <CommandInput placeholder="会員IDまたは氏名で検索" className="h-9" />
                           <CommandList>
@@ -631,6 +624,7 @@ export function MembersForm() {
                                 <CommandItem
                                   key={candidate.id}
                                   value={`${candidate.id} ${candidate.name}`}
+                                  data-checked={field.value === candidate.id}
                                   onSelect={() => {
                                     field.onChange(
                                       candidate.id === field.value ? '' : candidate.id,
@@ -650,12 +644,6 @@ export function MembersForm() {
                                   <span className="text-muted-foreground text-xs">
                                     {candidate.storeName}
                                   </span>
-                                  <Check
-                                    className={cn(
-                                      'ml-auto size-4',
-                                      field.value === candidate.id ? 'opacity-100' : 'opacity-0',
-                                    )}
-                                  />
                                 </CommandItem>
                               ))}
                             </CommandGroup>

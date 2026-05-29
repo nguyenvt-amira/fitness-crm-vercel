@@ -3,18 +3,11 @@
 import { useState } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
-import { Download, FileSpreadsheet, FileText, Users } from 'lucide-react';
-import { toast } from 'sonner';
+import { Download, Users } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -105,10 +98,6 @@ export const FamilyRegistrationsSummary = () => {
   );
 
   const periodLabel = PERIOD_LABELS[period];
-
-  const handleExport = (format: 'csv' | 'excel') => {
-    toast.info(`${format === 'csv' ? 'CSV' : 'Excel'} エクスポートを開始しました`);
-  };
 
   return (
     <div className="space-y-4">

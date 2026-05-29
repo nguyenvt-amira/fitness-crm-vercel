@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import {
   type CreateMemoRequest,
   CreateMemoRequestSchema,
-  type CreateMemoResponse,
   CreateMemoResponseSchema,
   ErrorResponseSchema,
   GetMemosResponseSchema,
