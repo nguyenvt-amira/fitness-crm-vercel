@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 
 import { useAuthUser } from '@/contexts/auth-user.context';

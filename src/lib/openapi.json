@@ -20683,6 +20683,113 @@
         }
       }
     },
+    "/crm/members/{id}/personal-data": {
+      "delete": {
+        "summary": "Anonymise member personal data",
+        "description": "Replace PII fields (name, address, contact info) with dummy values. Cannot be undone. Blocked if member is blacklisted.",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Personal data anonymised successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "member_id": {
+                      "type": "string",
+                      "example": "M-00001"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "個人情報を削除しました"
+                    }
+                  },
+                  "required": ["success", "member_id", "message"],
+                  "title": "DeletePersonalDataResponse",
+                  "description": "Result of personal data anonymisation"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Blocked — member is on the blacklist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/members/{id}/points/adjust": {
       "post": {
         "summary": "Adjust member points",
@@ -21133,6 +21240,166 @@
           },
           "404": {
             "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/re-enroll": {
+      "post": {
+        "summary": "Re-enroll a withdrawn member",
+        "description": "Re-enroll a member who has withdrawn or been force-withdrawn",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Re-enrollment payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "re_enroll_month": {
+                    "type": "string",
+                    "example": "2026-06",
+                    "description": "Re-enrollment month (YYYY-MM)"
+                  },
+                  "plan": {
+                    "type": "string",
+                    "example": "レギュラー会員",
+                    "description": "Selected membership plan"
+                  },
+                  "fee_waived": {
+                    "type": "boolean",
+                    "example": false,
+                    "description": "Whether the enrollment fee is waived"
+                  }
+                },
+                "required": ["re_enroll_month", "plan", "fee_waived"],
+                "title": "ReEnrollRequest",
+                "description": "Re-enroll a withdrawn member"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Re-enrollment accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "member_id": {
+                      "type": "string"
+                    },
+                    "re_enroll_month": {
+                      "type": "string"
+                    },
+                    "plan": {
+                      "type": "string"
+                    },
+                    "fee_waived": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": ["success", "member_id", "re_enroll_month", "plan", "fee_waived"],
+                  "title": "ReEnrollResponse",
+                  "description": "Result of re-enrollment"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Member is not in a withdrawn state",
             "content": {
               "application/json": {
                 "schema": {

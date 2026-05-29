@@ -2448,6 +2448,57 @@ export const GetUsageHistoryStoresResponseSchema = z
     description: 'Stores available for usage history filtering',
   });
 
+// ===== Re-Enroll =====
+
+export const ReEnrollRequestSchema = z
+  .object({
+    re_enroll_month: z.string().openapi({
+      example: '2026-06',
+      description: 'Re-enrollment month (YYYY-MM)',
+    }),
+    plan: z.string().openapi({
+      example: 'レギュラー会員',
+      description: 'Selected membership plan',
+    }),
+    fee_waived: z.boolean().openapi({
+      example: false,
+      description: 'Whether the enrollment fee is waived',
+    }),
+  })
+  .openapi({
+    title: 'ReEnrollRequest',
+    description: 'Re-enroll a withdrawn member',
+  });
+
+export const ReEnrollResponseSchema = z
+  .object({
+    success: z.boolean(),
+    member_id: z.string(),
+    re_enroll_month: z.string(),
+    plan: z.string(),
+    fee_waived: z.boolean(),
+  })
+  .openapi({
+    title: 'ReEnrollResponse',
+    description: 'Result of re-enrollment',
+  });
+
+export type ReEnrollRequest = z.infer<typeof ReEnrollRequestSchema>;
+export type ReEnrollResponse = z.infer<typeof ReEnrollResponseSchema>;
+
+export const DeletePersonalDataResponseSchema = z
+  .object({
+    success: z.boolean().openapi({ example: true }),
+    member_id: z.string().openapi({ example: 'M-00001' }),
+    message: z.string().openapi({ example: '個人情報を削除しました' }),
+  })
+  .openapi({
+    title: 'DeletePersonalDataResponse',
+    description: 'Result of personal data anonymisation',
+  });
+
+export type DeletePersonalDataResponse = z.infer<typeof DeletePersonalDataResponseSchema>;
+
 export type VisitRow = z.infer<typeof VisitRowSchema>;
 export type LessonReservationRow = z.infer<typeof LessonReservationRowSchema>;
 export type MemberAccessSettings = z.infer<typeof MemberAccessSettingsSchema>;

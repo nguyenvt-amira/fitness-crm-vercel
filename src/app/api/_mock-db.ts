@@ -843,6 +843,7 @@ type DbType = {
     ): Member | undefined;
     updateHealthInfo(id: string, body: UpdateHealthInfoRequest): Member | undefined;
     updateMarketingConsent(id: string, body: UpdateMarketingConsentRequest): Member | undefined;
+    anonymizePersonalData(id: string): Member | undefined;
   };
   contracts: {
     _seeded: boolean;
@@ -2489,6 +2490,29 @@ function createDb() {
               ...(current.consent?.marketing_consent ?? { email: false, sms: false, push: false }),
               ...body,
             },
+          },
+        };
+        this._members[idx] = updated;
+        return updated;
+      },
+      anonymizePersonalData(id: string): Member | undefined {
+        this._seed();
+        const idx = this._members.findIndex((m) => m.basic_info.id === id);
+        if (idx === -1) return undefined;
+        const current = this._members[idx];
+        const updated: MemberRow = {
+          ...current,
+          basic_info: {
+            ...current.basic_info,
+            name_kanji: '削除済み 会員',
+            name_kana: 'サクジョズミ カイイン',
+            email: 'deleted@example.com',
+            phone: '000-0000-0000',
+            postal_code: '000-0000',
+            prefecture: '',
+            city: '',
+            address: '',
+            building: '',
           },
         };
         this._members[idx] = updated;
