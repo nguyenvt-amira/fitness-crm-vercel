@@ -17,8 +17,6 @@ export type StoresFiltersState = {
 };
 
 export function useStoresFilters() {
-  const [searchInput, setSearchInput] = useState('');
-
   const [filters, setFilters] = useQueryStates(
     {
       page: parseAsInteger.withDefault(1),
@@ -35,12 +33,8 @@ export function useStoresFilters() {
     },
   );
 
-  useEffect(() => {
-    if (filters.search && searchInput !== filters.search) {
-      setSearchInput(filters.search);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Initialized from URL so the input reflects any pre-existing search param
+  const [searchInput, setSearchInput] = useState(() => filters.search);
 
   useEffect(() => {
     const timer = setTimeout(() => {

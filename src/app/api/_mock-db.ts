@@ -1183,7 +1183,6 @@ type DbType = {
 
 declare global {
   var __fitnessDb_v9: DbType | undefined;
-  var __fitnessDb_v10: DbType | undefined;
 }
 
 // ─── Mock Payment History Data (A-01 FR-009-a) ──────────────────────────────
@@ -5235,6 +5234,7 @@ function createDb() {
       getById(id: string): TransferRow | undefined {
         return this._rows.find((r) => r.id === id);
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       approve(id: string, _comment?: string): TransferRow | undefined {
         const idx = this._rows.findIndex((r) => r.id === id);
         if (idx === -1) return undefined;
@@ -5268,6 +5268,7 @@ function createDb() {
         this._rows[idx] = updated;
         return updated;
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       reject(id: string, _comment?: string): TransferRow | undefined {
         const idx = this._rows.findIndex((r) => r.id === id);
         if (idx === -1) return undefined;
@@ -5453,6 +5454,7 @@ function createDb() {
         }
         return updated;
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       approve(id: string, _comment?: string): LeaveDetail | undefined {
         this._seed();
         const detail = this._details[id];
@@ -5467,6 +5469,7 @@ function createDb() {
         }
         return this._updateDetail(id, { status: nextStatus });
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       reject(id: string, _reason: string): LeaveDetail | undefined {
         this._seed();
         const detail = this._details[id];
@@ -5494,6 +5497,7 @@ function createDb() {
         }
         return updated;
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       cancelWithdrawal(id: string, _comment?: string): LeaveDetail | undefined {
         this._seed();
         const detail = this._details[id];
@@ -5514,6 +5518,7 @@ function createDb() {
         }
         return updated;
       },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       executeWithdrawal(id: string, _comment?: string): LeaveDetail | undefined {
         this._seed();
         const detail = this._details[id];
@@ -5766,4 +5771,4 @@ function createDb() {
 // Without this, each route handler gets its own module instance and mutations are invisible
 // across routes.
 // Bump this key whenever the seed logic changes to force a fresh re-seed.
-export const db: DbType = (globalThis.__fitnessDb_v10 ??= createDb() as unknown as DbType);
+export const db: DbType = (globalThis.__fitnessDb_v9 ??= createDb() as unknown as DbType);

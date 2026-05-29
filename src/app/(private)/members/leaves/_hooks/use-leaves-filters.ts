@@ -23,8 +23,6 @@ export type LeavesFilters = {
 const SCHEDULED_PERIODS: ScheduledPeriod[] = ['current_month', 'next_month', 'current_year'];
 
 export function useLeavesFilters() {
-  const [searchInput, setSearchInput] = useState('');
-
   const [filters, setFilters] = useQueryStates(
     {
       page: parseAsInteger.withDefault(1),
@@ -43,12 +41,8 @@ export function useLeavesFilters() {
     },
   );
 
-  useEffect(() => {
-    if (filters.search && searchInput !== filters.search) {
-      setSearchInput(filters.search);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Initialized from URL so the input reflects any pre-existing search param
+  const [searchInput, setSearchInput] = useState(() => filters.search);
 
   useEffect(() => {
     const timer = setTimeout(() => {
