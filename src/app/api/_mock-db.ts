@@ -851,6 +851,16 @@ type DbType = {
       scheduled_date: string;
       reason: string;
     }): Member | undefined;
+    handleSuspension(input: {
+      id: string;
+      start_month: string;
+      end_month: string;
+      reason?: string;
+      is_proxy?: boolean;
+      proxy_agreed_at?: string;
+      proxy_method?: string;
+    }): Member | undefined;
+    handleSuspendRelease(input: { id: string; resume_month: string }): Member | undefined;
     setGateStop(input: {
       id: string;
       scope: string;
@@ -1149,11 +1159,21 @@ type DbType = {
     _seed(): void;
     list(): LeaveListItem[];
     getById(id: string): LeaveDetail | undefined;
+    getActiveSuspensionByMemberId(memberId: string): LeaveDetail | undefined;
     approve(id: string, comment?: string): LeaveDetail | undefined;
     reject(id: string, reason: string): LeaveDetail | undefined;
     cancelWithdrawal(id: string, comment?: string): LeaveDetail | undefined;
     executeWithdrawal(id: string, comment?: string): LeaveDetail | undefined;
     create(input: { member_id: string; scheduled_date: string; reason: string }): LeaveDetail;
+    createSuspension(input: {
+      member_id: string;
+      start_month: string;
+      end_month: string;
+      reason?: string;
+      is_proxy?: boolean;
+      proxy_agreed_at?: string;
+      proxy_method?: string;
+    }): LeaveDetail;
   };
   memberBlacklist: {
     _rows: BlacklistRow[];
@@ -2545,6 +2565,41 @@ function createDb() {
         this._members[idx] = updated;
         return updated;
       },
+      handleSuspendRelease(input: { id: string; resume_month: string }): Member | undefined {
+        this._seed();
+        const idx = this._members.findIndex((m) => m.basic_info.id === input.id);
+        if (idx === -1) return undefined;
+        // Mark the active suspension leave record as completed
+        const suspensionLeave = db.memberLeaves
+          .list()
+          .find(
+            (l) =>
+              l.member_id === input.id &&
+              l.type === 'suspension' &&
+              (l.status === 'suspended' || l.status === 'suspension_scheduled'),
+          );
+        if (suspensionLeave) {
+          db.memberLeaves._updateDetail(suspensionLeave.id, { status: 'completed' });
+          // Manually sync list row without triggering member status change
+          const listIdx = db.memberLeaves._rows.findIndex((r) => r.id === suspensionLeave.id);
+          if (listIdx !== -1) {
+            db.memberLeaves._rows[listIdx] = {
+              ...db.memberLeaves._rows[listIdx]!,
+              status: 'completed',
+            };
+          }
+        }
+        const updated: MemberRow = {
+          ...this._members[idx]!,
+          profile: {
+            ...this._members[idx]!.profile,
+            status: MemberStatus.ACTIVE,
+          },
+        };
+        this._members[idx] = updated;
+        return updated;
+      },
+
       handleWithdrawal(input: {
         id: string;
         scheduled_date: string;
@@ -2616,6 +2671,40 @@ function createDb() {
             ...this._members[idx]!.profile,
             status: MemberStatus.ACTIVE,
             gate_stop_info: null,
+          },
+        };
+        this._members[idx] = updated;
+        return updated;
+      },
+
+      handleSuspension(input: {
+        id: string;
+        start_month: string;
+        end_month: string;
+        reason?: string;
+        is_proxy?: boolean;
+        proxy_agreed_at?: string;
+        proxy_method?: string;
+      }): Member | undefined {
+        this._seed();
+        const idx = this._members.findIndex((m) => m.basic_info.id === input.id);
+        if (idx === -1) return undefined;
+        // Create a suspension leave record
+        db.memberLeaves.createSuspension({
+          member_id: input.id,
+          start_month: input.start_month,
+          end_month: input.end_month,
+          reason: input.reason,
+          is_proxy: input.is_proxy,
+          proxy_agreed_at: input.proxy_agreed_at,
+          proxy_method: input.proxy_method,
+        });
+        // Update member status to suspended
+        const updated: MemberRow = {
+          ...this._members[idx]!,
+          profile: {
+            ...this._members[idx]!.profile,
+            status: MemberStatus.SUSPENDED,
           },
         };
         this._members[idx] = updated;
@@ -5456,7 +5545,9 @@ function createDb() {
             is_proxy_applied: isProxy,
             proxy_applicant: isProxy ? `スタッフ${i + 1}（スタッフ）` : null,
             consent_at: isProxy
-              ? `${row.applied_at} ${String(9 + (i % 8)).padStart(2, '0')}:00`
+              ? new Date(
+                  `${row.applied_at} ${String(9 + (i % 8)).padStart(2, '0')}:00`,
+                ).toISOString()
               : null,
             consent_method: isProxy ? (consentMethods[i % 3] ?? '来店') : null,
             suspension_fee: row.type === 'suspension' ? 1100 : null,
@@ -5475,6 +5566,16 @@ function createDb() {
       getById(id: string): LeaveDetail | undefined {
         this._seed();
         return this._details[id];
+      },
+      getActiveSuspensionByMemberId(memberId: string): LeaveDetail | undefined {
+        this._seed();
+        const row = this._rows.find(
+          (r) =>
+            r.member_id === memberId &&
+            r.type === 'suspension' &&
+            (r.status === 'suspended' || r.status === 'suspension_scheduled'),
+        );
+        return row ? this._details[row.id] : undefined;
       },
       _updateDetail(id: string, patch: Partial<LeaveDetail>): LeaveDetail | undefined {
         const detail = this._details[id];
@@ -5641,6 +5742,73 @@ function createDb() {
           consent_at: null,
           consent_method: null,
           suspension_fee: null,
+          applied_campaign: 'なし',
+          unused_lessons: 0,
+          unpaid_amount: 0,
+          created_at: now,
+          updated_at: now,
+        };
+        this._details[newId] = detail;
+        return detail;
+      },
+      createSuspension(input: {
+        member_id: string;
+        start_month: string;
+        end_month: string;
+        reason?: string;
+        is_proxy?: boolean;
+        proxy_agreed_at?: string;
+        proxy_method?: string;
+      }): LeaveDetail {
+        this._seed();
+        const member = db.members._members.find((m) => m.basic_info.id === input.member_id);
+        const now = new Date()
+          .toLocaleString('ja-JP', {
+            timeZone: 'Asia/Tokyo',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+          })
+          .replace(',', '');
+        const newId = `LV-${String(this._rows.length + 1).padStart(3, '0')}`;
+        const listItem: LeaveListItem = {
+          id: newId,
+          member_id: input.member_id,
+          member_name: member?.basic_info.name_kanji ?? '',
+          brand: member?.profile.brand ?? '',
+          store_id: member?.profile.store_id ?? '',
+          store_name: member?.profile.store_name ?? '',
+          type: 'suspension',
+          status: 'suspension_scheduled',
+          applied_at: now.split(' ')[0]!,
+          scheduled_date: input.start_month,
+          end_date: input.end_month,
+          unpaid_amount: 0,
+        };
+        this._rows.push(listItem);
+        const detail: LeaveDetail = {
+          id: newId,
+          member_id: input.member_id,
+          member_name: listItem.member_name,
+          brand: listItem.brand,
+          store_id: listItem.store_id,
+          store_name: listItem.store_name,
+          type: 'suspension',
+          status: 'suspension_scheduled',
+          applied_at: now,
+          scheduled_date: input.start_month,
+          end_date: input.end_month,
+          reason: input.reason ?? '',
+          applicant: input.is_proxy
+            ? `${listItem.member_name}（代理）`
+            : `${listItem.member_name}（本人）`,
+          is_proxy_applied: input.is_proxy ?? false,
+          proxy_applicant: input.is_proxy ? 'スタッフ（代理）' : null,
+          consent_at: input.proxy_agreed_at ?? null,
+          consent_method: input.proxy_method ?? null,
+          suspension_fee: 1100,
           applied_campaign: 'なし',
           unused_lessons: 0,
           unpaid_amount: 0,

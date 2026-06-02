@@ -27,13 +27,13 @@ const MONTHS_JA = [
 ];
 
 function toYearMonth(value: string): { year: number; month: number } | null {
-  const m = /^(\d{4})-(\d{2})$/.exec(value);
+  const m = /^(\d{4})\/(\d{2})$/.exec(value);
   if (!m) return null;
   return { year: parseInt(m[1]), month: parseInt(m[2]) };
 }
 
 function formatYearMonth(year: number, month: number): string {
-  return `${year}-${String(month).padStart(2, '0')}`;
+  return `${year}/${String(month).padStart(2, '0')}`;
 }
 
 function formatDisplay(value: string): string {
@@ -43,9 +43,9 @@ function formatDisplay(value: string): string {
 }
 
 interface MonthPickerProps {
-  value: string; // YYYY-MM
+  value: string; // YYYY/MM
   onChange: (v: string) => void;
-  min?: string; // YYYY-MM — months before this are disabled
+  min?: string; // YYYY/MM — months before this are disabled
   placeholder?: string;
   hasError?: boolean;
 }

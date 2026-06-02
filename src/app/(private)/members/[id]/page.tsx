@@ -37,6 +37,8 @@ import { MEMBER_STATUS_LABELS } from '../_constants/constants';
 import { GENDER_LABELS } from '../_constants/constants';
 import { GateStopReleaseSheet } from './_components/gate-stop-release-sheet';
 import { GateStopSetSheet } from './_components/gate-stop-set-sheet';
+import { LeaveReleaseSheet } from './_components/leave-release-sheet';
+import { LeaveSheet } from './_components/leave-sheet';
 import { PersonalDataDeleteDialog } from './_components/personal-data-delete-dialog';
 import { ReEnrollSheet } from './_components/re-enroll-sheet';
 import { BasicInfoTab } from './_components/tabs/basic-info-tab';
@@ -79,10 +81,12 @@ export default function MemberDetailPage() {
 
   const [showReEnrollSheet, setShowReEnrollSheet] = useState(false);
   const [showWithdrawSheet, setShowWithdrawSheet] = useState(false);
+  const [showLeaveSheet, setShowLeaveSheet] = useState(false);
   const [showPersonalDataDeleteDialog, setShowPersonalDataDeleteDialog] = useState(false);
   const [showWithdrawCancelDialog, setShowWithdrawCancelDialog] = useState(false);
   const [showGateStopSetSheet, setShowGateStopSetSheet] = useState(false);
   const [showGateStopReleaseSheet, setShowGateStopReleaseSheet] = useState(false);
+  const [showLeaveReleaseSheet, setShowLeaveReleaseSheet] = useState(false);
 
   const {
     data: member,
@@ -122,11 +126,6 @@ export default function MemberDetailPage() {
     router.push(navigate('/members/[id]/edit', memberId));
   };
 
-  const handleSuspend = () => {
-    // TODO: Navigate to suspend page (A-02-06)
-    console.log('Suspend membership');
-  };
-
   const handleTransfer = () => {
     // TODO: Open transfer apply sheet
     console.log('Transfer apply');
@@ -135,10 +134,6 @@ export default function MemberDetailPage() {
   const handleForceWithdraw = () => {
     // TODO: Open force-withdraw dialog
     console.log('Force withdraw');
-  };
-  const handleLeaveRelease = () => {
-    // TODO: Open leave release sheet
-    console.log('Leave release');
   };
 
   const memberStatusLabel = MEMBER_STATUS_LABELS[member.profile.status];
@@ -290,7 +285,7 @@ export default function MemberDetailPage() {
                           <RoleGatedMenuItem
                             requiredPermission={Permission.MembersSuspend}
                             disabled={member.constraints.hasUnpaidFee}
-                            onClick={handleSuspend}
+                            onClick={() => setShowLeaveSheet(true)}
                           >
                             <div className="flex flex-col">
                               <span>休会申請</span>
@@ -354,7 +349,7 @@ export default function MemberDetailPage() {
                         <>
                           <RoleGatedMenuItem
                             requiredPermission={Permission.MembersSuspend}
-                            onClick={handleLeaveRelease}
+                            onClick={() => setShowLeaveReleaseSheet(true)}
                           >
                             休会解除
                           </RoleGatedMenuItem>
@@ -538,6 +533,19 @@ export default function MemberDetailPage() {
         memberId={memberId}
         withdrawnAt={member.profile.withdrawn_at}
         lastPlan={member.profile.contract_id ? 'レギュラー会員 ¥7,700/月' : undefined}
+      />
+
+      <LeaveSheet
+        open={showLeaveSheet}
+        onOpenChange={setShowLeaveSheet}
+        memberId={memberId}
+        hasUnpaidFee={member.constraints.hasUnpaidFee}
+      />
+
+      <LeaveReleaseSheet
+        open={showLeaveReleaseSheet}
+        onOpenChange={setShowLeaveReleaseSheet}
+        memberId={memberId}
       />
 
       <WithdrawSheet

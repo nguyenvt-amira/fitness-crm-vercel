@@ -2700,6 +2700,83 @@ export type GateStopReleaseReason = z.infer<typeof GateStopReleaseReasonSchema>;
 export type GateStopReleaseRequest = z.infer<typeof GateStopReleaseRequestSchema>;
 export type GateStopReleaseResponse = z.infer<typeof GateStopReleaseResponseSchema>;
 
+// ===== Suspend (休会) =====
+
+export const SuspendRequestSchema = z
+  .object({
+    start_month: z.string().openapi({
+      example: '2026-07',
+      description: 'Suspension start month (YYYY-MM)',
+    }),
+    end_month: z.string().openapi({
+      example: '2026-09',
+      description: 'Suspension end month (YYYY-MM)',
+    }),
+    reason: z.string().optional().openapi({
+      example: '産前産後のため',
+      description: 'Reason for suspension (optional)',
+    }),
+    is_proxy: z.boolean().openapi({
+      example: false,
+      description: 'Whether a staff member is submitting on behalf of the member',
+    }),
+    proxy_agreed_at: z.string().optional().openapi({
+      example: '2026-05-21T10:00',
+      description: 'Datetime of agreement (required when is_proxy is true)',
+    }),
+    proxy_method: z.string().optional().openapi({
+      example: '来店',
+      description: 'Method of agreement when proxy',
+    }),
+  })
+  .openapi({
+    title: 'SuspendRequest',
+    description: 'Submit a suspension (休会) request for an active member',
+  });
+
+export const SuspendResponseSchema = z
+  .object({
+    success: z.boolean(),
+    member_id: z.string(),
+    start_month: z.string(),
+    end_month: z.string(),
+  })
+  .openapi({
+    title: 'SuspendResponse',
+    description: 'Result of suspension request',
+  });
+
+export type SuspendRequest = z.infer<typeof SuspendRequestSchema>;
+export type SuspendResponse = z.infer<typeof SuspendResponseSchema>;
+
+// ===== Suspend Release (休会解除) =====
+
+export const SuspendReleaseRequestSchema = z
+  .object({
+    resume_month: z.string().openapi({
+      example: '2026/07',
+      description: 'Month from which billing resumes (YYYY/MM)',
+    }),
+  })
+  .openapi({
+    title: 'SuspendReleaseRequest',
+    description: 'Release a suspension and specify the month billing resumes',
+  });
+
+export const SuspendReleaseResponseSchema = z
+  .object({
+    success: z.boolean(),
+    member_id: z.string(),
+    resume_month: z.string(),
+  })
+  .openapi({
+    title: 'SuspendReleaseResponse',
+    description: 'Result of suspension release',
+  });
+
+export type SuspendReleaseRequest = z.infer<typeof SuspendReleaseRequestSchema>;
+export type SuspendReleaseResponse = z.infer<typeof SuspendReleaseResponseSchema>;
+
 export type VisitRow = z.infer<typeof VisitRowSchema>;
 export type LessonReservationRow = z.infer<typeof LessonReservationRowSchema>;
 export type MemberAccessSettings = z.infer<typeof MemberAccessSettingsSchema>;

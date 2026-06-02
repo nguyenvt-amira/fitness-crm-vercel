@@ -23164,6 +23164,545 @@
         }
       }
     },
+    "/crm/members/{id}/suspend-release": {
+      "post": {
+        "summary": "Release a suspension for a member",
+        "description": "Release an active suspension (休会解除) and revert member status to active",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Suspend release request payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "resume_month": {
+                    "type": "string",
+                    "example": "2026/07",
+                    "description": "Month from which billing resumes (YYYY/MM)"
+                  }
+                },
+                "required": ["resume_month"],
+                "title": "SuspendReleaseRequest",
+                "description": "Release a suspension and specify the month billing resumes"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Suspension released successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "member_id": {
+                      "type": "string"
+                    },
+                    "resume_month": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["success", "member_id", "resume_month"],
+                  "title": "SuspendReleaseResponse",
+                  "description": "Result of suspension release"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Member is not in suspended state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/suspend": {
+      "post": {
+        "summary": "Submit a suspension request for a member",
+        "description": "Submit a suspension (休会申請) request for an active member",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Suspension request payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "start_month": {
+                    "type": "string",
+                    "example": "2026-07",
+                    "description": "Suspension start month (YYYY-MM)"
+                  },
+                  "end_month": {
+                    "type": "string",
+                    "example": "2026-09",
+                    "description": "Suspension end month (YYYY-MM)"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "example": "産前産後のため",
+                    "description": "Reason for suspension (optional)"
+                  },
+                  "is_proxy": {
+                    "type": "boolean",
+                    "example": false,
+                    "description": "Whether a staff member is submitting on behalf of the member"
+                  },
+                  "proxy_agreed_at": {
+                    "type": "string",
+                    "example": "2026-05-21T10:00",
+                    "description": "Datetime of agreement (required when is_proxy is true)"
+                  },
+                  "proxy_method": {
+                    "type": "string",
+                    "example": "来店",
+                    "description": "Method of agreement when proxy"
+                  }
+                },
+                "required": ["start_month", "end_month", "is_proxy"],
+                "title": "SuspendRequest",
+                "description": "Submit a suspension (休会) request for an active member"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Suspension request accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "member_id": {
+                      "type": "string"
+                    },
+                    "start_month": {
+                      "type": "string"
+                    },
+                    "end_month": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["success", "member_id", "start_month", "end_month"],
+                  "title": "SuspendResponse",
+                  "description": "Result of suspension request"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Member is not in a state that allows suspension",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/suspension-leave": {
+      "get": {
+        "summary": "Get active suspension leave for a member",
+        "description": "Returns the current active suspension (休会中 or 休会予定) leave detail for a member, or null if none",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Active suspension detail (null when no active suspension)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "suspension": {
+                      "type": "object",
+                      "nullable": true,
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "LV-001",
+                          "description": "申請ID"
+                        },
+                        "member_id": {
+                          "type": "string",
+                          "example": "M-00101",
+                          "description": "会員ID"
+                        },
+                        "member_name": {
+                          "type": "string",
+                          "example": "田中 次郎",
+                          "description": "会員名"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "example": "JOYFIT",
+                          "description": "ブランド"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "example": "store-006",
+                          "description": "店舗ID"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "example": "JOYFIT24新宿店",
+                          "description": "店舗名"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": ["suspension", "withdrawal"],
+                          "title": "LeaveType",
+                          "description": "Leave type: suspension=休会, withdrawal=退会"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "suspension_scheduled",
+                            "suspended",
+                            "withdrawal_scheduled",
+                            "withdrawal_pending",
+                            "completed"
+                          ],
+                          "title": "LeaveStatus",
+                          "description": "Leave status: suspension_scheduled=休会予定, suspended=休会中, withdrawal_scheduled=退会予定, withdrawal_pending=退会処理待ち, completed=処理完了"
+                        },
+                        "applied_at": {
+                          "type": "string",
+                          "example": "2026/03/20 10:15",
+                          "description": "申請日時"
+                        },
+                        "scheduled_date": {
+                          "type": "string",
+                          "example": "2026/04",
+                          "description": "休会開始月 or 退会予定日"
+                        },
+                        "end_date": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "2026/06",
+                          "description": "休会終了月（休会のみ）"
+                        },
+                        "reason": {
+                          "type": "string",
+                          "example": "海外出張のため",
+                          "description": "申請理由"
+                        },
+                        "applicant": {
+                          "type": "string",
+                          "example": "田中 次郎（本人）",
+                          "description": "申請者"
+                        },
+                        "is_proxy_applied": {
+                          "type": "boolean",
+                          "description": "代理申請フラグ"
+                        },
+                        "proxy_applicant": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "代理申請者名"
+                        },
+                        "consent_at": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "合意日時"
+                        },
+                        "consent_method": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "合意方法"
+                        },
+                        "suspension_fee": {
+                          "type": "number",
+                          "nullable": true,
+                          "example": 1100,
+                          "description": "休会費（円/月）"
+                        },
+                        "applied_campaign": {
+                          "type": "string",
+                          "example": "なし",
+                          "description": "適用キャンペーン"
+                        },
+                        "unused_lessons": {
+                          "type": "number",
+                          "example": 2,
+                          "description": "未消化レッスン数"
+                        },
+                        "unpaid_amount": {
+                          "type": "number",
+                          "example": 0,
+                          "description": "未納金額（円）"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "description": "作成日時"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "description": "最終更新日時"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "member_id",
+                        "member_name",
+                        "brand",
+                        "store_id",
+                        "store_name",
+                        "type",
+                        "status",
+                        "applied_at",
+                        "scheduled_date",
+                        "end_date",
+                        "reason",
+                        "applicant",
+                        "is_proxy_applied",
+                        "proxy_applicant",
+                        "consent_at",
+                        "consent_method",
+                        "suspension_fee",
+                        "applied_campaign",
+                        "unused_lessons",
+                        "unpaid_amount",
+                        "created_at",
+                        "updated_at"
+                      ],
+                      "title": "LeaveDetail",
+                      "description": "Active suspension detail, or null if no active suspension"
+                    }
+                  },
+                  "required": ["suspension"],
+                  "title": "GetMemberActiveSuspensionResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "LeaveErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "LeaveErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/members/{id}/training-records": {
       "get": {
         "summary": "Get member training records",

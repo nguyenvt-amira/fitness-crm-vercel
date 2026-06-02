@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 
+import { formatDateYYYYMMDD_HHMM } from '@/utils/date.util';
 import { Check, Clock } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
@@ -185,7 +186,7 @@ export function LeaveProxyInfo({ leave }: Readonly<{ leave: LeaveDetail }>) {
       <CardContent className="px-4">
         <div className="grid grid-cols-2 gap-x-8 gap-y-4">
           <Field label="代理申請者">{leave.proxy_applicant ?? '—'}</Field>
-          <Field label="合意日時">{leave.consent_at ?? '—'}</Field>
+          <Field label="合意日時">{formatDateYYYYMMDD_HHMM(leave.consent_at) ?? '—'}</Field>
           <Field label="合意方法">{leave.consent_method ?? '—'}</Field>
         </div>
       </CardContent>
