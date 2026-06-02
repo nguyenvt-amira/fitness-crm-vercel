@@ -32,8 +32,6 @@ export type MembershipApplicationsFilters = {
 const PAGE_SIZE = 20;
 
 export function useMembershipApplicationsFilters() {
-  const [searchInput, setSearchInput] = useState('');
-
   const [filters, setFilters] = useQueryStates(
     {
       page: {
@@ -58,13 +56,8 @@ export function useMembershipApplicationsFilters() {
     { history: 'push', shallow: false },
   );
 
-  // Sync searchInput on mount
-  useEffect(() => {
-    if (filters.search && searchInput !== filters.search) {
-      setSearchInput(filters.search);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Initialized from URL so the input reflects any pre-existing search param
+  const [searchInput, setSearchInput] = useState(() => filters.search);
 
   // Debounce search
   useEffect(() => {

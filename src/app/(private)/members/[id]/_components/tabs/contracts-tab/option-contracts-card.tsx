@@ -106,8 +106,8 @@ export function OptionContractsCard({
     }),
   );
 
-  const optionAddBlocked = isOnLeave || isRetirePending || hasUnpaidFee;
-  const optionEditBlocked = isOnLeave || isRetirePending;
+  // const optionAddBlocked = isOnLeave || isRetirePending || hasUnpaidFee;
+  // const optionEditBlocked = isOnLeave || isRetirePending;
 
   const { data: memberData } = useQuery(
     getCrmMembersByIdOptions({

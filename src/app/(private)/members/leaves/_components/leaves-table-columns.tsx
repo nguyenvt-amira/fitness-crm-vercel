@@ -20,7 +20,7 @@ import {
 
 type LeaveRow = NonNullable<GetCrmLeavesResponse['leaves']>[number];
 
-export function useLeavesTableColumns(): ColumnDef<LeaveRow>[] {
+export function LeavesTableColumns(): ColumnDef<LeaveRow>[] {
   const router = useRouter();
 
   return [

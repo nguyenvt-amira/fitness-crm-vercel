@@ -61,6 +61,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(response);
   } catch (error) {
+    console.error('Error exporting members:', error);
     return NextResponse.json({ error: 'Failed to export members' }, { status: 500 });
   }
 }

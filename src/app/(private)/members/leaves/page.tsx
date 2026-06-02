@@ -17,7 +17,7 @@ import { getCrmLeavesOptions } from '@/lib/api/@tanstack/react-query.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
 import { LeavesFilters } from './_components/leaves-filters';
-import { useLeavesTableColumns } from './_components/leaves-table-columns';
+import { LeavesTableColumns } from './_components/leaves-table-columns';
 import { LeavesFiltersProvider } from './_contexts/leaves-filters-context';
 import { useLeavesFilters } from './_hooks/use-leaves-filters';
 
@@ -51,7 +51,7 @@ function LeavesPageContent() {
   const total = data?.total ?? 0;
   const pageSize = filtersHook.pageSize;
 
-  const columns = useLeavesTableColumns();
+  const columns = LeavesTableColumns();
 
   return (
     <LeavesFiltersProvider value={filtersHook}>

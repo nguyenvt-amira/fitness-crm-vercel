@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 import { ErrorResponseSchema } from '@/app/api/_schemas/member.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
@@ -63,10 +63,8 @@ registerRoute({
   ],
 });
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET() {
   try {
-    const { id } = await params;
-
     const mockData = {
       timeline: [
         {
@@ -109,6 +107,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     return NextResponse.json(mockData);
   } catch (error) {
+    console.error('Error fetching change history:', error);
     return NextResponse.json({ error: 'Failed to fetch change history' }, { status: 500 });
   }
 }
