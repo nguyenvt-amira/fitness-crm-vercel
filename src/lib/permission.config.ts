@@ -56,6 +56,9 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
   '/contracts/create': Permission.ContractsCreate,
   '/contracts/:id/edit': Permission.ContractsEdit,
 
+  // Campaigns
+  '/campaigns': Permission.CampaignsView,
+
   // Options
   '/options': Permission.OptionsView,
   '/options/:id': Permission.OptionsView,
@@ -118,6 +121,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.FamilyRegistrationsDashboardView,
     Permission.FamilyRegistrationsApprove,
     Permission.ContractsView,
+    Permission.CampaignsView,
     Permission.ContractsEdit,
     Permission.ContractsDelete,
     Permission.ContractsCreate,
@@ -149,6 +153,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.FamilyRegistrationsView,
     Permission.FamilyRegistrationsDashboardView,
     Permission.ContractsView,
+    Permission.CampaignsView,
     Permission.OptionsView,
   ],
 
@@ -174,6 +179,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.FamilyRegistrationsView,
     Permission.FamilyRegistrationsDashboardView,
     Permission.ContractsView,
+    Permission.CampaignsView,
     Permission.OptionsView,
   ],
 

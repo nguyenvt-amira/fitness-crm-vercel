@@ -4,6 +4,7 @@
  */
 import { type BlacklistDetail } from '@/app/api/_schemas/blacklist.schema';
 import type { BrandItem } from '@/app/api/_schemas/brand.schema';
+import type { CampaignListItem } from '@/app/api/_schemas/campaign.schema';
 import type {
   EkycResult,
   FamilyRegistrationStatus,
@@ -1335,6 +1336,13 @@ type DbType = {
     add(contract: MainContractDetail): void;
     update(id: string, data: Partial<MainContractDetail>): MainContractDetail | undefined;
   };
+  campaigns: {
+    _rows: CampaignListItem[];
+    _seeded: boolean;
+    _seed(): void;
+    getList(): CampaignListItem[];
+    getById(id: string): CampaignListItem | undefined;
+  };
   optionMasters: {
     _rows: OptionMasterDetail[];
     _changeHistory: Record<string, OptionMasterChangeHistoryItem[]>;
@@ -1540,7 +1548,7 @@ type DbType = {
 };
 
 declare global {
-  var __fitnessDb_v9: DbType | undefined;
+  var __fitnessDb_v10: DbType | undefined;
 }
 
 // ─── Mock Payment History Data (A-01 FR-009-a) ──────────────────────────────
@@ -5215,6 +5223,84 @@ function createDb() {
         return updated;
       },
     },
+    campaigns: {
+      _rows: [] as CampaignListItem[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows.push(
+          {
+            id: 'CP001',
+            name: '春の入会キャンペーン',
+            code: 'STR01-A1B2C',
+            brand: 'joyfit',
+            recruitment_period_start: '2026/03/01',
+            recruitment_period_end: '2026/04/30',
+            accept_status: 'active',
+            main_contract_name: 'レギュラー会員',
+          },
+          {
+            id: 'CP002',
+            name: '友達紹介キャンペーン',
+            code: 'ALL2026',
+            brand: 'joyfit',
+            recruitment_period_start: '2026/01/01',
+            recruitment_period_end: '2026/12/31',
+            accept_status: 'active',
+            main_contract_name: '全契約共通',
+          },
+          {
+            id: 'CP003',
+            name: '法人割引キャンペーン',
+            code: 'STR02-E5F6G',
+            brand: 'fit365',
+            recruitment_period_start: '2026/04/01',
+            recruitment_period_end: '2026/09/30',
+            accept_status: 'active',
+            main_contract_name: '法人会員',
+          },
+          {
+            id: 'CP004',
+            name: '新店オープン記念',
+            code: 'OPEN2025',
+            brand: 'joyfit',
+            recruitment_period_start: '2025/10/01',
+            recruitment_period_end: '2025/12/31',
+            accept_status: 'inactive',
+            main_contract_name: '全契約共通',
+          },
+          {
+            id: 'CP005',
+            name: '夏のボディメイクキャンペーン',
+            code: 'SUMMER26',
+            brand: 'joyfit',
+            recruitment_period_start: '2026/06/01',
+            recruitment_period_end: '2026/08/31',
+            accept_status: 'inactive',
+            main_contract_name: 'プレミアム会員',
+          },
+          {
+            id: 'CP006',
+            name: '年末特別割引',
+            code: 'STR01-K1L2M',
+            brand: 'fit365',
+            recruitment_period_start: '2026/10/01',
+            recruitment_period_end: '2026/12/31',
+            accept_status: 'active',
+            main_contract_name: '全契約共通',
+          },
+        );
+      },
+      getList(): CampaignListItem[] {
+        this._seed();
+        return [...this._rows];
+      },
+      getById(id: string): CampaignListItem | undefined {
+        this._seed();
+        return this._rows.find((campaign) => campaign.id === id);
+      },
+    },
     optionMasters: {
       _rows: [] as OptionMasterDetail[],
       _changeHistory: {} as Record<string, OptionMasterChangeHistoryItem[]>,
@@ -7474,6 +7560,7 @@ function createDb() {
 
   // Seed mock data immediately when the singleton is first created
   db.mainContracts._seed();
+  db.campaigns._seed();
   db.members._seed();
   db.contracts._seed();
   db.membershipApplications._seed();
@@ -7491,4 +7578,4 @@ function createDb() {
 // Without this, each route handler gets its own module instance and mutations are invisible
 // across routes.
 // Bump this key whenever the seed logic changes to force a fresh re-seed.
-export const db: DbType = (globalThis.__fitnessDb_v9 ??= createDb() as unknown as DbType);
+export const db: DbType = (globalThis.__fitnessDb_v10 ??= createDb() as unknown as DbType);
