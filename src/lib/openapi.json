@@ -2170,6 +2170,34 @@
                 "example": false,
                 "description": "Blacklisted status"
               },
+              "gate_stop_info": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "enum": ["all_stores", "own_store_only"]
+                  },
+                  "reason": {
+                    "type": "string",
+                    "enum": ["nuisance", "unpaid", "fraudulent_use", "other"]
+                  },
+                  "terminal_message": {
+                    "type": "string"
+                  },
+                  "lock_after_message": {
+                    "type": "boolean"
+                  },
+                  "set_at": {
+                    "type": "string"
+                  },
+                  "set_by": {
+                    "type": "string"
+                  }
+                },
+                "required": ["scope", "reason", "lock_after_message", "set_at", "set_by"],
+                "description": "Current gate stop info (null when not gate-stopped)"
+              },
               "contract_name": {
                 "type": "string",
                 "example": "レギュラー会員",
@@ -11358,6 +11386,149 @@
         ],
         "title": "WithdrawReason",
         "description": "Reason for withdrawal"
+      },
+      "GateStopInfo": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "type": "string",
+            "enum": ["all_stores", "own_store_only"],
+            "description": "Gate stop scope"
+          },
+          "reason": {
+            "type": "string",
+            "enum": ["nuisance", "unpaid", "fraudulent_use", "other"],
+            "description": "Reason for gate stop"
+          },
+          "terminal_message": {
+            "type": "string",
+            "description": "Message displayed on gate terminal"
+          },
+          "lock_after_message": {
+            "type": "boolean",
+            "description": "Whether entry is denied even after confirming the message"
+          },
+          "set_at": {
+            "type": "string",
+            "example": "2026-03-01T09:30:00.000Z",
+            "description": "Datetime the gate stop was set (ISO 8601)"
+          },
+          "set_by": {
+            "type": "string",
+            "example": "管理者A",
+            "description": "Name of the staff who set the gate stop"
+          }
+        },
+        "required": ["scope", "reason", "lock_after_message", "set_at", "set_by"],
+        "title": "GateStopInfo",
+        "description": "Current gate stop settings for a member"
+      },
+      "GateStopReason": {
+        "type": "string",
+        "enum": ["nuisance", "unpaid", "fraudulent_use", "other"],
+        "title": "GateStopReason",
+        "description": "Reason for gate stop: nuisance=迷惑行為, unpaid=未納金, fraudulent_use=不正利用, other=その他"
+      },
+      "GateStopScope": {
+        "type": "string",
+        "enum": ["all_stores", "own_store_only"],
+        "title": "GateStopScope",
+        "description": "Scope of gate stop: all_stores=全店舗入館不可, own_store_only=自店舗のみ入館不可"
+      },
+      "GateStopRequest": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "type": "string",
+            "enum": ["all_stores", "own_store_only"],
+            "title": "GateStopScope",
+            "description": "Gate stop scope"
+          },
+          "reason": {
+            "type": "string",
+            "enum": ["nuisance", "unpaid", "fraudulent_use", "other"],
+            "title": "GateStopReason",
+            "description": "Reason for gate stop"
+          },
+          "terminal_message": {
+            "type": "string",
+            "example": "スタッフにお声がけください",
+            "description": "Message to display on gate terminal (optional)"
+          },
+          "lock_after_message": {
+            "type": "boolean",
+            "example": false,
+            "description": "Whether to deny entry even after member confirms the message"
+          }
+        },
+        "required": ["scope", "reason", "lock_after_message"],
+        "title": "GateStopRequest",
+        "description": "Request body for setting gate stop on a member"
+      },
+      "GateStopResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "member_id": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string",
+            "enum": ["all_stores", "own_store_only"],
+            "title": "GateStopScope",
+            "description": "Scope of gate stop: all_stores=全店舗入館不可, own_store_only=自店舗のみ入館不可"
+          },
+          "reason": {
+            "type": "string",
+            "enum": ["nuisance", "unpaid", "fraudulent_use", "other"],
+            "title": "GateStopReason",
+            "description": "Reason for gate stop: nuisance=迷惑行為, unpaid=未納金, fraudulent_use=不正利用, other=その他"
+          }
+        },
+        "required": ["success", "member_id", "scope", "reason"],
+        "title": "GateStopResponse",
+        "description": "Result of gate stop setting"
+      },
+      "GateStopReleaseReason": {
+        "type": "string",
+        "enum": ["issue_resolved", "wrong_setting", "identity_confirmed", "other"],
+        "title": "GateStopReleaseReason",
+        "description": "Reason for releasing gate stop: issue_resolved=問題解決済み, wrong_setting=誤設定, identity_confirmed=本人確認完了, other=その他"
+      },
+      "GateStopReleaseRequest": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "enum": ["issue_resolved", "wrong_setting", "identity_confirmed", "other"],
+            "title": "GateStopReleaseReason",
+            "description": "Reason for releasing gate stop"
+          },
+          "detail": {
+            "type": "string",
+            "example": "未払い金の支払いが完了しました",
+            "description": "Additional detail for the release reason (optional)"
+          }
+        },
+        "required": ["reason"],
+        "title": "GateStopReleaseRequest",
+        "description": "Request body for releasing gate stop on a member"
+      },
+      "GateStopReleaseResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "member_id": {
+            "type": "string"
+          }
+        },
+        "required": ["success", "member_id"],
+        "title": "GateStopReleaseResponse",
+        "description": "Result of gate stop release"
       }
     },
     "parameters": {}
@@ -19616,6 +19787,321 @@
         }
       }
     },
+    "/crm/members/{id}/gate-stop": {
+      "post": {
+        "summary": "Set gate stop for a member",
+        "description": "Restrict member entry at gate terminals (ゲートストップ設定)",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Gate stop request payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "enum": ["all_stores", "own_store_only"],
+                    "title": "GateStopScope",
+                    "description": "Gate stop scope"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "enum": ["nuisance", "unpaid", "fraudulent_use", "other"],
+                    "title": "GateStopReason",
+                    "description": "Reason for gate stop"
+                  },
+                  "terminal_message": {
+                    "type": "string",
+                    "example": "スタッフにお声がけください",
+                    "description": "Message to display on gate terminal (optional)"
+                  },
+                  "lock_after_message": {
+                    "type": "boolean",
+                    "example": false,
+                    "description": "Whether to deny entry even after member confirms the message"
+                  }
+                },
+                "required": ["scope", "reason", "lock_after_message"],
+                "title": "GateStopRequest",
+                "description": "Request body for setting gate stop on a member"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Gate stop applied successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "member_id": {
+                      "type": "string"
+                    },
+                    "scope": {
+                      "type": "string",
+                      "enum": ["all_stores", "own_store_only"],
+                      "title": "GateStopScope",
+                      "description": "Scope of gate stop: all_stores=全店舗入館不可, own_store_only=自店舗のみ入館不可"
+                    },
+                    "reason": {
+                      "type": "string",
+                      "enum": ["nuisance", "unpaid", "fraudulent_use", "other"],
+                      "title": "GateStopReason",
+                      "description": "Reason for gate stop: nuisance=迷惑行為, unpaid=未納金, fraudulent_use=不正利用, other=その他"
+                    }
+                  },
+                  "required": ["success", "member_id", "scope", "reason"],
+                  "title": "GateStopResponse",
+                  "description": "Result of gate stop setting"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Member is not in a state that allows gate stop",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Release gate stop for a member",
+        "description": "Remove gate stop restriction and restore member access (ゲートストップ解除)",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Gate stop release request payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "enum": ["issue_resolved", "wrong_setting", "identity_confirmed", "other"],
+                    "title": "GateStopReleaseReason",
+                    "description": "Reason for releasing gate stop"
+                  },
+                  "detail": {
+                    "type": "string",
+                    "example": "未払い金の支払いが完了しました",
+                    "description": "Additional detail for the release reason (optional)"
+                  }
+                },
+                "required": ["reason"],
+                "title": "GateStopReleaseRequest",
+                "description": "Request body for releasing gate stop on a member"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Gate stop released successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "member_id": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["success", "member_id"],
+                  "title": "GateStopReleaseResponse",
+                  "description": "Result of gate stop release"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Member is not currently gate-stopped",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/members/{id}/health-info": {
       "put": {
         "summary": "Update member health info",
@@ -21689,6 +22175,34 @@
                           "example": false,
                           "description": "Blacklisted status"
                         },
+                        "gate_stop_info": {
+                          "type": "object",
+                          "nullable": true,
+                          "properties": {
+                            "scope": {
+                              "type": "string",
+                              "enum": ["all_stores", "own_store_only"]
+                            },
+                            "reason": {
+                              "type": "string",
+                              "enum": ["nuisance", "unpaid", "fraudulent_use", "other"]
+                            },
+                            "terminal_message": {
+                              "type": "string"
+                            },
+                            "lock_after_message": {
+                              "type": "boolean"
+                            },
+                            "set_at": {
+                              "type": "string"
+                            },
+                            "set_by": {
+                              "type": "string"
+                            }
+                          },
+                          "required": ["scope", "reason", "lock_after_message", "set_at", "set_by"],
+                          "description": "Current gate stop info (null when not gate-stopped)"
+                        },
                         "contract_name": {
                           "type": "string",
                           "example": "レギュラー会員",
@@ -22284,6 +22798,34 @@
                           "type": "boolean",
                           "example": false,
                           "description": "Blacklisted status"
+                        },
+                        "gate_stop_info": {
+                          "type": "object",
+                          "nullable": true,
+                          "properties": {
+                            "scope": {
+                              "type": "string",
+                              "enum": ["all_stores", "own_store_only"]
+                            },
+                            "reason": {
+                              "type": "string",
+                              "enum": ["nuisance", "unpaid", "fraudulent_use", "other"]
+                            },
+                            "terminal_message": {
+                              "type": "string"
+                            },
+                            "lock_after_message": {
+                              "type": "boolean"
+                            },
+                            "set_at": {
+                              "type": "string"
+                            },
+                            "set_by": {
+                              "type": "string"
+                            }
+                          },
+                          "required": ["scope", "reason", "lock_after_message", "set_at", "set_by"],
+                          "description": "Current gate stop info (null when not gate-stopped)"
                         },
                         "contract_name": {
                           "type": "string",

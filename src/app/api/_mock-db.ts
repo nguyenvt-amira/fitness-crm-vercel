@@ -405,6 +405,7 @@ function createMember(
     emergency_contact_phone: string;
     in_cancellation_period: boolean;
     is_option_restricted: boolean;
+    gate_stop_info?: MemberProfile['gate_stop_info'];
   },
 ): MemberRow {
   return {
@@ -447,6 +448,7 @@ function createMember(
       joined_at: listMeta.joined_at,
       contract_name: listMeta.contract_name,
       is_black_listed: false,
+      gate_stop_info: listMeta.gate_stop_info,
     },
     ekyc: {
       verified: true,
@@ -849,6 +851,15 @@ type DbType = {
       scheduled_date: string;
       reason: string;
     }): Member | undefined;
+    setGateStop(input: {
+      id: string;
+      scope: string;
+      reason: string;
+      terminal_message?: string;
+      lock_after_message: boolean;
+      set_by?: string;
+    }): Member | undefined;
+    releaseGateStop(id: string): Member | undefined;
   };
   contracts: {
     _seeded: boolean;
@@ -2055,44 +2066,54 @@ function createDb() {
           const mainContractId = mainContract?.id ?? DEFAULT_MEMBER_MAIN_CONTRACT_ID;
           const phone = `090${String(1000 + (i % 9000)).slice(-4)}${String(1000 + (i % 9000)).slice(-4)}`;
           const email = `member${String(i).padStart(5, '0')}@example.jp`;
-          this._members.push(
-            createMember(id, {
-              name_kanji: name.kanji,
-              name_kana: name.kana,
-              phone,
-              email,
-              birthday: `199${i % 10}-0${(i % 9) + 1}-15`,
-              gender: i % 2 === 0 ? 'male' : 'female',
-              member_type: memberType,
-              status: (
-                [
-                  'active',
-                  'suspended',
-                  'withdrawn',
-                  'gate_stop',
-                  'pending_withdrawal',
-                  'force_withdrawn',
-                ] as MemberProfile['status'][]
-              )[i % 6],
-              contract_type: resolveContractTypeFromMemberType(memberType),
-              store_name: store.name,
-              store_id: store.id,
-              brand: store.brand as Brand,
-              contract_name: displayName,
-              contract_id: mainContractId,
-              joined_at: `2024-${String((i % 12) + 1).padStart(2, '0')}-${String((i % 28) + 1).padStart(2, '0')}`,
-              last_visit_date:
-                i % 5 === 0
-                  ? undefined
-                  : toIsoDate(new Date(now.getTime() - ((i * 3) % 420) * dayMs)),
-              has_unpaid: i % 7 === 0,
-              in_cancellation_period: i % 6 === 4,
-              is_option_restricted: i % 7 === 0,
-              emergency_contact_name: name.kanji,
-              emergency_contact_relationship: '配偶者',
-              emergency_contact_phone: '09087654321',
-            }),
-          );
+          const member = {
+            name_kanji: name.kanji,
+            name_kana: name.kana,
+            phone,
+            email,
+            birthday: `199${i % 10}-0${(i % 9) + 1}-15`,
+            gender: i % 2 === 0 ? 'male' : ('female' as MemberRow['basic_info']['gender']),
+            member_type: memberType,
+            status: (
+              [
+                'active',
+                'suspended',
+                'withdrawn',
+                'gate_stop',
+                'pending_withdrawal',
+                'force_withdrawn',
+              ] as MemberProfile['status'][]
+            )[i % 6],
+            contract_type: resolveContractTypeFromMemberType(memberType),
+            store_name: store.name,
+            store_id: store.id,
+            brand: store.brand as Brand,
+            contract_name: displayName,
+            contract_id: mainContractId,
+            joined_at: `2024-${String((i % 12) + 1).padStart(2, '0')}-${String((i % 28) + 1).padStart(2, '0')}`,
+            last_visit_date:
+              i % 5 === 0
+                ? undefined
+                : toIsoDate(new Date(now.getTime() - ((i * 3) % 420) * dayMs)),
+            has_unpaid: i % 7 === 0,
+            in_cancellation_period: i % 6 === 4,
+            is_option_restricted: i % 7 === 0,
+            emergency_contact_name: name.kanji,
+            emergency_contact_relationship: '配偶者',
+            emergency_contact_phone: '09087654321',
+            gate_stop_info: null as MemberProfile['gate_stop_info'],
+          };
+          if (member.status === 'gate_stop') {
+            member.gate_stop_info = {
+              scope: 'own_store_only',
+              reason: 'unpaid',
+              terminal_message: '未納金のため、入館を制限します。',
+              lock_after_message: true,
+              set_at: new Date().toISOString(),
+              set_by: 'スタッフ',
+            };
+          }
+          this._members.push(createMember(id, member));
         }
       },
 
@@ -2549,6 +2570,52 @@ function createDb() {
           profile: {
             ...this._members[idx]!.profile,
             status: MemberStatus.PENDING_WITHDRAWAL,
+          },
+        };
+        this._members[idx] = updated;
+        return updated;
+      },
+
+      setGateStop(input: {
+        id: string;
+        scope: string;
+        reason: string;
+        terminal_message?: string;
+        lock_after_message: boolean;
+        set_by?: string;
+      }): Member | undefined {
+        this._seed();
+        const idx = this._members.findIndex((m) => m.basic_info.id === input.id);
+        if (idx === -1) return undefined;
+        const updated: MemberRow = {
+          ...this._members[idx]!,
+          profile: {
+            ...this._members[idx]!.profile,
+            status: MemberStatus.GATE_STOP,
+            gate_stop_info: {
+              scope: input.scope as 'all_stores' | 'own_store_only',
+              reason: input.reason as 'nuisance' | 'unpaid' | 'fraudulent_use' | 'other',
+              terminal_message: input.terminal_message,
+              lock_after_message: input.lock_after_message,
+              set_at: new Date().toISOString(),
+              set_by: input.set_by ?? 'スタッフ',
+            },
+          },
+        };
+        this._members[idx] = updated;
+        return updated;
+      },
+
+      releaseGateStop(id: string): Member | undefined {
+        this._seed();
+        const idx = this._members.findIndex((m) => m.basic_info.id === id);
+        if (idx === -1) return undefined;
+        const updated: MemberRow = {
+          ...this._members[idx]!,
+          profile: {
+            ...this._members[idx]!.profile,
+            status: MemberStatus.ACTIVE,
+            gate_stop_info: null,
           },
         };
         this._members[idx] = updated;

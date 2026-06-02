@@ -439,6 +439,18 @@ export const MemberProfileSchema = z
       description: 'Withdrawal date (ISO date)',
     }),
     is_black_listed: z.boolean().openapi({ example: false, description: 'Blacklisted status' }),
+    gate_stop_info: z
+      .object({
+        scope: z.enum(['all_stores', 'own_store_only']),
+        reason: z.enum(['nuisance', 'unpaid', 'fraudulent_use', 'other']),
+        terminal_message: z.string().optional(),
+        lock_after_message: z.boolean(),
+        set_at: z.string(),
+        set_by: z.string(),
+      })
+      .nullable()
+      .optional()
+      .openapi({ description: 'Current gate stop info (null when not gate-stopped)' }),
   })
   .openapi({
     title: 'MemberProfile',
@@ -2573,6 +2585,120 @@ export const WithdrawCancelResponseSchema = z
   });
 
 export type WithdrawCancelResponse = z.infer<typeof WithdrawCancelResponseSchema>;
+
+// ===== Gate Stop =====
+
+export const GateStopInfoSchema = z
+  .object({
+    scope: z.enum(['all_stores', 'own_store_only']).openapi({
+      description: 'Gate stop scope',
+    }),
+    reason: z.enum(['nuisance', 'unpaid', 'fraudulent_use', 'other']).openapi({
+      description: 'Reason for gate stop',
+    }),
+    terminal_message: z.string().optional().openapi({
+      description: 'Message displayed on gate terminal',
+    }),
+    lock_after_message: z.boolean().openapi({
+      description: 'Whether entry is denied even after confirming the message',
+    }),
+    set_at: z.string().openapi({
+      example: '2026-03-01T09:30:00.000Z',
+      description: 'Datetime the gate stop was set (ISO 8601)',
+    }),
+    set_by: z.string().openapi({
+      example: '管理者A',
+      description: 'Name of the staff who set the gate stop',
+    }),
+  })
+  .openapi({ title: 'GateStopInfo', description: 'Current gate stop settings for a member' });
+
+export type GateStopInfo = z.infer<typeof GateStopInfoSchema>;
+
+export const GateStopReasonSchema = z
+  .enum(['nuisance', 'unpaid', 'fraudulent_use', 'other'])
+  .openapi({
+    title: 'GateStopReason',
+    description:
+      'Reason for gate stop: nuisance=迷惑行為, unpaid=未納金, fraudulent_use=不正利用, other=その他',
+  });
+
+export const GateStopScopeSchema = z.enum(['all_stores', 'own_store_only']).openapi({
+  title: 'GateStopScope',
+  description: 'Scope of gate stop: all_stores=全店舗入館不可, own_store_only=自店舗のみ入館不可',
+});
+
+export const GateStopRequestSchema = z
+  .object({
+    scope: GateStopScopeSchema.openapi({ description: 'Gate stop scope' }),
+    reason: GateStopReasonSchema.openapi({ description: 'Reason for gate stop' }),
+    terminal_message: z.string().optional().openapi({
+      example: 'スタッフにお声がけください',
+      description: 'Message to display on gate terminal (optional)',
+    }),
+    lock_after_message: z.boolean().openapi({
+      example: false,
+      description: 'Whether to deny entry even after member confirms the message',
+    }),
+  })
+  .openapi({
+    title: 'GateStopRequest',
+    description: 'Request body for setting gate stop on a member',
+  });
+
+export const GateStopResponseSchema = z
+  .object({
+    success: z.boolean(),
+    member_id: z.string(),
+    scope: GateStopScopeSchema,
+    reason: GateStopReasonSchema,
+  })
+  .openapi({
+    title: 'GateStopResponse',
+    description: 'Result of gate stop setting',
+  });
+
+export type GateStopReason = z.infer<typeof GateStopReasonSchema>;
+export type GateStopScope = z.infer<typeof GateStopScopeSchema>;
+export type GateStopRequest = z.infer<typeof GateStopRequestSchema>;
+export type GateStopResponse = z.infer<typeof GateStopResponseSchema>;
+
+// ===== Gate Stop Release =====
+
+export const GateStopReleaseReasonSchema = z
+  .enum(['issue_resolved', 'wrong_setting', 'identity_confirmed', 'other'])
+  .openapi({
+    title: 'GateStopReleaseReason',
+    description:
+      'Reason for releasing gate stop: issue_resolved=問題解決済み, wrong_setting=誤設定, identity_confirmed=本人確認完了, other=その他',
+  });
+
+export const GateStopReleaseRequestSchema = z
+  .object({
+    reason: GateStopReleaseReasonSchema.openapi({ description: 'Reason for releasing gate stop' }),
+    detail: z.string().optional().openapi({
+      example: '未払い金の支払いが完了しました',
+      description: 'Additional detail for the release reason (optional)',
+    }),
+  })
+  .openapi({
+    title: 'GateStopReleaseRequest',
+    description: 'Request body for releasing gate stop on a member',
+  });
+
+export const GateStopReleaseResponseSchema = z
+  .object({
+    success: z.boolean(),
+    member_id: z.string(),
+  })
+  .openapi({
+    title: 'GateStopReleaseResponse',
+    description: 'Result of gate stop release',
+  });
+
+export type GateStopReleaseReason = z.infer<typeof GateStopReleaseReasonSchema>;
+export type GateStopReleaseRequest = z.infer<typeof GateStopReleaseRequestSchema>;
+export type GateStopReleaseResponse = z.infer<typeof GateStopReleaseResponseSchema>;
 
 export type VisitRow = z.infer<typeof VisitRowSchema>;
 export type LessonReservationRow = z.infer<typeof LessonReservationRowSchema>;

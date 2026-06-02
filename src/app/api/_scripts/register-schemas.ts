@@ -875,4 +875,38 @@ export function registerAllSchemas() {
     'WithdrawReason',
     registry.register('WithdrawReason', memberSchemas.WithdrawReasonSchema),
   );
+
+  // Register gate stop schemas
+  registeredSchemaMap.set(
+    'GateStopInfo',
+    registry.register('GateStopInfo', memberSchemas.GateStopInfoSchema),
+  );
+  registeredSchemaMap.set(
+    'GateStopReason',
+    registry.register('GateStopReason', memberSchemas.GateStopReasonSchema),
+  );
+  registeredSchemaMap.set(
+    'GateStopScope',
+    registry.register('GateStopScope', memberSchemas.GateStopScopeSchema),
+  );
+  registeredSchemaMap.set(
+    'GateStopRequest',
+    registry.register('GateStopRequest', memberSchemas.GateStopRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'GateStopResponse',
+    registry.register('GateStopResponse', memberSchemas.GateStopResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'GateStopReleaseReason',
+    registry.register('GateStopReleaseReason', memberSchemas.GateStopReleaseReasonSchema),
+  );
+  registeredSchemaMap.set(
+    'GateStopReleaseRequest',
+    registry.register('GateStopReleaseRequest', memberSchemas.GateStopReleaseRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'GateStopReleaseResponse',
+    registry.register('GateStopReleaseResponse', memberSchemas.GateStopReleaseResponseSchema),
+  );
 }
