@@ -9,12 +9,43 @@ export enum UserRole {
 }
 
 /**
- * Fine-grained permission actions.
+ * Fine-grained permissions grouped by screen/resource.
  * Format: "<resource>.<action>"
  * Extend this enum as new features are added.
  */
 export enum Permission {
+  // -------------------------------------------------------------------------
+  // Staffs
+  // -------------------------------------------------------------------------
+  StaffsView = 'staffs.view',
+  StaffsCreate = 'staffs.create',
+  StaffsEdit = 'staffs.edit',
+  StaffsDelete = 'staffs.delete',
+  StaffsInvite = 'staffs.invite',
+
+  // -------------------------------------------------------------------------
+  // Stores
+  // -------------------------------------------------------------------------
+  StoresView = 'stores.view',
+  StoresCreate = 'stores.create',
+  StoresEdit = 'stores.edit',
+  StoresDelete = 'stores.delete',
+  StoresConfigContract = 'stores.config-contract',
+  StoresConfigAccess = 'stores.config-access',
+  StoresConfigBusiness = 'stores.config-business',
+
+  // -------------------------------------------------------------------------
+  // Positions
+  // -------------------------------------------------------------------------
+  PositionsView = 'positions.view',
+  PositionsCreate = 'positions.create',
+  PositionsEdit = 'positions.edit',
+  PositionsDelete = 'positions.delete',
+
+  // -------------------------------------------------------------------------
   // Members
+  // -------------------------------------------------------------------------
+  MembersView = 'members.view',
   MembersCreate = 'members.create',
   MembersEdit = 'members.edit',
   MembersDelete = 'members.delete',
@@ -27,41 +58,38 @@ export enum Permission {
   MembersGateStop = 'members.gate-stop',
   MembersForceWithdraw = 'members.force-withdraw',
 
+  // -------------------------------------------------------------------------
+  // Members — Blacklist
+  // -------------------------------------------------------------------------
+  MembersBlacklistView = 'members.blacklist-view',
+  BlacklistCreate = 'blacklist.create',
+  BlacklistDelete = 'blacklist.delete',
+
+  // -------------------------------------------------------------------------
+  // Members — Leaves
+  // -------------------------------------------------------------------------
+  MembersLeavesView = 'members.leaves-view',
+  LeavesApprove = 'leaves.approve',
+
+  // -------------------------------------------------------------------------
+  // Members — Transfers
+  // -------------------------------------------------------------------------
+  MembersTransfersView = 'members.transfers-view',
+  TransfersApprove = 'transfers.approve',
+
+  // -------------------------------------------------------------------------
   // Membership applications
+  // -------------------------------------------------------------------------
+  MembershipApplicationsView = 'membership-applications.view',
   MembershipApplicationsCreate = 'membership-applications.create',
   MembershipApplicationsApprove = 'membership-applications.approve',
 
-  // Staffs
-  StaffsCreate = 'staffs.create',
-  StaffsEdit = 'staffs.edit',
-  StaffsDelete = 'staffs.delete',
-  StaffsInvite = 'staffs.invite',
-
-  // Stores
-  StoresCreate = 'stores.create',
-  StoresEdit = 'stores.edit',
-  StoresDelete = 'stores.delete',
-  StoresConfigContract = 'stores.config-contract',
-  StoresConfigAccess = 'stores.config-access',
-  StoresConfigBusiness = 'stores.config-business',
-
-  // Positions
-  PositionsCreate = 'positions.create',
-  PositionsEdit = 'positions.edit',
-  PositionsDelete = 'positions.delete',
-
+  // -------------------------------------------------------------------------
   // Family registrations
+  // -------------------------------------------------------------------------
+  FamilyRegistrationsView = 'family-registrations.view',
+  FamilyRegistrationsDashboardView = 'family-registrations.dashboard-view',
   FamilyRegistrationsApprove = 'family-registrations.approve',
-
-  // Transfers
-  TransfersApprove = 'transfers.approve',
-
-  // Leaves
-  LeavesApprove = 'leaves.approve',
-
-  // Blacklist
-  BlacklistCreate = 'blacklist.create',
-  BlacklistDelete = 'blacklist.delete',
 }
 
 /** Authenticated user stored in context */

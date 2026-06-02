@@ -27,8 +27,6 @@ export type MembersFilters = {
 };
 
 export function useMembersFilters() {
-  const [searchInput, setSearchInput] = useState('');
-
   // Use nuqs for URL query parameters
   const [filters, setFilters] = useQueryStates(
     {
@@ -53,13 +51,8 @@ export function useMembersFilters() {
     },
   );
 
-  // Sync searchInput with URL on mount
-  useEffect(() => {
-    if (filters.search && searchInput !== filters.search) {
-      setSearchInput(filters.search);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Only on mount
+  // Initialized from URL so the input reflects any pre-existing search param
+  const [searchInput, setSearchInput] = useState(() => filters.search);
 
   // Debounce search input (500ms)
   useEffect(() => {

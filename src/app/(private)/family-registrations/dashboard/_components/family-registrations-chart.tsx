@@ -5,29 +5,35 @@ import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis } f
 
 import { Card, CardContent } from '@/components/ui/card';
 
-import {
-  getCrmFamilyRegistrationsDashboardOptions,
-  getCrmFamilyRegistrationsSummaryOptions,
-} from '@/lib/api/@tanstack/react-query.gen';
+import { getCrmFamilyRegistrationsDashboardOptions } from '@/lib/api/@tanstack/react-query.gen';
 
-const weeklyData = [
-  { label: '月', invited: 3, awaiting_profile: 2, completed: 1, rejected: 0, declined: 0 },
-  { label: '火', invited: 5, awaiting_profile: 4, completed: 2, rejected: 1, declined: 0 },
-  { label: '水', invited: 2, awaiting_profile: 3, completed: 2, rejected: 0, declined: 1 },
-  { label: '木', invited: 8, awaiting_profile: 6, completed: 3, rejected: 1, declined: 0 },
-  { label: '金', invited: 6, awaiting_profile: 5, completed: 4, rejected: 2, declined: 1 },
-  { label: '土', invited: 1, awaiting_profile: 2, completed: 1, rejected: 0, declined: 0 },
-  { label: '日', invited: 4, awaiting_profile: 3, completed: 2, rejected: 1, declined: 0 },
-];
+// Data point type for chart data
+type ChartDataPoint = {
+  label: string;
+  invited: number;
+  awaiting_profile: number;
+  completed: number;
+  rejected: number;
+  declined: number;
+};
 
-const monthlyData = [
+// const weeklyData: ChartDataPoint[] = [
+//   { label: '月', invited: 3, awaiting_profile: 2, completed: 1, rejected: 0, declined: 0 },
+//   { label: '火', invited: 5, awaiting_profile: 4, completed: 2, rejected: 1, declined: 0 },
+//   { label: '水', invited: 2, awaiting_profile: 3, completed: 2, rejected: 0, declined: 1 },
+//   { label: '木', invited: 8, awaiting_profile: 6, completed: 3, rejected: 1, declined: 0 },
+//   { label: '金', invited: 6, awaiting_profile: 5, completed: 4, rejected: 2, declined: 1 },
+//   { label: '土', invited: 1, awaiting_profile: 2, completed: 1, rejected: 0, declined: 0 },
+//   { label: '日', invited: 4, awaiting_profile: 3, completed: 2, rejected: 1, declined: 0 },
+// ];
+const monthlyData: ChartDataPoint[] = [
   { label: '第1週', invited: 18, awaiting_profile: 14, completed: 9, rejected: 2, declined: 3 },
   { label: '第2週', invited: 24, awaiting_profile: 19, completed: 13, rejected: 1, declined: 4 },
   { label: '第3週', invited: 15, awaiting_profile: 12, completed: 10, rejected: 3, declined: 2 },
   { label: '第4週', invited: 29, awaiting_profile: 22, completed: 16, rejected: 2, declined: 5 },
 ];
 
-const quarterlyData = [
+const quarterlyData: ChartDataPoint[] = [
   { label: '1月W1', invited: 12, awaiting_profile: 9, completed: 6, rejected: 1, declined: 2 },
   { label: '1月W2', invited: 18, awaiting_profile: 14, completed: 9, rejected: 2, declined: 3 },
   { label: '1月W3', invited: 22, awaiting_profile: 17, completed: 11, rejected: 1, declined: 4 },
@@ -42,7 +48,7 @@ const quarterlyData = [
   { label: '3月W4', invited: 38, awaiting_profile: 30, completed: 22, rejected: 3, declined: 6 },
 ];
 
-const PERIOD_TO_DATA: Record<'this_month' | 'last_3_months' | 'last_year', typeof weeklyData> = {
+const PERIOD_TO_DATA: Record<'this_month' | 'last_3_months' | 'last_year', ChartDataPoint[]> = {
   this_month: monthlyData,
   last_3_months: quarterlyData,
   last_year: quarterlyData,

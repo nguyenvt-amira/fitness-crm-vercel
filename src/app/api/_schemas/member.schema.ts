@@ -2546,7 +2546,7 @@ export const WithdrawRequestSchema = z
       description: 'Whether a staff member is submitting on behalf of the member',
     }),
     proxy_agreed_at: z.string().optional().openapi({
-      example: '2026-05-19T10:00',
+      example: '2026-05-19T03:00:00.000Z',
       description: 'Datetime of agreement (required when is_proxy is true)',
     }),
     proxy_method: z.string().optional().openapi({

@@ -1,134 +1,80 @@
 /**
- * - `PAGE_ROLES`: maps each route pattern to the roles that can access it.
+ * - `PAGE_PERMISSIONS`: maps each route pattern to the Permission required to view it.
  *   Omitting a route means ALL authenticated roles can access it.
  *
- * - `ROLE_PERMISSIONS`: fine-grained action permissions used by RoleGatedButton / RoleGatedMenuItem
- *   to gate individual UI actions (Create, Edit, Delete, Approve, Invite …).
- *   View permissions are intentionally omitted — page visibility is already governed by PAGE_ROLES.
+ * - `ROLE_PERMISSIONS`: the full set of Permission values granted to each role.
+ *   Includes both page-view permissions (used for routing) and action permissions
+ *   (used by RoleGatedButton / RoleGatedMenuItem).
  */
 import type { RoutePattern } from '@/lib/routes/routes.type';
 
 import { Permission, UserRole } from '@/types/permission.type';
 
 // ---------------------------------------------------------------------------
-// Page-level access (route pattern → allowed roles)
+// Page-level access (route pattern → required Permission)
 // ---------------------------------------------------------------------------
-export const PAGE_ROLES: Partial<Record<RoutePattern, readonly UserRole[]>> = {
+export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
   // Staffs
-  '/staffs': [UserRole.System, UserRole.Headquarter, UserRole.Manager, UserRole.Staff],
-  '/staffs/:id': [UserRole.System, UserRole.Headquarter, UserRole.Manager, UserRole.Staff],
-  '/staffs/:id/edit': [UserRole.System, UserRole.Headquarter, UserRole.Staff],
+  '/staffs': Permission.StaffsView,
+  '/staffs/:id': Permission.StaffsView,
+  '/staffs/:id/edit': Permission.StaffsEdit,
 
   // Stores
-  '/stores': [UserRole.System, UserRole.Headquarter, UserRole.Manager, UserRole.Staff],
-  '/stores/:id': [UserRole.System, UserRole.Headquarter, UserRole.Manager, UserRole.Staff],
-  '/stores/:id/edit': [UserRole.System, UserRole.Headquarter],
-  '/stores/create': [UserRole.System, UserRole.Headquarter],
+  '/stores': Permission.StoresView,
+  '/stores/:id': Permission.StoresView,
+  '/stores/:id/edit': Permission.StoresEdit,
+  '/stores/create': Permission.StoresCreate,
 
   // Positions
-  '/positions': [UserRole.System, UserRole.Headquarter],
+  '/positions': Permission.PositionsView,
 
   // Members
-  '/members': [
-    UserRole.System,
-    UserRole.Headquarter,
-    UserRole.Manager,
-    UserRole.Staff,
-    UserRole.Observer,
-  ],
-  '/members/:id': [
-    UserRole.System,
-    UserRole.Headquarter,
-    UserRole.Manager,
-    UserRole.Staff,
-    UserRole.Observer,
-  ],
-  '/members/:id/edit': [UserRole.System, UserRole.Headquarter, UserRole.Manager, UserRole.Staff],
-  '/members/create': [UserRole.System, UserRole.Headquarter, UserRole.Manager, UserRole.Staff],
-  '/members/blacklist': [UserRole.System, UserRole.Headquarter],
-  '/members/blacklist/:id': [UserRole.System, UserRole.Headquarter],
-  '/members/leaves': [
-    UserRole.System,
-    UserRole.Headquarter,
-    UserRole.Manager,
-    UserRole.Staff,
-    UserRole.Observer,
-  ],
-  '/members/leaves/:id': [
-    UserRole.System,
-    UserRole.Headquarter,
-    UserRole.Manager,
-    UserRole.Staff,
-    UserRole.Observer,
-  ],
-  '/members/transfers': [
-    UserRole.System,
-    UserRole.Headquarter,
-    UserRole.Manager,
-    UserRole.Staff,
-    UserRole.Observer,
-  ],
-  '/members/transfers/:id': [
-    UserRole.System,
-    UserRole.Headquarter,
-    UserRole.Manager,
-    UserRole.Staff,
-    UserRole.Observer,
-  ],
+  '/members': Permission.MembersView,
+  '/members/:id': Permission.MembersView,
+  '/members/:id/edit': Permission.MembersEdit,
+  '/members/create': Permission.MembersCreate,
+  '/members/blacklist': Permission.MembersBlacklistView,
+  '/members/blacklist/:id': Permission.MembersBlacklistView,
+  '/members/leaves': Permission.MembersLeavesView,
+  '/members/leaves/:id': Permission.MembersLeavesView,
+  '/members/transfers': Permission.MembersTransfersView,
+  '/members/transfers/:id': Permission.MembersTransfersView,
 
   // Membership applications
-  '/membership-applications': [
-    UserRole.System,
-    UserRole.Headquarter,
-    UserRole.Manager,
-    UserRole.Staff,
-    UserRole.Observer,
-  ],
-  '/membership-applications/:id': [
-    UserRole.System,
-    UserRole.Headquarter,
-    UserRole.Manager,
-    UserRole.Staff,
-    UserRole.Observer,
-  ],
-  '/membership-applications/create': [
-    UserRole.System,
-    UserRole.Headquarter,
-    UserRole.Manager,
-    UserRole.Staff,
-  ],
+  '/membership-applications': Permission.MembershipApplicationsView,
+  '/membership-applications/:id': Permission.MembershipApplicationsView,
+  '/membership-applications/create': Permission.MembershipApplicationsCreate,
 
   // Family registrations
-  '/family-registrations': [
-    UserRole.System,
-    UserRole.Headquarter,
-    UserRole.Manager,
-    UserRole.Staff,
-    UserRole.Observer,
-  ],
-  '/family-registrations/:id': [
-    UserRole.System,
-    UserRole.Headquarter,
-    UserRole.Manager,
-    UserRole.Staff,
-    UserRole.Observer,
-  ],
-  '/family-registrations/dashboard': [
-    UserRole.System,
-    UserRole.Headquarter,
-    UserRole.Manager,
-    UserRole.Staff,
-    UserRole.Observer,
-  ],
+  '/family-registrations': Permission.FamilyRegistrationsView,
+  '/family-registrations/:id': Permission.FamilyRegistrationsView,
+  '/family-registrations/dashboard': Permission.FamilyRegistrationsDashboardView,
 };
 
 // ---------------------------------------------------------------------------
-// Role → default Permission set
+// Role → full Permission set  (view + action)
 // ---------------------------------------------------------------------------
 export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
   [UserRole.System]: Object.values(Permission),
 
   [UserRole.Headquarter]: [
+    Permission.StaffsView,
+    Permission.StaffsCreate,
+    Permission.StaffsEdit,
+    Permission.StaffsDelete,
+    Permission.StaffsInvite,
+    Permission.StoresView,
+    Permission.StoresCreate,
+    Permission.StoresEdit,
+    Permission.StoresDelete,
+    Permission.StoresConfigContract,
+    Permission.StoresConfigAccess,
+    Permission.StoresConfigBusiness,
+    Permission.PositionsView,
+    Permission.PositionsCreate,
+    Permission.PositionsEdit,
+    Permission.PositionsDelete,
+    Permission.MembersView,
     Permission.MembersCreate,
     Permission.MembersEdit,
     Permission.MembersDelete,
@@ -140,29 +86,25 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.MembersTransfer,
     Permission.MembersGateStop,
     Permission.MembersForceWithdraw,
-    Permission.MembershipApplicationsCreate,
-    Permission.MembershipApplicationsApprove,
-    Permission.StaffsCreate,
-    Permission.StaffsEdit,
-    Permission.StaffsDelete,
-    Permission.StaffsInvite,
-    Permission.StoresCreate,
-    Permission.StoresEdit,
-    Permission.StoresDelete,
-    Permission.StoresConfigContract,
-    Permission.StoresConfigAccess,
-    Permission.StoresConfigBusiness,
-    Permission.PositionsCreate,
-    Permission.PositionsEdit,
-    Permission.PositionsDelete,
-    Permission.FamilyRegistrationsApprove,
-    Permission.TransfersApprove,
-    Permission.LeavesApprove,
+    Permission.MembersBlacklistView,
     Permission.BlacklistCreate,
     Permission.BlacklistDelete,
+    Permission.MembersLeavesView,
+    Permission.LeavesApprove,
+    Permission.MembersTransfersView,
+    Permission.TransfersApprove,
+    Permission.MembershipApplicationsView,
+    Permission.MembershipApplicationsCreate,
+    Permission.MembershipApplicationsApprove,
+    Permission.FamilyRegistrationsView,
+    Permission.FamilyRegistrationsDashboardView,
+    Permission.FamilyRegistrationsApprove,
   ],
 
   [UserRole.Manager]: [
+    Permission.StaffsView,
+    Permission.StoresView,
+    Permission.MembersView,
     Permission.MembersCreate,
     Permission.MembersEdit,
     Permission.MembersReEnroll,
@@ -170,10 +112,22 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.MembersWithdraw,
     Permission.MembersTransfer,
     Permission.MembersGateStop,
+    Permission.MembersLeavesView,
+    Permission.MembersTransfersView,
+    Permission.MembershipApplicationsView,
     Permission.MembershipApplicationsCreate,
+    Permission.FamilyRegistrationsView,
+    Permission.FamilyRegistrationsDashboardView,
   ],
 
   [UserRole.Staff]: [
+    Permission.StaffsView,
+    Permission.StaffsEdit,
+    Permission.StoresView,
+    Permission.StoresCreate,
+    Permission.StoresEdit,
+    Permission.StoresConfigBusiness,
+    Permission.MembersView,
     Permission.MembersCreate,
     Permission.MembersEdit,
     Permission.MembersReEnroll,
@@ -181,22 +135,60 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.MembersWithdraw,
     Permission.MembersTransfer,
     Permission.MembersGateStop,
+    Permission.MembersLeavesView,
+    Permission.MembersTransfersView,
+    Permission.MembershipApplicationsView,
     Permission.MembershipApplicationsCreate,
-    Permission.StoresCreate,
-    Permission.StoresEdit,
-    Permission.StoresConfigBusiness,
+    Permission.FamilyRegistrationsView,
+    Permission.FamilyRegistrationsDashboardView,
   ],
 
-  [UserRole.Trainer]: [],
+  [UserRole.Trainer]: [Permission.MembersView],
 
-  [UserRole.Observer]: [],
+  [UserRole.Observer]: [
+    Permission.MembersView,
+    Permission.MembersLeavesView,
+    Permission.MembersTransfersView,
+    Permission.MembershipApplicationsView,
+    Permission.FamilyRegistrationsView,
+    Permission.FamilyRegistrationsDashboardView,
+  ],
 };
 
 // ---------------------------------------------------------------------------
-// Helper: check if a role can access a given route pattern
+// Helpers
 // ---------------------------------------------------------------------------
+
+/**
+ * Returns true if the given role holds the permission required to view the route.
+ * Routes not listed in PAGE_PERMISSIONS are unrestricted — any authenticated role can access.
+ */
 export function canRoleAccessPage(role: UserRole, pattern: RoutePattern): boolean {
-  const allowed = PAGE_ROLES[pattern];
-  if (!allowed) return true; // not restricted → any authenticated role can access
-  return (allowed as readonly UserRole[]).includes(role);
+  const required = PAGE_PERMISSIONS[pattern];
+  if (!required) return true; // not restricted
+  return (ROLE_PERMISSIONS[role] as readonly Permission[]).includes(required);
+}
+
+/**
+ * Returns true if the given role holds all of the specified permissions.
+ */
+export function hasPermissions(role: UserRole, permissions: readonly Permission[]): boolean {
+  const granted = ROLE_PERMISSIONS[role] as readonly Permission[];
+  return permissions.every((p) => granted.includes(p));
+}
+
+/**
+ * Returns true if the given route is restricted to Headquarter/System only.
+ * Determined by checking whether only those two roles hold the required page-view permission.
+ */
+export function isPageHqOnly(pattern: RoutePattern): boolean {
+  const required = PAGE_PERMISSIONS[pattern];
+  if (!required) return false;
+  const accessibleRoles = Object.values(UserRole).filter((role) =>
+    (ROLE_PERMISSIONS[role] as readonly Permission[]).includes(required),
+  );
+  return (
+    accessibleRoles.length > 0 &&
+    accessibleRoles.every((r) => r === UserRole.System || r === UserRole.Headquarter)
+  );
 }

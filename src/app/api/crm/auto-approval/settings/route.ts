@@ -63,7 +63,7 @@ registerRoute({
 });
 
 // GET /api/crm/auto-approval/settings - 設定取得
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Mock auto-approval settings
     const response: GetSettingsResponse = {

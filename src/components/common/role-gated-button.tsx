@@ -78,18 +78,16 @@ export function RoleGatedButton({
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger>
-          {/* span wrapper is required because a disabled button swallows pointer events */}
-          <span className={cn('inline-flex cursor-not-allowed', className)}>
-            <Button
-              {...props}
-              disabled
-              aria-disabled="true"
-              className={cn('pointer-events-none opacity-50', className)}
-            >
-              {children}
-            </Button>
-          </span>
+        {/* span wrapper is required because a disabled button swallows pointer events */}
+        <TooltipTrigger render={<span className="inline-flex cursor-not-allowed" />}>
+          <Button
+            {...props}
+            disabled
+            aria-disabled="true"
+            className={cn('pointer-events-none opacity-50', className)}
+          >
+            {children}
+          </Button>
         </TooltipTrigger>
         <TooltipContent>
           <p className="text-xs">{denyTooltip}</p>

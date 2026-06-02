@@ -20,18 +20,18 @@ const memberTypeLabel = (type?: string) => {
   }
 };
 
-const statusLabel = (status?: string) => {
-  switch (status) {
-    case 'active':
-      return '在籍中';
-    case 'suspended':
-      return '休会中';
-    case 'withdrawn':
-      return '退会済み';
-    default:
-      return status ?? '—';
-  }
-};
+// const statusLabel = (status?: string) => {
+//   switch (status) {
+//     case 'active':
+//       return '在籍中';
+//     case 'suspended':
+//       return '休会中';
+//     case 'withdrawn':
+//       return '退会済み';
+//     default:
+//       return status ?? '—';
+//   }
+// };
 
 function InfoRow({ label, value }: { label: string; value?: string | null }) {
   return (
