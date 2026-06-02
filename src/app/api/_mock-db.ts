@@ -851,6 +851,16 @@ type DbType = {
       scheduled_date: string;
       reason: string;
     }): Member | undefined;
+    handleForceWithdrawal(input: {
+      id: string;
+      reason: string;
+    }): { member: Member; blacklistId: string } | undefined;
+    handleTransfer(input: {
+      id: string;
+      to_store_id: string;
+      to_store_name: string;
+      reason?: string;
+    }): { member: Member; transfer_id: string } | undefined;
     handleSuspension(input: {
       id: string;
       start_month: string;
@@ -1149,6 +1159,16 @@ type DbType = {
     _rows: TransferRow[];
     getAll(): TransferRow[];
     getById(id: string): TransferRow | undefined;
+    create(input: {
+      member_id: string;
+      member_name: string;
+      from_store_id: string;
+      from_store_name: string;
+      to_store_id: string;
+      to_store_name: string;
+      brand: string;
+      reason?: string;
+    }): TransferRow;
     approve(id: string, comment?: string): TransferRow | undefined;
     reject(id: string, comment?: string): TransferRow | undefined;
   };
@@ -2629,6 +2649,77 @@ function createDb() {
         };
         this._members[idx] = updated;
         return updated;
+      },
+
+      handleForceWithdrawal(input: {
+        id: string;
+        reason: string;
+      }): { member: Member; blacklistId: string } | undefined {
+        this._seed();
+        const idx = this._members.findIndex((m) => m.basic_info.id === input.id);
+        if (idx === -1) return undefined;
+        const member = this._members[idx]!;
+
+        // Create a leave record
+        db.memberLeaves.create({
+          member_id: input.id,
+          scheduled_date: new Date().toISOString().slice(0, 10),
+          reason: input.reason,
+        });
+
+        // Update member status to force_withdrawn
+        const updated: MemberRow = {
+          ...member,
+          profile: {
+            ...member.profile,
+            status: MemberStatus.FORCE_WITHDRAWN,
+            is_black_listed: true,
+          },
+        };
+        this._members[idx] = updated;
+
+        // Register to blacklist
+        const blRow = db.memberBlacklist.create({
+          memberId: member.basic_info.member_number,
+          memberName: member.basic_info.name_kanji,
+          storeName: member.profile.store_name,
+          registrationSource: 'forced_withdrawal',
+          manualReason: null,
+          unpaidAmount: 0,
+          memo: input.reason,
+          registeredBy: 'System',
+          matchConditions: {
+            nameAndBirthdate: true,
+            email: false,
+            phone: false,
+            address: false,
+          },
+        });
+
+        return { member: updated, blacklistId: blRow.id };
+      },
+
+      handleTransfer(input: {
+        id: string;
+        to_store_id: string;
+        to_store_name: string;
+        reason?: string;
+      }): { member: Member; transfer_id: string } | undefined {
+        this._seed();
+        const idx = this._members.findIndex((m) => m.basic_info.id === input.id);
+        if (idx === -1) return undefined;
+        const member = this._members[idx]!;
+        const transfer = db.transfers.create({
+          member_id: input.id,
+          member_name: member.basic_info.name_kanji,
+          from_store_id: member.profile.store_id,
+          from_store_name: member.profile.store_name,
+          to_store_id: input.to_store_id,
+          to_store_name: input.to_store_name,
+          brand: member.profile.brand,
+          reason: input.reason,
+        });
+        return { member, transfer_id: transfer.id };
       },
 
       setGateStop(input: {
@@ -5389,6 +5480,67 @@ function createDb() {
       },
       getById(id: string): TransferRow | undefined {
         return this._rows.find((r) => r.id === id);
+      },
+      create(input: {
+        member_id: string;
+        member_name: string;
+        from_store_id: string;
+        from_store_name: string;
+        to_store_id: string;
+        to_store_name: string;
+        brand: string;
+        reason?: string;
+      }): TransferRow {
+        const now = new Date().toISOString();
+        const id = `TR-${String(this._rows.length + 1).padStart(3, '0')}`;
+        const newRow: TransferRow = {
+          id,
+          member_id: input.member_id,
+          member_name: input.member_name,
+          from_store_id: input.from_store_id,
+          from_store_name: input.from_store_name,
+          to_store_id: input.to_store_id,
+          to_store_name: input.to_store_name,
+          brand: input.brand as TransferRow['brand'],
+          applied_at: now,
+          scheduled_date: now,
+          status: TransferStatus.Pending,
+          reason: input.reason ?? '',
+          applicant_name: 'スタッフ',
+          applicant_role: 'staff',
+          updated_at: now,
+          approval_history: [
+            {
+              step: 1,
+              label: '申請',
+              store_type: null,
+              completed: true,
+              completed_at: now,
+              completed_by: 'スタッフ',
+              is_automatic: false,
+            },
+            {
+              step: 2,
+              label: '移籍元承認',
+              store_type: 'from',
+              completed: false,
+              completed_at: null,
+              completed_by: null,
+              is_automatic: false,
+            },
+            {
+              step: 3,
+              label: '移籍先承認',
+              store_type: 'to',
+              completed: false,
+              completed_at: null,
+              completed_by: null,
+              is_automatic: false,
+            },
+          ],
+        };
+        this._rows.push(newRow);
+        return newRow;
       },
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       approve(id: string, _comment?: string): TransferRow | undefined {

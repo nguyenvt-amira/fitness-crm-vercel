@@ -2586,6 +2586,35 @@ export const WithdrawCancelResponseSchema = z
 
 export type WithdrawCancelResponse = z.infer<typeof WithdrawCancelResponseSchema>;
 
+// ===== Force Withdraw (強制退会) =====
+
+export const ForceWithdrawRequestSchema = z
+  .object({
+    reason: z.string().min(1).openapi({
+      example: '2ヶ月連続未納のため強制退会',
+      description: '強制退会の理由',
+    }),
+  })
+  .openapi({
+    title: 'ForceWithdrawRequest',
+    description:
+      '強制退会リクエスト。会員ステータスをforce_withdrawnに更新し、ブラックリストに自動登録する。',
+  });
+
+export const ForceWithdrawResponseSchema = z
+  .object({
+    success: z.boolean(),
+    member_id: z.string(),
+    blacklist_id: z.string(),
+  })
+  .openapi({
+    title: 'ForceWithdrawResponse',
+    description: '強制退会処理結果',
+  });
+
+export type ForceWithdrawRequest = z.infer<typeof ForceWithdrawRequestSchema>;
+export type ForceWithdrawResponse = z.infer<typeof ForceWithdrawResponseSchema>;
+
 // ===== Gate Stop =====
 
 export const GateStopInfoSchema = z
@@ -2776,6 +2805,56 @@ export const SuspendReleaseResponseSchema = z
 
 export type SuspendReleaseRequest = z.infer<typeof SuspendReleaseRequestSchema>;
 export type SuspendReleaseResponse = z.infer<typeof SuspendReleaseResponseSchema>;
+
+// ===== Transfer =====
+
+export const TransferRequestBodySchema = z
+  .object({
+    to_store_id: z.string().openapi({
+      example: 'store-002',
+      description: '移籍先店舗ID',
+    }),
+    to_store_name: z.string().openapi({
+      example: 'JOYFIT新宿店',
+      description: '移籍先店舗名',
+    }),
+    reason: z.string().optional().openapi({
+      example: '転居のため',
+      description: '移籍理由（任意）',
+    }),
+    is_proxy: z.boolean().openapi({
+      example: false,
+      description: 'スタッフが代理申請するかどうか',
+    }),
+    proxy_agreed_at: z.string().optional().openapi({
+      example: '2026-05-19T10:00',
+      description: '合意日時（代理申請時に必須）',
+    }),
+    proxy_method: z.string().optional().openapi({
+      example: '来店',
+      description: '合意方法（代理申請時）',
+    }),
+  })
+  .openapi({
+    title: 'TransferRequestBody',
+    description: '移籍申請リクエスト',
+  });
+
+export const TransferResponseSchema = z
+  .object({
+    success: z.boolean(),
+    member_id: z.string(),
+    transfer_id: z.string(),
+    to_store_id: z.string(),
+    to_store_name: z.string(),
+  })
+  .openapi({
+    title: 'TransferResponse',
+    description: '移籍申請結果',
+  });
+
+export type TransferRequestBody = z.infer<typeof TransferRequestBodySchema>;
+export type TransferResponse = z.infer<typeof TransferResponseSchema>;
 
 export type VisitRow = z.infer<typeof VisitRowSchema>;
 export type LessonReservationRow = z.infer<typeof LessonReservationRowSchema>;

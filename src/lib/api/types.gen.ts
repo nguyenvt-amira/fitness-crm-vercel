@@ -13273,6 +13273,92 @@ export type GetCrmMembersByIdContractsSummaryResponses = {
 
 export type GetCrmMembersByIdContractsSummaryResponse = GetCrmMembersByIdContractsSummaryResponses[keyof GetCrmMembersByIdContractsSummaryResponses];
 
+export type PostCrmMembersByIdForceWithdrawData = {
+    /**
+     * ForceWithdrawRequest
+     *
+     * 強制退会リクエスト。会員ステータスをforce_withdrawnに更新し、ブラックリストに自動登録する。
+     */
+    body?: {
+        /**
+         * 強制退会の理由
+         */
+        reason: string;
+    };
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/force-withdraw';
+};
+
+export type PostCrmMembersByIdForceWithdrawErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembersByIdForceWithdrawError = PostCrmMembersByIdForceWithdrawErrors[keyof PostCrmMembersByIdForceWithdrawErrors];
+
+export type PostCrmMembersByIdForceWithdrawResponses = {
+    /**
+     * ForceWithdrawResponse
+     *
+     * 強制退会処理結果
+     */
+    200: {
+        success: boolean;
+        member_id: string;
+        blacklist_id: string;
+    };
+};
+
+export type PostCrmMembersByIdForceWithdrawResponse = PostCrmMembersByIdForceWithdrawResponses[keyof PostCrmMembersByIdForceWithdrawResponses];
+
 export type GetCrmMembersByMemberIdFamilyMembersData = {
     body?: never;
     path: {
@@ -16049,6 +16135,114 @@ export type GetCrmMembersByIdTrainingRecordsResponses = {
 };
 
 export type GetCrmMembersByIdTrainingRecordsResponse = GetCrmMembersByIdTrainingRecordsResponses[keyof GetCrmMembersByIdTrainingRecordsResponses];
+
+export type PostCrmMembersByIdTransferData = {
+    /**
+     * TransferRequestBody
+     *
+     * 移籍申請リクエスト
+     */
+    body?: {
+        /**
+         * 移籍先店舗ID
+         */
+        to_store_id: string;
+        /**
+         * 移籍先店舗名
+         */
+        to_store_name: string;
+        /**
+         * 移籍理由（任意）
+         */
+        reason?: string;
+        /**
+         * スタッフが代理申請するかどうか
+         */
+        is_proxy: boolean;
+        /**
+         * 合意日時（代理申請時に必須）
+         */
+        proxy_agreed_at?: string;
+        /**
+         * 合意方法（代理申請時）
+         */
+        proxy_method?: string;
+    };
+    path: {
+        /**
+         * Member ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/members/{id}/transfer';
+};
+
+export type PostCrmMembersByIdTransferErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmMembersByIdTransferError = PostCrmMembersByIdTransferErrors[keyof PostCrmMembersByIdTransferErrors];
+
+export type PostCrmMembersByIdTransferResponses = {
+    /**
+     * TransferResponse
+     *
+     * 移籍申請結果
+     */
+    200: {
+        success: boolean;
+        member_id: string;
+        transfer_id: string;
+        to_store_id: string;
+        to_store_name: string;
+    };
+};
+
+export type PostCrmMembersByIdTransferResponse = PostCrmMembersByIdTransferResponses[keyof PostCrmMembersByIdTransferResponses];
 
 export type GetCrmMembersByIdUsageHistoryAccessSettingsData = {
     body?: never;
