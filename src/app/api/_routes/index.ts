@@ -66,6 +66,8 @@ import '@/app/api/crm/members/[id]/usage-history/access-settings/route';
 import '@/app/api/crm/members/[id]/usage-history/entries/route';
 import '@/app/api/crm/members/[id]/usage-history/lessons/route';
 import '@/app/api/crm/members/[id]/usage-status/route';
+import '@/app/api/crm/members/[id]/withdraw-cancel/route';
+import '@/app/api/crm/members/[id]/withdraw/route';
 import '@/app/api/crm/members/export/route';
 import '@/app/api/crm/members/meta/main-contract-labels/route';
 // Import members routes

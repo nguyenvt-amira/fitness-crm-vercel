@@ -11345,6 +11345,19 @@
         "enum": ["has_debt", "no_debt"],
         "title": "UnpaidFilter",
         "description": "Unpaid amount filter: has_debt=未納金あり, no_debt=未納金なし"
+      },
+      "WithdrawReason": {
+        "type": "string",
+        "enum": [
+          "relocation",
+          "inconvenient_access",
+          "cost",
+          "health_reason",
+          "cancellation_before_use",
+          "other"
+        ],
+        "title": "WithdrawReason",
+        "description": "Reason for withdrawal"
       }
     },
     "parameters": {}
@@ -23271,6 +23284,288 @@
           },
           "404": {
             "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/withdraw-cancel": {
+      "post": {
+        "summary": "Cancel a pending withdrawal",
+        "description": "Cancel a pending withdrawal (退会取り消し) and revert member status to active",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Withdrawal cancelled successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "member_id": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["success", "member_id"],
+                  "title": "WithdrawCancelResponse",
+                  "description": "Result of cancelling a pending withdrawal"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Member is not in pending_withdrawal state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/members/{id}/withdraw": {
+      "post": {
+        "summary": "Submit a withdrawal request for a member",
+        "description": "Submit a withdrawal application (退会申請) for an active member",
+        "tags": ["Members"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Withdrawal request payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "scheduled_date": {
+                    "type": "string",
+                    "example": "2026-06-30",
+                    "description": "Scheduled withdrawal date (YYYY-MM-DD)"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "enum": [
+                      "relocation",
+                      "inconvenient_access",
+                      "cost",
+                      "health_reason",
+                      "cancellation_before_use",
+                      "other"
+                    ],
+                    "title": "WithdrawReason",
+                    "description": "Withdrawal reason",
+                    "example": "転居"
+                  },
+                  "reason_detail": {
+                    "type": "string",
+                    "example": "詳細理由",
+                    "description": "Additional detail when reason is その他"
+                  },
+                  "is_proxy": {
+                    "type": "boolean",
+                    "example": false,
+                    "description": "Whether a staff member is submitting on behalf of the member"
+                  },
+                  "proxy_agreed_at": {
+                    "type": "string",
+                    "example": "2026-05-19T10:00",
+                    "description": "Datetime of agreement (required when is_proxy is true)"
+                  },
+                  "proxy_method": {
+                    "type": "string",
+                    "example": "来店",
+                    "description": "Method of agreement when proxy (来店 / 電話 / メール / LINE)"
+                  }
+                },
+                "required": ["scheduled_date", "reason", "is_proxy"],
+                "title": "WithdrawRequest",
+                "description": "Submit a withdrawal request for a member"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Withdrawal request accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "member_id": {
+                      "type": "string"
+                    },
+                    "scheduled_date": {
+                      "type": "string"
+                    },
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["success", "member_id", "scheduled_date", "reason"],
+                  "title": "WithdrawResponse",
+                  "description": "Result of withdrawal request"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Member is not in a state that allows withdrawal",
             "content": {
               "application/json": {
                 "schema": {

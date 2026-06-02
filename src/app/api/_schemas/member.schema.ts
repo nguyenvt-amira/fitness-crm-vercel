@@ -2499,6 +2499,81 @@ export const DeletePersonalDataResponseSchema = z
 
 export type DeletePersonalDataResponse = z.infer<typeof DeletePersonalDataResponseSchema>;
 
+// ===== Withdraw =====
+
+export const WithdrawReasonSchema = z
+  .enum([
+    'relocation',
+    'inconvenient_access',
+    'cost',
+    'health_reason',
+    'cancellation_before_use',
+    'other',
+  ])
+  .openapi({
+    title: 'WithdrawReason',
+    description: 'Reason for withdrawal',
+  });
+
+export const WithdrawRequestSchema = z
+  .object({
+    scheduled_date: z.string().openapi({
+      example: '2026-06-30',
+      description: 'Scheduled withdrawal date (YYYY-MM-DD)',
+    }),
+    reason: WithdrawReasonSchema.openapi({
+      example: '転居',
+      description: 'Withdrawal reason',
+    }),
+    reason_detail: z.string().optional().openapi({
+      example: '詳細理由',
+      description: 'Additional detail when reason is その他',
+    }),
+    is_proxy: z.boolean().openapi({
+      example: false,
+      description: 'Whether a staff member is submitting on behalf of the member',
+    }),
+    proxy_agreed_at: z.string().optional().openapi({
+      example: '2026-05-19T03:00:00.000Z',
+      description: 'Datetime of agreement (required when is_proxy is true)',
+    }),
+    proxy_method: z.string().optional().openapi({
+      example: '来店',
+      description: 'Method of agreement when proxy (来店 / 電話 / メール / LINE)',
+    }),
+  })
+  .openapi({
+    title: 'WithdrawRequest',
+    description: 'Submit a withdrawal request for a member',
+  });
+
+export const WithdrawResponseSchema = z
+  .object({
+    success: z.boolean(),
+    member_id: z.string(),
+    scheduled_date: z.string(),
+    reason: z.string(),
+  })
+  .openapi({
+    title: 'WithdrawResponse',
+    description: 'Result of withdrawal request',
+  });
+
+export type WithdrawRequest = z.infer<typeof WithdrawRequestSchema>;
+export type WithdrawResponse = z.infer<typeof WithdrawResponseSchema>;
+
+export const WithdrawCancelResponseSchema = z
+  .object({
+    success: z.boolean(),
+    member_id: z.string(),
+  })
+  .openapi({
+    title: 'WithdrawCancelResponse',
+    description: 'Result of cancelling a pending withdrawal',
+  });
+
+export type WithdrawCancelResponse = z.infer<typeof WithdrawCancelResponseSchema>;
+
 export type VisitRow = z.infer<typeof VisitRowSchema>;
 export type LessonReservationRow = z.infer<typeof LessonReservationRowSchema>;
 export type MemberAccessSettings = z.infer<typeof MemberAccessSettingsSchema>;

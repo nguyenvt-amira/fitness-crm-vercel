@@ -45,6 +45,8 @@ import { PaymentHistoryTab } from './_components/tabs/payment-history-tab';
 import { PointsTab } from './_components/tabs/points-tab';
 import { TrainingRecordsTab } from './_components/tabs/training-records-tab';
 import { UsageHistoryTab } from './_components/tabs/usage-history-tab';
+import { WithdrawCancelDialog } from './_components/withdraw-cancel-dialog';
+import { WithdrawSheet } from './_components/withdraw-sheet';
 
 const BREADCRUMB_ITEMS = [{ url: '/members', label: '会員一覧' }, { label: '会員詳細' }];
 const TABS = [
@@ -74,7 +76,9 @@ export default function MemberDetailPage() {
   const activeTab = isMemberTab(tab) ? tab : 'basic';
 
   const [showReEnrollSheet, setShowReEnrollSheet] = useState(false);
+  const [showWithdrawSheet, setShowWithdrawSheet] = useState(false);
   const [showPersonalDataDeleteDialog, setShowPersonalDataDeleteDialog] = useState(false);
+  const [showWithdrawCancelDialog, setShowWithdrawCancelDialog] = useState(false);
 
   const {
     data: member,
@@ -119,16 +123,6 @@ export default function MemberDetailPage() {
     console.log('Suspend membership');
   };
 
-  const handleWithdraw = () => {
-    // TODO: Navigate to withdraw page (A-02-05)
-    console.log('Withdraw membership');
-  };
-  const handleReEnroll = () => {
-    setShowReEnrollSheet(true);
-  };
-  const handlePersonalDataDelete = () => {
-    setShowPersonalDataDeleteDialog(true);
-  };
   const handleTransfer = () => {
     // TODO: Open transfer apply sheet
     console.log('Transfer apply');
@@ -144,10 +138,6 @@ export default function MemberDetailPage() {
   const handleLeaveRelease = () => {
     // TODO: Open leave release sheet
     console.log('Leave release');
-  };
-  const handleCancelWithdraw = () => {
-    // TODO: Cancel pending withdraw
-    console.log('Cancel pending withdraw');
   };
 
   const memberStatusLabel = MEMBER_STATUS_LABELS[member.profile.status];
@@ -239,7 +229,7 @@ export default function MemberDetailPage() {
                       requiredPermission={Permission.MembersReEnroll}
                       denyTooltip="再入会登録の権限がありません"
                       size="sm"
-                      onClick={handleReEnroll}
+                      onClick={() => setShowReEnrollSheet(true)}
                     >
                       <UserCheck className="mr-1 size-4" />
                       再入会
@@ -261,7 +251,7 @@ export default function MemberDetailPage() {
                         <RoleGatedMenuItem
                           requiredPermission={Permission.MembersPersonalDataDelete}
                           variant="destructive"
-                          onClick={handlePersonalDataDelete}
+                          onClick={() => setShowPersonalDataDeleteDialog(true)}
                         >
                           個人情報削除
                         </RoleGatedMenuItem>
@@ -302,7 +292,7 @@ export default function MemberDetailPage() {
                           </RoleGatedMenuItem>
                           <RoleGatedMenuItem
                             requiredPermission={Permission.MembersWithdraw}
-                            onClick={handleWithdraw}
+                            onClick={() => setShowWithdrawSheet(true)}
                           >
                             退会申請
                           </RoleGatedMenuItem>
@@ -359,7 +349,7 @@ export default function MemberDetailPage() {
                           </RoleGatedMenuItem>
                           <RoleGatedMenuItem
                             requiredPermission={Permission.MembersWithdraw}
-                            onClick={handleWithdraw}
+                            onClick={() => setShowWithdrawSheet(true)}
                           >
                             退会申請
                           </RoleGatedMenuItem>
@@ -391,7 +381,7 @@ export default function MemberDetailPage() {
                           </RoleGatedMenuItem>
                           <RoleGatedMenuItem
                             requiredPermission={Permission.MembersWithdraw}
-                            onClick={handleWithdraw}
+                            onClick={() => setShowWithdrawSheet(true)}
                           >
                             退会申請
                           </RoleGatedMenuItem>
@@ -409,7 +399,7 @@ export default function MemberDetailPage() {
                         <>
                           <RoleGatedMenuItem
                             requiredPermission={Permission.MembersWithdraw}
-                            onClick={handleCancelWithdraw}
+                            onClick={() => setShowWithdrawCancelDialog(true)}
                           >
                             退会取り消し
                           </RoleGatedMenuItem>
@@ -545,11 +535,23 @@ export default function MemberDetailPage() {
         lastPlan={member.profile.contract_id ? 'レギュラー会員 ¥7,700/月' : undefined}
       />
 
+      <WithdrawSheet
+        open={showWithdrawSheet}
+        onOpenChange={setShowWithdrawSheet}
+        memberId={memberId}
+      />
+
       <PersonalDataDeleteDialog
         open={showPersonalDataDeleteDialog}
         onOpenChange={setShowPersonalDataDeleteDialog}
         memberId={memberId}
         isBlacklisted={member.profile.is_black_listed}
+      />
+
+      <WithdrawCancelDialog
+        open={showWithdrawCancelDialog}
+        onOpenChange={setShowWithdrawCancelDialog}
+        memberId={memberId}
       />
     </div>
   );

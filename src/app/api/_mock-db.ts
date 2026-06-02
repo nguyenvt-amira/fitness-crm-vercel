@@ -844,6 +844,11 @@ type DbType = {
     updateHealthInfo(id: string, body: UpdateHealthInfoRequest): Member | undefined;
     updateMarketingConsent(id: string, body: UpdateMarketingConsentRequest): Member | undefined;
     anonymizePersonalData(id: string): Member | undefined;
+    handleWithdrawal(input: {
+      id: string;
+      scheduled_date: string;
+      reason: string;
+    }): Member | undefined;
   };
   contracts: {
     _seeded: boolean;
@@ -1137,6 +1142,7 @@ type DbType = {
     reject(id: string, reason: string): LeaveDetail | undefined;
     cancelWithdrawal(id: string, comment?: string): LeaveDetail | undefined;
     executeWithdrawal(id: string, comment?: string): LeaveDetail | undefined;
+    create(input: { member_id: string; scheduled_date: string; reason: string }): LeaveDetail;
   };
   memberBlacklist: {
     _rows: BlacklistRow[];
@@ -2513,6 +2519,36 @@ function createDb() {
             city: '',
             address: '',
             building: '',
+          },
+        };
+        this._members[idx] = updated;
+        return updated;
+      },
+      handleWithdrawal(input: {
+        id: string;
+        scheduled_date: string;
+        reason: string;
+      }): Member | undefined {
+        this._seed();
+        const idx = this._members.findIndex((m) => m.basic_info.id === input.id);
+        if (idx === -1) return undefined;
+        // Create a new leave record if member status is active or gate_stop
+        if (
+          this._members[idx].profile.status == MemberStatus.ACTIVE ||
+          this._members[idx].profile.status == MemberStatus.GATE_STOP
+        ) {
+          db.memberLeaves.create({
+            member_id: input.id,
+            scheduled_date: input.scheduled_date,
+            reason: input.reason,
+          });
+        }
+        // Update member status to pending_withdrawal
+        const updated: MemberRow = {
+          ...this._members[idx]!,
+          profile: {
+            ...this._members[idx]!.profile,
+            status: MemberStatus.PENDING_WITHDRAWAL,
           },
         };
         this._members[idx] = updated;
@@ -5489,6 +5525,63 @@ function createDb() {
         if (!detail) return undefined;
         if (detail.status !== 'withdrawal_pending') return undefined;
         return this._updateDetail(id, { status: 'completed' });
+      },
+      create(input: { member_id: string; scheduled_date: string; reason: string }): LeaveDetail {
+        this._seed();
+        const member = db.members._members.find((m) => m.basic_info.id === input.member_id);
+        const now = new Date()
+          .toLocaleString('ja-JP', {
+            timeZone: 'Asia/Tokyo',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+          })
+          .replace(',', '');
+        const newId = `LV-${String(this._rows.length + 1).padStart(3, '0')}`;
+        const listItem: LeaveListItem = {
+          id: newId,
+          member_id: input.member_id,
+          member_name: member?.basic_info.name_kanji ?? '',
+          brand: member?.profile.brand ?? '',
+          store_id: member?.profile.store_id ?? '',
+          store_name: member?.profile.store_name ?? '',
+          type: 'withdrawal',
+          status: 'withdrawal_pending',
+          applied_at: now.split(' ')[0]!,
+          scheduled_date: input.scheduled_date,
+          end_date: null,
+          unpaid_amount: 0,
+        };
+        this._rows.push(listItem);
+        const detail: LeaveDetail = {
+          id: newId,
+          member_id: input.member_id,
+          member_name: listItem.member_name,
+          brand: listItem.brand,
+          store_id: listItem.store_id,
+          store_name: listItem.store_name,
+          type: 'withdrawal',
+          status: 'withdrawal_pending',
+          applied_at: now,
+          scheduled_date: input.scheduled_date,
+          end_date: null,
+          reason: input.reason,
+          applicant: `${listItem.member_name}（本人）`,
+          is_proxy_applied: false,
+          proxy_applicant: null,
+          consent_at: null,
+          consent_method: null,
+          suspension_fee: null,
+          applied_campaign: 'なし',
+          unused_lessons: 0,
+          unpaid_amount: 0,
+          created_at: now,
+          updated_at: now,
+        };
+        this._details[newId] = detail;
+        return detail;
       },
     },
     memberBlacklist: {

@@ -869,4 +869,10 @@ export function registerAllSchemas() {
     'UnpaidFilter',
     registry.register('UnpaidFilter', blacklistSchemas.UnpaidFilterSchema),
   );
+
+  // Register withdraw schemas
+  registeredSchemaMap.set(
+    'WithdrawReason',
+    registry.register('WithdrawReason', memberSchemas.WithdrawReasonSchema),
+  );
 }
