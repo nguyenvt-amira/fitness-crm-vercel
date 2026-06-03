@@ -93,6 +93,8 @@ import '@/app/api/crm/membership-applications/direct/route';
 import '@/app/api/crm/membership-applications/enrollment-fee-masters/route';
 // Import membership applications routes
 import '@/app/api/crm/membership-applications/route';
+import '@/app/api/crm/options/[id]/change-history/route';
+import '@/app/api/crm/options/[id]/route';
 import '@/app/api/crm/options/route';
 // Import staffs routes
 import '@/app/api/crm/positions/route';

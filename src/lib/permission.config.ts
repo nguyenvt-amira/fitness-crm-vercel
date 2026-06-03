@@ -58,6 +58,7 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
 
   // Options
   '/options': Permission.OptionsView,
+  '/options/:id': Permission.OptionsView,
 };
 
 // ---------------------------------------------------------------------------

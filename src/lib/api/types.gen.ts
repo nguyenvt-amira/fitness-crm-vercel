@@ -8874,7 +8874,7 @@ export type GetOptionMastersQuery = {
      * 店舗IDで絞り込み
      */
     store_id?: string;
-    sort_by?: 'id' | 'name' | 'brand' | 'price_including_tax' | 'member_count' | 'tax_rate' | 'status';
+    sort_by?: 'id' | 'name' | 'code' | 'price_including_tax' | 'member_count' | 'tax_rate' | 'status';
     sort_order?: 'asc' | 'desc';
 };
 
@@ -19830,6 +19830,310 @@ export type GetCrmMembershipApplicationsResponses = {
 
 export type GetCrmMembershipApplicationsResponse = GetCrmMembershipApplicationsResponses[keyof GetCrmMembershipApplicationsResponses];
 
+export type GetCrmOptionsByIdChangeHistoryData = {
+    body?: never;
+    path: {
+        /**
+         * Option ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/options/{id}/change-history';
+};
+
+export type GetCrmOptionsByIdChangeHistoryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmOptionsByIdChangeHistoryError = GetCrmOptionsByIdChangeHistoryErrors[keyof GetCrmOptionsByIdChangeHistoryErrors];
+
+export type GetCrmOptionsByIdChangeHistoryResponses = {
+    /**
+     * GetOptionMasterChangeHistoryResponse
+     *
+     * オプション変更履歴レスポンス
+     */
+    200: {
+        history: Array<{
+            date: string;
+            user: string;
+            field: string | null;
+            from: string | null;
+            to: string;
+        }>;
+    };
+};
+
+export type GetCrmOptionsByIdChangeHistoryResponse = GetCrmOptionsByIdChangeHistoryResponses[keyof GetCrmOptionsByIdChangeHistoryResponses];
+
+export type DeleteCrmOptionsByIdData = {
+    /**
+     * DeleteOptionMasterRequest
+     *
+     * オプション削除リクエスト
+     */
+    body?: {
+        reason: string;
+    };
+    path: {
+        /**
+         * Option ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/options/{id}';
+};
+
+export type DeleteCrmOptionsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type DeleteCrmOptionsByIdError = DeleteCrmOptionsByIdErrors[keyof DeleteCrmOptionsByIdErrors];
+
+export type DeleteCrmOptionsByIdResponses = {
+    /**
+     * DeleteOptionMasterResponse
+     *
+     * オプション削除レスポンス
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type DeleteCrmOptionsByIdResponse = DeleteCrmOptionsByIdResponses[keyof DeleteCrmOptionsByIdResponses];
+
+export type GetCrmOptionsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Option ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/options/{id}';
+};
+
+export type GetCrmOptionsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmOptionsByIdError = GetCrmOptionsByIdErrors[keyof GetCrmOptionsByIdErrors];
+
+export type GetCrmOptionsByIdResponses = {
+    /**
+     * GetOptionMasterDetailResponse
+     *
+     * オプション詳細レスポンス
+     */
+    200: {
+        /**
+         * OptionMasterDetail
+         *
+         * オプション詳細
+         */
+        option: {
+            /**
+             * オプションID
+             */
+            id: string;
+            /**
+             * オプション名
+             */
+            name: string;
+            /**
+             * オプションコード
+             */
+            code: string;
+            /**
+             * StoreListBrand
+             *
+             * ブランド
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * OptionType
+             *
+             * オプション種別
+             */
+            option_type: 'standard' | 'metered' | 'auto_attached';
+            /**
+             * 料金（税込）
+             */
+            price_including_tax: number;
+            /**
+             * 税率（%）
+             */
+            tax_rate: number;
+            /**
+             * 日割り要否
+             */
+            prorated_enabled: boolean;
+            /**
+             * OptionProrataMethod
+             *
+             * 日割り計算方法（prorated_enabled=true の場合のみ）
+             */
+            prorata_method: 'daily' | 'fixed' | null;
+            /**
+             * OptionUsageRule
+             *
+             * 利用可否ルール
+             */
+            usage_rule: 'disabled' | 'add_remove' | 'add_remove_change' | 'change_remove';
+            /**
+             * 紐付き契約プラン数
+             */
+            linked_contracts: number;
+            /**
+             * 利用会員数
+             */
+            member_count: number;
+            /**
+             * 対象店舗ID（null = 全店舗）
+             */
+            store_id: string | null;
+            /**
+             * 対象店舗名（null = 全店舗）
+             */
+            store_name: string | null;
+            /**
+             * 会計コード
+             */
+            accounting_code: string;
+            /**
+             * OptionStatus
+             *
+             * ステータス
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 料金（税抜）
+             */
+            price_excluding_tax: number;
+            /**
+             * 対象店舗範囲
+             */
+            store_range: string;
+            /**
+             * 説明文
+             */
+            description: string | null;
+            /**
+             * 備考
+             */
+            note: string | null;
+            /**
+             * 作成日時
+             */
+            created_at: string;
+            /**
+             * 更新日時
+             */
+            updated_at: string;
+            /**
+             * 人気ランキング
+             */
+            popularity_rank: number | null;
+            /**
+             * 都次オプション種別
+             */
+            tsuji_type: string | null;
+            /**
+             * 主オプション契約変更可否
+             */
+            constraint_main_option_change: boolean;
+            /**
+             * 変更可否
+             */
+            constraint_change: boolean;
+            /**
+             * エリア制限
+             */
+            area_restrictions: Array<string>;
+        };
+    };
+};
+
+export type GetCrmOptionsByIdResponse = GetCrmOptionsByIdResponses[keyof GetCrmOptionsByIdResponses];
+
 export type GetCrmOptionsData = {
     body?: never;
     path?: never;
@@ -19862,7 +20166,7 @@ export type GetCrmOptionsData = {
          * 店舗IDで絞り込み
          */
         store_id?: string;
-        sort_by?: 'id' | 'name' | 'brand' | 'price_including_tax' | 'member_count' | 'tax_rate' | 'status';
+        sort_by?: 'id' | 'name' | 'code' | 'price_including_tax' | 'member_count' | 'tax_rate' | 'status';
         sort_order?: 'asc' | 'desc';
     };
     url: '/crm/options';

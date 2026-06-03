@@ -22,6 +22,7 @@ import { navigate } from '@/lib/routes/routes.util';
 
 import { Permission } from '@/types/permission.type';
 
+import { OptionDeleteDialog } from './[id]/_components/option-delete-dialog';
 import { OptionsFilters } from './_components/options-filters';
 import { OptionsTableColumns } from './_components/options-table-columns';
 import { OptionsFiltersProvider } from './_contexts/options-filters-context';
@@ -31,6 +32,7 @@ type OptionRow = GetCrmOptionsResponse['options'][number];
 
 function OptionsPageContent() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<OptionRow | null>(null);
   const filtersHook = useOptionsFilters();
   const { filters, setFilters, queryParams, currentPage, setCurrentPage, pageSize, setPageSize } =
     filtersHook;
@@ -62,11 +64,9 @@ function OptionsPageContent() {
   const columns: ColumnDef<OptionRow>[] = useMemo(
     () =>
       OptionsTableColumns({
-        onEditClick: (id) => {
-          console.log('edit', id);
-        },
-        onDeleteClick: (id) => {
-          console.log('delete', id);
+        onEditClick: () => {},
+        onDeleteClick: (option) => {
+          setSelectedOption(option);
         },
       }),
     [],
@@ -79,23 +79,15 @@ function OptionsPageContent() {
         badge={<Badge variant="secondary">{totalOptions}件</Badge>}
         actions={
           <>
-            <RoleGatedButton
-              requiredPermission={Permission.StoresEdit}
-              type="button"
-              variant="outline"
-              size="sm"
-              className="gap-1"
-              onClick={() => router.push(navigate('/options'))}
-            >
+            <RoleGatedButton type="button" variant="outline" size="sm" className="gap-1">
               <Percent className="size-4" />
               セット割設定
             </RoleGatedButton>
             <RoleGatedButton
-              requiredPermission={Permission.StoresEdit}
+              requiredPermission={Permission.OptionsCreate}
               type="button"
               size="sm"
               className="gap-1"
-              onClick={() => router.push(navigate('/options'))}
             >
               <Plus className="size-4" />
               新規登録
@@ -118,7 +110,7 @@ function OptionsPageContent() {
             isLoading={isLoading}
             variant="simple"
             onRowClick={(row) => {
-              console.log('row click', row.id);
+              router.push(navigate('/options/[id]', row.id));
             }}
             className="rounded-none border-x-0 border-b-0"
             containerClassName={
@@ -142,6 +134,20 @@ function OptionsPageContent() {
           )}
         </Card>
       </div>
+
+      {selectedOption && (
+        <OptionDeleteDialog
+          optionId={selectedOption.id}
+          optionName={selectedOption.name}
+          open={Boolean(selectedOption)}
+          onOpenChange={(open) => {
+            if (!open) {
+              setSelectedOption(null);
+            }
+          }}
+          redirectOnSuccess={false}
+        />
+      )}
     </div>
   );
 }

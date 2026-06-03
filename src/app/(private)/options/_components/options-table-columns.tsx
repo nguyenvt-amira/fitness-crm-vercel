@@ -32,18 +32,25 @@ type OptionRow = GetCrmOptionsResponse['options'][number];
 
 interface OptionsTableColumnsProps {
   onEditClick?: (id: string) => void;
-  onDeleteClick?: (id: string) => void;
+  onDeleteClick?: (option: OptionRow) => void;
 }
 
 function ActionsCell({
-  optionId,
+  option,
   onEditClick,
   onDeleteClick,
 }: {
-  optionId: string;
+  option: OptionRow;
   onEditClick?: (id: string) => void;
-  onDeleteClick?: (id: string) => void;
+  onDeleteClick?: (option: OptionRow) => void;
 }) {
+  const deleteBlockedReason =
+    option.member_count > 0
+      ? `利用会員が ${option.member_count.toLocaleString()} 名存在するため削除できません`
+      : option.linked_contracts > 0
+        ? `紐付け契約が ${option.linked_contracts} 件存在するため削除できません`
+        : undefined;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -54,10 +61,10 @@ function ActionsCell({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
         <RoleGatedMenuItem
-          requiredPermission={Permission.StoresEdit}
+          requiredPermission={Permission.OptionsEdit}
           onClick={(e) => {
             e.stopPropagation();
-            onEditClick?.(optionId);
+            onEditClick?.(option.id);
           }}
         >
           <Pencil className="size-4" />
@@ -65,11 +72,13 @@ function ActionsCell({
         </RoleGatedMenuItem>
         <DropdownMenuSeparator />
         <RoleGatedMenuItem
-          requiredPermission={Permission.StoresEdit}
+          requiredPermission={Permission.OptionsDelete}
           className="text-destructive focus:text-destructive"
+          disabled={Boolean(deleteBlockedReason)}
+          tooltip={deleteBlockedReason}
           onClick={(e) => {
             e.stopPropagation();
-            onDeleteClick?.(optionId);
+            onDeleteClick?.(option);
           }}
         >
           <Trash2 className="size-4" />
@@ -91,13 +100,11 @@ export function OptionsTableColumns({
       cell: ({ row }) => (
         <span className="text-muted-foreground font-mono text-xs">{row.original.id}</span>
       ),
-      size: 80,
     },
     {
       accessorKey: 'name',
       header: ({ column }) => <DataTableColumnHeader column={column} title="オプション名" />,
       cell: ({ row }) => <span className="text-xs font-medium">{row.original.name}</span>,
-      minSize: 180,
     },
     {
       accessorKey: 'code',
@@ -105,13 +112,11 @@ export function OptionsTableColumns({
       cell: ({ row }) => (
         <span className="text-muted-foreground font-mono text-xs">{row.original.code}</span>
       ),
-      size: 100,
     },
     {
       accessorKey: 'brand',
       header: () => <span className="text-xs font-semibold">ブランド</span>,
       cell: ({ row }) => <BrandBadge brand={row.original.brand} />,
-      size: 110,
     },
     {
       accessorKey: 'prorated_enabled',
@@ -124,7 +129,6 @@ export function OptionsTableColumns({
         const label = prorata_method === 'daily' ? '日割り計算' : '固定金額';
         return <span className="text-success text-xs">✓ {label}</span>;
       },
-      size: 120,
     },
     {
       accessorKey: 'option_type',
@@ -137,7 +141,6 @@ export function OptionsTableColumns({
           </Badge>
         );
       },
-      size: 90,
     },
     {
       accessorKey: 'usage_rule',
@@ -147,7 +150,6 @@ export function OptionsTableColumns({
           {OPTION_USAGE_RULE_LABELS[row.original.usage_rule]}
         </span>
       ),
-      size: 150,
     },
     {
       accessorKey: 'price_including_tax',
@@ -159,7 +161,6 @@ export function OptionsTableColumns({
           ¥{row.original.price_including_tax.toLocaleString()}
         </span>
       ),
-      size: 100,
     },
     {
       accessorKey: 'tax_rate',
@@ -167,7 +168,6 @@ export function OptionsTableColumns({
         <DataTableColumnHeader column={column} title="税率" className="justify-end" />
       ),
       cell: ({ row }) => <span className="text-xs">{row.original.tax_rate}%</span>,
-      size: 60,
     },
     {
       accessorKey: 'member_count',
@@ -177,7 +177,6 @@ export function OptionsTableColumns({
       cell: ({ row }) => (
         <span className="text-xs">{row.original.member_count.toLocaleString()}名</span>
       ),
-      size: 100,
     },
     {
       accessorKey: 'accounting_code',
@@ -187,7 +186,6 @@ export function OptionsTableColumns({
           {row.original.accounting_code}
         </span>
       ),
-      size: 100,
     },
     {
       accessorKey: 'store_name',
@@ -201,7 +199,6 @@ export function OptionsTableColumns({
           </div>
         );
       },
-      size: 130,
     },
     {
       accessorKey: 'status',
@@ -217,19 +214,17 @@ export function OptionsTableColumns({
           </Badge>
         );
       },
-      size: 80,
     },
     {
       id: 'actions',
       header: () => null,
       cell: ({ row }) => (
         <ActionsCell
-          optionId={row.original.id}
+          option={row.original}
           onEditClick={onEditClick}
           onDeleteClick={onDeleteClick}
         />
       ),
-      size: 40,
     },
   ];
 }

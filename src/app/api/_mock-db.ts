@@ -26,7 +26,11 @@ import type {
   UpdateMemberRequest,
 } from '@/app/api/_schemas/member.schema';
 import type { DirectEnrollmentRequest as DirectEnrollmentRequestType } from '@/app/api/_schemas/membership-application.schema';
-import type { OptionMasterListItem } from '@/app/api/_schemas/option-master.schema';
+import type {
+  OptionMasterChangeHistoryItem,
+  OptionMasterDetail,
+  OptionMasterListItem,
+} from '@/app/api/_schemas/option-master.schema';
 import type { Position, StaffPermissionRecord } from '@/app/api/_schemas/position.schema';
 import type { StaffDetail, StaffListItem } from '@/app/api/_schemas/staff.schema';
 import type { StoreAccessSettings } from '@/app/api/_schemas/store-access-settings.schema';
@@ -57,6 +61,90 @@ export enum TransferStatus {
 }
 export const DEFAULT_MEMBER_MAIN_CONTRACT: string = 'レギュラー会員';
 const DEFAULT_MEMBER_MAIN_CONTRACT_ID = 'MC001';
+
+function inferOptionTsujiType(option: OptionMasterListItem): string | null {
+  if (option.option_type !== 'metered') return null;
+  if (option.code.startsWith('PRO')) return 'Protein';
+  if (option.code.startsWith('H2O')) return 'Hydrogen Water';
+  if (option.code.startsWith('PT')) return 'Personal Training';
+  if (option.code.startsWith('SHW')) return 'Shower';
+  return 'Metered';
+}
+
+function inferOptionAreaRestrictions(option: OptionMasterListItem): string[] {
+  if (option.code.startsWith('PRO')) return ['プロテインバー'];
+  if (option.code.startsWith('LCK')) return ['ロッカーエリア'];
+  if (option.code.startsWith('SHW')) return ['シャワールーム'];
+  if (option.code.startsWith('PT')) return ['パーソナルトレーニングエリア'];
+  return [];
+}
+
+function buildOptionMasterDetail(
+  option: OptionMasterListItem,
+  overrides: Partial<Omit<OptionMasterDetail, keyof OptionMasterListItem>> = {},
+): OptionMasterDetail {
+  const priceExcludingTax = Math.round(option.price_including_tax / (1 + option.tax_rate / 100));
+  const changeAllowed =
+    option.usage_rule === 'add_remove_change' || option.usage_rule === 'change_remove';
+
+  return {
+    ...option,
+    price_excluding_tax: overrides.price_excluding_tax ?? priceExcludingTax,
+    store_range:
+      overrides.store_range ??
+      (option.store_name ? `${option.store_name}（1店舗）` : '全店舗（12店舗）'),
+    description:
+      overrides.description ??
+      `${option.name}をご利用いただけるオプションサービスです。ご利用条件は契約内容に準じます。`,
+    note: overrides.note ?? (option.store_name ? `${option.store_name}限定オプションです。` : null),
+    created_at: overrides.created_at ?? '2024-04-01T10:00:00+09:00',
+    updated_at: overrides.updated_at ?? '2026-01-15T14:30:00+09:00',
+    popularity_rank: overrides.popularity_rank ?? null,
+    tsuji_type: overrides.tsuji_type ?? inferOptionTsujiType(option),
+    constraint_main_option_change:
+      overrides.constraint_main_option_change ?? option.option_type !== 'auto_attached',
+    constraint_change: overrides.constraint_change ?? changeAllowed,
+    area_restrictions: overrides.area_restrictions ?? inferOptionAreaRestrictions(option),
+  };
+}
+
+function buildOptionMasterChangeHistory(
+  option: OptionMasterDetail,
+): OptionMasterChangeHistoryItem[] {
+  const currentStatus = option.status === 'active' ? '有効' : '無効';
+  const previousStatus = option.status === 'active' ? '無効' : '有効';
+
+  return [
+    {
+      date: '2026/02/15 14:30',
+      user: '管理者A',
+      field: '説明文',
+      from: `${option.name}をご利用いただけるオプションです。`,
+      to: option.description ?? `${option.name}をご利用いただけるオプションサービスです。`,
+    },
+    {
+      date: '2025/10/01 09:00',
+      user: '管理者B',
+      field: '月額料金',
+      from: `¥${Math.max(option.price_excluding_tax - 100, 0).toLocaleString()}`,
+      to: `¥${option.price_excluding_tax.toLocaleString()}`,
+    },
+    {
+      date: '2025/04/01 10:00',
+      user: '管理者C',
+      field: 'ステータス',
+      from: previousStatus,
+      to: currentStatus,
+    },
+    {
+      date: '2024/04/01 10:00',
+      user: '管理者A',
+      field: null,
+      from: null,
+      to: '新規作成',
+    },
+  ];
+}
 
 export type MembershipApplicationContractDetails = {
   plan_id: string;
@@ -1083,10 +1171,14 @@ type DbType = {
     update(id: string, data: Partial<MainContractDetail>): MainContractDetail | undefined;
   };
   optionMasters: {
-    _rows: OptionMasterListItem[];
+    _rows: OptionMasterDetail[];
+    _changeHistory: Record<string, OptionMasterChangeHistoryItem[]>;
     _seeded: boolean;
     _seed(): void;
     getList(): OptionMasterListItem[];
+    getById(id: string): OptionMasterDetail | undefined;
+    getChangeHistory(id: string): OptionMasterChangeHistoryItem[];
+    delete(id: string): boolean;
   };
   storeMainContracts: {
     _rows: Array<{ store_id: string; main_contract_id: string; linked_at: string }>;
@@ -4920,12 +5012,13 @@ function createDb() {
       },
     },
     optionMasters: {
-      _rows: [] as OptionMasterListItem[],
+      _rows: [] as OptionMasterDetail[],
+      _changeHistory: {} as Record<string, OptionMasterChangeHistoryItem[]>,
       _seeded: false,
       _seed(): void {
         if (this._seeded) return;
         this._seeded = true;
-        this._rows.push(
+        const seedRows: OptionMasterListItem[] = [
           {
             id: 'OP001',
             name: 'ドリンクバー（月額）',
@@ -5135,8 +5228,8 @@ function createDb() {
             prorated_enabled: true,
             prorata_method: 'daily',
             usage_rule: 'add_remove',
-            linked_contracts: 2,
-            member_count: 30,
+            linked_contracts: 0,
+            member_count: 0,
             store_id: 'store-002',
             store_name: 'Fit365新宿店',
             accounting_code: 'OPT-701',
@@ -5148,10 +5241,10 @@ function createDb() {
             code: 'PRO-001',
             brand: 'fit365',
             option_type: 'metered',
-            price_including_tax: 1650,
+            price_including_tax: 1210,
             tax_rate: 10,
-            prorated_enabled: false,
-            prorata_method: null,
+            prorated_enabled: true,
+            prorata_method: 'daily',
             usage_rule: 'add_remove_change',
             linked_contracts: 8,
             member_count: 420,
@@ -5214,11 +5307,99 @@ function createDb() {
             accounting_code: 'OPT-902',
             status: 'active',
           },
+        ];
+
+        const popularityRanks = new Map(
+          [...seedRows]
+            .sort((a, b) => b.member_count - a.member_count)
+            .map((row, index) => [row.id, index + 1]),
         );
+
+        const detailOverrides: Record<
+          string,
+          Partial<Omit<OptionMasterDetail, keyof OptionMasterListItem>>
+        > = {
+          OP022: {
+            note: '現在利用会員が存在しないため削除可能なサンプルデータです。',
+          },
+          OP023: {
+            description:
+              '高品質プロテインを24時間いつでもご利用いただけるサーバーサービス。チョコレート・バニラ・ストロベリーの3種類のフレーバーからお選びいただけます。トレーニング前後の栄養補給に最適です。',
+            note: '月末の在庫確認を要実施。サーバーフィルター交換は4週間ごと。',
+            created_at: '2024-04-01T10:00:00+09:00',
+            updated_at: '2026-02-15T14:30:00+09:00',
+            popularity_rank: 3,
+            tsuji_type: 'Protein',
+            constraint_main_option_change: true,
+            constraint_change: false,
+            area_restrictions: ['プロテインバー'],
+          },
+        };
+
+        this._rows.push(
+          ...seedRows.map((row) =>
+            buildOptionMasterDetail(row, {
+              popularity_rank: popularityRanks.get(row.id) ?? null,
+              ...detailOverrides[row.id],
+            }),
+          ),
+        );
+
+        this._changeHistory = Object.fromEntries(
+          this._rows.map((row) => [row.id, buildOptionMasterChangeHistory(row)]),
+        );
+
+        this._changeHistory.OP023 = [
+          {
+            date: '2026/02/15 14:30',
+            user: '管理者A',
+            field: '説明文',
+            from: '高品質プロテインを24時間ご利用いただけます。',
+            to: '高品質プロテインを24時間いつでもご利用いただけるサーバーサービス。チョコレート・バニラ・ストロベリーの3種類のフレーバーからお選びいただけます。',
+          },
+          {
+            date: '2025/10/01 09:00',
+            user: '管理者B',
+            field: '月額料金',
+            from: '¥1,000',
+            to: '¥1,100',
+          },
+          {
+            date: '2025/04/01 10:00',
+            user: '管理者C',
+            field: 'ステータス',
+            from: '無効',
+            to: '有効',
+          },
+          {
+            date: '2024/04/01 10:00',
+            user: '管理者A',
+            field: null,
+            from: null,
+            to: '新規作成',
+          },
+        ];
       },
       getList(): OptionMasterListItem[] {
         this._seed();
         return [...this._rows];
+      },
+      getById(id: string): OptionMasterDetail | undefined {
+        this._seed();
+        return this._rows.find((row) => row.id === id);
+      },
+      getChangeHistory(id: string): OptionMasterChangeHistoryItem[] {
+        this._seed();
+        return [...(this._changeHistory[id] ?? [])];
+      },
+      delete(id: string): boolean {
+        this._seed();
+        const index = this._rows.findIndex((row) => row.id === id);
+        if (index === -1) return false;
+
+        this._rows.splice(index, 1);
+        delete this._changeHistory[id];
+        return true;
       },
     },
     storeMainContracts: {

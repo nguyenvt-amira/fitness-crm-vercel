@@ -99,9 +99,74 @@ export const GetOptionMastersResponseSchema = z
     description: 'オプション一覧レスポンス',
   });
 
+export const OptionMasterDetailSchema = OptionMasterListItemSchema.extend({
+  price_excluding_tax: z
+    .number()
+    .nonnegative()
+    .openapi({ example: 1100, description: '料金（税抜）' }),
+  store_range: z.string().openapi({ example: '全店舗（12店舗）', description: '対象店舗範囲' }),
+  description: z.string().nullable().openapi({ description: '説明文' }),
+  note: z.string().nullable().openapi({ description: '備考' }),
+  created_at: z.string().openapi({ example: '2024-04-01T10:00:00+09:00', description: '作成日時' }),
+  updated_at: z.string().openapi({ example: '2026-02-15T14:30:00+09:00', description: '更新日時' }),
+  popularity_rank: z.number().int().positive().nullable().openapi({
+    example: 3,
+    description: '人気ランキング',
+  }),
+  tsuji_type: z.string().nullable().openapi({ description: '都次オプション種別' }),
+  constraint_main_option_change: z.boolean().openapi({ description: '主オプション契約変更可否' }),
+  constraint_change: z.boolean().openapi({ description: '変更可否' }),
+  area_restrictions: z.array(z.string()).openapi({ description: 'エリア制限' }),
+}).openapi({
+  title: 'OptionMasterDetail',
+  description: 'オプション詳細',
+});
+
+export const GetOptionMasterDetailResponseSchema = z
+  .object({ option: OptionMasterDetailSchema })
+  .openapi({
+    title: 'GetOptionMasterDetailResponse',
+    description: 'オプション詳細レスポンス',
+  });
+
+export const OptionMasterChangeHistoryItemSchema = z
+  .object({
+    date: z.string().openapi({ example: '2026/02/15 14:30' }),
+    user: z.string().openapi({ example: '管理者A' }),
+    field: z.string().nullable(),
+    from: z.string().nullable(),
+    to: z.string(),
+  })
+  .openapi({ title: 'OptionMasterChangeHistoryItem', description: 'オプション変更履歴' });
+
+export const GetOptionMasterChangeHistoryResponseSchema = z
+  .object({ history: z.array(OptionMasterChangeHistoryItemSchema) })
+  .openapi({
+    title: 'GetOptionMasterChangeHistoryResponse',
+    description: 'オプション変更履歴レスポンス',
+  });
+
+export const DeleteOptionMasterRequestSchema = z
+  .object({
+    reason: z.string().min(1, '削除理由は必須です').openapi({ example: '廃止のため' }),
+  })
+  .openapi({ title: 'DeleteOptionMasterRequest', description: 'オプション削除リクエスト' });
+
+export const DeleteOptionMasterResponseSchema = z
+  .object({ message: z.string().openapi({ example: 'オプションを削除しました' }) })
+  .openapi({ title: 'DeleteOptionMasterResponse', description: 'オプション削除レスポンス' });
+
 export type OptionMasterListItem = z.infer<typeof OptionMasterListItemSchema>;
 export type GetOptionMastersQuery = z.infer<typeof GetOptionMastersQuerySchema>;
 export type GetOptionMastersResponse = z.infer<typeof GetOptionMastersResponseSchema>;
+export type OptionMasterDetail = z.infer<typeof OptionMasterDetailSchema>;
+export type GetOptionMasterDetailResponse = z.infer<typeof GetOptionMasterDetailResponseSchema>;
+export type OptionMasterChangeHistoryItem = z.infer<typeof OptionMasterChangeHistoryItemSchema>;
+export type GetOptionMasterChangeHistoryResponse = z.infer<
+  typeof GetOptionMasterChangeHistoryResponseSchema
+>;
+export type DeleteOptionMasterRequest = z.infer<typeof DeleteOptionMasterRequestSchema>;
+export type DeleteOptionMasterResponse = z.infer<typeof DeleteOptionMasterResponseSchema>;
 export type OptionProrataMethod = z.infer<typeof OptionProrataMethodSchema>;
 export type OptionUsageRule = z.infer<typeof OptionUsageRuleSchema>;
 
