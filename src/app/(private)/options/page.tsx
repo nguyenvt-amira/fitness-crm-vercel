@@ -81,7 +81,13 @@ function OptionsPageContent() {
         badge={<Badge variant="secondary">{totalOptions}件</Badge>}
         actions={
           <>
-            <RoleGatedButton type="button" variant="outline" className="gap-1">
+            <RoleGatedButton
+              requiredPermission={Permission.OptionDiscountsView}
+              type="button"
+              variant="outline"
+              className="gap-1"
+              onClick={() => router.push(navigate('/option-discount'))}
+            >
               <Percent className="size-4" />
               セット割設定
             </RoleGatedButton>

@@ -27,6 +27,10 @@ import type {
 } from '@/app/api/_schemas/member.schema';
 import type { DirectEnrollmentRequest as DirectEnrollmentRequestType } from '@/app/api/_schemas/membership-application.schema';
 import type {
+  GetOptionDiscountsResponse,
+  OptionDiscountListItem,
+} from '@/app/api/_schemas/option-discount.schema';
+import type {
   OptionCategory,
   OptionMasterChangeHistoryItem,
   OptionMasterDetail,
@@ -951,6 +955,79 @@ const SEED_CORPORATE_MASTERS: CorporateMasterRow[] = [
   { id: 'CORP-003', name: '株式会社サンプルC', code: 'CC003' },
 ];
 
+const SEED_OPTION_DISCOUNT_ROWS: OptionDiscountListItem[] = [
+  {
+    id: 'SD001',
+    name: 'レギュラー＋水素水セット',
+    code: 'SET-001',
+    target_contracts: ['レギュラー会員'],
+    target_options: ['水素水'],
+    discount_type: 'fixed_amount',
+    discount_value: 330,
+    conditions: '同時申込時',
+    store_id: null,
+    store_name: null,
+    applied_count: 180,
+    status: 'active',
+  },
+  {
+    id: 'SD002',
+    name: 'レギュラー＋プロテインセット',
+    code: 'SET-002',
+    target_contracts: ['レギュラー会員'],
+    target_options: ['プロテインサーバー'],
+    discount_type: 'fixed_amount',
+    discount_value: 220,
+    conditions: '同時申込時',
+    store_id: null,
+    store_name: null,
+    applied_count: 95,
+    status: 'active',
+  },
+  {
+    id: 'SD003',
+    name: 'ファミリー＋ロッカーセット',
+    code: 'SET-003',
+    target_contracts: ['ファミリー会員（親）', 'ファミリー会員（子・大人）'],
+    target_options: ['パーソナルロッカー（S）'],
+    discount_type: 'percentage',
+    discount_value: 10,
+    conditions: '家族2名以上',
+    store_id: null,
+    store_name: null,
+    applied_count: 42,
+    status: 'active',
+  },
+  {
+    id: 'SD004',
+    name: 'デイタイム＋タオルセット',
+    code: 'SET-004',
+    target_contracts: ['デイタイム会員'],
+    target_options: ['タオルセット'],
+    discount_type: 'fixed_amount',
+    discount_value: 110,
+    conditions: '同時申込時',
+    store_id: 'store-001',
+    store_name: 'Fit365八潮店',
+    applied_count: 65,
+    status: 'active',
+  },
+  {
+    id: 'SD005',
+    name: 'プレミアム全部入りセット',
+    code: 'SET-005',
+    target_contracts: ['プレミアム会員'],
+    target_options: ['水素水', 'プロテインサーバー', 'タオルセット'],
+    discount_type: 'fixed_amount',
+    discount_value: 550,
+    conditions: '3オプション同時',
+    store_id: null,
+    store_name: null,
+    applied_count: 0,
+    status: 'inactive',
+  },
+];
+
 type DbType = {
   members: {
     _members: MemberRow[];
@@ -1228,6 +1305,13 @@ type DbType = {
     delete(id: string): boolean;
     add(data: UpsertOptionMasterBody): OptionMasterDetail;
     update(id: string, data: UpsertOptionMasterBody): OptionMasterDetail | undefined;
+  };
+  optionDiscount: {
+    _rows: GetOptionDiscountsResponse['option_discounts'];
+    _seeded: boolean;
+    _seed(): void;
+    getList(): GetOptionDiscountsResponse['option_discounts'];
+    getById(id: string): OptionDiscountListItem | undefined;
   };
   storeMainContracts: {
     _rows: Array<{ store_id: string; main_contract_id: string; linked_at: string }>;
@@ -5538,6 +5622,37 @@ function createDb() {
         this._rows.splice(index, 1);
         delete this._changeHistory[id];
         return true;
+      },
+    },
+    optionDiscount: {
+      _rows: [] as GetOptionDiscountsResponse['option_discounts'],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows = SEED_OPTION_DISCOUNT_ROWS.map((row) => ({
+          ...row,
+          target_contracts: [...row.target_contracts],
+          target_options: [...row.target_options],
+        }));
+      },
+      getList(): GetOptionDiscountsResponse['option_discounts'] {
+        this._seed();
+        return this._rows.map((row) => ({
+          ...row,
+          target_contracts: [...row.target_contracts],
+          target_options: [...row.target_options],
+        }));
+      },
+      getById(id: string): OptionDiscountListItem | undefined {
+        this._seed();
+        const row = this._rows.find((item) => item.id === id);
+        if (!row) return undefined;
+        return {
+          ...row,
+          target_contracts: [...row.target_contracts],
+          target_options: [...row.target_options],
+        };
       },
     },
     storeMainContracts: {

@@ -134,6 +134,12 @@ export const routes = {
     pattern: '/membership-applications/create',
     private: true,
   },
+  '/option-discount': {
+    router: '/option-discount',
+    filePath: '(private)/option-discount',
+    pattern: '/option-discount',
+    private: true,
+  },
   '/options': {
     router: '/options',
     filePath: '(private)/options',
@@ -238,6 +244,7 @@ export const routeKeys = [
   '/membership-applications',
   '/membership-applications/[id]',
   '/membership-applications/create',
+  '/option-discount',
   '/options',
   '/options/[id]',
   '/options/[id]/edit',
@@ -277,6 +284,7 @@ export const routePatterns = [
   '/membership-applications',
   '/membership-applications/:id',
   '/membership-applications/create',
+  '/option-discount',
   '/options',
   '/options/:id',
   '/options/:id/edit',

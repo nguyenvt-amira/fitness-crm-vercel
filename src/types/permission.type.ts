@@ -106,6 +106,14 @@ export enum Permission {
   OptionsEdit = 'options.edit',
   OptionsCreate = 'options.create',
   OptionsDelete = 'options.delete',
+
+  // -------------------------------------------------------------------------
+  // Option discounts
+  // -------------------------------------------------------------------------
+  OptionDiscountsView = 'option-discounts.view',
+  OptionDiscountsEdit = 'option-discounts.edit',
+  OptionDiscountsCreate = 'option-discounts.create',
+  OptionDiscountsDelete = 'option-discounts.delete',
 }
 
 /** Authenticated user stored in context */
