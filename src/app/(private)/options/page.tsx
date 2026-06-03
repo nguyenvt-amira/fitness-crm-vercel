@@ -64,12 +64,14 @@ function OptionsPageContent() {
   const columns: ColumnDef<OptionRow>[] = useMemo(
     () =>
       OptionsTableColumns({
-        onEditClick: () => {},
+        onEditClick: (id) => {
+          router.push(navigate('/options/[id]/edit', id));
+        },
         onDeleteClick: (option) => {
           setSelectedOption(option);
         },
       }),
-    [],
+    [router],
   );
 
   return (
@@ -79,15 +81,15 @@ function OptionsPageContent() {
         badge={<Badge variant="secondary">{totalOptions}件</Badge>}
         actions={
           <>
-            <RoleGatedButton type="button" variant="outline" size="sm" className="gap-1">
+            <RoleGatedButton type="button" variant="outline" className="gap-1">
               <Percent className="size-4" />
               セット割設定
             </RoleGatedButton>
             <RoleGatedButton
               requiredPermission={Permission.OptionsCreate}
               type="button"
-              size="sm"
               className="gap-1"
+              onClick={() => router.push(navigate('/options/create'))}
             >
               <Plus className="size-4" />
               新規登録

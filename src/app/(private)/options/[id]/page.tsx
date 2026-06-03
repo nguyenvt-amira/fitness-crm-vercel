@@ -91,7 +91,11 @@ export default function OptionDetailPage() {
         }
         actions={
           <div className="flex items-center gap-2">
-            <RoleGatedButton requiredPermission={Permission.OptionsEdit} className="gap-1">
+            <RoleGatedButton
+              requiredPermission={Permission.OptionsEdit}
+              className="gap-1"
+              onClick={() => router.push(navigate('/options/[id]/edit', optionId))}
+            >
               <Pencil className="size-4" />
               編集
             </RoleGatedButton>

@@ -20,14 +20,9 @@ import {
 } from '@/components/ui/select';
 
 import { getCrmStoresByIdOptions, getCrmStoresOptions } from '@/lib/api/@tanstack/react-query.gen';
-import { Brand, type Store, StoreListBrand } from '@/lib/api/types.gen';
+import { Brand, OptionStatus, OptionType, type Store, StoreListBrand } from '@/lib/api/types.gen';
 
-import {
-  OPTION_STATUS_LABELS,
-  OPTION_TYPE_LABELS,
-  OptionStatus,
-  OptionType,
-} from '../_constants/constants';
+import { OPTION_STATUS_LABELS, OPTION_TYPE_LABELS } from '../_constants/constants';
 import { useOptionsFiltersContext } from '../_contexts/options-filters-context';
 
 interface OptionsFiltersProps {

@@ -32,7 +32,6 @@ import { Textarea } from '@/components/ui/textarea';
 
 import {
   deleteCrmOptionsByIdMutation,
-  getCrmOptionsByIdQueryKey,
   getCrmOptionsQueryKey,
 } from '@/lib/api/@tanstack/react-query.gen';
 import { navigate } from '@/lib/routes/routes.util';
@@ -80,9 +79,6 @@ export function OptionDeleteDialog({
       queryClient.invalidateQueries({
         queryKey: getCrmOptionsQueryKey(),
         refetchType: 'all',
-      });
-      queryClient.invalidateQueries({
-        queryKey: getCrmOptionsByIdQueryKey({ path: { id: optionId } }),
       });
       onOpenChange(false);
       if (redirectOnSuccess) {

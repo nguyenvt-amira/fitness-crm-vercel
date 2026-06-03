@@ -27,9 +27,11 @@ import type {
 } from '@/app/api/_schemas/member.schema';
 import type { DirectEnrollmentRequest as DirectEnrollmentRequestType } from '@/app/api/_schemas/membership-application.schema';
 import type {
+  OptionCategory,
   OptionMasterChangeHistoryItem,
   OptionMasterDetail,
   OptionMasterListItem,
+  UpsertOptionMasterBody,
 } from '@/app/api/_schemas/option-master.schema';
 import type { Position, StaffPermissionRecord } from '@/app/api/_schemas/position.schema';
 import type { StaffDetail, StaffListItem } from '@/app/api/_schemas/staff.schema';
@@ -79,6 +81,49 @@ function inferOptionAreaRestrictions(option: OptionMasterListItem): string[] {
   return [];
 }
 
+function inferOptionCategory(option: Pick<OptionMasterListItem, 'code' | 'name'>): OptionCategory {
+  if (option.code.startsWith('LCK')) return 'locker';
+  if (option.code.startsWith('SPT')) return 'insurance';
+  if (option.code.startsWith('TWL')) return 'rental';
+  if (
+    option.code.startsWith('PRO') ||
+    option.code.startsWith('DRK') ||
+    option.code.startsWith('H2O')
+  ) {
+    return 'drink';
+  }
+  if (
+    option.code.startsWith('SHW') ||
+    option.code.startsWith('WIF') ||
+    option.code.startsWith('MNT')
+  ) {
+    return 'service';
+  }
+  if (option.name.includes('サプリ')) return 'supplement';
+  return 'service';
+}
+
+function toOptionMasterListItem(option: OptionMasterDetail): OptionMasterListItem {
+  return {
+    id: option.id,
+    name: option.name,
+    code: option.code,
+    brand: option.brand,
+    option_type: option.option_type,
+    price_including_tax: option.price_including_tax,
+    tax_rate: option.tax_rate,
+    prorated_enabled: option.prorated_enabled,
+    prorata_method: option.prorata_method,
+    usage_rule: option.usage_rule,
+    linked_contracts: option.linked_contracts,
+    member_count: option.member_count,
+    store_id: option.store_id,
+    store_name: option.store_name,
+    accounting_code: option.accounting_code,
+    status: option.status,
+  };
+}
+
 function buildOptionMasterDetail(
   option: OptionMasterListItem,
   overrides: Partial<Omit<OptionMasterDetail, keyof OptionMasterListItem>> = {},
@@ -90,6 +135,7 @@ function buildOptionMasterDetail(
   return {
     ...option,
     price_excluding_tax: overrides.price_excluding_tax ?? priceExcludingTax,
+    option_category: overrides.option_category ?? inferOptionCategory(option),
     store_range:
       overrides.store_range ??
       (option.store_name ? `${option.store_name}（1店舗）` : '全店舗（12店舗）'),
@@ -97,6 +143,7 @@ function buildOptionMasterDetail(
       overrides.description ??
       `${option.name}をご利用いただけるオプションサービスです。ご利用条件は契約内容に準じます。`,
     note: overrides.note ?? (option.store_name ? `${option.store_name}限定オプションです。` : null),
+    member_app_image: overrides.member_app_image ?? null,
     created_at: overrides.created_at ?? '2024-04-01T10:00:00+09:00',
     updated_at: overrides.updated_at ?? '2026-01-15T14:30:00+09:00',
     popularity_rank: overrides.popularity_rank ?? null,
@@ -1179,6 +1226,8 @@ type DbType = {
     getById(id: string): OptionMasterDetail | undefined;
     getChangeHistory(id: string): OptionMasterChangeHistoryItem[];
     delete(id: string): boolean;
+    add(data: UpsertOptionMasterBody): OptionMasterDetail;
+    update(id: string, data: UpsertOptionMasterBody): OptionMasterDetail | undefined;
   };
   storeMainContracts: {
     _rows: Array<{ store_id: string; main_contract_id: string; linked_at: string }>;
@@ -5391,6 +5440,95 @@ function createDb() {
       getChangeHistory(id: string): OptionMasterChangeHistoryItem[] {
         this._seed();
         return [...(this._changeHistory[id] ?? [])];
+      },
+      add(data: UpsertOptionMasterBody): OptionMasterDetail {
+        this._seed();
+
+        const maxNumericId = this._rows.reduce((max, row) => {
+          const numericId = Number.parseInt(row.id.replace(/^OP/, ''), 10);
+          return Number.isNaN(numericId) ? max : Math.max(max, numericId);
+        }, 0);
+        const id = `OP${String(maxNumericId + 1).padStart(3, '0')}`;
+        const now = new Date().toISOString();
+
+        const option = buildOptionMasterDetail(
+          {
+            id,
+            name: data.name,
+            code: data.code,
+            brand: data.brand,
+            option_type: data.option_type,
+            price_including_tax: data.price_including_tax,
+            tax_rate: data.tax_rate,
+            prorated_enabled: data.prorated_enabled,
+            prorata_method: data.prorata_method ?? null,
+            usage_rule: data.usage_rule,
+            linked_contracts: 0,
+            member_count: 0,
+            store_id: null,
+            store_name: null,
+            accounting_code: data.accounting_code,
+            status: data.status,
+          },
+          {
+            option_category: data.option_category,
+            description: data.description ?? null,
+            note: data.note ?? null,
+            member_app_image: data.member_app_image ?? null,
+            created_at: now,
+            updated_at: now,
+            popularity_rank: null,
+            tsuji_type: data.tsuji_type ?? null,
+            constraint_main_option_change: data.constraint_main_option_change,
+            constraint_change: data.constraint_change,
+            area_restrictions: data.area_restrictions,
+          },
+        );
+
+        this._rows.unshift(option);
+        return option;
+      },
+      update(id: string, data: UpsertOptionMasterBody): OptionMasterDetail | undefined {
+        this._seed();
+
+        const index = this._rows.findIndex((row) => row.id === id);
+        if (index === -1) return undefined;
+
+        const existing = this._rows[index];
+        const now = new Date().toISOString();
+        const updated = buildOptionMasterDetail(
+          {
+            ...toOptionMasterListItem(existing),
+            name: data.name,
+            code: data.code,
+            brand: data.brand,
+            option_type: data.option_type,
+            price_including_tax: data.price_including_tax,
+            tax_rate: data.tax_rate,
+            prorated_enabled: data.prorated_enabled,
+            prorata_method: data.prorata_method ?? null,
+            usage_rule: data.usage_rule,
+            accounting_code: data.accounting_code,
+            status: data.status,
+          },
+          {
+            option_category: data.option_category,
+            store_range: existing.store_range,
+            description: data.description ?? null,
+            note: data.note ?? null,
+            member_app_image: data.member_app_image ?? null,
+            created_at: existing.created_at,
+            updated_at: now,
+            popularity_rank: existing.popularity_rank,
+            tsuji_type: data.tsuji_type ?? null,
+            constraint_main_option_change: data.constraint_main_option_change,
+            constraint_change: data.constraint_change,
+            area_restrictions: data.area_restrictions,
+          },
+        );
+
+        this._rows[index] = updated;
+        return updated;
       },
       delete(id: string): boolean {
         this._seed();

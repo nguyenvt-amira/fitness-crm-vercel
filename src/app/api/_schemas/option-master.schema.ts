@@ -28,6 +28,13 @@ export const OptionUsageRuleSchema = z
     description: '利用可否ルール',
   });
 
+export const OptionCategorySchema = z
+  .enum(['supplement', 'drink', 'rental', 'locker', 'insurance', 'service'])
+  .openapi({
+    title: 'OptionCategory',
+    description: 'オプション分類',
+  });
+
 export const OptionMasterListItemSchema = z
   .object({
     id: z.string().openapi({ example: 'OP002', description: 'オプションID' }),
@@ -104,9 +111,11 @@ export const OptionMasterDetailSchema = OptionMasterListItemSchema.extend({
     .number()
     .nonnegative()
     .openapi({ example: 1100, description: '料金（税抜）' }),
+  option_category: OptionCategorySchema.openapi({ description: 'オプション分類' }),
   store_range: z.string().openapi({ example: '全店舗（12店舗）', description: '対象店舗範囲' }),
   description: z.string().nullable().openapi({ description: '説明文' }),
   note: z.string().nullable().openapi({ description: '備考' }),
+  member_app_image: z.string().nullable().openapi({ description: '会員公開用画像（base64）' }),
   created_at: z.string().openapi({ example: '2024-04-01T10:00:00+09:00', description: '作成日時' }),
   updated_at: z.string().openapi({ example: '2026-02-15T14:30:00+09:00', description: '更新日時' }),
   popularity_rank: z.number().int().positive().nullable().openapi({
@@ -127,6 +136,96 @@ export const GetOptionMasterDetailResponseSchema = z
   .openapi({
     title: 'GetOptionMasterDetailResponse',
     description: 'オプション詳細レスポンス',
+  });
+
+export const UpsertOptionMasterBodySchema = z
+  .object({
+    brand: StoreListBrandSchema.openapi({ description: 'ブランド' }),
+    name: z.string().min(1, 'オプション名は必須です').openapi({ description: 'オプション名' }),
+    code: z.string().min(1, 'コードは必須です').openapi({ description: 'コード' }),
+    option_category: OptionCategorySchema.openapi({ description: 'オプション分類' }),
+    accounting_code: z.string().default('').openapi({ description: '会計コード' }),
+    note: z.string().nullable().optional().openapi({ description: '備考' }),
+    description: z.string().nullable().optional().openapi({ description: '説明文' }),
+    member_app_image: z.string().nullable().optional().openapi({
+      description: '会員公開用画像（base64）',
+    }),
+    price_including_tax: z
+      .number({ error: '料金（税込）は必須です' })
+      .nonnegative('0以上の値を入力してください')
+      .openapi({ description: '料金（税込）' }),
+    tax_rate: z.number({ error: '税率は必須です' }).nonnegative().openapi({ description: '税率' }),
+    prorated_enabled: z.boolean().default(false).openapi({ description: '日割り要否' }),
+    prorata_method: OptionProrataMethodSchema.nullable().optional().openapi({
+      description: '日割り計算方式',
+    }),
+    option_type: OptionTypeSchema.openapi({ description: 'オプション種別' }),
+    tsuji_type: z.string().nullable().optional().openapi({ description: '都次オプション種別' }),
+    usage_rule: OptionUsageRuleSchema.openapi({ description: '利用可否ルール' }),
+    constraint_main_option_change: z
+      .boolean()
+      .default(false)
+      .openapi({ description: '主オプション契約変更可否' }),
+    constraint_change: z.boolean().default(false).openapi({ description: '変更可否' }),
+    area_restrictions: z.array(z.string()).default([]).openapi({ description: 'エリア制限' }),
+    status: OptionStatusSchema.default('active').openapi({ description: 'ステータス' }),
+  })
+  .superRefine((value, ctx) => {
+    if (value.prorated_enabled && !value.prorata_method) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['prorata_method'],
+        message: '日割り計算方式を選択してください',
+      });
+    }
+
+    if (!value.prorated_enabled && value.prorata_method) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['prorata_method'],
+        message: '日割り未適用の場合は日割り計算方式を指定できません',
+      });
+    }
+
+    if (value.option_type === 'metered' && !value.tsuji_type) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['tsuji_type'],
+        message: '都次オプション種別を選択してください',
+      });
+    }
+
+    if (value.option_type !== 'metered' && value.tsuji_type) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['tsuji_type'],
+        message: '都次以外のオプションでは都次オプション種別を指定できません',
+      });
+    }
+  })
+  .openapi({
+    title: 'UpsertOptionMasterBody',
+    description: 'オプション作成・更新リクエスト',
+  });
+
+export const CreateOptionMasterResponseSchema = z
+  .object({
+    message: z.string().openapi({ example: 'オプションを作成しました' }),
+    option: OptionMasterDetailSchema,
+  })
+  .openapi({
+    title: 'CreateOptionMasterResponse',
+    description: 'オプション作成レスポンス',
+  });
+
+export const UpdateOptionMasterResponseSchema = z
+  .object({
+    message: z.string().openapi({ example: 'オプションを更新しました' }),
+    option: OptionMasterDetailSchema,
+  })
+  .openapi({
+    title: 'UpdateOptionMasterResponse',
+    description: 'オプション更新レスポンス',
   });
 
 export const OptionMasterChangeHistoryItemSchema = z
@@ -161,12 +260,16 @@ export type GetOptionMastersQuery = z.infer<typeof GetOptionMastersQuerySchema>;
 export type GetOptionMastersResponse = z.infer<typeof GetOptionMastersResponseSchema>;
 export type OptionMasterDetail = z.infer<typeof OptionMasterDetailSchema>;
 export type GetOptionMasterDetailResponse = z.infer<typeof GetOptionMasterDetailResponseSchema>;
+export type UpsertOptionMasterBody = z.infer<typeof UpsertOptionMasterBodySchema>;
 export type OptionMasterChangeHistoryItem = z.infer<typeof OptionMasterChangeHistoryItemSchema>;
 export type GetOptionMasterChangeHistoryResponse = z.infer<
   typeof GetOptionMasterChangeHistoryResponseSchema
 >;
 export type DeleteOptionMasterRequest = z.infer<typeof DeleteOptionMasterRequestSchema>;
 export type DeleteOptionMasterResponse = z.infer<typeof DeleteOptionMasterResponseSchema>;
+export type CreateOptionMasterResponse = z.infer<typeof CreateOptionMasterResponseSchema>;
+export type UpdateOptionMasterResponse = z.infer<typeof UpdateOptionMasterResponseSchema>;
+export type OptionCategory = z.infer<typeof OptionCategorySchema>;
 export type OptionProrataMethod = z.infer<typeof OptionProrataMethodSchema>;
 export type OptionUsageRule = z.infer<typeof OptionUsageRuleSchema>;
 

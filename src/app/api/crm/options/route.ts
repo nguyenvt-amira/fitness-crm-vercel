@@ -2,12 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { db } from '@/app/api/_mock-db';
 import {
+  CreateOptionMasterResponseSchema,
   ErrorResponseSchema,
   type GetOptionMastersQuery,
   GetOptionMastersQuerySchema,
   type GetOptionMastersResponse,
   GetOptionMastersResponseSchema,
   type OptionMasterListItem,
+  UpsertOptionMasterBodySchema,
 } from '@/app/api/_schemas/option-master.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
 
@@ -20,6 +22,23 @@ registerRoute({
   query: GetOptionMastersQuerySchema,
   responses: [
     { status: 200, schema: GetOptionMastersResponseSchema, description: 'Option list' },
+    { status: 400, schema: ErrorResponseSchema, description: 'Bad request' },
+    { status: 500, schema: ErrorResponseSchema, description: 'Internal server error' },
+  ],
+});
+
+registerRoute({
+  method: 'post',
+  path: '/crm/options',
+  summary: 'Create option master',
+  description: 'Create a new option master (G-02)',
+  tags: ['Options'],
+  requestBody: {
+    schema: UpsertOptionMasterBodySchema,
+    description: 'オプション作成リクエスト',
+  },
+  responses: [
+    { status: 201, schema: CreateOptionMasterResponseSchema, description: 'Created' },
     { status: 400, schema: ErrorResponseSchema, description: 'Bad request' },
     { status: 500, schema: ErrorResponseSchema, description: 'Internal server error' },
   ],
@@ -91,5 +110,24 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Error fetching options:', error);
     return NextResponse.json({ error: 'Failed to fetch options' }, { status: 500 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const validationResult = UpsertOptionMasterBodySchema.safeParse(body);
+
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((issue) => issue.message).join(', ');
+      return NextResponse.json({ error: errors }, { status: 400 });
+    }
+
+    const option = db.optionMasters.add(validationResult.data);
+
+    return NextResponse.json({ message: 'オプションを作成しました', option }, { status: 201 });
+  } catch (error) {
+    console.error('POST /crm/options error:', error);
+    return NextResponse.json({ error: 'Failed to create option' }, { status: 500 });
   }
 }

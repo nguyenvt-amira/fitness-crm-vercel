@@ -973,4 +973,65 @@ export function registerAllSchemas() {
       optionMasterSchemas.GetOptionMastersResponseSchema,
     ),
   );
+  registeredSchemaMap.set(
+    'OptionCategory',
+    registry.register('OptionCategory', optionMasterSchemas.OptionCategorySchema),
+  );
+  registeredSchemaMap.set(
+    'OptionMasterDetail',
+    registry.register('OptionMasterDetail', optionMasterSchemas.OptionMasterDetailSchema),
+  );
+  registeredSchemaMap.set(
+    'GetOptionMasterDetailResponse',
+    registry.register(
+      'GetOptionMasterDetailResponse',
+      optionMasterSchemas.GetOptionMasterDetailResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpsertOptionMasterBody',
+    registry.register('UpsertOptionMasterBody', optionMasterSchemas.UpsertOptionMasterBodySchema),
+  );
+  registeredSchemaMap.set(
+    'CreateOptionMasterResponse',
+    registry.register(
+      'CreateOptionMasterResponse',
+      optionMasterSchemas.CreateOptionMasterResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateOptionMasterResponse',
+    registry.register(
+      'UpdateOptionMasterResponse',
+      optionMasterSchemas.UpdateOptionMasterResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'OptionMasterChangeHistoryItem',
+    registry.register(
+      'OptionMasterChangeHistoryItem',
+      optionMasterSchemas.OptionMasterChangeHistoryItemSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetOptionMasterChangeHistoryResponse',
+    registry.register(
+      'GetOptionMasterChangeHistoryResponse',
+      optionMasterSchemas.GetOptionMasterChangeHistoryResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'DeleteOptionMasterRequest',
+    registry.register(
+      'DeleteOptionMasterRequest',
+      optionMasterSchemas.DeleteOptionMasterRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'DeleteOptionMasterResponse',
+    registry.register(
+      'DeleteOptionMasterResponse',
+      optionMasterSchemas.DeleteOptionMasterResponseSchema,
+    ),
+  );
 }
