@@ -1,9 +1,13 @@
 'use client';
 
+import { useState } from 'react';
+
 import { useQuery } from '@tanstack/react-query';
 import { ChevronDown, ChevronUp, Search, SlidersHorizontal } from 'lucide-react';
 
 import { BRAND_LABELS } from '@/components/common/brand-badge';
+import { SearchableSelect } from '@/components/common/searchable-select';
+import { TextWithTooltip } from '@/components/common/text-with-tooltip';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,8 +19,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { getCrmStoresOptions } from '@/lib/api/@tanstack/react-query.gen';
-import { Brand, StoreListBrand } from '@/lib/api/types.gen';
+import { getCrmStoresByIdOptions, getCrmStoresOptions } from '@/lib/api/@tanstack/react-query.gen';
+import { Brand, type Store, StoreListBrand } from '@/lib/api/types.gen';
 
 import {
   OPTION_STATUS_LABELS,
@@ -31,16 +35,49 @@ interface OptionsFiltersProps {
   onFilterOpenChange: (open: boolean) => void;
 }
 
+const STORE_FILTER_INITIAL_LIMIT = 20;
+// Keep store search results fresh while the filter popup is reopened to avoid immediate refetch.
+const STORE_FILTER_CACHE_MS = 5 * 60 * 1000;
+
 export function OptionsFilters({ isFilterOpen, onFilterOpenChange }: OptionsFiltersProps) {
   const { filters, searchInput, setSearchInput, updateFilter, hasActiveFilters, clearFilters } =
     useOptionsFiltersContext();
 
-  const { data: storesRes } = useQuery({
+  const [isStorePopoverOpen, setIsStorePopoverOpen] = useState(false);
+  const [storeSearchQuery, setStoreSearchQuery] = useState('');
+
+  const { data: storesRes, isFetching: isStoresFetching } = useQuery({
     ...getCrmStoresOptions({
-      query: { page: 1, limit: 100, sort_by: 'name', sort_order: 'asc' },
+      query: {
+        page: 1,
+        limit: STORE_FILTER_INITIAL_LIMIT,
+        search: storeSearchQuery || undefined,
+        sort_by: 'name',
+        sort_order: 'asc',
+      },
     }),
+    enabled: isFilterOpen && isStorePopoverOpen,
+    staleTime: STORE_FILTER_CACHE_MS,
   });
+
   const stores = storesRes?.stores ?? [];
+  const selectedStoreFromOptions = filters.store_id
+    ? stores.find((store) => store.id === filters.store_id)
+    : undefined;
+
+  const { data: selectedStoreRes } = useQuery({
+    ...getCrmStoresByIdOptions({ path: { id: filters.store_id ?? '' } }),
+    enabled: isFilterOpen && !!filters.store_id && !selectedStoreFromOptions,
+    staleTime: STORE_FILTER_CACHE_MS,
+  });
+
+  const selectedStoreLabel = filters.store_id
+    ? (selectedStoreFromOptions?.name ?? selectedStoreRes?.store?.name)
+    : '全店舗';
+
+  const handleStoreSelect = (store: Store | null) => {
+    updateFilter('store_id', store?.id ?? null);
+  };
 
   const activeFilterCount = [
     filters.brand !== null,
@@ -143,26 +180,38 @@ export function OptionsFilters({ isFilterOpen, onFilterOpenChange }: OptionsFilt
           </Select>
 
           {/* Store */}
-          <Select
-            value={filters.store_id ?? 'all'}
-            onValueChange={(v) => updateFilter('store_id', v === 'all' ? null : v)}
-          >
-            <SelectTrigger size="sm" className="w-fit rounded-lg">
-              <SelectValue placeholder="全店舗">
-                {filters.store_id
-                  ? (stores.find((s) => s.id === filters.store_id)?.name ?? filters.store_id)
-                  : '全店舗'}
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">全店舗</SelectItem>
-              {stores.map((s) => (
-                <SelectItem key={s.id} value={s.id}>
-                  {s.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <SearchableSelect
+            value={filters.store_id}
+            valueLabel={selectedStoreLabel}
+            options={stores}
+            placeholder="全店舗"
+            searchPlaceholder="店舗名・店舗IDで検索..."
+            emptyMessage="該当する店舗がありません"
+            loadingMessage="店舗を読み込み中..."
+            clearLabel="全店舗"
+            open={isStorePopoverOpen}
+            onOpenChange={setIsStorePopoverOpen}
+            onSearchChange={setStoreSearchQuery}
+            onSelect={handleStoreSelect}
+            getOptionKey={(store) => store.id}
+            getOptionLabel={(store) => store.name}
+            getOptionKeywords={(store) =>
+              [store.name, store.store_id, store.id, store.club_code].filter(Boolean).join(' ')
+            }
+            renderOption={(store) => (
+              <div className="flex min-w-0 flex-col items-start gap-0.5">
+                <TextWithTooltip
+                  text={store.name}
+                  wrapperClassName="w-full"
+                  className="w-full"
+                  side="right"
+                  align="center"
+                />
+              </div>
+            )}
+            isLoading={isStoresFetching}
+            triggerClassName="h-8 w-64 justify-between rounded-lg px-3 text-xs font-normal"
+          />
 
           {hasActiveFilters && (
             <Button
