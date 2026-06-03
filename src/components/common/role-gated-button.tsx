@@ -74,7 +74,7 @@ export function RoleGatedButton({
     return (
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger render={<span className={cn('inline-flex', className)} />}>
+          <TooltipTrigger render={<span className="inline-flex" />}>
             <Button className={className} onClick={onClick} disabled={externalDisabled} {...props}>
               {children}
             </Button>
@@ -92,9 +92,8 @@ export function RoleGatedButton({
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger
-          render={<span className={cn('inline-flex cursor-not-allowed', className)} />}
-        >
+        {/* span wrapper is required because a disabled button swallows pointer events */}
+        <TooltipTrigger render={<span className="inline-flex cursor-not-allowed" />}>
           <Button
             {...props}
             disabled

@@ -80,10 +80,7 @@ export function RoleGatedMenuItem({
         <TooltipTrigger
           render={
             <div
-              className={cn(
-                isDisabled && 'inline-flex cursor-not-allowed',
-                !isDisabled && className,
-              )}
+              className={cn(isDisabled && 'inline-flex cursor-not-allowed')}
               onClickCapture={
                 isDisabled
                   ? (e) => {
