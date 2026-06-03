@@ -98,6 +98,14 @@ export enum Permission {
   ContractsEdit = 'contracts.edit',
   ContractsDelete = 'contracts.delete',
   ContractsCreate = 'contracts.create',
+
+  // -------------------------------------------------------------------------
+  // Options
+  // -------------------------------------------------------------------------
+  OptionsView = 'options.view',
+  OptionsEdit = 'options.edit',
+  OptionsCreate = 'options.create',
+  OptionsDelete = 'options.delete',
 }
 
 /** Authenticated user stored in context */

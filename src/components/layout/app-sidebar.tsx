@@ -79,7 +79,10 @@ const menuItems: MenuItem[] = [
     label: '商材・施策設定',
     icon: Package,
     href: '/contracts',
-    subItems: [{ label: '主契約管理', href: '/contracts' }],
+    subItems: [
+      { label: '主契約管理', href: '/contracts' },
+      { label: 'オプション管理', href: '/options' },
+    ],
   },
   {
     label: 'スタッフ管理',
