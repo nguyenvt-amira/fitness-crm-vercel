@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useMemo, useState } from 'react';
+import { Suspense, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
@@ -39,7 +39,7 @@ function BlacklistPageContent() {
   const total = data?.pagination?.total ?? 0;
   const totalPages = data?.pagination?.total_pages ?? 1;
 
-  const columns = useMemo(() => BlacklistTableColumns(), []);
+  const columns = BlacklistTableColumns();
 
   return (
     <BlacklistFiltersProvider value={filtersHook}>

@@ -1,5 +1,4 @@
 'use client';
-
 import { useState } from 'react';
 
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -15,6 +14,7 @@ import { RoleGatedMenuItem } from '@/components/common/role-gated-menu-item';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   DropdownMenu,
@@ -235,7 +235,15 @@ export default function MemberDetailPage() {
                       再入会
                     </RoleGatedButton>
                     <DropdownMenu modal={false}>
-                      <DropdownMenuTrigger className="border-input bg-background hover:bg-accent hover:text-accent-foreground flex size-8 items-center justify-center rounded-md border">
+                      <DropdownMenuTrigger
+                        render={
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="border-input bg-background hover:bg-accent hover:text-accent-foreground size-8"
+                          />
+                        }
+                      >
                         <MoreHorizontal className="size-4" />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
@@ -253,7 +261,15 @@ export default function MemberDetailPage() {
                 )}
                 {!isWithdrawnStatus && (
                   <DropdownMenu modal={false}>
-                    <DropdownMenuTrigger className="border-input bg-background hover:bg-accent hover:text-accent-foreground flex size-8 items-center justify-center rounded-md border">
+                    <DropdownMenuTrigger
+                      render={
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="border-input bg-background hover:bg-accent hover:text-accent-foreground size-8"
+                        />
+                      }
+                    >
                       <MoreHorizontal className="size-4" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">

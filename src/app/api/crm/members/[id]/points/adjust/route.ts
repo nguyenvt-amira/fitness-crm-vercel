@@ -73,6 +73,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     return NextResponse.json(response);
   } catch (error) {
+    console.error('Error adjusting points:', error);
     return NextResponse.json({ error: 'Failed to adjust points' }, { status: 500 });
   }
 }

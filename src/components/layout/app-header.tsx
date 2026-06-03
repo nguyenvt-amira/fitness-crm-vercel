@@ -38,7 +38,6 @@ import {
   postAuthSwitchUserMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
 import type { GetCrmUsersResponse } from '@/lib/api/types.gen';
-import { navigate } from '@/lib/routes/routes.util';
 
 import { CookieNames } from '@/types/global.enum';
 import { UserRole } from '@/types/permission.type';
@@ -106,10 +105,11 @@ export function AppHeader() {
       <div className="border-sidebar-border/60 bg-sidebar-accent/40 hover:border-sidebar-border hover:bg-sidebar-accent flex shrink-0 cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 transition-colors">
         <div className="relative h-7 w-7">
           <Image
-            src={'/logo.jpeg'}
+            src={'/fitness.jpeg'}
             alt="申込写真"
             className="size-full rounded object-cover"
             fill
+            sizes="(max-width: 768px) 100vw, 48px"
           />
         </div>
         <span className="text-sidebar-foreground/90 text-sm font-medium">Fit365八潮店</span>

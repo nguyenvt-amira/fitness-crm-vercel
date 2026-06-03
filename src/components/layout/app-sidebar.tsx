@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 
 import { useAuthUser } from '@/contexts/auth-user.context';
@@ -146,13 +145,8 @@ export function AppSidebar() {
   return (
     <Sidebar className="border-sidebar-border border-r">
       <SidebarHeader className="border-sidebar-border h-14 flex-row items-center border-b px-6 py-0">
-        <Image
-          src={'/logo-yamauchi.svg'}
-          alt="YAMAUCHI"
-          width={207}
-          height={28}
-          className="h-7 w-auto"
-        />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo.svg" alt="Logo" className="h-7 w-auto" />
       </SidebarHeader>
 
       <SidebarContent>
@@ -214,8 +208,8 @@ export function AppSidebar() {
                         {!parentAllowed ? (
                           <TooltipProvider>
                             <Tooltip>
-                              <TooltipTrigger>
-                                <span className="w-full">{parentButton}</span>
+                              <TooltipTrigger render={<span className="w-full" />}>
+                                {parentButton}
                               </TooltipTrigger>
                               <TooltipContent side="right">
                                 <p className="text-xs">{denyReason}</p>
@@ -263,8 +257,8 @@ export function AppSidebar() {
                                   {!subAllowed ? (
                                     <TooltipProvider>
                                       <Tooltip>
-                                        <TooltipTrigger>
-                                          <span className="w-full">{subButton}</span>
+                                        <TooltipTrigger render={<span className="w-full" />}>
+                                          {subButton}
                                         </TooltipTrigger>
                                         <TooltipContent side="right">
                                           <p className="text-xs">{subDenyReason}</p>
@@ -300,8 +294,8 @@ export function AppSidebar() {
                       {!allowed ? (
                         <TooltipProvider>
                           <Tooltip>
-                            <TooltipTrigger>
-                              <span className="w-full">{leafButton}</span>
+                            <TooltipTrigger render={<span className="w-full" />}>
+                              {leafButton}
                             </TooltipTrigger>
                             <TooltipContent side="right">
                               <p className="text-xs">{denyReason}</p>

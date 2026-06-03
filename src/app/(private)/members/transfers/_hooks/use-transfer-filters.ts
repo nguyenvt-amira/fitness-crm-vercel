@@ -18,8 +18,6 @@ export type TransferFilters = {
 };
 
 export function useTransferFilters() {
-  const [searchInput, setSearchInput] = useState('');
-
   const [filters, setFilters] = useQueryStates(
     {
       page: parseAsInteger.withDefault(1),
@@ -48,13 +46,8 @@ export function useTransferFilters() {
     },
   );
 
-  // Sync searchInput with URL on mount
-  useEffect(() => {
-    if (filters.search && searchInput !== filters.search) {
-      setSearchInput(filters.search);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Initialized from URL so the input reflects any pre-existing search param
+  const [searchInput, setSearchInput] = useState(() => filters.search);
 
   // Debounce search input (500ms)
   useEffect(() => {

@@ -159,7 +159,7 @@ export function WithdrawSheet({ open, onOpenChange, memberId }: Readonly<Withdra
 
   const handleProxyAgreedAtChange = (date: Date | undefined) => {
     setProxyAgreedAtDate(date);
-    form.setValue('proxy_agreed_at', date ? format(date, 'yyyy-MM-dd') : '', {
+    form.setValue('proxy_agreed_at', date ? date.toISOString() : '', {
       shouldValidate: true,
     });
   };
