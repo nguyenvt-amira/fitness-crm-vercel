@@ -1168,6 +1168,10 @@ export type CampaignDetailStats = {
      * New applications this month
      */
     monthly_new_application_count: number;
+    /**
+     * Total discount amount
+     */
+    discount_total: number;
 };
 
 /**
@@ -1375,6 +1379,33 @@ export type CampaignDetail = {
          */
         updated_by: string;
     };
+    /**
+     * Read-only promo-code preview rows for campaign detail tab 2
+     */
+    promo_code_previews: Array<{
+        /**
+         * Promo code
+         */
+        code: string;
+        /**
+         * Promo code description
+         */
+        description: string | null;
+        /**
+         * Validity start date
+         */
+        valid_from: string;
+        /**
+         * Validity end date
+         */
+        valid_to: string;
+        /**
+         * CampaignPromoCodePreviewStatus
+         *
+         * Promo code preview status
+         */
+        status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+    }>;
 };
 
 /**
@@ -1652,6 +1683,33 @@ export type GetCampaignDetailResponse = {
              */
             updated_by: string;
         };
+        /**
+         * Read-only promo-code preview rows for campaign detail tab 2
+         */
+        promo_code_previews: Array<{
+            /**
+             * Promo code
+             */
+            code: string;
+            /**
+             * Promo code description
+             */
+            description: string | null;
+            /**
+             * Validity start date
+             */
+            valid_from: string;
+            /**
+             * Validity end date
+             */
+            valid_to: string;
+            /**
+             * CampaignPromoCodePreviewStatus
+             *
+             * Promo code preview status
+             */
+            status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+        }>;
     };
 };
 
@@ -11766,125 +11824,6 @@ export type GetCrmBrandsResponses = {
 
 export type GetCrmBrandsResponse = GetCrmBrandsResponses[keyof GetCrmBrandsResponses];
 
-export type GetCrmCampaignsData = {
-    body?: never;
-    path?: never;
-    query?: {
-        page?: number;
-        limit?: number;
-        /**
-         * Search by campaign name, ID, or code
-         */
-        search?: string;
-        /**
-         * StoreListBrand
-         *
-         * Store brand
-         */
-        brand?: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
-        /**
-         * CampaignAcceptStatus
-         *
-         * Campaign acceptance availability
-         */
-        accept_status?: 'active' | 'inactive';
-        /**
-         * Recruitment period start date (YYYY-MM-DD)
-         */
-        recruitment_period_start?: string;
-        /**
-         * Recruitment period end date (YYYY-MM-DD)
-         */
-        recruitment_period_end?: string;
-        sort_by?: 'id' | 'name' | 'code' | 'brand' | 'recruitment_period_start' | 'recruitment_period_end' | 'accept_status' | 'main_contract_name';
-        sort_order?: 'asc' | 'desc';
-    };
-    url: '/crm/campaigns';
-};
-
-export type GetCrmCampaignsErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    400: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type GetCrmCampaignsError = GetCrmCampaignsErrors[keyof GetCrmCampaignsErrors];
-
-export type GetCrmCampaignsResponses = {
-    /**
-     * GetCampaignsResponse
-     *
-     * Campaign master list response
-     */
-    200: {
-        campaigns: Array<{
-            /**
-             * Campaign ID
-             */
-            id: string;
-            /**
-             * Campaign name
-             */
-            name: string;
-            /**
-             * Campaign code
-             */
-            code: string;
-            /**
-             * StoreListBrand
-             *
-             * Brand
-             */
-            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
-            /**
-             * Recruitment period start date
-             */
-            recruitment_period_start: string;
-            /**
-             * Recruitment period end date
-             */
-            recruitment_period_end: string;
-            /**
-             * CampaignAcceptStatus
-             *
-             * Acceptance status
-             */
-            accept_status: 'active' | 'inactive';
-            /**
-             * Linked main contract name
-             */
-            main_contract_name: string;
-        }>;
-        pagination: {
-            page: number;
-            limit: number;
-            total: number;
-            total_pages: number;
-        };
-    };
-};
-
-export type GetCrmCampaignsResponse = GetCrmCampaignsResponses[keyof GetCrmCampaignsResponses];
-
 export type GetCrmCampaignsByIdData = {
     body?: never;
     path: {
@@ -12112,11 +12051,230 @@ export type GetCrmCampaignsByIdResponses = {
                  */
                 updated_by: string;
             };
+            /**
+             * Read-only promo-code preview rows for campaign detail tab 2
+             */
+            promo_code_previews: Array<{
+                /**
+                 * Promo code
+                 */
+                code: string;
+                /**
+                 * Promo code description
+                 */
+                description: string | null;
+                /**
+                 * Validity start date
+                 */
+                valid_from: string;
+                /**
+                 * Validity end date
+                 */
+                valid_to: string;
+                /**
+                 * CampaignPromoCodePreviewStatus
+                 *
+                 * Promo code preview status
+                 */
+                status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+            }>;
         };
     };
 };
 
 export type GetCrmCampaignsByIdResponse = GetCrmCampaignsByIdResponses[keyof GetCrmCampaignsByIdResponses];
+
+export type GetCrmCampaignsByIdChangeHistoryData = {
+    body?: never;
+    path: {
+        /**
+         * Campaign ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/campaigns/{id}/change-history';
+};
+
+export type GetCrmCampaignsByIdChangeHistoryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmCampaignsByIdChangeHistoryError = GetCrmCampaignsByIdChangeHistoryErrors[keyof GetCrmCampaignsByIdChangeHistoryErrors];
+
+export type GetCrmCampaignsByIdChangeHistoryResponses = {
+    /**
+     * GetCampaignChangeHistoryResponse
+     *
+     * Campaign change-history response
+     */
+    200: {
+        history: Array<{
+            /**
+             * Updated timestamp
+             */
+            date: string;
+            /**
+             * Operator name
+             */
+            user: string;
+            /**
+             * Changed field name
+             */
+            field: string | null;
+            /**
+             * Previous value
+             */
+            from: string | null;
+            /**
+             * New value
+             */
+            to: string;
+        }>;
+    };
+};
+
+export type GetCrmCampaignsByIdChangeHistoryResponse = GetCrmCampaignsByIdChangeHistoryResponses[keyof GetCrmCampaignsByIdChangeHistoryResponses];
+
+export type GetCrmCampaignsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        limit?: number;
+        /**
+         * Search by campaign name, ID, or code
+         */
+        search?: string;
+        /**
+         * StoreListBrand
+         *
+         * Store brand
+         */
+        brand?: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * CampaignAcceptStatus
+         *
+         * Campaign acceptance availability
+         */
+        accept_status?: 'active' | 'inactive';
+        /**
+         * Recruitment period start date (YYYY-MM-DD)
+         */
+        recruitment_period_start?: string;
+        /**
+         * Recruitment period end date (YYYY-MM-DD)
+         */
+        recruitment_period_end?: string;
+        sort_by?: 'id' | 'name' | 'code' | 'brand' | 'recruitment_period_start' | 'recruitment_period_end' | 'accept_status' | 'main_contract_name';
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/campaigns';
+};
+
+export type GetCrmCampaignsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmCampaignsError = GetCrmCampaignsErrors[keyof GetCrmCampaignsErrors];
+
+export type GetCrmCampaignsResponses = {
+    /**
+     * GetCampaignsResponse
+     *
+     * Campaign master list response
+     */
+    200: {
+        campaigns: Array<{
+            /**
+             * Campaign ID
+             */
+            id: string;
+            /**
+             * Campaign name
+             */
+            name: string;
+            /**
+             * Campaign code
+             */
+            code: string;
+            /**
+             * StoreListBrand
+             *
+             * Brand
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * Recruitment period start date
+             */
+            recruitment_period_start: string;
+            /**
+             * Recruitment period end date
+             */
+            recruitment_period_end: string;
+            /**
+             * CampaignAcceptStatus
+             *
+             * Acceptance status
+             */
+            accept_status: 'active' | 'inactive';
+            /**
+             * Linked main contract name
+             */
+            main_contract_name: string;
+        }>;
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmCampaignsResponse = GetCrmCampaignsResponses[keyof GetCrmCampaignsResponses];
 
 export type PostCrmFamilyRegistrationsByIdApproveData = {
     /**

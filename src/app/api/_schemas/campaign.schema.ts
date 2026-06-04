@@ -160,6 +160,11 @@ export const CampaignDetailStatsSchema = z
       .int()
       .nonnegative()
       .openapi({ example: 12, description: 'New applications this month' }),
+    discount_total: z
+      .number()
+      .int()
+      .nonnegative()
+      .openapi({ example: 1284000, description: 'Total discount amount' }),
   })
   .openapi({
     title: 'CampaignDetailStats',
@@ -176,6 +181,53 @@ export const CampaignDetailMetadataSchema = z
   .openapi({
     title: 'CampaignDetailMetadata',
     description: 'Campaign detail audit metadata',
+  });
+
+export const CampaignPromoCodePreviewStatusSchema = z
+  .enum(['active', 'expired', 'limit_reached', 'inactive'])
+  .openapi({
+    title: 'CampaignPromoCodePreviewStatus',
+    description: 'Read-only promo-code preview status for campaign detail tab 2',
+  });
+
+export const CampaignPromoCodePreviewItemSchema = z
+  .object({
+    code: z.string().openapi({ example: 'STR01-ABCDE', description: 'Promo code' }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({ example: '春の入会キャンペーン用', description: 'Promo code description' }),
+    valid_from: z.string().openapi({ example: '2026/03/01', description: 'Validity start date' }),
+    valid_to: z.string().openapi({ example: '2026/04/30', description: 'Validity end date' }),
+    status: CampaignPromoCodePreviewStatusSchema.openapi({
+      description: 'Promo code preview status',
+    }),
+  })
+  .openapi({
+    title: 'CampaignPromoCodePreviewItem',
+    description: 'Read-only promo-code preview row shown in campaign detail tab 2',
+  });
+
+export const CampaignChangeHistoryItemSchema = z
+  .object({
+    date: z.string().openapi({ example: '2026/03/10 14:20', description: 'Updated timestamp' }),
+    user: z.string().openapi({ example: '田中 花子', description: 'Operator name' }),
+    field: z.string().nullable().openapi({
+      example: '月額割引',
+      description: 'Changed field name',
+    }),
+    from: z.string().nullable().openapi({
+      example: '初月30%OFF',
+      description: 'Previous value',
+    }),
+    to: z.string().openapi({
+      example: '初月50%OFF',
+      description: 'New value',
+    }),
+  })
+  .openapi({
+    title: 'CampaignChangeHistoryItem',
+    description: 'Campaign change history item',
   });
 
 export const CampaignDetailSchema = z
@@ -232,6 +284,9 @@ export const CampaignDetailSchema = z
     auto_grant: CampaignDetailAutoGrantSchema,
     stats: CampaignDetailStatsSchema,
     metadata: CampaignDetailMetadataSchema,
+    promo_code_previews: z.array(CampaignPromoCodePreviewItemSchema).openapi({
+      description: 'Read-only promo-code preview rows for campaign detail tab 2',
+    }),
   })
   .openapi({
     title: 'CampaignDetail',
@@ -247,13 +302,28 @@ export const GetCampaignDetailResponseSchema = z
     description: 'Single campaign master detail response',
   });
 
+export const GetCampaignChangeHistoryResponseSchema = z
+  .object({
+    history: z.array(CampaignChangeHistoryItemSchema),
+  })
+  .openapi({
+    title: 'GetCampaignChangeHistoryResponse',
+    description: 'Campaign change-history response',
+  });
+
 export type CampaignPeriodType = z.infer<typeof CampaignPeriodTypeSchema>;
 export type CampaignDetailPeriod = z.infer<typeof CampaignDetailPeriodSchema>;
 export type CampaignDetailDiscount = z.infer<typeof CampaignDetailDiscountSchema>;
 export type CampaignDetailAutoGrant = z.infer<typeof CampaignDetailAutoGrantSchema>;
 export type CampaignDetailStats = z.infer<typeof CampaignDetailStatsSchema>;
 export type CampaignDetailMetadata = z.infer<typeof CampaignDetailMetadataSchema>;
+export type CampaignPromoCodePreviewStatus = z.infer<typeof CampaignPromoCodePreviewStatusSchema>;
+export type CampaignPromoCodePreviewItem = z.infer<typeof CampaignPromoCodePreviewItemSchema>;
+export type CampaignChangeHistoryItem = z.infer<typeof CampaignChangeHistoryItemSchema>;
 export type CampaignDetail = z.infer<typeof CampaignDetailSchema>;
 export type GetCampaignDetailResponse = z.infer<typeof GetCampaignDetailResponseSchema>;
+export type GetCampaignChangeHistoryResponse = z.infer<
+  typeof GetCampaignChangeHistoryResponseSchema
+>;
 
 export { ErrorResponseSchema };

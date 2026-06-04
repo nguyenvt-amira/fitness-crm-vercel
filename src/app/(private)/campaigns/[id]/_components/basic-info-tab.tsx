@@ -2,6 +2,7 @@
 
 import type { ReactNode } from 'react';
 
+import type { CampaignDetail } from '@/app/api/_schemas/campaign.schema';
 import { formatDateYYYYMMDD } from '@/utils/date.util';
 
 import { BrandBadge } from '@/components/common/brand-badge';
@@ -9,7 +10,6 @@ import { Field } from '@/components/common/field';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-import type { CampaignDetail } from '@/lib/api/types.gen';
 import { cn } from '@/lib/utils';
 
 import { CampaignAcceptancePanel } from './campaign-acceptance-panel';
@@ -21,20 +21,34 @@ type BasicInfoTabProps = {
 function SummaryCard({
   title,
   value,
+  prefix,
+  suffix,
   tone = 'default',
 }: Readonly<{
   title: string;
   value: ReactNode;
-  tone?: 'default' | 'info' | 'success';
+  prefix?: string;
+  suffix?: string;
+  tone?: 'default' | 'info' | 'success' | 'warning';
 }>) {
   const toneClass =
-    tone === 'info' ? 'text-info' : tone === 'success' ? 'text-success' : 'text-foreground';
+    tone === 'info'
+      ? 'text-info'
+      : tone === 'success'
+        ? 'text-success'
+        : tone === 'warning'
+          ? 'text-warning'
+          : 'text-foreground';
 
   return (
     <Card className="overflow-hidden">
       <CardContent className="px-4 py-3">
         <p className="text-muted-foreground mb-1 text-xs">{title}</p>
-        <div className={`text-2xl leading-8 font-semibold ${toneClass}`}>{value}</div>
+        <div className={`text-2xl leading-8 font-semibold ${toneClass}`}>
+          {prefix ? <span className="mr-0.5 text-base font-medium">{prefix}</span> : null}
+          {value}
+          {suffix ? <span className="ml-1 text-base font-medium">{suffix}</span> : null}
+        </div>
       </CardContent>
     </Card>
   );
@@ -60,7 +74,7 @@ function CreatorRow({ name }: Readonly<{ name: string }>) {
 export function BasicInfoTab({ campaign }: Readonly<BasicInfoTabProps>) {
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-4">
         <SummaryCard
           title="適用会員数"
           value={`${campaign.stats.applied_member_count.toLocaleString()}名`}
@@ -74,6 +88,12 @@ export function BasicInfoTab({ campaign }: Readonly<BasicInfoTabProps>) {
           title="今月の新規適用"
           value={`${campaign.stats.monthly_new_application_count.toLocaleString()}名`}
           tone="success"
+        />
+        <SummaryCard
+          title="割引総額"
+          value={campaign.stats.discount_total.toLocaleString()}
+          prefix="¥"
+          tone="warning"
         />
       </div>
 
@@ -249,7 +269,7 @@ export function BasicInfoTab({ campaign }: Readonly<BasicInfoTabProps>) {
         </div>
 
         <div className="xl:w-[40%]">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 xl:sticky xl:top-0">
             <CampaignAcceptancePanel campaign={campaign} />
 
             <Card className="overflow-hidden">

@@ -2,6 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation';
 
+import type { CampaignDetail } from '@/app/api/_schemas/campaign.schema';
 import { useQuery } from '@tanstack/react-query';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 
@@ -10,7 +11,6 @@ import { DataStateBoundary } from '@/components/common/data-state-boundary';
 import { PageHeader } from '@/components/common/page-header';
 import { RoleGatedButton } from '@/components/common/role-gated-button';
 import { RoleGatedMenuItem } from '@/components/common/role-gated-menu-item';
-import { Card, CardContent } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,28 +20,14 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { getCrmCampaignsByIdOptions } from '@/lib/api/@tanstack/react-query.gen';
-import type { GetCrmCampaignsByIdResponse } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
 import { UserRole } from '@/types/permission.type';
 
 import { BasicInfoTab } from './_components/basic-info-tab';
 import { CampaignDetailSkeleton } from './_components/campaign-detail-skeleton';
-
-type CampaignDetail = NonNullable<GetCrmCampaignsByIdResponse>['campaign'];
-
-function ComingSoonTab({ title, description }: Readonly<{ title: string; description: string }>) {
-  return (
-    <Card className="overflow-hidden">
-      <CardContent className="px-4 py-6">
-        <div className="flex flex-col gap-1">
-          <p className="text-sm font-medium">{title}</p>
-          <p className="text-muted-foreground text-sm">{description}</p>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
+import { HistoryTab } from './_components/history-tab';
+import { PromoCodesTab } from './_components/promo-codes-tab';
 
 export default function CampaignDetailPage() {
   const params = useParams();
@@ -71,7 +57,7 @@ export default function CampaignDetailPage() {
     );
   }
 
-  const campaign: CampaignDetail = data.campaign;
+  const campaign = data.campaign as CampaignDetail;
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden">
@@ -140,14 +126,11 @@ export default function CampaignDetailPage() {
         </TabsContent>
 
         <TabsContent value="promo" className="min-h-0 flex-1 overflow-y-auto px-6 pt-0 pb-4">
-          <ComingSoonTab
-            title="プロモーションコード"
-            description="このタブは次のスライスで実装します。"
-          />
+          <PromoCodesTab promoCodePreviews={campaign.promo_code_previews} />
         </TabsContent>
 
         <TabsContent value="history" className="min-h-0 flex-1 overflow-y-auto px-6 pt-0 pb-4">
-          <ComingSoonTab title="変更履歴" description="このタブは次のスライスで実装します。" />
+          <HistoryTab campaignId={campaignId} />
         </TabsContent>
       </Tabs>
     </div>

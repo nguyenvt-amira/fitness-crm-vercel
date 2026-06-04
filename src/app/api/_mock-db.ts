@@ -4,7 +4,11 @@
  */
 import { type BlacklistDetail } from '@/app/api/_schemas/blacklist.schema';
 import type { BrandItem } from '@/app/api/_schemas/brand.schema';
-import type { CampaignDetail, CampaignListItem } from '@/app/api/_schemas/campaign.schema';
+import type {
+  CampaignChangeHistoryItem,
+  CampaignDetail,
+  CampaignListItem,
+} from '@/app/api/_schemas/campaign.schema';
 import type {
   EkycResult,
   FamilyRegistrationStatus,
@@ -1339,10 +1343,12 @@ type DbType = {
   campaigns: {
     _rows: CampaignListItem[];
     _details: Record<string, CampaignDetail>;
+    _changeHistory: Record<string, CampaignChangeHistoryItem[]>;
     _seeded: boolean;
     _seed(): void;
     getList(): CampaignListItem[];
     getById(id: string): CampaignDetail | undefined;
+    getChangeHistory(id: string): CampaignChangeHistoryItem[];
   };
   optionMasters: {
     _rows: OptionMasterDetail[];
@@ -5227,6 +5233,7 @@ function createDb() {
     campaigns: {
       _rows: [] as CampaignListItem[],
       _details: {} as Record<string, CampaignDetail>,
+      _changeHistory: {} as Record<string, CampaignChangeHistoryItem[]>,
       _seeded: false,
       _seed(): void {
         if (this._seeded) return;
@@ -5345,6 +5352,7 @@ function createDb() {
               applied_member_count: 128,
               application_count: 45,
               monthly_new_application_count: 12,
+              discount_total: 1284000,
             },
             metadata: {
               created_at: '2026/01/10 09:30',
@@ -5352,6 +5360,22 @@ function createDb() {
               updated_at: '2026/05/31 14:20',
               updated_by: '本部管理者',
             },
+            promo_code_previews: [
+              {
+                code: 'STR01-7HGK2',
+                description: '春の入会キャンペーン用',
+                valid_from: '2026/03/01',
+                valid_to: '2026/04/30',
+                status: 'active',
+              },
+              {
+                code: 'STR01-KP4M8',
+                description: 'オフライン配布分',
+                valid_from: '2026/03/15',
+                valid_to: '2026/04/15',
+                status: 'expired',
+              },
+            ],
           }),
           CP002: makeDetail('CP002', {
             note: '紹介経由の新規会員獲得キャンペーン',
@@ -5397,6 +5421,7 @@ function createDb() {
               applied_member_count: 286,
               application_count: 132,
               monthly_new_application_count: 24,
+              discount_total: 2489000,
             },
             metadata: {
               created_at: '2026/01/01 08:00',
@@ -5404,6 +5429,15 @@ function createDb() {
               updated_at: '2026/05/20 11:10',
               updated_by: '本部管理者',
             },
+            promo_code_previews: [
+              {
+                code: 'ALL2026',
+                description: '通年紹介施策',
+                valid_from: '2026/01/01',
+                valid_to: '2026/12/31',
+                status: 'active',
+              },
+            ],
           }),
           CP003: makeDetail('CP003', {
             note: '法人契約向けの期間限定施策',
@@ -5449,6 +5483,7 @@ function createDb() {
               applied_member_count: 64,
               application_count: 21,
               monthly_new_application_count: 7,
+              discount_total: 864000,
             },
             metadata: {
               created_at: '2026/03/18 16:45',
@@ -5456,6 +5491,22 @@ function createDb() {
               updated_at: '2026/05/12 10:05',
               updated_by: '田中 花子',
             },
+            promo_code_previews: [
+              {
+                code: 'STR02-CORP1',
+                description: '法人提携先向け',
+                valid_from: '2026/04/01',
+                valid_to: '2026/09/30',
+                status: 'active',
+              },
+              {
+                code: 'STR02-CORP2',
+                description: '先着配布分',
+                valid_from: '2026/04/15',
+                valid_to: '2026/08/31',
+                status: 'limit_reached',
+              },
+            ],
           }),
           CP004: makeDetail('CP004', {
             note: '新店オープン記念施策',
@@ -5501,6 +5552,7 @@ function createDb() {
               applied_member_count: 19,
               application_count: 5,
               monthly_new_application_count: 0,
+              discount_total: 134000,
             },
             metadata: {
               created_at: '2025/10/01 08:00',
@@ -5508,6 +5560,15 @@ function createDb() {
               updated_at: '2025/12/20 17:30',
               updated_by: '店舗開店準備室',
             },
+            promo_code_previews: [
+              {
+                code: 'OPEN25-GRAND',
+                description: 'オープン記念配布分',
+                valid_from: '2025/10/01',
+                valid_to: '2025/12/31',
+                status: 'inactive',
+              },
+            ],
           }),
           CP005: makeDetail('CP005', {
             note: '夏季の入会強化キャンペーン',
@@ -5553,6 +5614,7 @@ function createDb() {
               applied_member_count: 42,
               application_count: 8,
               monthly_new_application_count: 2,
+              discount_total: 421500,
             },
             metadata: {
               created_at: '2026/05/10 12:00',
@@ -5560,6 +5622,7 @@ function createDb() {
               updated_at: '2026/06/01 09:20',
               updated_by: 'マーケティング担当',
             },
+            promo_code_previews: [],
           }),
           CP006: makeDetail('CP006', {
             note: '年末商戦向けの特別割引施策',
@@ -5605,6 +5668,7 @@ function createDb() {
               applied_member_count: 9,
               application_count: 3,
               monthly_new_application_count: 1,
+              discount_total: 78500,
             },
             metadata: {
               created_at: '2026/09/20 13:15',
@@ -5612,7 +5676,86 @@ function createDb() {
               updated_at: '2026/10/05 11:40',
               updated_by: '本部管理者',
             },
+            promo_code_previews: [
+              {
+                code: 'STR01-YE26A',
+                description: '年末キャンペーン先行配布分',
+                valid_from: '2026/10/01',
+                valid_to: '2026/12/31',
+                status: 'active',
+              },
+            ],
           }),
+        };
+
+        this._changeHistory = {
+          CP001: [
+            {
+              date: '2026/03/10 14:20',
+              user: '田中 花子',
+              field: '月額割引',
+              from: '初月30%OFF',
+              to: '初月50%OFF',
+            },
+            {
+              date: '2026/03/05 09:15',
+              user: '田中 花子',
+              field: '対象契約',
+              from: 'レギュラー会員のみ',
+              to: 'レギュラー会員, デイタイム会員',
+            },
+            {
+              date: '2026/02/15 10:30',
+              user: '山田 太郎',
+              field: null,
+              from: null,
+              to: '新規作成',
+            },
+          ],
+          CP002: [
+            {
+              date: '2026/05/20 11:10',
+              user: '本部管理者',
+              field: '備考',
+              from: '紹介経由の施策',
+              to: '紹介経由の新規会員獲得キャンペーン',
+            },
+          ],
+          CP003: [
+            {
+              date: '2026/05/12 10:05',
+              user: '田中 花子',
+              field: '適用主契約',
+              from: '一般会員',
+              to: '法人会員',
+            },
+            {
+              date: '2026/04/01 08:30',
+              user: '田中 花子',
+              field: null,
+              from: null,
+              to: '新規作成',
+            },
+          ],
+          CP004: [
+            {
+              date: '2025/12/20 17:30',
+              user: '店舗開店準備室',
+              field: 'ステータス',
+              from: '有効',
+              to: '無効',
+            },
+          ],
+          CP005: [],
+          CP006: [
+            {
+              date: '2026/10/05 11:40',
+              user: '本部管理者',
+              field: '受付可否',
+              from: '下書き',
+              to: '有効',
+            },
+          ],
         };
       },
       getList(): CampaignListItem[] {
@@ -5622,6 +5765,10 @@ function createDb() {
       getById(id: string): CampaignDetail | undefined {
         this._seed();
         return this._details[id];
+      },
+      getChangeHistory(id: string): CampaignChangeHistoryItem[] {
+        this._seed();
+        return this._changeHistory[id] ?? [];
       },
     },
     optionMasters: {

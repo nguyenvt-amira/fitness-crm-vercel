@@ -1596,9 +1596,20 @@
             "minimum": 0,
             "example": 12,
             "description": "New applications this month"
+          },
+          "discount_total": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 1284000,
+            "description": "Total discount amount"
           }
         },
-        "required": ["applied_member_count", "application_count", "monthly_new_application_count"],
+        "required": [
+          "applied_member_count",
+          "application_count",
+          "monthly_new_application_count",
+          "discount_total"
+        ],
         "title": "CampaignDetailStats",
         "description": "Campaign summary metrics shown on the detail page"
       },
@@ -1856,6 +1867,45 @@
             "required": ["created_at", "created_by", "updated_at", "updated_by"],
             "title": "CampaignDetailMetadata",
             "description": "Campaign detail audit metadata"
+          },
+          "promo_code_previews": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "example": "STR01-ABCDE",
+                  "description": "Promo code"
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "春の入会キャンペーン用",
+                  "description": "Promo code description"
+                },
+                "valid_from": {
+                  "type": "string",
+                  "example": "2026/03/01",
+                  "description": "Validity start date"
+                },
+                "valid_to": {
+                  "type": "string",
+                  "example": "2026/04/30",
+                  "description": "Validity end date"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["active", "expired", "limit_reached", "inactive"],
+                  "title": "CampaignPromoCodePreviewStatus",
+                  "description": "Promo code preview status"
+                }
+              },
+              "required": ["code", "description", "valid_from", "valid_to", "status"],
+              "title": "CampaignPromoCodePreviewItem",
+              "description": "Read-only promo-code preview row shown in campaign detail tab 2"
+            },
+            "description": "Read-only promo-code preview rows for campaign detail tab 2"
           }
         },
         "required": [
@@ -1878,7 +1928,8 @@
           "periods",
           "auto_grant",
           "stats",
-          "metadata"
+          "metadata",
+          "promo_code_previews"
         ],
         "title": "CampaignDetail",
         "description": "Campaign master detail payload for tab 1"
@@ -2261,6 +2312,45 @@
                 "required": ["created_at", "created_by", "updated_at", "updated_by"],
                 "title": "CampaignDetailMetadata",
                 "description": "Campaign detail audit metadata"
+              },
+              "promo_code_previews": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "example": "STR01-ABCDE",
+                      "description": "Promo code"
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "春の入会キャンペーン用",
+                      "description": "Promo code description"
+                    },
+                    "valid_from": {
+                      "type": "string",
+                      "example": "2026/03/01",
+                      "description": "Validity start date"
+                    },
+                    "valid_to": {
+                      "type": "string",
+                      "example": "2026/04/30",
+                      "description": "Validity end date"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": ["active", "expired", "limit_reached", "inactive"],
+                      "title": "CampaignPromoCodePreviewStatus",
+                      "description": "Promo code preview status"
+                    }
+                  },
+                  "required": ["code", "description", "valid_from", "valid_to", "status"],
+                  "title": "CampaignPromoCodePreviewItem",
+                  "description": "Read-only promo-code preview row shown in campaign detail tab 2"
+                },
+                "description": "Read-only promo-code preview rows for campaign detail tab 2"
               }
             },
             "required": [
@@ -2283,7 +2373,8 @@
               "periods",
               "auto_grant",
               "stats",
-              "metadata"
+              "metadata",
+              "promo_code_previews"
             ],
             "title": "CampaignDetail",
             "description": "Campaign master detail payload for tab 1"
@@ -16386,256 +16477,6 @@
         }
       }
     },
-    "/crm/campaigns": {
-      "get": {
-        "summary": "Get campaign masters",
-        "description": "Get paginated list of campaign masters (G-03)",
-        "tags": ["Campaigns"],
-        "parameters": [
-          {
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "default": 1
-            },
-            "required": false,
-            "name": "page",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 200,
-              "default": 20
-            },
-            "required": false,
-            "name": "limit",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "description": "Search by campaign name, ID, or code"
-            },
-            "required": false,
-            "description": "Search by campaign name, ID, or code",
-            "name": "search",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
-              "title": "StoreListBrand",
-              "description": "Store brand"
-            },
-            "required": false,
-            "description": "Store brand",
-            "name": "brand",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "enum": ["active", "inactive"],
-              "title": "CampaignAcceptStatus",
-              "description": "Campaign acceptance availability"
-            },
-            "required": false,
-            "description": "Campaign acceptance availability",
-            "name": "accept_status",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "description": "Recruitment period start date (YYYY-MM-DD)"
-            },
-            "required": false,
-            "description": "Recruitment period start date (YYYY-MM-DD)",
-            "name": "recruitment_period_start",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "description": "Recruitment period end date (YYYY-MM-DD)"
-            },
-            "required": false,
-            "description": "Recruitment period end date (YYYY-MM-DD)",
-            "name": "recruitment_period_end",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "enum": [
-                "id",
-                "name",
-                "code",
-                "brand",
-                "recruitment_period_start",
-                "recruitment_period_end",
-                "accept_status",
-                "main_contract_name"
-              ],
-              "default": "id"
-            },
-            "required": false,
-            "name": "sort_by",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "enum": ["asc", "desc"],
-              "default": "asc"
-            },
-            "required": false,
-            "name": "sort_order",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Campaign list",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "campaigns": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "example": "CP001",
-                            "description": "Campaign ID"
-                          },
-                          "name": {
-                            "type": "string",
-                            "example": "春の入会キャンペーン",
-                            "description": "Campaign name"
-                          },
-                          "code": {
-                            "type": "string",
-                            "example": "STR01-A1B2C",
-                            "description": "Campaign code"
-                          },
-                          "brand": {
-                            "type": "string",
-                            "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
-                            "title": "StoreListBrand",
-                            "description": "Brand"
-                          },
-                          "recruitment_period_start": {
-                            "type": "string",
-                            "example": "2026/03/01",
-                            "description": "Recruitment period start date"
-                          },
-                          "recruitment_period_end": {
-                            "type": "string",
-                            "example": "2026/04/30",
-                            "description": "Recruitment period end date"
-                          },
-                          "accept_status": {
-                            "type": "string",
-                            "enum": ["active", "inactive"],
-                            "title": "CampaignAcceptStatus",
-                            "description": "Acceptance status"
-                          },
-                          "main_contract_name": {
-                            "type": "string",
-                            "example": "レギュラー会員",
-                            "description": "Linked main contract name"
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "name",
-                          "code",
-                          "brand",
-                          "recruitment_period_start",
-                          "recruitment_period_end",
-                          "accept_status",
-                          "main_contract_name"
-                        ],
-                        "title": "CampaignListItem",
-                        "description": "Campaign master list item"
-                      }
-                    },
-                    "pagination": {
-                      "type": "object",
-                      "properties": {
-                        "page": {
-                          "type": "number"
-                        },
-                        "limit": {
-                          "type": "number"
-                        },
-                        "total": {
-                          "type": "number"
-                        },
-                        "total_pages": {
-                          "type": "number"
-                        }
-                      },
-                      "required": ["page", "limit", "total", "total_pages"]
-                    }
-                  },
-                  "required": ["campaigns", "pagination"],
-                  "title": "GetCampaignsResponse",
-                  "description": "Campaign master list response"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Invalid email or password",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Invalid email or password",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/crm/campaigns/{id}": {
       "get": {
         "summary": "Get campaign detail",
@@ -16892,6 +16733,45 @@
                           "required": ["created_at", "created_by", "updated_at", "updated_by"],
                           "title": "CampaignDetailMetadata",
                           "description": "Campaign detail audit metadata"
+                        },
+                        "promo_code_previews": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "code": {
+                                "type": "string",
+                                "example": "STR01-ABCDE",
+                                "description": "Promo code"
+                              },
+                              "description": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "春の入会キャンペーン用",
+                                "description": "Promo code description"
+                              },
+                              "valid_from": {
+                                "type": "string",
+                                "example": "2026/03/01",
+                                "description": "Validity start date"
+                              },
+                              "valid_to": {
+                                "type": "string",
+                                "example": "2026/04/30",
+                                "description": "Validity end date"
+                              },
+                              "status": {
+                                "type": "string",
+                                "enum": ["active", "expired", "limit_reached", "inactive"],
+                                "title": "CampaignPromoCodePreviewStatus",
+                                "description": "Promo code preview status"
+                              }
+                            },
+                            "required": ["code", "description", "valid_from", "valid_to", "status"],
+                            "title": "CampaignPromoCodePreviewItem",
+                            "description": "Read-only promo-code preview row shown in campaign detail tab 2"
+                          },
+                          "description": "Read-only promo-code preview rows for campaign detail tab 2"
                         }
                       },
                       "required": [
@@ -16914,7 +16794,8 @@
                         "periods",
                         "auto_grant",
                         "stats",
-                        "metadata"
+                        "metadata",
+                        "promo_code_previews"
                       ],
                       "title": "CampaignDetail",
                       "description": "Campaign master detail payload for tab 1"
@@ -16929,6 +16810,369 @@
           },
           "404": {
             "description": "Campaign not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/campaigns/{id}/change-history": {
+      "get": {
+        "summary": "Get campaign change history",
+        "description": "Get change history for a specific campaign master record",
+        "tags": ["Campaigns"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Campaign ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campaign change history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "history": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "date": {
+                            "type": "string",
+                            "example": "2026/03/10 14:20",
+                            "description": "Updated timestamp"
+                          },
+                          "user": {
+                            "type": "string",
+                            "example": "田中 花子",
+                            "description": "Operator name"
+                          },
+                          "field": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "月額割引",
+                            "description": "Changed field name"
+                          },
+                          "from": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "初月30%OFF",
+                            "description": "Previous value"
+                          },
+                          "to": {
+                            "type": "string",
+                            "example": "初月50%OFF",
+                            "description": "New value"
+                          }
+                        },
+                        "required": ["date", "user", "field", "from", "to"],
+                        "title": "CampaignChangeHistoryItem",
+                        "description": "Campaign change history item"
+                      }
+                    }
+                  },
+                  "required": ["history"],
+                  "title": "GetCampaignChangeHistoryResponse",
+                  "description": "Campaign change-history response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Campaign not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/campaigns": {
+      "get": {
+        "summary": "Get campaign masters",
+        "description": "Get paginated list of campaign masters (G-03)",
+        "tags": ["Campaigns"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 20
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "Search by campaign name, ID, or code"
+            },
+            "required": false,
+            "description": "Search by campaign name, ID, or code",
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+              "title": "StoreListBrand",
+              "description": "Store brand"
+            },
+            "required": false,
+            "description": "Store brand",
+            "name": "brand",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["active", "inactive"],
+              "title": "CampaignAcceptStatus",
+              "description": "Campaign acceptance availability"
+            },
+            "required": false,
+            "description": "Campaign acceptance availability",
+            "name": "accept_status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "Recruitment period start date (YYYY-MM-DD)"
+            },
+            "required": false,
+            "description": "Recruitment period start date (YYYY-MM-DD)",
+            "name": "recruitment_period_start",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "Recruitment period end date (YYYY-MM-DD)"
+            },
+            "required": false,
+            "description": "Recruitment period end date (YYYY-MM-DD)",
+            "name": "recruitment_period_end",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "id",
+                "name",
+                "code",
+                "brand",
+                "recruitment_period_start",
+                "recruitment_period_end",
+                "accept_status",
+                "main_contract_name"
+              ],
+              "default": "id"
+            },
+            "required": false,
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            },
+            "required": false,
+            "name": "sort_order",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campaign list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "campaigns": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "CP001",
+                            "description": "Campaign ID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "春の入会キャンペーン",
+                            "description": "Campaign name"
+                          },
+                          "code": {
+                            "type": "string",
+                            "example": "STR01-A1B2C",
+                            "description": "Campaign code"
+                          },
+                          "brand": {
+                            "type": "string",
+                            "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                            "title": "StoreListBrand",
+                            "description": "Brand"
+                          },
+                          "recruitment_period_start": {
+                            "type": "string",
+                            "example": "2026/03/01",
+                            "description": "Recruitment period start date"
+                          },
+                          "recruitment_period_end": {
+                            "type": "string",
+                            "example": "2026/04/30",
+                            "description": "Recruitment period end date"
+                          },
+                          "accept_status": {
+                            "type": "string",
+                            "enum": ["active", "inactive"],
+                            "title": "CampaignAcceptStatus",
+                            "description": "Acceptance status"
+                          },
+                          "main_contract_name": {
+                            "type": "string",
+                            "example": "レギュラー会員",
+                            "description": "Linked main contract name"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "code",
+                          "brand",
+                          "recruitment_period_start",
+                          "recruitment_period_end",
+                          "accept_status",
+                          "main_contract_name"
+                        ],
+                        "title": "CampaignListItem",
+                        "description": "Campaign master list item"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "number"
+                        },
+                        "limit": {
+                          "type": "number"
+                        },
+                        "total": {
+                          "type": "number"
+                        },
+                        "total_pages": {
+                          "type": "number"
+                        }
+                      },
+                      "required": ["page", "limit", "total", "total_pages"]
+                    }
+                  },
+                  "required": ["campaigns", "pagination"],
+                  "title": "GetCampaignsResponse",
+                  "description": "Campaign master list response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
             "content": {
               "application/json": {
                 "schema": {
