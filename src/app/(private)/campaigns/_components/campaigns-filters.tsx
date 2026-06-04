@@ -1,9 +1,12 @@
 'use client';
 
+import { format, parse } from 'date-fns';
+import { ja } from 'date-fns/locale';
 import { ChevronDown, ChevronUp, Search, SlidersHorizontal } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { DatePicker } from '@/components/ui/date-picker';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -37,6 +40,13 @@ export function CampaignsFilters({
   const acceptStatus = filters.accept_status as CampaignAcceptStatus | null;
   const recruitmentPeriodStart = filters.recruitment_period_start;
   const recruitmentPeriodEnd = filters.recruitment_period_end;
+
+  const recruitmentStartDate = recruitmentPeriodStart
+    ? parse(recruitmentPeriodStart, 'yyyy/MM/dd', new Date(), { locale: ja })
+    : undefined;
+  const recruitmentEndDate = recruitmentPeriodEnd
+    ? parse(recruitmentPeriodEnd, 'yyyy/MM/dd', new Date(), { locale: ja })
+    : undefined;
 
   const activeFilterCount = [
     brand,
@@ -130,21 +140,29 @@ export function CampaignsFilters({
 
             <div className="flex flex-col gap-1">
               <span className="text-muted-foreground text-[11px]">募集開始日</span>
-              <Input
-                type="date"
-                value={recruitmentPeriodStart}
-                onChange={(event) => updateFilter('recruitment_period_start', event.target.value)}
-                className="h-8 w-[160px] rounded-lg"
+              <DatePicker
+                date={recruitmentStartDate}
+                onDateChange={(date) => {
+                  updateFilter(
+                    'recruitment_period_start',
+                    date ? format(date, 'yyyy/MM/dd', { locale: ja }) : '',
+                  );
+                }}
+                placeholder="日付を選択"
               />
             </div>
 
             <div className="flex flex-col gap-1">
               <span className="text-muted-foreground text-[11px]">募集終了日</span>
-              <Input
-                type="date"
-                value={recruitmentPeriodEnd}
-                onChange={(event) => updateFilter('recruitment_period_end', event.target.value)}
-                className="h-8 w-[160px] rounded-lg"
+              <DatePicker
+                date={recruitmentEndDate}
+                onDateChange={(date) => {
+                  updateFilter(
+                    'recruitment_period_end',
+                    date ? format(date, 'yyyy/MM/dd', { locale: ja }) : '',
+                  );
+                }}
+                placeholder="日付を選択"
               />
             </div>
           </div>
