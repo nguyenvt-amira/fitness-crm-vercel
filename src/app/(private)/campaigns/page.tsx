@@ -2,6 +2,8 @@
 
 import { Suspense, useMemo, useState } from 'react';
 
+import { useRouter } from 'next/navigation';
+
 import { useQuery } from '@tanstack/react-query';
 import type { SortingState } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
@@ -15,6 +17,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 
 import { getCrmCampaignsOptions } from '@/lib/api/@tanstack/react-query.gen';
+import { navigate } from '@/lib/routes/routes.util';
 
 import { UserRole } from '@/types/permission.type';
 
@@ -24,6 +27,7 @@ import { CampaignsFiltersProvider } from './_contexts/campaigns-filters-context'
 import { useCampaignsFilters } from './_hooks/use-campaigns-filters';
 
 function CampaignsPageContent() {
+  const router = useRouter();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const filtersHook = useCampaignsFilters();
   const { filters, setFilters, queryParams, currentPage, setCurrentPage, pageSize, setPageSize } =
@@ -90,6 +94,9 @@ function CampaignsPageContent() {
             data={campaigns}
             isLoading={isLoading}
             variant="simple"
+            onRowClick={(row) => {
+              router.push(navigate('/campaigns/[id]', row.id));
+            }}
             className="rounded-none border-x-0 border-b-0 text-xs [&_table]:text-xs [&_td]:text-xs [&_td]:leading-4 [&_th]:text-xs [&_th]:leading-4 [&_th]:font-semibold [&_thead_tr]:h-10 [&_thead_tr]:bg-neutral-100"
             containerClassName={
               isFilterOpen ? 'max-h-[calc(100vh-330px)]' : 'max-h-[calc(100vh-286px)]'

@@ -58,6 +58,7 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
 
   // Campaigns
   '/campaigns': Permission.CampaignsView,
+  '/campaigns/:id': Permission.CampaignsView,
 
   // Options
   '/options': Permission.OptionsView,

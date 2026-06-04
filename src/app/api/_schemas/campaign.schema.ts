@@ -85,4 +85,175 @@ export type CampaignListItem = z.infer<typeof CampaignListItemSchema>;
 export type GetCampaignsQuery = z.infer<typeof GetCampaignsQuerySchema>;
 export type GetCampaignsResponse = z.infer<typeof GetCampaignsResponseSchema>;
 
+export const CampaignPeriodTypeSchema = z.enum(['recruitment', 'usage', 'application']).openapi({
+  title: 'CampaignPeriodType',
+  description: 'Type of campaign period shown in the detail tab',
+});
+
+export const CampaignDetailPeriodSchema = z
+  .object({
+    period_type: CampaignPeriodTypeSchema.openapi({
+      description: 'Period grouping key',
+    }),
+    label: z.string().openapi({ example: '募集期間', description: 'Period label' }),
+    start_date: z.string().openapi({ example: '2026/03/01', description: 'Start date' }),
+    end_date: z.string().openapi({ example: '2026/04/30', description: 'End date' }),
+  })
+  .openapi({
+    title: 'CampaignDetailPeriod',
+    description: 'Campaign period block shown in detail tab 1',
+  });
+
+export const CampaignDetailDiscountSchema = z
+  .object({
+    title: z.string().openapi({ example: '春の入会特典', description: 'Discount title' }),
+    description: z.string().openapi({
+      example: '入会金 0円 / 事務手数料 50% OFF',
+      description: 'Discount description',
+    }),
+    value_text: z.string().openapi({
+      example: '初月会費 1,100円引き',
+      description: 'Display text for the discount value',
+    }),
+  })
+  .openapi({
+    title: 'CampaignDetailDiscount',
+    description: 'Discount settings shown in the basic information tab',
+  });
+
+export const CampaignDetailAutoGrantSchema = z
+  .object({
+    enabled: z.boolean().openapi({ description: 'Whether auto-grant is enabled' }),
+    title: z.string().openapi({ example: '自動付与設定', description: 'Auto-grant title' }),
+    timing_text: z.string().openapi({
+      example: '会員登録完了後 3日以内',
+      description: 'Timing description',
+    }),
+    target_text: z.string().openapi({
+      example: 'レギュラー会員 / プレミアム会員',
+      description: 'Target contract description',
+    }),
+    description: z.string().openapi({
+      example: '条件を満たした会員に対して自動でキャンペーン適用を行います。',
+      description: 'Additional description',
+    }),
+  })
+  .openapi({
+    title: 'CampaignDetailAutoGrant',
+    description: 'Auto-grant settings shown in the basic information tab',
+  });
+
+export const CampaignDetailStatsSchema = z
+  .object({
+    applied_member_count: z
+      .number()
+      .int()
+      .nonnegative()
+      .openapi({ example: 128, description: 'Number of applied members' }),
+    application_count: z
+      .number()
+      .int()
+      .nonnegative()
+      .openapi({ example: 45, description: 'Number of applications' }),
+    monthly_new_application_count: z
+      .number()
+      .int()
+      .nonnegative()
+      .openapi({ example: 12, description: 'New applications this month' }),
+  })
+  .openapi({
+    title: 'CampaignDetailStats',
+    description: 'Campaign summary metrics shown on the detail page',
+  });
+
+export const CampaignDetailMetadataSchema = z
+  .object({
+    created_at: z.string().openapi({ example: '2026/01/10 09:30', description: 'Created at' }),
+    created_by: z.string().openapi({ example: '本部管理者', description: 'Created by' }),
+    updated_at: z.string().openapi({ example: '2026/05/31 14:20', description: 'Updated at' }),
+    updated_by: z.string().openapi({ example: '本部管理者', description: 'Updated by' }),
+  })
+  .openapi({
+    title: 'CampaignDetailMetadata',
+    description: 'Campaign detail audit metadata',
+  });
+
+export const CampaignDetailSchema = z
+  .object({
+    id: z.string().openapi({ example: 'CP001', description: 'Campaign ID' }),
+    name: z.string().openapi({ example: '春の入会キャンペーン', description: 'Campaign name' }),
+    code: z.string().openapi({ example: 'STR01-A1B2C', description: 'Campaign code' }),
+    brand: StoreListBrandSchema.openapi({ description: 'Brand' }),
+    note: z.string().nullable().openapi({
+      example: '新生活需要向けの施策',
+      description: 'Campaign note',
+    }),
+    accept_status: CampaignAcceptStatusSchema.openapi({ description: 'Acceptance status' }),
+    accept_status_message: z.string().openapi({
+      example: '受付中です。募集期間内の新規申請を受け付けています。',
+      description: 'Acceptance status helper text',
+    }),
+    accept_status_action_label: z.string().openapi({
+      example: '受付を停止する',
+      description: 'Primary acceptance control label',
+    }),
+    main_contract_name: z.string().openapi({
+      example: 'レギュラー会員',
+      description: 'Main contract name',
+    }),
+    recruitment_period_start: z.string().openapi({
+      example: '2026/03/01',
+      description: 'Recruitment period start date',
+    }),
+    recruitment_period_end: z.string().openapi({
+      example: '2026/04/30',
+      description: 'Recruitment period end date',
+    }),
+    usage_period_start: z.string().openapi({
+      example: '2026/03/15',
+      description: 'Usage period start date',
+    }),
+    usage_period_end: z.string().openapi({
+      example: '2026/05/31',
+      description: 'Usage period end date',
+    }),
+    application_period_start: z.string().openapi({
+      example: '2026/03/01',
+      description: 'Campaign application period start date',
+    }),
+    application_period_end: z.string().openapi({
+      example: '2026/04/30',
+      description: 'Campaign application period end date',
+    }),
+    discount: CampaignDetailDiscountSchema,
+    periods: z.array(CampaignDetailPeriodSchema).openapi({
+      description: 'Periods displayed in the detail tab',
+    }),
+    auto_grant: CampaignDetailAutoGrantSchema,
+    stats: CampaignDetailStatsSchema,
+    metadata: CampaignDetailMetadataSchema,
+  })
+  .openapi({
+    title: 'CampaignDetail',
+    description: 'Campaign master detail payload for tab 1',
+  });
+
+export const GetCampaignDetailResponseSchema = z
+  .object({
+    campaign: CampaignDetailSchema,
+  })
+  .openapi({
+    title: 'GetCampaignDetailResponse',
+    description: 'Single campaign master detail response',
+  });
+
+export type CampaignPeriodType = z.infer<typeof CampaignPeriodTypeSchema>;
+export type CampaignDetailPeriod = z.infer<typeof CampaignDetailPeriodSchema>;
+export type CampaignDetailDiscount = z.infer<typeof CampaignDetailDiscountSchema>;
+export type CampaignDetailAutoGrant = z.infer<typeof CampaignDetailAutoGrantSchema>;
+export type CampaignDetailStats = z.infer<typeof CampaignDetailStatsSchema>;
+export type CampaignDetailMetadata = z.infer<typeof CampaignDetailMetadataSchema>;
+export type CampaignDetail = z.infer<typeof CampaignDetailSchema>;
+export type GetCampaignDetailResponse = z.infer<typeof GetCampaignDetailResponseSchema>;
+
 export { ErrorResponseSchema };

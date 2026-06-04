@@ -7,6 +7,7 @@ import * as authSchemas from '../_schemas/auth.schema';
 import * as autoApprovalSchemas from '../_schemas/auto-approval.schema';
 import * as blacklistSchemas from '../_schemas/blacklist.schema';
 import * as brandSchemas from '../_schemas/brand.schema';
+import * as campaignSchemas from '../_schemas/campaign.schema';
 import * as familyRegistrationSchemas from '../_schemas/family-registration.schema';
 import * as leaveSchemas from '../_schemas/leave.schema';
 import * as mainContractSchemas from '../_schemas/main-contract.schema';
@@ -110,6 +111,56 @@ export function registerAllSchemas() {
   registeredSchemaMap.set(
     'RecentActivity',
     registry.register('RecentActivity', autoApprovalSchemas.RecentActivitySchema),
+  );
+
+  // Register campaign schemas
+  registeredSchemaMap.set(
+    'CampaignAcceptStatus',
+    registry.register('CampaignAcceptStatus', campaignSchemas.CampaignAcceptStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'CampaignPeriodType',
+    registry.register('CampaignPeriodType', campaignSchemas.CampaignPeriodTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'CampaignListItem',
+    registry.register('CampaignListItem', campaignSchemas.CampaignListItemSchema),
+  );
+  registeredSchemaMap.set(
+    'CampaignDetailPeriod',
+    registry.register('CampaignDetailPeriod', campaignSchemas.CampaignDetailPeriodSchema),
+  );
+  registeredSchemaMap.set(
+    'CampaignDetailDiscount',
+    registry.register('CampaignDetailDiscount', campaignSchemas.CampaignDetailDiscountSchema),
+  );
+  registeredSchemaMap.set(
+    'CampaignDetailAutoGrant',
+    registry.register('CampaignDetailAutoGrant', campaignSchemas.CampaignDetailAutoGrantSchema),
+  );
+  registeredSchemaMap.set(
+    'CampaignDetailStats',
+    registry.register('CampaignDetailStats', campaignSchemas.CampaignDetailStatsSchema),
+  );
+  registeredSchemaMap.set(
+    'CampaignDetailMetadata',
+    registry.register('CampaignDetailMetadata', campaignSchemas.CampaignDetailMetadataSchema),
+  );
+  registeredSchemaMap.set(
+    'CampaignDetail',
+    registry.register('CampaignDetail', campaignSchemas.CampaignDetailSchema),
+  );
+  registeredSchemaMap.set(
+    'GetCampaignsQuery',
+    registry.register('GetCampaignsQuery', campaignSchemas.GetCampaignsQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'GetCampaignsResponse',
+    registry.register('GetCampaignsResponse', campaignSchemas.GetCampaignsResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'GetCampaignDetailResponse',
+    registry.register('GetCampaignDetailResponse', campaignSchemas.GetCampaignDetailResponseSchema),
   );
 
   // Register member schemas

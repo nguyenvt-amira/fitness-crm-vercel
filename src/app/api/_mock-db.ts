@@ -4,7 +4,7 @@
  */
 import { type BlacklistDetail } from '@/app/api/_schemas/blacklist.schema';
 import type { BrandItem } from '@/app/api/_schemas/brand.schema';
-import type { CampaignListItem } from '@/app/api/_schemas/campaign.schema';
+import type { CampaignDetail, CampaignListItem } from '@/app/api/_schemas/campaign.schema';
 import type {
   EkycResult,
   FamilyRegistrationStatus,
@@ -1338,10 +1338,11 @@ type DbType = {
   };
   campaigns: {
     _rows: CampaignListItem[];
+    _details: Record<string, CampaignDetail>;
     _seeded: boolean;
     _seed(): void;
     getList(): CampaignListItem[];
-    getById(id: string): CampaignListItem | undefined;
+    getById(id: string): CampaignDetail | undefined;
   };
   optionMasters: {
     _rows: OptionMasterDetail[];
@@ -5225,6 +5226,7 @@ function createDb() {
     },
     campaigns: {
       _rows: [] as CampaignListItem[],
+      _details: {} as Record<string, CampaignDetail>,
       _seeded: false,
       _seed(): void {
         if (this._seeded) return;
@@ -5291,14 +5293,335 @@ function createDb() {
             main_contract_name: '全契約共通',
           },
         );
+
+        const rowsById = Object.fromEntries(this._rows.map((row) => [row.id, row]));
+        const makeDetail = (id: string, detail: Omit<CampaignDetail, keyof CampaignListItem>) => ({
+          ...rowsById[id]!,
+          ...detail,
+        });
+
+        this._details = {
+          CP001: makeDetail('CP001', {
+            note: '新生活シーズン向けの入会促進施策',
+            accept_status_message: '受付中です。募集期間内の新規申請を受け付けています。',
+            accept_status_action_label: '受付を停止する',
+            usage_period_start: '2026/03/15',
+            usage_period_end: '2026/05/31',
+            application_period_start: '2026/03/01',
+            application_period_end: '2026/04/30',
+            discount: {
+              title: '春の入会特典',
+              description: '入会金 0円 / 事務手数料 50% OFF',
+              value_text: '初月会費 1,100円引き',
+            },
+            periods: [
+              {
+                period_type: 'recruitment',
+                label: '募集期間',
+                start_date: '2026/03/01',
+                end_date: '2026/04/30',
+              },
+              {
+                period_type: 'usage',
+                label: '利用開始期間',
+                start_date: '2026/03/15',
+                end_date: '2026/05/31',
+              },
+              {
+                period_type: 'application',
+                label: 'キャンペーン適用期間',
+                start_date: '2026/03/01',
+                end_date: '2026/04/30',
+              },
+            ],
+            auto_grant: {
+              enabled: true,
+              title: '自動付与設定',
+              timing_text: '会員登録完了後 3日以内',
+              target_text: 'レギュラー会員',
+              description: '条件を満たした会員に対して自動でキャンペーン適用を行います。',
+            },
+            stats: {
+              applied_member_count: 128,
+              application_count: 45,
+              monthly_new_application_count: 12,
+            },
+            metadata: {
+              created_at: '2026/01/10 09:30',
+              created_by: '本部管理者',
+              updated_at: '2026/05/31 14:20',
+              updated_by: '本部管理者',
+            },
+          }),
+          CP002: makeDetail('CP002', {
+            note: '紹介経由の新規会員獲得キャンペーン',
+            accept_status_message: '受付中です。年間を通して適用可能です。',
+            accept_status_action_label: '受付を停止する',
+            usage_period_start: '2026/01/01',
+            usage_period_end: '2026/12/31',
+            application_period_start: '2026/01/01',
+            application_period_end: '2026/12/31',
+            discount: {
+              title: '友達紹介特典',
+              description: '紹介者と新規入会者の双方に特典を付与',
+              value_text: '双方に 2,000円相当の特典',
+            },
+            periods: [
+              {
+                period_type: 'recruitment',
+                label: '募集期間',
+                start_date: '2026/01/01',
+                end_date: '2026/12/31',
+              },
+              {
+                period_type: 'usage',
+                label: '利用開始期間',
+                start_date: '2026/01/01',
+                end_date: '2026/12/31',
+              },
+              {
+                period_type: 'application',
+                label: 'キャンペーン適用期間',
+                start_date: '2026/01/01',
+                end_date: '2026/12/31',
+              },
+            ],
+            auto_grant: {
+              enabled: true,
+              title: '自動付与設定',
+              timing_text: '申請承認後 即時',
+              target_text: '全契約共通',
+              description: '紹介成立時に自動で特典を付与します。',
+            },
+            stats: {
+              applied_member_count: 286,
+              application_count: 132,
+              monthly_new_application_count: 24,
+            },
+            metadata: {
+              created_at: '2026/01/01 08:00',
+              created_by: '本部管理者',
+              updated_at: '2026/05/20 11:10',
+              updated_by: '本部管理者',
+            },
+          }),
+          CP003: makeDetail('CP003', {
+            note: '法人契約向けの期間限定施策',
+            accept_status_message: '受付中です。法人会員向けに公開されています。',
+            accept_status_action_label: '受付を停止する',
+            usage_period_start: '2026/04/15',
+            usage_period_end: '2026/10/31',
+            application_period_start: '2026/04/01',
+            application_period_end: '2026/09/30',
+            discount: {
+              title: '法人割引',
+              description: '法人契約の月会費を 10% OFF',
+              value_text: '月会費 10% OFF',
+            },
+            periods: [
+              {
+                period_type: 'recruitment',
+                label: '募集期間',
+                start_date: '2026/04/01',
+                end_date: '2026/09/30',
+              },
+              {
+                period_type: 'usage',
+                label: '利用開始期間',
+                start_date: '2026/04/15',
+                end_date: '2026/10/31',
+              },
+              {
+                period_type: 'application',
+                label: 'キャンペーン適用期間',
+                start_date: '2026/04/01',
+                end_date: '2026/09/30',
+              },
+            ],
+            auto_grant: {
+              enabled: false,
+              title: '自動付与設定',
+              timing_text: '手動適用',
+              target_text: '法人会員',
+              description: '担当者がキャンペーン適用を手動で実施します。',
+            },
+            stats: {
+              applied_member_count: 64,
+              application_count: 21,
+              monthly_new_application_count: 7,
+            },
+            metadata: {
+              created_at: '2026/03/18 16:45',
+              created_by: '田中 花子',
+              updated_at: '2026/05/12 10:05',
+              updated_by: '田中 花子',
+            },
+          }),
+          CP004: makeDetail('CP004', {
+            note: '新店オープン記念施策',
+            accept_status_message: '受付停止中です。現在は新規受付を行っていません。',
+            accept_status_action_label: '受付を再開する',
+            usage_period_start: '2025/10/15',
+            usage_period_end: '2026/01/31',
+            application_period_start: '2025/10/01',
+            application_period_end: '2025/12/31',
+            discount: {
+              title: 'オープン記念特典',
+              description: '入会金無料 / 初回月会費割引',
+              value_text: '初月会費 50% OFF',
+            },
+            periods: [
+              {
+                period_type: 'recruitment',
+                label: '募集期間',
+                start_date: '2025/10/01',
+                end_date: '2025/12/31',
+              },
+              {
+                period_type: 'usage',
+                label: '利用開始期間',
+                start_date: '2025/10/15',
+                end_date: '2026/01/31',
+              },
+              {
+                period_type: 'application',
+                label: 'キャンペーン適用期間',
+                start_date: '2025/10/01',
+                end_date: '2025/12/31',
+              },
+            ],
+            auto_grant: {
+              enabled: false,
+              title: '自動付与設定',
+              timing_text: '手動適用',
+              target_text: '全契約共通',
+              description: '受付停止中のため自動付与設定は参照のみです。',
+            },
+            stats: {
+              applied_member_count: 19,
+              application_count: 5,
+              monthly_new_application_count: 0,
+            },
+            metadata: {
+              created_at: '2025/10/01 08:00',
+              created_by: '店舗開店準備室',
+              updated_at: '2025/12/20 17:30',
+              updated_by: '店舗開店準備室',
+            },
+          }),
+          CP005: makeDetail('CP005', {
+            note: '夏季の入会強化キャンペーン',
+            accept_status_message: '受付停止中です。現在は受付を止めています。',
+            accept_status_action_label: '受付を再開する',
+            usage_period_start: '2026/06/15',
+            usage_period_end: '2026/09/30',
+            application_period_start: '2026/06/01',
+            application_period_end: '2026/08/31',
+            discount: {
+              title: '夏のボディメイク特典',
+              description: 'パーソナルトレーニング初回無料',
+              value_text: '初回PT 1回無料',
+            },
+            periods: [
+              {
+                period_type: 'recruitment',
+                label: '募集期間',
+                start_date: '2026/06/01',
+                end_date: '2026/08/31',
+              },
+              {
+                period_type: 'usage',
+                label: '利用開始期間',
+                start_date: '2026/06/15',
+                end_date: '2026/09/30',
+              },
+              {
+                period_type: 'application',
+                label: 'キャンペーン適用期間',
+                start_date: '2026/06/01',
+                end_date: '2026/08/31',
+              },
+            ],
+            auto_grant: {
+              enabled: true,
+              title: '自動付与設定',
+              timing_text: '会員登録完了後 1日以内',
+              target_text: 'プレミアム会員',
+              description: 'プレミアム会員向けに自動でキャンペーンを適用します。',
+            },
+            stats: {
+              applied_member_count: 42,
+              application_count: 8,
+              monthly_new_application_count: 2,
+            },
+            metadata: {
+              created_at: '2026/05/10 12:00',
+              created_by: 'マーケティング担当',
+              updated_at: '2026/06/01 09:20',
+              updated_by: 'マーケティング担当',
+            },
+          }),
+          CP006: makeDetail('CP006', {
+            note: '年末商戦向けの特別割引施策',
+            accept_status_message: '受付中です。年末に向けて公開中です。',
+            accept_status_action_label: '受付を停止する',
+            usage_period_start: '2026/10/15',
+            usage_period_end: '2027/01/31',
+            application_period_start: '2026/10/01',
+            application_period_end: '2026/12/31',
+            discount: {
+              title: '年末特別割引',
+              description: '入会時の初期費用を特別価格に設定',
+              value_text: '初期費用 3,300円引き',
+            },
+            periods: [
+              {
+                period_type: 'recruitment',
+                label: '募集期間',
+                start_date: '2026/10/01',
+                end_date: '2026/12/31',
+              },
+              {
+                period_type: 'usage',
+                label: '利用開始期間',
+                start_date: '2026/10/15',
+                end_date: '2027/01/31',
+              },
+              {
+                period_type: 'application',
+                label: 'キャンペーン適用期間',
+                start_date: '2026/10/01',
+                end_date: '2026/12/31',
+              },
+            ],
+            auto_grant: {
+              enabled: false,
+              title: '自動付与設定',
+              timing_text: '手動適用',
+              target_text: '全契約共通',
+              description: '年末商戦向けの特別割引は管理者が手動適用します。',
+            },
+            stats: {
+              applied_member_count: 9,
+              application_count: 3,
+              monthly_new_application_count: 1,
+            },
+            metadata: {
+              created_at: '2026/09/20 13:15',
+              created_by: '本部管理者',
+              updated_at: '2026/10/05 11:40',
+              updated_by: '本部管理者',
+            },
+          }),
+        };
       },
       getList(): CampaignListItem[] {
         this._seed();
         return [...this._rows];
       },
-      getById(id: string): CampaignListItem | undefined {
+      getById(id: string): CampaignDetail | undefined {
         this._seed();
-        return this._rows.find((campaign) => campaign.id === id);
+        return this._details[id];
       },
     },
     optionMasters: {

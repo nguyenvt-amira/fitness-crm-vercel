@@ -34,13 +34,14 @@ export function CampaignsTableColumns(): ColumnDef<CampaignRow>[] {
     },
     {
       accessorKey: 'code',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="コード" />,
+      header: 'コード',
       cell: ({ row }) => (
         <code className="inline-flex rounded-[4px] bg-[oklch(0.935_0.003_197)] px-2 py-1 font-mono text-xs font-normal text-[oklch(0.32_0_0)]">
           {row.original.code}
         </code>
       ),
       meta: { className: 'min-w-[120px]' },
+      enableSorting: false,
     },
     {
       accessorKey: 'brand',
@@ -77,18 +78,19 @@ export function CampaignsTableColumns(): ColumnDef<CampaignRow>[] {
     },
     {
       accessorKey: 'main_contract_name',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="適用主契約" />,
+      header: '適用主契約',
       cell: ({ row }) => (
         <Badge variant="outline" className="rounded-4xl text-[10px] font-medium">
           {row.original.main_contract_name}
         </Badge>
       ),
       meta: { className: 'min-w-[160px]' },
+      enableSorting: false,
     },
     {
       id: 'actions',
       header: () => <span className="sr-only">操作</span>,
-      cell: () => <CampaignRowActions />,
+      cell: ({ row }) => <CampaignRowActions campaignId={row.original.id} />,
       meta: { className: 'w-10' },
     },
   ];
