@@ -1538,9 +1538,42 @@
             "type": "string",
             "example": "初月会費 1,100円引き",
             "description": "Display text for the discount value"
+          },
+          "first_month_enabled": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether first month discount is enabled"
+          },
+          "second_month_enabled": {
+            "type": "boolean",
+            "example": false,
+            "description": "Whether second month discount is enabled"
+          },
+          "amount": {
+            "type": "integer",
+            "nullable": true,
+            "minimum": 0,
+            "example": 1100,
+            "description": "Fixed discount amount in JPY"
+          },
+          "rate": {
+            "type": "integer",
+            "nullable": true,
+            "minimum": 0,
+            "maximum": 100,
+            "example": null,
+            "description": "Discount rate percentage"
           }
         },
-        "required": ["title", "description", "value_text"],
+        "required": [
+          "title",
+          "description",
+          "value_text",
+          "first_month_enabled",
+          "second_month_enabled",
+          "amount",
+          "rate"
+        ],
         "title": "CampaignDetailDiscount",
         "description": "Discount settings shown in the basic information tab"
       },
@@ -1570,9 +1603,52 @@
             "type": "string",
             "example": "条件を満たした会員に対して自動でキャンペーン適用を行います。",
             "description": "Additional description"
+          },
+          "target_type": {
+            "type": "string",
+            "enum": ["all", "conditional"],
+            "title": "CampaignAutoGrantTarget",
+            "description": "Auto-grant target type"
+          },
+          "gender_conditions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["male", "female", "other"],
+              "title": "CampaignGenderCondition",
+              "description": "Gender condition for auto-grant"
+            },
+            "example": ["male", "female"],
+            "description": "Gender conditions for auto-grant"
+          },
+          "option_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["OP001", "OP002"],
+            "description": "Auto-granted option IDs"
+          },
+          "option_names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["プロテイン", "水素水"],
+            "description": "Auto-granted option names"
           }
         },
-        "required": ["enabled", "title", "timing_text", "target_text", "description"],
+        "required": [
+          "enabled",
+          "title",
+          "timing_text",
+          "target_text",
+          "description",
+          "target_type",
+          "gender_conditions",
+          "option_ids",
+          "option_names"
+        ],
         "title": "CampaignDetailAutoGrant",
         "description": "Auto-grant settings shown in the basic information tab"
       },
@@ -1677,6 +1753,12 @@
             "title": "CampaignAcceptStatus",
             "description": "Acceptance status"
           },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive"],
+            "title": "CampaignStatus",
+            "description": "Campaign status"
+          },
           "accept_status_message": {
             "type": "string",
             "example": "受付中です。募集期間内の新規申請を受け付けています。",
@@ -1691,6 +1773,11 @@
             "type": "string",
             "example": "レギュラー会員",
             "description": "Main contract name"
+          },
+          "main_contract_id": {
+            "type": "string",
+            "example": "MC001",
+            "description": "Main contract ID"
           },
           "recruitment_period_start": {
             "type": "string",
@@ -1722,6 +1809,25 @@
             "example": "2026/04/30",
             "description": "Campaign application period end date"
           },
+          "application_start_month_type": {
+            "type": "string",
+            "enum": ["first_month", "next_month", "custom_month"],
+            "title": "CampaignApplicationStartMonthType",
+            "description": "Campaign application start month type"
+          },
+          "application_custom_month": {
+            "type": "integer",
+            "nullable": true,
+            "example": null,
+            "description": "Custom application start month offset"
+          },
+          "application_duration_months": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "example": 2,
+            "description": "Campaign application duration in months"
+          },
           "discount": {
             "type": "object",
             "properties": {
@@ -1739,9 +1845,42 @@
                 "type": "string",
                 "example": "初月会費 1,100円引き",
                 "description": "Display text for the discount value"
+              },
+              "first_month_enabled": {
+                "type": "boolean",
+                "example": true,
+                "description": "Whether first month discount is enabled"
+              },
+              "second_month_enabled": {
+                "type": "boolean",
+                "example": false,
+                "description": "Whether second month discount is enabled"
+              },
+              "amount": {
+                "type": "integer",
+                "nullable": true,
+                "minimum": 0,
+                "example": 1100,
+                "description": "Fixed discount amount in JPY"
+              },
+              "rate": {
+                "type": "integer",
+                "nullable": true,
+                "minimum": 0,
+                "maximum": 100,
+                "example": null,
+                "description": "Discount rate percentage"
               }
             },
-            "required": ["title", "description", "value_text"],
+            "required": [
+              "title",
+              "description",
+              "value_text",
+              "first_month_enabled",
+              "second_month_enabled",
+              "amount",
+              "rate"
+            ],
             "title": "CampaignDetailDiscount",
             "description": "Discount settings shown in the basic information tab"
           },
@@ -1804,9 +1943,52 @@
                 "type": "string",
                 "example": "条件を満たした会員に対して自動でキャンペーン適用を行います。",
                 "description": "Additional description"
+              },
+              "target_type": {
+                "type": "string",
+                "enum": ["all", "conditional"],
+                "title": "CampaignAutoGrantTarget",
+                "description": "Auto-grant target type"
+              },
+              "gender_conditions": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": ["male", "female", "other"],
+                  "title": "CampaignGenderCondition",
+                  "description": "Gender condition for auto-grant"
+                },
+                "example": ["male", "female"],
+                "description": "Gender conditions for auto-grant"
+              },
+              "option_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "example": ["OP001", "OP002"],
+                "description": "Auto-granted option IDs"
+              },
+              "option_names": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "example": ["プロテイン", "水素水"],
+                "description": "Auto-granted option names"
               }
             },
-            "required": ["enabled", "title", "timing_text", "target_text", "description"],
+            "required": [
+              "enabled",
+              "title",
+              "timing_text",
+              "target_text",
+              "description",
+              "target_type",
+              "gender_conditions",
+              "option_ids",
+              "option_names"
+            ],
             "title": "CampaignDetailAutoGrant",
             "description": "Auto-grant settings shown in the basic information tab"
           },
@@ -1830,12 +2012,19 @@
                 "minimum": 0,
                 "example": 12,
                 "description": "New applications this month"
+              },
+              "discount_total": {
+                "type": "integer",
+                "minimum": 0,
+                "example": 1284000,
+                "description": "Total discount amount"
               }
             },
             "required": [
               "applied_member_count",
               "application_count",
-              "monthly_new_application_count"
+              "monthly_new_application_count",
+              "discount_total"
             ],
             "title": "CampaignDetailStats",
             "description": "Campaign summary metrics shown on the detail page"
@@ -1915,15 +2104,20 @@
           "brand",
           "note",
           "accept_status",
+          "status",
           "accept_status_message",
           "accept_status_action_label",
           "main_contract_name",
+          "main_contract_id",
           "recruitment_period_start",
           "recruitment_period_end",
           "usage_period_start",
           "usage_period_end",
           "application_period_start",
           "application_period_end",
+          "application_start_month_type",
+          "application_custom_month",
+          "application_duration_months",
           "discount",
           "periods",
           "auto_grant",
@@ -2122,6 +2316,12 @@
                 "title": "CampaignAcceptStatus",
                 "description": "Acceptance status"
               },
+              "status": {
+                "type": "string",
+                "enum": ["active", "inactive"],
+                "title": "CampaignStatus",
+                "description": "Campaign status"
+              },
               "accept_status_message": {
                 "type": "string",
                 "example": "受付中です。募集期間内の新規申請を受け付けています。",
@@ -2136,6 +2336,11 @@
                 "type": "string",
                 "example": "レギュラー会員",
                 "description": "Main contract name"
+              },
+              "main_contract_id": {
+                "type": "string",
+                "example": "MC001",
+                "description": "Main contract ID"
               },
               "recruitment_period_start": {
                 "type": "string",
@@ -2167,6 +2372,25 @@
                 "example": "2026/04/30",
                 "description": "Campaign application period end date"
               },
+              "application_start_month_type": {
+                "type": "string",
+                "enum": ["first_month", "next_month", "custom_month"],
+                "title": "CampaignApplicationStartMonthType",
+                "description": "Campaign application start month type"
+              },
+              "application_custom_month": {
+                "type": "integer",
+                "nullable": true,
+                "example": null,
+                "description": "Custom application start month offset"
+              },
+              "application_duration_months": {
+                "type": "integer",
+                "minimum": 0,
+                "exclusiveMinimum": true,
+                "example": 2,
+                "description": "Campaign application duration in months"
+              },
               "discount": {
                 "type": "object",
                 "properties": {
@@ -2184,9 +2408,42 @@
                     "type": "string",
                     "example": "初月会費 1,100円引き",
                     "description": "Display text for the discount value"
+                  },
+                  "first_month_enabled": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "Whether first month discount is enabled"
+                  },
+                  "second_month_enabled": {
+                    "type": "boolean",
+                    "example": false,
+                    "description": "Whether second month discount is enabled"
+                  },
+                  "amount": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": 0,
+                    "example": 1100,
+                    "description": "Fixed discount amount in JPY"
+                  },
+                  "rate": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": 0,
+                    "maximum": 100,
+                    "example": null,
+                    "description": "Discount rate percentage"
                   }
                 },
-                "required": ["title", "description", "value_text"],
+                "required": [
+                  "title",
+                  "description",
+                  "value_text",
+                  "first_month_enabled",
+                  "second_month_enabled",
+                  "amount",
+                  "rate"
+                ],
                 "title": "CampaignDetailDiscount",
                 "description": "Discount settings shown in the basic information tab"
               },
@@ -2249,9 +2506,52 @@
                     "type": "string",
                     "example": "条件を満たした会員に対して自動でキャンペーン適用を行います。",
                     "description": "Additional description"
+                  },
+                  "target_type": {
+                    "type": "string",
+                    "enum": ["all", "conditional"],
+                    "title": "CampaignAutoGrantTarget",
+                    "description": "Auto-grant target type"
+                  },
+                  "gender_conditions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": ["male", "female", "other"],
+                      "title": "CampaignGenderCondition",
+                      "description": "Gender condition for auto-grant"
+                    },
+                    "example": ["male", "female"],
+                    "description": "Gender conditions for auto-grant"
+                  },
+                  "option_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["OP001", "OP002"],
+                    "description": "Auto-granted option IDs"
+                  },
+                  "option_names": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": ["プロテイン", "水素水"],
+                    "description": "Auto-granted option names"
                   }
                 },
-                "required": ["enabled", "title", "timing_text", "target_text", "description"],
+                "required": [
+                  "enabled",
+                  "title",
+                  "timing_text",
+                  "target_text",
+                  "description",
+                  "target_type",
+                  "gender_conditions",
+                  "option_ids",
+                  "option_names"
+                ],
                 "title": "CampaignDetailAutoGrant",
                 "description": "Auto-grant settings shown in the basic information tab"
               },
@@ -2275,12 +2575,19 @@
                     "minimum": 0,
                     "example": 12,
                     "description": "New applications this month"
+                  },
+                  "discount_total": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "example": 1284000,
+                    "description": "Total discount amount"
                   }
                 },
                 "required": [
                   "applied_member_count",
                   "application_count",
-                  "monthly_new_application_count"
+                  "monthly_new_application_count",
+                  "discount_total"
                 ],
                 "title": "CampaignDetailStats",
                 "description": "Campaign summary metrics shown on the detail page"
@@ -2360,15 +2667,20 @@
               "brand",
               "note",
               "accept_status",
+              "status",
               "accept_status_message",
               "accept_status_action_label",
               "main_contract_name",
+              "main_contract_id",
               "recruitment_period_start",
               "recruitment_period_end",
               "usage_period_start",
               "usage_period_end",
               "application_period_start",
               "application_period_end",
+              "application_start_month_type",
+              "application_custom_month",
+              "application_duration_months",
               "discount",
               "periods",
               "auto_grant",
@@ -16477,6 +16789,119 @@
         }
       }
     },
+    "/crm/campaigns/{id}/change-history": {
+      "get": {
+        "summary": "Get campaign change history",
+        "description": "Get change history for a specific campaign master record",
+        "tags": ["Campaigns"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Campaign ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campaign change history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "history": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "date": {
+                            "type": "string",
+                            "example": "2026/03/10 14:20",
+                            "description": "Updated timestamp"
+                          },
+                          "user": {
+                            "type": "string",
+                            "example": "田中 花子",
+                            "description": "Operator name"
+                          },
+                          "field": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "月額割引",
+                            "description": "Changed field name"
+                          },
+                          "from": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "初月30%OFF",
+                            "description": "Previous value"
+                          },
+                          "to": {
+                            "type": "string",
+                            "example": "初月50%OFF",
+                            "description": "New value"
+                          }
+                        },
+                        "required": ["date", "user", "field", "from", "to"],
+                        "title": "CampaignChangeHistoryItem",
+                        "description": "Campaign change history item"
+                      }
+                    }
+                  },
+                  "required": ["history"],
+                  "title": "GetCampaignChangeHistoryResponse",
+                  "description": "Campaign change-history response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Campaign not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/campaigns/{id}": {
       "get": {
         "summary": "Get campaign detail",
@@ -16537,6 +16962,12 @@
                           "title": "CampaignAcceptStatus",
                           "description": "Acceptance status"
                         },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "CampaignStatus",
+                          "description": "Campaign status"
+                        },
                         "accept_status_message": {
                           "type": "string",
                           "example": "受付中です。募集期間内の新規申請を受け付けています。",
@@ -16551,6 +16982,11 @@
                           "type": "string",
                           "example": "レギュラー会員",
                           "description": "Main contract name"
+                        },
+                        "main_contract_id": {
+                          "type": "string",
+                          "example": "MC001",
+                          "description": "Main contract ID"
                         },
                         "recruitment_period_start": {
                           "type": "string",
@@ -16582,6 +17018,25 @@
                           "example": "2026/04/30",
                           "description": "Campaign application period end date"
                         },
+                        "application_start_month_type": {
+                          "type": "string",
+                          "enum": ["first_month", "next_month", "custom_month"],
+                          "title": "CampaignApplicationStartMonthType",
+                          "description": "Campaign application start month type"
+                        },
+                        "application_custom_month": {
+                          "type": "integer",
+                          "nullable": true,
+                          "example": null,
+                          "description": "Custom application start month offset"
+                        },
+                        "application_duration_months": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "exclusiveMinimum": true,
+                          "example": 2,
+                          "description": "Campaign application duration in months"
+                        },
                         "discount": {
                           "type": "object",
                           "properties": {
@@ -16599,9 +17054,42 @@
                               "type": "string",
                               "example": "初月会費 1,100円引き",
                               "description": "Display text for the discount value"
+                            },
+                            "first_month_enabled": {
+                              "type": "boolean",
+                              "example": true,
+                              "description": "Whether first month discount is enabled"
+                            },
+                            "second_month_enabled": {
+                              "type": "boolean",
+                              "example": false,
+                              "description": "Whether second month discount is enabled"
+                            },
+                            "amount": {
+                              "type": "integer",
+                              "nullable": true,
+                              "minimum": 0,
+                              "example": 1100,
+                              "description": "Fixed discount amount in JPY"
+                            },
+                            "rate": {
+                              "type": "integer",
+                              "nullable": true,
+                              "minimum": 0,
+                              "maximum": 100,
+                              "example": null,
+                              "description": "Discount rate percentage"
                             }
                           },
-                          "required": ["title", "description", "value_text"],
+                          "required": [
+                            "title",
+                            "description",
+                            "value_text",
+                            "first_month_enabled",
+                            "second_month_enabled",
+                            "amount",
+                            "rate"
+                          ],
                           "title": "CampaignDetailDiscount",
                           "description": "Discount settings shown in the basic information tab"
                         },
@@ -16664,6 +17152,39 @@
                               "type": "string",
                               "example": "条件を満たした会員に対して自動でキャンペーン適用を行います。",
                               "description": "Additional description"
+                            },
+                            "target_type": {
+                              "type": "string",
+                              "enum": ["all", "conditional"],
+                              "title": "CampaignAutoGrantTarget",
+                              "description": "Auto-grant target type"
+                            },
+                            "gender_conditions": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["male", "female", "other"],
+                                "title": "CampaignGenderCondition",
+                                "description": "Gender condition for auto-grant"
+                              },
+                              "example": ["male", "female"],
+                              "description": "Gender conditions for auto-grant"
+                            },
+                            "option_ids": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "example": ["OP001", "OP002"],
+                              "description": "Auto-granted option IDs"
+                            },
+                            "option_names": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "example": ["プロテイン", "水素水"],
+                              "description": "Auto-granted option names"
                             }
                           },
                           "required": [
@@ -16671,7 +17192,11 @@
                             "title",
                             "timing_text",
                             "target_text",
-                            "description"
+                            "description",
+                            "target_type",
+                            "gender_conditions",
+                            "option_ids",
+                            "option_names"
                           ],
                           "title": "CampaignDetailAutoGrant",
                           "description": "Auto-grant settings shown in the basic information tab"
@@ -16696,12 +17221,19 @@
                               "minimum": 0,
                               "example": 12,
                               "description": "New applications this month"
+                            },
+                            "discount_total": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "example": 1284000,
+                              "description": "Total discount amount"
                             }
                           },
                           "required": [
                             "applied_member_count",
                             "application_count",
-                            "monthly_new_application_count"
+                            "monthly_new_application_count",
+                            "discount_total"
                           ],
                           "title": "CampaignDetailStats",
                           "description": "Campaign summary metrics shown on the detail page"
@@ -16781,15 +17313,20 @@
                         "brand",
                         "note",
                         "accept_status",
+                        "status",
                         "accept_status_message",
                         "accept_status_action_label",
                         "main_contract_name",
+                        "main_contract_id",
                         "recruitment_period_start",
                         "recruitment_period_end",
                         "usage_period_start",
                         "usage_period_end",
                         "application_period_start",
                         "application_period_end",
+                        "application_start_month_type",
+                        "application_custom_month",
+                        "application_duration_months",
                         "discount",
                         "periods",
                         "auto_grant",
@@ -16849,12 +17386,10 @@
             }
           }
         }
-      }
-    },
-    "/crm/campaigns/{id}/change-history": {
-      "get": {
-        "summary": "Get campaign change history",
-        "description": "Get change history for a specific campaign master record",
+      },
+      "patch": {
+        "summary": "Update campaign detail",
+        "description": "Update an existing campaign master by ID",
         "tags": ["Campaigns"],
         "parameters": [
           {
@@ -16867,56 +17402,615 @@
             }
           }
         ],
+        "requestBody": {
+          "description": "キャンペーン更新リクエスト",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  },
+                  "code": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "pattern": "^([A-Z0-9]{5}|OGF)-[A-Z0-9]{5}$"
+                  },
+                  "brand": {
+                    "type": "string",
+                    "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                    "title": "StoreListBrand",
+                    "description": "Store brand"
+                  },
+                  "note": {
+                    "type": "string",
+                    "nullable": true,
+                    "maxLength": 1000
+                  },
+                  "accept_status": {
+                    "type": "string",
+                    "enum": ["active", "inactive"],
+                    "default": "active",
+                    "title": "CampaignAcceptStatus",
+                    "description": "Campaign acceptance availability"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["active", "inactive"],
+                    "default": "active",
+                    "title": "CampaignStatus",
+                    "description": "Campaign record status"
+                  },
+                  "recruitment_period_start": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                  },
+                  "recruitment_period_end": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                  },
+                  "usage_period_start": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                  },
+                  "usage_period_end": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                  },
+                  "application_start_month_type": {
+                    "type": "string",
+                    "enum": ["first_month", "next_month", "custom_month"],
+                    "title": "CampaignApplicationStartMonthType",
+                    "description": "Start month type for campaign application period"
+                  },
+                  "application_custom_month": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": 1
+                  },
+                  "application_duration_months": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 12
+                  },
+                  "main_contract_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "discount": {
+                    "type": "object",
+                    "properties": {
+                      "first_month_enabled": {
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "second_month_enabled": {
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "amount": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": 0,
+                        "default": null
+                      },
+                      "rate": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": 0,
+                        "maximum": 100,
+                        "default": null
+                      }
+                    },
+                    "title": "CampaignUpsertDiscount",
+                    "description": "Campaign discount settings for create/update"
+                  },
+                  "auto_grant": {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "target_type": {
+                        "type": "string",
+                        "enum": ["all", "conditional"],
+                        "default": "all",
+                        "title": "CampaignAutoGrantTarget",
+                        "description": "Auto-grant target scope"
+                      },
+                      "gender_conditions": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": ["male", "female", "other"],
+                          "title": "CampaignGenderCondition",
+                          "description": "Gender condition for auto-grant"
+                        },
+                        "default": []
+                      },
+                      "option_ids": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "default": []
+                      }
+                    },
+                    "title": "CampaignUpsertAutoGrant",
+                    "description": "Campaign auto-grant settings for create/update"
+                  }
+                },
+                "required": [
+                  "name",
+                  "code",
+                  "brand",
+                  "recruitment_period_start",
+                  "recruitment_period_end",
+                  "usage_period_start",
+                  "usage_period_end",
+                  "application_start_month_type",
+                  "application_duration_months",
+                  "main_contract_id",
+                  "discount",
+                  "auto_grant"
+                ],
+                "title": "UpsertCampaignBody",
+                "description": "Campaign create/update request payload"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "Campaign change history",
+            "description": "Updated successfully",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "history": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "date": {
-                            "type": "string",
-                            "example": "2026/03/10 14:20",
-                            "description": "Updated timestamp"
-                          },
-                          "user": {
-                            "type": "string",
-                            "example": "田中 花子",
-                            "description": "Operator name"
-                          },
-                          "field": {
-                            "type": "string",
-                            "nullable": true,
-                            "example": "月額割引",
-                            "description": "Changed field name"
-                          },
-                          "from": {
-                            "type": "string",
-                            "nullable": true,
-                            "example": "初月30%OFF",
-                            "description": "Previous value"
-                          },
-                          "to": {
-                            "type": "string",
-                            "example": "初月50%OFF",
-                            "description": "New value"
-                          }
+                    "message": {
+                      "type": "string"
+                    },
+                    "campaign": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "CP001",
+                          "description": "Campaign ID"
                         },
-                        "required": ["date", "user", "field", "from", "to"],
-                        "title": "CampaignChangeHistoryItem",
-                        "description": "Campaign change history item"
-                      }
+                        "name": {
+                          "type": "string",
+                          "example": "春の入会キャンペーン",
+                          "description": "Campaign name"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "STR01-A1B2C",
+                          "description": "Campaign code"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                          "title": "StoreListBrand",
+                          "description": "Brand"
+                        },
+                        "note": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "新生活需要向けの施策",
+                          "description": "Campaign note"
+                        },
+                        "accept_status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "CampaignAcceptStatus",
+                          "description": "Acceptance status"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "CampaignStatus",
+                          "description": "Campaign status"
+                        },
+                        "accept_status_message": {
+                          "type": "string",
+                          "example": "受付中です。募集期間内の新規申請を受け付けています。",
+                          "description": "Acceptance status helper text"
+                        },
+                        "accept_status_action_label": {
+                          "type": "string",
+                          "example": "受付を停止する",
+                          "description": "Primary acceptance control label"
+                        },
+                        "main_contract_name": {
+                          "type": "string",
+                          "example": "レギュラー会員",
+                          "description": "Main contract name"
+                        },
+                        "main_contract_id": {
+                          "type": "string",
+                          "example": "MC001",
+                          "description": "Main contract ID"
+                        },
+                        "recruitment_period_start": {
+                          "type": "string",
+                          "example": "2026/03/01",
+                          "description": "Recruitment period start date"
+                        },
+                        "recruitment_period_end": {
+                          "type": "string",
+                          "example": "2026/04/30",
+                          "description": "Recruitment period end date"
+                        },
+                        "usage_period_start": {
+                          "type": "string",
+                          "example": "2026/03/15",
+                          "description": "Usage period start date"
+                        },
+                        "usage_period_end": {
+                          "type": "string",
+                          "example": "2026/05/31",
+                          "description": "Usage period end date"
+                        },
+                        "application_period_start": {
+                          "type": "string",
+                          "example": "2026/03/01",
+                          "description": "Campaign application period start date"
+                        },
+                        "application_period_end": {
+                          "type": "string",
+                          "example": "2026/04/30",
+                          "description": "Campaign application period end date"
+                        },
+                        "application_start_month_type": {
+                          "type": "string",
+                          "enum": ["first_month", "next_month", "custom_month"],
+                          "title": "CampaignApplicationStartMonthType",
+                          "description": "Campaign application start month type"
+                        },
+                        "application_custom_month": {
+                          "type": "integer",
+                          "nullable": true,
+                          "example": null,
+                          "description": "Custom application start month offset"
+                        },
+                        "application_duration_months": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "exclusiveMinimum": true,
+                          "example": 2,
+                          "description": "Campaign application duration in months"
+                        },
+                        "discount": {
+                          "type": "object",
+                          "properties": {
+                            "title": {
+                              "type": "string",
+                              "example": "春の入会特典",
+                              "description": "Discount title"
+                            },
+                            "description": {
+                              "type": "string",
+                              "example": "入会金 0円 / 事務手数料 50% OFF",
+                              "description": "Discount description"
+                            },
+                            "value_text": {
+                              "type": "string",
+                              "example": "初月会費 1,100円引き",
+                              "description": "Display text for the discount value"
+                            },
+                            "first_month_enabled": {
+                              "type": "boolean",
+                              "example": true,
+                              "description": "Whether first month discount is enabled"
+                            },
+                            "second_month_enabled": {
+                              "type": "boolean",
+                              "example": false,
+                              "description": "Whether second month discount is enabled"
+                            },
+                            "amount": {
+                              "type": "integer",
+                              "nullable": true,
+                              "minimum": 0,
+                              "example": 1100,
+                              "description": "Fixed discount amount in JPY"
+                            },
+                            "rate": {
+                              "type": "integer",
+                              "nullable": true,
+                              "minimum": 0,
+                              "maximum": 100,
+                              "example": null,
+                              "description": "Discount rate percentage"
+                            }
+                          },
+                          "required": [
+                            "title",
+                            "description",
+                            "value_text",
+                            "first_month_enabled",
+                            "second_month_enabled",
+                            "amount",
+                            "rate"
+                          ],
+                          "title": "CampaignDetailDiscount",
+                          "description": "Discount settings shown in the basic information tab"
+                        },
+                        "periods": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "period_type": {
+                                "type": "string",
+                                "enum": ["recruitment", "usage", "application"],
+                                "title": "CampaignPeriodType",
+                                "description": "Period grouping key"
+                              },
+                              "label": {
+                                "type": "string",
+                                "example": "募集期間",
+                                "description": "Period label"
+                              },
+                              "start_date": {
+                                "type": "string",
+                                "example": "2026/03/01",
+                                "description": "Start date"
+                              },
+                              "end_date": {
+                                "type": "string",
+                                "example": "2026/04/30",
+                                "description": "End date"
+                              }
+                            },
+                            "required": ["period_type", "label", "start_date", "end_date"],
+                            "title": "CampaignDetailPeriod",
+                            "description": "Campaign period block shown in detail tab 1"
+                          },
+                          "description": "Periods displayed in the detail tab"
+                        },
+                        "auto_grant": {
+                          "type": "object",
+                          "properties": {
+                            "enabled": {
+                              "type": "boolean",
+                              "description": "Whether auto-grant is enabled"
+                            },
+                            "title": {
+                              "type": "string",
+                              "example": "自動付与設定",
+                              "description": "Auto-grant title"
+                            },
+                            "timing_text": {
+                              "type": "string",
+                              "example": "会員登録完了後 3日以内",
+                              "description": "Timing description"
+                            },
+                            "target_text": {
+                              "type": "string",
+                              "example": "レギュラー会員 / プレミアム会員",
+                              "description": "Target contract description"
+                            },
+                            "description": {
+                              "type": "string",
+                              "example": "条件を満たした会員に対して自動でキャンペーン適用を行います。",
+                              "description": "Additional description"
+                            },
+                            "target_type": {
+                              "type": "string",
+                              "enum": ["all", "conditional"],
+                              "title": "CampaignAutoGrantTarget",
+                              "description": "Auto-grant target type"
+                            },
+                            "gender_conditions": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["male", "female", "other"],
+                                "title": "CampaignGenderCondition",
+                                "description": "Gender condition for auto-grant"
+                              },
+                              "example": ["male", "female"],
+                              "description": "Gender conditions for auto-grant"
+                            },
+                            "option_ids": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "example": ["OP001", "OP002"],
+                              "description": "Auto-granted option IDs"
+                            },
+                            "option_names": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "example": ["プロテイン", "水素水"],
+                              "description": "Auto-granted option names"
+                            }
+                          },
+                          "required": [
+                            "enabled",
+                            "title",
+                            "timing_text",
+                            "target_text",
+                            "description",
+                            "target_type",
+                            "gender_conditions",
+                            "option_ids",
+                            "option_names"
+                          ],
+                          "title": "CampaignDetailAutoGrant",
+                          "description": "Auto-grant settings shown in the basic information tab"
+                        },
+                        "stats": {
+                          "type": "object",
+                          "properties": {
+                            "applied_member_count": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "example": 128,
+                              "description": "Number of applied members"
+                            },
+                            "application_count": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "example": 45,
+                              "description": "Number of applications"
+                            },
+                            "monthly_new_application_count": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "example": 12,
+                              "description": "New applications this month"
+                            },
+                            "discount_total": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "example": 1284000,
+                              "description": "Total discount amount"
+                            }
+                          },
+                          "required": [
+                            "applied_member_count",
+                            "application_count",
+                            "monthly_new_application_count",
+                            "discount_total"
+                          ],
+                          "title": "CampaignDetailStats",
+                          "description": "Campaign summary metrics shown on the detail page"
+                        },
+                        "metadata": {
+                          "type": "object",
+                          "properties": {
+                            "created_at": {
+                              "type": "string",
+                              "example": "2026/01/10 09:30",
+                              "description": "Created at"
+                            },
+                            "created_by": {
+                              "type": "string",
+                              "example": "本部管理者",
+                              "description": "Created by"
+                            },
+                            "updated_at": {
+                              "type": "string",
+                              "example": "2026/05/31 14:20",
+                              "description": "Updated at"
+                            },
+                            "updated_by": {
+                              "type": "string",
+                              "example": "本部管理者",
+                              "description": "Updated by"
+                            }
+                          },
+                          "required": ["created_at", "created_by", "updated_at", "updated_by"],
+                          "title": "CampaignDetailMetadata",
+                          "description": "Campaign detail audit metadata"
+                        },
+                        "promo_code_previews": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "code": {
+                                "type": "string",
+                                "example": "STR01-ABCDE",
+                                "description": "Promo code"
+                              },
+                              "description": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "春の入会キャンペーン用",
+                                "description": "Promo code description"
+                              },
+                              "valid_from": {
+                                "type": "string",
+                                "example": "2026/03/01",
+                                "description": "Validity start date"
+                              },
+                              "valid_to": {
+                                "type": "string",
+                                "example": "2026/04/30",
+                                "description": "Validity end date"
+                              },
+                              "status": {
+                                "type": "string",
+                                "enum": ["active", "expired", "limit_reached", "inactive"],
+                                "title": "CampaignPromoCodePreviewStatus",
+                                "description": "Promo code preview status"
+                              }
+                            },
+                            "required": ["code", "description", "valid_from", "valid_to", "status"],
+                            "title": "CampaignPromoCodePreviewItem",
+                            "description": "Read-only promo-code preview row shown in campaign detail tab 2"
+                          },
+                          "description": "Read-only promo-code preview rows for campaign detail tab 2"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "code",
+                        "brand",
+                        "note",
+                        "accept_status",
+                        "status",
+                        "accept_status_message",
+                        "accept_status_action_label",
+                        "main_contract_name",
+                        "main_contract_id",
+                        "recruitment_period_start",
+                        "recruitment_period_end",
+                        "usage_period_start",
+                        "usage_period_end",
+                        "application_period_start",
+                        "application_period_end",
+                        "application_start_month_type",
+                        "application_custom_month",
+                        "application_duration_months",
+                        "discount",
+                        "periods",
+                        "auto_grant",
+                        "stats",
+                        "metadata",
+                        "promo_code_previews"
+                      ],
+                      "title": "CampaignDetail",
+                      "description": "Campaign master detail payload for tab 1"
                     }
                   },
-                  "required": ["history"],
-                  "title": "GetCampaignChangeHistoryResponse",
-                  "description": "Campaign change-history response"
+                  "required": ["message", "campaign"],
+                  "title": "UpdateCampaignResponse",
+                  "description": "Update campaign response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
                 }
               }
             }
@@ -17167,6 +18261,645 @@
                   "required": ["campaigns", "pagination"],
                   "title": "GetCampaignsResponse",
                   "description": "Campaign master list response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create campaign master",
+        "description": "Create a new campaign master (G-03)",
+        "tags": ["Campaigns"],
+        "requestBody": {
+          "description": "キャンペーン作成リクエスト",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  },
+                  "code": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "pattern": "^([A-Z0-9]{5}|OGF)-[A-Z0-9]{5}$"
+                  },
+                  "brand": {
+                    "type": "string",
+                    "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                    "title": "StoreListBrand",
+                    "description": "Store brand"
+                  },
+                  "note": {
+                    "type": "string",
+                    "nullable": true,
+                    "maxLength": 1000
+                  },
+                  "accept_status": {
+                    "type": "string",
+                    "enum": ["active", "inactive"],
+                    "default": "active",
+                    "title": "CampaignAcceptStatus",
+                    "description": "Campaign acceptance availability"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["active", "inactive"],
+                    "default": "active",
+                    "title": "CampaignStatus",
+                    "description": "Campaign record status"
+                  },
+                  "recruitment_period_start": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                  },
+                  "recruitment_period_end": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                  },
+                  "usage_period_start": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                  },
+                  "usage_period_end": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                  },
+                  "application_start_month_type": {
+                    "type": "string",
+                    "enum": ["first_month", "next_month", "custom_month"],
+                    "title": "CampaignApplicationStartMonthType",
+                    "description": "Start month type for campaign application period"
+                  },
+                  "application_custom_month": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": 1
+                  },
+                  "application_duration_months": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 12
+                  },
+                  "main_contract_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "discount": {
+                    "type": "object",
+                    "properties": {
+                      "first_month_enabled": {
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "second_month_enabled": {
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "amount": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": 0,
+                        "default": null
+                      },
+                      "rate": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": 0,
+                        "maximum": 100,
+                        "default": null
+                      }
+                    },
+                    "title": "CampaignUpsertDiscount",
+                    "description": "Campaign discount settings for create/update"
+                  },
+                  "auto_grant": {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "target_type": {
+                        "type": "string",
+                        "enum": ["all", "conditional"],
+                        "default": "all",
+                        "title": "CampaignAutoGrantTarget",
+                        "description": "Auto-grant target scope"
+                      },
+                      "gender_conditions": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": ["male", "female", "other"],
+                          "title": "CampaignGenderCondition",
+                          "description": "Gender condition for auto-grant"
+                        },
+                        "default": []
+                      },
+                      "option_ids": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "default": []
+                      }
+                    },
+                    "title": "CampaignUpsertAutoGrant",
+                    "description": "Campaign auto-grant settings for create/update"
+                  }
+                },
+                "required": [
+                  "name",
+                  "code",
+                  "brand",
+                  "recruitment_period_start",
+                  "recruitment_period_end",
+                  "usage_period_start",
+                  "usage_period_end",
+                  "application_start_month_type",
+                  "application_duration_months",
+                  "main_contract_id",
+                  "discount",
+                  "auto_grant"
+                ],
+                "title": "UpsertCampaignBody",
+                "description": "Campaign create/update request payload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "campaign": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "CP001",
+                          "description": "Campaign ID"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "春の入会キャンペーン",
+                          "description": "Campaign name"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "STR01-A1B2C",
+                          "description": "Campaign code"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                          "title": "StoreListBrand",
+                          "description": "Brand"
+                        },
+                        "note": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "新生活需要向けの施策",
+                          "description": "Campaign note"
+                        },
+                        "accept_status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "CampaignAcceptStatus",
+                          "description": "Acceptance status"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "CampaignStatus",
+                          "description": "Campaign status"
+                        },
+                        "accept_status_message": {
+                          "type": "string",
+                          "example": "受付中です。募集期間内の新規申請を受け付けています。",
+                          "description": "Acceptance status helper text"
+                        },
+                        "accept_status_action_label": {
+                          "type": "string",
+                          "example": "受付を停止する",
+                          "description": "Primary acceptance control label"
+                        },
+                        "main_contract_name": {
+                          "type": "string",
+                          "example": "レギュラー会員",
+                          "description": "Main contract name"
+                        },
+                        "main_contract_id": {
+                          "type": "string",
+                          "example": "MC001",
+                          "description": "Main contract ID"
+                        },
+                        "recruitment_period_start": {
+                          "type": "string",
+                          "example": "2026/03/01",
+                          "description": "Recruitment period start date"
+                        },
+                        "recruitment_period_end": {
+                          "type": "string",
+                          "example": "2026/04/30",
+                          "description": "Recruitment period end date"
+                        },
+                        "usage_period_start": {
+                          "type": "string",
+                          "example": "2026/03/15",
+                          "description": "Usage period start date"
+                        },
+                        "usage_period_end": {
+                          "type": "string",
+                          "example": "2026/05/31",
+                          "description": "Usage period end date"
+                        },
+                        "application_period_start": {
+                          "type": "string",
+                          "example": "2026/03/01",
+                          "description": "Campaign application period start date"
+                        },
+                        "application_period_end": {
+                          "type": "string",
+                          "example": "2026/04/30",
+                          "description": "Campaign application period end date"
+                        },
+                        "application_start_month_type": {
+                          "type": "string",
+                          "enum": ["first_month", "next_month", "custom_month"],
+                          "title": "CampaignApplicationStartMonthType",
+                          "description": "Campaign application start month type"
+                        },
+                        "application_custom_month": {
+                          "type": "integer",
+                          "nullable": true,
+                          "example": null,
+                          "description": "Custom application start month offset"
+                        },
+                        "application_duration_months": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "exclusiveMinimum": true,
+                          "example": 2,
+                          "description": "Campaign application duration in months"
+                        },
+                        "discount": {
+                          "type": "object",
+                          "properties": {
+                            "title": {
+                              "type": "string",
+                              "example": "春の入会特典",
+                              "description": "Discount title"
+                            },
+                            "description": {
+                              "type": "string",
+                              "example": "入会金 0円 / 事務手数料 50% OFF",
+                              "description": "Discount description"
+                            },
+                            "value_text": {
+                              "type": "string",
+                              "example": "初月会費 1,100円引き",
+                              "description": "Display text for the discount value"
+                            },
+                            "first_month_enabled": {
+                              "type": "boolean",
+                              "example": true,
+                              "description": "Whether first month discount is enabled"
+                            },
+                            "second_month_enabled": {
+                              "type": "boolean",
+                              "example": false,
+                              "description": "Whether second month discount is enabled"
+                            },
+                            "amount": {
+                              "type": "integer",
+                              "nullable": true,
+                              "minimum": 0,
+                              "example": 1100,
+                              "description": "Fixed discount amount in JPY"
+                            },
+                            "rate": {
+                              "type": "integer",
+                              "nullable": true,
+                              "minimum": 0,
+                              "maximum": 100,
+                              "example": null,
+                              "description": "Discount rate percentage"
+                            }
+                          },
+                          "required": [
+                            "title",
+                            "description",
+                            "value_text",
+                            "first_month_enabled",
+                            "second_month_enabled",
+                            "amount",
+                            "rate"
+                          ],
+                          "title": "CampaignDetailDiscount",
+                          "description": "Discount settings shown in the basic information tab"
+                        },
+                        "periods": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "period_type": {
+                                "type": "string",
+                                "enum": ["recruitment", "usage", "application"],
+                                "title": "CampaignPeriodType",
+                                "description": "Period grouping key"
+                              },
+                              "label": {
+                                "type": "string",
+                                "example": "募集期間",
+                                "description": "Period label"
+                              },
+                              "start_date": {
+                                "type": "string",
+                                "example": "2026/03/01",
+                                "description": "Start date"
+                              },
+                              "end_date": {
+                                "type": "string",
+                                "example": "2026/04/30",
+                                "description": "End date"
+                              }
+                            },
+                            "required": ["period_type", "label", "start_date", "end_date"],
+                            "title": "CampaignDetailPeriod",
+                            "description": "Campaign period block shown in detail tab 1"
+                          },
+                          "description": "Periods displayed in the detail tab"
+                        },
+                        "auto_grant": {
+                          "type": "object",
+                          "properties": {
+                            "enabled": {
+                              "type": "boolean",
+                              "description": "Whether auto-grant is enabled"
+                            },
+                            "title": {
+                              "type": "string",
+                              "example": "自動付与設定",
+                              "description": "Auto-grant title"
+                            },
+                            "timing_text": {
+                              "type": "string",
+                              "example": "会員登録完了後 3日以内",
+                              "description": "Timing description"
+                            },
+                            "target_text": {
+                              "type": "string",
+                              "example": "レギュラー会員 / プレミアム会員",
+                              "description": "Target contract description"
+                            },
+                            "description": {
+                              "type": "string",
+                              "example": "条件を満たした会員に対して自動でキャンペーン適用を行います。",
+                              "description": "Additional description"
+                            },
+                            "target_type": {
+                              "type": "string",
+                              "enum": ["all", "conditional"],
+                              "title": "CampaignAutoGrantTarget",
+                              "description": "Auto-grant target type"
+                            },
+                            "gender_conditions": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["male", "female", "other"],
+                                "title": "CampaignGenderCondition",
+                                "description": "Gender condition for auto-grant"
+                              },
+                              "example": ["male", "female"],
+                              "description": "Gender conditions for auto-grant"
+                            },
+                            "option_ids": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "example": ["OP001", "OP002"],
+                              "description": "Auto-granted option IDs"
+                            },
+                            "option_names": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "example": ["プロテイン", "水素水"],
+                              "description": "Auto-granted option names"
+                            }
+                          },
+                          "required": [
+                            "enabled",
+                            "title",
+                            "timing_text",
+                            "target_text",
+                            "description",
+                            "target_type",
+                            "gender_conditions",
+                            "option_ids",
+                            "option_names"
+                          ],
+                          "title": "CampaignDetailAutoGrant",
+                          "description": "Auto-grant settings shown in the basic information tab"
+                        },
+                        "stats": {
+                          "type": "object",
+                          "properties": {
+                            "applied_member_count": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "example": 128,
+                              "description": "Number of applied members"
+                            },
+                            "application_count": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "example": 45,
+                              "description": "Number of applications"
+                            },
+                            "monthly_new_application_count": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "example": 12,
+                              "description": "New applications this month"
+                            },
+                            "discount_total": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "example": 1284000,
+                              "description": "Total discount amount"
+                            }
+                          },
+                          "required": [
+                            "applied_member_count",
+                            "application_count",
+                            "monthly_new_application_count",
+                            "discount_total"
+                          ],
+                          "title": "CampaignDetailStats",
+                          "description": "Campaign summary metrics shown on the detail page"
+                        },
+                        "metadata": {
+                          "type": "object",
+                          "properties": {
+                            "created_at": {
+                              "type": "string",
+                              "example": "2026/01/10 09:30",
+                              "description": "Created at"
+                            },
+                            "created_by": {
+                              "type": "string",
+                              "example": "本部管理者",
+                              "description": "Created by"
+                            },
+                            "updated_at": {
+                              "type": "string",
+                              "example": "2026/05/31 14:20",
+                              "description": "Updated at"
+                            },
+                            "updated_by": {
+                              "type": "string",
+                              "example": "本部管理者",
+                              "description": "Updated by"
+                            }
+                          },
+                          "required": ["created_at", "created_by", "updated_at", "updated_by"],
+                          "title": "CampaignDetailMetadata",
+                          "description": "Campaign detail audit metadata"
+                        },
+                        "promo_code_previews": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "code": {
+                                "type": "string",
+                                "example": "STR01-ABCDE",
+                                "description": "Promo code"
+                              },
+                              "description": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "春の入会キャンペーン用",
+                                "description": "Promo code description"
+                              },
+                              "valid_from": {
+                                "type": "string",
+                                "example": "2026/03/01",
+                                "description": "Validity start date"
+                              },
+                              "valid_to": {
+                                "type": "string",
+                                "example": "2026/04/30",
+                                "description": "Validity end date"
+                              },
+                              "status": {
+                                "type": "string",
+                                "enum": ["active", "expired", "limit_reached", "inactive"],
+                                "title": "CampaignPromoCodePreviewStatus",
+                                "description": "Promo code preview status"
+                              }
+                            },
+                            "required": ["code", "description", "valid_from", "valid_to", "status"],
+                            "title": "CampaignPromoCodePreviewItem",
+                            "description": "Read-only promo-code preview row shown in campaign detail tab 2"
+                          },
+                          "description": "Read-only promo-code preview rows for campaign detail tab 2"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "code",
+                        "brand",
+                        "note",
+                        "accept_status",
+                        "status",
+                        "accept_status_message",
+                        "accept_status_action_label",
+                        "main_contract_name",
+                        "main_contract_id",
+                        "recruitment_period_start",
+                        "recruitment_period_end",
+                        "usage_period_start",
+                        "usage_period_end",
+                        "application_period_start",
+                        "application_period_end",
+                        "application_start_month_type",
+                        "application_custom_month",
+                        "application_duration_months",
+                        "discount",
+                        "periods",
+                        "auto_grant",
+                        "stats",
+                        "metadata",
+                        "promo_code_previews"
+                      ],
+                      "title": "CampaignDetail",
+                      "description": "Campaign master detail payload for tab 1"
+                    }
+                  },
+                  "required": ["message", "campaign"],
+                  "title": "CreateCampaignResponse",
+                  "description": "Create campaign response"
                 }
               }
             }

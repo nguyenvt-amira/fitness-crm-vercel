@@ -2,14 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { db } from '@/app/api/_mock-db';
 import {
+  CampaignErrorResponseSchema,
   type CampaignListItem,
-  ErrorResponseSchema,
+  CreateCampaignResponseSchema,
   type GetCampaignsQuery,
   GetCampaignsQuerySchema,
   type GetCampaignsResponse,
   GetCampaignsResponseSchema,
+  UpsertCampaignBodySchema,
 } from '@/app/api/_schemas/campaign.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
+
+import { buildCampaignDetail } from './_utils';
 
 registerRoute({
   method: 'get',
@@ -20,8 +24,25 @@ registerRoute({
   query: GetCampaignsQuerySchema,
   responses: [
     { status: 200, schema: GetCampaignsResponseSchema, description: 'Campaign list' },
-    { status: 400, schema: ErrorResponseSchema, description: 'Bad request' },
-    { status: 500, schema: ErrorResponseSchema, description: 'Internal server error' },
+    { status: 400, schema: CampaignErrorResponseSchema, description: 'Bad request' },
+    { status: 500, schema: CampaignErrorResponseSchema, description: 'Internal server error' },
+  ],
+});
+
+registerRoute({
+  method: 'post',
+  path: '/crm/campaigns',
+  summary: 'Create campaign master',
+  description: 'Create a new campaign master (G-03)',
+  tags: ['Campaigns'],
+  requestBody: {
+    schema: UpsertCampaignBodySchema,
+    description: 'キャンペーン作成リクエスト',
+  },
+  responses: [
+    { status: 201, schema: CreateCampaignResponseSchema, description: 'Created' },
+    { status: 400, schema: CampaignErrorResponseSchema, description: 'Bad request' },
+    { status: 500, schema: CampaignErrorResponseSchema, description: 'Internal server error' },
   ],
 });
 
@@ -112,5 +133,39 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Error fetching campaigns:', error);
     return NextResponse.json({ error: 'Failed to fetch campaigns' }, { status: 500 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const validationResult = UpsertCampaignBodySchema.safeParse(body);
+
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((issue) => issue.message).join(', ');
+      return NextResponse.json({ error: errors }, { status: 400 });
+    }
+
+    const data = validationResult.data;
+    const duplicate = db.campaigns
+      .getList()
+      .find((campaign) => campaign.code.toLowerCase() === data.code.toLowerCase());
+
+    if (duplicate) {
+      return NextResponse.json(
+        { error: 'キャンペーンコードが重複しています', code: 'campaign_code_duplicate' },
+        { status: 400 },
+      );
+    }
+
+    const newId = `CP${String(db.campaigns.getList().length + 1).padStart(3, '0')}`;
+    const campaign = buildCampaignDetail(newId, data, '本部管理者');
+
+    db.campaigns.add(campaign);
+
+    return NextResponse.json({ message: 'キャンペーンを作成しました', campaign }, { status: 201 });
+  } catch (error) {
+    console.error('POST /crm/campaigns error:', error);
+    return NextResponse.json({ error: 'Failed to create campaign' }, { status: 500 });
   }
 }

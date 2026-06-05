@@ -1349,6 +1349,8 @@ type DbType = {
     getList(): CampaignListItem[];
     getById(id: string): CampaignDetail | undefined;
     getChangeHistory(id: string): CampaignChangeHistoryItem[];
+    add(campaign: CampaignDetail): void;
+    update(id: string, data: Partial<CampaignDetail>): CampaignDetail | undefined;
   };
   optionMasters: {
     _rows: OptionMasterDetail[];
@@ -5242,7 +5244,7 @@ function createDb() {
           {
             id: 'CP001',
             name: '春の入会キャンペーン',
-            code: 'STR01-A1B2C',
+            code: 'STR01A1B2C',
             brand: 'joyfit',
             recruitment_period_start: '2026/03/01',
             recruitment_period_end: '2026/04/30',
@@ -5252,7 +5254,7 @@ function createDb() {
           {
             id: 'CP002',
             name: '友達紹介キャンペーン',
-            code: 'ALL2026',
+            code: 'ALL2026A1B2C',
             brand: 'joyfit',
             recruitment_period_start: '2026/01/01',
             recruitment_period_end: '2026/12/31',
@@ -5262,7 +5264,7 @@ function createDb() {
           {
             id: 'CP003',
             name: '法人割引キャンペーン',
-            code: 'STR02-E5F6G',
+            code: 'STR02E5F6G',
             brand: 'fit365',
             recruitment_period_start: '2026/04/01',
             recruitment_period_end: '2026/09/30',
@@ -5272,7 +5274,7 @@ function createDb() {
           {
             id: 'CP004',
             name: '新店オープン記念',
-            code: 'OPEN2025',
+            code: 'OPEN2025A1B2C',
             brand: 'joyfit',
             recruitment_period_start: '2025/10/01',
             recruitment_period_end: '2025/12/31',
@@ -5282,7 +5284,7 @@ function createDb() {
           {
             id: 'CP005',
             name: '夏のボディメイクキャンペーン',
-            code: 'SUMMER26',
+            code: 'SUMMER26A1B2C',
             brand: 'joyfit',
             recruitment_period_start: '2026/06/01',
             recruitment_period_end: '2026/08/31',
@@ -5292,7 +5294,7 @@ function createDb() {
           {
             id: 'CP006',
             name: '年末特別割引',
-            code: 'STR01-K1L2M',
+            code: 'STR01K1L2M',
             brand: 'fit365',
             recruitment_period_start: '2026/10/01',
             recruitment_period_end: '2026/12/31',
@@ -5302,24 +5304,142 @@ function createDb() {
         );
 
         const rowsById = Object.fromEntries(this._rows.map((row) => [row.id, row]));
-        const makeDetail = (id: string, detail: Omit<CampaignDetail, keyof CampaignListItem>) => ({
-          ...rowsById[id]!,
-          ...detail,
-        });
+        const defaultMainContractIdByName: Record<string, string> = {
+          レギュラー会員: 'MC001',
+          デイタイム会員: 'MC002',
+          プレミアム会員: 'MC003',
+          法人会員: 'MC004',
+          全契約共通: 'MC001',
+        };
+        const makeDetail = (
+          id: string,
+          detail: Omit<CampaignDetail, keyof CampaignListItem>,
+        ): CampaignDetail => {
+          const row = rowsById[id]!;
+          const {
+            note,
+            status,
+            accept_status_message,
+            accept_status_action_label,
+            main_contract_id,
+            usage_period_start,
+            usage_period_end,
+            application_period_start,
+            application_period_end,
+            application_start_month_type,
+            application_custom_month,
+            application_duration_months,
+            discount,
+            periods,
+            auto_grant,
+            stats,
+            metadata,
+            promo_code_previews,
+            ...detailRest
+          } = detail;
+          const defaultDiscount: CampaignDetail['discount'] = {
+            title: '割引設定',
+            description: '割引なし',
+            value_text: '割引なし',
+            first_month_enabled: false,
+            second_month_enabled: false,
+            amount: null,
+            rate: null,
+          };
+          const defaultAutoGrant: CampaignDetail['auto_grant'] = {
+            enabled: false,
+            title: '自動付与設定',
+            timing_text: '手動適用',
+            target_text: '全員',
+            description: '自動付与は設定されていません。',
+            target_type: 'all',
+            gender_conditions: [],
+            option_ids: [],
+            option_names: [],
+          };
+
+          return {
+            ...row,
+            note: note ?? null,
+            status: status ?? row.accept_status,
+            accept_status_message:
+              accept_status_message ??
+              (row.accept_status === 'active'
+                ? '受付中です。募集期間内の新規申請を受け付けています。'
+                : '受付停止中です。現在は新規受付を行っていません。'),
+            accept_status_action_label:
+              accept_status_action_label ??
+              (row.accept_status === 'active' ? '受付を停止する' : '受付を再開する'),
+            main_contract_id:
+              main_contract_id ?? defaultMainContractIdByName[row.main_contract_name] ?? 'MC001',
+            usage_period_start: usage_period_start ?? row.recruitment_period_start,
+            usage_period_end: usage_period_end ?? row.recruitment_period_end,
+            application_period_start: application_period_start ?? row.recruitment_period_start,
+            application_period_end: application_period_end ?? row.recruitment_period_end,
+            application_start_month_type: application_start_month_type ?? 'first_month',
+            application_custom_month: application_custom_month ?? null,
+            application_duration_months: application_duration_months ?? 2,
+            periods: periods ?? [
+              {
+                period_type: 'recruitment',
+                label: '募集期間',
+                start_date: row.recruitment_period_start,
+                end_date: row.recruitment_period_end,
+              },
+              {
+                period_type: 'usage',
+                label: '利用開始期間',
+                start_date: row.recruitment_period_start,
+                end_date: row.recruitment_period_end,
+              },
+              {
+                period_type: 'application',
+                label: 'キャンペーン適用期間',
+                start_date: row.recruitment_period_start,
+                end_date: row.recruitment_period_end,
+              },
+            ],
+            stats: stats ?? {
+              applied_member_count: 0,
+              application_count: 0,
+              monthly_new_application_count: 0,
+              discount_total: 0,
+            },
+            metadata: metadata ?? {
+              created_at: '2026/01/01 00:00',
+              created_by: '本部管理者',
+              updated_at: '2026/01/01 00:00',
+              updated_by: '本部管理者',
+            },
+            promo_code_previews: promo_code_previews ?? [],
+            ...detailRest,
+            discount: { ...defaultDiscount, ...discount },
+            auto_grant: { ...defaultAutoGrant, ...auto_grant },
+          };
+        };
 
         this._details = {
           CP001: makeDetail('CP001', {
             note: '新生活シーズン向けの入会促進施策',
+            status: 'active',
             accept_status_message: '受付中です。募集期間内の新規申請を受け付けています。',
             accept_status_action_label: '受付を停止する',
             usage_period_start: '2026/03/15',
             usage_period_end: '2026/05/31',
             application_period_start: '2026/03/01',
             application_period_end: '2026/04/30',
+            main_contract_id: 'MC001',
+            application_start_month_type: 'first_month',
+            application_custom_month: null,
+            application_duration_months: 2,
             discount: {
               title: '春の入会特典',
               description: '入会金 0円 / 事務手数料 50% OFF',
               value_text: '初月会費 1,100円引き',
+              first_month_enabled: true,
+              second_month_enabled: false,
+              amount: 1100,
+              rate: null,
             },
             periods: [
               {
@@ -5347,6 +5467,10 @@ function createDb() {
               timing_text: '会員登録完了後 3日以内',
               target_text: 'レギュラー会員',
               description: '条件を満たした会員に対して自動でキャンペーン適用を行います。',
+              target_type: 'conditional',
+              gender_conditions: ['male', 'female'],
+              option_ids: ['OP001', 'OP002'],
+              option_names: ['ドリンクバー（月額）', '水素水'],
             },
             stats: {
               applied_member_count: 128,
@@ -5379,16 +5503,25 @@ function createDb() {
           }),
           CP002: makeDetail('CP002', {
             note: '紹介経由の新規会員獲得キャンペーン',
+            status: 'active',
             accept_status_message: '受付中です。年間を通して適用可能です。',
             accept_status_action_label: '受付を停止する',
             usage_period_start: '2026/01/01',
             usage_period_end: '2026/12/31',
             application_period_start: '2026/01/01',
             application_period_end: '2026/12/31',
+            main_contract_id: 'MC001',
+            application_start_month_type: 'first_month',
+            application_custom_month: null,
+            application_duration_months: 2,
             discount: {
               title: '友達紹介特典',
               description: '紹介者と新規入会者の双方に特典を付与',
               value_text: '双方に 2,000円相当の特典',
+              first_month_enabled: true,
+              second_month_enabled: true,
+              amount: 2000,
+              rate: null,
             },
             periods: [
               {
@@ -5416,6 +5549,10 @@ function createDb() {
               timing_text: '申請承認後 即時',
               target_text: '全契約共通',
               description: '紹介成立時に自動で特典を付与します。',
+              target_type: 'all',
+              gender_conditions: [],
+              option_ids: ['OP003'],
+              option_names: ['タオルセット'],
             },
             stats: {
               applied_member_count: 286,
@@ -5431,7 +5568,7 @@ function createDb() {
             },
             promo_code_previews: [
               {
-                code: 'ALL2026',
+                code: 'ALL2026A1B2C',
                 description: '通年紹介施策',
                 valid_from: '2026/01/01',
                 valid_to: '2026/12/31',
@@ -5441,16 +5578,25 @@ function createDb() {
           }),
           CP003: makeDetail('CP003', {
             note: '法人契約向けの期間限定施策',
+            status: 'active',
             accept_status_message: '受付中です。法人会員向けに公開されています。',
             accept_status_action_label: '受付を停止する',
             usage_period_start: '2026/04/15',
             usage_period_end: '2026/10/31',
             application_period_start: '2026/04/01',
             application_period_end: '2026/09/30',
+            main_contract_id: 'MC004',
+            application_start_month_type: 'next_month',
+            application_custom_month: null,
+            application_duration_months: 3,
             discount: {
               title: '法人割引',
               description: '法人契約の月会費を 10% OFF',
               value_text: '月会費 10% OFF',
+              first_month_enabled: false,
+              second_month_enabled: true,
+              amount: null,
+              rate: 10,
             },
             periods: [
               {
@@ -5478,6 +5624,10 @@ function createDb() {
               timing_text: '手動適用',
               target_text: '法人会員',
               description: '担当者がキャンペーン適用を手動で実施します。',
+              target_type: 'conditional',
+              gender_conditions: [],
+              option_ids: [],
+              option_names: [],
             },
             stats: {
               applied_member_count: 64,
@@ -5510,16 +5660,25 @@ function createDb() {
           }),
           CP004: makeDetail('CP004', {
             note: '新店オープン記念施策',
+            status: 'inactive',
             accept_status_message: '受付停止中です。現在は新規受付を行っていません。',
             accept_status_action_label: '受付を再開する',
             usage_period_start: '2025/10/15',
             usage_period_end: '2026/01/31',
             application_period_start: '2025/10/01',
             application_period_end: '2025/12/31',
+            main_contract_id: 'MC001',
+            application_start_month_type: 'first_month',
+            application_custom_month: null,
+            application_duration_months: 1,
             discount: {
               title: 'オープン記念特典',
               description: '入会金無料 / 初回月会費割引',
               value_text: '初月会費 50% OFF',
+              first_month_enabled: true,
+              second_month_enabled: false,
+              amount: null,
+              rate: 50,
             },
             periods: [
               {
@@ -5547,6 +5706,10 @@ function createDb() {
               timing_text: '手動適用',
               target_text: '全契約共通',
               description: '受付停止中のため自動付与設定は参照のみです。',
+              target_type: 'all',
+              gender_conditions: [],
+              option_ids: [],
+              option_names: [],
             },
             stats: {
               applied_member_count: 19,
@@ -5572,16 +5735,25 @@ function createDb() {
           }),
           CP005: makeDetail('CP005', {
             note: '夏季の入会強化キャンペーン',
+            status: 'inactive',
             accept_status_message: '受付停止中です。現在は受付を止めています。',
             accept_status_action_label: '受付を再開する',
             usage_period_start: '2026/06/15',
             usage_period_end: '2026/09/30',
             application_period_start: '2026/06/01',
             application_period_end: '2026/08/31',
+            main_contract_id: 'MC003',
+            application_start_month_type: 'custom_month',
+            application_custom_month: 3,
+            application_duration_months: 2,
             discount: {
               title: '夏のボディメイク特典',
               description: 'パーソナルトレーニング初回無料',
               value_text: '初回PT 1回無料',
+              first_month_enabled: true,
+              second_month_enabled: false,
+              amount: 5500,
+              rate: null,
             },
             periods: [
               {
@@ -5609,6 +5781,10 @@ function createDb() {
               timing_text: '会員登録完了後 1日以内',
               target_text: 'プレミアム会員',
               description: 'プレミアム会員向けに自動でキャンペーンを適用します。',
+              target_type: 'conditional',
+              gender_conditions: ['female'],
+              option_ids: ['OP004'],
+              option_names: ['パーソナルロッカー（S）'],
             },
             stats: {
               applied_member_count: 42,
@@ -5626,16 +5802,25 @@ function createDb() {
           }),
           CP006: makeDetail('CP006', {
             note: '年末商戦向けの特別割引施策',
+            status: 'active',
             accept_status_message: '受付中です。年末に向けて公開中です。',
             accept_status_action_label: '受付を停止する',
             usage_period_start: '2026/10/15',
             usage_period_end: '2027/01/31',
             application_period_start: '2026/10/01',
             application_period_end: '2026/12/31',
+            main_contract_id: 'MC001',
+            application_start_month_type: 'next_month',
+            application_custom_month: null,
+            application_duration_months: 2,
             discount: {
               title: '年末特別割引',
               description: '入会時の初期費用を特別価格に設定',
               value_text: '初期費用 3,300円引き',
+              first_month_enabled: false,
+              second_month_enabled: true,
+              amount: 3300,
+              rate: null,
             },
             periods: [
               {
@@ -5663,6 +5848,10 @@ function createDb() {
               timing_text: '手動適用',
               target_text: '全契約共通',
               description: '年末商戦向けの特別割引は管理者が手動適用します。',
+              target_type: 'all',
+              gender_conditions: [],
+              option_ids: [],
+              option_names: [],
             },
             stats: {
               applied_member_count: 9,
@@ -5769,6 +5958,81 @@ function createDb() {
       getChangeHistory(id: string): CampaignChangeHistoryItem[] {
         this._seed();
         return this._changeHistory[id] ?? [];
+      },
+      add(campaign: CampaignDetail): void {
+        this._seed();
+        this._rows.push({
+          id: campaign.id,
+          name: campaign.name,
+          code: campaign.code,
+          brand: campaign.brand,
+          recruitment_period_start: campaign.recruitment_period_start,
+          recruitment_period_end: campaign.recruitment_period_end,
+          accept_status: campaign.accept_status,
+          main_contract_name: campaign.main_contract_name,
+        });
+        this._details[campaign.id] = campaign;
+        this._changeHistory[campaign.id] = [
+          {
+            date: campaign.metadata.updated_at,
+            user: campaign.metadata.updated_by,
+            field: null,
+            from: null,
+            to: '新規作成',
+          },
+        ];
+      },
+      update(id: string, data: Partial<CampaignDetail>): CampaignDetail | undefined {
+        this._seed();
+        const existing = this._details[id];
+        if (!existing) return undefined;
+
+        const updated = {
+          ...existing,
+          ...data,
+          id,
+          discount: {
+            ...existing.discount,
+            ...(data.discount ?? {}),
+          },
+          auto_grant: {
+            ...existing.auto_grant,
+            ...(data.auto_grant ?? {}),
+          },
+          metadata: {
+            ...existing.metadata,
+            ...(data.metadata ?? {}),
+          },
+        } satisfies CampaignDetail;
+
+        this._details[id] = updated;
+
+        const idx = this._rows.findIndex((row) => row.id === id);
+        if (idx !== -1) {
+          this._rows[idx] = {
+            ...this._rows[idx],
+            name: updated.name,
+            code: updated.code,
+            brand: updated.brand,
+            recruitment_period_start: updated.recruitment_period_start,
+            recruitment_period_end: updated.recruitment_period_end,
+            accept_status: updated.accept_status,
+            main_contract_name: updated.main_contract_name,
+          };
+        }
+
+        this._changeHistory[id] = [
+          {
+            date: updated.metadata.updated_at,
+            user: updated.metadata.updated_by,
+            field: null,
+            from: null,
+            to: '更新',
+          },
+          ...(this._changeHistory[id] ?? []),
+        ];
+
+        return updated;
       },
     },
     optionMasters: {
