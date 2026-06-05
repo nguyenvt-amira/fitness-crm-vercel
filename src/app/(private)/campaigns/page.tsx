@@ -67,14 +67,16 @@ function CampaignsPageContent() {
     <>
       <PageHeader
         title="キャンペーン管理"
-        className="[&_h1]:leading-8"
         badge={
           <Badge variant="outline" className="text-xs">
             {totalCampaigns}件
           </Badge>
         }
         actions={
-          <RoleGatedButton allowedRoles={[UserRole.Headquarter, UserRole.System]}>
+          <RoleGatedButton
+            allowedRoles={[UserRole.Headquarter, UserRole.System]}
+            onClick={() => router.push(navigate('/campaigns/create'))}
+          >
             <Plus className="size-4" />
             新規登録
           </RoleGatedButton>

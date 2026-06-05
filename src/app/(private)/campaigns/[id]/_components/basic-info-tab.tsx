@@ -12,6 +12,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import { cn } from '@/lib/utils';
 
+import {
+  CAMPAIGN_APPLICATION_START_MONTH_LABELS,
+  CAMPAIGN_AUTO_GRANT_TARGET_LABELS,
+  CAMPAIGN_GENDER_CONDITION_LABELS,
+} from '../../_constants/constants';
 import { CampaignAcceptancePanel } from './campaign-acceptance-panel';
 
 type BasicInfoTabProps = {
@@ -72,6 +77,21 @@ function CreatorRow({ name }: Readonly<{ name: string }>) {
 }
 
 export function BasicInfoTab({ campaign }: Readonly<BasicInfoTabProps>) {
+  const genderBadges = campaign.auto_grant.gender_conditions.map((condition) => {
+    const toneClass =
+      condition === 'male'
+        ? 'border-gender-male/20 bg-gender-male/15 text-gender-male'
+        : condition === 'female'
+          ? 'border-gender-female/20 bg-gender-female/15 text-gender-female'
+          : 'border-zinc-200 bg-zinc-100 text-zinc-700';
+
+    return (
+      <Badge key={condition} variant="outline" className={`${toneClass} text-xs font-medium`}>
+        {CAMPAIGN_GENDER_CONDITION_LABELS[condition]}
+      </Badge>
+    );
+  });
+
   return (
     <div className="flex flex-col gap-4">
       <div className="grid gap-4 md:grid-cols-4">
@@ -150,10 +170,7 @@ export function BasicInfoTab({ campaign }: Readonly<BasicInfoTabProps>) {
                     value={
                       <div className="flex flex-wrap gap-2">
                         <Badge variant="outline" className="text-xs">
-                          レギュラー会員
-                        </Badge>
-                        <Badge variant="outline" className="text-xs">
-                          デイタイム会員
+                          {campaign.main_contract_name}
                         </Badge>
                       </div>
                     }
@@ -200,8 +217,20 @@ export function BasicInfoTab({ campaign }: Readonly<BasicInfoTabProps>) {
                 <div>
                   <SectionTitle>キャンペーン適用期間</SectionTitle>
                   <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                    <Field label="適用開始月" value="初月（利用開始月）" />
-                    <Field label="適用期間" value="2ヶ月（利用開始日起算）" />
+                    <Field
+                      label="適用開始月"
+                      value={
+                        campaign.application_start_month_type === 'custom_month'
+                          ? `${campaign.application_custom_month ?? 1}ヶ月目から`
+                          : CAMPAIGN_APPLICATION_START_MONTH_LABELS[
+                              campaign.application_start_month_type
+                            ]
+                      }
+                    />
+                    <Field
+                      label="適用期間"
+                      value={`${campaign.application_duration_months}ヶ月（利用開始日起算）`}
+                    />
                   </div>
                 </div>
               </div>
@@ -230,37 +259,38 @@ export function BasicInfoTab({ campaign }: Readonly<BasicInfoTabProps>) {
                     </Badge>
                   }
                 />
-                <Field label="付与対象" value={campaign.auto_grant.enabled ? '条件あり' : '―'} />
+                <Field
+                  label="付与対象"
+                  value={
+                    campaign.auto_grant.enabled
+                      ? CAMPAIGN_AUTO_GRANT_TARGET_LABELS[campaign.auto_grant.target_type]
+                      : '―'
+                  }
+                />
                 <Field
                   label="性別条件"
                   value={
-                    <div className="flex flex-wrap gap-2">
-                      <Badge
-                        variant="outline"
-                        className="border-gender-male/20 bg-gender-male/15 text-gender-male text-xs font-medium"
-                      >
-                        男性
-                      </Badge>
-                      <Badge
-                        variant="outline"
-                        className="border-gender-female/20 bg-gender-female/15 text-gender-female text-xs font-medium"
-                      >
-                        女性
-                      </Badge>
-                    </div>
+                    genderBadges.length > 0 ? (
+                      <div className="flex flex-wrap gap-2">{genderBadges}</div>
+                    ) : (
+                      '―'
+                    )
                   }
                 />
                 <Field
                   label="付与オプション"
                   value={
-                    <div className="flex flex-wrap gap-2">
-                      <Badge variant="outline" className="text-xs">
-                        プロテイン
-                      </Badge>
-                      <Badge variant="outline" className="text-xs">
-                        水素水
-                      </Badge>
-                    </div>
+                    campaign.auto_grant.option_names.length > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                        {campaign.auto_grant.option_names.map((optionName) => (
+                          <Badge key={optionName} variant="outline" className="text-xs">
+                            {optionName}
+                          </Badge>
+                        ))}
+                      </div>
+                    ) : (
+                      '―'
+                    )
                   }
                 />
               </div>

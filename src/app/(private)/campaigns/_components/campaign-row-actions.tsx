@@ -25,7 +25,7 @@ export function CampaignRowActions({ campaignId, className }: Readonly<CampaignR
   const router = useRouter();
 
   const handleEdit = () => {
-    router.push(navigate('/campaigns/[id]', campaignId));
+    router.push(navigate('/campaigns/[id]/edit', campaignId));
   };
 
   return (

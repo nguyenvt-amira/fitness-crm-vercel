@@ -69,7 +69,6 @@ export default function CampaignDetailPage() {
           />
         }
         title={campaign.name}
-        className="[&_h1]:leading-8"
         actions={
           <div className="flex items-center gap-2">
             <RoleGatedButton
@@ -77,7 +76,7 @@ export default function CampaignDetailPage() {
               variant="default"
               size="sm"
               className="h-9 gap-1.5 rounded-[10px] px-3 text-sm font-medium"
-              onClick={() => undefined}
+              onClick={() => router.push(navigate('/campaigns/[id]/edit', campaignId))}
             >
               <Pencil className="size-4" />
               編集
@@ -90,7 +89,7 @@ export default function CampaignDetailPage() {
               <DropdownMenuContent align="end">
                 <RoleGatedMenuItem
                   allowedRoles={[UserRole.Headquarter, UserRole.System]}
-                  onClick={() => undefined}
+                  onClick={() => router.push(navigate('/campaigns/[id]/edit', campaignId))}
                 >
                   <Pencil className="size-4" />
                   編集
