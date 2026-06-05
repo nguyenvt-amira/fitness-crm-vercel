@@ -28,6 +28,8 @@ import type {
 import type { DirectEnrollmentRequest as DirectEnrollmentRequestType } from '@/app/api/_schemas/membership-application.schema';
 import type {
   GetOptionDiscountsResponse,
+  OptionDiscountChangeHistoryItem,
+  OptionDiscountDetail,
   OptionDiscountListItem,
 } from '@/app/api/_schemas/option-discount.schema';
 import type {
@@ -955,6 +957,45 @@ const SEED_CORPORATE_MASTERS: CorporateMasterRow[] = [
   { id: 'CORP-003', name: '株式会社サンプルC', code: 'CC003' },
 ];
 
+const SEED_OPTION_DISCOUNT_CHANGE_HISTORY: Record<string, OptionDiscountChangeHistoryItem[]> = {
+  SD001: [
+    {
+      date: '2026/03/01 10:30',
+      user: 'テストユーザー',
+      field: '割引金額',
+      from: '¥220',
+      to: '¥330',
+    },
+    {
+      date: '2025/10/15 14:00',
+      user: '管理者A',
+      field: '適用条件',
+      from: '新規入会時のみ',
+      to: '同時申込時',
+    },
+    {
+      date: '2025/07/01 09:00',
+      user: '管理者A',
+      field: 'ステータス',
+      from: 'inactive',
+      to: 'active',
+    },
+    { date: '2025/06/20 16:45', user: 'テストユーザー', field: null, from: null, to: '新規作成' },
+  ],
+  SD002: [
+    { date: '2026/02/15 14:30', user: '管理者A', field: '割引金額', from: '¥250', to: '¥220' },
+    { date: '2025/08/10 11:00', user: 'テストユーザー', field: null, from: null, to: '新規作成' },
+  ],
+  SD003: [
+    { date: '2025/12/01 09:00', user: '管理者A', field: '割引率', from: '5%', to: '10%' },
+    { date: '2025/09/20 16:45', user: 'テストユーザー', field: null, from: null, to: '新規作成' },
+  ],
+  SD004: [
+    { date: '2026/01/10 13:00', user: 'テストユーザー', field: null, from: null, to: '新規作成' },
+  ],
+  SD005: [{ date: '2025/11/05 10:00', user: '管理者A', field: null, from: null, to: '新規作成' }],
+};
+
 const SEED_OPTION_DISCOUNT_ROWS: OptionDiscountListItem[] = [
   {
     id: 'SD001',
@@ -1308,10 +1349,13 @@ type DbType = {
   };
   optionDiscount: {
     _rows: GetOptionDiscountsResponse['option_discounts'];
+    _changeHistory: Record<string, OptionDiscountChangeHistoryItem[]>;
     _seeded: boolean;
     _seed(): void;
     getList(): GetOptionDiscountsResponse['option_discounts'];
-    getById(id: string): OptionDiscountListItem | undefined;
+    getById(id: string): OptionDiscountDetail | undefined;
+    delete(id: string): boolean;
+    getChangeHistory(id: string): OptionDiscountChangeHistoryItem[];
   };
   storeMainContracts: {
     _rows: Array<{ store_id: string; main_contract_id: string; linked_at: string }>;
@@ -5626,6 +5670,7 @@ function createDb() {
     },
     optionDiscount: {
       _rows: [] as GetOptionDiscountsResponse['option_discounts'],
+      _changeHistory: {} as Record<string, OptionDiscountChangeHistoryItem[]>,
       _seeded: false,
       _seed(): void {
         if (this._seeded) return;
@@ -5635,6 +5680,10 @@ function createDb() {
           target_contracts: [...row.target_contracts],
           target_options: [...row.target_options],
         }));
+        this._changeHistory = {};
+        for (const [id, history] of Object.entries(SEED_OPTION_DISCOUNT_CHANGE_HISTORY)) {
+          this._changeHistory[id] = history.map((h) => ({ ...h }));
+        }
       },
       getList(): GetOptionDiscountsResponse['option_discounts'] {
         this._seed();
@@ -5644,7 +5693,7 @@ function createDb() {
           target_options: [...row.target_options],
         }));
       },
-      getById(id: string): OptionDiscountListItem | undefined {
+      getById(id: string): OptionDiscountDetail | undefined {
         this._seed();
         const row = this._rows.find((item) => item.id === id);
         if (!row) return undefined;
@@ -5652,7 +5701,29 @@ function createDb() {
           ...row,
           target_contracts: [...row.target_contracts],
           target_options: [...row.target_options],
+          description:
+            'レギュラー会員プランと水素水オプションを同時にお申し込みいただくと、月額料金から¥330を割引いたします。既存会員がオプションを追加する場合も適用対象となります。',
+          rules: [
+            '常時募集（キャンペーンとは別物）',
+            'セット内片方オプションの解除で割引解除、再追加で再適用',
+            'キャンペーン併用時、金額変動オプションがあれば不発動',
+          ],
+          created_at: '2025/06/20 16:45',
+          updated_at: '2026/03/01 10:30',
+          updated_by: 'テストユーザー',
         };
+      },
+      delete(id: string): boolean {
+        this._seed();
+        const idx = this._rows.findIndex((r) => r.id === id);
+        if (idx === -1) return false;
+        this._rows.splice(idx, 1);
+        delete this._changeHistory[id];
+        return true;
+      },
+      getChangeHistory(id: string): OptionDiscountChangeHistoryItem[] {
+        this._seed();
+        return this._changeHistory[id] ?? [];
       },
     },
     storeMainContracts: {

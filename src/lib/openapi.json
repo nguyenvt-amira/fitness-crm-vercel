@@ -31826,6 +31826,426 @@
         }
       }
     },
+    "/crm/option-discounts/{id}/change-history": {
+      "get": {
+        "summary": "Get option discount change history",
+        "description": "Get change history for a specific option discount",
+        "tags": ["Options"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Option Discount ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Option discount change history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "history": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "date": {
+                            "type": "string",
+                            "example": "2026/03/01 10:30"
+                          },
+                          "user": {
+                            "type": "string",
+                            "example": "テストユーザー"
+                          },
+                          "field": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "from": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "to": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["date", "user", "field", "from", "to"],
+                        "title": "OptionDiscountChangeHistoryItem",
+                        "description": "セット割変更履歴"
+                      }
+                    }
+                  },
+                  "required": ["history"],
+                  "title": "GetOptionDiscountChangeHistoryResponse",
+                  "description": "セット割変更履歴レスポンス"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/option-discounts/{id}": {
+      "get": {
+        "summary": "Get option discount detail",
+        "description": "Get detailed information for a specific option discount",
+        "tags": ["Options"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Option Discount ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Option discount detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "option_discount": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "SD001",
+                          "description": "セット割ID"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "レギュラー＋水素水セット",
+                          "description": "セット割名"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "SET-001",
+                          "description": "セット割コード"
+                        },
+                        "target_contracts": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "対象契約名一覧",
+                          "example": ["レギュラー会員"]
+                        },
+                        "target_options": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "対象オプション名一覧",
+                          "example": ["水素水"]
+                        },
+                        "discount_type": {
+                          "type": "string",
+                          "enum": ["fixed_amount", "percentage"],
+                          "title": "OptionDiscountType",
+                          "description": "割引タイプ"
+                        },
+                        "discount_value": {
+                          "type": "number",
+                          "minimum": 0,
+                          "example": 330,
+                          "description": "割引値"
+                        },
+                        "conditions": {
+                          "type": "string",
+                          "example": "同時申込時",
+                          "description": "適用条件"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "対象店舗ID（null = 全店舗）"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "対象店舗名（null = 全店舗）"
+                        },
+                        "applied_count": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 180,
+                          "description": "適用数"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "OptionDiscountStatus",
+                          "description": "ステータス"
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "説明文"
+                        },
+                        "rules": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "適用ルール"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2025/06/20 16:45",
+                          "description": "作成日時"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026/03/01 10:30",
+                          "description": "最終更新日時"
+                        },
+                        "updated_by": {
+                          "type": "string",
+                          "example": "テストユーザー",
+                          "description": "更新者"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "code",
+                        "target_contracts",
+                        "target_options",
+                        "discount_type",
+                        "discount_value",
+                        "conditions",
+                        "store_id",
+                        "store_name",
+                        "applied_count",
+                        "status",
+                        "description",
+                        "rules",
+                        "created_at",
+                        "updated_at",
+                        "updated_by"
+                      ],
+                      "title": "OptionDiscountDetail",
+                      "description": "セット割詳細"
+                    }
+                  },
+                  "required": ["option_discount"],
+                  "title": "GetOptionDiscountDetailResponse",
+                  "description": "セット割詳細レスポンス"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete option discount",
+        "description": "Delete an option discount setting",
+        "tags": ["Options"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Option Discount ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "削除理由",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "廃止のため"
+                  }
+                },
+                "required": ["reason"],
+                "title": "DeleteOptionDiscountRequest",
+                "description": "セット割削除リクエスト"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "セット割を削除しました"
+                    }
+                  },
+                  "required": ["message"],
+                  "title": "DeleteOptionDiscountResponse",
+                  "description": "セット割削除レスポンス"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Deletion blocked or validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/option-discounts": {
       "get": {
         "summary": "Get option discounts list",

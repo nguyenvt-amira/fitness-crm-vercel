@@ -80,6 +80,54 @@ export const GetOptionDiscountsResponseSchema = z
     description: 'セット割一覧レスポンス',
   });
 
+// --- Detail ---
+export const OptionDiscountDetailSchema = OptionDiscountListItemSchema.extend({
+  description: z.string().nullable().openapi({ description: '説明文' }),
+  rules: z.array(z.string()).openapi({ description: '適用ルール' }),
+  created_at: z.string().openapi({ example: '2025/06/20 16:45', description: '作成日時' }),
+  updated_at: z.string().openapi({ example: '2026/03/01 10:30', description: '最終更新日時' }),
+  updated_by: z.string().openapi({ example: 'テストユーザー', description: '更新者' }),
+}).openapi({
+  title: 'OptionDiscountDetail',
+  description: 'セット割詳細',
+});
+
+export const GetOptionDiscountDetailResponseSchema = z
+  .object({ option_discount: OptionDiscountDetailSchema })
+  .openapi({
+    title: 'GetOptionDiscountDetailResponse',
+    description: 'セット割詳細レスポンス',
+  });
+
+// --- Change History ---
+export const OptionDiscountChangeHistoryItemSchema = z
+  .object({
+    date: z.string().openapi({ example: '2026/03/01 10:30' }),
+    user: z.string().openapi({ example: 'テストユーザー' }),
+    field: z.string().nullable(),
+    from: z.string().nullable(),
+    to: z.string(),
+  })
+  .openapi({ title: 'OptionDiscountChangeHistoryItem', description: 'セット割変更履歴' });
+
+export const GetOptionDiscountChangeHistoryResponseSchema = z
+  .object({ history: z.array(OptionDiscountChangeHistoryItemSchema) })
+  .openapi({
+    title: 'GetOptionDiscountChangeHistoryResponse',
+    description: 'セット割変更履歴レスポンス',
+  });
+
+// --- Delete ---
+export const DeleteOptionDiscountRequestSchema = z
+  .object({
+    reason: z.string().min(1, '削除理由は必須です').openapi({ example: '廃止のため' }),
+  })
+  .openapi({ title: 'DeleteOptionDiscountRequest', description: 'セット割削除リクエスト' });
+
+export const DeleteOptionDiscountResponseSchema = z
+  .object({ message: z.string().openapi({ example: 'セット割を削除しました' }) })
+  .openapi({ title: 'DeleteOptionDiscountResponse', description: 'セット割削除レスポンス' });
+
 export { ErrorResponseSchema };
 
 export type OptionDiscountType = z.infer<typeof OptionDiscountTypeSchema>;
@@ -87,3 +135,11 @@ export type OptionDiscountStatus = z.infer<typeof OptionDiscountStatusSchema>;
 export type OptionDiscountListItem = z.infer<typeof OptionDiscountListItemSchema>;
 export type GetOptionDiscountsQuery = z.infer<typeof GetOptionDiscountsQuerySchema>;
 export type GetOptionDiscountsResponse = z.infer<typeof GetOptionDiscountsResponseSchema>;
+export type OptionDiscountDetail = z.infer<typeof OptionDiscountDetailSchema>;
+export type GetOptionDiscountDetailResponse = z.infer<typeof GetOptionDiscountDetailResponseSchema>;
+export type OptionDiscountChangeHistoryItem = z.infer<typeof OptionDiscountChangeHistoryItemSchema>;
+export type GetOptionDiscountChangeHistoryResponse = z.infer<
+  typeof GetOptionDiscountChangeHistoryResponseSchema
+>;
+export type DeleteOptionDiscountRequest = z.infer<typeof DeleteOptionDiscountRequestSchema>;
+export type DeleteOptionDiscountResponse = z.infer<typeof DeleteOptionDiscountResponseSchema>;

@@ -138,6 +138,9 @@ function OptionDiscountPageContent() {
               manualSorting: true,
               state: { sorting },
             }}
+            onRowClick={(row) => {
+              router.push(navigate('/option-discount/[id]', row.id));
+            }}
           />
 
           {totalOptionDiscounts > 0 && (
