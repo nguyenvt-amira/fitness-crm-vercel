@@ -1872,6 +1872,449 @@ export type GetCampaignDetailResponse = {
 };
 
 /**
+ * PromoCodeStatus
+ *
+ * Promo code status
+ */
+export const PromoCodeStatus = {
+    ACTIVE: 'active',
+    EXPIRED: 'expired',
+    LIMIT_REACHED: 'limit_reached',
+    INACTIVE: 'inactive'
+} as const;
+
+/**
+ * PromoCodeStatus
+ *
+ * Promo code status
+ */
+export type PromoCodeStatus = typeof PromoCodeStatus[keyof typeof PromoCodeStatus];
+
+/**
+ * PromoCodeUsageCapMode
+ *
+ * Promo code usage-cap mode
+ */
+export const PromoCodeUsageCapMode = { UNLIMITED: 'unlimited', LIMITED: 'limited' } as const;
+
+/**
+ * PromoCodeUsageCapMode
+ *
+ * Promo code usage-cap mode
+ */
+export type PromoCodeUsageCapMode = typeof PromoCodeUsageCapMode[keyof typeof PromoCodeUsageCapMode];
+
+/**
+ * PromoCodeStoreScope
+ *
+ * Promo code store scope
+ */
+export const PromoCodeStoreScope = { ALL: 'all', BRANCH: 'branch' } as const;
+
+/**
+ * PromoCodeStoreScope
+ *
+ * Promo code store scope
+ */
+export type PromoCodeStoreScope = typeof PromoCodeStoreScope[keyof typeof PromoCodeStoreScope];
+
+/**
+ * GetPromoCodesQuery
+ *
+ * Query for fetching promo codes by campaign
+ */
+export type GetPromoCodesQuery = {
+    campaign_id: string;
+};
+
+/**
+ * PromoCodeUpsertBody
+ *
+ * Promo code create/update payload
+ */
+export type PromoCodeUpsertBody = {
+    campaignId: string;
+    campaignName: string;
+    code: string;
+    description?: string | null;
+    validFrom: string;
+    validTo: string;
+    usageCount?: number;
+    usageCap: number | null;
+    /**
+     * PromoCodeUsageCapMode
+     *
+     * Promo code usage-cap mode
+     */
+    usageCapMode: 'unlimited' | 'limited';
+    /**
+     * PromoCodeStoreScope
+     *
+     * Promo code store scope
+     */
+    storeScope: 'all' | 'branch';
+    issuedByLabel: string;
+    /**
+     * PromoCodeStatus
+     *
+     * Promo code status
+     */
+    status?: 'active' | 'expired' | 'limit_reached' | 'inactive';
+};
+
+/**
+ * UpdatePromoCodeStatusBody
+ *
+ * Promo code status update payload
+ */
+export type UpdatePromoCodeStatusBody = {
+    /**
+     * PromoCodeStatus
+     *
+     * Promo code status
+     */
+    status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+    reason?: string | null;
+};
+
+/**
+ * PromoCodeRecord
+ *
+ * Persistent promo code record stored in the mock API
+ */
+export type PromoCodeRecord = {
+    /**
+     * Promo code record ID
+     */
+    id: string;
+    /**
+     * Campaign ID
+     */
+    campaign_id: string;
+    /**
+     * Campaign name
+     */
+    campaign_name: string;
+    /**
+     * Promo code
+     */
+    code: string;
+    /**
+     * Promo code description
+     */
+    description: string | null;
+    /**
+     * Validity start date
+     */
+    valid_from: string;
+    /**
+     * Validity end date
+     */
+    valid_to: string;
+    /**
+     * Usage count
+     */
+    usage_count: number;
+    /**
+     * Usage cap
+     */
+    usage_cap: number | null;
+    /**
+     * Usage cap label
+     */
+    usage_cap_label: string;
+    /**
+     * Store scope label
+     */
+    store_scope_label: string;
+    /**
+     * Issued by label
+     */
+    issued_by_label: string;
+    /**
+     * Discount total label
+     */
+    discount_total_label: string;
+    /**
+     * PromoCodeStatus
+     *
+     * Promo code status
+     */
+    status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+    /**
+     * Disable reason
+     */
+    disabled_reason: string | null;
+    /**
+     * Created at
+     */
+    created_at: string;
+    /**
+     * Updated at
+     */
+    updated_at: string;
+};
+
+/**
+ * GetPromoCodesResponse
+ *
+ * Promo code list response
+ */
+export type GetPromoCodesResponse = {
+    promo_codes: Array<{
+        /**
+         * Promo code record ID
+         */
+        id: string;
+        /**
+         * Campaign ID
+         */
+        campaign_id: string;
+        /**
+         * Campaign name
+         */
+        campaign_name: string;
+        /**
+         * Promo code
+         */
+        code: string;
+        /**
+         * Promo code description
+         */
+        description: string | null;
+        /**
+         * Validity start date
+         */
+        valid_from: string;
+        /**
+         * Validity end date
+         */
+        valid_to: string;
+        /**
+         * Usage count
+         */
+        usage_count: number;
+        /**
+         * Usage cap
+         */
+        usage_cap: number | null;
+        /**
+         * Usage cap label
+         */
+        usage_cap_label: string;
+        /**
+         * Store scope label
+         */
+        store_scope_label: string;
+        /**
+         * Issued by label
+         */
+        issued_by_label: string;
+        /**
+         * Discount total label
+         */
+        discount_total_label: string;
+        /**
+         * PromoCodeStatus
+         *
+         * Promo code status
+         */
+        status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+        /**
+         * Disable reason
+         */
+        disabled_reason: string | null;
+        /**
+         * Created at
+         */
+        created_at: string;
+        /**
+         * Updated at
+         */
+        updated_at: string;
+    }>;
+};
+
+/**
+ * CreatePromoCodeResponse
+ *
+ * Created promo code response
+ */
+export type CreatePromoCodeResponse = {
+    /**
+     * PromoCodeRecord
+     *
+     * Persistent promo code record stored in the mock API
+     */
+    promo_code: {
+        /**
+         * Promo code record ID
+         */
+        id: string;
+        /**
+         * Campaign ID
+         */
+        campaign_id: string;
+        /**
+         * Campaign name
+         */
+        campaign_name: string;
+        /**
+         * Promo code
+         */
+        code: string;
+        /**
+         * Promo code description
+         */
+        description: string | null;
+        /**
+         * Validity start date
+         */
+        valid_from: string;
+        /**
+         * Validity end date
+         */
+        valid_to: string;
+        /**
+         * Usage count
+         */
+        usage_count: number;
+        /**
+         * Usage cap
+         */
+        usage_cap: number | null;
+        /**
+         * Usage cap label
+         */
+        usage_cap_label: string;
+        /**
+         * Store scope label
+         */
+        store_scope_label: string;
+        /**
+         * Issued by label
+         */
+        issued_by_label: string;
+        /**
+         * Discount total label
+         */
+        discount_total_label: string;
+        /**
+         * PromoCodeStatus
+         *
+         * Promo code status
+         */
+        status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+        /**
+         * Disable reason
+         */
+        disabled_reason: string | null;
+        /**
+         * Created at
+         */
+        created_at: string;
+        /**
+         * Updated at
+         */
+        updated_at: string;
+    };
+};
+
+/**
+ * UpdatePromoCodeResponse
+ *
+ * Updated promo code response
+ */
+export type UpdatePromoCodeResponse = {
+    /**
+     * PromoCodeRecord
+     *
+     * Persistent promo code record stored in the mock API
+     */
+    promo_code: {
+        /**
+         * Promo code record ID
+         */
+        id: string;
+        /**
+         * Campaign ID
+         */
+        campaign_id: string;
+        /**
+         * Campaign name
+         */
+        campaign_name: string;
+        /**
+         * Promo code
+         */
+        code: string;
+        /**
+         * Promo code description
+         */
+        description: string | null;
+        /**
+         * Validity start date
+         */
+        valid_from: string;
+        /**
+         * Validity end date
+         */
+        valid_to: string;
+        /**
+         * Usage count
+         */
+        usage_count: number;
+        /**
+         * Usage cap
+         */
+        usage_cap: number | null;
+        /**
+         * Usage cap label
+         */
+        usage_cap_label: string;
+        /**
+         * Store scope label
+         */
+        store_scope_label: string;
+        /**
+         * Issued by label
+         */
+        issued_by_label: string;
+        /**
+         * Discount total label
+         */
+        discount_total_label: string;
+        /**
+         * PromoCodeStatus
+         *
+         * Promo code status
+         */
+        status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+        /**
+         * Disable reason
+         */
+        disabled_reason: string | null;
+        /**
+         * Created at
+         */
+        created_at: string;
+        /**
+         * Updated at
+         */
+        updated_at: string;
+    };
+};
+
+/**
+ * PromoCodeErrorResponse
+ *
+ * Promo-code-specific error response
+ */
+export type PromoCodeErrorResponse = {
+    error: string;
+};
+
+/**
  * MemberListItem
  *
  * Member information for list view
@@ -12069,26 +12512,34 @@ export type GetCrmCampaignsByIdData = {
 
 export type GetCrmCampaignsByIdErrors = {
     /**
-     * ErrorResponse
+     * CampaignErrorResponse
      *
-     * Error response
+     * Campaign-specific error response
      */
     404: {
         /**
          * Error message
          */
         error: string;
+        /**
+         * Campaign-specific error code
+         */
+        code?: string;
     };
     /**
-     * ErrorResponse
+     * CampaignErrorResponse
      *
-     * Error response
+     * Campaign-specific error response
      */
     500: {
         /**
          * Error message
          */
         error: string;
+        /**
+         * Campaign-specific error code
+         */
+        code?: string;
     };
 };
 
@@ -12458,37 +12909,49 @@ export type PatchCrmCampaignsByIdData = {
 
 export type PatchCrmCampaignsByIdErrors = {
     /**
-     * ErrorResponse
+     * CampaignErrorResponse
      *
-     * Error response
+     * Campaign-specific error response
      */
     400: {
         /**
          * Error message
          */
         error: string;
+        /**
+         * Campaign-specific error code
+         */
+        code?: string;
     };
     /**
-     * ErrorResponse
+     * CampaignErrorResponse
      *
-     * Error response
+     * Campaign-specific error response
      */
     404: {
         /**
          * Error message
          */
         error: string;
+        /**
+         * Campaign-specific error code
+         */
+        code?: string;
     };
     /**
-     * ErrorResponse
+     * CampaignErrorResponse
      *
-     * Error response
+     * Campaign-specific error response
      */
     500: {
         /**
          * Error message
          */
         error: string;
+        /**
+         * Campaign-specific error code
+         */
+        code?: string;
     };
 };
 
@@ -12816,26 +13279,34 @@ export type GetCrmCampaignsData = {
 
 export type GetCrmCampaignsErrors = {
     /**
-     * ErrorResponse
+     * CampaignErrorResponse
      *
-     * Error response
+     * Campaign-specific error response
      */
     400: {
         /**
          * Error message
          */
         error: string;
+        /**
+         * Campaign-specific error code
+         */
+        code?: string;
     };
     /**
-     * ErrorResponse
+     * CampaignErrorResponse
      *
-     * Error response
+     * Campaign-specific error response
      */
     500: {
         /**
          * Error message
          */
         error: string;
+        /**
+         * Campaign-specific error code
+         */
+        code?: string;
     };
 };
 
@@ -12973,26 +13444,34 @@ export type PostCrmCampaignsData = {
 
 export type PostCrmCampaignsErrors = {
     /**
-     * ErrorResponse
+     * CampaignErrorResponse
      *
-     * Error response
+     * Campaign-specific error response
      */
     400: {
         /**
          * Error message
          */
         error: string;
+        /**
+         * Campaign-specific error code
+         */
+        code?: string;
     };
     /**
-     * ErrorResponse
+     * CampaignErrorResponse
      *
-     * Error response
+     * Campaign-specific error response
      */
     500: {
         /**
          * Error message
          */
         error: string;
+        /**
+         * Campaign-specific error code
+         */
+        code?: string;
     };
 };
 
@@ -24701,6 +25180,421 @@ export type PostCrmOptionsResponses = {
 };
 
 export type PostCrmOptionsResponse = PostCrmOptionsResponses[keyof PostCrmOptionsResponses];
+
+export type PatchCrmPromoCodesByCodeData = {
+    /**
+     * UpdatePromoCodeStatusBody
+     *
+     * Promo code status update payload
+     */
+    body?: {
+        /**
+         * PromoCodeStatus
+         *
+         * Promo code status
+         */
+        status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+        reason?: string | null;
+    };
+    path: {
+        /**
+         * Promo code
+         */
+        code: string;
+    };
+    query?: never;
+    url: '/crm/promo-codes/{code}';
+};
+
+export type PatchCrmPromoCodesByCodeErrors = {
+    /**
+     * PromoCodeErrorResponse
+     *
+     * Promo-code-specific error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * PromoCodeErrorResponse
+     *
+     * Promo-code-specific error response
+     */
+    404: {
+        error: string;
+    };
+    /**
+     * PromoCodeErrorResponse
+     *
+     * Promo-code-specific error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type PatchCrmPromoCodesByCodeError = PatchCrmPromoCodesByCodeErrors[keyof PatchCrmPromoCodesByCodeErrors];
+
+export type PatchCrmPromoCodesByCodeResponses = {
+    /**
+     * UpdatePromoCodeResponse
+     *
+     * Updated promo code response
+     */
+    200: {
+        /**
+         * PromoCodeRecord
+         *
+         * Persistent promo code record stored in the mock API
+         */
+        promo_code: {
+            /**
+             * Promo code record ID
+             */
+            id: string;
+            /**
+             * Campaign ID
+             */
+            campaign_id: string;
+            /**
+             * Campaign name
+             */
+            campaign_name: string;
+            /**
+             * Promo code
+             */
+            code: string;
+            /**
+             * Promo code description
+             */
+            description: string | null;
+            /**
+             * Validity start date
+             */
+            valid_from: string;
+            /**
+             * Validity end date
+             */
+            valid_to: string;
+            /**
+             * Usage count
+             */
+            usage_count: number;
+            /**
+             * Usage cap
+             */
+            usage_cap: number | null;
+            /**
+             * Usage cap label
+             */
+            usage_cap_label: string;
+            /**
+             * Store scope label
+             */
+            store_scope_label: string;
+            /**
+             * Issued by label
+             */
+            issued_by_label: string;
+            /**
+             * Discount total label
+             */
+            discount_total_label: string;
+            /**
+             * PromoCodeStatus
+             *
+             * Promo code status
+             */
+            status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+            /**
+             * Disable reason
+             */
+            disabled_reason: string | null;
+            /**
+             * Created at
+             */
+            created_at: string;
+            /**
+             * Updated at
+             */
+            updated_at: string;
+        };
+    };
+};
+
+export type PatchCrmPromoCodesByCodeResponse = PatchCrmPromoCodesByCodeResponses[keyof PatchCrmPromoCodesByCodeResponses];
+
+export type GetCrmPromoCodesData = {
+    body?: never;
+    path?: never;
+    query: {
+        campaign_id: string;
+    };
+    url: '/crm/promo-codes';
+};
+
+export type GetCrmPromoCodesErrors = {
+    /**
+     * PromoCodeErrorResponse
+     *
+     * Promo-code-specific error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * PromoCodeErrorResponse
+     *
+     * Promo-code-specific error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type GetCrmPromoCodesError = GetCrmPromoCodesErrors[keyof GetCrmPromoCodesErrors];
+
+export type GetCrmPromoCodesResponses = {
+    /**
+     * GetPromoCodesResponse
+     *
+     * Promo code list response
+     */
+    200: {
+        promo_codes: Array<{
+            /**
+             * Promo code record ID
+             */
+            id: string;
+            /**
+             * Campaign ID
+             */
+            campaign_id: string;
+            /**
+             * Campaign name
+             */
+            campaign_name: string;
+            /**
+             * Promo code
+             */
+            code: string;
+            /**
+             * Promo code description
+             */
+            description: string | null;
+            /**
+             * Validity start date
+             */
+            valid_from: string;
+            /**
+             * Validity end date
+             */
+            valid_to: string;
+            /**
+             * Usage count
+             */
+            usage_count: number;
+            /**
+             * Usage cap
+             */
+            usage_cap: number | null;
+            /**
+             * Usage cap label
+             */
+            usage_cap_label: string;
+            /**
+             * Store scope label
+             */
+            store_scope_label: string;
+            /**
+             * Issued by label
+             */
+            issued_by_label: string;
+            /**
+             * Discount total label
+             */
+            discount_total_label: string;
+            /**
+             * PromoCodeStatus
+             *
+             * Promo code status
+             */
+            status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+            /**
+             * Disable reason
+             */
+            disabled_reason: string | null;
+            /**
+             * Created at
+             */
+            created_at: string;
+            /**
+             * Updated at
+             */
+            updated_at: string;
+        }>;
+    };
+};
+
+export type GetCrmPromoCodesResponse = GetCrmPromoCodesResponses[keyof GetCrmPromoCodesResponses];
+
+export type PostCrmPromoCodesData = {
+    /**
+     * PromoCodeUpsertBody
+     *
+     * Promo code create/update payload
+     */
+    body?: {
+        campaignId: string;
+        campaignName: string;
+        code: string;
+        description?: string | null;
+        validFrom: string;
+        validTo: string;
+        usageCount?: number;
+        usageCap: number | null;
+        /**
+         * PromoCodeUsageCapMode
+         *
+         * Promo code usage-cap mode
+         */
+        usageCapMode: 'unlimited' | 'limited';
+        /**
+         * PromoCodeStoreScope
+         *
+         * Promo code store scope
+         */
+        storeScope: 'all' | 'branch';
+        issuedByLabel: string;
+        /**
+         * PromoCodeStatus
+         *
+         * Promo code status
+         */
+        status?: 'active' | 'expired' | 'limit_reached' | 'inactive';
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/promo-codes';
+};
+
+export type PostCrmPromoCodesErrors = {
+    /**
+     * PromoCodeErrorResponse
+     *
+     * Promo-code-specific error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * PromoCodeErrorResponse
+     *
+     * Promo-code-specific error response
+     */
+    409: {
+        error: string;
+    };
+    /**
+     * PromoCodeErrorResponse
+     *
+     * Promo-code-specific error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type PostCrmPromoCodesError = PostCrmPromoCodesErrors[keyof PostCrmPromoCodesErrors];
+
+export type PostCrmPromoCodesResponses = {
+    /**
+     * CreatePromoCodeResponse
+     *
+     * Created promo code response
+     */
+    201: {
+        /**
+         * PromoCodeRecord
+         *
+         * Persistent promo code record stored in the mock API
+         */
+        promo_code: {
+            /**
+             * Promo code record ID
+             */
+            id: string;
+            /**
+             * Campaign ID
+             */
+            campaign_id: string;
+            /**
+             * Campaign name
+             */
+            campaign_name: string;
+            /**
+             * Promo code
+             */
+            code: string;
+            /**
+             * Promo code description
+             */
+            description: string | null;
+            /**
+             * Validity start date
+             */
+            valid_from: string;
+            /**
+             * Validity end date
+             */
+            valid_to: string;
+            /**
+             * Usage count
+             */
+            usage_count: number;
+            /**
+             * Usage cap
+             */
+            usage_cap: number | null;
+            /**
+             * Usage cap label
+             */
+            usage_cap_label: string;
+            /**
+             * Store scope label
+             */
+            store_scope_label: string;
+            /**
+             * Issued by label
+             */
+            issued_by_label: string;
+            /**
+             * Discount total label
+             */
+            discount_total_label: string;
+            /**
+             * PromoCodeStatus
+             *
+             * Promo code status
+             */
+            status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+            /**
+             * Disable reason
+             */
+            disabled_reason: string | null;
+            /**
+             * Created at
+             */
+            created_at: string;
+            /**
+             * Updated at
+             */
+            updated_at: string;
+        };
+    };
+};
+
+export type PostCrmPromoCodesResponse = PostCrmPromoCodesResponses[keyof PostCrmPromoCodesResponses];
 
 export type GetCrmPositionsData = {
     body?: never;

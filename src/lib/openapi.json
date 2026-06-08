@@ -1448,7 +1448,7 @@
           },
           "code": {
             "type": "string",
-            "example": "STR01-A1B2C",
+            "example": "STR01A1B2C",
             "description": "Campaign code"
           },
           "brand": {
@@ -1732,7 +1732,7 @@
           },
           "code": {
             "type": "string",
-            "example": "STR01-A1B2C",
+            "example": "STR01A1B2C",
             "description": "Campaign code"
           },
           "brand": {
@@ -2209,7 +2209,7 @@
                 },
                 "code": {
                   "type": "string",
-                  "example": "STR01-A1B2C",
+                  "example": "STR01A1B2C",
                   "description": "Campaign code"
                 },
                 "brand": {
@@ -2295,7 +2295,7 @@
               },
               "code": {
                 "type": "string",
-                "example": "STR01-A1B2C",
+                "example": "STR01A1B2C",
                 "description": "Campaign code"
               },
               "brand": {
@@ -2695,6 +2695,633 @@
         "required": ["campaign"],
         "title": "GetCampaignDetailResponse",
         "description": "Single campaign master detail response"
+      },
+      "PromoCodeStatus": {
+        "type": "string",
+        "enum": ["active", "expired", "limit_reached", "inactive"],
+        "title": "PromoCodeStatus",
+        "description": "Promo code status"
+      },
+      "PromoCodeUsageCapMode": {
+        "type": "string",
+        "enum": ["unlimited", "limited"],
+        "title": "PromoCodeUsageCapMode",
+        "description": "Promo code usage-cap mode"
+      },
+      "PromoCodeStoreScope": {
+        "type": "string",
+        "enum": ["all", "branch"],
+        "title": "PromoCodeStoreScope",
+        "description": "Promo code store scope"
+      },
+      "GetPromoCodesQuery": {
+        "type": "object",
+        "properties": {
+          "campaign_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": ["campaign_id"],
+        "title": "GetPromoCodesQuery",
+        "description": "Query for fetching promo codes by campaign"
+      },
+      "PromoCodeUpsertBody": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "campaignName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "validFrom": {
+            "type": "string",
+            "minLength": 1
+          },
+          "validTo": {
+            "type": "string",
+            "minLength": 1
+          },
+          "usageCount": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          },
+          "usageCap": {
+            "type": "integer",
+            "nullable": true,
+            "minimum": 0
+          },
+          "usageCapMode": {
+            "type": "string",
+            "enum": ["unlimited", "limited"],
+            "title": "PromoCodeUsageCapMode",
+            "description": "Promo code usage-cap mode"
+          },
+          "storeScope": {
+            "type": "string",
+            "enum": ["all", "branch"],
+            "title": "PromoCodeStoreScope",
+            "description": "Promo code store scope"
+          },
+          "issuedByLabel": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "expired", "limit_reached", "inactive"],
+            "default": "active",
+            "title": "PromoCodeStatus",
+            "description": "Promo code status"
+          }
+        },
+        "required": [
+          "campaignId",
+          "campaignName",
+          "code",
+          "validFrom",
+          "validTo",
+          "usageCap",
+          "usageCapMode",
+          "storeScope",
+          "issuedByLabel"
+        ],
+        "title": "PromoCodeUpsertBody",
+        "description": "Promo code create/update payload"
+      },
+      "UpdatePromoCodeStatusBody": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["active", "expired", "limit_reached", "inactive"],
+            "title": "PromoCodeStatus",
+            "description": "Promo code status"
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 500
+          }
+        },
+        "required": ["status"],
+        "title": "UpdatePromoCodeStatusBody",
+        "description": "Promo code status update payload"
+      },
+      "PromoCodeRecord": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "PC001",
+            "description": "Promo code record ID"
+          },
+          "campaign_id": {
+            "type": "string",
+            "example": "CP001",
+            "description": "Campaign ID"
+          },
+          "campaign_name": {
+            "type": "string",
+            "example": "春の入会キャンペーン",
+            "description": "Campaign name"
+          },
+          "code": {
+            "type": "string",
+            "example": "STR01-ABCDE",
+            "description": "Promo code"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "春の入会キャンペーン用",
+            "description": "Promo code description"
+          },
+          "valid_from": {
+            "type": "string",
+            "example": "2026/03/01",
+            "description": "Validity start date"
+          },
+          "valid_to": {
+            "type": "string",
+            "example": "2026/04/30",
+            "description": "Validity end date"
+          },
+          "usage_count": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 0,
+            "description": "Usage count"
+          },
+          "usage_cap": {
+            "type": "integer",
+            "nullable": true,
+            "example": null,
+            "description": "Usage cap"
+          },
+          "usage_cap_label": {
+            "type": "string",
+            "example": "無制限",
+            "description": "Usage cap label"
+          },
+          "store_scope_label": {
+            "type": "string",
+            "example": "タイプB: 発行店舗のみで使用可能",
+            "description": "Store scope label"
+          },
+          "issued_by_label": {
+            "type": "string",
+            "example": "本部",
+            "description": "Issued by label"
+          },
+          "discount_total_label": {
+            "type": "string",
+            "example": "—",
+            "description": "Discount total label"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "expired", "limit_reached", "inactive"],
+            "title": "PromoCodeStatus",
+            "description": "Promo code status"
+          },
+          "disabled_reason": {
+            "type": "string",
+            "nullable": true,
+            "example": null,
+            "description": "Disable reason"
+          },
+          "created_at": {
+            "type": "string",
+            "example": "2026/06/08 10:30",
+            "description": "Created at"
+          },
+          "updated_at": {
+            "type": "string",
+            "example": "2026/06/08 10:30",
+            "description": "Updated at"
+          }
+        },
+        "required": [
+          "id",
+          "campaign_id",
+          "campaign_name",
+          "code",
+          "description",
+          "valid_from",
+          "valid_to",
+          "usage_count",
+          "usage_cap",
+          "usage_cap_label",
+          "store_scope_label",
+          "issued_by_label",
+          "discount_total_label",
+          "status",
+          "disabled_reason",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "PromoCodeRecord",
+        "description": "Persistent promo code record stored in the mock API"
+      },
+      "GetPromoCodesResponse": {
+        "type": "object",
+        "properties": {
+          "promo_codes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "PC001",
+                  "description": "Promo code record ID"
+                },
+                "campaign_id": {
+                  "type": "string",
+                  "example": "CP001",
+                  "description": "Campaign ID"
+                },
+                "campaign_name": {
+                  "type": "string",
+                  "example": "春の入会キャンペーン",
+                  "description": "Campaign name"
+                },
+                "code": {
+                  "type": "string",
+                  "example": "STR01-ABCDE",
+                  "description": "Promo code"
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "春の入会キャンペーン用",
+                  "description": "Promo code description"
+                },
+                "valid_from": {
+                  "type": "string",
+                  "example": "2026/03/01",
+                  "description": "Validity start date"
+                },
+                "valid_to": {
+                  "type": "string",
+                  "example": "2026/04/30",
+                  "description": "Validity end date"
+                },
+                "usage_count": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "example": 0,
+                  "description": "Usage count"
+                },
+                "usage_cap": {
+                  "type": "integer",
+                  "nullable": true,
+                  "example": null,
+                  "description": "Usage cap"
+                },
+                "usage_cap_label": {
+                  "type": "string",
+                  "example": "無制限",
+                  "description": "Usage cap label"
+                },
+                "store_scope_label": {
+                  "type": "string",
+                  "example": "タイプB: 発行店舗のみで使用可能",
+                  "description": "Store scope label"
+                },
+                "issued_by_label": {
+                  "type": "string",
+                  "example": "本部",
+                  "description": "Issued by label"
+                },
+                "discount_total_label": {
+                  "type": "string",
+                  "example": "—",
+                  "description": "Discount total label"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["active", "expired", "limit_reached", "inactive"],
+                  "title": "PromoCodeStatus",
+                  "description": "Promo code status"
+                },
+                "disabled_reason": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": null,
+                  "description": "Disable reason"
+                },
+                "created_at": {
+                  "type": "string",
+                  "example": "2026/06/08 10:30",
+                  "description": "Created at"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "example": "2026/06/08 10:30",
+                  "description": "Updated at"
+                }
+              },
+              "required": [
+                "id",
+                "campaign_id",
+                "campaign_name",
+                "code",
+                "description",
+                "valid_from",
+                "valid_to",
+                "usage_count",
+                "usage_cap",
+                "usage_cap_label",
+                "store_scope_label",
+                "issued_by_label",
+                "discount_total_label",
+                "status",
+                "disabled_reason",
+                "created_at",
+                "updated_at"
+              ],
+              "title": "PromoCodeRecord",
+              "description": "Persistent promo code record stored in the mock API"
+            }
+          }
+        },
+        "required": ["promo_codes"],
+        "title": "GetPromoCodesResponse",
+        "description": "Promo code list response"
+      },
+      "CreatePromoCodeResponse": {
+        "type": "object",
+        "properties": {
+          "promo_code": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "PC001",
+                "description": "Promo code record ID"
+              },
+              "campaign_id": {
+                "type": "string",
+                "example": "CP001",
+                "description": "Campaign ID"
+              },
+              "campaign_name": {
+                "type": "string",
+                "example": "春の入会キャンペーン",
+                "description": "Campaign name"
+              },
+              "code": {
+                "type": "string",
+                "example": "STR01-ABCDE",
+                "description": "Promo code"
+              },
+              "description": {
+                "type": "string",
+                "nullable": true,
+                "example": "春の入会キャンペーン用",
+                "description": "Promo code description"
+              },
+              "valid_from": {
+                "type": "string",
+                "example": "2026/03/01",
+                "description": "Validity start date"
+              },
+              "valid_to": {
+                "type": "string",
+                "example": "2026/04/30",
+                "description": "Validity end date"
+              },
+              "usage_count": {
+                "type": "integer",
+                "minimum": 0,
+                "example": 0,
+                "description": "Usage count"
+              },
+              "usage_cap": {
+                "type": "integer",
+                "nullable": true,
+                "example": null,
+                "description": "Usage cap"
+              },
+              "usage_cap_label": {
+                "type": "string",
+                "example": "無制限",
+                "description": "Usage cap label"
+              },
+              "store_scope_label": {
+                "type": "string",
+                "example": "タイプB: 発行店舗のみで使用可能",
+                "description": "Store scope label"
+              },
+              "issued_by_label": {
+                "type": "string",
+                "example": "本部",
+                "description": "Issued by label"
+              },
+              "discount_total_label": {
+                "type": "string",
+                "example": "—",
+                "description": "Discount total label"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["active", "expired", "limit_reached", "inactive"],
+                "title": "PromoCodeStatus",
+                "description": "Promo code status"
+              },
+              "disabled_reason": {
+                "type": "string",
+                "nullable": true,
+                "example": null,
+                "description": "Disable reason"
+              },
+              "created_at": {
+                "type": "string",
+                "example": "2026/06/08 10:30",
+                "description": "Created at"
+              },
+              "updated_at": {
+                "type": "string",
+                "example": "2026/06/08 10:30",
+                "description": "Updated at"
+              }
+            },
+            "required": [
+              "id",
+              "campaign_id",
+              "campaign_name",
+              "code",
+              "description",
+              "valid_from",
+              "valid_to",
+              "usage_count",
+              "usage_cap",
+              "usage_cap_label",
+              "store_scope_label",
+              "issued_by_label",
+              "discount_total_label",
+              "status",
+              "disabled_reason",
+              "created_at",
+              "updated_at"
+            ],
+            "title": "PromoCodeRecord",
+            "description": "Persistent promo code record stored in the mock API"
+          }
+        },
+        "required": ["promo_code"],
+        "title": "CreatePromoCodeResponse",
+        "description": "Created promo code response"
+      },
+      "UpdatePromoCodeResponse": {
+        "type": "object",
+        "properties": {
+          "promo_code": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "PC001",
+                "description": "Promo code record ID"
+              },
+              "campaign_id": {
+                "type": "string",
+                "example": "CP001",
+                "description": "Campaign ID"
+              },
+              "campaign_name": {
+                "type": "string",
+                "example": "春の入会キャンペーン",
+                "description": "Campaign name"
+              },
+              "code": {
+                "type": "string",
+                "example": "STR01-ABCDE",
+                "description": "Promo code"
+              },
+              "description": {
+                "type": "string",
+                "nullable": true,
+                "example": "春の入会キャンペーン用",
+                "description": "Promo code description"
+              },
+              "valid_from": {
+                "type": "string",
+                "example": "2026/03/01",
+                "description": "Validity start date"
+              },
+              "valid_to": {
+                "type": "string",
+                "example": "2026/04/30",
+                "description": "Validity end date"
+              },
+              "usage_count": {
+                "type": "integer",
+                "minimum": 0,
+                "example": 0,
+                "description": "Usage count"
+              },
+              "usage_cap": {
+                "type": "integer",
+                "nullable": true,
+                "example": null,
+                "description": "Usage cap"
+              },
+              "usage_cap_label": {
+                "type": "string",
+                "example": "無制限",
+                "description": "Usage cap label"
+              },
+              "store_scope_label": {
+                "type": "string",
+                "example": "タイプB: 発行店舗のみで使用可能",
+                "description": "Store scope label"
+              },
+              "issued_by_label": {
+                "type": "string",
+                "example": "本部",
+                "description": "Issued by label"
+              },
+              "discount_total_label": {
+                "type": "string",
+                "example": "—",
+                "description": "Discount total label"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["active", "expired", "limit_reached", "inactive"],
+                "title": "PromoCodeStatus",
+                "description": "Promo code status"
+              },
+              "disabled_reason": {
+                "type": "string",
+                "nullable": true,
+                "example": null,
+                "description": "Disable reason"
+              },
+              "created_at": {
+                "type": "string",
+                "example": "2026/06/08 10:30",
+                "description": "Created at"
+              },
+              "updated_at": {
+                "type": "string",
+                "example": "2026/06/08 10:30",
+                "description": "Updated at"
+              }
+            },
+            "required": [
+              "id",
+              "campaign_id",
+              "campaign_name",
+              "code",
+              "description",
+              "valid_from",
+              "valid_to",
+              "usage_count",
+              "usage_cap",
+              "usage_cap_label",
+              "store_scope_label",
+              "issued_by_label",
+              "discount_total_label",
+              "status",
+              "disabled_reason",
+              "created_at",
+              "updated_at"
+            ],
+            "title": "PromoCodeRecord",
+            "description": "Persistent promo code record stored in the mock API"
+          }
+        },
+        "required": ["promo_code"],
+        "title": "UpdatePromoCodeResponse",
+        "description": "Updated promo code response"
+      },
+      "PromoCodeErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        },
+        "required": ["error"],
+        "title": "PromoCodeErrorResponse",
+        "description": "Promo-code-specific error response"
       },
       "MemberListItem": {
         "type": "object",
@@ -16941,7 +17568,7 @@
                         },
                         "code": {
                           "type": "string",
-                          "example": "STR01-A1B2C",
+                          "example": "STR01A1B2C",
                           "description": "Campaign code"
                         },
                         "brand": {
@@ -17356,11 +17983,16 @@
                       "type": "string",
                       "example": "Invalid email or password",
                       "description": "Error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "example": "campaign_code_duplicate",
+                      "description": "Campaign-specific error code"
                     }
                   },
                   "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
+                  "title": "CampaignErrorResponse",
+                  "description": "Campaign-specific error response"
                 }
               }
             }
@@ -17376,11 +18008,16 @@
                       "type": "string",
                       "example": "Invalid email or password",
                       "description": "Error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "example": "campaign_code_duplicate",
+                      "description": "Campaign-specific error code"
                     }
                   },
                   "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
+                  "title": "CampaignErrorResponse",
+                  "description": "Campaign-specific error response"
                 }
               }
             }
@@ -17418,7 +18055,7 @@
                     "type": "string",
                     "minLength": 1,
                     "maxLength": 255,
-                    "pattern": "^([A-Z0-9]{5}|OGF)-[A-Z0-9]{5}$"
+                    "pattern": "^(?:OGF|[A-Z0-9]+)[A-Z0-9]{5}$"
                   },
                   "brand": {
                     "type": "string",
@@ -17591,7 +18228,7 @@
                         },
                         "code": {
                           "type": "string",
-                          "example": "STR01-A1B2C",
+                          "example": "STR01A1B2C",
                           "description": "Campaign code"
                         },
                         "brand": {
@@ -18006,11 +18643,16 @@
                       "type": "string",
                       "example": "Invalid email or password",
                       "description": "Error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "example": "campaign_code_duplicate",
+                      "description": "Campaign-specific error code"
                     }
                   },
                   "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
+                  "title": "CampaignErrorResponse",
+                  "description": "Campaign-specific error response"
                 }
               }
             }
@@ -18026,11 +18668,16 @@
                       "type": "string",
                       "example": "Invalid email or password",
                       "description": "Error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "example": "campaign_code_duplicate",
+                      "description": "Campaign-specific error code"
                     }
                   },
                   "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
+                  "title": "CampaignErrorResponse",
+                  "description": "Campaign-specific error response"
                 }
               }
             }
@@ -18046,11 +18693,16 @@
                       "type": "string",
                       "example": "Invalid email or password",
                       "description": "Error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "example": "campaign_code_duplicate",
+                      "description": "Campaign-specific error code"
                     }
                   },
                   "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
+                  "title": "CampaignErrorResponse",
+                  "description": "Campaign-specific error response"
                 }
               }
             }
@@ -18194,7 +18846,7 @@
                           },
                           "code": {
                             "type": "string",
-                            "example": "STR01-A1B2C",
+                            "example": "STR01A1B2C",
                             "description": "Campaign code"
                           },
                           "brand": {
@@ -18276,11 +18928,16 @@
                       "type": "string",
                       "example": "Invalid email or password",
                       "description": "Error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "example": "campaign_code_duplicate",
+                      "description": "Campaign-specific error code"
                     }
                   },
                   "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
+                  "title": "CampaignErrorResponse",
+                  "description": "Campaign-specific error response"
                 }
               }
             }
@@ -18296,11 +18953,16 @@
                       "type": "string",
                       "example": "Invalid email or password",
                       "description": "Error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "example": "campaign_code_duplicate",
+                      "description": "Campaign-specific error code"
                     }
                   },
                   "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
+                  "title": "CampaignErrorResponse",
+                  "description": "Campaign-specific error response"
                 }
               }
             }
@@ -18327,7 +18989,7 @@
                     "type": "string",
                     "minLength": 1,
                     "maxLength": 255,
-                    "pattern": "^([A-Z0-9]{5}|OGF)-[A-Z0-9]{5}$"
+                    "pattern": "^(?:OGF|[A-Z0-9]+)[A-Z0-9]{5}$"
                   },
                   "brand": {
                     "type": "string",
@@ -18500,7 +19162,7 @@
                         },
                         "code": {
                           "type": "string",
-                          "example": "STR01-A1B2C",
+                          "example": "STR01A1B2C",
                           "description": "Campaign code"
                         },
                         "brand": {
@@ -18915,11 +19577,16 @@
                       "type": "string",
                       "example": "Invalid email or password",
                       "description": "Error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "example": "campaign_code_duplicate",
+                      "description": "Campaign-specific error code"
                     }
                   },
                   "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
+                  "title": "CampaignErrorResponse",
+                  "description": "Campaign-specific error response"
                 }
               }
             }
@@ -18935,11 +19602,16 @@
                       "type": "string",
                       "example": "Invalid email or password",
                       "description": "Error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "example": "campaign_code_duplicate",
+                      "description": "Campaign-specific error code"
                     }
                   },
                   "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
+                  "title": "CampaignErrorResponse",
+                  "description": "Campaign-specific error response"
                 }
               }
             }
@@ -38180,6 +38852,702 @@
                   "required": ["error"],
                   "title": "ErrorResponse",
                   "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/promo-codes/{code}": {
+      "patch": {
+        "summary": "Update promo code",
+        "description": "Update a promo code status in mock storage",
+        "tags": ["PromoCodes"],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "description": "Promo code",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Promo code status update payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": ["active", "expired", "limit_reached", "inactive"],
+                    "title": "PromoCodeStatus",
+                    "description": "Promo code status"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "nullable": true,
+                    "maxLength": 500
+                  }
+                },
+                "required": ["status"],
+                "title": "UpdatePromoCodeStatusBody",
+                "description": "Promo code status update payload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated promo code",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "promo_code": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "PC001",
+                          "description": "Promo code record ID"
+                        },
+                        "campaign_id": {
+                          "type": "string",
+                          "example": "CP001",
+                          "description": "Campaign ID"
+                        },
+                        "campaign_name": {
+                          "type": "string",
+                          "example": "春の入会キャンペーン",
+                          "description": "Campaign name"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "STR01-ABCDE",
+                          "description": "Promo code"
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "春の入会キャンペーン用",
+                          "description": "Promo code description"
+                        },
+                        "valid_from": {
+                          "type": "string",
+                          "example": "2026/03/01",
+                          "description": "Validity start date"
+                        },
+                        "valid_to": {
+                          "type": "string",
+                          "example": "2026/04/30",
+                          "description": "Validity end date"
+                        },
+                        "usage_count": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 0,
+                          "description": "Usage count"
+                        },
+                        "usage_cap": {
+                          "type": "integer",
+                          "nullable": true,
+                          "example": null,
+                          "description": "Usage cap"
+                        },
+                        "usage_cap_label": {
+                          "type": "string",
+                          "example": "無制限",
+                          "description": "Usage cap label"
+                        },
+                        "store_scope_label": {
+                          "type": "string",
+                          "example": "タイプB: 発行店舗のみで使用可能",
+                          "description": "Store scope label"
+                        },
+                        "issued_by_label": {
+                          "type": "string",
+                          "example": "本部",
+                          "description": "Issued by label"
+                        },
+                        "discount_total_label": {
+                          "type": "string",
+                          "example": "—",
+                          "description": "Discount total label"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "expired", "limit_reached", "inactive"],
+                          "title": "PromoCodeStatus",
+                          "description": "Promo code status"
+                        },
+                        "disabled_reason": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": null,
+                          "description": "Disable reason"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2026/06/08 10:30",
+                          "description": "Created at"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026/06/08 10:30",
+                          "description": "Updated at"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "campaign_id",
+                        "campaign_name",
+                        "code",
+                        "description",
+                        "valid_from",
+                        "valid_to",
+                        "usage_count",
+                        "usage_cap",
+                        "usage_cap_label",
+                        "store_scope_label",
+                        "issued_by_label",
+                        "discount_total_label",
+                        "status",
+                        "disabled_reason",
+                        "created_at",
+                        "updated_at"
+                      ],
+                      "title": "PromoCodeRecord",
+                      "description": "Persistent promo code record stored in the mock API"
+                    }
+                  },
+                  "required": ["promo_code"],
+                  "title": "UpdatePromoCodeResponse",
+                  "description": "Updated promo code response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "PromoCodeErrorResponse",
+                  "description": "Promo-code-specific error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Promo code not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "PromoCodeErrorResponse",
+                  "description": "Promo-code-specific error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "PromoCodeErrorResponse",
+                  "description": "Promo-code-specific error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/promo-codes": {
+      "get": {
+        "summary": "Get promo codes",
+        "description": "Get promo codes by campaign",
+        "tags": ["PromoCodes"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "campaign_id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Promo code list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "promo_codes": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "PC001",
+                            "description": "Promo code record ID"
+                          },
+                          "campaign_id": {
+                            "type": "string",
+                            "example": "CP001",
+                            "description": "Campaign ID"
+                          },
+                          "campaign_name": {
+                            "type": "string",
+                            "example": "春の入会キャンペーン",
+                            "description": "Campaign name"
+                          },
+                          "code": {
+                            "type": "string",
+                            "example": "STR01-ABCDE",
+                            "description": "Promo code"
+                          },
+                          "description": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "春の入会キャンペーン用",
+                            "description": "Promo code description"
+                          },
+                          "valid_from": {
+                            "type": "string",
+                            "example": "2026/03/01",
+                            "description": "Validity start date"
+                          },
+                          "valid_to": {
+                            "type": "string",
+                            "example": "2026/04/30",
+                            "description": "Validity end date"
+                          },
+                          "usage_count": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "example": 0,
+                            "description": "Usage count"
+                          },
+                          "usage_cap": {
+                            "type": "integer",
+                            "nullable": true,
+                            "example": null,
+                            "description": "Usage cap"
+                          },
+                          "usage_cap_label": {
+                            "type": "string",
+                            "example": "無制限",
+                            "description": "Usage cap label"
+                          },
+                          "store_scope_label": {
+                            "type": "string",
+                            "example": "タイプB: 発行店舗のみで使用可能",
+                            "description": "Store scope label"
+                          },
+                          "issued_by_label": {
+                            "type": "string",
+                            "example": "本部",
+                            "description": "Issued by label"
+                          },
+                          "discount_total_label": {
+                            "type": "string",
+                            "example": "—",
+                            "description": "Discount total label"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["active", "expired", "limit_reached", "inactive"],
+                            "title": "PromoCodeStatus",
+                            "description": "Promo code status"
+                          },
+                          "disabled_reason": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": null,
+                            "description": "Disable reason"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "example": "2026/06/08 10:30",
+                            "description": "Created at"
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "example": "2026/06/08 10:30",
+                            "description": "Updated at"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "campaign_id",
+                          "campaign_name",
+                          "code",
+                          "description",
+                          "valid_from",
+                          "valid_to",
+                          "usage_count",
+                          "usage_cap",
+                          "usage_cap_label",
+                          "store_scope_label",
+                          "issued_by_label",
+                          "discount_total_label",
+                          "status",
+                          "disabled_reason",
+                          "created_at",
+                          "updated_at"
+                        ],
+                        "title": "PromoCodeRecord",
+                        "description": "Persistent promo code record stored in the mock API"
+                      }
+                    }
+                  },
+                  "required": ["promo_codes"],
+                  "title": "GetPromoCodesResponse",
+                  "description": "Promo code list response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "PromoCodeErrorResponse",
+                  "description": "Promo-code-specific error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "PromoCodeErrorResponse",
+                  "description": "Promo-code-specific error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create promo code",
+        "description": "Create a new promo code in mock storage",
+        "tags": ["PromoCodes"],
+        "requestBody": {
+          "description": "Promo code creation payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "campaignId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "campaignName": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "code": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "maxLength": 255
+                  },
+                  "validFrom": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "validTo": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "usageCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "default": 0
+                  },
+                  "usageCap": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": 0
+                  },
+                  "usageCapMode": {
+                    "type": "string",
+                    "enum": ["unlimited", "limited"],
+                    "title": "PromoCodeUsageCapMode",
+                    "description": "Promo code usage-cap mode"
+                  },
+                  "storeScope": {
+                    "type": "string",
+                    "enum": ["all", "branch"],
+                    "title": "PromoCodeStoreScope",
+                    "description": "Promo code store scope"
+                  },
+                  "issuedByLabel": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["active", "expired", "limit_reached", "inactive"],
+                    "default": "active",
+                    "title": "PromoCodeStatus",
+                    "description": "Promo code status"
+                  }
+                },
+                "required": [
+                  "campaignId",
+                  "campaignName",
+                  "code",
+                  "validFrom",
+                  "validTo",
+                  "usageCap",
+                  "usageCapMode",
+                  "storeScope",
+                  "issuedByLabel"
+                ],
+                "title": "PromoCodeUpsertBody",
+                "description": "Promo code create/update payload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created promo code",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "promo_code": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "PC001",
+                          "description": "Promo code record ID"
+                        },
+                        "campaign_id": {
+                          "type": "string",
+                          "example": "CP001",
+                          "description": "Campaign ID"
+                        },
+                        "campaign_name": {
+                          "type": "string",
+                          "example": "春の入会キャンペーン",
+                          "description": "Campaign name"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "STR01-ABCDE",
+                          "description": "Promo code"
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "春の入会キャンペーン用",
+                          "description": "Promo code description"
+                        },
+                        "valid_from": {
+                          "type": "string",
+                          "example": "2026/03/01",
+                          "description": "Validity start date"
+                        },
+                        "valid_to": {
+                          "type": "string",
+                          "example": "2026/04/30",
+                          "description": "Validity end date"
+                        },
+                        "usage_count": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 0,
+                          "description": "Usage count"
+                        },
+                        "usage_cap": {
+                          "type": "integer",
+                          "nullable": true,
+                          "example": null,
+                          "description": "Usage cap"
+                        },
+                        "usage_cap_label": {
+                          "type": "string",
+                          "example": "無制限",
+                          "description": "Usage cap label"
+                        },
+                        "store_scope_label": {
+                          "type": "string",
+                          "example": "タイプB: 発行店舗のみで使用可能",
+                          "description": "Store scope label"
+                        },
+                        "issued_by_label": {
+                          "type": "string",
+                          "example": "本部",
+                          "description": "Issued by label"
+                        },
+                        "discount_total_label": {
+                          "type": "string",
+                          "example": "—",
+                          "description": "Discount total label"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "expired", "limit_reached", "inactive"],
+                          "title": "PromoCodeStatus",
+                          "description": "Promo code status"
+                        },
+                        "disabled_reason": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": null,
+                          "description": "Disable reason"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2026/06/08 10:30",
+                          "description": "Created at"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026/06/08 10:30",
+                          "description": "Updated at"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "campaign_id",
+                        "campaign_name",
+                        "code",
+                        "description",
+                        "valid_from",
+                        "valid_to",
+                        "usage_count",
+                        "usage_cap",
+                        "usage_cap_label",
+                        "store_scope_label",
+                        "issued_by_label",
+                        "discount_total_label",
+                        "status",
+                        "disabled_reason",
+                        "created_at",
+                        "updated_at"
+                      ],
+                      "title": "PromoCodeRecord",
+                      "description": "Persistent promo code record stored in the mock API"
+                    }
+                  },
+                  "required": ["promo_code"],
+                  "title": "CreatePromoCodeResponse",
+                  "description": "Created promo code response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "PromoCodeErrorResponse",
+                  "description": "Promo-code-specific error response"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate code",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "PromoCodeErrorResponse",
+                  "description": "Promo-code-specific error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "PromoCodeErrorResponse",
+                  "description": "Promo-code-specific error response"
                 }
               }
             }

@@ -104,6 +104,8 @@ import '@/app/api/crm/options/[id]/route';
 import '@/app/api/crm/options/route';
 // Import staffs routes
 import '@/app/api/crm/positions/route';
+import '@/app/api/crm/promo-codes/[code]/route';
+import '@/app/api/crm/promo-codes/route';
 import '@/app/api/crm/staffs/[id]/route';
 import '@/app/api/crm/staffs/invite/route';
 import '@/app/api/crm/staffs/route';

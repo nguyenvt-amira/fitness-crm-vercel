@@ -2,6 +2,7 @@ import { db } from '@/app/api/_mock-db';
 import type {
   CampaignDetail,
   CampaignGenderCondition,
+  CampaignPromoCodePreviewItem,
   CampaignUpsertAutoGrant,
   CampaignUpsertDiscount,
   UpsertCampaignBody,
@@ -75,6 +76,16 @@ function buildAutoGrantDescription(
   if (!autoGrant.enabled) return '自動付与は設定されていません。';
   if (optionNames.length === 0) return '条件を満たした会員に自動付与します。';
   return `条件を満たした会員に ${optionNames.join(' / ')} を自動付与します。`;
+}
+
+function buildPromoCodePreviewRows(campaignId: string): CampaignPromoCodePreviewItem[] {
+  return db.promoCodes.getListByCampaignId(campaignId).map((promoCode) => ({
+    code: promoCode.code,
+    description: promoCode.description,
+    valid_from: promoCode.valid_from,
+    valid_to: promoCode.valid_to,
+    status: promoCode.status,
+  }));
 }
 
 export function buildCampaignDetail(
@@ -175,6 +186,16 @@ export function buildCampaignDetail(
       updated_at: nowDisplay,
       updated_by: actor,
     },
-    promo_code_previews: existing?.promo_code_previews ?? [],
+    promo_code_previews: [
+      ...(existing?.promo_code_previews ?? []),
+      ...buildPromoCodePreviewRows(id),
+    ].reduce<CampaignPromoCodePreviewItem[]>((acc, item) => {
+      if (acc.some((row) => row.code === item.code)) {
+        return acc.map((row) => (row.code === item.code ? item : row));
+      }
+
+      acc.push(item);
+      return acc;
+    }, []),
   };
 }

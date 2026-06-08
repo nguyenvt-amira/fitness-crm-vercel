@@ -11,6 +11,24 @@ import { registerRoute } from '@/app/api/_scripts/register-route';
 
 import { buildCampaignDetail } from '../_utils';
 
+function buildLiveCampaignDetail(id: string) {
+  const campaign = db.campaigns.getById(id);
+  if (!campaign) {
+    return undefined;
+  }
+
+  return {
+    ...campaign,
+    promo_code_previews: db.promoCodes.getListByCampaignId(id).map((promoCode) => ({
+      code: promoCode.code,
+      description: promoCode.description,
+      valid_from: promoCode.valid_from,
+      valid_to: promoCode.valid_to,
+      status: promoCode.status,
+    })),
+  };
+}
+
 registerRoute({
   method: 'get',
   path: '/crm/campaigns/{id}',
@@ -63,7 +81,7 @@ registerRoute({
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const campaign = db.campaigns.getById(id);
+    const campaign = buildLiveCampaignDetail(id);
 
     if (!campaign) {
       return NextResponse.json({ error: 'Campaign not found' }, { status: 404 });

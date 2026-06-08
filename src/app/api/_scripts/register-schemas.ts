@@ -16,6 +16,7 @@ import * as membershipApplicationSchemas from '../_schemas/membership-applicatio
 import * as optionDiscountSchemas from '../_schemas/option-discount.schema';
 import * as optionMasterSchemas from '../_schemas/option-master.schema';
 import * as positionSchemas from '../_schemas/position.schema';
+import * as promoCodeSchemas from '../_schemas/promo-code.schema';
 import * as staffSchemas from '../_schemas/staff.schema';
 import * as storeAccessSettingsSchemas from '../_schemas/store-access-settings.schema';
 import * as storeSchemas from '../_schemas/store.schema';
@@ -161,6 +162,55 @@ export function registerAllSchemas() {
   registeredSchemaMap.set(
     'GetCampaignDetailResponse',
     registry.register('GetCampaignDetailResponse', campaignSchemas.GetCampaignDetailResponseSchema),
+  );
+
+  // Register promo code schemas
+  registeredSchemaMap.set(
+    'PromoCodeStatus',
+    registry.register('PromoCodeStatus', promoCodeSchemas.PromoCodeStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'PromoCodeUsageCapMode',
+    registry.register('PromoCodeUsageCapMode', promoCodeSchemas.PromoCodeUsageCapModeSchema),
+  );
+  registeredSchemaMap.set(
+    'PromoCodeStoreScope',
+    registry.register('PromoCodeStoreScope', promoCodeSchemas.PromoCodeStoreScopeSchema),
+  );
+  registeredSchemaMap.set(
+    'GetPromoCodesQuery',
+    registry.register('GetPromoCodesQuery', promoCodeSchemas.GetPromoCodesQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'PromoCodeUpsertBody',
+    registry.register('PromoCodeUpsertBody', promoCodeSchemas.PromoCodeUpsertBodySchema),
+  );
+  registeredSchemaMap.set(
+    'UpdatePromoCodeStatusBody',
+    registry.register(
+      'UpdatePromoCodeStatusBody',
+      promoCodeSchemas.UpdatePromoCodeStatusBodySchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'PromoCodeRecord',
+    registry.register('PromoCodeRecord', promoCodeSchemas.PromoCodeRecordSchema),
+  );
+  registeredSchemaMap.set(
+    'GetPromoCodesResponse',
+    registry.register('GetPromoCodesResponse', promoCodeSchemas.GetPromoCodesResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'CreatePromoCodeResponse',
+    registry.register('CreatePromoCodeResponse', promoCodeSchemas.CreatePromoCodeResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'UpdatePromoCodeResponse',
+    registry.register('UpdatePromoCodeResponse', promoCodeSchemas.UpdatePromoCodeResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'PromoCodeErrorResponse',
+    registry.register('PromoCodeErrorResponse', promoCodeSchemas.PromoCodeErrorResponseSchema),
   );
 
   // Register member schemas

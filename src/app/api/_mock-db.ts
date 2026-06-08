@@ -45,6 +45,7 @@ import type {
   UpsertOptionMasterBody,
 } from '@/app/api/_schemas/option-master.schema';
 import type { Position, StaffPermissionRecord } from '@/app/api/_schemas/position.schema';
+import type { PromoCodeRecord, PromoCodeUpsertBody } from '@/app/api/_schemas/promo-code.schema';
 import type { StaffDetail, StaffListItem } from '@/app/api/_schemas/staff.schema';
 import type { StoreAccessSettings } from '@/app/api/_schemas/store-access-settings.schema';
 import type {
@@ -1352,6 +1353,16 @@ type DbType = {
     add(campaign: CampaignDetail): void;
     update(id: string, data: Partial<CampaignDetail>): CampaignDetail | undefined;
   };
+  promoCodes: {
+    _rows: PromoCodeRecord[];
+    _seeded: boolean;
+    _seed(): void;
+    getList(): PromoCodeRecord[];
+    getListByCampaignId(campaignId: string): PromoCodeRecord[];
+    getByCode(code: string): PromoCodeRecord | undefined;
+    add(data: PromoCodeUpsertBody): PromoCodeRecord;
+    updateByCode(code: string, patch: Partial<PromoCodeRecord>): PromoCodeRecord | undefined;
+  };
   optionMasters: {
     _rows: OptionMasterDetail[];
     _changeHistory: Record<string, OptionMasterChangeHistoryItem[]>;
@@ -1557,7 +1568,7 @@ type DbType = {
 };
 
 declare global {
-  var __fitnessDb_v10: DbType | undefined;
+  var __fitnessDb_v11: DbType | undefined;
 }
 
 // ─── Mock Payment History Data (A-01 FR-009-a) ──────────────────────────────
@@ -6035,6 +6046,118 @@ function createDb() {
         return updated;
       },
     },
+    promoCodes: {
+      _rows: [] as PromoCodeRecord[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+
+        const createdAt = '2026/04/01 00:00';
+        const updatedAt = '2026/04/01 00:00';
+        const records = db.campaigns.getList().flatMap((campaign) =>
+          (db.campaigns.getById(campaign.id)?.promo_code_previews ?? []).map(
+            (preview, index): PromoCodeRecord => ({
+              id: `${campaign.id}-PC${String(index + 1).padStart(3, '0')}`,
+              campaign_id: campaign.id,
+              campaign_name: campaign.name,
+              code: preview.code,
+              description: preview.description ?? null,
+              valid_from: preview.valid_from,
+              valid_to: preview.valid_to,
+              usage_count: 0,
+              usage_cap: null,
+              usage_cap_label: '—',
+              store_scope_label: '—',
+              issued_by_label: '本部',
+              discount_total_label: '—',
+              status: preview.status,
+              disabled_reason: null,
+              created_at: createdAt,
+              updated_at: updatedAt,
+            }),
+          ),
+        );
+
+        this._rows.push(...records);
+      },
+      getList(): PromoCodeRecord[] {
+        this._seed();
+        return this._rows;
+      },
+      getListByCampaignId(campaignId: string): PromoCodeRecord[] {
+        this._seed();
+        return this._rows.filter((row) => row.campaign_id === campaignId);
+      },
+      getByCode(code: string): PromoCodeRecord | undefined {
+        this._seed();
+        return this._rows.find((row) => row.code === code);
+      },
+      add(data: PromoCodeUpsertBody): PromoCodeRecord {
+        this._seed();
+
+        const now = new Date().toLocaleString('ja-JP', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        });
+
+        const record: PromoCodeRecord = {
+          id: `PC${String(this._rows.length + 1).padStart(3, '0')}`,
+          campaign_id: data.campaignId,
+          campaign_name: data.campaignName,
+          code: data.code,
+          description: data.description ?? null,
+          valid_from: data.validFrom,
+          valid_to: data.validTo,
+          usage_count: data.usageCount,
+          usage_cap: data.usageCap,
+          usage_cap_label:
+            data.usageCap === null ? '無制限' : `${data.usageCap.toLocaleString()}回`,
+          store_scope_label:
+            data.storeScope === 'all'
+              ? 'タイプA: 全店舗で使用可能'
+              : 'タイプB: 発行店舗のみで使用可能',
+          issued_by_label: data.issuedByLabel,
+          discount_total_label: '—',
+          status: data.status,
+          disabled_reason: null,
+          created_at: now,
+          updated_at: now,
+        };
+
+        this._rows.push(record);
+        return record;
+      },
+      updateByCode(code: string, patch: Partial<PromoCodeRecord>): PromoCodeRecord | undefined {
+        this._seed();
+
+        const index = this._rows.findIndex((row) => row.code === code);
+        if (index === -1) {
+          return undefined;
+        }
+
+        const now = new Date().toLocaleString('ja-JP', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        });
+
+        const next = {
+          ...this._rows[index]!,
+          ...patch,
+          updated_at: patch.updated_at ?? now,
+        };
+        this._rows[index] = next;
+        return next;
+      },
+    },
     optionMasters: {
       _rows: [] as OptionMasterDetail[],
       _changeHistory: {} as Record<string, OptionMasterChangeHistoryItem[]>,
@@ -8295,6 +8418,7 @@ function createDb() {
   // Seed mock data immediately when the singleton is first created
   db.mainContracts._seed();
   db.campaigns._seed();
+  db.promoCodes._seed();
   db.members._seed();
   db.contracts._seed();
   db.membershipApplications._seed();
@@ -8312,4 +8436,4 @@ function createDb() {
 // Without this, each route handler gets its own module instance and mutations are invisible
 // across routes.
 // Bump this key whenever the seed logic changes to force a fresh re-seed.
-export const db: DbType = (globalThis.__fitnessDb_v10 ??= createDb() as unknown as DbType);
+export const db: DbType = (globalThis.__fitnessDb_v11 ??= createDb() as unknown as DbType);
