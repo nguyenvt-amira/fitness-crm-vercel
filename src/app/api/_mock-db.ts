@@ -403,23 +403,13 @@ function defaultPositionIdByRole(role: StaffListItem['role']): number {
 /** ブランドマスタ */
 const SEED_BRAND_ROWS: BrandItem[] = [
   {
-    brand_id: 'brand-all',
-    code: 'all',
-    display_name: '全ブランド',
-    enrollment_fee_yen: 0,
-    handling_fee_yen: 0,
-    currency: 'JPY',
-    sort_order: 0,
-    created_at: '2024-01-01T00:00:00.000Z',
-    updated_at: '2026-03-15T10:30:00.000Z',
-    updated_by: 'STF-001',
-  },
-  {
-    brand_id: 'brand-joyfit',
+    brand_id: 'joyfit',
     code: 'joyfit',
     display_name: 'JOYFIT',
-    enrollment_fee_yen: 3300,
-    handling_fee_yen: 1100,
+    enrollment_fee_excluding_tax_yen: 2000,
+    registration_admin_fee_excluding_tax_yen: 3000,
+    card_issuance_fee_excluding_tax_yen: 0,
+    other_fee_description: null,
     currency: 'JPY',
     sort_order: 1,
     created_at: '2024-01-01T00:00:00.000Z',
@@ -427,11 +417,13 @@ const SEED_BRAND_ROWS: BrandItem[] = [
     updated_by: 'STF-001',
   },
   {
-    brand_id: 'brand-fit365',
+    brand_id: 'fit365',
     code: 'fit365',
     display_name: 'FIT365',
-    enrollment_fee_yen: 3000,
-    handling_fee_yen: 880,
+    enrollment_fee_excluding_tax_yen: 3000,
+    registration_admin_fee_excluding_tax_yen: 4000,
+    card_issuance_fee_excluding_tax_yen: 5000,
+    other_fee_description: 'セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）',
     currency: 'JPY',
     sort_order: 2,
     created_at: '2024-01-01T00:00:00.000Z',
@@ -439,11 +431,13 @@ const SEED_BRAND_ROWS: BrandItem[] = [
     updated_by: 'STF-001',
   },
   {
-    brand_id: 'brand-joyfit24',
+    brand_id: 'joyfit24',
     code: 'joyfit24',
     display_name: 'JOYFIT24',
-    enrollment_fee_yen: 3300,
-    handling_fee_yen: 1100,
+    enrollment_fee_excluding_tax_yen: 2000,
+    registration_admin_fee_excluding_tax_yen: 3000,
+    card_issuance_fee_excluding_tax_yen: 0,
+    other_fee_description: null,
     currency: 'JPY',
     sort_order: 3,
     created_at: '2024-01-01T00:00:00.000Z',
@@ -451,11 +445,13 @@ const SEED_BRAND_ROWS: BrandItem[] = [
     updated_by: 'STF-001',
   },
   {
-    brand_id: 'brand-joyfit-yoga',
+    brand_id: 'joyfit_yoga',
     code: 'joyfit_yoga',
     display_name: 'JOYFIT YOGA',
-    enrollment_fee_yen: 3300,
-    handling_fee_yen: 1100,
+    enrollment_fee_excluding_tax_yen: 2000,
+    registration_admin_fee_excluding_tax_yen: 3000,
+    card_issuance_fee_excluding_tax_yen: 0,
+    other_fee_description: 'セキュリティ管理費・施設メンテナンス料 4,500円（1年ごと）',
     currency: 'JPY',
     sort_order: 4,
     created_at: '2024-01-01T00:00:00.000Z',
@@ -463,11 +459,13 @@ const SEED_BRAND_ROWS: BrandItem[] = [
     updated_by: 'STF-001',
   },
   {
-    brand_id: 'brand-joyfit-plus',
+    brand_id: 'joyfit_plus',
     code: 'joyfit_plus',
     display_name: 'JOYFIT+',
-    enrollment_fee_yen: 3300,
-    handling_fee_yen: 1100,
+    enrollment_fee_excluding_tax_yen: 2000,
+    registration_admin_fee_excluding_tax_yen: 3000,
+    card_issuance_fee_excluding_tax_yen: 0,
+    other_fee_description: null,
     currency: 'JPY',
     sort_order: 5,
     created_at: '2024-01-01T00:00:00.000Z',
@@ -1475,7 +1473,16 @@ type DbType = {
     getByCode(code: string): BrandItem | undefined;
     update(
       code: string,
-      patch: Partial<Pick<BrandItem, 'enrollment_fee_yen' | 'handling_fee_yen' | 'updated_by'>>,
+      patch: Partial<
+        Pick<
+          BrandItem,
+          | 'enrollment_fee_excluding_tax_yen'
+          | 'registration_admin_fee_excluding_tax_yen'
+          | 'card_issuance_fee_excluding_tax_yen'
+          | 'other_fee_description'
+          | 'updated_by'
+        >
+      >,
     ): BrandItem | undefined;
   };
   staffs: {
@@ -7308,7 +7315,16 @@ function createDb() {
       },
       update(
         code: string,
-        patch: Partial<Pick<BrandItem, 'enrollment_fee_yen' | 'handling_fee_yen' | 'updated_by'>>,
+        patch: Partial<
+          Pick<
+            BrandItem,
+            | 'enrollment_fee_excluding_tax_yen'
+            | 'registration_admin_fee_excluding_tax_yen'
+            | 'card_issuance_fee_excluding_tax_yen'
+            | 'other_fee_description'
+            | 'updated_by'
+          >
+        >,
       ): BrandItem | undefined {
         this._seed();
         const idx = this._rows.findIndex((r) => r.code === code);

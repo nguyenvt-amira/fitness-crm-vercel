@@ -7900,23 +7900,9 @@ export type StaffBrand = typeof StaffBrand[keyof typeof StaffBrand];
 /**
  * ManagedBrandCode
  *
- * 管理対象ブランドコード
+ * 管理対象ブランドコード（英数字とアンダースコアのみ）
  */
-export const ManagedBrandCode = {
-    ALL: 'all',
-    JOYFIT: 'joyfit',
-    FIT365: 'fit365',
-    JOYFIT24: 'joyfit24',
-    JOYFIT_YOGA: 'joyfit_yoga',
-    JOYFIT_PLUS: 'joyfit_plus'
-} as const;
-
-/**
- * ManagedBrandCode
- *
- * 管理対象ブランドコード
- */
-export type ManagedBrandCode = typeof ManagedBrandCode[keyof typeof ManagedBrandCode];
+export type ManagedBrandCode = string;
 
 /**
  * BrandItem
@@ -7925,7 +7911,7 @@ export type ManagedBrandCode = typeof ManagedBrandCode[keyof typeof ManagedBrand
  */
 export type BrandItem = {
     /**
-     * Canonical id（店舗.brand_id 等と整合）
+     * ブランドID
      */
     brand_id: string;
     /**
@@ -7933,19 +7919,27 @@ export type BrandItem = {
      *
      * ブランドコード
      */
-    code: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    code: string;
     /**
      * 表示名
      */
     display_name: string;
     /**
-     * 入会金デフォルト（円）
+     * 入会金デフォルト（税別・円）。設定なしの場合は null
      */
-    enrollment_fee_yen: number;
+    enrollment_fee_excluding_tax_yen: number | null;
     /**
-     * 手数料デフォルト（円）
+     * 登録事務手数料デフォルト（税別・円）。設定なしの場合は null
      */
-    handling_fee_yen: number;
+    registration_admin_fee_excluding_tax_yen: number | null;
+    /**
+     * カード発行料デフォルト（税別・円）。設定なしの場合は null
+     */
+    card_issuance_fee_excluding_tax_yen: number | null;
+    /**
+     * その他費用の表示テキスト。設定なしの場合は null
+     */
+    other_fee_description: string | null;
     /**
      * 通貨
      */
@@ -7973,7 +7967,7 @@ export type GetBrandsResponse = {
      */
     brands: Array<{
         /**
-         * Canonical id（店舗.brand_id 等と整合）
+         * ブランドID
          */
         brand_id: string;
         /**
@@ -7981,19 +7975,27 @@ export type GetBrandsResponse = {
          *
          * ブランドコード
          */
-        code: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        code: string;
         /**
          * 表示名
          */
         display_name: string;
         /**
-         * 入会金デフォルト（円）
+         * 入会金デフォルト（税別・円）。設定なしの場合は null
          */
-        enrollment_fee_yen: number;
+        enrollment_fee_excluding_tax_yen: number | null;
         /**
-         * 手数料デフォルト（円）
+         * 登録事務手数料デフォルト（税別・円）。設定なしの場合は null
          */
-        handling_fee_yen: number;
+        registration_admin_fee_excluding_tax_yen: number | null;
+        /**
+         * カード発行料デフォルト（税別・円）。設定なしの場合は null
+         */
+        card_issuance_fee_excluding_tax_yen: number | null;
+        /**
+         * その他費用の表示テキスト。設定なしの場合は null
+         */
+        other_fee_description: string | null;
         /**
          * 通貨
          */
@@ -8018,13 +8020,21 @@ export type GetBrandsResponse = {
  */
 export type UpdateBrandRequest = {
     /**
-     * 入会金（円）
+     * 入会金（税別・円）
      */
-    enrollment_fee_yen?: number;
+    enrollment_fee_excluding_tax_yen?: number | null;
     /**
-     * 手数料（円）
+     * 登録事務手数料（税別・円）
      */
-    handling_fee_yen?: number;
+    registration_admin_fee_excluding_tax_yen?: number | null;
+    /**
+     * カード発行料（税別・円）
+     */
+    card_issuance_fee_excluding_tax_yen?: number | null;
+    /**
+     * その他費用の表示テキスト。設定なしの場合は null
+     */
+    other_fee_description?: string | null;
     /**
      * 更新者スタッフID（モック用）
      */
@@ -8045,7 +8055,7 @@ export type UpdateBrandResponse = {
      */
     brand: {
         /**
-         * Canonical id（店舗.brand_id 等と整合）
+         * ブランドID
          */
         brand_id: string;
         /**
@@ -8053,19 +8063,27 @@ export type UpdateBrandResponse = {
          *
          * ブランドコード
          */
-        code: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        code: string;
         /**
          * 表示名
          */
         display_name: string;
         /**
-         * 入会金デフォルト（円）
+         * 入会金デフォルト（税別・円）。設定なしの場合は null
          */
-        enrollment_fee_yen: number;
+        enrollment_fee_excluding_tax_yen: number | null;
         /**
-         * 手数料デフォルト（円）
+         * 登録事務手数料デフォルト（税別・円）。設定なしの場合は null
          */
-        handling_fee_yen: number;
+        registration_admin_fee_excluding_tax_yen: number | null;
+        /**
+         * カード発行料デフォルト（税別・円）。設定なしの場合は null
+         */
+        card_issuance_fee_excluding_tax_yen: number | null;
+        /**
+         * その他費用の表示テキスト。設定なしの場合は null
+         */
+        other_fee_description: string | null;
         /**
          * 通貨
          */
@@ -12372,7 +12390,7 @@ export type GetCrmBrandsResponses = {
          */
         brands: Array<{
             /**
-             * Canonical id（店舗.brand_id 等と整合）
+             * ブランドID
              */
             brand_id: string;
             /**
@@ -12380,19 +12398,27 @@ export type GetCrmBrandsResponses = {
              *
              * ブランドコード
              */
-            code: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            code: string;
             /**
              * 表示名
              */
             display_name: string;
             /**
-             * 入会金デフォルト（円）
+             * 入会金デフォルト（税別・円）。設定なしの場合は null
              */
-            enrollment_fee_yen: number;
+            enrollment_fee_excluding_tax_yen: number | null;
             /**
-             * 手数料デフォルト（円）
+             * 登録事務手数料デフォルト（税別・円）。設定なしの場合は null
              */
-            handling_fee_yen: number;
+            registration_admin_fee_excluding_tax_yen: number | null;
+            /**
+             * カード発行料デフォルト（税別・円）。設定なしの場合は null
+             */
+            card_issuance_fee_excluding_tax_yen: number | null;
+            /**
+             * その他費用の表示テキスト。設定なしの場合は null
+             */
+            other_fee_description: string | null;
             /**
              * 通貨
              */

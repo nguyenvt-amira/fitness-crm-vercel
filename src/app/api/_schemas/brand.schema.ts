@@ -7,10 +7,13 @@ extendZodWithOpenApi(z);
  * Brands under management.
  */
 export const ManagedBrandCodeSchema = z
-  .enum(['all', 'joyfit', 'fit365', 'joyfit24', 'joyfit_yoga', 'joyfit_plus'])
+  .string()
+  .min(1)
+  .regex(/^[A-Za-z0-9_]+$/)
   .openapi({
     title: 'ManagedBrandCode',
-    description: '管理対象ブランドコード',
+    example: 'joyfit',
+    description: '管理対象ブランドコード（英数字とアンダースコアのみ）',
   });
 
 /**
@@ -19,8 +22,8 @@ export const ManagedBrandCodeSchema = z
 export const BrandItemSchema = z
   .object({
     brand_id: z.string().openapi({
-      example: 'brand-joyfit',
-      description: 'Canonical id（店舗.brand_id 等と整合）',
+      example: 'joyfit',
+      description: 'ブランドID',
     }),
     code: ManagedBrandCodeSchema.openapi({
       description: 'ブランドコード',
@@ -29,15 +32,24 @@ export const BrandItemSchema = z
       example: 'JOYFIT',
       description: '表示名',
     }),
-    /** 入会金（円）— G-01 新規登録時のデフォルト（主契約で個別上書き可） */
-    enrollment_fee_yen: z.number().int().min(0).openapi({
-      example: 3300,
-      description: '入会金デフォルト（円）',
+    /** 入会金（税別・円）— G-01 新規登録時のデフォルト（主契約で個別上書き可） */
+    enrollment_fee_excluding_tax_yen: z.number().int().min(0).nullable().openapi({
+      example: 2000,
+      description: '入会金デフォルト（税別・円）。設定なしの場合は null',
     }),
-    /** 手数料（円）— 基本設定（モックは単一金額。詳細項目は将来拡張可） */
-    handling_fee_yen: z.number().int().min(0).openapi({
-      example: 1100,
-      description: '手数料デフォルト（円）',
+    /** 登録事務手数料（税別・円） */
+    registration_admin_fee_excluding_tax_yen: z.number().int().min(0).nullable().openapi({
+      example: 3000,
+      description: '登録事務手数料デフォルト（税別・円）。設定なしの場合は null',
+    }),
+    /** カード発行料（税別・円） */
+    card_issuance_fee_excluding_tax_yen: z.number().int().min(0).nullable().openapi({
+      example: 5000,
+      description: 'カード発行料デフォルト（税別・円）。設定なしの場合は null',
+    }),
+    other_fee_description: z.string().nullable().openapi({
+      example: 'セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）',
+      description: 'その他費用の表示テキスト。設定なしの場合は null',
     }),
     currency: z.literal('JPY').openapi({
       description: '通貨',
@@ -75,11 +87,23 @@ export const GetBrandsResponseSchema = z
 
 export const UpdateBrandRequestSchema = z
   .object({
-    enrollment_fee_yen: z.number().int().min(0).optional().openapi({
-      description: '入会金（円）',
+    enrollment_fee_excluding_tax_yen: z.number().int().min(0).nullable().optional().openapi({
+      description: '入会金（税別・円）',
     }),
-    handling_fee_yen: z.number().int().min(0).optional().openapi({
-      description: '手数料（円）',
+    registration_admin_fee_excluding_tax_yen: z
+      .number()
+      .int()
+      .min(0)
+      .nullable()
+      .optional()
+      .openapi({
+        description: '登録事務手数料（税別・円）',
+      }),
+    card_issuance_fee_excluding_tax_yen: z.number().int().min(0).nullable().optional().openapi({
+      description: 'カード発行料（税別・円）',
+    }),
+    other_fee_description: z.string().nullable().optional().openapi({
+      description: 'その他費用の表示テキスト。設定なしの場合は null',
     }),
     updated_by: z.string().optional().openapi({
       description: '更新者スタッフID（モック用）',

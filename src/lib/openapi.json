@@ -11202,22 +11202,26 @@
       },
       "ManagedBrandCode": {
         "type": "string",
-        "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9_]+$",
         "title": "ManagedBrandCode",
-        "description": "管理対象ブランドコード"
+        "example": "joyfit",
+        "description": "管理対象ブランドコード（英数字とアンダースコアのみ）"
       },
       "BrandItem": {
         "type": "object",
         "properties": {
           "brand_id": {
             "type": "string",
-            "example": "brand-joyfit",
-            "description": "Canonical id（店舗.brand_id 等と整合）"
+            "example": "joyfit",
+            "description": "ブランドID"
           },
           "code": {
             "type": "string",
-            "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_]+$",
             "title": "ManagedBrandCode",
+            "example": "joyfit",
             "description": "ブランドコード"
           },
           "display_name": {
@@ -11225,17 +11229,32 @@
             "example": "JOYFIT",
             "description": "表示名"
           },
-          "enrollment_fee_yen": {
+          "enrollment_fee_excluding_tax_yen": {
             "type": "integer",
+            "nullable": true,
             "minimum": 0,
-            "example": 3300,
-            "description": "入会金デフォルト（円）"
+            "example": 2000,
+            "description": "入会金デフォルト（税別・円）。設定なしの場合は null"
           },
-          "handling_fee_yen": {
+          "registration_admin_fee_excluding_tax_yen": {
             "type": "integer",
+            "nullable": true,
             "minimum": 0,
-            "example": 1100,
-            "description": "手数料デフォルト（円）"
+            "example": 3000,
+            "description": "登録事務手数料デフォルト（税別・円）。設定なしの場合は null"
+          },
+          "card_issuance_fee_excluding_tax_yen": {
+            "type": "integer",
+            "nullable": true,
+            "minimum": 0,
+            "example": 5000,
+            "description": "カード発行料デフォルト（税別・円）。設定なしの場合は null"
+          },
+          "other_fee_description": {
+            "type": "string",
+            "nullable": true,
+            "example": "セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）",
+            "description": "その他費用の表示テキスト。設定なしの場合は null"
           },
           "currency": {
             "type": "string",
@@ -11266,8 +11285,10 @@
           "brand_id",
           "code",
           "display_name",
-          "enrollment_fee_yen",
-          "handling_fee_yen",
+          "enrollment_fee_excluding_tax_yen",
+          "registration_admin_fee_excluding_tax_yen",
+          "card_issuance_fee_excluding_tax_yen",
+          "other_fee_description",
           "currency",
           "sort_order",
           "created_at",
@@ -11286,13 +11307,15 @@
               "properties": {
                 "brand_id": {
                   "type": "string",
-                  "example": "brand-joyfit",
-                  "description": "Canonical id（店舗.brand_id 等と整合）"
+                  "example": "joyfit",
+                  "description": "ブランドID"
                 },
                 "code": {
                   "type": "string",
-                  "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_]+$",
                   "title": "ManagedBrandCode",
+                  "example": "joyfit",
                   "description": "ブランドコード"
                 },
                 "display_name": {
@@ -11300,17 +11323,32 @@
                   "example": "JOYFIT",
                   "description": "表示名"
                 },
-                "enrollment_fee_yen": {
+                "enrollment_fee_excluding_tax_yen": {
                   "type": "integer",
+                  "nullable": true,
                   "minimum": 0,
-                  "example": 3300,
-                  "description": "入会金デフォルト（円）"
+                  "example": 2000,
+                  "description": "入会金デフォルト（税別・円）。設定なしの場合は null"
                 },
-                "handling_fee_yen": {
+                "registration_admin_fee_excluding_tax_yen": {
                   "type": "integer",
+                  "nullable": true,
                   "minimum": 0,
-                  "example": 1100,
-                  "description": "手数料デフォルト（円）"
+                  "example": 3000,
+                  "description": "登録事務手数料デフォルト（税別・円）。設定なしの場合は null"
+                },
+                "card_issuance_fee_excluding_tax_yen": {
+                  "type": "integer",
+                  "nullable": true,
+                  "minimum": 0,
+                  "example": 5000,
+                  "description": "カード発行料デフォルト（税別・円）。設定なしの場合は null"
+                },
+                "other_fee_description": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）",
+                  "description": "その他費用の表示テキスト。設定なしの場合は null"
                 },
                 "currency": {
                   "type": "string",
@@ -11341,8 +11379,10 @@
                 "brand_id",
                 "code",
                 "display_name",
-                "enrollment_fee_yen",
-                "handling_fee_yen",
+                "enrollment_fee_excluding_tax_yen",
+                "registration_admin_fee_excluding_tax_yen",
+                "card_issuance_fee_excluding_tax_yen",
+                "other_fee_description",
                 "currency",
                 "sort_order",
                 "created_at",
@@ -11361,15 +11401,28 @@
       "UpdateBrandRequest": {
         "type": "object",
         "properties": {
-          "enrollment_fee_yen": {
+          "enrollment_fee_excluding_tax_yen": {
             "type": "integer",
+            "nullable": true,
             "minimum": 0,
-            "description": "入会金（円）"
+            "description": "入会金（税別・円）"
           },
-          "handling_fee_yen": {
+          "registration_admin_fee_excluding_tax_yen": {
             "type": "integer",
+            "nullable": true,
             "minimum": 0,
-            "description": "手数料（円）"
+            "description": "登録事務手数料（税別・円）"
+          },
+          "card_issuance_fee_excluding_tax_yen": {
+            "type": "integer",
+            "nullable": true,
+            "minimum": 0,
+            "description": "カード発行料（税別・円）"
+          },
+          "other_fee_description": {
+            "type": "string",
+            "nullable": true,
+            "description": "その他費用の表示テキスト。設定なしの場合は null"
           },
           "updated_by": {
             "type": "string",
@@ -11391,13 +11444,15 @@
             "properties": {
               "brand_id": {
                 "type": "string",
-                "example": "brand-joyfit",
-                "description": "Canonical id（店舗.brand_id 等と整合）"
+                "example": "joyfit",
+                "description": "ブランドID"
               },
               "code": {
                 "type": "string",
-                "enum": ["all", "joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_]+$",
                 "title": "ManagedBrandCode",
+                "example": "joyfit",
                 "description": "ブランドコード"
               },
               "display_name": {
@@ -11405,17 +11460,32 @@
                 "example": "JOYFIT",
                 "description": "表示名"
               },
-              "enrollment_fee_yen": {
+              "enrollment_fee_excluding_tax_yen": {
                 "type": "integer",
+                "nullable": true,
                 "minimum": 0,
-                "example": 3300,
-                "description": "入会金デフォルト（円）"
+                "example": 2000,
+                "description": "入会金デフォルト（税別・円）。設定なしの場合は null"
               },
-              "handling_fee_yen": {
+              "registration_admin_fee_excluding_tax_yen": {
                 "type": "integer",
+                "nullable": true,
                 "minimum": 0,
-                "example": 1100,
-                "description": "手数料デフォルト（円）"
+                "example": 3000,
+                "description": "登録事務手数料デフォルト（税別・円）。設定なしの場合は null"
+              },
+              "card_issuance_fee_excluding_tax_yen": {
+                "type": "integer",
+                "nullable": true,
+                "minimum": 0,
+                "example": 5000,
+                "description": "カード発行料デフォルト（税別・円）。設定なしの場合は null"
+              },
+              "other_fee_description": {
+                "type": "string",
+                "nullable": true,
+                "example": "セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）",
+                "description": "その他費用の表示テキスト。設定なしの場合は null"
               },
               "currency": {
                 "type": "string",
@@ -11446,8 +11516,10 @@
               "brand_id",
               "code",
               "display_name",
-              "enrollment_fee_yen",
-              "handling_fee_yen",
+              "enrollment_fee_excluding_tax_yen",
+              "registration_admin_fee_excluding_tax_yen",
+              "card_issuance_fee_excluding_tax_yen",
+              "other_fee_description",
               "currency",
               "sort_order",
               "created_at",
@@ -17286,20 +17358,15 @@
                         "properties": {
                           "brand_id": {
                             "type": "string",
-                            "example": "brand-joyfit",
-                            "description": "Canonical id（店舗.brand_id 等と整合）"
+                            "example": "joyfit",
+                            "description": "ブランドID"
                           },
                           "code": {
                             "type": "string",
-                            "enum": [
-                              "all",
-                              "joyfit",
-                              "fit365",
-                              "joyfit24",
-                              "joyfit_yoga",
-                              "joyfit_plus"
-                            ],
+                            "minLength": 1,
+                            "pattern": "^[A-Za-z0-9_]+$",
                             "title": "ManagedBrandCode",
+                            "example": "joyfit",
                             "description": "ブランドコード"
                           },
                           "display_name": {
@@ -17307,17 +17374,32 @@
                             "example": "JOYFIT",
                             "description": "表示名"
                           },
-                          "enrollment_fee_yen": {
+                          "enrollment_fee_excluding_tax_yen": {
                             "type": "integer",
+                            "nullable": true,
                             "minimum": 0,
-                            "example": 3300,
-                            "description": "入会金デフォルト（円）"
+                            "example": 2000,
+                            "description": "入会金デフォルト（税別・円）。設定なしの場合は null"
                           },
-                          "handling_fee_yen": {
+                          "registration_admin_fee_excluding_tax_yen": {
                             "type": "integer",
+                            "nullable": true,
                             "minimum": 0,
-                            "example": 1100,
-                            "description": "手数料デフォルト（円）"
+                            "example": 3000,
+                            "description": "登録事務手数料デフォルト（税別・円）。設定なしの場合は null"
+                          },
+                          "card_issuance_fee_excluding_tax_yen": {
+                            "type": "integer",
+                            "nullable": true,
+                            "minimum": 0,
+                            "example": 5000,
+                            "description": "カード発行料デフォルト（税別・円）。設定なしの場合は null"
+                          },
+                          "other_fee_description": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）",
+                            "description": "その他費用の表示テキスト。設定なしの場合は null"
                           },
                           "currency": {
                             "type": "string",
@@ -17348,8 +17430,10 @@
                           "brand_id",
                           "code",
                           "display_name",
-                          "enrollment_fee_yen",
-                          "handling_fee_yen",
+                          "enrollment_fee_excluding_tax_yen",
+                          "registration_admin_fee_excluding_tax_yen",
+                          "card_issuance_fee_excluding_tax_yen",
+                          "other_fee_description",
                           "currency",
                           "sort_order",
                           "created_at",
