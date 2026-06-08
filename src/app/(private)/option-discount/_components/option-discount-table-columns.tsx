@@ -29,7 +29,20 @@ import {
 
 type OptionDiscountRow = GetCrmOptionDiscountsResponse['option_discounts'][number];
 
-function ActionsCell() {
+interface OptionsTableColumnsProps {
+  onEditClick?: (id: string) => void;
+  onDeleteClick?: (optionDiscount: OptionDiscountRow) => void;
+}
+
+function ActionsCell({
+  optionDiscount,
+  onEditClick,
+  onDeleteClick,
+}: {
+  optionDiscount: OptionDiscountRow;
+  onEditClick?: (id: string) => void;
+  onDeleteClick?: (optionDiscount: OptionDiscountRow) => void;
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -39,14 +52,24 @@ function ActionsCell() {
         <MoreHorizontal className="size-4" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
-        <RoleGatedMenuItem requiredPermission={Permission.OptionsEdit}>
+        <RoleGatedMenuItem
+          requiredPermission={Permission.OptionDiscountsEdit}
+          onClick={(e) => {
+            e.stopPropagation();
+            onEditClick?.(optionDiscount.id);
+          }}
+        >
           <Pencil className="size-4" />
           編集
         </RoleGatedMenuItem>
         <DropdownMenuSeparator />
         <RoleGatedMenuItem
-          requiredPermission={Permission.OptionsDelete}
-          className="text-destructive focus:text-destructive"
+          requiredPermission={Permission.OptionDiscountsDelete}
+          className="text-destructive"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDeleteClick?.(optionDiscount);
+          }}
         >
           <Trash2 className="size-4" />
           削除
@@ -56,7 +79,10 @@ function ActionsCell() {
   );
 }
 
-export function OptionDiscountTableColumns(): ColumnDef<OptionDiscountRow>[] {
+export function OptionDiscountTableColumns({
+  onEditClick,
+  onDeleteClick,
+}: OptionsTableColumnsProps): ColumnDef<OptionDiscountRow>[] {
   return [
     {
       accessorKey: 'id',
@@ -169,7 +195,13 @@ export function OptionDiscountTableColumns(): ColumnDef<OptionDiscountRow>[] {
       id: 'actions',
       header: () => null,
       enableSorting: false,
-      cell: () => <ActionsCell />,
+      cell: ({ row }) => (
+        <ActionsCell
+          optionDiscount={row.original}
+          onEditClick={onEditClick}
+          onDeleteClick={onDeleteClick}
+        />
+      ),
     },
   ];
 }

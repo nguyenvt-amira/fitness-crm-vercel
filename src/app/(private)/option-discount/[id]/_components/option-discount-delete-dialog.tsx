@@ -47,6 +47,7 @@ interface OptionDiscountDeleteDialogProps {
   optionDiscountName: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  redirectOnSuccess?: boolean;
 }
 
 export function OptionDiscountDeleteDialog({
@@ -54,6 +55,7 @@ export function OptionDiscountDeleteDialog({
   optionDiscountName,
   open,
   onOpenChange,
+  redirectOnSuccess = true,
 }: OptionDiscountDeleteDialogProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -79,7 +81,9 @@ export function OptionDiscountDeleteDialog({
         refetchType: 'all',
       });
       onOpenChange(false);
-      router.push(navigate('/option-discount'));
+      if (redirectOnSuccess) {
+        router.push(navigate('/option-discount'));
+      }
     },
     onError: () => {
       toast.error('セット割の削除に失敗しました');

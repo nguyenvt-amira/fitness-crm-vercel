@@ -1,4 +1,15 @@
-import { OptionDiscountStatus, OptionDiscountType } from '@/lib/api/types.gen';
+import {
+  OptionDiscountCondition,
+  OptionDiscountStatus,
+  OptionDiscountType,
+} from '@/lib/api/types.gen';
+
+export const OPTION_DISCOUNT_CONDITION_LABELS: Record<OptionDiscountCondition, string> = {
+  [OptionDiscountCondition.SIMULTANEOUS]: '同時申込時',
+  [OptionDiscountCondition.EXISTING_MEMBER]: '既存会員も対象',
+  [OptionDiscountCondition.FAMILY_2_PLUS]: '家族2名以上',
+  [OptionDiscountCondition.OPTIONS_3_PLUS]: '3オプション同時',
+};
 
 export const OPTION_DISCOUNT_TYPE_LABELS: Record<OptionDiscountType, string> = {
   [OptionDiscountType.FIXED_AMOUNT]: '定額値引き',

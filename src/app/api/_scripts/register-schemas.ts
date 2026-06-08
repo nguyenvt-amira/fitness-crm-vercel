@@ -952,6 +952,13 @@ export function registerAllSchemas() {
     registry.register('OptionDiscountStatus', optionDiscountSchemas.OptionDiscountStatusSchema),
   );
   registeredSchemaMap.set(
+    'OptionDiscountCondition',
+    registry.register(
+      'OptionDiscountCondition',
+      optionDiscountSchemas.OptionDiscountConditionSchema,
+    ),
+  );
+  registeredSchemaMap.set(
     'OptionDiscountListItem',
     registry.register('OptionDiscountListItem', optionDiscountSchemas.OptionDiscountListItemSchema),
   );

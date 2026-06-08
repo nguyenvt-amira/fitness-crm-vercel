@@ -11991,6 +11991,12 @@
         "title": "OptionDiscountStatus",
         "description": "セット割の有効/無効ステータス"
       },
+      "OptionDiscountCondition": {
+        "type": "string",
+        "enum": ["simultaneous", "existing_member", "family_2_plus", "options_3_plus"],
+        "title": "OptionDiscountCondition",
+        "description": "セット割の適用条件"
+      },
       "OptionDiscountListItem": {
         "type": "object",
         "properties": {
@@ -12039,8 +12045,10 @@
           },
           "conditions": {
             "type": "string",
-            "example": "同時申込時",
-            "description": "適用条件"
+            "enum": ["simultaneous", "existing_member", "family_2_plus", "options_3_plus"],
+            "title": "OptionDiscountCondition",
+            "description": "適用条件",
+            "example": "simultaneous"
           },
           "store_id": {
             "type": "string",
@@ -12188,8 +12196,10 @@
                 },
                 "conditions": {
                   "type": "string",
-                  "example": "同時申込時",
-                  "description": "適用条件"
+                  "enum": ["simultaneous", "existing_member", "family_2_plus", "options_3_plus"],
+                  "title": "OptionDiscountCondition",
+                  "description": "適用条件",
+                  "example": "simultaneous"
                 },
                 "store_id": {
                   "type": "string",
@@ -32003,8 +32013,15 @@
                         },
                         "conditions": {
                           "type": "string",
-                          "example": "同時申込時",
-                          "description": "適用条件"
+                          "enum": [
+                            "simultaneous",
+                            "existing_member",
+                            "family_2_plus",
+                            "options_3_plus"
+                          ],
+                          "title": "OptionDiscountCondition",
+                          "description": "適用条件",
+                          "example": "simultaneous"
                         },
                         "store_id": {
                           "type": "string",
@@ -32244,6 +32261,309 @@
             }
           }
         }
+      },
+      "patch": {
+        "summary": "Update option discount",
+        "description": "Update an existing option discount setting by ID",
+        "tags": ["Options"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Option Discount ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "セット割更新リクエスト",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "code": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "target_contracts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  },
+                  "target_options": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  },
+                  "discount_type": {
+                    "type": "string",
+                    "enum": ["fixed_amount", "percentage"],
+                    "title": "OptionDiscountType",
+                    "description": "セット割の割引タイプ"
+                  },
+                  "discount_value": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "conditions": {
+                    "type": "string",
+                    "enum": ["simultaneous", "existing_member", "family_2_plus", "options_3_plus"],
+                    "title": "OptionDiscountCondition",
+                    "description": "セット割の適用条件"
+                  },
+                  "store_id": {
+                    "type": "string",
+                    "nullable": true,
+                    "default": null
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["active", "inactive"],
+                    "default": "active",
+                    "title": "OptionDiscountStatus",
+                    "description": "セット割の有効/無効ステータス"
+                  }
+                },
+                "required": [
+                  "name",
+                  "code",
+                  "target_contracts",
+                  "target_options",
+                  "discount_type",
+                  "discount_value",
+                  "conditions"
+                ],
+                "title": "UpsertOptionDiscountBody",
+                "description": "セット割作成・更新リクエスト"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "option_discount": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "SD001",
+                          "description": "セット割ID"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "レギュラー＋水素水セット",
+                          "description": "セット割名"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "SET-001",
+                          "description": "セット割コード"
+                        },
+                        "target_contracts": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "対象契約名一覧",
+                          "example": ["レギュラー会員"]
+                        },
+                        "target_options": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "対象オプション名一覧",
+                          "example": ["水素水"]
+                        },
+                        "discount_type": {
+                          "type": "string",
+                          "enum": ["fixed_amount", "percentage"],
+                          "title": "OptionDiscountType",
+                          "description": "割引タイプ"
+                        },
+                        "discount_value": {
+                          "type": "number",
+                          "minimum": 0,
+                          "example": 330,
+                          "description": "割引値"
+                        },
+                        "conditions": {
+                          "type": "string",
+                          "enum": [
+                            "simultaneous",
+                            "existing_member",
+                            "family_2_plus",
+                            "options_3_plus"
+                          ],
+                          "title": "OptionDiscountCondition",
+                          "description": "適用条件",
+                          "example": "simultaneous"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "対象店舗ID（null = 全店舗）"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "対象店舗名（null = 全店舗）"
+                        },
+                        "applied_count": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 180,
+                          "description": "適用数"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "OptionDiscountStatus",
+                          "description": "ステータス"
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "説明文"
+                        },
+                        "rules": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "適用ルール"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2025/06/20 16:45",
+                          "description": "作成日時"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026/03/01 10:30",
+                          "description": "最終更新日時"
+                        },
+                        "updated_by": {
+                          "type": "string",
+                          "example": "テストユーザー",
+                          "description": "更新者"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "code",
+                        "target_contracts",
+                        "target_options",
+                        "discount_type",
+                        "discount_value",
+                        "conditions",
+                        "store_id",
+                        "store_name",
+                        "applied_count",
+                        "status",
+                        "description",
+                        "rules",
+                        "created_at",
+                        "updated_at",
+                        "updated_by"
+                      ],
+                      "title": "OptionDiscountDetail",
+                      "description": "セット割詳細"
+                    }
+                  },
+                  "required": ["message", "option_discount"],
+                  "title": "UpdateOptionDiscountResponse",
+                  "description": "セット割更新レスポンス"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/crm/option-discounts": {
@@ -32395,8 +32715,15 @@
                           },
                           "conditions": {
                             "type": "string",
-                            "example": "同時申込時",
-                            "description": "適用条件"
+                            "enum": [
+                              "simultaneous",
+                              "existing_member",
+                              "family_2_plus",
+                              "options_3_plus"
+                            ],
+                            "title": "OptionDiscountCondition",
+                            "description": "適用条件",
+                            "example": "simultaneous"
                           },
                           "store_id": {
                             "type": "string",
@@ -32461,6 +32788,278 @@
                   "required": ["option_discounts", "pagination"],
                   "title": "GetOptionDiscountsResponse",
                   "description": "セット割一覧レスポンス"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create option discount",
+        "description": "Create a new option discount setting (G-02)",
+        "tags": ["Options"],
+        "requestBody": {
+          "description": "セット割作成リクエスト",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "code": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "target_contracts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  },
+                  "target_options": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  },
+                  "discount_type": {
+                    "type": "string",
+                    "enum": ["fixed_amount", "percentage"],
+                    "title": "OptionDiscountType",
+                    "description": "セット割の割引タイプ"
+                  },
+                  "discount_value": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "conditions": {
+                    "type": "string",
+                    "enum": ["simultaneous", "existing_member", "family_2_plus", "options_3_plus"],
+                    "title": "OptionDiscountCondition",
+                    "description": "セット割の適用条件"
+                  },
+                  "store_id": {
+                    "type": "string",
+                    "nullable": true,
+                    "default": null
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["active", "inactive"],
+                    "default": "active",
+                    "title": "OptionDiscountStatus",
+                    "description": "セット割の有効/無効ステータス"
+                  }
+                },
+                "required": [
+                  "name",
+                  "code",
+                  "target_contracts",
+                  "target_options",
+                  "discount_type",
+                  "discount_value",
+                  "conditions"
+                ],
+                "title": "UpsertOptionDiscountBody",
+                "description": "セット割作成・更新リクエスト"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "option_discount": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "SD001",
+                          "description": "セット割ID"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "レギュラー＋水素水セット",
+                          "description": "セット割名"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "SET-001",
+                          "description": "セット割コード"
+                        },
+                        "target_contracts": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "対象契約名一覧",
+                          "example": ["レギュラー会員"]
+                        },
+                        "target_options": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "対象オプション名一覧",
+                          "example": ["水素水"]
+                        },
+                        "discount_type": {
+                          "type": "string",
+                          "enum": ["fixed_amount", "percentage"],
+                          "title": "OptionDiscountType",
+                          "description": "割引タイプ"
+                        },
+                        "discount_value": {
+                          "type": "number",
+                          "minimum": 0,
+                          "example": 330,
+                          "description": "割引値"
+                        },
+                        "conditions": {
+                          "type": "string",
+                          "enum": [
+                            "simultaneous",
+                            "existing_member",
+                            "family_2_plus",
+                            "options_3_plus"
+                          ],
+                          "title": "OptionDiscountCondition",
+                          "description": "適用条件",
+                          "example": "simultaneous"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "対象店舗ID（null = 全店舗）"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "対象店舗名（null = 全店舗）"
+                        },
+                        "applied_count": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 180,
+                          "description": "適用数"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "OptionDiscountStatus",
+                          "description": "ステータス"
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "説明文"
+                        },
+                        "rules": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "適用ルール"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2025/06/20 16:45",
+                          "description": "作成日時"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026/03/01 10:30",
+                          "description": "最終更新日時"
+                        },
+                        "updated_by": {
+                          "type": "string",
+                          "example": "テストユーザー",
+                          "description": "更新者"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "code",
+                        "target_contracts",
+                        "target_options",
+                        "discount_type",
+                        "discount_value",
+                        "conditions",
+                        "store_id",
+                        "store_name",
+                        "applied_count",
+                        "status",
+                        "description",
+                        "rules",
+                        "created_at",
+                        "updated_at",
+                        "updated_by"
+                      ],
+                      "title": "OptionDiscountDetail",
+                      "description": "セット割詳細"
+                    }
+                  },
+                  "required": ["message", "option_discount"],
+                  "title": "CreateOptionDiscountResponse",
+                  "description": "セット割作成レスポンス"
                 }
               }
             }

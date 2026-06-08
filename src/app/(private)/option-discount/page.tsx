@@ -30,6 +30,7 @@ import { navigate } from '@/lib/routes/routes.util';
 
 import { Permission } from '@/types/permission.type';
 
+import { OptionDiscountDeleteDialog } from './[id]/_components/option-discount-delete-dialog';
 import { OptionDiscountFilters } from './_components/option-discount-filters';
 import { OptionDiscountTableColumns } from './_components/option-discount-table-columns';
 import { OptionDiscountFiltersProvider } from './_contexts/option-discount-filters-context';
@@ -39,6 +40,7 @@ type OptionDiscountRow = GetCrmOptionDiscountsResponse['option_discounts'][numbe
 
 function OptionDiscountPageContent() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<OptionDiscountRow | null>(null);
   const filtersHook = useOptionDiscountFilters();
   const { filters, setFilters, queryParams, currentPage, setCurrentPage, pageSize } = filtersHook;
   const router = useRouter();
@@ -70,7 +72,18 @@ function OptionDiscountPageContent() {
     }
   };
 
-  const columns: ColumnDef<OptionDiscountRow>[] = useMemo(() => OptionDiscountTableColumns(), []);
+  const columns: ColumnDef<OptionDiscountRow>[] = useMemo(
+    () =>
+      OptionDiscountTableColumns({
+        onEditClick: (id) => {
+          router.push(navigate('/option-discount/[id]/edit', id));
+        },
+        onDeleteClick: (optionDiscount) => {
+          setDeleteTarget(optionDiscount);
+        },
+      }),
+    [router],
+  );
 
   return (
     <div>
@@ -106,7 +119,11 @@ function OptionDiscountPageContent() {
           </>
         }
         actions={
-          <RoleGatedButton requiredPermission={Permission.OptionsCreate} className="gap-1">
+          <RoleGatedButton
+            requiredPermission={Permission.OptionDiscountsCreate}
+            className="gap-1"
+            onClick={() => router.push(navigate('/option-discount/create'))}
+          >
             <Plus className="size-4" />
             新規登録
           </RoleGatedButton>
@@ -156,6 +173,15 @@ function OptionDiscountPageContent() {
           )}
         </Card>
       </div>
+      <OptionDiscountDeleteDialog
+        optionDiscountId={deleteTarget?.id ?? ''}
+        optionDiscountName={deleteTarget?.name ?? ''}
+        open={deleteTarget !== null}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null);
+        }}
+        redirectOnSuccess={false}
+      />
     </div>
   );
 }

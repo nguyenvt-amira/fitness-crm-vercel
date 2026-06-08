@@ -1,7 +1,7 @@
 'use client';
 
 import { formatDateYYYYMMDD, formatDateYYYYMMDD_HHMM } from '@/utils/date.util';
-import { Percent, Store } from 'lucide-react';
+import { Percent } from 'lucide-react';
 
 import { Field } from '@/components/common/field';
 import { StatusCard } from '@/components/common/status-card';
@@ -12,6 +12,7 @@ import type { GetCrmOptionDiscountsByIdResponse } from '@/lib/api/types.gen';
 import { OptionDiscountStatus, OptionDiscountType } from '@/lib/api/types.gen';
 
 import {
+  OPTION_DISCOUNT_CONDITION_LABELS,
   OPTION_DISCOUNT_STATUS_LABELS,
   OPTION_DISCOUNT_TYPE_BADGE_CLASSES,
   OPTION_DISCOUNT_TYPE_LABELS,
@@ -109,7 +110,9 @@ export function BasicInfoTab({ data }: BasicInfoTabProps) {
               </div>
               <div>
                 <p className="text-muted-foreground mb-1 text-xs">適用条件</p>
-                <p className="text-sm font-medium">{data.conditions}</p>
+                <p className="text-sm font-medium">
+                  {OPTION_DISCOUNT_CONDITION_LABELS[data.conditions] ?? data.conditions}
+                </p>
               </div>
             </div>
             {data.description && (

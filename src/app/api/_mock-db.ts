@@ -1005,7 +1005,7 @@ const SEED_OPTION_DISCOUNT_ROWS: OptionDiscountListItem[] = [
     target_options: ['水素水'],
     discount_type: 'fixed_amount',
     discount_value: 330,
-    conditions: '同時申込時',
+    conditions: 'simultaneous',
     store_id: null,
     store_name: null,
     applied_count: 180,
@@ -1019,7 +1019,7 @@ const SEED_OPTION_DISCOUNT_ROWS: OptionDiscountListItem[] = [
     target_options: ['プロテインサーバー'],
     discount_type: 'fixed_amount',
     discount_value: 220,
-    conditions: '同時申込時',
+    conditions: 'simultaneous',
     store_id: null,
     store_name: null,
     applied_count: 95,
@@ -1033,7 +1033,7 @@ const SEED_OPTION_DISCOUNT_ROWS: OptionDiscountListItem[] = [
     target_options: ['パーソナルロッカー（S）'],
     discount_type: 'percentage',
     discount_value: 10,
-    conditions: '家族2名以上',
+    conditions: 'family_2_plus',
     store_id: null,
     store_name: null,
     applied_count: 42,
@@ -1047,7 +1047,7 @@ const SEED_OPTION_DISCOUNT_ROWS: OptionDiscountListItem[] = [
     target_options: ['タオルセット'],
     discount_type: 'fixed_amount',
     discount_value: 110,
-    conditions: '同時申込時',
+    conditions: 'simultaneous',
     store_id: 'store-001',
     store_name: 'Fit365八潮店',
     applied_count: 65,
@@ -1061,7 +1061,7 @@ const SEED_OPTION_DISCOUNT_ROWS: OptionDiscountListItem[] = [
     target_options: ['水素水', 'プロテインサーバー', 'タオルセット'],
     discount_type: 'fixed_amount',
     discount_value: 550,
-    conditions: '3オプション同時',
+    conditions: 'options_3_plus',
     store_id: null,
     store_name: null,
     applied_count: 0,
@@ -1354,6 +1354,33 @@ type DbType = {
     _seed(): void;
     getList(): GetOptionDiscountsResponse['option_discounts'];
     getById(id: string): OptionDiscountDetail | undefined;
+    add(data: {
+      name: string;
+      code: string;
+      description?: string | null;
+      target_contracts: string[];
+      target_options: string[];
+      discount_type: string;
+      discount_value: number;
+      conditions: string;
+      store_id?: string | null;
+      status?: string;
+    }): OptionDiscountDetail;
+    update(
+      id: string,
+      data: {
+        name?: string;
+        code?: string;
+        description?: string | null;
+        target_contracts?: string[];
+        target_options?: string[];
+        discount_type?: string;
+        discount_value?: number;
+        conditions?: string;
+        store_id?: string | null;
+        status?: string;
+      },
+    ): OptionDiscountDetail | undefined;
     delete(id: string): boolean;
     getChangeHistory(id: string): OptionDiscountChangeHistoryItem[];
   };
@@ -5724,6 +5751,96 @@ function createDb() {
       getChangeHistory(id: string): OptionDiscountChangeHistoryItem[] {
         this._seed();
         return this._changeHistory[id] ?? [];
+      },
+      add(data: {
+        name: string;
+        code: string;
+        description?: string | null;
+        target_contracts: string[];
+        target_options: string[];
+        discount_type: string;
+        discount_value: number;
+        conditions: string;
+        store_id?: string | null;
+        status?: string;
+      }): OptionDiscountDetail {
+        this._seed();
+        const newId = `SD${String(this._rows.length + 1).padStart(3, '0')}`;
+        const now = new Date().toISOString().slice(0, 16).replace('T', ' ');
+        const entry: OptionDiscountListItem = {
+          id: newId,
+          name: data.name,
+          code: data.code,
+          target_contracts: [...data.target_contracts],
+          target_options: [...data.target_options],
+          discount_type: data.discount_type as 'fixed_amount' | 'percentage',
+          discount_value: data.discount_value,
+          conditions: data.conditions as
+            | 'simultaneous'
+            | 'existing_member'
+            | 'family_2_plus'
+            | 'options_3_plus',
+          store_id: data.store_id ?? null,
+          store_name: null,
+          applied_count: 0,
+          status: (data.status ?? 'active') as 'active' | 'inactive',
+        };
+        this._rows.push(entry);
+        const detail: OptionDiscountDetail = {
+          ...entry,
+          target_contracts: [...entry.target_contracts],
+          target_options: [...entry.target_options],
+          description: data.description ?? null,
+          rules: [],
+          created_at: now,
+          updated_at: now,
+          updated_by: 'テストユーザー',
+        };
+        return detail;
+      },
+      update(
+        id: string,
+        data: {
+          name?: string;
+          code?: string;
+          description?: string | null;
+          target_contracts?: string[];
+          target_options?: string[];
+          discount_type?: string;
+          discount_value?: number;
+          conditions?: string;
+          store_id?: string | null;
+          status?: string;
+        },
+      ): OptionDiscountDetail | undefined {
+        this._seed();
+        const idx = this._rows.findIndex((r) => r.id === id);
+        if (idx === -1) return undefined;
+        const existing = this._rows[idx];
+        const updated: OptionDiscountListItem = {
+          ...existing,
+          name: data.name ?? existing.name,
+          code: data.code ?? existing.code,
+          target_contracts: data.target_contracts
+            ? [...data.target_contracts]
+            : [...existing.target_contracts],
+          target_options: data.target_options
+            ? [...data.target_options]
+            : [...existing.target_options],
+          discount_type: (data.discount_type ?? existing.discount_type) as
+            | 'fixed_amount'
+            | 'percentage',
+          discount_value: data.discount_value ?? existing.discount_value,
+          conditions: (data.conditions ?? existing.conditions) as
+            | 'simultaneous'
+            | 'existing_member'
+            | 'family_2_plus'
+            | 'options_3_plus',
+          store_id: data.store_id !== undefined ? data.store_id : existing.store_id,
+          status: (data.status ?? existing.status) as 'active' | 'inactive',
+        };
+        this._rows[idx] = updated;
+        return this.getById(id);
       },
     },
     storeMainContracts: {

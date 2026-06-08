@@ -5,6 +5,13 @@ import { ErrorResponseSchema } from './auth.schema';
 
 extendZodWithOpenApi(z);
 
+export const OptionDiscountConditionSchema = z
+  .enum(['simultaneous', 'existing_member', 'family_2_plus', 'options_3_plus'])
+  .openapi({
+    title: 'OptionDiscountCondition',
+    description: 'セット割の適用条件',
+  });
+
 export const OptionDiscountTypeSchema = z.enum(['fixed_amount', 'percentage']).openapi({
   title: 'OptionDiscountType',
   description: 'セット割の割引タイプ',
@@ -28,7 +35,10 @@ export const OptionDiscountListItemSchema = z
       .openapi({ description: '対象オプション名一覧', example: ['水素水'] }),
     discount_type: OptionDiscountTypeSchema.openapi({ description: '割引タイプ' }),
     discount_value: z.number().nonnegative().openapi({ example: 330, description: '割引値' }),
-    conditions: z.string().openapi({ example: '同時申込時', description: '適用条件' }),
+    conditions: OptionDiscountConditionSchema.openapi({
+      example: 'simultaneous',
+      description: '適用条件',
+    }),
     store_id: z.string().nullable().openapi({ description: '対象店舗ID（null = 全店舗）' }),
     store_name: z.string().nullable().openapi({ description: '対象店舗名（null = 全店舗）' }),
     applied_count: z.number().int().nonnegative().openapi({ example: 180, description: '適用数' }),
@@ -117,6 +127,54 @@ export const GetOptionDiscountChangeHistoryResponseSchema = z
     description: 'セット割変更履歴レスポンス',
   });
 
+// --- Create / Update ---
+export const UpsertOptionDiscountBodySchema = z
+  .object({
+    name: z.string().min(1, 'セット割名は必須です'),
+    code: z.string().min(1, 'コードは必須です'),
+    description: z.string().nullable().optional(),
+    target_contracts: z.array(z.string()).min(1, '対象契約を1つ以上選択してください'),
+    target_options: z.array(z.string()).min(1, '対象オプションを1つ以上選択してください'),
+    discount_type: OptionDiscountTypeSchema,
+    discount_value: z.number().nonnegative('0以上の値を入力してください'),
+    conditions: OptionDiscountConditionSchema,
+    store_id: z.string().nullable().optional().default(null),
+    status: OptionDiscountStatusSchema.optional().default('active'),
+  })
+  .superRefine((value, ctx) => {
+    if (value.discount_type === 'percentage' && value.discount_value > 100) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['discount_value'],
+        message: '割引率は100%以下で入力してください',
+      });
+    }
+  })
+  .openapi({
+    title: 'UpsertOptionDiscountBody',
+    description: 'セット割作成・更新リクエスト',
+  });
+
+export const CreateOptionDiscountResponseSchema = z
+  .object({
+    message: z.string(),
+    option_discount: OptionDiscountDetailSchema,
+  })
+  .openapi({
+    title: 'CreateOptionDiscountResponse',
+    description: 'セット割作成レスポンス',
+  });
+
+export const UpdateOptionDiscountResponseSchema = z
+  .object({
+    message: z.string(),
+    option_discount: OptionDiscountDetailSchema,
+  })
+  .openapi({
+    title: 'UpdateOptionDiscountResponse',
+    description: 'セット割更新レスポンス',
+  });
+
 // --- Delete ---
 export const DeleteOptionDiscountRequestSchema = z
   .object({
@@ -132,6 +190,7 @@ export { ErrorResponseSchema };
 
 export type OptionDiscountType = z.infer<typeof OptionDiscountTypeSchema>;
 export type OptionDiscountStatus = z.infer<typeof OptionDiscountStatusSchema>;
+export type OptionDiscountCondition = z.infer<typeof OptionDiscountConditionSchema>;
 export type OptionDiscountListItem = z.infer<typeof OptionDiscountListItemSchema>;
 export type GetOptionDiscountsQuery = z.infer<typeof GetOptionDiscountsQuerySchema>;
 export type GetOptionDiscountsResponse = z.infer<typeof GetOptionDiscountsResponseSchema>;
@@ -143,3 +202,6 @@ export type GetOptionDiscountChangeHistoryResponse = z.infer<
 >;
 export type DeleteOptionDiscountRequest = z.infer<typeof DeleteOptionDiscountRequestSchema>;
 export type DeleteOptionDiscountResponse = z.infer<typeof DeleteOptionDiscountResponseSchema>;
+export type UpsertOptionDiscountBody = z.infer<typeof UpsertOptionDiscountBodySchema>;
+export type CreateOptionDiscountResponse = z.infer<typeof CreateOptionDiscountResponseSchema>;
+export type UpdateOptionDiscountResponse = z.infer<typeof UpdateOptionDiscountResponseSchema>;

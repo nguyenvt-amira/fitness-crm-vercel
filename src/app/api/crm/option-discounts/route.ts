@@ -2,12 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { db } from '@/app/api/_mock-db';
 import {
+  CreateOptionDiscountResponseSchema,
   ErrorResponseSchema,
   type GetOptionDiscountsQuery,
   GetOptionDiscountsQuerySchema,
   type GetOptionDiscountsResponse,
   GetOptionDiscountsResponseSchema,
   type OptionDiscountListItem,
+  UpsertOptionDiscountBodySchema,
 } from '@/app/api/_schemas/option-discount.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
 
@@ -91,5 +93,49 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Error fetching option discounts:', error);
     return NextResponse.json({ error: 'Failed to fetch option discounts' }, { status: 500 });
+  }
+}
+
+registerRoute({
+  method: 'post',
+  path: '/crm/option-discounts',
+  summary: 'Create option discount',
+  description: 'Create a new option discount setting (G-02)',
+  tags: ['Options'],
+  requestBody: {
+    schema: UpsertOptionDiscountBodySchema,
+    description: 'セット割作成リクエスト',
+  },
+  responses: [
+    {
+      status: 201,
+      schema: CreateOptionDiscountResponseSchema,
+      description: 'Created',
+    },
+    { status: 400, schema: ErrorResponseSchema, description: 'Bad request' },
+    { status: 500, schema: ErrorResponseSchema, description: 'Internal server error' },
+  ],
+});
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const validationResult = UpsertOptionDiscountBodySchema.safeParse(body);
+
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((issue) => issue.message).join(', ');
+      return NextResponse.json({ error: errors }, { status: 400 });
+    }
+
+    const data = validationResult.data;
+    const option_discount = db.optionDiscount.add(data);
+
+    return NextResponse.json(
+      { message: 'セット割を作成しました', option_discount },
+      { status: 201 },
+    );
+  } catch (error) {
+    console.error('POST /crm/option-discounts error:', error);
+    return NextResponse.json({ error: 'Failed to create option discount' }, { status: 500 });
   }
 }
