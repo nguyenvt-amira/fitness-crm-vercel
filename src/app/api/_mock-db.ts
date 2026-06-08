@@ -406,13 +406,14 @@ const SEED_BRAND_ROWS: BrandItem[] = [
     brand_id: 'joyfit',
     code: 'joyfit',
     display_name: 'JOYFIT',
-    enrollment_fee_excluding_tax_yen: 2000,
-    registration_admin_fee_excluding_tax_yen: 3000,
-    card_issuance_fee_excluding_tax_yen: 0,
+    enrollment_fee_yen: 2000,
+    registration_admin_fee_yen: 3000,
+    card_issuance_fee_yen: 0,
     other_fee_description: null,
     currency: 'JPY',
     sort_order: 1,
     created_at: '2024-01-01T00:00:00.000Z',
+    created_by: 'STF-001',
     updated_at: '2026-03-15T10:30:00.000Z',
     updated_by: 'STF-001',
   },
@@ -420,13 +421,14 @@ const SEED_BRAND_ROWS: BrandItem[] = [
     brand_id: 'fit365',
     code: 'fit365',
     display_name: 'FIT365',
-    enrollment_fee_excluding_tax_yen: 3000,
-    registration_admin_fee_excluding_tax_yen: 4000,
-    card_issuance_fee_excluding_tax_yen: 5000,
+    enrollment_fee_yen: 3000,
+    registration_admin_fee_yen: 4000,
+    card_issuance_fee_yen: 5000,
     other_fee_description: 'セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）',
     currency: 'JPY',
     sort_order: 2,
     created_at: '2024-01-01T00:00:00.000Z',
+    created_by: 'STF-001',
     updated_at: '2026-03-15T10:30:00.000Z',
     updated_by: 'STF-001',
   },
@@ -434,13 +436,14 @@ const SEED_BRAND_ROWS: BrandItem[] = [
     brand_id: 'joyfit24',
     code: 'joyfit24',
     display_name: 'JOYFIT24',
-    enrollment_fee_excluding_tax_yen: 2000,
-    registration_admin_fee_excluding_tax_yen: 3000,
-    card_issuance_fee_excluding_tax_yen: 0,
+    enrollment_fee_yen: 2000,
+    registration_admin_fee_yen: 3000,
+    card_issuance_fee_yen: 0,
     other_fee_description: null,
     currency: 'JPY',
     sort_order: 3,
     created_at: '2024-01-01T00:00:00.000Z',
+    created_by: 'STF-001',
     updated_at: '2026-03-15T10:30:00.000Z',
     updated_by: 'STF-001',
   },
@@ -448,13 +451,14 @@ const SEED_BRAND_ROWS: BrandItem[] = [
     brand_id: 'joyfit_yoga',
     code: 'joyfit_yoga',
     display_name: 'JOYFIT YOGA',
-    enrollment_fee_excluding_tax_yen: 2000,
-    registration_admin_fee_excluding_tax_yen: 3000,
-    card_issuance_fee_excluding_tax_yen: 0,
+    enrollment_fee_yen: 2000,
+    registration_admin_fee_yen: 3000,
+    card_issuance_fee_yen: 0,
     other_fee_description: 'セキュリティ管理費・施設メンテナンス料 4,500円（1年ごと）',
     currency: 'JPY',
     sort_order: 4,
     created_at: '2024-01-01T00:00:00.000Z',
+    created_by: 'STF-001',
     updated_at: '2026-03-15T10:30:00.000Z',
     updated_by: 'STF-001',
   },
@@ -462,13 +466,14 @@ const SEED_BRAND_ROWS: BrandItem[] = [
     brand_id: 'joyfit_plus',
     code: 'joyfit_plus',
     display_name: 'JOYFIT+',
-    enrollment_fee_excluding_tax_yen: 2000,
-    registration_admin_fee_excluding_tax_yen: 3000,
-    card_issuance_fee_excluding_tax_yen: 0,
+    enrollment_fee_yen: 2000,
+    registration_admin_fee_yen: 3000,
+    card_issuance_fee_yen: 0,
     other_fee_description: null,
     currency: 'JPY',
     sort_order: 5,
     created_at: '2024-01-01T00:00:00.000Z',
+    created_by: 'STF-001',
     updated_at: '2026-03-15T10:30:00.000Z',
     updated_by: 'STF-001',
   },
@@ -1476,9 +1481,9 @@ type DbType = {
       patch: Partial<
         Pick<
           BrandItem,
-          | 'enrollment_fee_excluding_tax_yen'
-          | 'registration_admin_fee_excluding_tax_yen'
-          | 'card_issuance_fee_excluding_tax_yen'
+          | 'enrollment_fee_yen'
+          | 'registration_admin_fee_yen'
+          | 'card_issuance_fee_yen'
           | 'other_fee_description'
           | 'updated_by'
         >
@@ -7318,9 +7323,9 @@ function createDb() {
         patch: Partial<
           Pick<
             BrandItem,
-            | 'enrollment_fee_excluding_tax_yen'
-            | 'registration_admin_fee_excluding_tax_yen'
-            | 'card_issuance_fee_excluding_tax_yen'
+            | 'enrollment_fee_yen'
+            | 'registration_admin_fee_yen'
+            | 'card_issuance_fee_yen'
             | 'other_fee_description'
             | 'updated_by'
           >

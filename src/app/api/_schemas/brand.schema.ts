@@ -33,19 +33,19 @@ export const BrandItemSchema = z
       description: '表示名',
     }),
     /** 入会金（税別・円）— G-01 新規登録時のデフォルト（主契約で個別上書き可） */
-    enrollment_fee_excluding_tax_yen: z.number().int().min(0).nullable().openapi({
+    enrollment_fee_yen: z.number().int().min(0).nullable().openapi({
       example: 2000,
-      description: '入会金デフォルト（税別・円）。設定なしの場合は null',
+      description: '入会金デフォルト（円）。設定なしの場合は null',
     }),
     /** 登録事務手数料（税別・円） */
-    registration_admin_fee_excluding_tax_yen: z.number().int().min(0).nullable().openapi({
+    registration_admin_fee_yen: z.number().int().min(0).nullable().openapi({
       example: 3000,
-      description: '登録事務手数料デフォルト（税別・円）。設定なしの場合は null',
+      description: '登録事務手数料デフォルト（円）。設定なしの場合は null',
     }),
     /** カード発行料（税別・円） */
-    card_issuance_fee_excluding_tax_yen: z.number().int().min(0).nullable().openapi({
+    card_issuance_fee_yen: z.number().int().min(0).nullable().openapi({
       example: 5000,
-      description: 'カード発行料デフォルト（税別・円）。設定なしの場合は null',
+      description: 'カード発行料デフォルト（円）。設定なしの場合は null',
     }),
     other_fee_description: z.string().nullable().openapi({
       example: 'セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）',
@@ -63,6 +63,10 @@ export const BrandItemSchema = z
     }),
     updated_at: z.string().openapi({
       example: '2026-04-01T09:00:00.000Z',
+    }),
+    created_by: z.string().openapi({
+      example: 'STF-001',
+      description: '作成者スタッフID',
     }),
     updated_by: z.string().nullable().optional().openapi({
       example: 'STF-001',
@@ -87,20 +91,14 @@ export const GetBrandsResponseSchema = z
 
 export const UpdateBrandRequestSchema = z
   .object({
-    enrollment_fee_excluding_tax_yen: z.number().int().min(0).nullable().optional().openapi({
-      description: '入会金（税別・円）',
+    enrollment_fee_yen: z.number().int().min(0).nullable().optional().openapi({
+      description: '入会金（円）',
     }),
-    registration_admin_fee_excluding_tax_yen: z
-      .number()
-      .int()
-      .min(0)
-      .nullable()
-      .optional()
-      .openapi({
-        description: '登録事務手数料（税別・円）',
-      }),
-    card_issuance_fee_excluding_tax_yen: z.number().int().min(0).nullable().optional().openapi({
-      description: 'カード発行料（税別・円）',
+    registration_admin_fee_yen: z.number().int().min(0).nullable().optional().openapi({
+      description: '登録事務手数料（円）',
+    }),
+    card_issuance_fee_yen: z.number().int().min(0).nullable().optional().openapi({
+      description: 'カード発行料（円）',
     }),
     other_fee_description: z.string().nullable().optional().openapi({
       description: 'その他費用の表示テキスト。設定なしの場合は null',

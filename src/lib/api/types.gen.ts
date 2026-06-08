@@ -7925,17 +7925,17 @@ export type BrandItem = {
      */
     display_name: string;
     /**
-     * 入会金デフォルト（税別・円）。設定なしの場合は null
+     * 入会金デフォルト（円）。設定なしの場合は null
      */
-    enrollment_fee_excluding_tax_yen: number | null;
+    enrollment_fee_yen: number | null;
     /**
-     * 登録事務手数料デフォルト（税別・円）。設定なしの場合は null
+     * 登録事務手数料デフォルト（円）。設定なしの場合は null
      */
-    registration_admin_fee_excluding_tax_yen: number | null;
+    registration_admin_fee_yen: number | null;
     /**
-     * カード発行料デフォルト（税別・円）。設定なしの場合は null
+     * カード発行料デフォルト（円）。設定なしの場合は null
      */
-    card_issuance_fee_excluding_tax_yen: number | null;
+    card_issuance_fee_yen: number | null;
     /**
      * その他費用の表示テキスト。設定なしの場合は null
      */
@@ -7950,6 +7950,10 @@ export type BrandItem = {
     sort_order: number;
     created_at: string;
     updated_at: string;
+    /**
+     * 作成者スタッフID
+     */
+    created_by: string;
     /**
      * 最終更新者（本部のみ編集）
      */
@@ -7981,17 +7985,17 @@ export type GetBrandsResponse = {
          */
         display_name: string;
         /**
-         * 入会金デフォルト（税別・円）。設定なしの場合は null
+         * 入会金デフォルト（円）。設定なしの場合は null
          */
-        enrollment_fee_excluding_tax_yen: number | null;
+        enrollment_fee_yen: number | null;
         /**
-         * 登録事務手数料デフォルト（税別・円）。設定なしの場合は null
+         * 登録事務手数料デフォルト（円）。設定なしの場合は null
          */
-        registration_admin_fee_excluding_tax_yen: number | null;
+        registration_admin_fee_yen: number | null;
         /**
-         * カード発行料デフォルト（税別・円）。設定なしの場合は null
+         * カード発行料デフォルト（円）。設定なしの場合は null
          */
-        card_issuance_fee_excluding_tax_yen: number | null;
+        card_issuance_fee_yen: number | null;
         /**
          * その他費用の表示テキスト。設定なしの場合は null
          */
@@ -8007,6 +8011,10 @@ export type GetBrandsResponse = {
         created_at: string;
         updated_at: string;
         /**
+         * 作成者スタッフID
+         */
+        created_by: string;
+        /**
          * 最終更新者（本部のみ編集）
          */
         updated_by?: string | null;
@@ -8020,17 +8028,17 @@ export type GetBrandsResponse = {
  */
 export type UpdateBrandRequest = {
     /**
-     * 入会金（税別・円）
+     * 入会金（円）
      */
-    enrollment_fee_excluding_tax_yen?: number | null;
+    enrollment_fee_yen?: number | null;
     /**
-     * 登録事務手数料（税別・円）
+     * 登録事務手数料（円）
      */
-    registration_admin_fee_excluding_tax_yen?: number | null;
+    registration_admin_fee_yen?: number | null;
     /**
-     * カード発行料（税別・円）
+     * カード発行料（円）
      */
-    card_issuance_fee_excluding_tax_yen?: number | null;
+    card_issuance_fee_yen?: number | null;
     /**
      * その他費用の表示テキスト。設定なしの場合は null
      */
@@ -8069,17 +8077,17 @@ export type UpdateBrandResponse = {
          */
         display_name: string;
         /**
-         * 入会金デフォルト（税別・円）。設定なしの場合は null
+         * 入会金デフォルト（円）。設定なしの場合は null
          */
-        enrollment_fee_excluding_tax_yen: number | null;
+        enrollment_fee_yen: number | null;
         /**
-         * 登録事務手数料デフォルト（税別・円）。設定なしの場合は null
+         * 登録事務手数料デフォルト（円）。設定なしの場合は null
          */
-        registration_admin_fee_excluding_tax_yen: number | null;
+        registration_admin_fee_yen: number | null;
         /**
-         * カード発行料デフォルト（税別・円）。設定なしの場合は null
+         * カード発行料デフォルト（円）。設定なしの場合は null
          */
-        card_issuance_fee_excluding_tax_yen: number | null;
+        card_issuance_fee_yen: number | null;
         /**
          * その他費用の表示テキスト。設定なしの場合は null
          */
@@ -8094,6 +8102,10 @@ export type UpdateBrandResponse = {
         sort_order: number;
         created_at: string;
         updated_at: string;
+        /**
+         * 作成者スタッフID
+         */
+        created_by: string;
         /**
          * 最終更新者（本部のみ編集）
          */
@@ -12404,17 +12416,17 @@ export type GetCrmBrandsResponses = {
              */
             display_name: string;
             /**
-             * 入会金デフォルト（税別・円）。設定なしの場合は null
+             * 入会金デフォルト（円）。設定なしの場合は null
              */
-            enrollment_fee_excluding_tax_yen: number | null;
+            enrollment_fee_yen: number | null;
             /**
-             * 登録事務手数料デフォルト（税別・円）。設定なしの場合は null
+             * 登録事務手数料デフォルト（円）。設定なしの場合は null
              */
-            registration_admin_fee_excluding_tax_yen: number | null;
+            registration_admin_fee_yen: number | null;
             /**
-             * カード発行料デフォルト（税別・円）。設定なしの場合は null
+             * カード発行料デフォルト（円）。設定なしの場合は null
              */
-            card_issuance_fee_excluding_tax_yen: number | null;
+            card_issuance_fee_yen: number | null;
             /**
              * その他費用の表示テキスト。設定なしの場合は null
              */
@@ -12429,6 +12441,10 @@ export type GetCrmBrandsResponses = {
             sort_order: number;
             created_at: string;
             updated_at: string;
+            /**
+             * 作成者スタッフID
+             */
+            created_by: string;
             /**
              * 最終更新者（本部のみ編集）
              */
