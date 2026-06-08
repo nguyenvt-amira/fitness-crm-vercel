@@ -2,7 +2,6 @@
 
 import { useParams, useRouter } from 'next/navigation';
 
-import type { CampaignDetail } from '@/app/api/_schemas/campaign.schema';
 import { useQuery } from '@tanstack/react-query';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 
@@ -20,6 +19,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { getCrmCampaignsByIdOptions } from '@/lib/api/@tanstack/react-query.gen';
+import type { CampaignDetail } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
 import { UserRole } from '@/types/permission.type';
@@ -27,7 +27,7 @@ import { UserRole } from '@/types/permission.type';
 import { BasicInfoTab } from './_components/basic-info-tab';
 import { CampaignDetailSkeleton } from './_components/campaign-detail-skeleton';
 import { HistoryTab } from './_components/history-tab';
-import { PromoCodesTab } from './_components/promo-codes-tab';
+import { PromoCodeSection } from './_components/promo-code-section';
 
 export default function CampaignDetailPage() {
   const params = useParams();
@@ -125,7 +125,12 @@ export default function CampaignDetailPage() {
         </TabsContent>
 
         <TabsContent value="promo" className="min-h-0 flex-1 overflow-y-auto px-6 pt-0 pb-4">
-          <PromoCodesTab promoCodePreviews={campaign.promo_code_previews} />
+          <PromoCodeSection
+            campaignId={campaign.id}
+            campaignCode={campaign.code}
+            campaignName={campaign.name}
+            promoCodePreviews={campaign.promo_code_previews}
+          />
         </TabsContent>
 
         <TabsContent value="history" className="min-h-0 flex-1 overflow-y-auto px-6 pt-0 pb-4">
