@@ -51,7 +51,10 @@ function ContractEditForm({ id, defaultValues }: Readonly<ContractEditFormProps>
     ...patchCrmMainContractsByIdMutation(),
     onSuccess: () => {
       toast.success('主契約を更新しました');
-      queryClient.invalidateQueries({ queryKey: getCrmMainContractsQueryKey() });
+      queryClient.invalidateQueries({
+        queryKey: getCrmMainContractsQueryKey(),
+        refetchType: 'all',
+      });
       queryClient.invalidateQueries({
         queryKey: getCrmMainContractsByIdQueryKey({ path: { id } }),
       });

@@ -64,7 +64,10 @@ export default function ContractCreatePage() {
     ...postCrmMainContractsMutation(),
     onSuccess: (res: PostCrmMainContractsResponse) => {
       toast.success('主契約を作成しました');
-      queryClient.invalidateQueries({ queryKey: getCrmMainContractsQueryKey() });
+      queryClient.invalidateQueries({
+        queryKey: getCrmMainContractsQueryKey(),
+        refetchType: 'all',
+      });
       router.push(navigate('/contracts/[id]', res.main_contract.id));
     },
     onError: () => {
