@@ -64,6 +64,9 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
 
   // Option discounts
   '/option-discount': Permission.OptionDiscountsView,
+  '/option-discount/:id': Permission.OptionDiscountsView,
+  '/option-discount/create': Permission.OptionDiscountsCreate,
+  '/option-discount/:id/edit': Permission.OptionDiscountsEdit,
 };
 
 // ---------------------------------------------------------------------------
