@@ -8693,6 +8693,1011 @@ export type GateStopReleaseResponse = {
     member_id: string;
 };
 
+/**
+ * OptionType
+ *
+ * オプション種別（通常/都次/自動付与）
+ */
+export const OptionType = {
+    STANDARD: 'standard',
+    METERED: 'metered',
+    AUTO_ATTACHED: 'auto_attached'
+} as const;
+
+/**
+ * OptionType
+ *
+ * オプション種別（通常/都次/自動付与）
+ */
+export type OptionType = typeof OptionType[keyof typeof OptionType];
+
+/**
+ * OptionStatus
+ *
+ * オプション有効/無効ステータス
+ */
+export const OptionStatus = { ACTIVE: 'active', INACTIVE: 'inactive' } as const;
+
+/**
+ * OptionStatus
+ *
+ * オプション有効/無効ステータス
+ */
+export type OptionStatus = typeof OptionStatus[keyof typeof OptionStatus];
+
+/**
+ * OptionProrataMethod
+ *
+ * 日割り計算方法（daily: 日割り計算 / fixed: 固定金額）
+ */
+export const OptionProrataMethod = { DAILY: 'daily', FIXED: 'fixed' } as const;
+
+/**
+ * OptionProrataMethod
+ *
+ * 日割り計算方法（daily: 日割り計算 / fixed: 固定金額）
+ */
+export type OptionProrataMethod = typeof OptionProrataMethod[keyof typeof OptionProrataMethod];
+
+/**
+ * OptionUsageRule
+ *
+ * 利用可否ルール
+ */
+export const OptionUsageRule = {
+    DISABLED: 'disabled',
+    ADD_REMOVE: 'add_remove',
+    ADD_REMOVE_CHANGE: 'add_remove_change',
+    CHANGE_REMOVE: 'change_remove'
+} as const;
+
+/**
+ * OptionUsageRule
+ *
+ * 利用可否ルール
+ */
+export type OptionUsageRule = typeof OptionUsageRule[keyof typeof OptionUsageRule];
+
+/**
+ * OptionMasterListItem
+ *
+ * オプション一覧アイテム
+ */
+export type OptionMasterListItem = {
+    /**
+     * オプションID
+     */
+    id: string;
+    /**
+     * オプション名
+     */
+    name: string;
+    /**
+     * オプションコード
+     */
+    code: string;
+    /**
+     * StoreListBrand
+     *
+     * ブランド
+     */
+    brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * OptionType
+     *
+     * オプション種別
+     */
+    option_type: 'standard' | 'metered' | 'auto_attached';
+    /**
+     * 料金（税込）
+     */
+    price_including_tax: number;
+    /**
+     * 税率（%）
+     */
+    tax_rate: number;
+    /**
+     * 日割り要否
+     */
+    prorated_enabled: boolean;
+    /**
+     * OptionProrataMethod
+     *
+     * 日割り計算方法（prorated_enabled=true の場合のみ）
+     */
+    prorata_method: 'daily' | 'fixed' | null;
+    /**
+     * OptionUsageRule
+     *
+     * 利用可否ルール
+     */
+    usage_rule: 'disabled' | 'add_remove' | 'add_remove_change' | 'change_remove';
+    /**
+     * 紐付き契約プラン数
+     */
+    linked_contracts: number;
+    /**
+     * 利用会員数
+     */
+    member_count: number;
+    /**
+     * 対象店舗ID（null = 全店舗）
+     */
+    store_id: string | null;
+    /**
+     * 対象店舗名（null = 全店舗）
+     */
+    store_name: string | null;
+    /**
+     * 会計コード
+     */
+    accounting_code: string;
+    /**
+     * OptionStatus
+     *
+     * ステータス
+     */
+    status: 'active' | 'inactive';
+};
+
+/**
+ * GetOptionMastersQuery
+ *
+ * オプション一覧取得クエリ
+ */
+export type GetOptionMastersQuery = {
+    page?: number;
+    limit?: number;
+    /**
+     * オプション名・コードで検索
+     */
+    search?: string;
+    /**
+     * StoreListBrand
+     *
+     * Store brand
+     */
+    brand?: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * OptionType
+     *
+     * オプション種別（通常/都次/自動付与）
+     */
+    option_type?: 'standard' | 'metered' | 'auto_attached';
+    /**
+     * OptionStatus
+     *
+     * オプション有効/無効ステータス
+     */
+    status?: 'active' | 'inactive';
+    /**
+     * 店舗IDで絞り込み
+     */
+    store_id?: string;
+    sort_by?: 'id' | 'name' | 'code' | 'price_including_tax' | 'member_count' | 'tax_rate' | 'status';
+    sort_order?: 'asc' | 'desc';
+};
+
+/**
+ * GetOptionMastersResponse
+ *
+ * オプション一覧レスポンス
+ */
+export type GetOptionMastersResponse = {
+    options: Array<{
+        /**
+         * オプションID
+         */
+        id: string;
+        /**
+         * オプション名
+         */
+        name: string;
+        /**
+         * オプションコード
+         */
+        code: string;
+        /**
+         * StoreListBrand
+         *
+         * ブランド
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * OptionType
+         *
+         * オプション種別
+         */
+        option_type: 'standard' | 'metered' | 'auto_attached';
+        /**
+         * 料金（税込）
+         */
+        price_including_tax: number;
+        /**
+         * 税率（%）
+         */
+        tax_rate: number;
+        /**
+         * 日割り要否
+         */
+        prorated_enabled: boolean;
+        /**
+         * OptionProrataMethod
+         *
+         * 日割り計算方法（prorated_enabled=true の場合のみ）
+         */
+        prorata_method: 'daily' | 'fixed' | null;
+        /**
+         * OptionUsageRule
+         *
+         * 利用可否ルール
+         */
+        usage_rule: 'disabled' | 'add_remove' | 'add_remove_change' | 'change_remove';
+        /**
+         * 紐付き契約プラン数
+         */
+        linked_contracts: number;
+        /**
+         * 利用会員数
+         */
+        member_count: number;
+        /**
+         * 対象店舗ID（null = 全店舗）
+         */
+        store_id: string | null;
+        /**
+         * 対象店舗名（null = 全店舗）
+         */
+        store_name: string | null;
+        /**
+         * 会計コード
+         */
+        accounting_code: string;
+        /**
+         * OptionStatus
+         *
+         * ステータス
+         */
+        status: 'active' | 'inactive';
+    }>;
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        total_pages: number;
+    };
+};
+
+/**
+ * OptionCategory
+ *
+ * オプション分類
+ */
+export const OptionCategory = {
+    SUPPLEMENT: 'supplement',
+    DRINK: 'drink',
+    RENTAL: 'rental',
+    LOCKER: 'locker',
+    INSURANCE: 'insurance',
+    SERVICE: 'service'
+} as const;
+
+/**
+ * OptionCategory
+ *
+ * オプション分類
+ */
+export type OptionCategory = typeof OptionCategory[keyof typeof OptionCategory];
+
+/**
+ * OptionMasterDetail
+ *
+ * オプション詳細
+ */
+export type OptionMasterDetail = {
+    /**
+     * オプションID
+     */
+    id: string;
+    /**
+     * オプション名
+     */
+    name: string;
+    /**
+     * オプションコード
+     */
+    code: string;
+    /**
+     * StoreListBrand
+     *
+     * ブランド
+     */
+    brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * OptionType
+     *
+     * オプション種別
+     */
+    option_type: 'standard' | 'metered' | 'auto_attached';
+    /**
+     * 料金（税込）
+     */
+    price_including_tax: number;
+    /**
+     * 税率（%）
+     */
+    tax_rate: number;
+    /**
+     * 日割り要否
+     */
+    prorated_enabled: boolean;
+    /**
+     * OptionProrataMethod
+     *
+     * 日割り計算方法（prorated_enabled=true の場合のみ）
+     */
+    prorata_method: 'daily' | 'fixed' | null;
+    /**
+     * OptionUsageRule
+     *
+     * 利用可否ルール
+     */
+    usage_rule: 'disabled' | 'add_remove' | 'add_remove_change' | 'change_remove';
+    /**
+     * 紐付き契約プラン数
+     */
+    linked_contracts: number;
+    /**
+     * 利用会員数
+     */
+    member_count: number;
+    /**
+     * 対象店舗ID（null = 全店舗）
+     */
+    store_id: string | null;
+    /**
+     * 対象店舗名（null = 全店舗）
+     */
+    store_name: string | null;
+    /**
+     * 会計コード
+     */
+    accounting_code: string;
+    /**
+     * OptionStatus
+     *
+     * ステータス
+     */
+    status: 'active' | 'inactive';
+    /**
+     * 料金（税抜）
+     */
+    price_excluding_tax: number;
+    /**
+     * OptionCategory
+     *
+     * オプション分類
+     */
+    option_category: 'supplement' | 'drink' | 'rental' | 'locker' | 'insurance' | 'service';
+    /**
+     * 対象店舗範囲
+     */
+    store_range: string;
+    /**
+     * 説明文
+     */
+    description: string | null;
+    /**
+     * 備考
+     */
+    note: string | null;
+    /**
+     * 会員公開用画像（base64）
+     */
+    member_app_image: string | null;
+    /**
+     * 作成日時
+     */
+    created_at: string;
+    /**
+     * 更新日時
+     */
+    updated_at: string;
+    /**
+     * 人気ランキング
+     */
+    popularity_rank: number | null;
+    /**
+     * 都次オプション種別
+     */
+    tsuji_type: string | null;
+    /**
+     * 主オプション契約変更可否
+     */
+    constraint_main_option_change: boolean;
+    /**
+     * 変更可否
+     */
+    constraint_change: boolean;
+    /**
+     * エリア制限
+     */
+    area_restrictions: Array<string>;
+};
+
+/**
+ * GetOptionMasterDetailResponse
+ *
+ * オプション詳細レスポンス
+ */
+export type GetOptionMasterDetailResponse = {
+    /**
+     * OptionMasterDetail
+     *
+     * オプション詳細
+     */
+    option: {
+        /**
+         * オプションID
+         */
+        id: string;
+        /**
+         * オプション名
+         */
+        name: string;
+        /**
+         * オプションコード
+         */
+        code: string;
+        /**
+         * StoreListBrand
+         *
+         * ブランド
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * OptionType
+         *
+         * オプション種別
+         */
+        option_type: 'standard' | 'metered' | 'auto_attached';
+        /**
+         * 料金（税込）
+         */
+        price_including_tax: number;
+        /**
+         * 税率（%）
+         */
+        tax_rate: number;
+        /**
+         * 日割り要否
+         */
+        prorated_enabled: boolean;
+        /**
+         * OptionProrataMethod
+         *
+         * 日割り計算方法（prorated_enabled=true の場合のみ）
+         */
+        prorata_method: 'daily' | 'fixed' | null;
+        /**
+         * OptionUsageRule
+         *
+         * 利用可否ルール
+         */
+        usage_rule: 'disabled' | 'add_remove' | 'add_remove_change' | 'change_remove';
+        /**
+         * 紐付き契約プラン数
+         */
+        linked_contracts: number;
+        /**
+         * 利用会員数
+         */
+        member_count: number;
+        /**
+         * 対象店舗ID（null = 全店舗）
+         */
+        store_id: string | null;
+        /**
+         * 対象店舗名（null = 全店舗）
+         */
+        store_name: string | null;
+        /**
+         * 会計コード
+         */
+        accounting_code: string;
+        /**
+         * OptionStatus
+         *
+         * ステータス
+         */
+        status: 'active' | 'inactive';
+        /**
+         * 料金（税抜）
+         */
+        price_excluding_tax: number;
+        /**
+         * OptionCategory
+         *
+         * オプション分類
+         */
+        option_category: 'supplement' | 'drink' | 'rental' | 'locker' | 'insurance' | 'service';
+        /**
+         * 対象店舗範囲
+         */
+        store_range: string;
+        /**
+         * 説明文
+         */
+        description: string | null;
+        /**
+         * 備考
+         */
+        note: string | null;
+        /**
+         * 会員公開用画像（base64）
+         */
+        member_app_image: string | null;
+        /**
+         * 作成日時
+         */
+        created_at: string;
+        /**
+         * 更新日時
+         */
+        updated_at: string;
+        /**
+         * 人気ランキング
+         */
+        popularity_rank: number | null;
+        /**
+         * 都次オプション種別
+         */
+        tsuji_type: string | null;
+        /**
+         * 主オプション契約変更可否
+         */
+        constraint_main_option_change: boolean;
+        /**
+         * 変更可否
+         */
+        constraint_change: boolean;
+        /**
+         * エリア制限
+         */
+        area_restrictions: Array<string>;
+    };
+};
+
+/**
+ * UpsertOptionMasterBody
+ *
+ * オプション作成・更新リクエスト
+ */
+export type UpsertOptionMasterBody = {
+    /**
+     * StoreListBrand
+     *
+     * ブランド
+     */
+    brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * オプション名
+     */
+    name: string;
+    /**
+     * コード
+     */
+    code: string;
+    /**
+     * OptionCategory
+     *
+     * オプション分類
+     */
+    option_category: 'supplement' | 'drink' | 'rental' | 'locker' | 'insurance' | 'service';
+    /**
+     * 会計コード
+     */
+    accounting_code?: string;
+    /**
+     * 備考
+     */
+    note?: string | null;
+    /**
+     * 説明文
+     */
+    description?: string | null;
+    /**
+     * 会員公開用画像（base64）
+     */
+    member_app_image?: string | null;
+    /**
+     * 料金（税込）
+     */
+    price_including_tax: number;
+    /**
+     * 税率
+     */
+    tax_rate: number;
+    /**
+     * 日割り要否
+     */
+    prorated_enabled?: boolean;
+    /**
+     * OptionProrataMethod
+     *
+     * 日割り計算方式
+     */
+    prorata_method?: 'daily' | 'fixed' | null;
+    /**
+     * OptionType
+     *
+     * オプション種別
+     */
+    option_type: 'standard' | 'metered' | 'auto_attached';
+    /**
+     * 都次オプション種別
+     */
+    tsuji_type?: string | null;
+    /**
+     * OptionUsageRule
+     *
+     * 利用可否ルール
+     */
+    usage_rule: 'disabled' | 'add_remove' | 'add_remove_change' | 'change_remove';
+    /**
+     * 主オプション契約変更可否
+     */
+    constraint_main_option_change?: boolean;
+    /**
+     * 変更可否
+     */
+    constraint_change?: boolean;
+    /**
+     * エリア制限
+     */
+    area_restrictions?: Array<string>;
+    /**
+     * OptionStatus
+     *
+     * ステータス
+     */
+    status?: 'active' | 'inactive';
+};
+
+/**
+ * CreateOptionMasterResponse
+ *
+ * オプション作成レスポンス
+ */
+export type CreateOptionMasterResponse = {
+    message: string;
+    /**
+     * OptionMasterDetail
+     *
+     * オプション詳細
+     */
+    option: {
+        /**
+         * オプションID
+         */
+        id: string;
+        /**
+         * オプション名
+         */
+        name: string;
+        /**
+         * オプションコード
+         */
+        code: string;
+        /**
+         * StoreListBrand
+         *
+         * ブランド
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * OptionType
+         *
+         * オプション種別
+         */
+        option_type: 'standard' | 'metered' | 'auto_attached';
+        /**
+         * 料金（税込）
+         */
+        price_including_tax: number;
+        /**
+         * 税率（%）
+         */
+        tax_rate: number;
+        /**
+         * 日割り要否
+         */
+        prorated_enabled: boolean;
+        /**
+         * OptionProrataMethod
+         *
+         * 日割り計算方法（prorated_enabled=true の場合のみ）
+         */
+        prorata_method: 'daily' | 'fixed' | null;
+        /**
+         * OptionUsageRule
+         *
+         * 利用可否ルール
+         */
+        usage_rule: 'disabled' | 'add_remove' | 'add_remove_change' | 'change_remove';
+        /**
+         * 紐付き契約プラン数
+         */
+        linked_contracts: number;
+        /**
+         * 利用会員数
+         */
+        member_count: number;
+        /**
+         * 対象店舗ID（null = 全店舗）
+         */
+        store_id: string | null;
+        /**
+         * 対象店舗名（null = 全店舗）
+         */
+        store_name: string | null;
+        /**
+         * 会計コード
+         */
+        accounting_code: string;
+        /**
+         * OptionStatus
+         *
+         * ステータス
+         */
+        status: 'active' | 'inactive';
+        /**
+         * 料金（税抜）
+         */
+        price_excluding_tax: number;
+        /**
+         * OptionCategory
+         *
+         * オプション分類
+         */
+        option_category: 'supplement' | 'drink' | 'rental' | 'locker' | 'insurance' | 'service';
+        /**
+         * 対象店舗範囲
+         */
+        store_range: string;
+        /**
+         * 説明文
+         */
+        description: string | null;
+        /**
+         * 備考
+         */
+        note: string | null;
+        /**
+         * 会員公開用画像（base64）
+         */
+        member_app_image: string | null;
+        /**
+         * 作成日時
+         */
+        created_at: string;
+        /**
+         * 更新日時
+         */
+        updated_at: string;
+        /**
+         * 人気ランキング
+         */
+        popularity_rank: number | null;
+        /**
+         * 都次オプション種別
+         */
+        tsuji_type: string | null;
+        /**
+         * 主オプション契約変更可否
+         */
+        constraint_main_option_change: boolean;
+        /**
+         * 変更可否
+         */
+        constraint_change: boolean;
+        /**
+         * エリア制限
+         */
+        area_restrictions: Array<string>;
+    };
+};
+
+/**
+ * UpdateOptionMasterResponse
+ *
+ * オプション更新レスポンス
+ */
+export type UpdateOptionMasterResponse = {
+    message: string;
+    /**
+     * OptionMasterDetail
+     *
+     * オプション詳細
+     */
+    option: {
+        /**
+         * オプションID
+         */
+        id: string;
+        /**
+         * オプション名
+         */
+        name: string;
+        /**
+         * オプションコード
+         */
+        code: string;
+        /**
+         * StoreListBrand
+         *
+         * ブランド
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * OptionType
+         *
+         * オプション種別
+         */
+        option_type: 'standard' | 'metered' | 'auto_attached';
+        /**
+         * 料金（税込）
+         */
+        price_including_tax: number;
+        /**
+         * 税率（%）
+         */
+        tax_rate: number;
+        /**
+         * 日割り要否
+         */
+        prorated_enabled: boolean;
+        /**
+         * OptionProrataMethod
+         *
+         * 日割り計算方法（prorated_enabled=true の場合のみ）
+         */
+        prorata_method: 'daily' | 'fixed' | null;
+        /**
+         * OptionUsageRule
+         *
+         * 利用可否ルール
+         */
+        usage_rule: 'disabled' | 'add_remove' | 'add_remove_change' | 'change_remove';
+        /**
+         * 紐付き契約プラン数
+         */
+        linked_contracts: number;
+        /**
+         * 利用会員数
+         */
+        member_count: number;
+        /**
+         * 対象店舗ID（null = 全店舗）
+         */
+        store_id: string | null;
+        /**
+         * 対象店舗名（null = 全店舗）
+         */
+        store_name: string | null;
+        /**
+         * 会計コード
+         */
+        accounting_code: string;
+        /**
+         * OptionStatus
+         *
+         * ステータス
+         */
+        status: 'active' | 'inactive';
+        /**
+         * 料金（税抜）
+         */
+        price_excluding_tax: number;
+        /**
+         * OptionCategory
+         *
+         * オプション分類
+         */
+        option_category: 'supplement' | 'drink' | 'rental' | 'locker' | 'insurance' | 'service';
+        /**
+         * 対象店舗範囲
+         */
+        store_range: string;
+        /**
+         * 説明文
+         */
+        description: string | null;
+        /**
+         * 備考
+         */
+        note: string | null;
+        /**
+         * 会員公開用画像（base64）
+         */
+        member_app_image: string | null;
+        /**
+         * 作成日時
+         */
+        created_at: string;
+        /**
+         * 更新日時
+         */
+        updated_at: string;
+        /**
+         * 人気ランキング
+         */
+        popularity_rank: number | null;
+        /**
+         * 都次オプション種別
+         */
+        tsuji_type: string | null;
+        /**
+         * 主オプション契約変更可否
+         */
+        constraint_main_option_change: boolean;
+        /**
+         * 変更可否
+         */
+        constraint_change: boolean;
+        /**
+         * エリア制限
+         */
+        area_restrictions: Array<string>;
+    };
+};
+
+/**
+ * OptionMasterChangeHistoryItem
+ *
+ * オプション変更履歴
+ */
+export type OptionMasterChangeHistoryItem = {
+    date: string;
+    user: string;
+    field: string | null;
+    from: string | null;
+    to: string;
+};
+
+/**
+ * GetOptionMasterChangeHistoryResponse
+ *
+ * オプション変更履歴レスポンス
+ */
+export type GetOptionMasterChangeHistoryResponse = {
+    history: Array<{
+        date: string;
+        user: string;
+        field: string | null;
+        from: string | null;
+        to: string;
+    }>;
+};
+
+/**
+ * DeleteOptionMasterRequest
+ *
+ * オプション削除リクエスト
+ */
+export type DeleteOptionMasterRequest = {
+    reason: string;
+};
+
+/**
+ * DeleteOptionMasterResponse
+ *
+ * オプション削除レスポンス
+ */
+export type DeleteOptionMasterResponse = {
+    message: string;
+};
+
 export type PostAuthLoginData = {
     /**
      * LoginRequest
@@ -19555,6 +20560,612 @@ export type GetCrmMembershipApplicationsResponses = {
 
 export type GetCrmMembershipApplicationsResponse = GetCrmMembershipApplicationsResponses[keyof GetCrmMembershipApplicationsResponses];
 
+export type GetCrmOptionsByIdChangeHistoryData = {
+    body?: never;
+    path: {
+        /**
+         * Option ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/options/{id}/change-history';
+};
+
+export type GetCrmOptionsByIdChangeHistoryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmOptionsByIdChangeHistoryError = GetCrmOptionsByIdChangeHistoryErrors[keyof GetCrmOptionsByIdChangeHistoryErrors];
+
+export type GetCrmOptionsByIdChangeHistoryResponses = {
+    /**
+     * GetOptionMasterChangeHistoryResponse
+     *
+     * オプション変更履歴レスポンス
+     */
+    200: {
+        history: Array<{
+            date: string;
+            user: string;
+            field: string | null;
+            from: string | null;
+            to: string;
+        }>;
+    };
+};
+
+export type GetCrmOptionsByIdChangeHistoryResponse = GetCrmOptionsByIdChangeHistoryResponses[keyof GetCrmOptionsByIdChangeHistoryResponses];
+
+export type DeleteCrmOptionsByIdData = {
+    /**
+     * DeleteOptionMasterRequest
+     *
+     * オプション削除リクエスト
+     */
+    body?: {
+        reason: string;
+    };
+    path: {
+        /**
+         * Option ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/options/{id}';
+};
+
+export type DeleteCrmOptionsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type DeleteCrmOptionsByIdError = DeleteCrmOptionsByIdErrors[keyof DeleteCrmOptionsByIdErrors];
+
+export type DeleteCrmOptionsByIdResponses = {
+    /**
+     * DeleteOptionMasterResponse
+     *
+     * オプション削除レスポンス
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type DeleteCrmOptionsByIdResponse = DeleteCrmOptionsByIdResponses[keyof DeleteCrmOptionsByIdResponses];
+
+export type GetCrmOptionsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Option ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/options/{id}';
+};
+
+export type GetCrmOptionsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmOptionsByIdError = GetCrmOptionsByIdErrors[keyof GetCrmOptionsByIdErrors];
+
+export type GetCrmOptionsByIdResponses = {
+    /**
+     * GetOptionMasterDetailResponse
+     *
+     * オプション詳細レスポンス
+     */
+    200: {
+        /**
+         * OptionMasterDetail
+         *
+         * オプション詳細
+         */
+        option: {
+            /**
+             * オプションID
+             */
+            id: string;
+            /**
+             * オプション名
+             */
+            name: string;
+            /**
+             * オプションコード
+             */
+            code: string;
+            /**
+             * StoreListBrand
+             *
+             * ブランド
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * OptionType
+             *
+             * オプション種別
+             */
+            option_type: 'standard' | 'metered' | 'auto_attached';
+            /**
+             * 料金（税込）
+             */
+            price_including_tax: number;
+            /**
+             * 税率（%）
+             */
+            tax_rate: number;
+            /**
+             * 日割り要否
+             */
+            prorated_enabled: boolean;
+            /**
+             * OptionProrataMethod
+             *
+             * 日割り計算方法（prorated_enabled=true の場合のみ）
+             */
+            prorata_method: 'daily' | 'fixed' | null;
+            /**
+             * OptionUsageRule
+             *
+             * 利用可否ルール
+             */
+            usage_rule: 'disabled' | 'add_remove' | 'add_remove_change' | 'change_remove';
+            /**
+             * 紐付き契約プラン数
+             */
+            linked_contracts: number;
+            /**
+             * 利用会員数
+             */
+            member_count: number;
+            /**
+             * 対象店舗ID（null = 全店舗）
+             */
+            store_id: string | null;
+            /**
+             * 対象店舗名（null = 全店舗）
+             */
+            store_name: string | null;
+            /**
+             * 会計コード
+             */
+            accounting_code: string;
+            /**
+             * OptionStatus
+             *
+             * ステータス
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 料金（税抜）
+             */
+            price_excluding_tax: number;
+            /**
+             * OptionCategory
+             *
+             * オプション分類
+             */
+            option_category: 'supplement' | 'drink' | 'rental' | 'locker' | 'insurance' | 'service';
+            /**
+             * 対象店舗範囲
+             */
+            store_range: string;
+            /**
+             * 説明文
+             */
+            description: string | null;
+            /**
+             * 備考
+             */
+            note: string | null;
+            /**
+             * 会員公開用画像（base64）
+             */
+            member_app_image: string | null;
+            /**
+             * 作成日時
+             */
+            created_at: string;
+            /**
+             * 更新日時
+             */
+            updated_at: string;
+            /**
+             * 人気ランキング
+             */
+            popularity_rank: number | null;
+            /**
+             * 都次オプション種別
+             */
+            tsuji_type: string | null;
+            /**
+             * 主オプション契約変更可否
+             */
+            constraint_main_option_change: boolean;
+            /**
+             * 変更可否
+             */
+            constraint_change: boolean;
+            /**
+             * エリア制限
+             */
+            area_restrictions: Array<string>;
+        };
+    };
+};
+
+export type GetCrmOptionsByIdResponse = GetCrmOptionsByIdResponses[keyof GetCrmOptionsByIdResponses];
+
+export type PatchCrmOptionsByIdData = {
+    /**
+     * UpsertOptionMasterBody
+     *
+     * オプション作成・更新リクエスト
+     */
+    body?: {
+        /**
+         * StoreListBrand
+         *
+         * ブランド
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * オプション名
+         */
+        name: string;
+        /**
+         * コード
+         */
+        code: string;
+        /**
+         * OptionCategory
+         *
+         * オプション分類
+         */
+        option_category: 'supplement' | 'drink' | 'rental' | 'locker' | 'insurance' | 'service';
+        /**
+         * 会計コード
+         */
+        accounting_code?: string;
+        /**
+         * 備考
+         */
+        note?: string | null;
+        /**
+         * 説明文
+         */
+        description?: string | null;
+        /**
+         * 会員公開用画像（base64）
+         */
+        member_app_image?: string | null;
+        /**
+         * 料金（税込）
+         */
+        price_including_tax: number;
+        /**
+         * 税率
+         */
+        tax_rate: number;
+        /**
+         * 日割り要否
+         */
+        prorated_enabled?: boolean;
+        /**
+         * OptionProrataMethod
+         *
+         * 日割り計算方式
+         */
+        prorata_method?: 'daily' | 'fixed' | null;
+        /**
+         * OptionType
+         *
+         * オプション種別
+         */
+        option_type: 'standard' | 'metered' | 'auto_attached';
+        /**
+         * 都次オプション種別
+         */
+        tsuji_type?: string | null;
+        /**
+         * OptionUsageRule
+         *
+         * 利用可否ルール
+         */
+        usage_rule: 'disabled' | 'add_remove' | 'add_remove_change' | 'change_remove';
+        /**
+         * 主オプション契約変更可否
+         */
+        constraint_main_option_change?: boolean;
+        /**
+         * 変更可否
+         */
+        constraint_change?: boolean;
+        /**
+         * エリア制限
+         */
+        area_restrictions?: Array<string>;
+        /**
+         * OptionStatus
+         *
+         * ステータス
+         */
+        status?: 'active' | 'inactive';
+    };
+    path: {
+        /**
+         * Option ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/options/{id}';
+};
+
+export type PatchCrmOptionsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PatchCrmOptionsByIdError = PatchCrmOptionsByIdErrors[keyof PatchCrmOptionsByIdErrors];
+
+export type PatchCrmOptionsByIdResponses = {
+    /**
+     * UpdateOptionMasterResponse
+     *
+     * オプション更新レスポンス
+     */
+    200: {
+        message: string;
+        /**
+         * OptionMasterDetail
+         *
+         * オプション詳細
+         */
+        option: {
+            /**
+             * オプションID
+             */
+            id: string;
+            /**
+             * オプション名
+             */
+            name: string;
+            /**
+             * オプションコード
+             */
+            code: string;
+            /**
+             * StoreListBrand
+             *
+             * ブランド
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * OptionType
+             *
+             * オプション種別
+             */
+            option_type: 'standard' | 'metered' | 'auto_attached';
+            /**
+             * 料金（税込）
+             */
+            price_including_tax: number;
+            /**
+             * 税率（%）
+             */
+            tax_rate: number;
+            /**
+             * 日割り要否
+             */
+            prorated_enabled: boolean;
+            /**
+             * OptionProrataMethod
+             *
+             * 日割り計算方法（prorated_enabled=true の場合のみ）
+             */
+            prorata_method: 'daily' | 'fixed' | null;
+            /**
+             * OptionUsageRule
+             *
+             * 利用可否ルール
+             */
+            usage_rule: 'disabled' | 'add_remove' | 'add_remove_change' | 'change_remove';
+            /**
+             * 紐付き契約プラン数
+             */
+            linked_contracts: number;
+            /**
+             * 利用会員数
+             */
+            member_count: number;
+            /**
+             * 対象店舗ID（null = 全店舗）
+             */
+            store_id: string | null;
+            /**
+             * 対象店舗名（null = 全店舗）
+             */
+            store_name: string | null;
+            /**
+             * 会計コード
+             */
+            accounting_code: string;
+            /**
+             * OptionStatus
+             *
+             * ステータス
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 料金（税抜）
+             */
+            price_excluding_tax: number;
+            /**
+             * OptionCategory
+             *
+             * オプション分類
+             */
+            option_category: 'supplement' | 'drink' | 'rental' | 'locker' | 'insurance' | 'service';
+            /**
+             * 対象店舗範囲
+             */
+            store_range: string;
+            /**
+             * 説明文
+             */
+            description: string | null;
+            /**
+             * 備考
+             */
+            note: string | null;
+            /**
+             * 会員公開用画像（base64）
+             */
+            member_app_image: string | null;
+            /**
+             * 作成日時
+             */
+            created_at: string;
+            /**
+             * 更新日時
+             */
+            updated_at: string;
+            /**
+             * 人気ランキング
+             */
+            popularity_rank: number | null;
+            /**
+             * 都次オプション種別
+             */
+            tsuji_type: string | null;
+            /**
+             * 主オプション契約変更可否
+             */
+            constraint_main_option_change: boolean;
+            /**
+             * 変更可否
+             */
+            constraint_change: boolean;
+            /**
+             * エリア制限
+             */
+            area_restrictions: Array<string>;
+        };
+    };
+};
+
+export type PatchCrmOptionsByIdResponse = PatchCrmOptionsByIdResponses[keyof PatchCrmOptionsByIdResponses];
+
 export type GetCrmOptionsData = {
     body?: never;
     path?: never;
@@ -19562,7 +21173,7 @@ export type GetCrmOptionsData = {
         page?: number;
         limit?: number;
         /**
-         * オプション名・IDで検索
+         * オプション名・コードで検索
          */
         search?: string;
         /**
@@ -19583,7 +21194,11 @@ export type GetCrmOptionsData = {
          * オプション有効/無効ステータス
          */
         status?: 'active' | 'inactive';
-        sort_by?: 'id' | 'name' | 'brand' | 'price_including_tax';
+        /**
+         * 店舗IDで絞り込み
+         */
+        store_id?: string;
+        sort_by?: 'id' | 'name' | 'code' | 'price_including_tax' | 'member_count' | 'tax_rate' | 'status';
         sort_order?: 'asc' | 'desc';
     };
     url: '/crm/options';
@@ -19633,6 +21248,10 @@ export type GetCrmOptionsResponses = {
              */
             name: string;
             /**
+             * オプションコード
+             */
+            code: string;
+            /**
              * StoreListBrand
              *
              * ブランド
@@ -19649,13 +21268,45 @@ export type GetCrmOptionsResponses = {
              */
             price_including_tax: number;
             /**
+             * 税率（%）
+             */
+            tax_rate: number;
+            /**
              * 日割り要否
              */
             prorated_enabled: boolean;
             /**
+             * OptionProrataMethod
+             *
+             * 日割り計算方法（prorated_enabled=true の場合のみ）
+             */
+            prorata_method: 'daily' | 'fixed' | null;
+            /**
+             * OptionUsageRule
+             *
              * 利用可否ルール
              */
             usage_rule: 'disabled' | 'add_remove' | 'add_remove_change' | 'change_remove';
+            /**
+             * 紐付き契約プラン数
+             */
+            linked_contracts: number;
+            /**
+             * 利用会員数
+             */
+            member_count: number;
+            /**
+             * 対象店舗ID（null = 全店舗）
+             */
+            store_id: string | null;
+            /**
+             * 対象店舗名（null = 全店舗）
+             */
+            store_name: string | null;
+            /**
+             * 会計コード
+             */
+            accounting_code: string;
             /**
              * OptionStatus
              *
@@ -19673,6 +21324,282 @@ export type GetCrmOptionsResponses = {
 };
 
 export type GetCrmOptionsResponse = GetCrmOptionsResponses[keyof GetCrmOptionsResponses];
+
+export type PostCrmOptionsData = {
+    /**
+     * UpsertOptionMasterBody
+     *
+     * オプション作成・更新リクエスト
+     */
+    body?: {
+        /**
+         * StoreListBrand
+         *
+         * ブランド
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * オプション名
+         */
+        name: string;
+        /**
+         * コード
+         */
+        code: string;
+        /**
+         * OptionCategory
+         *
+         * オプション分類
+         */
+        option_category: 'supplement' | 'drink' | 'rental' | 'locker' | 'insurance' | 'service';
+        /**
+         * 会計コード
+         */
+        accounting_code?: string;
+        /**
+         * 備考
+         */
+        note?: string | null;
+        /**
+         * 説明文
+         */
+        description?: string | null;
+        /**
+         * 会員公開用画像（base64）
+         */
+        member_app_image?: string | null;
+        /**
+         * 料金（税込）
+         */
+        price_including_tax: number;
+        /**
+         * 税率
+         */
+        tax_rate: number;
+        /**
+         * 日割り要否
+         */
+        prorated_enabled?: boolean;
+        /**
+         * OptionProrataMethod
+         *
+         * 日割り計算方式
+         */
+        prorata_method?: 'daily' | 'fixed' | null;
+        /**
+         * OptionType
+         *
+         * オプション種別
+         */
+        option_type: 'standard' | 'metered' | 'auto_attached';
+        /**
+         * 都次オプション種別
+         */
+        tsuji_type?: string | null;
+        /**
+         * OptionUsageRule
+         *
+         * 利用可否ルール
+         */
+        usage_rule: 'disabled' | 'add_remove' | 'add_remove_change' | 'change_remove';
+        /**
+         * 主オプション契約変更可否
+         */
+        constraint_main_option_change?: boolean;
+        /**
+         * 変更可否
+         */
+        constraint_change?: boolean;
+        /**
+         * エリア制限
+         */
+        area_restrictions?: Array<string>;
+        /**
+         * OptionStatus
+         *
+         * ステータス
+         */
+        status?: 'active' | 'inactive';
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/options';
+};
+
+export type PostCrmOptionsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmOptionsError = PostCrmOptionsErrors[keyof PostCrmOptionsErrors];
+
+export type PostCrmOptionsResponses = {
+    /**
+     * CreateOptionMasterResponse
+     *
+     * オプション作成レスポンス
+     */
+    201: {
+        message: string;
+        /**
+         * OptionMasterDetail
+         *
+         * オプション詳細
+         */
+        option: {
+            /**
+             * オプションID
+             */
+            id: string;
+            /**
+             * オプション名
+             */
+            name: string;
+            /**
+             * オプションコード
+             */
+            code: string;
+            /**
+             * StoreListBrand
+             *
+             * ブランド
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * OptionType
+             *
+             * オプション種別
+             */
+            option_type: 'standard' | 'metered' | 'auto_attached';
+            /**
+             * 料金（税込）
+             */
+            price_including_tax: number;
+            /**
+             * 税率（%）
+             */
+            tax_rate: number;
+            /**
+             * 日割り要否
+             */
+            prorated_enabled: boolean;
+            /**
+             * OptionProrataMethod
+             *
+             * 日割り計算方法（prorated_enabled=true の場合のみ）
+             */
+            prorata_method: 'daily' | 'fixed' | null;
+            /**
+             * OptionUsageRule
+             *
+             * 利用可否ルール
+             */
+            usage_rule: 'disabled' | 'add_remove' | 'add_remove_change' | 'change_remove';
+            /**
+             * 紐付き契約プラン数
+             */
+            linked_contracts: number;
+            /**
+             * 利用会員数
+             */
+            member_count: number;
+            /**
+             * 対象店舗ID（null = 全店舗）
+             */
+            store_id: string | null;
+            /**
+             * 対象店舗名（null = 全店舗）
+             */
+            store_name: string | null;
+            /**
+             * 会計コード
+             */
+            accounting_code: string;
+            /**
+             * OptionStatus
+             *
+             * ステータス
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 料金（税抜）
+             */
+            price_excluding_tax: number;
+            /**
+             * OptionCategory
+             *
+             * オプション分類
+             */
+            option_category: 'supplement' | 'drink' | 'rental' | 'locker' | 'insurance' | 'service';
+            /**
+             * 対象店舗範囲
+             */
+            store_range: string;
+            /**
+             * 説明文
+             */
+            description: string | null;
+            /**
+             * 備考
+             */
+            note: string | null;
+            /**
+             * 会員公開用画像（base64）
+             */
+            member_app_image: string | null;
+            /**
+             * 作成日時
+             */
+            created_at: string;
+            /**
+             * 更新日時
+             */
+            updated_at: string;
+            /**
+             * 人気ランキング
+             */
+            popularity_rank: number | null;
+            /**
+             * 都次オプション種別
+             */
+            tsuji_type: string | null;
+            /**
+             * 主オプション契約変更可否
+             */
+            constraint_main_option_change: boolean;
+            /**
+             * 変更可否
+             */
+            constraint_change: boolean;
+            /**
+             * エリア制限
+             */
+            area_restrictions: Array<string>;
+        };
+    };
+};
+
+export type PostCrmOptionsResponse = PostCrmOptionsResponses[keyof PostCrmOptionsResponses];
 
 export type GetCrmPositionsData = {
     body?: never;

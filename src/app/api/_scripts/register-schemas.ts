@@ -12,6 +12,7 @@ import * as leaveSchemas from '../_schemas/leave.schema';
 import * as mainContractSchemas from '../_schemas/main-contract.schema';
 import * as memberSchemas from '../_schemas/member.schema';
 import * as membershipApplicationSchemas from '../_schemas/membership-application.schema';
+import * as optionMasterSchemas from '../_schemas/option-master.schema';
 import * as positionSchemas from '../_schemas/position.schema';
 import * as staffSchemas from '../_schemas/staff.schema';
 import * as storeAccessSettingsSchemas from '../_schemas/store-access-settings.schema';
@@ -938,5 +939,99 @@ export function registerAllSchemas() {
   registeredSchemaMap.set(
     'GateStopReleaseResponse',
     registry.register('GateStopReleaseResponse', memberSchemas.GateStopReleaseResponseSchema),
+  );
+
+  // Register option master schemas
+  registeredSchemaMap.set(
+    'OptionType',
+    registry.register('OptionType', optionMasterSchemas.OptionTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'OptionStatus',
+    registry.register('OptionStatus', optionMasterSchemas.OptionStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'OptionProrataMethod',
+    registry.register('OptionProrataMethod', optionMasterSchemas.OptionProrataMethodSchema),
+  );
+  registeredSchemaMap.set(
+    'OptionUsageRule',
+    registry.register('OptionUsageRule', optionMasterSchemas.OptionUsageRuleSchema),
+  );
+  registeredSchemaMap.set(
+    'OptionMasterListItem',
+    registry.register('OptionMasterListItem', optionMasterSchemas.OptionMasterListItemSchema),
+  );
+  registeredSchemaMap.set(
+    'GetOptionMastersQuery',
+    registry.register('GetOptionMastersQuery', optionMasterSchemas.GetOptionMastersQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'GetOptionMastersResponse',
+    registry.register(
+      'GetOptionMastersResponse',
+      optionMasterSchemas.GetOptionMastersResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'OptionCategory',
+    registry.register('OptionCategory', optionMasterSchemas.OptionCategorySchema),
+  );
+  registeredSchemaMap.set(
+    'OptionMasterDetail',
+    registry.register('OptionMasterDetail', optionMasterSchemas.OptionMasterDetailSchema),
+  );
+  registeredSchemaMap.set(
+    'GetOptionMasterDetailResponse',
+    registry.register(
+      'GetOptionMasterDetailResponse',
+      optionMasterSchemas.GetOptionMasterDetailResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpsertOptionMasterBody',
+    registry.register('UpsertOptionMasterBody', optionMasterSchemas.UpsertOptionMasterBodySchema),
+  );
+  registeredSchemaMap.set(
+    'CreateOptionMasterResponse',
+    registry.register(
+      'CreateOptionMasterResponse',
+      optionMasterSchemas.CreateOptionMasterResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateOptionMasterResponse',
+    registry.register(
+      'UpdateOptionMasterResponse',
+      optionMasterSchemas.UpdateOptionMasterResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'OptionMasterChangeHistoryItem',
+    registry.register(
+      'OptionMasterChangeHistoryItem',
+      optionMasterSchemas.OptionMasterChangeHistoryItemSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetOptionMasterChangeHistoryResponse',
+    registry.register(
+      'GetOptionMasterChangeHistoryResponse',
+      optionMasterSchemas.GetOptionMasterChangeHistoryResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'DeleteOptionMasterRequest',
+    registry.register(
+      'DeleteOptionMasterRequest',
+      optionMasterSchemas.DeleteOptionMasterRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'DeleteOptionMasterResponse',
+    registry.register(
+      'DeleteOptionMasterResponse',
+      optionMasterSchemas.DeleteOptionMasterResponseSchema,
+    ),
   );
 }

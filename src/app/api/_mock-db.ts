@@ -26,7 +26,13 @@ import type {
   UpdateMemberRequest,
 } from '@/app/api/_schemas/member.schema';
 import type { DirectEnrollmentRequest as DirectEnrollmentRequestType } from '@/app/api/_schemas/membership-application.schema';
-import type { OptionMasterListItem } from '@/app/api/_schemas/option-master.schema';
+import type {
+  OptionCategory,
+  OptionMasterChangeHistoryItem,
+  OptionMasterDetail,
+  OptionMasterListItem,
+  UpsertOptionMasterBody,
+} from '@/app/api/_schemas/option-master.schema';
 import type { Position, StaffPermissionRecord } from '@/app/api/_schemas/position.schema';
 import type { StaffDetail, StaffListItem } from '@/app/api/_schemas/staff.schema';
 import type { StoreAccessSettings } from '@/app/api/_schemas/store-access-settings.schema';
@@ -57,6 +63,135 @@ export enum TransferStatus {
 }
 export const DEFAULT_MEMBER_MAIN_CONTRACT: string = 'レギュラー会員';
 const DEFAULT_MEMBER_MAIN_CONTRACT_ID = 'MC001';
+
+function inferOptionTsujiType(option: OptionMasterListItem): string | null {
+  if (option.option_type !== 'metered') return null;
+  if (option.code.startsWith('PRO')) return 'Protein';
+  if (option.code.startsWith('H2O')) return 'Hydrogen Water';
+  if (option.code.startsWith('PT')) return 'Personal Training';
+  if (option.code.startsWith('SHW')) return 'Shower';
+  return 'Metered';
+}
+
+function inferOptionAreaRestrictions(option: OptionMasterListItem): string[] {
+  if (option.code.startsWith('PRO')) return ['プロテインバー'];
+  if (option.code.startsWith('LCK')) return ['ロッカーエリア'];
+  if (option.code.startsWith('SHW')) return ['シャワールーム'];
+  if (option.code.startsWith('PT')) return ['パーソナルトレーニングエリア'];
+  return [];
+}
+
+function inferOptionCategory(option: Pick<OptionMasterListItem, 'code' | 'name'>): OptionCategory {
+  if (option.code.startsWith('LCK')) return 'locker';
+  if (option.code.startsWith('SPT')) return 'insurance';
+  if (option.code.startsWith('TWL')) return 'rental';
+  if (
+    option.code.startsWith('PRO') ||
+    option.code.startsWith('DRK') ||
+    option.code.startsWith('H2O')
+  ) {
+    return 'drink';
+  }
+  if (
+    option.code.startsWith('SHW') ||
+    option.code.startsWith('WIF') ||
+    option.code.startsWith('MNT')
+  ) {
+    return 'service';
+  }
+  if (option.name.includes('サプリ')) return 'supplement';
+  return 'service';
+}
+
+function toOptionMasterListItem(option: OptionMasterDetail): OptionMasterListItem {
+  return {
+    id: option.id,
+    name: option.name,
+    code: option.code,
+    brand: option.brand,
+    option_type: option.option_type,
+    price_including_tax: option.price_including_tax,
+    tax_rate: option.tax_rate,
+    prorated_enabled: option.prorated_enabled,
+    prorata_method: option.prorata_method,
+    usage_rule: option.usage_rule,
+    linked_contracts: option.linked_contracts,
+    member_count: option.member_count,
+    store_id: option.store_id,
+    store_name: option.store_name,
+    accounting_code: option.accounting_code,
+    status: option.status,
+  };
+}
+
+function buildOptionMasterDetail(
+  option: OptionMasterListItem,
+  overrides: Partial<Omit<OptionMasterDetail, keyof OptionMasterListItem>> = {},
+): OptionMasterDetail {
+  const priceExcludingTax = Math.round(option.price_including_tax / (1 + option.tax_rate / 100));
+  const changeAllowed =
+    option.usage_rule === 'add_remove_change' || option.usage_rule === 'change_remove';
+
+  return {
+    ...option,
+    price_excluding_tax: overrides.price_excluding_tax ?? priceExcludingTax,
+    option_category: overrides.option_category ?? inferOptionCategory(option),
+    store_range:
+      overrides.store_range ??
+      (option.store_name ? `${option.store_name}（1店舗）` : '全店舗（12店舗）'),
+    description:
+      overrides.description ??
+      `${option.name}をご利用いただけるオプションサービスです。ご利用条件は契約内容に準じます。`,
+    note: overrides.note ?? (option.store_name ? `${option.store_name}限定オプションです。` : null),
+    member_app_image: overrides.member_app_image ?? null,
+    created_at: overrides.created_at ?? '2024-04-01T10:00:00+09:00',
+    updated_at: overrides.updated_at ?? '2026-01-15T14:30:00+09:00',
+    popularity_rank: overrides.popularity_rank ?? null,
+    tsuji_type: overrides.tsuji_type ?? inferOptionTsujiType(option),
+    constraint_main_option_change:
+      overrides.constraint_main_option_change ?? option.option_type !== 'auto_attached',
+    constraint_change: overrides.constraint_change ?? changeAllowed,
+    area_restrictions: overrides.area_restrictions ?? inferOptionAreaRestrictions(option),
+  };
+}
+
+function buildOptionMasterChangeHistory(
+  option: OptionMasterDetail,
+): OptionMasterChangeHistoryItem[] {
+  const currentStatus = option.status === 'active' ? '有効' : '無効';
+  const previousStatus = option.status === 'active' ? '無効' : '有効';
+
+  return [
+    {
+      date: '2026/02/15 14:30',
+      user: '管理者A',
+      field: '説明文',
+      from: `${option.name}をご利用いただけるオプションです。`,
+      to: option.description ?? `${option.name}をご利用いただけるオプションサービスです。`,
+    },
+    {
+      date: '2025/10/01 09:00',
+      user: '管理者B',
+      field: '月額料金',
+      from: `¥${Math.max(option.price_excluding_tax - 100, 0).toLocaleString()}`,
+      to: `¥${option.price_excluding_tax.toLocaleString()}`,
+    },
+    {
+      date: '2025/04/01 10:00',
+      user: '管理者C',
+      field: 'ステータス',
+      from: previousStatus,
+      to: currentStatus,
+    },
+    {
+      date: '2024/04/01 10:00',
+      user: '管理者A',
+      field: null,
+      from: null,
+      to: '新規作成',
+    },
+  ];
+}
 
 export type MembershipApplicationContractDetails = {
   plan_id: string;
@@ -1083,10 +1218,16 @@ type DbType = {
     update(id: string, data: Partial<MainContractDetail>): MainContractDetail | undefined;
   };
   optionMasters: {
-    _rows: OptionMasterListItem[];
+    _rows: OptionMasterDetail[];
+    _changeHistory: Record<string, OptionMasterChangeHistoryItem[]>;
     _seeded: boolean;
     _seed(): void;
     getList(): OptionMasterListItem[];
+    getById(id: string): OptionMasterDetail | undefined;
+    getChangeHistory(id: string): OptionMasterChangeHistoryItem[];
+    delete(id: string): boolean;
+    add(data: UpsertOptionMasterBody): OptionMasterDetail;
+    update(id: string, data: UpsertOptionMasterBody): OptionMasterDetail | undefined;
   };
   storeMainContracts: {
     _rows: Array<{ store_id: string; main_contract_id: string; linked_at: string }>;
@@ -4920,197 +5061,483 @@ function createDb() {
       },
     },
     optionMasters: {
-      _rows: [] as OptionMasterListItem[],
+      _rows: [] as OptionMasterDetail[],
+      _changeHistory: {} as Record<string, OptionMasterChangeHistoryItem[]>,
       _seeded: false,
       _seed(): void {
         if (this._seeded) return;
         this._seeded = true;
-        this._rows.push(
+        const seedRows: OptionMasterListItem[] = [
           {
             id: 'OP001',
             name: 'ドリンクバー（月額）',
+            code: 'DRK-001',
             brand: 'fit365',
             option_type: 'standard',
             price_including_tax: 550,
+            tax_rate: 10,
             prorated_enabled: true,
+            prorata_method: 'daily',
             usage_rule: 'add_remove_change',
+            linked_contracts: 6,
+            member_count: 310,
+            store_id: null,
+            store_name: null,
+            accounting_code: 'OPT-101',
             status: 'active',
           },
           {
             id: 'OP002',
             name: '水素水',
-            brand: 'joyfit24',
-            option_type: 'standard',
+            code: 'H2O-001',
+            brand: 'fit365',
+            option_type: 'metered',
             price_including_tax: 1100,
+            tax_rate: 10,
             prorated_enabled: true,
-            usage_rule: 'add_remove',
+            prorata_method: 'daily',
+            usage_rule: 'add_remove_change',
+            linked_contracts: 10,
+            member_count: 680,
+            store_id: null,
+            store_name: null,
+            accounting_code: 'OPT-102',
             status: 'active',
           },
           {
             id: 'OP003',
             name: 'タオルセット',
-            brand: 'joyfit24',
+            code: 'TWL-001',
+            brand: 'joyfit',
             option_type: 'standard',
             price_including_tax: 330,
-            prorated_enabled: true,
+            tax_rate: 10,
+            prorated_enabled: false,
+            prorata_method: null,
+            usage_rule: 'add_remove',
+            linked_contracts: 10,
+            member_count: 350,
+            store_id: null,
+            store_name: null,
+            accounting_code: 'OPT-103',
+            status: 'active',
+          },
+          {
+            id: 'OP004',
+            name: 'パーソナルロッカー（S）',
+            code: 'LCK-001',
+            brand: 'joyfit',
+            option_type: 'standard',
+            price_including_tax: 550,
+            tax_rate: 10,
+            prorated_enabled: false,
+            prorata_method: null,
             usage_rule: 'add_remove_change',
+            linked_contracts: 6,
+            member_count: 180,
+            store_id: null,
+            store_name: null,
+            accounting_code: 'OPT-201',
+            status: 'active',
+          },
+          {
+            id: 'OP005',
+            name: 'パーソナルロッカー（L）',
+            code: 'LCK-002',
+            brand: 'fit365',
+            option_type: 'standard',
+            price_including_tax: 880,
+            tax_rate: 10,
+            prorated_enabled: false,
+            prorata_method: null,
+            usage_rule: 'add_remove_change',
+            linked_contracts: 6,
+            member_count: 95,
+            store_id: 'store-002',
+            store_name: 'Fit365新宿店',
+            accounting_code: 'OPT-202',
             status: 'active',
           },
           {
             id: 'OP006',
             name: '契約ロッカー',
-            brand: 'joyfit24',
+            code: 'LCK-003',
+            brand: 'joyfit',
             option_type: 'standard',
             price_including_tax: 1100,
+            tax_rate: 10,
             prorated_enabled: false,
+            prorata_method: null,
             usage_rule: 'change_remove',
+            linked_contracts: 4,
+            member_count: 60,
+            store_id: null,
+            store_name: null,
+            accounting_code: 'OPT-203',
             status: 'active',
           },
           {
             id: 'OP007',
-            name: 'パーソナルトレーニング（月2回）',
-            brand: 'fit365',
-            option_type: 'metered',
-            price_including_tax: 13200,
+            name: '安心サポートプラス',
+            code: 'SPT-001',
+            brand: 'joyfit',
+            option_type: 'auto_attached',
+            price_including_tax: 550,
+            tax_rate: 10,
             prorated_enabled: false,
-            usage_rule: 'add_remove_change',
+            prorata_method: null,
+            usage_rule: 'disabled',
+            linked_contracts: 8,
+            member_count: 920,
+            store_id: null,
+            store_name: null,
+            accounting_code: 'OPT-301',
             status: 'active',
+          },
+          {
+            id: 'OP008',
+            name: 'Wi-Fi利用',
+            code: 'WIF-001',
+            brand: 'joyfit',
+            option_type: 'auto_attached',
+            price_including_tax: 0,
+            tax_rate: 10,
+            prorated_enabled: false,
+            prorata_method: null,
+            usage_rule: 'disabled',
+            linked_contracts: 10,
+            member_count: 1200,
+            store_id: null,
+            store_name: null,
+            accounting_code: 'OPT-401',
+            status: 'active',
+          },
+          {
+            id: 'OP009',
+            name: 'シャワールーム優先利用',
+            code: 'SHW-001',
+            brand: 'joyfit',
+            option_type: 'metered',
+            price_including_tax: 220,
+            tax_rate: 10,
+            prorated_enabled: true,
+            prorata_method: 'fixed',
+            usage_rule: 'add_remove',
+            linked_contracts: 3,
+            member_count: 45,
+            store_id: 'store-001',
+            store_name: 'Fit365八潮店',
+            accounting_code: 'OPT-402',
+            status: 'inactive',
           },
           {
             id: 'OP011',
             name: 'パーソナルトレーニング（月4回）',
+            code: 'PT-002',
             brand: 'joyfit24',
             option_type: 'metered',
             price_including_tax: 22000,
+            tax_rate: 10,
             prorated_enabled: false,
+            prorata_method: null,
             usage_rule: 'add_remove_change',
+            linked_contracts: 5,
+            member_count: 88,
+            store_id: null,
+            store_name: null,
+            accounting_code: 'OPT-501',
             status: 'active',
           },
           {
             id: 'OP021',
             name: '安心サポート（当店版）',
+            code: 'SPT-002',
             brand: 'joyfit24',
             option_type: 'auto_attached',
             price_including_tax: 660,
+            tax_rate: 10,
             prorated_enabled: false,
+            prorata_method: null,
             usage_rule: 'disabled',
+            linked_contracts: 3,
+            member_count: 420,
+            store_id: null,
+            store_name: null,
+            accounting_code: 'OPT-601',
             status: 'active',
           },
           {
             id: 'OP022',
             name: '有料駐車場チケット（当店限定）',
+            code: 'PKG-001',
             brand: 'fit365',
             option_type: 'standard',
             price_including_tax: 1100,
+            tax_rate: 10,
             prorated_enabled: true,
+            prorata_method: 'daily',
             usage_rule: 'add_remove',
+            linked_contracts: 0,
+            member_count: 0,
+            store_id: 'store-002',
+            store_name: 'Fit365新宿店',
+            accounting_code: 'OPT-701',
             status: 'inactive',
           },
           {
             id: 'OP023',
             name: 'プロテインサーバー',
+            code: 'PRO-001',
             brand: 'fit365',
             option_type: 'metered',
-            price_including_tax: 1650,
-            prorated_enabled: false,
+            price_including_tax: 1210,
+            tax_rate: 10,
+            prorated_enabled: true,
+            prorata_method: 'daily',
             usage_rule: 'add_remove_change',
-            status: 'active',
-          },
-          {
-            id: 'OP024',
-            name: 'コラーゲンマシン',
-            brand: 'fit365',
-            option_type: 'metered',
-            price_including_tax: 2200,
-            prorated_enabled: false,
-            usage_rule: 'add_remove_change',
+            linked_contracts: 8,
+            member_count: 420,
+            store_id: null,
+            store_name: null,
+            accounting_code: 'OPT-801',
             status: 'active',
           },
           {
             id: 'OP025',
             name: '契約ロッカーL',
+            code: 'LCK-004',
             brand: 'joyfit',
             option_type: 'standard',
             price_including_tax: 1650,
+            tax_rate: 10,
             prorated_enabled: true,
+            prorata_method: 'daily',
             usage_rule: 'change_remove',
-            status: 'active',
-          },
-          {
-            id: 'OP026',
-            name: 'タンニング',
-            brand: 'fit365',
-            option_type: 'metered',
-            price_including_tax: 3300,
-            prorated_enabled: false,
-            usage_rule: 'add_remove_change',
-            status: 'active',
-          },
-          {
-            id: 'OP027',
-            name: 'ボディプランナー',
-            brand: 'fit365',
-            option_type: 'metered',
-            price_including_tax: 1980,
-            prorated_enabled: false,
-            usage_rule: 'add_remove_change',
-            status: 'active',
-          },
-          {
-            id: 'OP028',
-            name: 'シャワー利用',
-            brand: 'joyfit24',
-            option_type: 'metered',
-            price_including_tax: 550,
-            prorated_enabled: false,
-            usage_rule: 'add_remove',
-            status: 'active',
-          },
-          {
-            id: 'OP029',
-            name: 'レンタルウェア',
-            brand: 'joyfit',
-            option_type: 'standard',
-            price_including_tax: 880,
-            prorated_enabled: true,
-            usage_rule: 'add_remove_change',
+            linked_contracts: 4,
+            member_count: 72,
+            store_id: null,
+            store_name: null,
+            accounting_code: 'OPT-204',
             status: 'active',
           },
           {
             id: 'OP030',
             name: '安心サポートPLUS',
+            code: 'SPT-003',
             brand: 'joyfit_plus',
             option_type: 'auto_attached',
             price_including_tax: 880,
+            tax_rate: 10,
             prorated_enabled: false,
+            prorata_method: null,
             usage_rule: 'disabled',
+            linked_contracts: 2,
+            member_count: 155,
+            store_id: null,
+            store_name: null,
+            accounting_code: 'OPT-901',
             status: 'active',
           },
           {
             id: 'OP031',
             name: 'メンテナンス会費',
+            code: 'MNT-001',
             brand: 'fit365',
             option_type: 'auto_attached',
             price_including_tax: 770,
+            tax_rate: 10,
             prorated_enabled: false,
+            prorata_method: null,
             usage_rule: 'disabled',
+            linked_contracts: 7,
+            member_count: 890,
+            store_id: null,
+            store_name: null,
+            accounting_code: 'OPT-902',
             status: 'active',
+          },
+        ];
+
+        const popularityRanks = new Map(
+          [...seedRows]
+            .sort((a, b) => b.member_count - a.member_count)
+            .map((row, index) => [row.id, index + 1]),
+        );
+
+        const detailOverrides: Record<
+          string,
+          Partial<Omit<OptionMasterDetail, keyof OptionMasterListItem>>
+        > = {
+          OP022: {
+            note: '現在利用会員が存在しないため削除可能なサンプルデータです。',
+          },
+          OP023: {
+            description:
+              '高品質プロテインを24時間いつでもご利用いただけるサーバーサービス。チョコレート・バニラ・ストロベリーの3種類のフレーバーからお選びいただけます。トレーニング前後の栄養補給に最適です。',
+            note: '月末の在庫確認を要実施。サーバーフィルター交換は4週間ごと。',
+            created_at: '2024-04-01T10:00:00+09:00',
+            updated_at: '2026-02-15T14:30:00+09:00',
+            popularity_rank: 3,
+            tsuji_type: 'Protein',
+            constraint_main_option_change: true,
+            constraint_change: false,
+            area_restrictions: ['プロテインバー'],
+          },
+        };
+
+        this._rows.push(
+          ...seedRows.map((row) =>
+            buildOptionMasterDetail(row, {
+              popularity_rank: popularityRanks.get(row.id) ?? null,
+              ...detailOverrides[row.id],
+            }),
+          ),
+        );
+
+        this._changeHistory = Object.fromEntries(
+          this._rows.map((row) => [row.id, buildOptionMasterChangeHistory(row)]),
+        );
+
+        this._changeHistory.OP023 = [
+          {
+            date: '2026/02/15 14:30',
+            user: '管理者A',
+            field: '説明文',
+            from: '高品質プロテインを24時間ご利用いただけます。',
+            to: '高品質プロテインを24時間いつでもご利用いただけるサーバーサービス。チョコレート・バニラ・ストロベリーの3種類のフレーバーからお選びいただけます。',
           },
           {
-            id: 'OP032',
-            name: '水素水プレミアム',
-            brand: 'joyfit_yoga',
-            option_type: 'standard',
-            price_including_tax: 1430,
-            prorated_enabled: true,
-            usage_rule: 'add_remove',
-            status: 'active',
+            date: '2025/10/01 09:00',
+            user: '管理者B',
+            field: '月額料金',
+            from: '¥1,000',
+            to: '¥1,100',
           },
-        );
+          {
+            date: '2025/04/01 10:00',
+            user: '管理者C',
+            field: 'ステータス',
+            from: '無効',
+            to: '有効',
+          },
+          {
+            date: '2024/04/01 10:00',
+            user: '管理者A',
+            field: null,
+            from: null,
+            to: '新規作成',
+          },
+        ];
       },
       getList(): OptionMasterListItem[] {
         this._seed();
         return [...this._rows];
+      },
+      getById(id: string): OptionMasterDetail | undefined {
+        this._seed();
+        return this._rows.find((row) => row.id === id);
+      },
+      getChangeHistory(id: string): OptionMasterChangeHistoryItem[] {
+        this._seed();
+        return [...(this._changeHistory[id] ?? [])];
+      },
+      add(data: UpsertOptionMasterBody): OptionMasterDetail {
+        this._seed();
+
+        const maxNumericId = this._rows.reduce((max, row) => {
+          const numericId = Number.parseInt(row.id.replace(/^OP/, ''), 10);
+          return Number.isNaN(numericId) ? max : Math.max(max, numericId);
+        }, 0);
+        const id = `OP${String(maxNumericId + 1).padStart(3, '0')}`;
+        const now = new Date().toISOString();
+
+        const option = buildOptionMasterDetail(
+          {
+            id,
+            name: data.name,
+            code: data.code,
+            brand: data.brand,
+            option_type: data.option_type,
+            price_including_tax: data.price_including_tax,
+            tax_rate: data.tax_rate,
+            prorated_enabled: data.prorated_enabled,
+            prorata_method: data.prorata_method ?? null,
+            usage_rule: data.usage_rule,
+            linked_contracts: 0,
+            member_count: 0,
+            store_id: null,
+            store_name: null,
+            accounting_code: data.accounting_code,
+            status: data.status,
+          },
+          {
+            option_category: data.option_category,
+            description: data.description ?? null,
+            note: data.note ?? null,
+            member_app_image: data.member_app_image ?? null,
+            created_at: now,
+            updated_at: now,
+            popularity_rank: null,
+            tsuji_type: data.tsuji_type ?? null,
+            constraint_main_option_change: data.constraint_main_option_change,
+            constraint_change: data.constraint_change,
+            area_restrictions: data.area_restrictions,
+          },
+        );
+
+        this._rows.unshift(option);
+        return option;
+      },
+      update(id: string, data: UpsertOptionMasterBody): OptionMasterDetail | undefined {
+        this._seed();
+
+        const index = this._rows.findIndex((row) => row.id === id);
+        if (index === -1) return undefined;
+
+        const existing = this._rows[index];
+        const now = new Date().toISOString();
+        const updated = buildOptionMasterDetail(
+          {
+            ...toOptionMasterListItem(existing),
+            name: data.name,
+            code: data.code,
+            brand: data.brand,
+            option_type: data.option_type,
+            price_including_tax: data.price_including_tax,
+            tax_rate: data.tax_rate,
+            prorated_enabled: data.prorated_enabled,
+            prorata_method: data.prorata_method ?? null,
+            usage_rule: data.usage_rule,
+            accounting_code: data.accounting_code,
+            status: data.status,
+          },
+          {
+            option_category: data.option_category,
+            store_range: existing.store_range,
+            description: data.description ?? null,
+            note: data.note ?? null,
+            member_app_image: data.member_app_image ?? null,
+            created_at: existing.created_at,
+            updated_at: now,
+            popularity_rank: existing.popularity_rank,
+            tsuji_type: data.tsuji_type ?? null,
+            constraint_main_option_change: data.constraint_main_option_change,
+            constraint_change: data.constraint_change,
+            area_restrictions: data.area_restrictions,
+          },
+        );
+
+        this._rows[index] = updated;
+        return updated;
+      },
+      delete(id: string): boolean {
+        this._seed();
+        const index = this._rows.findIndex((row) => row.id === id);
+        if (index === -1) return false;
+
+        this._rows.splice(index, 1);
+        delete this._changeHistory[id];
+        return true;
       },
     },
     storeMainContracts: {

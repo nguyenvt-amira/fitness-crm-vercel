@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { TooltipPortal } from '@radix-ui/react-tooltip';
-
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { cn } from '@/lib/utils';
@@ -9,10 +7,24 @@ import { cn } from '@/lib/utils';
 interface TextWithTooltipProps {
   text: string | number;
   className?: string;
+  wrapperClassName?: string;
+  contentClassName?: string;
   lines?: number; // 1-6 for line-clamp, undefined for single line truncate
+  side?: React.ComponentProps<typeof TooltipContent>['side'];
+  align?: React.ComponentProps<typeof TooltipContent>['align'];
+  sideOffset?: number;
 }
 
-export function TextWithTooltip({ text, className, lines }: Readonly<TextWithTooltipProps>) {
+export function TextWithTooltip({
+  text,
+  className,
+  wrapperClassName,
+  contentClassName,
+  lines,
+  side = 'bottom',
+  align = 'start',
+  sideOffset = 6,
+}: Readonly<TextWithTooltipProps>) {
   const [isTruncated, setIsTruncated] = useState<boolean>(false);
   const textRef = useRef<HTMLDivElement>(null);
 
@@ -31,7 +43,8 @@ export function TextWithTooltip({ text, className, lines }: Readonly<TextWithToo
         const clientWidth = element.clientWidth;
 
         // Check if text is truncated (either horizontally or vertically)
-        const isTrunc = scrollWidth > clientWidth || scrollHeight > clientHeight;
+        // Use a tiny tolerance to avoid rounding issues from sub-pixel layout.
+        const isTrunc = scrollWidth - clientWidth > 1 || scrollHeight - clientHeight > 1;
         setIsTruncated(isTrunc);
       }
     };
@@ -44,29 +57,36 @@ export function TextWithTooltip({ text, className, lines }: Readonly<TextWithToo
       resizeObserver.observe(textRef.current);
     }
 
-    checkTruncation();
+    const rafId = window.requestAnimationFrame(checkTruncation);
 
     return () => {
+      window.cancelAnimationFrame(rafId);
       resizeObserver.disconnect();
     };
-  }, [lines]);
+  }, [className, lines, text]);
 
   return (
     <TooltipProvider delay={100}>
       <Tooltip>
-        <TooltipTrigger disabled={!isTruncated}>
-          <div
-            ref={textRef}
-            className={cn(lineClampClass, !isTruncated && 'pointer-events-none', className)}
-          >
+        <TooltipTrigger
+          render={<div className={cn('min-w-0', wrapperClassName)} />}
+          disabled={!isTruncated}
+        >
+          <div ref={textRef} className={cn(lineClampClass, className)}>
             {text}
           </div>
         </TooltipTrigger>
-        <TooltipPortal>
-          <TooltipContent className="break-word max-h-60 max-w-xs overflow-y-auto">
-            {text}
-          </TooltipContent>
-        </TooltipPortal>
+        <TooltipContent
+          side={side}
+          align={align}
+          sideOffset={sideOffset}
+          className={cn(
+            'max-h-48 max-w-sm overflow-y-auto wrap-break-word whitespace-normal',
+            contentClassName,
+          )}
+        >
+          {text}
+        </TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );

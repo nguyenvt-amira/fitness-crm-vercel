@@ -11978,6 +11978,1394 @@
         "required": ["success", "member_id"],
         "title": "GateStopReleaseResponse",
         "description": "Result of gate stop release"
+      },
+      "OptionType": {
+        "type": "string",
+        "enum": ["standard", "metered", "auto_attached"],
+        "title": "OptionType",
+        "description": "オプション種別（通常/都次/自動付与）"
+      },
+      "OptionStatus": {
+        "type": "string",
+        "enum": ["active", "inactive"],
+        "title": "OptionStatus",
+        "description": "オプション有効/無効ステータス"
+      },
+      "OptionProrataMethod": {
+        "type": "string",
+        "enum": ["daily", "fixed"],
+        "title": "OptionProrataMethod",
+        "description": "日割り計算方法（daily: 日割り計算 / fixed: 固定金額）"
+      },
+      "OptionUsageRule": {
+        "type": "string",
+        "enum": ["disabled", "add_remove", "add_remove_change", "change_remove"],
+        "title": "OptionUsageRule",
+        "description": "利用可否ルール"
+      },
+      "OptionMasterListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "OP002",
+            "description": "オプションID"
+          },
+          "name": {
+            "type": "string",
+            "example": "水素水",
+            "description": "オプション名"
+          },
+          "code": {
+            "type": "string",
+            "example": "H2O-001",
+            "description": "オプションコード"
+          },
+          "brand": {
+            "type": "string",
+            "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+            "title": "StoreListBrand",
+            "description": "ブランド"
+          },
+          "option_type": {
+            "type": "string",
+            "enum": ["standard", "metered", "auto_attached"],
+            "title": "OptionType",
+            "description": "オプション種別"
+          },
+          "price_including_tax": {
+            "type": "number",
+            "minimum": 0,
+            "example": 1100,
+            "description": "料金（税込）"
+          },
+          "tax_rate": {
+            "type": "number",
+            "minimum": 0,
+            "example": 10,
+            "description": "税率（%）"
+          },
+          "prorated_enabled": {
+            "type": "boolean",
+            "example": true,
+            "description": "日割り要否"
+          },
+          "prorata_method": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["daily", "fixed", null],
+            "title": "OptionProrataMethod",
+            "description": "日割り計算方法（prorated_enabled=true の場合のみ）"
+          },
+          "usage_rule": {
+            "type": "string",
+            "enum": ["disabled", "add_remove", "add_remove_change", "change_remove"],
+            "title": "OptionUsageRule",
+            "description": "利用可否ルール"
+          },
+          "linked_contracts": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 10,
+            "description": "紐付き契約プラン数"
+          },
+          "member_count": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 680,
+            "description": "利用会員数"
+          },
+          "store_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "対象店舗ID（null = 全店舗）"
+          },
+          "store_name": {
+            "type": "string",
+            "nullable": true,
+            "description": "対象店舗名（null = 全店舗）"
+          },
+          "accounting_code": {
+            "type": "string",
+            "example": "OPT-102",
+            "description": "会計コード"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive"],
+            "title": "OptionStatus",
+            "description": "ステータス"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "code",
+          "brand",
+          "option_type",
+          "price_including_tax",
+          "tax_rate",
+          "prorated_enabled",
+          "prorata_method",
+          "usage_rule",
+          "linked_contracts",
+          "member_count",
+          "store_id",
+          "store_name",
+          "accounting_code",
+          "status"
+        ],
+        "title": "OptionMasterListItem",
+        "description": "オプション一覧アイテム"
+      },
+      "GetOptionMastersQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 20
+          },
+          "search": {
+            "type": "string",
+            "description": "オプション名・コードで検索"
+          },
+          "brand": {
+            "type": "string",
+            "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+            "title": "StoreListBrand",
+            "description": "Store brand"
+          },
+          "option_type": {
+            "type": "string",
+            "enum": ["standard", "metered", "auto_attached"],
+            "title": "OptionType",
+            "description": "オプション種別（通常/都次/自動付与）"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive"],
+            "title": "OptionStatus",
+            "description": "オプション有効/無効ステータス"
+          },
+          "store_id": {
+            "type": "string",
+            "description": "店舗IDで絞り込み"
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": [
+              "id",
+              "name",
+              "code",
+              "price_including_tax",
+              "member_count",
+              "tax_rate",
+              "status"
+            ],
+            "default": "id"
+          },
+          "sort_order": {
+            "type": "string",
+            "enum": ["asc", "desc"],
+            "default": "asc"
+          }
+        },
+        "title": "GetOptionMastersQuery",
+        "description": "オプション一覧取得クエリ"
+      },
+      "GetOptionMastersResponse": {
+        "type": "object",
+        "properties": {
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "OP002",
+                  "description": "オプションID"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "水素水",
+                  "description": "オプション名"
+                },
+                "code": {
+                  "type": "string",
+                  "example": "H2O-001",
+                  "description": "オプションコード"
+                },
+                "brand": {
+                  "type": "string",
+                  "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                  "title": "StoreListBrand",
+                  "description": "ブランド"
+                },
+                "option_type": {
+                  "type": "string",
+                  "enum": ["standard", "metered", "auto_attached"],
+                  "title": "OptionType",
+                  "description": "オプション種別"
+                },
+                "price_including_tax": {
+                  "type": "number",
+                  "minimum": 0,
+                  "example": 1100,
+                  "description": "料金（税込）"
+                },
+                "tax_rate": {
+                  "type": "number",
+                  "minimum": 0,
+                  "example": 10,
+                  "description": "税率（%）"
+                },
+                "prorated_enabled": {
+                  "type": "boolean",
+                  "example": true,
+                  "description": "日割り要否"
+                },
+                "prorata_method": {
+                  "type": "string",
+                  "nullable": true,
+                  "enum": ["daily", "fixed", null],
+                  "title": "OptionProrataMethod",
+                  "description": "日割り計算方法（prorated_enabled=true の場合のみ）"
+                },
+                "usage_rule": {
+                  "type": "string",
+                  "enum": ["disabled", "add_remove", "add_remove_change", "change_remove"],
+                  "title": "OptionUsageRule",
+                  "description": "利用可否ルール"
+                },
+                "linked_contracts": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "example": 10,
+                  "description": "紐付き契約プラン数"
+                },
+                "member_count": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "example": 680,
+                  "description": "利用会員数"
+                },
+                "store_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "対象店舗ID（null = 全店舗）"
+                },
+                "store_name": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "対象店舗名（null = 全店舗）"
+                },
+                "accounting_code": {
+                  "type": "string",
+                  "example": "OPT-102",
+                  "description": "会計コード"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["active", "inactive"],
+                  "title": "OptionStatus",
+                  "description": "ステータス"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "code",
+                "brand",
+                "option_type",
+                "price_including_tax",
+                "tax_rate",
+                "prorated_enabled",
+                "prorata_method",
+                "usage_rule",
+                "linked_contracts",
+                "member_count",
+                "store_id",
+                "store_name",
+                "accounting_code",
+                "status"
+              ],
+              "title": "OptionMasterListItem",
+              "description": "オプション一覧アイテム"
+            }
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "number"
+              },
+              "limit": {
+                "type": "number"
+              },
+              "total": {
+                "type": "number"
+              },
+              "total_pages": {
+                "type": "number"
+              }
+            },
+            "required": ["page", "limit", "total", "total_pages"]
+          }
+        },
+        "required": ["options", "pagination"],
+        "title": "GetOptionMastersResponse",
+        "description": "オプション一覧レスポンス"
+      },
+      "OptionCategory": {
+        "type": "string",
+        "enum": ["supplement", "drink", "rental", "locker", "insurance", "service"],
+        "title": "OptionCategory",
+        "description": "オプション分類"
+      },
+      "OptionMasterDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "OP002",
+            "description": "オプションID"
+          },
+          "name": {
+            "type": "string",
+            "example": "水素水",
+            "description": "オプション名"
+          },
+          "code": {
+            "type": "string",
+            "example": "H2O-001",
+            "description": "オプションコード"
+          },
+          "brand": {
+            "type": "string",
+            "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+            "title": "StoreListBrand",
+            "description": "ブランド"
+          },
+          "option_type": {
+            "type": "string",
+            "enum": ["standard", "metered", "auto_attached"],
+            "title": "OptionType",
+            "description": "オプション種別"
+          },
+          "price_including_tax": {
+            "type": "number",
+            "minimum": 0,
+            "example": 1100,
+            "description": "料金（税込）"
+          },
+          "tax_rate": {
+            "type": "number",
+            "minimum": 0,
+            "example": 10,
+            "description": "税率（%）"
+          },
+          "prorated_enabled": {
+            "type": "boolean",
+            "example": true,
+            "description": "日割り要否"
+          },
+          "prorata_method": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["daily", "fixed", null],
+            "title": "OptionProrataMethod",
+            "description": "日割り計算方法（prorated_enabled=true の場合のみ）"
+          },
+          "usage_rule": {
+            "type": "string",
+            "enum": ["disabled", "add_remove", "add_remove_change", "change_remove"],
+            "title": "OptionUsageRule",
+            "description": "利用可否ルール"
+          },
+          "linked_contracts": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 10,
+            "description": "紐付き契約プラン数"
+          },
+          "member_count": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 680,
+            "description": "利用会員数"
+          },
+          "store_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "対象店舗ID（null = 全店舗）"
+          },
+          "store_name": {
+            "type": "string",
+            "nullable": true,
+            "description": "対象店舗名（null = 全店舗）"
+          },
+          "accounting_code": {
+            "type": "string",
+            "example": "OPT-102",
+            "description": "会計コード"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive"],
+            "title": "OptionStatus",
+            "description": "ステータス"
+          },
+          "price_excluding_tax": {
+            "type": "number",
+            "minimum": 0,
+            "example": 1100,
+            "description": "料金（税抜）"
+          },
+          "option_category": {
+            "type": "string",
+            "enum": ["supplement", "drink", "rental", "locker", "insurance", "service"],
+            "title": "OptionCategory",
+            "description": "オプション分類"
+          },
+          "store_range": {
+            "type": "string",
+            "example": "全店舗（12店舗）",
+            "description": "対象店舗範囲"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "説明文"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true,
+            "description": "備考"
+          },
+          "member_app_image": {
+            "type": "string",
+            "nullable": true,
+            "description": "会員公開用画像（base64）"
+          },
+          "created_at": {
+            "type": "string",
+            "example": "2024-04-01T10:00:00+09:00",
+            "description": "作成日時"
+          },
+          "updated_at": {
+            "type": "string",
+            "example": "2026-02-15T14:30:00+09:00",
+            "description": "更新日時"
+          },
+          "popularity_rank": {
+            "type": "integer",
+            "nullable": true,
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "example": 3,
+            "description": "人気ランキング"
+          },
+          "tsuji_type": {
+            "type": "string",
+            "nullable": true,
+            "description": "都次オプション種別"
+          },
+          "constraint_main_option_change": {
+            "type": "boolean",
+            "description": "主オプション契約変更可否"
+          },
+          "constraint_change": {
+            "type": "boolean",
+            "description": "変更可否"
+          },
+          "area_restrictions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "エリア制限"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "code",
+          "brand",
+          "option_type",
+          "price_including_tax",
+          "tax_rate",
+          "prorated_enabled",
+          "prorata_method",
+          "usage_rule",
+          "linked_contracts",
+          "member_count",
+          "store_id",
+          "store_name",
+          "accounting_code",
+          "status",
+          "price_excluding_tax",
+          "option_category",
+          "store_range",
+          "description",
+          "note",
+          "member_app_image",
+          "created_at",
+          "updated_at",
+          "popularity_rank",
+          "tsuji_type",
+          "constraint_main_option_change",
+          "constraint_change",
+          "area_restrictions"
+        ],
+        "title": "OptionMasterDetail",
+        "description": "オプション詳細"
+      },
+      "GetOptionMasterDetailResponse": {
+        "type": "object",
+        "properties": {
+          "option": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "OP002",
+                "description": "オプションID"
+              },
+              "name": {
+                "type": "string",
+                "example": "水素水",
+                "description": "オプション名"
+              },
+              "code": {
+                "type": "string",
+                "example": "H2O-001",
+                "description": "オプションコード"
+              },
+              "brand": {
+                "type": "string",
+                "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                "title": "StoreListBrand",
+                "description": "ブランド"
+              },
+              "option_type": {
+                "type": "string",
+                "enum": ["standard", "metered", "auto_attached"],
+                "title": "OptionType",
+                "description": "オプション種別"
+              },
+              "price_including_tax": {
+                "type": "number",
+                "minimum": 0,
+                "example": 1100,
+                "description": "料金（税込）"
+              },
+              "tax_rate": {
+                "type": "number",
+                "minimum": 0,
+                "example": 10,
+                "description": "税率（%）"
+              },
+              "prorated_enabled": {
+                "type": "boolean",
+                "example": true,
+                "description": "日割り要否"
+              },
+              "prorata_method": {
+                "type": "string",
+                "nullable": true,
+                "enum": ["daily", "fixed", null],
+                "title": "OptionProrataMethod",
+                "description": "日割り計算方法（prorated_enabled=true の場合のみ）"
+              },
+              "usage_rule": {
+                "type": "string",
+                "enum": ["disabled", "add_remove", "add_remove_change", "change_remove"],
+                "title": "OptionUsageRule",
+                "description": "利用可否ルール"
+              },
+              "linked_contracts": {
+                "type": "integer",
+                "minimum": 0,
+                "example": 10,
+                "description": "紐付き契約プラン数"
+              },
+              "member_count": {
+                "type": "integer",
+                "minimum": 0,
+                "example": 680,
+                "description": "利用会員数"
+              },
+              "store_id": {
+                "type": "string",
+                "nullable": true,
+                "description": "対象店舗ID（null = 全店舗）"
+              },
+              "store_name": {
+                "type": "string",
+                "nullable": true,
+                "description": "対象店舗名（null = 全店舗）"
+              },
+              "accounting_code": {
+                "type": "string",
+                "example": "OPT-102",
+                "description": "会計コード"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["active", "inactive"],
+                "title": "OptionStatus",
+                "description": "ステータス"
+              },
+              "price_excluding_tax": {
+                "type": "number",
+                "minimum": 0,
+                "example": 1100,
+                "description": "料金（税抜）"
+              },
+              "option_category": {
+                "type": "string",
+                "enum": ["supplement", "drink", "rental", "locker", "insurance", "service"],
+                "title": "OptionCategory",
+                "description": "オプション分類"
+              },
+              "store_range": {
+                "type": "string",
+                "example": "全店舗（12店舗）",
+                "description": "対象店舗範囲"
+              },
+              "description": {
+                "type": "string",
+                "nullable": true,
+                "description": "説明文"
+              },
+              "note": {
+                "type": "string",
+                "nullable": true,
+                "description": "備考"
+              },
+              "member_app_image": {
+                "type": "string",
+                "nullable": true,
+                "description": "会員公開用画像（base64）"
+              },
+              "created_at": {
+                "type": "string",
+                "example": "2024-04-01T10:00:00+09:00",
+                "description": "作成日時"
+              },
+              "updated_at": {
+                "type": "string",
+                "example": "2026-02-15T14:30:00+09:00",
+                "description": "更新日時"
+              },
+              "popularity_rank": {
+                "type": "integer",
+                "nullable": true,
+                "minimum": 0,
+                "exclusiveMinimum": true,
+                "example": 3,
+                "description": "人気ランキング"
+              },
+              "tsuji_type": {
+                "type": "string",
+                "nullable": true,
+                "description": "都次オプション種別"
+              },
+              "constraint_main_option_change": {
+                "type": "boolean",
+                "description": "主オプション契約変更可否"
+              },
+              "constraint_change": {
+                "type": "boolean",
+                "description": "変更可否"
+              },
+              "area_restrictions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "エリア制限"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "code",
+              "brand",
+              "option_type",
+              "price_including_tax",
+              "tax_rate",
+              "prorated_enabled",
+              "prorata_method",
+              "usage_rule",
+              "linked_contracts",
+              "member_count",
+              "store_id",
+              "store_name",
+              "accounting_code",
+              "status",
+              "price_excluding_tax",
+              "option_category",
+              "store_range",
+              "description",
+              "note",
+              "member_app_image",
+              "created_at",
+              "updated_at",
+              "popularity_rank",
+              "tsuji_type",
+              "constraint_main_option_change",
+              "constraint_change",
+              "area_restrictions"
+            ],
+            "title": "OptionMasterDetail",
+            "description": "オプション詳細"
+          }
+        },
+        "required": ["option"],
+        "title": "GetOptionMasterDetailResponse",
+        "description": "オプション詳細レスポンス"
+      },
+      "UpsertOptionMasterBody": {
+        "type": "object",
+        "properties": {
+          "brand": {
+            "type": "string",
+            "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+            "title": "StoreListBrand",
+            "description": "ブランド"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "オプション名"
+          },
+          "code": {
+            "type": "string",
+            "minLength": 1,
+            "description": "コード"
+          },
+          "option_category": {
+            "type": "string",
+            "enum": ["supplement", "drink", "rental", "locker", "insurance", "service"],
+            "title": "OptionCategory",
+            "description": "オプション分類"
+          },
+          "accounting_code": {
+            "type": "string",
+            "default": "",
+            "description": "会計コード"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true,
+            "description": "備考"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "説明文"
+          },
+          "member_app_image": {
+            "type": "string",
+            "nullable": true,
+            "description": "会員公開用画像（base64）"
+          },
+          "price_including_tax": {
+            "type": "number",
+            "minimum": 0,
+            "description": "料金（税込）"
+          },
+          "tax_rate": {
+            "type": "number",
+            "minimum": 0,
+            "description": "税率"
+          },
+          "prorated_enabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "日割り要否"
+          },
+          "prorata_method": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["daily", "fixed", null],
+            "title": "OptionProrataMethod",
+            "description": "日割り計算方式"
+          },
+          "option_type": {
+            "type": "string",
+            "enum": ["standard", "metered", "auto_attached"],
+            "title": "OptionType",
+            "description": "オプション種別"
+          },
+          "tsuji_type": {
+            "type": "string",
+            "nullable": true,
+            "description": "都次オプション種別"
+          },
+          "usage_rule": {
+            "type": "string",
+            "enum": ["disabled", "add_remove", "add_remove_change", "change_remove"],
+            "title": "OptionUsageRule",
+            "description": "利用可否ルール"
+          },
+          "constraint_main_option_change": {
+            "type": "boolean",
+            "default": false,
+            "description": "主オプション契約変更可否"
+          },
+          "constraint_change": {
+            "type": "boolean",
+            "default": false,
+            "description": "変更可否"
+          },
+          "area_restrictions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
+            "description": "エリア制限"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive"],
+            "default": "active",
+            "title": "OptionStatus",
+            "description": "ステータス"
+          }
+        },
+        "required": [
+          "brand",
+          "name",
+          "code",
+          "option_category",
+          "price_including_tax",
+          "tax_rate",
+          "option_type",
+          "usage_rule"
+        ],
+        "title": "UpsertOptionMasterBody",
+        "description": "オプション作成・更新リクエスト"
+      },
+      "CreateOptionMasterResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "オプションを作成しました"
+          },
+          "option": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "OP002",
+                "description": "オプションID"
+              },
+              "name": {
+                "type": "string",
+                "example": "水素水",
+                "description": "オプション名"
+              },
+              "code": {
+                "type": "string",
+                "example": "H2O-001",
+                "description": "オプションコード"
+              },
+              "brand": {
+                "type": "string",
+                "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                "title": "StoreListBrand",
+                "description": "ブランド"
+              },
+              "option_type": {
+                "type": "string",
+                "enum": ["standard", "metered", "auto_attached"],
+                "title": "OptionType",
+                "description": "オプション種別"
+              },
+              "price_including_tax": {
+                "type": "number",
+                "minimum": 0,
+                "example": 1100,
+                "description": "料金（税込）"
+              },
+              "tax_rate": {
+                "type": "number",
+                "minimum": 0,
+                "example": 10,
+                "description": "税率（%）"
+              },
+              "prorated_enabled": {
+                "type": "boolean",
+                "example": true,
+                "description": "日割り要否"
+              },
+              "prorata_method": {
+                "type": "string",
+                "nullable": true,
+                "enum": ["daily", "fixed", null],
+                "title": "OptionProrataMethod",
+                "description": "日割り計算方法（prorated_enabled=true の場合のみ）"
+              },
+              "usage_rule": {
+                "type": "string",
+                "enum": ["disabled", "add_remove", "add_remove_change", "change_remove"],
+                "title": "OptionUsageRule",
+                "description": "利用可否ルール"
+              },
+              "linked_contracts": {
+                "type": "integer",
+                "minimum": 0,
+                "example": 10,
+                "description": "紐付き契約プラン数"
+              },
+              "member_count": {
+                "type": "integer",
+                "minimum": 0,
+                "example": 680,
+                "description": "利用会員数"
+              },
+              "store_id": {
+                "type": "string",
+                "nullable": true,
+                "description": "対象店舗ID（null = 全店舗）"
+              },
+              "store_name": {
+                "type": "string",
+                "nullable": true,
+                "description": "対象店舗名（null = 全店舗）"
+              },
+              "accounting_code": {
+                "type": "string",
+                "example": "OPT-102",
+                "description": "会計コード"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["active", "inactive"],
+                "title": "OptionStatus",
+                "description": "ステータス"
+              },
+              "price_excluding_tax": {
+                "type": "number",
+                "minimum": 0,
+                "example": 1100,
+                "description": "料金（税抜）"
+              },
+              "option_category": {
+                "type": "string",
+                "enum": ["supplement", "drink", "rental", "locker", "insurance", "service"],
+                "title": "OptionCategory",
+                "description": "オプション分類"
+              },
+              "store_range": {
+                "type": "string",
+                "example": "全店舗（12店舗）",
+                "description": "対象店舗範囲"
+              },
+              "description": {
+                "type": "string",
+                "nullable": true,
+                "description": "説明文"
+              },
+              "note": {
+                "type": "string",
+                "nullable": true,
+                "description": "備考"
+              },
+              "member_app_image": {
+                "type": "string",
+                "nullable": true,
+                "description": "会員公開用画像（base64）"
+              },
+              "created_at": {
+                "type": "string",
+                "example": "2024-04-01T10:00:00+09:00",
+                "description": "作成日時"
+              },
+              "updated_at": {
+                "type": "string",
+                "example": "2026-02-15T14:30:00+09:00",
+                "description": "更新日時"
+              },
+              "popularity_rank": {
+                "type": "integer",
+                "nullable": true,
+                "minimum": 0,
+                "exclusiveMinimum": true,
+                "example": 3,
+                "description": "人気ランキング"
+              },
+              "tsuji_type": {
+                "type": "string",
+                "nullable": true,
+                "description": "都次オプション種別"
+              },
+              "constraint_main_option_change": {
+                "type": "boolean",
+                "description": "主オプション契約変更可否"
+              },
+              "constraint_change": {
+                "type": "boolean",
+                "description": "変更可否"
+              },
+              "area_restrictions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "エリア制限"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "code",
+              "brand",
+              "option_type",
+              "price_including_tax",
+              "tax_rate",
+              "prorated_enabled",
+              "prorata_method",
+              "usage_rule",
+              "linked_contracts",
+              "member_count",
+              "store_id",
+              "store_name",
+              "accounting_code",
+              "status",
+              "price_excluding_tax",
+              "option_category",
+              "store_range",
+              "description",
+              "note",
+              "member_app_image",
+              "created_at",
+              "updated_at",
+              "popularity_rank",
+              "tsuji_type",
+              "constraint_main_option_change",
+              "constraint_change",
+              "area_restrictions"
+            ],
+            "title": "OptionMasterDetail",
+            "description": "オプション詳細"
+          }
+        },
+        "required": ["message", "option"],
+        "title": "CreateOptionMasterResponse",
+        "description": "オプション作成レスポンス"
+      },
+      "UpdateOptionMasterResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "オプションを更新しました"
+          },
+          "option": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "OP002",
+                "description": "オプションID"
+              },
+              "name": {
+                "type": "string",
+                "example": "水素水",
+                "description": "オプション名"
+              },
+              "code": {
+                "type": "string",
+                "example": "H2O-001",
+                "description": "オプションコード"
+              },
+              "brand": {
+                "type": "string",
+                "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                "title": "StoreListBrand",
+                "description": "ブランド"
+              },
+              "option_type": {
+                "type": "string",
+                "enum": ["standard", "metered", "auto_attached"],
+                "title": "OptionType",
+                "description": "オプション種別"
+              },
+              "price_including_tax": {
+                "type": "number",
+                "minimum": 0,
+                "example": 1100,
+                "description": "料金（税込）"
+              },
+              "tax_rate": {
+                "type": "number",
+                "minimum": 0,
+                "example": 10,
+                "description": "税率（%）"
+              },
+              "prorated_enabled": {
+                "type": "boolean",
+                "example": true,
+                "description": "日割り要否"
+              },
+              "prorata_method": {
+                "type": "string",
+                "nullable": true,
+                "enum": ["daily", "fixed", null],
+                "title": "OptionProrataMethod",
+                "description": "日割り計算方法（prorated_enabled=true の場合のみ）"
+              },
+              "usage_rule": {
+                "type": "string",
+                "enum": ["disabled", "add_remove", "add_remove_change", "change_remove"],
+                "title": "OptionUsageRule",
+                "description": "利用可否ルール"
+              },
+              "linked_contracts": {
+                "type": "integer",
+                "minimum": 0,
+                "example": 10,
+                "description": "紐付き契約プラン数"
+              },
+              "member_count": {
+                "type": "integer",
+                "minimum": 0,
+                "example": 680,
+                "description": "利用会員数"
+              },
+              "store_id": {
+                "type": "string",
+                "nullable": true,
+                "description": "対象店舗ID（null = 全店舗）"
+              },
+              "store_name": {
+                "type": "string",
+                "nullable": true,
+                "description": "対象店舗名（null = 全店舗）"
+              },
+              "accounting_code": {
+                "type": "string",
+                "example": "OPT-102",
+                "description": "会計コード"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["active", "inactive"],
+                "title": "OptionStatus",
+                "description": "ステータス"
+              },
+              "price_excluding_tax": {
+                "type": "number",
+                "minimum": 0,
+                "example": 1100,
+                "description": "料金（税抜）"
+              },
+              "option_category": {
+                "type": "string",
+                "enum": ["supplement", "drink", "rental", "locker", "insurance", "service"],
+                "title": "OptionCategory",
+                "description": "オプション分類"
+              },
+              "store_range": {
+                "type": "string",
+                "example": "全店舗（12店舗）",
+                "description": "対象店舗範囲"
+              },
+              "description": {
+                "type": "string",
+                "nullable": true,
+                "description": "説明文"
+              },
+              "note": {
+                "type": "string",
+                "nullable": true,
+                "description": "備考"
+              },
+              "member_app_image": {
+                "type": "string",
+                "nullable": true,
+                "description": "会員公開用画像（base64）"
+              },
+              "created_at": {
+                "type": "string",
+                "example": "2024-04-01T10:00:00+09:00",
+                "description": "作成日時"
+              },
+              "updated_at": {
+                "type": "string",
+                "example": "2026-02-15T14:30:00+09:00",
+                "description": "更新日時"
+              },
+              "popularity_rank": {
+                "type": "integer",
+                "nullable": true,
+                "minimum": 0,
+                "exclusiveMinimum": true,
+                "example": 3,
+                "description": "人気ランキング"
+              },
+              "tsuji_type": {
+                "type": "string",
+                "nullable": true,
+                "description": "都次オプション種別"
+              },
+              "constraint_main_option_change": {
+                "type": "boolean",
+                "description": "主オプション契約変更可否"
+              },
+              "constraint_change": {
+                "type": "boolean",
+                "description": "変更可否"
+              },
+              "area_restrictions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "エリア制限"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "code",
+              "brand",
+              "option_type",
+              "price_including_tax",
+              "tax_rate",
+              "prorated_enabled",
+              "prorata_method",
+              "usage_rule",
+              "linked_contracts",
+              "member_count",
+              "store_id",
+              "store_name",
+              "accounting_code",
+              "status",
+              "price_excluding_tax",
+              "option_category",
+              "store_range",
+              "description",
+              "note",
+              "member_app_image",
+              "created_at",
+              "updated_at",
+              "popularity_rank",
+              "tsuji_type",
+              "constraint_main_option_change",
+              "constraint_change",
+              "area_restrictions"
+            ],
+            "title": "OptionMasterDetail",
+            "description": "オプション詳細"
+          }
+        },
+        "required": ["message", "option"],
+        "title": "UpdateOptionMasterResponse",
+        "description": "オプション更新レスポンス"
+      },
+      "OptionMasterChangeHistoryItem": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "example": "2026/02/15 14:30"
+          },
+          "user": {
+            "type": "string",
+            "example": "管理者A"
+          },
+          "field": {
+            "type": "string",
+            "nullable": true
+          },
+          "from": {
+            "type": "string",
+            "nullable": true
+          },
+          "to": {
+            "type": "string"
+          }
+        },
+        "required": ["date", "user", "field", "from", "to"],
+        "title": "OptionMasterChangeHistoryItem",
+        "description": "オプション変更履歴"
+      },
+      "GetOptionMasterChangeHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "history": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "example": "2026/02/15 14:30"
+                },
+                "user": {
+                  "type": "string",
+                  "example": "管理者A"
+                },
+                "field": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "from": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "to": {
+                  "type": "string"
+                }
+              },
+              "required": ["date", "user", "field", "from", "to"],
+              "title": "OptionMasterChangeHistoryItem",
+              "description": "オプション変更履歴"
+            }
+          }
+        },
+        "required": ["history"],
+        "title": "GetOptionMasterChangeHistoryResponse",
+        "description": "オプション変更履歴レスポンス"
+      },
+      "DeleteOptionMasterRequest": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "example": "廃止のため"
+          }
+        },
+        "required": ["reason"],
+        "title": "DeleteOptionMasterRequest",
+        "description": "オプション削除リクエスト"
+      },
+      "DeleteOptionMasterResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "オプションを削除しました"
+          }
+        },
+        "required": ["message"],
+        "title": "DeleteOptionMasterResponse",
+        "description": "オプション削除レスポンス"
       }
     },
     "parameters": {}
@@ -18088,7 +19476,7 @@
                   },
                   "billing_enabled": {
                     "type": "boolean",
-                    "default": true
+                    "default": false
                   },
                   "modifiable": {
                     "type": "string"
@@ -18998,7 +20386,7 @@
                   },
                   "billing_enabled": {
                     "type": "boolean",
-                    "default": true
+                    "default": false
                   },
                   "modifiable": {
                     "type": "string"
@@ -30162,6 +31550,940 @@
         }
       }
     },
+    "/crm/options/{id}/change-history": {
+      "get": {
+        "summary": "Get option master change history",
+        "description": "Get change history for a specific option master",
+        "tags": ["Options"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Option ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Option change history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "history": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "date": {
+                            "type": "string",
+                            "example": "2026/02/15 14:30"
+                          },
+                          "user": {
+                            "type": "string",
+                            "example": "管理者A"
+                          },
+                          "field": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "from": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "to": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["date", "user", "field", "from", "to"],
+                        "title": "OptionMasterChangeHistoryItem",
+                        "description": "オプション変更履歴"
+                      }
+                    }
+                  },
+                  "required": ["history"],
+                  "title": "GetOptionMasterChangeHistoryResponse",
+                  "description": "オプション変更履歴レスポンス"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/options/{id}": {
+      "get": {
+        "summary": "Get option master detail",
+        "description": "Get detailed information for a specific option master",
+        "tags": ["Options"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Option ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Option detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "option": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "OP002",
+                          "description": "オプションID"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "水素水",
+                          "description": "オプション名"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "H2O-001",
+                          "description": "オプションコード"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                          "title": "StoreListBrand",
+                          "description": "ブランド"
+                        },
+                        "option_type": {
+                          "type": "string",
+                          "enum": ["standard", "metered", "auto_attached"],
+                          "title": "OptionType",
+                          "description": "オプション種別"
+                        },
+                        "price_including_tax": {
+                          "type": "number",
+                          "minimum": 0,
+                          "example": 1100,
+                          "description": "料金（税込）"
+                        },
+                        "tax_rate": {
+                          "type": "number",
+                          "minimum": 0,
+                          "example": 10,
+                          "description": "税率（%）"
+                        },
+                        "prorated_enabled": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "日割り要否"
+                        },
+                        "prorata_method": {
+                          "type": "string",
+                          "nullable": true,
+                          "enum": ["daily", "fixed", null],
+                          "title": "OptionProrataMethod",
+                          "description": "日割り計算方法（prorated_enabled=true の場合のみ）"
+                        },
+                        "usage_rule": {
+                          "type": "string",
+                          "enum": ["disabled", "add_remove", "add_remove_change", "change_remove"],
+                          "title": "OptionUsageRule",
+                          "description": "利用可否ルール"
+                        },
+                        "linked_contracts": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 10,
+                          "description": "紐付き契約プラン数"
+                        },
+                        "member_count": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 680,
+                          "description": "利用会員数"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "対象店舗ID（null = 全店舗）"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "対象店舗名（null = 全店舗）"
+                        },
+                        "accounting_code": {
+                          "type": "string",
+                          "example": "OPT-102",
+                          "description": "会計コード"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "OptionStatus",
+                          "description": "ステータス"
+                        },
+                        "price_excluding_tax": {
+                          "type": "number",
+                          "minimum": 0,
+                          "example": 1100,
+                          "description": "料金（税抜）"
+                        },
+                        "option_category": {
+                          "type": "string",
+                          "enum": [
+                            "supplement",
+                            "drink",
+                            "rental",
+                            "locker",
+                            "insurance",
+                            "service"
+                          ],
+                          "title": "OptionCategory",
+                          "description": "オプション分類"
+                        },
+                        "store_range": {
+                          "type": "string",
+                          "example": "全店舗（12店舗）",
+                          "description": "対象店舗範囲"
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "説明文"
+                        },
+                        "note": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "備考"
+                        },
+                        "member_app_image": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "会員公開用画像（base64）"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2024-04-01T10:00:00+09:00",
+                          "description": "作成日時"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026-02-15T14:30:00+09:00",
+                          "description": "更新日時"
+                        },
+                        "popularity_rank": {
+                          "type": "integer",
+                          "nullable": true,
+                          "minimum": 0,
+                          "exclusiveMinimum": true,
+                          "example": 3,
+                          "description": "人気ランキング"
+                        },
+                        "tsuji_type": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "都次オプション種別"
+                        },
+                        "constraint_main_option_change": {
+                          "type": "boolean",
+                          "description": "主オプション契約変更可否"
+                        },
+                        "constraint_change": {
+                          "type": "boolean",
+                          "description": "変更可否"
+                        },
+                        "area_restrictions": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "エリア制限"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "code",
+                        "brand",
+                        "option_type",
+                        "price_including_tax",
+                        "tax_rate",
+                        "prorated_enabled",
+                        "prorata_method",
+                        "usage_rule",
+                        "linked_contracts",
+                        "member_count",
+                        "store_id",
+                        "store_name",
+                        "accounting_code",
+                        "status",
+                        "price_excluding_tax",
+                        "option_category",
+                        "store_range",
+                        "description",
+                        "note",
+                        "member_app_image",
+                        "created_at",
+                        "updated_at",
+                        "popularity_rank",
+                        "tsuji_type",
+                        "constraint_main_option_change",
+                        "constraint_change",
+                        "area_restrictions"
+                      ],
+                      "title": "OptionMasterDetail",
+                      "description": "オプション詳細"
+                    }
+                  },
+                  "required": ["option"],
+                  "title": "GetOptionMasterDetailResponse",
+                  "description": "オプション詳細レスポンス"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete option master",
+        "description": "Delete an option master when it has no linked contracts or active members",
+        "tags": ["Options"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Option ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "削除理由",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "廃止のため"
+                  }
+                },
+                "required": ["reason"],
+                "title": "DeleteOptionMasterRequest",
+                "description": "オプション削除リクエスト"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "オプションを削除しました"
+                    }
+                  },
+                  "required": ["message"],
+                  "title": "DeleteOptionMasterResponse",
+                  "description": "オプション削除レスポンス"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Deletion blocked or validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update option master",
+        "description": "Update an existing option master by ID",
+        "tags": ["Options"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Option ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "オプション更新リクエスト",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "brand": {
+                    "type": "string",
+                    "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                    "title": "StoreListBrand",
+                    "description": "ブランド"
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "オプション名"
+                  },
+                  "code": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "コード"
+                  },
+                  "option_category": {
+                    "type": "string",
+                    "enum": ["supplement", "drink", "rental", "locker", "insurance", "service"],
+                    "title": "OptionCategory",
+                    "description": "オプション分類"
+                  },
+                  "accounting_code": {
+                    "type": "string",
+                    "default": "",
+                    "description": "会計コード"
+                  },
+                  "note": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "備考"
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "説明文"
+                  },
+                  "member_app_image": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "会員公開用画像（base64）"
+                  },
+                  "price_including_tax": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "料金（税込）"
+                  },
+                  "tax_rate": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "税率"
+                  },
+                  "prorated_enabled": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "日割り要否"
+                  },
+                  "prorata_method": {
+                    "type": "string",
+                    "nullable": true,
+                    "enum": ["daily", "fixed", null],
+                    "title": "OptionProrataMethod",
+                    "description": "日割り計算方式"
+                  },
+                  "option_type": {
+                    "type": "string",
+                    "enum": ["standard", "metered", "auto_attached"],
+                    "title": "OptionType",
+                    "description": "オプション種別"
+                  },
+                  "tsuji_type": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "都次オプション種別"
+                  },
+                  "usage_rule": {
+                    "type": "string",
+                    "enum": ["disabled", "add_remove", "add_remove_change", "change_remove"],
+                    "title": "OptionUsageRule",
+                    "description": "利用可否ルール"
+                  },
+                  "constraint_main_option_change": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "主オプション契約変更可否"
+                  },
+                  "constraint_change": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "変更可否"
+                  },
+                  "area_restrictions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "default": [],
+                    "description": "エリア制限"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["active", "inactive"],
+                    "default": "active",
+                    "title": "OptionStatus",
+                    "description": "ステータス"
+                  }
+                },
+                "required": [
+                  "brand",
+                  "name",
+                  "code",
+                  "option_category",
+                  "price_including_tax",
+                  "tax_rate",
+                  "option_type",
+                  "usage_rule"
+                ],
+                "title": "UpsertOptionMasterBody",
+                "description": "オプション作成・更新リクエスト"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "オプションを更新しました"
+                    },
+                    "option": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "OP002",
+                          "description": "オプションID"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "水素水",
+                          "description": "オプション名"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "H2O-001",
+                          "description": "オプションコード"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                          "title": "StoreListBrand",
+                          "description": "ブランド"
+                        },
+                        "option_type": {
+                          "type": "string",
+                          "enum": ["standard", "metered", "auto_attached"],
+                          "title": "OptionType",
+                          "description": "オプション種別"
+                        },
+                        "price_including_tax": {
+                          "type": "number",
+                          "minimum": 0,
+                          "example": 1100,
+                          "description": "料金（税込）"
+                        },
+                        "tax_rate": {
+                          "type": "number",
+                          "minimum": 0,
+                          "example": 10,
+                          "description": "税率（%）"
+                        },
+                        "prorated_enabled": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "日割り要否"
+                        },
+                        "prorata_method": {
+                          "type": "string",
+                          "nullable": true,
+                          "enum": ["daily", "fixed", null],
+                          "title": "OptionProrataMethod",
+                          "description": "日割り計算方法（prorated_enabled=true の場合のみ）"
+                        },
+                        "usage_rule": {
+                          "type": "string",
+                          "enum": ["disabled", "add_remove", "add_remove_change", "change_remove"],
+                          "title": "OptionUsageRule",
+                          "description": "利用可否ルール"
+                        },
+                        "linked_contracts": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 10,
+                          "description": "紐付き契約プラン数"
+                        },
+                        "member_count": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 680,
+                          "description": "利用会員数"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "対象店舗ID（null = 全店舗）"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "対象店舗名（null = 全店舗）"
+                        },
+                        "accounting_code": {
+                          "type": "string",
+                          "example": "OPT-102",
+                          "description": "会計コード"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "OptionStatus",
+                          "description": "ステータス"
+                        },
+                        "price_excluding_tax": {
+                          "type": "number",
+                          "minimum": 0,
+                          "example": 1100,
+                          "description": "料金（税抜）"
+                        },
+                        "option_category": {
+                          "type": "string",
+                          "enum": [
+                            "supplement",
+                            "drink",
+                            "rental",
+                            "locker",
+                            "insurance",
+                            "service"
+                          ],
+                          "title": "OptionCategory",
+                          "description": "オプション分類"
+                        },
+                        "store_range": {
+                          "type": "string",
+                          "example": "全店舗（12店舗）",
+                          "description": "対象店舗範囲"
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "説明文"
+                        },
+                        "note": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "備考"
+                        },
+                        "member_app_image": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "会員公開用画像（base64）"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2024-04-01T10:00:00+09:00",
+                          "description": "作成日時"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026-02-15T14:30:00+09:00",
+                          "description": "更新日時"
+                        },
+                        "popularity_rank": {
+                          "type": "integer",
+                          "nullable": true,
+                          "minimum": 0,
+                          "exclusiveMinimum": true,
+                          "example": 3,
+                          "description": "人気ランキング"
+                        },
+                        "tsuji_type": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "都次オプション種別"
+                        },
+                        "constraint_main_option_change": {
+                          "type": "boolean",
+                          "description": "主オプション契約変更可否"
+                        },
+                        "constraint_change": {
+                          "type": "boolean",
+                          "description": "変更可否"
+                        },
+                        "area_restrictions": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "エリア制限"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "code",
+                        "brand",
+                        "option_type",
+                        "price_including_tax",
+                        "tax_rate",
+                        "prorated_enabled",
+                        "prorata_method",
+                        "usage_rule",
+                        "linked_contracts",
+                        "member_count",
+                        "store_id",
+                        "store_name",
+                        "accounting_code",
+                        "status",
+                        "price_excluding_tax",
+                        "option_category",
+                        "store_range",
+                        "description",
+                        "note",
+                        "member_app_image",
+                        "created_at",
+                        "updated_at",
+                        "popularity_rank",
+                        "tsuji_type",
+                        "constraint_main_option_change",
+                        "constraint_change",
+                        "area_restrictions"
+                      ],
+                      "title": "OptionMasterDetail",
+                      "description": "オプション詳細"
+                    }
+                  },
+                  "required": ["message", "option"],
+                  "title": "UpdateOptionMasterResponse",
+                  "description": "オプション更新レスポンス"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/options": {
       "get": {
         "summary": "Get option masters",
@@ -30192,10 +32514,10 @@
           {
             "schema": {
               "type": "string",
-              "description": "オプション名・IDで検索"
+              "description": "オプション名・コードで検索"
             },
             "required": false,
-            "description": "オプション名・IDで検索",
+            "description": "オプション名・コードで検索",
             "name": "search",
             "in": "query"
           },
@@ -30238,7 +32560,25 @@
           {
             "schema": {
               "type": "string",
-              "enum": ["id", "name", "brand", "price_including_tax"],
+              "description": "店舗IDで絞り込み"
+            },
+            "required": false,
+            "description": "店舗IDで絞り込み",
+            "name": "store_id",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "id",
+                "name",
+                "code",
+                "price_including_tax",
+                "member_count",
+                "tax_rate",
+                "status"
+              ],
               "default": "id"
             },
             "required": false,
@@ -30279,6 +32619,11 @@
                             "example": "水素水",
                             "description": "オプション名"
                           },
+                          "code": {
+                            "type": "string",
+                            "example": "H2O-001",
+                            "description": "オプションコード"
+                          },
                           "brand": {
                             "type": "string",
                             "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
@@ -30297,10 +32642,23 @@
                             "example": 1100,
                             "description": "料金（税込）"
                           },
+                          "tax_rate": {
+                            "type": "number",
+                            "minimum": 0,
+                            "example": 10,
+                            "description": "税率（%）"
+                          },
                           "prorated_enabled": {
                             "type": "boolean",
                             "example": true,
                             "description": "日割り要否"
+                          },
+                          "prorata_method": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": ["daily", "fixed", null],
+                            "title": "OptionProrataMethod",
+                            "description": "日割り計算方法（prorated_enabled=true の場合のみ）"
                           },
                           "usage_rule": {
                             "type": "string",
@@ -30310,7 +32668,35 @@
                               "add_remove_change",
                               "change_remove"
                             ],
+                            "title": "OptionUsageRule",
                             "description": "利用可否ルール"
+                          },
+                          "linked_contracts": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "example": 10,
+                            "description": "紐付き契約プラン数"
+                          },
+                          "member_count": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "example": 680,
+                            "description": "利用会員数"
+                          },
+                          "store_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "対象店舗ID（null = 全店舗）"
+                          },
+                          "store_name": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "対象店舗名（null = 全店舗）"
+                          },
+                          "accounting_code": {
+                            "type": "string",
+                            "example": "OPT-102",
+                            "description": "会計コード"
                           },
                           "status": {
                             "type": "string",
@@ -30322,11 +32708,19 @@
                         "required": [
                           "id",
                           "name",
+                          "code",
                           "brand",
                           "option_type",
                           "price_including_tax",
+                          "tax_rate",
                           "prorated_enabled",
+                          "prorata_method",
                           "usage_rule",
+                          "linked_contracts",
+                          "member_count",
+                          "store_id",
+                          "store_name",
+                          "accounting_code",
                           "status"
                         ],
                         "title": "OptionMasterListItem",
@@ -30355,6 +32749,407 @@
                   "required": ["options", "pagination"],
                   "title": "GetOptionMastersResponse",
                   "description": "オプション一覧レスポンス"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create option master",
+        "description": "Create a new option master (G-02)",
+        "tags": ["Options"],
+        "requestBody": {
+          "description": "オプション作成リクエスト",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "brand": {
+                    "type": "string",
+                    "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                    "title": "StoreListBrand",
+                    "description": "ブランド"
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "オプション名"
+                  },
+                  "code": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "コード"
+                  },
+                  "option_category": {
+                    "type": "string",
+                    "enum": ["supplement", "drink", "rental", "locker", "insurance", "service"],
+                    "title": "OptionCategory",
+                    "description": "オプション分類"
+                  },
+                  "accounting_code": {
+                    "type": "string",
+                    "default": "",
+                    "description": "会計コード"
+                  },
+                  "note": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "備考"
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "説明文"
+                  },
+                  "member_app_image": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "会員公開用画像（base64）"
+                  },
+                  "price_including_tax": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "料金（税込）"
+                  },
+                  "tax_rate": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "税率"
+                  },
+                  "prorated_enabled": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "日割り要否"
+                  },
+                  "prorata_method": {
+                    "type": "string",
+                    "nullable": true,
+                    "enum": ["daily", "fixed", null],
+                    "title": "OptionProrataMethod",
+                    "description": "日割り計算方式"
+                  },
+                  "option_type": {
+                    "type": "string",
+                    "enum": ["standard", "metered", "auto_attached"],
+                    "title": "OptionType",
+                    "description": "オプション種別"
+                  },
+                  "tsuji_type": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "都次オプション種別"
+                  },
+                  "usage_rule": {
+                    "type": "string",
+                    "enum": ["disabled", "add_remove", "add_remove_change", "change_remove"],
+                    "title": "OptionUsageRule",
+                    "description": "利用可否ルール"
+                  },
+                  "constraint_main_option_change": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "主オプション契約変更可否"
+                  },
+                  "constraint_change": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "変更可否"
+                  },
+                  "area_restrictions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "default": [],
+                    "description": "エリア制限"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["active", "inactive"],
+                    "default": "active",
+                    "title": "OptionStatus",
+                    "description": "ステータス"
+                  }
+                },
+                "required": [
+                  "brand",
+                  "name",
+                  "code",
+                  "option_category",
+                  "price_including_tax",
+                  "tax_rate",
+                  "option_type",
+                  "usage_rule"
+                ],
+                "title": "UpsertOptionMasterBody",
+                "description": "オプション作成・更新リクエスト"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "オプションを作成しました"
+                    },
+                    "option": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "OP002",
+                          "description": "オプションID"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "水素水",
+                          "description": "オプション名"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "H2O-001",
+                          "description": "オプションコード"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "enum": ["joyfit", "fit365", "joyfit24", "joyfit_yoga", "joyfit_plus"],
+                          "title": "StoreListBrand",
+                          "description": "ブランド"
+                        },
+                        "option_type": {
+                          "type": "string",
+                          "enum": ["standard", "metered", "auto_attached"],
+                          "title": "OptionType",
+                          "description": "オプション種別"
+                        },
+                        "price_including_tax": {
+                          "type": "number",
+                          "minimum": 0,
+                          "example": 1100,
+                          "description": "料金（税込）"
+                        },
+                        "tax_rate": {
+                          "type": "number",
+                          "minimum": 0,
+                          "example": 10,
+                          "description": "税率（%）"
+                        },
+                        "prorated_enabled": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "日割り要否"
+                        },
+                        "prorata_method": {
+                          "type": "string",
+                          "nullable": true,
+                          "enum": ["daily", "fixed", null],
+                          "title": "OptionProrataMethod",
+                          "description": "日割り計算方法（prorated_enabled=true の場合のみ）"
+                        },
+                        "usage_rule": {
+                          "type": "string",
+                          "enum": ["disabled", "add_remove", "add_remove_change", "change_remove"],
+                          "title": "OptionUsageRule",
+                          "description": "利用可否ルール"
+                        },
+                        "linked_contracts": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 10,
+                          "description": "紐付き契約プラン数"
+                        },
+                        "member_count": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 680,
+                          "description": "利用会員数"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "対象店舗ID（null = 全店舗）"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "対象店舗名（null = 全店舗）"
+                        },
+                        "accounting_code": {
+                          "type": "string",
+                          "example": "OPT-102",
+                          "description": "会計コード"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "OptionStatus",
+                          "description": "ステータス"
+                        },
+                        "price_excluding_tax": {
+                          "type": "number",
+                          "minimum": 0,
+                          "example": 1100,
+                          "description": "料金（税抜）"
+                        },
+                        "option_category": {
+                          "type": "string",
+                          "enum": [
+                            "supplement",
+                            "drink",
+                            "rental",
+                            "locker",
+                            "insurance",
+                            "service"
+                          ],
+                          "title": "OptionCategory",
+                          "description": "オプション分類"
+                        },
+                        "store_range": {
+                          "type": "string",
+                          "example": "全店舗（12店舗）",
+                          "description": "対象店舗範囲"
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "説明文"
+                        },
+                        "note": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "備考"
+                        },
+                        "member_app_image": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "会員公開用画像（base64）"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2024-04-01T10:00:00+09:00",
+                          "description": "作成日時"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026-02-15T14:30:00+09:00",
+                          "description": "更新日時"
+                        },
+                        "popularity_rank": {
+                          "type": "integer",
+                          "nullable": true,
+                          "minimum": 0,
+                          "exclusiveMinimum": true,
+                          "example": 3,
+                          "description": "人気ランキング"
+                        },
+                        "tsuji_type": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "都次オプション種別"
+                        },
+                        "constraint_main_option_change": {
+                          "type": "boolean",
+                          "description": "主オプション契約変更可否"
+                        },
+                        "constraint_change": {
+                          "type": "boolean",
+                          "description": "変更可否"
+                        },
+                        "area_restrictions": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "エリア制限"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "code",
+                        "brand",
+                        "option_type",
+                        "price_including_tax",
+                        "tax_rate",
+                        "prorated_enabled",
+                        "prorata_method",
+                        "usage_rule",
+                        "linked_contracts",
+                        "member_count",
+                        "store_id",
+                        "store_name",
+                        "accounting_code",
+                        "status",
+                        "price_excluding_tax",
+                        "option_category",
+                        "store_range",
+                        "description",
+                        "note",
+                        "member_app_image",
+                        "created_at",
+                        "updated_at",
+                        "popularity_rank",
+                        "tsuji_type",
+                        "constraint_main_option_change",
+                        "constraint_change",
+                        "area_restrictions"
+                      ],
+                      "title": "OptionMasterDetail",
+                      "description": "オプション詳細"
+                    }
+                  },
+                  "required": ["message", "option"],
+                  "title": "CreateOptionMasterResponse",
+                  "description": "オプション作成レスポンス"
                 }
               }
             }
