@@ -1,4 +1,4 @@
-import type { CampaignDetail } from '@/app/api/_schemas/campaign.schema';
+import type { CampaignDetail } from '@/lib/api/types.gen';
 
 import type { CampaignFormSubmitValues, CampaignFormValues } from './campaign-form.schema';
 

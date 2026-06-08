@@ -2,7 +2,6 @@
 
 import type { ReactNode } from 'react';
 
-import type { CampaignDetail } from '@/app/api/_schemas/campaign.schema';
 import { formatDateYYYYMMDD } from '@/utils/date.util';
 
 import { BrandBadge } from '@/components/common/brand-badge';
@@ -10,6 +9,7 @@ import { Field } from '@/components/common/field';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
+import type { CampaignDetail } from '@/lib/api/types.gen';
 import { cn } from '@/lib/utils';
 
 import {
