@@ -62,7 +62,7 @@ export default function OptionCreatePage() {
     ...postCrmOptionsMutation(),
     onSuccess: (res) => {
       toast.success(res.message || 'オプションを作成しました');
-      queryClient.invalidateQueries({ queryKey: getCrmOptionsQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getCrmOptionsQueryKey(), refetchType: 'all' });
       router.push(navigate(`/options/[id]`, res.option.id));
     },
     onError: () => {
