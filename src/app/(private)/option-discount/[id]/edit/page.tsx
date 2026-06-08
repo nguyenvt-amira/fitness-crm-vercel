@@ -72,7 +72,10 @@ function OptionDiscountEditForm({
     ...patchCrmOptionDiscountsByIdMutation(),
     onSuccess: (res) => {
       toast.success(res.message || 'セット割を更新しました');
-      queryClient.invalidateQueries({ queryKey: getCrmOptionDiscountsQueryKey() });
+      queryClient.invalidateQueries({
+        queryKey: getCrmOptionDiscountsQueryKey(),
+        refetchType: 'all',
+      });
       queryClient.invalidateQueries({
         queryKey: getCrmOptionDiscountsByIdQueryKey({ path: { id } }),
       });
