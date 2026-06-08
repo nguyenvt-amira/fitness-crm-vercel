@@ -14,6 +14,30 @@ export const routes = {
     pattern: '/403',
     private: true,
   },
+  '/contracts': {
+    router: '/contracts',
+    filePath: '(private)/contracts',
+    pattern: '/contracts',
+    private: true,
+  },
+  '/contracts/[id]': {
+    router: (id: string | number) => `/contracts/${id}`,
+    filePath: '(private)/contracts/[id]',
+    pattern: '/contracts/:id',
+    private: true,
+  },
+  '/contracts/[id]/edit': {
+    router: (id: string | number) => `/contracts/${id}/edit`,
+    filePath: '(private)/contracts/[id]/edit',
+    pattern: '/contracts/:id/edit',
+    private: true,
+  },
+  '/contracts/create': {
+    router: '/contracts/create',
+    filePath: '(private)/contracts/create',
+    pattern: '/contracts/create',
+    private: true,
+  },
   '/family-registrations': {
     router: '/family-registrations',
     filePath: '(private)/family-registrations',
@@ -170,6 +194,10 @@ export const routes = {
 export const routeKeys = [
   '/',
   '/403',
+  '/contracts',
+  '/contracts/[id]',
+  '/contracts/[id]/edit',
+  '/contracts/create',
   '/family-registrations',
   '/family-registrations/[id]',
   '/family-registrations/dashboard',
@@ -201,6 +229,10 @@ export const routeKeys = [
 export const routePatterns = [
   '/',
   '/403',
+  '/contracts',
+  '/contracts/:id',
+  '/contracts/:id/edit',
+  '/contracts/create',
   '/family-registrations',
   '/family-registrations/:id',
   '/family-registrations/dashboard',

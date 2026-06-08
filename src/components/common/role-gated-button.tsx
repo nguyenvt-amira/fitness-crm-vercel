@@ -48,6 +48,8 @@ interface RoleGatedButtonProps extends ComponentProps<typeof Button> {
   requiredPermission?: Permission;
   /** Tooltip shown when the user is not allowed (default: '権限がありません') */
   denyTooltip?: string;
+  /** Optional tooltip shown even when the user is allowed (e.g. to explain why the button might be disabled) */
+  tooltip?: string;
   children: ReactNode;
 }
 
@@ -58,6 +60,7 @@ export function RoleGatedButton({
   children,
   className,
   disabled: externalDisabled,
+  tooltip: externalTooltip,
   onClick,
   ...props
 }: RoleGatedButtonProps) {
@@ -69,9 +72,20 @@ export function RoleGatedButton({
 
   if (allowed) {
     return (
-      <Button className={className} onClick={onClick} disabled={externalDisabled} {...props}>
-        {children}
-      </Button>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger render={<span className="inline-flex" />}>
+            <Button className={className} onClick={onClick} disabled={externalDisabled} {...props}>
+              {children}
+            </Button>
+          </TooltipTrigger>
+          {externalTooltip && (
+            <TooltipContent>
+              <p className="text-xs">{externalTooltip}</p>
+            </TooltipContent>
+          )}
+        </Tooltip>
+      </TooltipProvider>
     );
   }
 

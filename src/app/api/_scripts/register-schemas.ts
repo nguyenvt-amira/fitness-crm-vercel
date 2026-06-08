@@ -9,6 +9,7 @@ import * as blacklistSchemas from '../_schemas/blacklist.schema';
 import * as brandSchemas from '../_schemas/brand.schema';
 import * as familyRegistrationSchemas from '../_schemas/family-registration.schema';
 import * as leaveSchemas from '../_schemas/leave.schema';
+import * as mainContractSchemas from '../_schemas/main-contract.schema';
 import * as memberSchemas from '../_schemas/member.schema';
 import * as membershipApplicationSchemas from '../_schemas/membership-application.schema';
 import * as positionSchemas from '../_schemas/position.schema';
@@ -617,6 +618,36 @@ export function registerAllSchemas() {
     registry.register('GetPositionsResponse', positionSchemas.GetPositionsResponseSchema),
   );
   registeredSchemaMap.set(
+    'MainContractType',
+    registry.register('MainContractType', mainContractSchemas.MainContractTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'MainContractStatus',
+    registry.register('MainContractStatus', mainContractSchemas.MainContractStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'MainContractOtherStoreUsage',
+    registry.register(
+      'MainContractOtherStoreUsage',
+      mainContractSchemas.MainContractOtherStoreUsageSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'MainContractListItem',
+    registry.register('MainContractListItem', mainContractSchemas.MainContractListItemSchema),
+  );
+  registeredSchemaMap.set(
+    'GetMainContractsQuery',
+    registry.register('GetMainContractsQuery', mainContractSchemas.GetMainContractsQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'GetMainContractsResponse',
+    registry.register(
+      'GetMainContractsResponse',
+      mainContractSchemas.GetMainContractsResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
     'StoreMainContractStatus',
     registry.register('StoreMainContractStatus', storeSchemas.StoreMainContractStatusSchema),
   );
@@ -721,7 +752,6 @@ export function registerAllSchemas() {
       storeSchemas.UpdateStoreBusinessHoursResponseSchema,
     ),
   );
-  registeredSchemaMap.set('Store', registry.register('Store', storeSchemas.StoreSchema));
 
   // Register staff enum schemas
   registeredSchemaMap.set(

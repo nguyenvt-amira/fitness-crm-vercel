@@ -90,6 +90,14 @@ export enum Permission {
   FamilyRegistrationsView = 'family-registrations.view',
   FamilyRegistrationsDashboardView = 'family-registrations.dashboard-view',
   FamilyRegistrationsApprove = 'family-registrations.approve',
+
+  // -------------------------------------------------------------------------
+  // Contracts
+  // -------------------------------------------------------------------------
+  ContractsView = 'contracts.view',
+  ContractsEdit = 'contracts.edit',
+  ContractsDelete = 'contracts.delete',
+  ContractsCreate = 'contracts.create',
 }
 
 /** Authenticated user stored in context */

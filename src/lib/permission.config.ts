@@ -49,6 +49,12 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
   '/family-registrations': Permission.FamilyRegistrationsView,
   '/family-registrations/:id': Permission.FamilyRegistrationsView,
   '/family-registrations/dashboard': Permission.FamilyRegistrationsDashboardView,
+
+  // Contracts
+  '/contracts': Permission.ContractsView,
+  '/contracts/:id': Permission.ContractsView,
+  '/contracts/create': Permission.ContractsCreate,
+  '/contracts/:id/edit': Permission.ContractsEdit,
 };
 
 // ---------------------------------------------------------------------------
@@ -99,6 +105,10 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.FamilyRegistrationsView,
     Permission.FamilyRegistrationsDashboardView,
     Permission.FamilyRegistrationsApprove,
+    Permission.ContractsView,
+    Permission.ContractsEdit,
+    Permission.ContractsDelete,
+    Permission.ContractsCreate,
   ],
 
   [UserRole.Manager]: [
@@ -118,6 +128,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.MembershipApplicationsCreate,
     Permission.FamilyRegistrationsView,
     Permission.FamilyRegistrationsDashboardView,
+    Permission.ContractsView,
   ],
 
   [UserRole.Staff]: [
@@ -141,6 +152,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.MembershipApplicationsCreate,
     Permission.FamilyRegistrationsView,
     Permission.FamilyRegistrationsDashboardView,
+    Permission.ContractsView,
   ],
 
   [UserRole.Trainer]: [Permission.MembersView],

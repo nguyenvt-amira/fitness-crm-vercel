@@ -1,4 +1,4 @@
-export const PAGE_SIZE = 20;
+export const PAGE_SIZE = 25;
 export const TEXT_MAX_LENGTH = 255;
 export const TEXTAREA_MAX_LENGTH = 1000;
 export const PREFECTURES = [
