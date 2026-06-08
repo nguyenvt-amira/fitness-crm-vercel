@@ -306,11 +306,6 @@ export const CampaignDetailStatsSchema = z
       .int()
       .nonnegative()
       .openapi({ example: 12, description: 'New applications this month' }),
-    discount_total: z
-      .number()
-      .int()
-      .nonnegative()
-      .openapi({ example: 1284000, description: 'Total discount amount' }),
   })
   .openapi({
     title: 'CampaignDetailStats',

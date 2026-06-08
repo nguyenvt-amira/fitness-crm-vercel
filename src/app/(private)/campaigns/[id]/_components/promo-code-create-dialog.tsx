@@ -457,9 +457,7 @@ export function PromoCodeCreateDialog({
                     </SelectContent>
                   </Select>
                   {canChooseGlobalScope ? (
-                    <p className="text-muted-foreground text-xs">
-                      Headquarter / Manager / System はタイプA と B を選択できます。
-                    </p>
+                    <p className="text-muted-foreground text-xs">はタイプA と B を選択できます。</p>
                   ) : (
                     <p className="text-muted-foreground text-xs">Staff はタイプB 固定です。</p>
                   )}

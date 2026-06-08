@@ -1672,20 +1672,9 @@
             "minimum": 0,
             "example": 12,
             "description": "New applications this month"
-          },
-          "discount_total": {
-            "type": "integer",
-            "minimum": 0,
-            "example": 1284000,
-            "description": "Total discount amount"
           }
         },
-        "required": [
-          "applied_member_count",
-          "application_count",
-          "monthly_new_application_count",
-          "discount_total"
-        ],
+        "required": ["applied_member_count", "application_count", "monthly_new_application_count"],
         "title": "CampaignDetailStats",
         "description": "Campaign summary metrics shown on the detail page"
       },
@@ -2012,19 +2001,12 @@
                 "minimum": 0,
                 "example": 12,
                 "description": "New applications this month"
-              },
-              "discount_total": {
-                "type": "integer",
-                "minimum": 0,
-                "example": 1284000,
-                "description": "Total discount amount"
               }
             },
             "required": [
               "applied_member_count",
               "application_count",
-              "monthly_new_application_count",
-              "discount_total"
+              "monthly_new_application_count"
             ],
             "title": "CampaignDetailStats",
             "description": "Campaign summary metrics shown on the detail page"
@@ -2575,19 +2557,12 @@
                     "minimum": 0,
                     "example": 12,
                     "description": "New applications this month"
-                  },
-                  "discount_total": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "example": 1284000,
-                    "description": "Total discount amount"
                   }
                 },
                 "required": [
                   "applied_member_count",
                   "application_count",
-                  "monthly_new_application_count",
-                  "discount_total"
+                  "monthly_new_application_count"
                 ],
                 "title": "CampaignDetailStats",
                 "description": "Campaign summary metrics shown on the detail page"
@@ -17848,19 +17823,12 @@
                               "minimum": 0,
                               "example": 12,
                               "description": "New applications this month"
-                            },
-                            "discount_total": {
-                              "type": "integer",
-                              "minimum": 0,
-                              "example": 1284000,
-                              "description": "Total discount amount"
                             }
                           },
                           "required": [
                             "applied_member_count",
                             "application_count",
-                            "monthly_new_application_count",
-                            "discount_total"
+                            "monthly_new_application_count"
                           ],
                           "title": "CampaignDetailStats",
                           "description": "Campaign summary metrics shown on the detail page"
@@ -18508,19 +18476,12 @@
                               "minimum": 0,
                               "example": 12,
                               "description": "New applications this month"
-                            },
-                            "discount_total": {
-                              "type": "integer",
-                              "minimum": 0,
-                              "example": 1284000,
-                              "description": "Total discount amount"
                             }
                           },
                           "required": [
                             "applied_member_count",
                             "application_count",
-                            "monthly_new_application_count",
-                            "discount_total"
+                            "monthly_new_application_count"
                           ],
                           "title": "CampaignDetailStats",
                           "description": "Campaign summary metrics shown on the detail page"
@@ -19442,19 +19403,12 @@
                               "minimum": 0,
                               "example": 12,
                               "description": "New applications this month"
-                            },
-                            "discount_total": {
-                              "type": "integer",
-                              "minimum": 0,
-                              "example": 1284000,
-                              "description": "Total discount amount"
                             }
                           },
                           "required": [
                             "applied_member_count",
                             "application_count",
-                            "monthly_new_application_count",
-                            "discount_total"
+                            "monthly_new_application_count"
                           ],
                           "title": "CampaignDetailStats",
                           "description": "Campaign summary metrics shown on the detail page"
@@ -38859,6 +38813,86 @@
         }
       }
     },
+    "/crm/positions": {
+      "get": {
+        "summary": "List staff positions",
+        "description": "Returns the position master (職位マスター) for filters and dropdowns",
+        "tags": ["Staffs"],
+        "responses": {
+          "200": {
+            "description": "Position list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "positions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 1,
+                            "description": "Position PK"
+                          },
+                          "role": {
+                            "type": "string",
+                            "enum": ["headquarter", "manager", "staff", "trainer", "observer"],
+                            "title": "PositionRoleCategory",
+                            "description": "ロール"
+                          },
+                          "position_name": {
+                            "type": "string",
+                            "example": "本部管理者",
+                            "description": "職位名"
+                          },
+                          "features": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "nullable": true
+                            },
+                            "title": "PositionFeatures",
+                            "description": "主な権限の特徴"
+                          }
+                        },
+                        "required": ["id", "role", "position_name", "features"],
+                        "title": "Position",
+                        "description": "Normalized staff position / 職位マスター"
+                      },
+                      "description": "All positions (職位マスター)"
+                    }
+                  },
+                  "required": ["positions"],
+                  "title": "GetPositionsResponse",
+                  "description": "List of staff positions for filters and forms"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/promo-codes/{code}": {
       "patch": {
         "summary": "Update promo code",
@@ -39548,86 +39582,6 @@
                   "required": ["error"],
                   "title": "PromoCodeErrorResponse",
                   "description": "Promo-code-specific error response"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/crm/positions": {
-      "get": {
-        "summary": "List staff positions",
-        "description": "Returns the position master (職位マスター) for filters and dropdowns",
-        "tags": ["Staffs"],
-        "responses": {
-          "200": {
-            "description": "Position list",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "positions": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "integer",
-                            "example": 1,
-                            "description": "Position PK"
-                          },
-                          "role": {
-                            "type": "string",
-                            "enum": ["headquarter", "manager", "staff", "trainer", "observer"],
-                            "title": "PositionRoleCategory",
-                            "description": "ロール"
-                          },
-                          "position_name": {
-                            "type": "string",
-                            "example": "本部管理者",
-                            "description": "職位名"
-                          },
-                          "features": {
-                            "type": "object",
-                            "additionalProperties": {
-                              "nullable": true
-                            },
-                            "title": "PositionFeatures",
-                            "description": "主な権限の特徴"
-                          }
-                        },
-                        "required": ["id", "role", "position_name", "features"],
-                        "title": "Position",
-                        "description": "Normalized staff position / 職位マスター"
-                      },
-                      "description": "All positions (職位マスター)"
-                    }
-                  },
-                  "required": ["positions"],
-                  "title": "GetPositionsResponse",
-                  "description": "List of staff positions for filters and forms"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Invalid email or password",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
                 }
               }
             }

@@ -1434,49 +1434,6 @@ export class Options2 {
     }
 }
 
-export class PromoCodes {
-    /**
-     * Update promo code
-     *
-     * Update a promo code status in mock storage
-     */
-    public static patchCrmPromoCodesByCode<ThrowOnError extends boolean = false>(options: Options<PatchCrmPromoCodesByCodeData, ThrowOnError>) {
-        return (options.client ?? client).patch<PatchCrmPromoCodesByCodeResponses, PatchCrmPromoCodesByCodeErrors, ThrowOnError>({
-            url: '/crm/promo-codes/{code}',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            }
-        });
-    }
-    
-    /**
-     * Get promo codes
-     *
-     * Get promo codes by campaign
-     */
-    public static getCrmPromoCodes<ThrowOnError extends boolean = false>(options: Options<GetCrmPromoCodesData, ThrowOnError>) {
-        return (options.client ?? client).get<GetCrmPromoCodesResponses, GetCrmPromoCodesErrors, ThrowOnError>({ url: '/crm/promo-codes', ...options });
-    }
-    
-    /**
-     * Create promo code
-     *
-     * Create a new promo code in mock storage
-     */
-    public static postCrmPromoCodes<ThrowOnError extends boolean = false>(options?: Options<PostCrmPromoCodesData, ThrowOnError>) {
-        return (options?.client ?? client).post<PostCrmPromoCodesResponses, PostCrmPromoCodesErrors, ThrowOnError>({
-            url: '/crm/promo-codes',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options?.headers
-            }
-        });
-    }
-}
-
 export class Staffs {
     /**
      * List staff positions
@@ -1551,6 +1508,49 @@ export class Staffs {
      */
     public static getCrmStaffs<ThrowOnError extends boolean = false>(options?: Options<GetCrmStaffsData, ThrowOnError>) {
         return (options?.client ?? client).get<GetCrmStaffsResponses, GetCrmStaffsErrors, ThrowOnError>({ url: '/crm/staffs', ...options });
+    }
+}
+
+export class PromoCodes {
+    /**
+     * Update promo code
+     *
+     * Update a promo code status in mock storage
+     */
+    public static patchCrmPromoCodesByCode<ThrowOnError extends boolean = false>(options: Options<PatchCrmPromoCodesByCodeData, ThrowOnError>) {
+        return (options.client ?? client).patch<PatchCrmPromoCodesByCodeResponses, PatchCrmPromoCodesByCodeErrors, ThrowOnError>({
+            url: '/crm/promo-codes/{code}',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Get promo codes
+     *
+     * Get promo codes by campaign
+     */
+    public static getCrmPromoCodes<ThrowOnError extends boolean = false>(options: Options<GetCrmPromoCodesData, ThrowOnError>) {
+        return (options.client ?? client).get<GetCrmPromoCodesResponses, GetCrmPromoCodesErrors, ThrowOnError>({ url: '/crm/promo-codes', ...options });
+    }
+    
+    /**
+     * Create promo code
+     *
+     * Create a new promo code in mock storage
+     */
+    public static postCrmPromoCodes<ThrowOnError extends boolean = false>(options?: Options<PostCrmPromoCodesData, ThrowOnError>) {
+        return (options?.client ?? client).post<PostCrmPromoCodesResponses, PostCrmPromoCodesErrors, ThrowOnError>({
+            url: '/crm/promo-codes',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options?.headers
+            }
+        });
     }
 }
 

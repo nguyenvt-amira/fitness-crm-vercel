@@ -2639,6 +2639,26 @@ export const postCrmOptionsMutation = (options?: Partial<Options<PostCrmOptionsD
     return mutationOptions;
 };
 
+export const getCrmPositionsQueryKey = (options?: Options<GetCrmPositionsData>) => createQueryKey('getCrmPositions', options);
+
+/**
+ * List staff positions
+ *
+ * Returns the position master (職位マスター) for filters and dropdowns
+ */
+export const getCrmPositionsOptions = (options?: Options<GetCrmPositionsData>) => queryOptions<GetCrmPositionsResponse, GetCrmPositionsError, GetCrmPositionsResponse, ReturnType<typeof getCrmPositionsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Staffs.getCrmPositions({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmPositionsQueryKey(options)
+});
+
 /**
  * Update promo code
  *
@@ -2696,26 +2716,6 @@ export const postCrmPromoCodesMutation = (options?: Partial<Options<PostCrmPromo
     };
     return mutationOptions;
 };
-
-export const getCrmPositionsQueryKey = (options?: Options<GetCrmPositionsData>) => createQueryKey('getCrmPositions', options);
-
-/**
- * List staff positions
- *
- * Returns the position master (職位マスター) for filters and dropdowns
- */
-export const getCrmPositionsOptions = (options?: Options<GetCrmPositionsData>) => queryOptions<GetCrmPositionsResponse, GetCrmPositionsError, GetCrmPositionsResponse, ReturnType<typeof getCrmPositionsQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Staffs.getCrmPositions({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmPositionsQueryKey(options)
-});
 
 /**
  * Delete a staff member

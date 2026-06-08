@@ -1202,10 +1202,6 @@ export type CampaignDetailStats = {
      * New applications this month
      */
     monthly_new_application_count: number;
-    /**
-     * Total discount amount
-     */
-    discount_total: number;
 };
 
 /**
@@ -1447,10 +1443,6 @@ export type CampaignDetail = {
          * New applications this month
          */
         monthly_new_application_count: number;
-        /**
-         * Total discount amount
-         */
-        discount_total: number;
     };
     /**
      * CampaignDetailMetadata
@@ -1813,10 +1805,6 @@ export type GetCampaignDetailResponse = {
              * New applications this month
              */
             monthly_new_application_count: number;
-            /**
-             * Total discount amount
-             */
-            discount_total: number;
         };
         /**
          * CampaignDetailMetadata
@@ -12767,10 +12755,6 @@ export type GetCrmCampaignsByIdResponses = {
                  * New applications this month
                  */
                 monthly_new_application_count: number;
-                /**
-                 * Total discount amount
-                 */
-                discount_total: number;
             };
             /**
              * CampaignDetailMetadata
@@ -13180,10 +13164,6 @@ export type PatchCrmCampaignsByIdResponses = {
                  * New applications this month
                  */
                 monthly_new_application_count: number;
-                /**
-                 * Total discount amount
-                 */
-                discount_total: number;
             };
             /**
              * CampaignDetailMetadata
@@ -13700,10 +13680,6 @@ export type PostCrmCampaignsResponses = {
                  * New applications this month
                  */
                 monthly_new_application_count: number;
-                /**
-                 * Total discount amount
-                 */
-                discount_total: number;
             };
             /**
              * CampaignDetailMetadata
@@ -25181,6 +25157,68 @@ export type PostCrmOptionsResponses = {
 
 export type PostCrmOptionsResponse = PostCrmOptionsResponses[keyof PostCrmOptionsResponses];
 
+export type GetCrmPositionsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/positions';
+};
+
+export type GetCrmPositionsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmPositionsError = GetCrmPositionsErrors[keyof GetCrmPositionsErrors];
+
+export type GetCrmPositionsResponses = {
+    /**
+     * GetPositionsResponse
+     *
+     * List of staff positions for filters and forms
+     */
+    200: {
+        /**
+         * All positions (職位マスター)
+         */
+        positions: Array<{
+            /**
+             * Position PK
+             */
+            id: number;
+            /**
+             * PositionRoleCategory
+             *
+             * ロール
+             */
+            role: 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
+            /**
+             * 職位名
+             */
+            position_name: string;
+            /**
+             * PositionFeatures
+             *
+             * 主な権限の特徴
+             */
+            features: {
+                [key: string]: unknown;
+            };
+        }>;
+    };
+};
+
+export type GetCrmPositionsResponse = GetCrmPositionsResponses[keyof GetCrmPositionsResponses];
+
 export type PatchCrmPromoCodesByCodeData = {
     /**
      * UpdatePromoCodeStatusBody
@@ -25595,68 +25633,6 @@ export type PostCrmPromoCodesResponses = {
 };
 
 export type PostCrmPromoCodesResponse = PostCrmPromoCodesResponses[keyof PostCrmPromoCodesResponses];
-
-export type GetCrmPositionsData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/crm/positions';
-};
-
-export type GetCrmPositionsErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type GetCrmPositionsError = GetCrmPositionsErrors[keyof GetCrmPositionsErrors];
-
-export type GetCrmPositionsResponses = {
-    /**
-     * GetPositionsResponse
-     *
-     * List of staff positions for filters and forms
-     */
-    200: {
-        /**
-         * All positions (職位マスター)
-         */
-        positions: Array<{
-            /**
-             * Position PK
-             */
-            id: number;
-            /**
-             * PositionRoleCategory
-             *
-             * ロール
-             */
-            role: 'headquarter' | 'manager' | 'staff' | 'trainer' | 'observer';
-            /**
-             * 職位名
-             */
-            position_name: string;
-            /**
-             * PositionFeatures
-             *
-             * 主な権限の特徴
-             */
-            features: {
-                [key: string]: unknown;
-            };
-        }>;
-    };
-};
-
-export type GetCrmPositionsResponse = GetCrmPositionsResponses[keyof GetCrmPositionsResponses];
 
 export type DeleteCrmStaffsByIdData = {
     /**

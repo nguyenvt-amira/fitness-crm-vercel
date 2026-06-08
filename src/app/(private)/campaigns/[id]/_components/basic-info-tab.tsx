@@ -94,7 +94,7 @@ export function BasicInfoTab({ campaign }: Readonly<BasicInfoTabProps>) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-3">
         <SummaryCard
           title="適用会員数"
           value={`${campaign.stats.applied_member_count.toLocaleString()}名`}
@@ -108,12 +108,6 @@ export function BasicInfoTab({ campaign }: Readonly<BasicInfoTabProps>) {
           title="今月の新規適用"
           value={`${campaign.stats.monthly_new_application_count.toLocaleString()}名`}
           tone="success"
-        />
-        <SummaryCard
-          title="割引総額"
-          value={campaign.stats.discount_total.toLocaleString()}
-          prefix="¥"
-          tone="warning"
         />
       </div>
 

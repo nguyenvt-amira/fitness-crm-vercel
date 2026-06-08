@@ -5414,7 +5414,6 @@ function createDb() {
               applied_member_count: 0,
               application_count: 0,
               monthly_new_application_count: 0,
-              discount_total: 0,
             },
             metadata: metadata ?? {
               created_at: '2026/01/01 00:00',
@@ -5487,7 +5486,6 @@ function createDb() {
               applied_member_count: 128,
               application_count: 45,
               monthly_new_application_count: 12,
-              discount_total: 1284000,
             },
             metadata: {
               created_at: '2026/01/10 09:30',
@@ -5569,7 +5567,6 @@ function createDb() {
               applied_member_count: 286,
               application_count: 132,
               monthly_new_application_count: 24,
-              discount_total: 2489000,
             },
             metadata: {
               created_at: '2026/01/01 08:00',
@@ -5644,7 +5641,6 @@ function createDb() {
               applied_member_count: 64,
               application_count: 21,
               monthly_new_application_count: 7,
-              discount_total: 864000,
             },
             metadata: {
               created_at: '2026/03/18 16:45',
@@ -5726,7 +5722,6 @@ function createDb() {
               applied_member_count: 19,
               application_count: 5,
               monthly_new_application_count: 0,
-              discount_total: 134000,
             },
             metadata: {
               created_at: '2025/10/01 08:00',
@@ -5801,7 +5796,6 @@ function createDb() {
               applied_member_count: 42,
               application_count: 8,
               monthly_new_application_count: 2,
-              discount_total: 421500,
             },
             metadata: {
               created_at: '2026/05/10 12:00',
@@ -5868,7 +5862,6 @@ function createDb() {
               applied_member_count: 9,
               application_count: 3,
               monthly_new_application_count: 1,
-              discount_total: 78500,
             },
             metadata: {
               created_at: '2026/09/20 13:15',

@@ -178,7 +178,6 @@ export function buildCampaignDetail(
       applied_member_count: 0,
       application_count: 0,
       monthly_new_application_count: 0,
-      discount_total: 0,
     },
     metadata: {
       created_at: existing?.metadata.created_at ?? nowDisplay,
