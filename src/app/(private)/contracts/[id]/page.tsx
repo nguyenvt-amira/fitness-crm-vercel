@@ -32,6 +32,10 @@ import {
   MAIN_CONTRACT_TYPE_BADGE_CLASSES,
   MAIN_CONTRACT_TYPE_LABELS,
 } from '../_constants/constants';
+import {
+  getMainContractDeleteState,
+  getMainContractEditState,
+} from '../_utils/main-contract-editability';
 import { BasicInfoTab } from './_components/basic-info-tab';
 import { ContractDeleteDialog } from './_components/contract-delete-dialog';
 import { ContractDetailSkeleton } from './_components/contract-detail-skeleton';
@@ -74,8 +78,8 @@ export default function ContractDetailPage() {
     router.replace(`?${sp.toString()}`, { scroll: false });
   };
 
-  const activeMembers = contract.active_contracts ?? 0;
-  const childContractsCount = contract.child_contracts?.length ?? 0;
+  const { canEdit, editBlockedMessage } = getMainContractEditState(contract);
+  const { canDelete, deleteBlockedMessage } = getMainContractDeleteState(contract);
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
@@ -110,13 +114,9 @@ export default function ContractDetailPage() {
             <RoleGatedButton
               requiredPermission={Permission.ContractsEdit}
               className="gap-1"
-              disabled={activeMembers > 0}
+              disabled={!canEdit}
               onClick={() => router.push(`/contracts/${contractId}/edit`)}
-              tooltip={
-                activeMembers > 0
-                  ? `契約者が存在するため編集できません。新規マスタを登録してください`
-                  : undefined
-              }
+              tooltip={editBlockedMessage}
             >
               <Pencil className="size-4" />
               編集
@@ -130,12 +130,8 @@ export default function ContractDetailPage() {
                 <RoleGatedMenuItem
                   requiredPermission={Permission.ContractsDelete}
                   className="text-destructive"
-                  disabled={childContractsCount > 0 || activeMembers > 0}
-                  tooltip={
-                    childContractsCount > 0 || activeMembers > 0
-                      ? `契約者 ${activeMembers.toLocaleString()}名・派生マスタ ${childContractsCount}件が存在するため削除できません`
-                      : undefined
-                  }
+                  disabled={!canDelete}
+                  tooltip={deleteBlockedMessage}
                   onClick={() => setDeleteOpen(true)}
                 >
                   <Trash2 className="size-4" />

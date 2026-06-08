@@ -28,6 +28,7 @@ import {
   MAIN_CONTRACT_TYPE_BADGE_CLASSES,
   MAIN_CONTRACT_TYPE_LABELS,
 } from '../_constants/constants';
+import { getMainContractEditState } from '../_utils/main-contract-editability';
 
 type MainContractRow = GetCrmMainContractsResponse['main_contracts'][number];
 
@@ -278,6 +279,7 @@ export function useContractsTableColumns(): ColumnDef<MainContractRow>[] {
       header: '',
       cell: ({ row }) => {
         const contractId = row.original.id || '';
+        const { canEdit, editBlockedMessage } = getMainContractEditState(row.original);
         if (!contractId) return null;
         return (
           <DropdownMenu>
@@ -290,6 +292,8 @@ export function useContractsTableColumns(): ColumnDef<MainContractRow>[] {
             <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
               <RoleGatedMenuItem
                 requiredPermission={Permission.ContractsEdit}
+                disabled={!canEdit}
+                tooltip={editBlockedMessage}
                 onClick={() => {
                   router.push(navigate('/contracts/[id]/edit', contractId));
                 }}

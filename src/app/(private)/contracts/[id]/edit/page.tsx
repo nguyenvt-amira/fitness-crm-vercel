@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { BackLink } from '@/components/common/back-link';
 import { DataStateBoundary } from '@/components/common/data-state-boundary';
 import { PageHeader } from '@/components/common/page-header';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Form } from '@/components/ui/form';
 
 import {
@@ -29,6 +30,7 @@ import {
   DAYS_OF_WEEK,
   contractFormSchema,
 } from '../../_schemas/contract-form.schema';
+import { getMainContractEditState } from '../../_utils/main-contract-editability';
 
 interface ContractEditFormProps {
   id: string;
@@ -87,6 +89,9 @@ export default function ContractEditPage() {
   });
 
   const contract = data?.main_contract;
+  const { canEdit, editBlockedMessage } = contract
+    ? getMainContractEditState(contract)
+    : { canEdit: false as const, editBlockedMessage: undefined };
 
   const defaultValues = useMemo<ContractFormValues | null>(() => {
     if (!contract) return null;
@@ -144,7 +149,14 @@ export default function ContractEditPage() {
           title="主契約 編集"
         />
         <div className="mx-auto max-w-240 p-4">
-          {defaultValues && id && (
+          {contract && !canEdit && (
+            <Alert className="border-warning/50 bg-warning/10">
+              <AlertDescription className="text-muted-foreground text-sm">
+                {editBlockedMessage}
+              </AlertDescription>
+            </Alert>
+          )}
+          {defaultValues && id && canEdit && (
             <ContractEditForm key={contract?.id} id={id} defaultValues={defaultValues} />
           )}
         </div>
