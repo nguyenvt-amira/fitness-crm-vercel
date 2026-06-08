@@ -30,7 +30,7 @@ import {
   DAYS_OF_WEEK,
   contractFormSchema,
 } from '../../_schemas/contract-form.schema';
-import { getMainContractEditState } from '../../_utils/main-contract-editability';
+import { getContractEditState } from '../../_utils/contract-action-state';
 
 interface ContractEditFormProps {
   id: string;
@@ -90,7 +90,7 @@ export default function ContractEditPage() {
 
   const contract = data?.main_contract;
   const { canEdit, editBlockedMessage } = contract
-    ? getMainContractEditState(contract)
+    ? getContractEditState(contract)
     : { canEdit: false as const, editBlockedMessage: undefined };
 
   const defaultValues = useMemo<ContractFormValues | null>(() => {

@@ -1,12 +1,12 @@
-type MainContractEditStateTarget = {
+type ContractEditStateTarget = {
   active_contracts?: number | null;
 };
 
-type MainContractDeleteStateTarget = MainContractEditStateTarget & {
+type ContractDeleteStateTarget = ContractEditStateTarget & {
   child_contracts?: Array<unknown> | null;
 };
 
-export function getMainContractEditState(contract: MainContractEditStateTarget): {
+export function getContractEditState(contract: ContractEditStateTarget): {
   canEdit: boolean;
   editBlockedMessage?: string;
 } {
@@ -22,7 +22,7 @@ export function getMainContractEditState(contract: MainContractEditStateTarget):
   };
 }
 
-export function getMainContractDeleteState(contract: MainContractDeleteStateTarget): {
+export function getContractDeleteState(contract: ContractDeleteStateTarget): {
   canDelete: boolean;
   deleteBlockedMessage?: string;
 } {

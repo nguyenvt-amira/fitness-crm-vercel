@@ -28,7 +28,7 @@ import {
   MAIN_CONTRACT_TYPE_BADGE_CLASSES,
   MAIN_CONTRACT_TYPE_LABELS,
 } from '../_constants/constants';
-import { getMainContractEditState } from '../_utils/main-contract-editability';
+import { getContractEditState } from '../_utils/contract-action-state';
 
 type MainContractRow = GetCrmMainContractsResponse['main_contracts'][number];
 
@@ -279,7 +279,7 @@ export function useContractsTableColumns(): ColumnDef<MainContractRow>[] {
       header: '',
       cell: ({ row }) => {
         const contractId = row.original.id || '';
-        const { canEdit, editBlockedMessage } = getMainContractEditState(row.original);
+        const { canEdit, editBlockedMessage } = getContractEditState(row.original);
         if (!contractId) return null;
         return (
           <DropdownMenu>

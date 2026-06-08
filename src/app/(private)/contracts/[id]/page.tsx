@@ -32,10 +32,7 @@ import {
   MAIN_CONTRACT_TYPE_BADGE_CLASSES,
   MAIN_CONTRACT_TYPE_LABELS,
 } from '../_constants/constants';
-import {
-  getMainContractDeleteState,
-  getMainContractEditState,
-} from '../_utils/main-contract-editability';
+import { getContractDeleteState, getContractEditState } from '../_utils/contract-action-state';
 import { BasicInfoTab } from './_components/basic-info-tab';
 import { ContractDeleteDialog } from './_components/contract-delete-dialog';
 import { ContractDetailSkeleton } from './_components/contract-detail-skeleton';
@@ -78,8 +75,8 @@ export default function ContractDetailPage() {
     router.replace(`?${sp.toString()}`, { scroll: false });
   };
 
-  const { canEdit, editBlockedMessage } = getMainContractEditState(contract);
-  const { canDelete, deleteBlockedMessage } = getMainContractDeleteState(contract);
+  const { canEdit, editBlockedMessage } = getContractEditState(contract);
+  const { canDelete, deleteBlockedMessage } = getContractDeleteState(contract);
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
