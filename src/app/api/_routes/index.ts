@@ -14,6 +14,7 @@ import '@/app/api/crm/blacklist/[id]/route';
 // Blacklist (A-01 FR-015)
 import '@/app/api/crm/blacklist/route';
 // Brand master (Y-07) — OpenAPI tag: Brands
+import '@/app/api/crm/brands/[code]/route';
 import '@/app/api/crm/brands/route';
 import '@/app/api/crm/campaigns/[id]/change-history/route';
 import '@/app/api/crm/campaigns/[id]/route';

@@ -3,7 +3,11 @@
  * All APIs should read/update data through this module so list and detail stay in sync.
  */
 import { type BlacklistDetail } from '@/app/api/_schemas/blacklist.schema';
-import type { BrandItem } from '@/app/api/_schemas/brand.schema';
+import {
+  type BrandItem,
+  type CreateBrandRequest,
+  normalizeBrandCode,
+} from '@/app/api/_schemas/brand.schema';
 import type {
   CampaignChangeHistoryItem,
   CampaignDetail,
@@ -481,7 +485,8 @@ const SEED_BRAND_ROWS: BrandItem[] = [
 
 /** Resolve brand label from brand master with fallback */
 function staffBrandDisplayName(code: string): string {
-  const y07 = SEED_BRAND_ROWS.find((b) => b.code === code);
+  const normalizedCode = normalizeBrandCode(code);
+  const y07 = SEED_BRAND_ROWS.find((b) => b.code === normalizedCode);
   if (y07) return y07.display_name;
   const fallbacks: Record<string, string> = {
     all: '全ブランド',
@@ -1474,13 +1479,18 @@ type DbType = {
     _rows: BrandItem[];
     _seeded: boolean;
     _seed(): void;
-    getList(): BrandItem[];
+    getList(params?: { page?: number; limit?: number }): BrandItem[];
+    count(): number;
+    getByBrandId(brandId: string): BrandItem | undefined;
     getByCode(code: string): BrandItem | undefined;
+    add(data: CreateBrandRequest): BrandItem;
     update(
       code: string,
       patch: Partial<
         Pick<
           BrandItem,
+          | 'brand_id'
+          | 'display_name'
           | 'enrollment_fee_yen'
           | 'registration_admin_fee_yen'
           | 'card_issuance_fee_yen'
@@ -7310,19 +7320,59 @@ function createDb() {
         this._seeded = true;
         this._rows.push(...SEED_BRAND_ROWS.map((b) => ({ ...b })));
       },
-      getList(): BrandItem[] {
+      getList(params?: { page?: number; limit?: number }): BrandItem[] {
         this._seed();
-        return [...this._rows].sort((a, b) => a.sort_order - b.sort_order);
+        const rows = [...this._rows].sort((a, b) => a.sort_order - b.sort_order);
+        if (!params?.page || !params?.limit) return rows;
+        const start = (params.page - 1) * params.limit;
+        return rows.slice(start, start + params.limit);
+      },
+      count(): number {
+        this._seed();
+        return this._rows.length;
+      },
+      getByBrandId(brandId: string): BrandItem | undefined {
+        this._seed();
+        const normalizedBrandId = normalizeBrandCode(brandId);
+        return this._rows.find((r) => normalizeBrandCode(r.brand_id) === normalizedBrandId);
       },
       getByCode(code: string): BrandItem | undefined {
         this._seed();
-        return this._rows.find((r) => r.code === code);
+        const normalizedCode = normalizeBrandCode(code);
+        return this._rows.find((r) => normalizeBrandCode(r.code) === normalizedCode);
+      },
+      add(data: CreateBrandRequest): BrandItem {
+        this._seed();
+        const normalizedBrandId = normalizeBrandCode(data.brand_id);
+        const now = new Date().toISOString();
+        const createdBy = data.created_by ?? 'STF-001';
+        const nextSortOrder =
+          this._rows.length > 0 ? Math.max(...this._rows.map((row) => row.sort_order)) + 1 : 1;
+        const entry: BrandItem = {
+          brand_id: normalizedBrandId,
+          code: normalizedBrandId,
+          display_name: data.display_name,
+          enrollment_fee_yen: data.enrollment_fee_yen ?? null,
+          registration_admin_fee_yen: data.registration_admin_fee_yen ?? null,
+          card_issuance_fee_yen: data.card_issuance_fee_yen ?? null,
+          other_fee_description: data.other_fee_description ?? null,
+          currency: 'JPY',
+          sort_order: nextSortOrder,
+          created_at: now,
+          created_by: createdBy,
+          updated_at: now,
+          updated_by: createdBy,
+        };
+        this._rows.push(entry);
+        return entry;
       },
       update(
         code: string,
         patch: Partial<
           Pick<
             BrandItem,
+            | 'brand_id'
+            | 'display_name'
             | 'enrollment_fee_yen'
             | 'registration_admin_fee_yen'
             | 'card_issuance_fee_yen'
@@ -7332,12 +7382,14 @@ function createDb() {
         >,
       ): BrandItem | undefined {
         this._seed();
-        const idx = this._rows.findIndex((r) => r.code === code);
+        const normalizedCode = normalizeBrandCode(code);
+        const idx = this._rows.findIndex((r) => normalizeBrandCode(r.code) === normalizedCode);
         if (idx === -1) return undefined;
         const row = this._rows[idx]!;
         const next: BrandItem = {
           ...row,
           ...patch,
+          ...(patch.brand_id ? { brand_id: normalizeBrandCode(patch.brand_id) } : {}),
           updated_at: new Date().toISOString(),
         };
         this._rows[idx] = next;

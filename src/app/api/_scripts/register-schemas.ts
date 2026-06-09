@@ -890,6 +890,18 @@ export function registerAllSchemas() {
     registry.register('GetBrandsResponse', brandSchemas.GetBrandsResponseSchema),
   );
   registeredSchemaMap.set(
+    'GetBrandsQuery',
+    registry.register('GetBrandsQuery', brandSchemas.GetBrandsQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'CreateBrandRequest',
+    registry.register('CreateBrandRequest', brandSchemas.CreateBrandRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'CreateBrandResponse',
+    registry.register('CreateBrandResponse', brandSchemas.CreateBrandResponseSchema),
+  );
+  registeredSchemaMap.set(
     'UpdateBrandRequest',
     registry.register('UpdateBrandRequest', brandSchemas.UpdateBrandRequestSchema),
   );

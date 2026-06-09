@@ -7911,6 +7911,8 @@ export type ManagedBrandCode = string;
  */
 export type BrandItem = {
     /**
+     * ManagedBrandCode
+     *
      * ブランドID
      */
     brand_id: string;
@@ -7971,6 +7973,8 @@ export type GetBrandsResponse = {
      */
     brands: Array<{
         /**
+         * ManagedBrandCode
+         *
          * ブランドID
          */
         brand_id: string;
@@ -8019,6 +8023,147 @@ export type GetBrandsResponse = {
          */
         updated_by?: string | null;
     }>;
+    /**
+     * ページネーション情報
+     */
+    pagination: {
+        /**
+         * Current page number
+         */
+        page: number;
+        /**
+         * Items per page
+         */
+        limit: number;
+        /**
+         * Total number of items
+         */
+        total: number;
+        /**
+         * Total number of pages
+         */
+        total_pages: number;
+    };
+};
+
+/**
+ * GetBrandsQuery
+ *
+ * ブランドマスタ一覧取得クエリ
+ */
+export type GetBrandsQuery = {
+    /**
+     * Page number
+     */
+    page?: number;
+    /**
+     * Items per page
+     */
+    limit?: number;
+};
+
+/**
+ * CreateBrandRequest
+ *
+ * Y-07 ブランド設定の新規作成（本部のみ）
+ */
+export type CreateBrandRequest = {
+    /**
+     * 表示名
+     */
+    display_name: string;
+    /**
+     * ManagedBrandCode
+     *
+     * ブランドID
+     */
+    brand_id: string;
+    /**
+     * 入会金（円）
+     */
+    enrollment_fee_yen?: number | null;
+    /**
+     * 登録事務手数料（円）
+     */
+    registration_admin_fee_yen?: number | null;
+    /**
+     * カード発行料（円）
+     */
+    card_issuance_fee_yen?: number | null;
+    /**
+     * その他費用の表示テキスト。設定なしの場合は null
+     */
+    other_fee_description?: string | null;
+    /**
+     * 作成者スタッフID（モック用）
+     */
+    created_by?: string;
+};
+
+/**
+ * CreateBrandResponse
+ *
+ * 作成後のブランド行
+ */
+export type CreateBrandResponse = {
+    message: string;
+    /**
+     * BrandItem
+     *
+     * Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）
+     */
+    brand: {
+        /**
+         * ManagedBrandCode
+         *
+         * ブランドID
+         */
+        brand_id: string;
+        /**
+         * ManagedBrandCode
+         *
+         * ブランドコード
+         */
+        code: string;
+        /**
+         * 表示名
+         */
+        display_name: string;
+        /**
+         * 入会金デフォルト（円）。設定なしの場合は null
+         */
+        enrollment_fee_yen: number | null;
+        /**
+         * 登録事務手数料デフォルト（円）。設定なしの場合は null
+         */
+        registration_admin_fee_yen: number | null;
+        /**
+         * カード発行料デフォルト（円）。設定なしの場合は null
+         */
+        card_issuance_fee_yen: number | null;
+        /**
+         * その他費用の表示テキスト。設定なしの場合は null
+         */
+        other_fee_description: string | null;
+        /**
+         * 通貨
+         */
+        currency: 'JPY';
+        /**
+         * 一覧表示順
+         */
+        sort_order: number;
+        created_at: string;
+        updated_at: string;
+        /**
+         * 作成者スタッフID
+         */
+        created_by: string;
+        /**
+         * 最終更新者（本部のみ編集）
+         */
+        updated_by?: string | null;
+    };
 };
 
 /**
@@ -8027,6 +8172,16 @@ export type GetBrandsResponse = {
  * Y-07 ブランド設定の部分更新（本部のみ）
  */
 export type UpdateBrandRequest = {
+    /**
+     * 表示名
+     */
+    display_name?: string;
+    /**
+     * ManagedBrandCode
+     *
+     * ブランドID
+     */
+    brand_id?: string;
     /**
      * 入会金（円）
      */
@@ -8063,6 +8218,8 @@ export type UpdateBrandResponse = {
      */
     brand: {
         /**
+         * ManagedBrandCode
+         *
          * ブランドID
          */
         brand_id: string;
@@ -12367,14 +12524,190 @@ export type PostCrmBlacklistResponses = {
 
 export type PostCrmBlacklistResponse = PostCrmBlacklistResponses[keyof PostCrmBlacklistResponses];
 
+export type PatchCrmBrandsByCodeData = {
+    /**
+     * UpdateBrandRequest
+     *
+     * Y-07 ブランド設定の部分更新（本部のみ）
+     */
+    body?: {
+        /**
+         * 表示名
+         */
+        display_name?: string;
+        /**
+         * ManagedBrandCode
+         *
+         * ブランドID
+         */
+        brand_id?: string;
+        /**
+         * 入会金（円）
+         */
+        enrollment_fee_yen?: number | null;
+        /**
+         * 登録事務手数料（円）
+         */
+        registration_admin_fee_yen?: number | null;
+        /**
+         * カード発行料（円）
+         */
+        card_issuance_fee_yen?: number | null;
+        /**
+         * その他費用の表示テキスト。設定なしの場合は null
+         */
+        other_fee_description?: string | null;
+        /**
+         * 更新者スタッフID（モック用）
+         */
+        updated_by?: string;
+    };
+    path: {
+        /**
+         * Brand code
+         */
+        code: string;
+    };
+    query?: never;
+    url: '/crm/brands/{code}';
+};
+
+export type PatchCrmBrandsByCodeErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PatchCrmBrandsByCodeError = PatchCrmBrandsByCodeErrors[keyof PatchCrmBrandsByCodeErrors];
+
+export type PatchCrmBrandsByCodeResponses = {
+    /**
+     * UpdateBrandResponse
+     *
+     * 更新後のブランド行
+     */
+    200: {
+        message: string;
+        /**
+         * BrandItem
+         *
+         * Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）
+         */
+        brand: {
+            /**
+             * ManagedBrandCode
+             *
+             * ブランドID
+             */
+            brand_id: string;
+            /**
+             * ManagedBrandCode
+             *
+             * ブランドコード
+             */
+            code: string;
+            /**
+             * 表示名
+             */
+            display_name: string;
+            /**
+             * 入会金デフォルト（円）。設定なしの場合は null
+             */
+            enrollment_fee_yen: number | null;
+            /**
+             * 登録事務手数料デフォルト（円）。設定なしの場合は null
+             */
+            registration_admin_fee_yen: number | null;
+            /**
+             * カード発行料デフォルト（円）。設定なしの場合は null
+             */
+            card_issuance_fee_yen: number | null;
+            /**
+             * その他費用の表示テキスト。設定なしの場合は null
+             */
+            other_fee_description: string | null;
+            /**
+             * 通貨
+             */
+            currency: 'JPY';
+            /**
+             * 一覧表示順
+             */
+            sort_order: number;
+            created_at: string;
+            updated_at: string;
+            /**
+             * 作成者スタッフID
+             */
+            created_by: string;
+            /**
+             * 最終更新者（本部のみ編集）
+             */
+            updated_by?: string | null;
+        };
+    };
+};
+
+export type PatchCrmBrandsByCodeResponse = PatchCrmBrandsByCodeResponses[keyof PatchCrmBrandsByCodeResponses];
+
 export type GetCrmBrandsData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * Page number
+         */
+        page?: number;
+        /**
+         * Items per page
+         */
+        limit?: number;
+    };
     url: '/crm/brands';
 };
 
 export type GetCrmBrandsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
     /**
      * ErrorResponse
      *
@@ -12402,6 +12735,8 @@ export type GetCrmBrandsResponses = {
          */
         brands: Array<{
             /**
+             * ManagedBrandCode
+             *
              * ブランドID
              */
             brand_id: string;
@@ -12450,10 +12785,171 @@ export type GetCrmBrandsResponses = {
              */
             updated_by?: string | null;
         }>;
+        /**
+         * ページネーション情報
+         */
+        pagination: {
+            /**
+             * Current page number
+             */
+            page: number;
+            /**
+             * Items per page
+             */
+            limit: number;
+            /**
+             * Total number of items
+             */
+            total: number;
+            /**
+             * Total number of pages
+             */
+            total_pages: number;
+        };
     };
 };
 
 export type GetCrmBrandsResponse = GetCrmBrandsResponses[keyof GetCrmBrandsResponses];
+
+export type PostCrmBrandsData = {
+    /**
+     * CreateBrandRequest
+     *
+     * Y-07 ブランド設定の新規作成（本部のみ）
+     */
+    body?: {
+        /**
+         * 表示名
+         */
+        display_name: string;
+        /**
+         * ManagedBrandCode
+         *
+         * ブランドID
+         */
+        brand_id: string;
+        /**
+         * 入会金（円）
+         */
+        enrollment_fee_yen?: number | null;
+        /**
+         * 登録事務手数料（円）
+         */
+        registration_admin_fee_yen?: number | null;
+        /**
+         * カード発行料（円）
+         */
+        card_issuance_fee_yen?: number | null;
+        /**
+         * その他費用の表示テキスト。設定なしの場合は null
+         */
+        other_fee_description?: string | null;
+        /**
+         * 作成者スタッフID（モック用）
+         */
+        created_by?: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/brands';
+};
+
+export type PostCrmBrandsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmBrandsError = PostCrmBrandsErrors[keyof PostCrmBrandsErrors];
+
+export type PostCrmBrandsResponses = {
+    /**
+     * CreateBrandResponse
+     *
+     * 作成後のブランド行
+     */
+    201: {
+        message: string;
+        /**
+         * BrandItem
+         *
+         * Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）
+         */
+        brand: {
+            /**
+             * ManagedBrandCode
+             *
+             * ブランドID
+             */
+            brand_id: string;
+            /**
+             * ManagedBrandCode
+             *
+             * ブランドコード
+             */
+            code: string;
+            /**
+             * 表示名
+             */
+            display_name: string;
+            /**
+             * 入会金デフォルト（円）。設定なしの場合は null
+             */
+            enrollment_fee_yen: number | null;
+            /**
+             * 登録事務手数料デフォルト（円）。設定なしの場合は null
+             */
+            registration_admin_fee_yen: number | null;
+            /**
+             * カード発行料デフォルト（円）。設定なしの場合は null
+             */
+            card_issuance_fee_yen: number | null;
+            /**
+             * その他費用の表示テキスト。設定なしの場合は null
+             */
+            other_fee_description: string | null;
+            /**
+             * 通貨
+             */
+            currency: 'JPY';
+            /**
+             * 一覧表示順
+             */
+            sort_order: number;
+            created_at: string;
+            updated_at: string;
+            /**
+             * 作成者スタッフID
+             */
+            created_by: string;
+            /**
+             * 最終更新者（本部のみ編集）
+             */
+            updated_by?: string | null;
+        };
+    };
+};
+
+export type PostCrmBrandsResponse = PostCrmBrandsResponses[keyof PostCrmBrandsResponses];
 
 export type GetCrmCampaignsByIdChangeHistoryData = {
     body?: never;

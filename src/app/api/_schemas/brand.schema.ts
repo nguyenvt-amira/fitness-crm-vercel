@@ -3,6 +3,10 @@ import { z } from 'zod';
 
 extendZodWithOpenApi(z);
 
+export function normalizeBrandCode(value: string): string {
+  return value.trim().toLowerCase();
+}
+
 /**
  * Brands under management.
  */
@@ -21,8 +25,7 @@ export const ManagedBrandCodeSchema = z
  */
 export const BrandItemSchema = z
   .object({
-    brand_id: z.string().openapi({
-      example: 'joyfit',
+    brand_id: ManagedBrandCodeSchema.openapi({
       description: 'ブランドID',
     }),
     code: ManagedBrandCodeSchema.openapi({
@@ -83,14 +86,105 @@ export const GetBrandsResponseSchema = z
     brands: z.array(BrandItemSchema).openapi({
       description: '管理対象ブランド一覧',
     }),
+    pagination: z
+      .object({
+        page: z.number().openapi({
+          example: 1,
+          description: 'Current page number',
+        }),
+        limit: z.number().openapi({
+          example: 50,
+          description: 'Items per page',
+        }),
+        total: z.number().openapi({
+          example: 5,
+          description: 'Total number of items',
+        }),
+        total_pages: z.number().openapi({
+          example: 1,
+          description: 'Total number of pages',
+        }),
+      })
+      .openapi({
+        description: 'ページネーション情報',
+      }),
   })
   .openapi({
     title: 'GetBrandsResponse',
     description: 'ブランドマスタ一覧',
   });
 
+export const GetBrandsQuerySchema = z
+  .object({
+    page: z.coerce.number().int().min(1).default(1).openapi({
+      example: 1,
+      description: 'Page number',
+    }),
+    limit: z.coerce.number().int().min(1).max(200).default(50).openapi({
+      example: 50,
+      description: 'Items per page',
+    }),
+  })
+  .openapi({
+    title: 'GetBrandsQuery',
+    description: 'ブランドマスタ一覧取得クエリ',
+  });
+
+export const CreateBrandRequestSchema = z
+  .object({
+    display_name: z.string().min(1).openapi({
+      example: 'JOYFIT',
+      description: '表示名',
+    }),
+    brand_id: ManagedBrandCodeSchema.openapi({
+      description: 'ブランドID',
+    }),
+    enrollment_fee_yen: z.number().int().min(0).nullable().optional().openapi({
+      description: '入会金（円）',
+      example: 2000,
+    }),
+    registration_admin_fee_yen: z.number().int().min(0).nullable().optional().openapi({
+      description: '登録事務手数料（円）',
+      example: 3000,
+    }),
+    card_issuance_fee_yen: z.number().int().min(0).nullable().optional().openapi({
+      description: 'カード発行料（円）',
+      example: 0,
+    }),
+    other_fee_description: z.string().nullable().optional().openapi({
+      description: 'その他費用の表示テキスト。設定なしの場合は null',
+      example: 'セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）',
+    }),
+    created_by: z.string().optional().openapi({
+      description: '作成者スタッフID（モック用）',
+    }),
+  })
+  .strict()
+  .openapi({
+    title: 'CreateBrandRequest',
+    description: 'Y-07 ブランド設定の新規作成（本部のみ）',
+  });
+
+export const CreateBrandResponseSchema = z
+  .object({
+    message: z.string().openapi({ example: 'ブランドを作成しました' }),
+    brand: BrandItemSchema,
+  })
+  .openapi({
+    title: 'CreateBrandResponse',
+    description: '作成後のブランド行',
+  });
+
 export const UpdateBrandRequestSchema = z
   .object({
+    display_name: z.string().min(1).optional().openapi({
+      description: '表示名',
+      example: 'JOYFIT',
+    }),
+    brand_id: ManagedBrandCodeSchema.optional().openapi({
+      description: 'ブランドID',
+      example: 'joyfit',
+    }),
     enrollment_fee_yen: z.number().int().min(0).nullable().optional().openapi({
       description: '入会金（円）',
     }),
@@ -107,6 +201,7 @@ export const UpdateBrandRequestSchema = z
       description: '更新者スタッフID（モック用）',
     }),
   })
+  .strict()
   .openapi({
     title: 'UpdateBrandRequest',
     description: 'Y-07 ブランド設定の部分更新（本部のみ）',
@@ -123,6 +218,9 @@ export const UpdateBrandResponseSchema = z
   });
 
 export type BrandItem = z.infer<typeof BrandItemSchema>;
+export type CreateBrandRequest = z.infer<typeof CreateBrandRequestSchema>;
+export type CreateBrandResponse = z.infer<typeof CreateBrandResponseSchema>;
+export type GetBrandsQuery = z.infer<typeof GetBrandsQuerySchema>;
 export type GetBrandsResponse = z.infer<typeof GetBrandsResponseSchema>;
 export type ManagedBrandCode = z.infer<typeof ManagedBrandCodeSchema>;
 export type UpdateBrandRequest = z.infer<typeof UpdateBrandRequestSchema>;

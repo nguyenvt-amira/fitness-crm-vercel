@@ -11213,6 +11213,9 @@
         "properties": {
           "brand_id": {
             "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_]+$",
+            "title": "ManagedBrandCode",
             "example": "joyfit",
             "description": "ブランドID"
           },
@@ -11313,6 +11316,9 @@
               "properties": {
                 "brand_id": {
                   "type": "string",
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_]+$",
+                  "title": "ManagedBrandCode",
                   "example": "joyfit",
                   "description": "ブランドID"
                 },
@@ -11404,15 +11410,242 @@
               "description": "Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）"
             },
             "description": "管理対象ブランド一覧"
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "number",
+                "example": 1,
+                "description": "Current page number"
+              },
+              "limit": {
+                "type": "number",
+                "example": 50,
+                "description": "Items per page"
+              },
+              "total": {
+                "type": "number",
+                "example": 5,
+                "description": "Total number of items"
+              },
+              "total_pages": {
+                "type": "number",
+                "example": 1,
+                "description": "Total number of pages"
+              }
+            },
+            "required": ["page", "limit", "total", "total_pages"],
+            "description": "ページネーション情報"
           }
         },
-        "required": ["brands"],
+        "required": ["brands", "pagination"],
         "title": "GetBrandsResponse",
         "description": "ブランドマスタ一覧"
+      },
+      "GetBrandsQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "example": 1,
+            "description": "Page number"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 50,
+            "example": 50,
+            "description": "Items per page"
+          }
+        },
+        "title": "GetBrandsQuery",
+        "description": "ブランドマスタ一覧取得クエリ"
+      },
+      "CreateBrandRequest": {
+        "type": "object",
+        "properties": {
+          "display_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "JOYFIT",
+            "description": "表示名"
+          },
+          "brand_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_]+$",
+            "title": "ManagedBrandCode",
+            "example": "joyfit",
+            "description": "ブランドID"
+          },
+          "enrollment_fee_yen": {
+            "type": "integer",
+            "nullable": true,
+            "minimum": 0,
+            "description": "入会金（円）",
+            "example": 2000
+          },
+          "registration_admin_fee_yen": {
+            "type": "integer",
+            "nullable": true,
+            "minimum": 0,
+            "description": "登録事務手数料（円）",
+            "example": 3000
+          },
+          "card_issuance_fee_yen": {
+            "type": "integer",
+            "nullable": true,
+            "minimum": 0,
+            "description": "カード発行料（円）",
+            "example": 0
+          },
+          "other_fee_description": {
+            "type": "string",
+            "nullable": true,
+            "description": "その他費用の表示テキスト。設定なしの場合は null",
+            "example": "セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）"
+          },
+          "created_by": {
+            "type": "string",
+            "description": "作成者スタッフID（モック用）"
+          }
+        },
+        "required": ["display_name", "brand_id"],
+        "additionalProperties": false,
+        "title": "CreateBrandRequest",
+        "description": "Y-07 ブランド設定の新規作成（本部のみ）"
+      },
+      "CreateBrandResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "ブランドを作成しました"
+          },
+          "brand": {
+            "type": "object",
+            "properties": {
+              "brand_id": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_]+$",
+                "title": "ManagedBrandCode",
+                "example": "joyfit",
+                "description": "ブランドID"
+              },
+              "code": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_]+$",
+                "title": "ManagedBrandCode",
+                "example": "joyfit",
+                "description": "ブランドコード"
+              },
+              "display_name": {
+                "type": "string",
+                "example": "JOYFIT",
+                "description": "表示名"
+              },
+              "enrollment_fee_yen": {
+                "type": "integer",
+                "nullable": true,
+                "minimum": 0,
+                "example": 2000,
+                "description": "入会金デフォルト（円）。設定なしの場合は null"
+              },
+              "registration_admin_fee_yen": {
+                "type": "integer",
+                "nullable": true,
+                "minimum": 0,
+                "example": 3000,
+                "description": "登録事務手数料デフォルト（円）。設定なしの場合は null"
+              },
+              "card_issuance_fee_yen": {
+                "type": "integer",
+                "nullable": true,
+                "minimum": 0,
+                "example": 5000,
+                "description": "カード発行料デフォルト（円）。設定なしの場合は null"
+              },
+              "other_fee_description": {
+                "type": "string",
+                "nullable": true,
+                "example": "セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）",
+                "description": "その他費用の表示テキスト。設定なしの場合は null"
+              },
+              "currency": {
+                "type": "string",
+                "enum": ["JPY"],
+                "description": "通貨"
+              },
+              "sort_order": {
+                "type": "integer",
+                "example": 1,
+                "description": "一覧表示順"
+              },
+              "created_at": {
+                "type": "string",
+                "example": "2024-01-01T00:00:00.000Z"
+              },
+              "updated_at": {
+                "type": "string",
+                "example": "2026-04-01T09:00:00.000Z"
+              },
+              "created_by": {
+                "type": "string",
+                "example": "STF-001",
+                "description": "作成者スタッフID"
+              },
+              "updated_by": {
+                "type": "string",
+                "nullable": true,
+                "example": "STF-001",
+                "description": "最終更新者（本部のみ編集）"
+              }
+            },
+            "required": [
+              "brand_id",
+              "code",
+              "display_name",
+              "enrollment_fee_yen",
+              "registration_admin_fee_yen",
+              "card_issuance_fee_yen",
+              "other_fee_description",
+              "currency",
+              "sort_order",
+              "created_at",
+              "updated_at",
+              "created_by"
+            ],
+            "title": "BrandItem",
+            "description": "Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）"
+          }
+        },
+        "required": ["message", "brand"],
+        "title": "CreateBrandResponse",
+        "description": "作成後のブランド行"
       },
       "UpdateBrandRequest": {
         "type": "object",
         "properties": {
+          "display_name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "表示名",
+            "example": "JOYFIT"
+          },
+          "brand_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_]+$",
+            "title": "ManagedBrandCode",
+            "example": "joyfit",
+            "description": "ブランドID"
+          },
           "enrollment_fee_yen": {
             "type": "integer",
             "nullable": true,
@@ -11441,6 +11674,7 @@
             "description": "更新者スタッフID（モック用）"
           }
         },
+        "additionalProperties": false,
         "title": "UpdateBrandRequest",
         "description": "Y-07 ブランド設定の部分更新（本部のみ）"
       },
@@ -11456,6 +11690,9 @@
             "properties": {
               "brand_id": {
                 "type": "string",
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_]+$",
+                "title": "ManagedBrandCode",
                 "example": "joyfit",
                 "description": "ブランドID"
               },
@@ -17356,11 +17593,293 @@
         }
       }
     },
+    "/crm/brands/{code}": {
+      "patch": {
+        "summary": "Update Y-07 brand master",
+        "description": "ブランド基本設定を更新する（本部のみ）",
+        "tags": ["Brands"],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "description": "Brand code",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "ブランド設定更新リクエスト",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "display_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "表示名",
+                    "example": "JOYFIT"
+                  },
+                  "brand_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9_]+$",
+                    "title": "ManagedBrandCode",
+                    "example": "joyfit",
+                    "description": "ブランドID"
+                  },
+                  "enrollment_fee_yen": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": 0,
+                    "description": "入会金（円）"
+                  },
+                  "registration_admin_fee_yen": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": 0,
+                    "description": "登録事務手数料（円）"
+                  },
+                  "card_issuance_fee_yen": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": 0,
+                    "description": "カード発行料（円）"
+                  },
+                  "other_fee_description": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "その他費用の表示テキスト。設定なしの場合は null"
+                  },
+                  "updated_by": {
+                    "type": "string",
+                    "description": "更新者スタッフID（モック用）"
+                  }
+                },
+                "additionalProperties": false,
+                "title": "UpdateBrandRequest",
+                "description": "Y-07 ブランド設定の部分更新（本部のみ）"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "ブランド設定を保存しました"
+                    },
+                    "brand": {
+                      "type": "object",
+                      "properties": {
+                        "brand_id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": "^[A-Za-z0-9_]+$",
+                          "title": "ManagedBrandCode",
+                          "example": "joyfit",
+                          "description": "ブランドID"
+                        },
+                        "code": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": "^[A-Za-z0-9_]+$",
+                          "title": "ManagedBrandCode",
+                          "example": "joyfit",
+                          "description": "ブランドコード"
+                        },
+                        "display_name": {
+                          "type": "string",
+                          "example": "JOYFIT",
+                          "description": "表示名"
+                        },
+                        "enrollment_fee_yen": {
+                          "type": "integer",
+                          "nullable": true,
+                          "minimum": 0,
+                          "example": 2000,
+                          "description": "入会金デフォルト（円）。設定なしの場合は null"
+                        },
+                        "registration_admin_fee_yen": {
+                          "type": "integer",
+                          "nullable": true,
+                          "minimum": 0,
+                          "example": 3000,
+                          "description": "登録事務手数料デフォルト（円）。設定なしの場合は null"
+                        },
+                        "card_issuance_fee_yen": {
+                          "type": "integer",
+                          "nullable": true,
+                          "minimum": 0,
+                          "example": 5000,
+                          "description": "カード発行料デフォルト（円）。設定なしの場合は null"
+                        },
+                        "other_fee_description": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）",
+                          "description": "その他費用の表示テキスト。設定なしの場合は null"
+                        },
+                        "currency": {
+                          "type": "string",
+                          "enum": ["JPY"],
+                          "description": "通貨"
+                        },
+                        "sort_order": {
+                          "type": "integer",
+                          "example": 1,
+                          "description": "一覧表示順"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2024-01-01T00:00:00.000Z"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026-04-01T09:00:00.000Z"
+                        },
+                        "created_by": {
+                          "type": "string",
+                          "example": "STF-001",
+                          "description": "作成者スタッフID"
+                        },
+                        "updated_by": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "STF-001",
+                          "description": "最終更新者（本部のみ編集）"
+                        }
+                      },
+                      "required": [
+                        "brand_id",
+                        "code",
+                        "display_name",
+                        "enrollment_fee_yen",
+                        "registration_admin_fee_yen",
+                        "card_issuance_fee_yen",
+                        "other_fee_description",
+                        "currency",
+                        "sort_order",
+                        "created_at",
+                        "updated_at",
+                        "created_by"
+                      ],
+                      "title": "BrandItem",
+                      "description": "Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）"
+                    }
+                  },
+                  "required": ["message", "brand"],
+                  "title": "UpdateBrandResponse",
+                  "description": "更新後のブランド行"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/brands": {
       "get": {
         "summary": "List Y-07 brand master",
         "description": "JOYFIT / FIT365 のブランド基本設定（入会金・手数料デフォルト）。G-01 主契約の参照元。",
         "tags": ["Brands"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "example": 1,
+              "description": "Page number"
+            },
+            "required": false,
+            "description": "Page number",
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 50,
+              "example": 50,
+              "description": "Items per page"
+            },
+            "required": false,
+            "description": "Items per page",
+            "name": "limit",
+            "in": "query"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Brand list",
@@ -17376,6 +17895,9 @@
                         "properties": {
                           "brand_id": {
                             "type": "string",
+                            "minLength": 1,
+                            "pattern": "^[A-Za-z0-9_]+$",
+                            "title": "ManagedBrandCode",
                             "example": "joyfit",
                             "description": "ブランドID"
                           },
@@ -17467,11 +17989,283 @@
                         "description": "Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）"
                       },
                       "description": "管理対象ブランド一覧"
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "number",
+                          "example": 1,
+                          "description": "Current page number"
+                        },
+                        "limit": {
+                          "type": "number",
+                          "example": 50,
+                          "description": "Items per page"
+                        },
+                        "total": {
+                          "type": "number",
+                          "example": 5,
+                          "description": "Total number of items"
+                        },
+                        "total_pages": {
+                          "type": "number",
+                          "example": 1,
+                          "description": "Total number of pages"
+                        }
+                      },
+                      "required": ["page", "limit", "total", "total_pages"],
+                      "description": "ページネーション情報"
                     }
                   },
-                  "required": ["brands"],
+                  "required": ["brands", "pagination"],
                   "title": "GetBrandsResponse",
                   "description": "ブランドマスタ一覧"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Y-07 brand master",
+        "description": "ブランド基本設定を新規作成する（本部のみ）",
+        "tags": ["Brands"],
+        "requestBody": {
+          "description": "ブランド設定作成リクエスト",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "display_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "JOYFIT",
+                    "description": "表示名"
+                  },
+                  "brand_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9_]+$",
+                    "title": "ManagedBrandCode",
+                    "example": "joyfit",
+                    "description": "ブランドID"
+                  },
+                  "enrollment_fee_yen": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": 0,
+                    "description": "入会金（円）",
+                    "example": 2000
+                  },
+                  "registration_admin_fee_yen": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": 0,
+                    "description": "登録事務手数料（円）",
+                    "example": 3000
+                  },
+                  "card_issuance_fee_yen": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": 0,
+                    "description": "カード発行料（円）",
+                    "example": 0
+                  },
+                  "other_fee_description": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "その他費用の表示テキスト。設定なしの場合は null",
+                    "example": "セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）"
+                  },
+                  "created_by": {
+                    "type": "string",
+                    "description": "作成者スタッフID（モック用）"
+                  }
+                },
+                "required": ["display_name", "brand_id"],
+                "additionalProperties": false,
+                "title": "CreateBrandRequest",
+                "description": "Y-07 ブランド設定の新規作成（本部のみ）"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "ブランドを作成しました"
+                    },
+                    "brand": {
+                      "type": "object",
+                      "properties": {
+                        "brand_id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": "^[A-Za-z0-9_]+$",
+                          "title": "ManagedBrandCode",
+                          "example": "joyfit",
+                          "description": "ブランドID"
+                        },
+                        "code": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": "^[A-Za-z0-9_]+$",
+                          "title": "ManagedBrandCode",
+                          "example": "joyfit",
+                          "description": "ブランドコード"
+                        },
+                        "display_name": {
+                          "type": "string",
+                          "example": "JOYFIT",
+                          "description": "表示名"
+                        },
+                        "enrollment_fee_yen": {
+                          "type": "integer",
+                          "nullable": true,
+                          "minimum": 0,
+                          "example": 2000,
+                          "description": "入会金デフォルト（円）。設定なしの場合は null"
+                        },
+                        "registration_admin_fee_yen": {
+                          "type": "integer",
+                          "nullable": true,
+                          "minimum": 0,
+                          "example": 3000,
+                          "description": "登録事務手数料デフォルト（円）。設定なしの場合は null"
+                        },
+                        "card_issuance_fee_yen": {
+                          "type": "integer",
+                          "nullable": true,
+                          "minimum": 0,
+                          "example": 5000,
+                          "description": "カード発行料デフォルト（円）。設定なしの場合は null"
+                        },
+                        "other_fee_description": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）",
+                          "description": "その他費用の表示テキスト。設定なしの場合は null"
+                        },
+                        "currency": {
+                          "type": "string",
+                          "enum": ["JPY"],
+                          "description": "通貨"
+                        },
+                        "sort_order": {
+                          "type": "integer",
+                          "example": 1,
+                          "description": "一覧表示順"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2024-01-01T00:00:00.000Z"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026-04-01T09:00:00.000Z"
+                        },
+                        "created_by": {
+                          "type": "string",
+                          "example": "STF-001",
+                          "description": "作成者スタッフID"
+                        },
+                        "updated_by": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "STF-001",
+                          "description": "最終更新者（本部のみ編集）"
+                        }
+                      },
+                      "required": [
+                        "brand_id",
+                        "code",
+                        "display_name",
+                        "enrollment_fee_yen",
+                        "registration_admin_fee_yen",
+                        "card_issuance_fee_yen",
+                        "other_fee_description",
+                        "currency",
+                        "sort_order",
+                        "created_at",
+                        "updated_at",
+                        "created_by"
+                      ],
+                      "title": "BrandItem",
+                      "description": "Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）"
+                    }
+                  },
+                  "required": ["message", "brand"],
+                  "title": "CreateBrandResponse",
+                  "description": "作成後のブランド行"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
                 }
               }
             }
