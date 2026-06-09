@@ -3,59 +3,88 @@ import { z } from 'zod';
 
 extendZodWithOpenApi(z);
 
-export function normalizeBrandCode(value: string): string {
-  return value.trim().toLowerCase();
-}
+const BRAND_IDENTIFIER_REGEX = /^[a-z0-9_]+$/;
+const BRAND_IDENTIFIER_INPUT_REGEX = /^[A-Za-z0-9_]+$/;
 
-/**
- * Brands under management.
- */
-export const ManagedBrandCodeSchema = z
+export const ManagedBrandCodeSchema = z.string().trim().regex(BRAND_IDENTIFIER_REGEX).openapi({
+  title: 'ManagedBrandCode',
+  description: 'システム内部で利用するブランドコード',
+  example: 'joyfit',
+});
+
+export const BrandIdInputSchema = z
   .string()
+  .trim()
   .min(1)
-  .regex(/^[A-Za-z0-9_]+$/)
+  .regex(BRAND_IDENTIFIER_INPUT_REGEX, '英数字とアンダースコアのみ入力できます')
   .openapi({
-    title: 'ManagedBrandCode',
+    title: 'BrandIdInput',
+    description: 'ブランドID入力値',
     example: 'joyfit',
-    description: '管理対象ブランドコード（英数字とアンダースコアのみ）',
   });
 
-/**
- * Y-07 ブランドマスタ — 入会金・手数料の基本設定（G-01 主契約のデフォルト参照元）
- */
+const BrandFeeSchema = z.number().int().min(0).nullable();
+
+export const BrandPaginationSchema = z
+  .object({
+    page: z.number().int().min(1).openapi({
+      example: 1,
+      description: '現在のページ',
+    }),
+    limit: z.number().int().min(1).openapi({
+      example: 25,
+      description: '1ページあたりの表示件数',
+    }),
+    total: z.number().int().min(0).openapi({
+      example: 2,
+      description: '検索条件適用後の総件数',
+    }),
+    total_pages: z.number().int().min(1).openapi({
+      example: 1,
+      description: '総ページ数',
+    }),
+    all_total: z.number().int().min(0).openapi({
+      example: 5,
+      description: '検索条件適用前の総件数',
+    }),
+  })
+  .openapi({
+    title: 'BrandPagination',
+    description: 'ブランド一覧のページネーション情報',
+  });
+
 export const BrandItemSchema = z
   .object({
     brand_id: ManagedBrandCodeSchema.openapi({
       description: 'ブランドID',
+      example: 'joyfit',
     }),
     code: ManagedBrandCodeSchema.openapi({
       description: 'ブランドコード',
+      example: 'joyfit',
     }),
-    display_name: z.string().openapi({
+    display_name: z.string().trim().min(1).openapi({
       example: 'JOYFIT',
-      description: '表示名',
+      description: 'ブランド名',
     }),
-    /** 入会金（税別・円）— G-01 新規登録時のデフォルト（主契約で個別上書き可） */
-    enrollment_fee_yen: z.number().int().min(0).nullable().openapi({
+    enrollment_fee_yen: BrandFeeSchema.openapi({
       example: 2000,
-      description: '入会金デフォルト（円）。設定なしの場合は null',
+      description: '入会金（税別・円）',
     }),
-    /** 登録事務手数料（税別・円） */
-    registration_admin_fee_yen: z.number().int().min(0).nullable().openapi({
+    registration_admin_fee_yen: BrandFeeSchema.openapi({
       example: 3000,
-      description: '登録事務手数料デフォルト（円）。設定なしの場合は null',
+      description: '登録事務手数料（税別・円）',
     }),
-    /** カード発行料（税別・円） */
-    card_issuance_fee_yen: z.number().int().min(0).nullable().openapi({
+    card_issuance_fee_yen: BrandFeeSchema.openapi({
       example: 5000,
-      description: 'カード発行料デフォルト（円）。設定なしの場合は null',
+      description: 'カード発行料（税別・円）',
     }),
     other_fee_description: z.string().nullable().openapi({
       example: 'セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）',
-      description: 'その他費用の表示テキスト。設定なしの場合は null',
+      description: 'その他費用の表示文言',
     }),
     currency: z.literal('JPY').openapi({
-      description: '通貨',
+      description: '通貨コード',
     }),
     sort_order: z.number().int().openapi({
       example: 1,
@@ -63,22 +92,44 @@ export const BrandItemSchema = z
     }),
     created_at: z.string().openapi({
       example: '2024-01-01T00:00:00.000Z',
+      description: '作成日時',
     }),
     updated_at: z.string().openapi({
       example: '2026-04-01T09:00:00.000Z',
+      description: '更新日時',
     }),
-    created_by: z.string().openapi({
+    created_by: z.string().nullable().optional().openapi({
       example: 'STF-001',
       description: '作成者スタッフID',
     }),
     updated_by: z.string().nullable().optional().openapi({
       example: 'STF-001',
-      description: '最終更新者（本部のみ編集）',
+      description: '最終更新者スタッフID',
     }),
   })
   .openapi({
     title: 'BrandItem',
-    description: 'Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）',
+    description: 'Y-07 ブランド基本設定',
+  });
+
+export const GetBrandsQuerySchema = z
+  .object({
+    page: z.coerce.number().int().min(1).default(1).openapi({
+      example: 1,
+      description: 'ページ番号',
+    }),
+    limit: z.coerce.number().int().min(1).max(200).default(25).openapi({
+      example: 25,
+      description: '1ページあたりの表示件数',
+    }),
+    search: z.string().trim().max(255).optional().openapi({
+      example: 'joyfit',
+      description: 'ブランドID・ブランド名・その他費用で検索',
+    }),
+  })
+  .openapi({
+    title: 'GetBrandsQuery',
+    description: 'ブランド一覧検索条件',
   });
 
 export const GetBrandsResponseSchema = z
@@ -86,83 +137,43 @@ export const GetBrandsResponseSchema = z
     brands: z.array(BrandItemSchema).openapi({
       description: '管理対象ブランド一覧',
     }),
-    pagination: z
-      .object({
-        page: z.number().openapi({
-          example: 1,
-          description: 'Current page number',
-        }),
-        limit: z.number().openapi({
-          example: 50,
-          description: 'Items per page',
-        }),
-        total: z.number().openapi({
-          example: 5,
-          description: 'Total number of items',
-        }),
-        total_pages: z.number().openapi({
-          example: 1,
-          description: 'Total number of pages',
-        }),
-      })
-      .openapi({
-        description: 'ページネーション情報',
-      }),
+    pagination: BrandPaginationSchema,
   })
   .openapi({
     title: 'GetBrandsResponse',
     description: 'ブランドマスタ一覧',
   });
 
-export const GetBrandsQuerySchema = z
-  .object({
-    page: z.coerce.number().int().min(1).default(1).openapi({
-      example: 1,
-      description: 'Page number',
-    }),
-    limit: z.coerce.number().int().min(1).max(200).default(50).openapi({
-      example: 50,
-      description: 'Items per page',
-    }),
-  })
-  .openapi({
-    title: 'GetBrandsQuery',
-    description: 'ブランドマスタ一覧取得クエリ',
-  });
-
 export const CreateBrandRequestSchema = z
   .object({
-    display_name: z.string().min(1).openapi({
+    display_name: z.string().trim().min(1).max(255).openapi({
+      description: 'ブランド名',
       example: 'JOYFIT',
-      description: '表示名',
     }),
-    brand_id: ManagedBrandCodeSchema.openapi({
+    brand_id: BrandIdInputSchema.openapi({
       description: 'ブランドID',
+      example: 'joyfit',
     }),
-    enrollment_fee_yen: z.number().int().min(0).nullable().optional().openapi({
-      description: '入会金（円）',
-      example: 2000,
+    enrollment_fee_yen: BrandFeeSchema.optional().openapi({
+      description: '入会金（税別・円）',
     }),
-    registration_admin_fee_yen: z.number().int().min(0).nullable().optional().openapi({
-      description: '登録事務手数料（円）',
-      example: 3000,
+    registration_admin_fee_yen: BrandFeeSchema.optional().openapi({
+      description: '登録事務手数料（税別・円）',
     }),
-    card_issuance_fee_yen: z.number().int().min(0).nullable().optional().openapi({
-      description: 'カード発行料（円）',
-      example: 0,
+    card_issuance_fee_yen: BrandFeeSchema.optional().openapi({
+      description: 'カード発行料（税別・円）',
     }),
-    other_fee_description: z.string().nullable().optional().openapi({
-      description: 'その他費用の表示テキスト。設定なしの場合は null',
-      example: 'セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）',
+    other_fee_description: z.string().trim().max(1000).nullable().optional().openapi({
+      description: 'その他費用',
     }),
-    created_by: z.string().optional().openapi({
+    created_by: z.string().trim().min(1).optional().openapi({
       description: '作成者スタッフID（モック用）',
+      example: 'STF-001',
     }),
   })
-  .strict()
   .openapi({
     title: 'CreateBrandRequest',
-    description: 'Y-07 ブランド設定の新規作成（本部のみ）',
+    description: 'Y-07 ブランド新規登録',
   });
 
 export const CreateBrandResponseSchema = z
@@ -177,34 +188,32 @@ export const CreateBrandResponseSchema = z
 
 export const UpdateBrandRequestSchema = z
   .object({
-    display_name: z.string().min(1).optional().openapi({
-      description: '表示名',
-      example: 'JOYFIT',
+    display_name: z.string().trim().min(1).max(255).optional().openapi({
+      description: 'ブランド名',
     }),
-    brand_id: ManagedBrandCodeSchema.optional().openapi({
+    brand_id: BrandIdInputSchema.optional().openapi({
       description: 'ブランドID',
-      example: 'joyfit',
     }),
-    enrollment_fee_yen: z.number().int().min(0).nullable().optional().openapi({
-      description: '入会金（円）',
+    enrollment_fee_yen: BrandFeeSchema.optional().openapi({
+      description: '入会金（税別・円）',
     }),
-    registration_admin_fee_yen: z.number().int().min(0).nullable().optional().openapi({
-      description: '登録事務手数料（円）',
+    registration_admin_fee_yen: BrandFeeSchema.optional().openapi({
+      description: '登録事務手数料（税別・円）',
     }),
-    card_issuance_fee_yen: z.number().int().min(0).nullable().optional().openapi({
-      description: 'カード発行料（円）',
+    card_issuance_fee_yen: BrandFeeSchema.optional().openapi({
+      description: 'カード発行料（税別・円）',
     }),
-    other_fee_description: z.string().nullable().optional().openapi({
-      description: 'その他費用の表示テキスト。設定なしの場合は null',
+    other_fee_description: z.string().trim().max(1000).nullable().optional().openapi({
+      description: 'その他費用',
     }),
-    updated_by: z.string().optional().openapi({
+    updated_by: z.string().trim().min(1).optional().openapi({
       description: '更新者スタッフID（モック用）',
+      example: 'STF-001',
     }),
   })
-  .strict()
   .openapi({
     title: 'UpdateBrandRequest',
-    description: 'Y-07 ブランド設定の部分更新（本部のみ）',
+    description: 'Y-07 ブランド設定の部分更新',
   });
 
 export const UpdateBrandResponseSchema = z
@@ -218,6 +227,7 @@ export const UpdateBrandResponseSchema = z
   });
 
 export type BrandItem = z.infer<typeof BrandItemSchema>;
+export type BrandPagination = z.infer<typeof BrandPaginationSchema>;
 export type CreateBrandRequest = z.infer<typeof CreateBrandRequestSchema>;
 export type CreateBrandResponse = z.infer<typeof CreateBrandResponseSchema>;
 export type GetBrandsQuery = z.infer<typeof GetBrandsQuerySchema>;

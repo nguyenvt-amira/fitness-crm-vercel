@@ -7900,14 +7900,49 @@ export type StaffBrand = typeof StaffBrand[keyof typeof StaffBrand];
 /**
  * ManagedBrandCode
  *
- * 管理対象ブランドコード（英数字とアンダースコアのみ）
+ * システム内部で利用するブランドコード
  */
 export type ManagedBrandCode = string;
 
 /**
+ * BrandIdInput
+ *
+ * ブランドID入力値
+ */
+export type BrandIdInput = string;
+
+/**
+ * BrandPagination
+ *
+ * ブランド一覧のページネーション情報
+ */
+export type BrandPagination = {
+    /**
+     * 現在のページ
+     */
+    page: number;
+    /**
+     * 1ページあたりの表示件数
+     */
+    limit: number;
+    /**
+     * 検索条件適用後の総件数
+     */
+    total: number;
+    /**
+     * 総ページ数
+     */
+    total_pages: number;
+    /**
+     * 検索条件適用前の総件数
+     */
+    all_total: number;
+};
+
+/**
  * BrandItem
  *
- * Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）
+ * Y-07 ブランド基本設定
  */
 export type BrandItem = {
     /**
@@ -7923,43 +7958,69 @@ export type BrandItem = {
      */
     code: string;
     /**
-     * 表示名
+     * ブランド名
      */
     display_name: string;
     /**
-     * 入会金デフォルト（円）。設定なしの場合は null
+     * 入会金（税別・円）
      */
     enrollment_fee_yen: number | null;
     /**
-     * 登録事務手数料デフォルト（円）。設定なしの場合は null
+     * 登録事務手数料（税別・円）
      */
     registration_admin_fee_yen: number | null;
     /**
-     * カード発行料デフォルト（円）。設定なしの場合は null
+     * カード発行料（税別・円）
      */
     card_issuance_fee_yen: number | null;
     /**
-     * その他費用の表示テキスト。設定なしの場合は null
+     * その他費用の表示文言
      */
     other_fee_description: string | null;
     /**
-     * 通貨
+     * 通貨コード
      */
     currency: 'JPY';
     /**
      * 一覧表示順
      */
     sort_order: number;
+    /**
+     * 作成日時
+     */
     created_at: string;
+    /**
+     * 更新日時
+     */
     updated_at: string;
     /**
      * 作成者スタッフID
      */
-    created_by: string;
+    created_by?: string | null;
     /**
-     * 最終更新者（本部のみ編集）
+     * 最終更新者スタッフID
      */
     updated_by?: string | null;
+};
+
+/**
+ * GetBrandsQuery
+ *
+ * ブランド一覧検索条件
+ */
+export type GetBrandsQuery = {
+    /**
+     * ページ番号
+     */
+    page?: number;
+    /**
+     * 1ページあたりの表示件数
+     */
+    limit?: number;
+    /**
+     * ブランドID・ブランド名・その他費用で検索
+     */
+    search?: string;
 };
 
 /**
@@ -7985,113 +8046,109 @@ export type GetBrandsResponse = {
          */
         code: string;
         /**
-         * 表示名
+         * ブランド名
          */
         display_name: string;
         /**
-         * 入会金デフォルト（円）。設定なしの場合は null
+         * 入会金（税別・円）
          */
         enrollment_fee_yen: number | null;
         /**
-         * 登録事務手数料デフォルト（円）。設定なしの場合は null
+         * 登録事務手数料（税別・円）
          */
         registration_admin_fee_yen: number | null;
         /**
-         * カード発行料デフォルト（円）。設定なしの場合は null
+         * カード発行料（税別・円）
          */
         card_issuance_fee_yen: number | null;
         /**
-         * その他費用の表示テキスト。設定なしの場合は null
+         * その他費用の表示文言
          */
         other_fee_description: string | null;
         /**
-         * 通貨
+         * 通貨コード
          */
         currency: 'JPY';
         /**
          * 一覧表示順
          */
         sort_order: number;
+        /**
+         * 作成日時
+         */
         created_at: string;
+        /**
+         * 更新日時
+         */
         updated_at: string;
         /**
          * 作成者スタッフID
          */
-        created_by: string;
+        created_by?: string | null;
         /**
-         * 最終更新者（本部のみ編集）
+         * 最終更新者スタッフID
          */
         updated_by?: string | null;
     }>;
     /**
-     * ページネーション情報
+     * BrandPagination
+     *
+     * ブランド一覧のページネーション情報
      */
     pagination: {
         /**
-         * Current page number
+         * 現在のページ
          */
         page: number;
         /**
-         * Items per page
+         * 1ページあたりの表示件数
          */
         limit: number;
         /**
-         * Total number of items
+         * 検索条件適用後の総件数
          */
         total: number;
         /**
-         * Total number of pages
+         * 総ページ数
          */
         total_pages: number;
+        /**
+         * 検索条件適用前の総件数
+         */
+        all_total: number;
     };
-};
-
-/**
- * GetBrandsQuery
- *
- * ブランドマスタ一覧取得クエリ
- */
-export type GetBrandsQuery = {
-    /**
-     * Page number
-     */
-    page?: number;
-    /**
-     * Items per page
-     */
-    limit?: number;
 };
 
 /**
  * CreateBrandRequest
  *
- * Y-07 ブランド設定の新規作成（本部のみ）
+ * Y-07 ブランド新規登録
  */
 export type CreateBrandRequest = {
     /**
-     * 表示名
+     * ブランド名
      */
     display_name: string;
     /**
-     * ManagedBrandCode
+     * BrandIdInput
      *
      * ブランドID
      */
     brand_id: string;
     /**
-     * 入会金（円）
+     * 入会金（税別・円）
      */
     enrollment_fee_yen?: number | null;
     /**
-     * 登録事務手数料（円）
+     * 登録事務手数料（税別・円）
      */
     registration_admin_fee_yen?: number | null;
     /**
-     * カード発行料（円）
+     * カード発行料（税別・円）
      */
     card_issuance_fee_yen?: number | null;
     /**
-     * その他費用の表示テキスト。設定なしの場合は null
+     * その他費用
      */
     other_fee_description?: string | null;
     /**
@@ -8110,7 +8167,7 @@ export type CreateBrandResponse = {
     /**
      * BrandItem
      *
-     * Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）
+     * Y-07 ブランド基本設定
      */
     brand: {
         /**
@@ -8126,41 +8183,47 @@ export type CreateBrandResponse = {
          */
         code: string;
         /**
-         * 表示名
+         * ブランド名
          */
         display_name: string;
         /**
-         * 入会金デフォルト（円）。設定なしの場合は null
+         * 入会金（税別・円）
          */
         enrollment_fee_yen: number | null;
         /**
-         * 登録事務手数料デフォルト（円）。設定なしの場合は null
+         * 登録事務手数料（税別・円）
          */
         registration_admin_fee_yen: number | null;
         /**
-         * カード発行料デフォルト（円）。設定なしの場合は null
+         * カード発行料（税別・円）
          */
         card_issuance_fee_yen: number | null;
         /**
-         * その他費用の表示テキスト。設定なしの場合は null
+         * その他費用の表示文言
          */
         other_fee_description: string | null;
         /**
-         * 通貨
+         * 通貨コード
          */
         currency: 'JPY';
         /**
          * 一覧表示順
          */
         sort_order: number;
+        /**
+         * 作成日時
+         */
         created_at: string;
+        /**
+         * 更新日時
+         */
         updated_at: string;
         /**
          * 作成者スタッフID
          */
-        created_by: string;
+        created_by?: string | null;
         /**
-         * 最終更新者（本部のみ編集）
+         * 最終更新者スタッフID
          */
         updated_by?: string | null;
     };
@@ -8169,33 +8232,33 @@ export type CreateBrandResponse = {
 /**
  * UpdateBrandRequest
  *
- * Y-07 ブランド設定の部分更新（本部のみ）
+ * Y-07 ブランド設定の部分更新
  */
 export type UpdateBrandRequest = {
     /**
-     * 表示名
+     * ブランド名
      */
     display_name?: string;
     /**
-     * ManagedBrandCode
+     * BrandIdInput
      *
      * ブランドID
      */
     brand_id?: string;
     /**
-     * 入会金（円）
+     * 入会金（税別・円）
      */
     enrollment_fee_yen?: number | null;
     /**
-     * 登録事務手数料（円）
+     * 登録事務手数料（税別・円）
      */
     registration_admin_fee_yen?: number | null;
     /**
-     * カード発行料（円）
+     * カード発行料（税別・円）
      */
     card_issuance_fee_yen?: number | null;
     /**
-     * その他費用の表示テキスト。設定なしの場合は null
+     * その他費用
      */
     other_fee_description?: string | null;
     /**
@@ -8214,7 +8277,7 @@ export type UpdateBrandResponse = {
     /**
      * BrandItem
      *
-     * Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）
+     * Y-07 ブランド基本設定
      */
     brand: {
         /**
@@ -8230,41 +8293,47 @@ export type UpdateBrandResponse = {
          */
         code: string;
         /**
-         * 表示名
+         * ブランド名
          */
         display_name: string;
         /**
-         * 入会金デフォルト（円）。設定なしの場合は null
+         * 入会金（税別・円）
          */
         enrollment_fee_yen: number | null;
         /**
-         * 登録事務手数料デフォルト（円）。設定なしの場合は null
+         * 登録事務手数料（税別・円）
          */
         registration_admin_fee_yen: number | null;
         /**
-         * カード発行料デフォルト（円）。設定なしの場合は null
+         * カード発行料（税別・円）
          */
         card_issuance_fee_yen: number | null;
         /**
-         * その他費用の表示テキスト。設定なしの場合は null
+         * その他費用の表示文言
          */
         other_fee_description: string | null;
         /**
-         * 通貨
+         * 通貨コード
          */
         currency: 'JPY';
         /**
          * 一覧表示順
          */
         sort_order: number;
+        /**
+         * 作成日時
+         */
         created_at: string;
+        /**
+         * 更新日時
+         */
         updated_at: string;
         /**
          * 作成者スタッフID
          */
-        created_by: string;
+        created_by?: string | null;
         /**
-         * 最終更新者（本部のみ編集）
+         * 最終更新者スタッフID
          */
         updated_by?: string | null;
     };
@@ -10180,213 +10249,6 @@ export type GateStopReleaseRequest = {
 export type GateStopReleaseResponse = {
     success: boolean;
     member_id: string;
-};
-
-/**
- * OptionDiscountType
- *
- * セット割の割引タイプ
- */
-export const OptionDiscountType = { FIXED_AMOUNT: 'fixed_amount', PERCENTAGE: 'percentage' } as const;
-
-/**
- * OptionDiscountType
- *
- * セット割の割引タイプ
- */
-export type OptionDiscountType = typeof OptionDiscountType[keyof typeof OptionDiscountType];
-
-/**
- * OptionDiscountStatus
- *
- * セット割の有効/無効ステータス
- */
-export const OptionDiscountStatus = { ACTIVE: 'active', INACTIVE: 'inactive' } as const;
-
-/**
- * OptionDiscountStatus
- *
- * セット割の有効/無効ステータス
- */
-export type OptionDiscountStatus = typeof OptionDiscountStatus[keyof typeof OptionDiscountStatus];
-
-/**
- * OptionDiscountCondition
- *
- * セット割の適用条件
- */
-export const OptionDiscountCondition = {
-    SIMULTANEOUS: 'simultaneous',
-    EXISTING_MEMBER: 'existing_member',
-    FAMILY_2_PLUS: 'family_2_plus',
-    OPTIONS_3_PLUS: 'options_3_plus'
-} as const;
-
-/**
- * OptionDiscountCondition
- *
- * セット割の適用条件
- */
-export type OptionDiscountCondition = typeof OptionDiscountCondition[keyof typeof OptionDiscountCondition];
-
-/**
- * OptionDiscountListItem
- *
- * セット割一覧アイテム
- */
-export type OptionDiscountListItem = {
-    /**
-     * セット割ID
-     */
-    id: string;
-    /**
-     * セット割名
-     */
-    name: string;
-    /**
-     * セット割コード
-     */
-    code: string;
-    /**
-     * 対象契約名一覧
-     */
-    target_contracts: Array<string>;
-    /**
-     * 対象オプション名一覧
-     */
-    target_options: Array<string>;
-    /**
-     * OptionDiscountType
-     *
-     * 割引タイプ
-     */
-    discount_type: 'fixed_amount' | 'percentage';
-    /**
-     * 割引値
-     */
-    discount_value: number;
-    /**
-     * OptionDiscountCondition
-     *
-     * 適用条件
-     */
-    conditions: 'simultaneous' | 'existing_member' | 'family_2_plus' | 'options_3_plus';
-    /**
-     * 対象店舗ID（null = 全店舗）
-     */
-    store_id: string | null;
-    /**
-     * 対象店舗名（null = 全店舗）
-     */
-    store_name: string | null;
-    /**
-     * 適用数
-     */
-    applied_count: number;
-    /**
-     * OptionDiscountStatus
-     *
-     * ステータス
-     */
-    status: 'active' | 'inactive';
-};
-
-/**
- * GetOptionDiscountsQuery
- *
- * セット割一覧取得クエリ
- */
-export type GetOptionDiscountsQuery = {
-    page?: number;
-    limit?: number;
-    /**
-     * セット割名・コードで検索
-     */
-    search?: string;
-    /**
-     * OptionDiscountType
-     *
-     * セット割の割引タイプ
-     */
-    discount_type?: 'fixed_amount' | 'percentage';
-    /**
-     * OptionDiscountStatus
-     *
-     * セット割の有効/無効ステータス
-     */
-    status?: 'active' | 'inactive';
-    sort_by?: 'id' | 'name' | 'code' | 'discount_type' | 'discount_value' | 'store_name' | 'applied_count' | 'status';
-    sort_order?: 'asc' | 'desc';
-};
-
-/**
- * GetOptionDiscountsResponse
- *
- * セット割一覧レスポンス
- */
-export type GetOptionDiscountsResponse = {
-    option_discounts: Array<{
-        /**
-         * セット割ID
-         */
-        id: string;
-        /**
-         * セット割名
-         */
-        name: string;
-        /**
-         * セット割コード
-         */
-        code: string;
-        /**
-         * 対象契約名一覧
-         */
-        target_contracts: Array<string>;
-        /**
-         * 対象オプション名一覧
-         */
-        target_options: Array<string>;
-        /**
-         * OptionDiscountType
-         *
-         * 割引タイプ
-         */
-        discount_type: 'fixed_amount' | 'percentage';
-        /**
-         * 割引値
-         */
-        discount_value: number;
-        /**
-         * OptionDiscountCondition
-         *
-         * 適用条件
-         */
-        conditions: 'simultaneous' | 'existing_member' | 'family_2_plus' | 'options_3_plus';
-        /**
-         * 対象店舗ID（null = 全店舗）
-         */
-        store_id: string | null;
-        /**
-         * 対象店舗名（null = 全店舗）
-         */
-        store_name: string | null;
-        /**
-         * 適用数
-         */
-        applied_count: number;
-        /**
-         * OptionDiscountStatus
-         *
-         * ステータス
-         */
-        status: 'active' | 'inactive';
-    }>;
-    pagination: {
-        page: number;
-        limit: number;
-        total: number;
-        total_pages: number;
-    };
 };
 
 /**
@@ -12528,33 +12390,33 @@ export type PatchCrmBrandsByCodeData = {
     /**
      * UpdateBrandRequest
      *
-     * Y-07 ブランド設定の部分更新（本部のみ）
+     * Y-07 ブランド設定の部分更新
      */
     body?: {
         /**
-         * 表示名
+         * ブランド名
          */
         display_name?: string;
         /**
-         * ManagedBrandCode
+         * BrandIdInput
          *
          * ブランドID
          */
         brand_id?: string;
         /**
-         * 入会金（円）
+         * 入会金（税別・円）
          */
         enrollment_fee_yen?: number | null;
         /**
-         * 登録事務手数料（円）
+         * 登録事務手数料（税別・円）
          */
         registration_admin_fee_yen?: number | null;
         /**
-         * カード発行料（円）
+         * カード発行料（税別・円）
          */
         card_issuance_fee_yen?: number | null;
         /**
-         * その他費用の表示テキスト。設定なしの場合は null
+         * その他費用
          */
         other_fee_description?: string | null;
         /**
@@ -12564,7 +12426,7 @@ export type PatchCrmBrandsByCodeData = {
     };
     path: {
         /**
-         * Brand code
+         * code parameter
          */
         code: string;
     };
@@ -12621,7 +12483,7 @@ export type PatchCrmBrandsByCodeResponses = {
         /**
          * BrandItem
          *
-         * Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）
+         * Y-07 ブランド基本設定
          */
         brand: {
             /**
@@ -12637,41 +12499,47 @@ export type PatchCrmBrandsByCodeResponses = {
              */
             code: string;
             /**
-             * 表示名
+             * ブランド名
              */
             display_name: string;
             /**
-             * 入会金デフォルト（円）。設定なしの場合は null
+             * 入会金（税別・円）
              */
             enrollment_fee_yen: number | null;
             /**
-             * 登録事務手数料デフォルト（円）。設定なしの場合は null
+             * 登録事務手数料（税別・円）
              */
             registration_admin_fee_yen: number | null;
             /**
-             * カード発行料デフォルト（円）。設定なしの場合は null
+             * カード発行料（税別・円）
              */
             card_issuance_fee_yen: number | null;
             /**
-             * その他費用の表示テキスト。設定なしの場合は null
+             * その他費用の表示文言
              */
             other_fee_description: string | null;
             /**
-             * 通貨
+             * 通貨コード
              */
             currency: 'JPY';
             /**
              * 一覧表示順
              */
             sort_order: number;
+            /**
+             * 作成日時
+             */
             created_at: string;
+            /**
+             * 更新日時
+             */
             updated_at: string;
             /**
              * 作成者スタッフID
              */
-            created_by: string;
+            created_by?: string | null;
             /**
-             * 最終更新者（本部のみ編集）
+             * 最終更新者スタッフID
              */
             updated_by?: string | null;
         };
@@ -12685,13 +12553,17 @@ export type GetCrmBrandsData = {
     path?: never;
     query?: {
         /**
-         * Page number
+         * ページ番号
          */
         page?: number;
         /**
-         * Items per page
+         * 1ページあたりの表示件数
          */
         limit?: number;
+        /**
+         * ブランドID・ブランド名・その他費用で検索
+         */
+        search?: string;
     };
     url: '/crm/brands';
 };
@@ -12747,64 +12619,76 @@ export type GetCrmBrandsResponses = {
              */
             code: string;
             /**
-             * 表示名
+             * ブランド名
              */
             display_name: string;
             /**
-             * 入会金デフォルト（円）。設定なしの場合は null
+             * 入会金（税別・円）
              */
             enrollment_fee_yen: number | null;
             /**
-             * 登録事務手数料デフォルト（円）。設定なしの場合は null
+             * 登録事務手数料（税別・円）
              */
             registration_admin_fee_yen: number | null;
             /**
-             * カード発行料デフォルト（円）。設定なしの場合は null
+             * カード発行料（税別・円）
              */
             card_issuance_fee_yen: number | null;
             /**
-             * その他費用の表示テキスト。設定なしの場合は null
+             * その他費用の表示文言
              */
             other_fee_description: string | null;
             /**
-             * 通貨
+             * 通貨コード
              */
             currency: 'JPY';
             /**
              * 一覧表示順
              */
             sort_order: number;
+            /**
+             * 作成日時
+             */
             created_at: string;
+            /**
+             * 更新日時
+             */
             updated_at: string;
             /**
              * 作成者スタッフID
              */
-            created_by: string;
+            created_by?: string | null;
             /**
-             * 最終更新者（本部のみ編集）
+             * 最終更新者スタッフID
              */
             updated_by?: string | null;
         }>;
         /**
-         * ページネーション情報
+         * BrandPagination
+         *
+         * ブランド一覧のページネーション情報
          */
         pagination: {
             /**
-             * Current page number
+             * 現在のページ
              */
             page: number;
             /**
-             * Items per page
+             * 1ページあたりの表示件数
              */
             limit: number;
             /**
-             * Total number of items
+             * 検索条件適用後の総件数
              */
             total: number;
             /**
-             * Total number of pages
+             * 総ページ数
              */
             total_pages: number;
+            /**
+             * 検索条件適用前の総件数
+             */
+            all_total: number;
         };
     };
 };
@@ -12815,33 +12699,33 @@ export type PostCrmBrandsData = {
     /**
      * CreateBrandRequest
      *
-     * Y-07 ブランド設定の新規作成（本部のみ）
+     * Y-07 ブランド新規登録
      */
     body?: {
         /**
-         * 表示名
+         * ブランド名
          */
         display_name: string;
         /**
-         * ManagedBrandCode
+         * BrandIdInput
          *
          * ブランドID
          */
         brand_id: string;
         /**
-         * 入会金（円）
+         * 入会金（税別・円）
          */
         enrollment_fee_yen?: number | null;
         /**
-         * 登録事務手数料（円）
+         * 登録事務手数料（税別・円）
          */
         registration_admin_fee_yen?: number | null;
         /**
-         * カード発行料（円）
+         * カード発行料（税別・円）
          */
         card_issuance_fee_yen?: number | null;
         /**
-         * その他費用の表示テキスト。設定なしの場合は null
+         * その他費用
          */
         other_fee_description?: string | null;
         /**
@@ -12892,7 +12776,7 @@ export type PostCrmBrandsResponses = {
         /**
          * BrandItem
          *
-         * Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）
+         * Y-07 ブランド基本設定
          */
         brand: {
             /**
@@ -12908,41 +12792,47 @@ export type PostCrmBrandsResponses = {
              */
             code: string;
             /**
-             * 表示名
+             * ブランド名
              */
             display_name: string;
             /**
-             * 入会金デフォルト（円）。設定なしの場合は null
+             * 入会金（税別・円）
              */
             enrollment_fee_yen: number | null;
             /**
-             * 登録事務手数料デフォルト（円）。設定なしの場合は null
+             * 登録事務手数料（税別・円）
              */
             registration_admin_fee_yen: number | null;
             /**
-             * カード発行料デフォルト（円）。設定なしの場合は null
+             * カード発行料（税別・円）
              */
             card_issuance_fee_yen: number | null;
             /**
-             * その他費用の表示テキスト。設定なしの場合は null
+             * その他費用の表示文言
              */
             other_fee_description: string | null;
             /**
-             * 通貨
+             * 通貨コード
              */
             currency: 'JPY';
             /**
              * 一覧表示順
              */
             sort_order: number;
+            /**
+             * 作成日時
+             */
             created_at: string;
+            /**
+             * 更新日時
+             */
             updated_at: string;
             /**
              * 作成者スタッフID
              */
-            created_by: string;
+            created_by?: string | null;
             /**
-             * 最終更新者（本部のみ編集）
+             * 最終更新者スタッフID
              */
             updated_by?: string | null;
         };
@@ -23930,729 +23820,6 @@ export type GetCrmMembershipApplicationsResponses = {
 };
 
 export type GetCrmMembershipApplicationsResponse = GetCrmMembershipApplicationsResponses[keyof GetCrmMembershipApplicationsResponses];
-
-export type GetCrmOptionDiscountsByIdChangeHistoryData = {
-    body?: never;
-    path: {
-        /**
-         * Option Discount ID
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/crm/option-discounts/{id}/change-history';
-};
-
-export type GetCrmOptionDiscountsByIdChangeHistoryErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    404: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type GetCrmOptionDiscountsByIdChangeHistoryError = GetCrmOptionDiscountsByIdChangeHistoryErrors[keyof GetCrmOptionDiscountsByIdChangeHistoryErrors];
-
-export type GetCrmOptionDiscountsByIdChangeHistoryResponses = {
-    /**
-     * GetOptionDiscountChangeHistoryResponse
-     *
-     * セット割変更履歴レスポンス
-     */
-    200: {
-        history: Array<{
-            date: string;
-            user: string;
-            field: string | null;
-            from: string | null;
-            to: string;
-        }>;
-    };
-};
-
-export type GetCrmOptionDiscountsByIdChangeHistoryResponse = GetCrmOptionDiscountsByIdChangeHistoryResponses[keyof GetCrmOptionDiscountsByIdChangeHistoryResponses];
-
-export type DeleteCrmOptionDiscountsByIdData = {
-    /**
-     * DeleteOptionDiscountRequest
-     *
-     * セット割削除リクエスト
-     */
-    body?: {
-        reason: string;
-    };
-    path: {
-        /**
-         * Option Discount ID
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/crm/option-discounts/{id}';
-};
-
-export type DeleteCrmOptionDiscountsByIdErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    400: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    404: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type DeleteCrmOptionDiscountsByIdError = DeleteCrmOptionDiscountsByIdErrors[keyof DeleteCrmOptionDiscountsByIdErrors];
-
-export type DeleteCrmOptionDiscountsByIdResponses = {
-    /**
-     * DeleteOptionDiscountResponse
-     *
-     * セット割削除レスポンス
-     */
-    200: {
-        message: string;
-    };
-};
-
-export type DeleteCrmOptionDiscountsByIdResponse = DeleteCrmOptionDiscountsByIdResponses[keyof DeleteCrmOptionDiscountsByIdResponses];
-
-export type GetCrmOptionDiscountsByIdData = {
-    body?: never;
-    path: {
-        /**
-         * Option Discount ID
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/crm/option-discounts/{id}';
-};
-
-export type GetCrmOptionDiscountsByIdErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    404: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type GetCrmOptionDiscountsByIdError = GetCrmOptionDiscountsByIdErrors[keyof GetCrmOptionDiscountsByIdErrors];
-
-export type GetCrmOptionDiscountsByIdResponses = {
-    /**
-     * GetOptionDiscountDetailResponse
-     *
-     * セット割詳細レスポンス
-     */
-    200: {
-        /**
-         * OptionDiscountDetail
-         *
-         * セット割詳細
-         */
-        option_discount: {
-            /**
-             * セット割ID
-             */
-            id: string;
-            /**
-             * セット割名
-             */
-            name: string;
-            /**
-             * セット割コード
-             */
-            code: string;
-            /**
-             * 対象契約名一覧
-             */
-            target_contracts: Array<string>;
-            /**
-             * 対象オプション名一覧
-             */
-            target_options: Array<string>;
-            /**
-             * OptionDiscountType
-             *
-             * 割引タイプ
-             */
-            discount_type: 'fixed_amount' | 'percentage';
-            /**
-             * 割引値
-             */
-            discount_value: number;
-            /**
-             * OptionDiscountCondition
-             *
-             * 適用条件
-             */
-            conditions: 'simultaneous' | 'existing_member' | 'family_2_plus' | 'options_3_plus';
-            /**
-             * 対象店舗ID（null = 全店舗）
-             */
-            store_id: string | null;
-            /**
-             * 対象店舗名（null = 全店舗）
-             */
-            store_name: string | null;
-            /**
-             * 適用数
-             */
-            applied_count: number;
-            /**
-             * OptionDiscountStatus
-             *
-             * ステータス
-             */
-            status: 'active' | 'inactive';
-            /**
-             * 説明文
-             */
-            description: string | null;
-            /**
-             * 適用ルール
-             */
-            rules: Array<string>;
-            /**
-             * 作成日時
-             */
-            created_at: string;
-            /**
-             * 最終更新日時
-             */
-            updated_at: string;
-            /**
-             * 更新者
-             */
-            updated_by: string;
-        };
-    };
-};
-
-export type GetCrmOptionDiscountsByIdResponse = GetCrmOptionDiscountsByIdResponses[keyof GetCrmOptionDiscountsByIdResponses];
-
-export type PatchCrmOptionDiscountsByIdData = {
-    /**
-     * UpsertOptionDiscountBody
-     *
-     * セット割作成・更新リクエスト
-     */
-    body?: {
-        name: string;
-        code: string;
-        description?: string | null;
-        target_contracts: Array<string>;
-        target_options: Array<string>;
-        /**
-         * OptionDiscountType
-         *
-         * セット割の割引タイプ
-         */
-        discount_type: 'fixed_amount' | 'percentage';
-        discount_value: number;
-        /**
-         * OptionDiscountCondition
-         *
-         * セット割の適用条件
-         */
-        conditions: 'simultaneous' | 'existing_member' | 'family_2_plus' | 'options_3_plus';
-        store_id?: string | null;
-        /**
-         * OptionDiscountStatus
-         *
-         * セット割の有効/無効ステータス
-         */
-        status?: 'active' | 'inactive';
-    };
-    path: {
-        /**
-         * Option Discount ID
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/crm/option-discounts/{id}';
-};
-
-export type PatchCrmOptionDiscountsByIdErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    400: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    404: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type PatchCrmOptionDiscountsByIdError = PatchCrmOptionDiscountsByIdErrors[keyof PatchCrmOptionDiscountsByIdErrors];
-
-export type PatchCrmOptionDiscountsByIdResponses = {
-    /**
-     * UpdateOptionDiscountResponse
-     *
-     * セット割更新レスポンス
-     */
-    200: {
-        message: string;
-        /**
-         * OptionDiscountDetail
-         *
-         * セット割詳細
-         */
-        option_discount: {
-            /**
-             * セット割ID
-             */
-            id: string;
-            /**
-             * セット割名
-             */
-            name: string;
-            /**
-             * セット割コード
-             */
-            code: string;
-            /**
-             * 対象契約名一覧
-             */
-            target_contracts: Array<string>;
-            /**
-             * 対象オプション名一覧
-             */
-            target_options: Array<string>;
-            /**
-             * OptionDiscountType
-             *
-             * 割引タイプ
-             */
-            discount_type: 'fixed_amount' | 'percentage';
-            /**
-             * 割引値
-             */
-            discount_value: number;
-            /**
-             * OptionDiscountCondition
-             *
-             * 適用条件
-             */
-            conditions: 'simultaneous' | 'existing_member' | 'family_2_plus' | 'options_3_plus';
-            /**
-             * 対象店舗ID（null = 全店舗）
-             */
-            store_id: string | null;
-            /**
-             * 対象店舗名（null = 全店舗）
-             */
-            store_name: string | null;
-            /**
-             * 適用数
-             */
-            applied_count: number;
-            /**
-             * OptionDiscountStatus
-             *
-             * ステータス
-             */
-            status: 'active' | 'inactive';
-            /**
-             * 説明文
-             */
-            description: string | null;
-            /**
-             * 適用ルール
-             */
-            rules: Array<string>;
-            /**
-             * 作成日時
-             */
-            created_at: string;
-            /**
-             * 最終更新日時
-             */
-            updated_at: string;
-            /**
-             * 更新者
-             */
-            updated_by: string;
-        };
-    };
-};
-
-export type PatchCrmOptionDiscountsByIdResponse = PatchCrmOptionDiscountsByIdResponses[keyof PatchCrmOptionDiscountsByIdResponses];
-
-export type GetCrmOptionDiscountsData = {
-    body?: never;
-    path?: never;
-    query?: {
-        page?: number;
-        limit?: number;
-        /**
-         * セット割名・コードで検索
-         */
-        search?: string;
-        /**
-         * OptionDiscountType
-         *
-         * セット割の割引タイプ
-         */
-        discount_type?: 'fixed_amount' | 'percentage';
-        /**
-         * OptionDiscountStatus
-         *
-         * セット割の有効/無効ステータス
-         */
-        status?: 'active' | 'inactive';
-        sort_by?: 'id' | 'name' | 'code' | 'discount_type' | 'discount_value' | 'store_name' | 'applied_count' | 'status';
-        sort_order?: 'asc' | 'desc';
-    };
-    url: '/crm/option-discounts';
-};
-
-export type GetCrmOptionDiscountsErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    400: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type GetCrmOptionDiscountsError = GetCrmOptionDiscountsErrors[keyof GetCrmOptionDiscountsErrors];
-
-export type GetCrmOptionDiscountsResponses = {
-    /**
-     * GetOptionDiscountsResponse
-     *
-     * セット割一覧レスポンス
-     */
-    200: {
-        option_discounts: Array<{
-            /**
-             * セット割ID
-             */
-            id: string;
-            /**
-             * セット割名
-             */
-            name: string;
-            /**
-             * セット割コード
-             */
-            code: string;
-            /**
-             * 対象契約名一覧
-             */
-            target_contracts: Array<string>;
-            /**
-             * 対象オプション名一覧
-             */
-            target_options: Array<string>;
-            /**
-             * OptionDiscountType
-             *
-             * 割引タイプ
-             */
-            discount_type: 'fixed_amount' | 'percentage';
-            /**
-             * 割引値
-             */
-            discount_value: number;
-            /**
-             * OptionDiscountCondition
-             *
-             * 適用条件
-             */
-            conditions: 'simultaneous' | 'existing_member' | 'family_2_plus' | 'options_3_plus';
-            /**
-             * 対象店舗ID（null = 全店舗）
-             */
-            store_id: string | null;
-            /**
-             * 対象店舗名（null = 全店舗）
-             */
-            store_name: string | null;
-            /**
-             * 適用数
-             */
-            applied_count: number;
-            /**
-             * OptionDiscountStatus
-             *
-             * ステータス
-             */
-            status: 'active' | 'inactive';
-        }>;
-        pagination: {
-            page: number;
-            limit: number;
-            total: number;
-            total_pages: number;
-        };
-    };
-};
-
-export type GetCrmOptionDiscountsResponse = GetCrmOptionDiscountsResponses[keyof GetCrmOptionDiscountsResponses];
-
-export type PostCrmOptionDiscountsData = {
-    /**
-     * UpsertOptionDiscountBody
-     *
-     * セット割作成・更新リクエスト
-     */
-    body?: {
-        name: string;
-        code: string;
-        description?: string | null;
-        target_contracts: Array<string>;
-        target_options: Array<string>;
-        /**
-         * OptionDiscountType
-         *
-         * セット割の割引タイプ
-         */
-        discount_type: 'fixed_amount' | 'percentage';
-        discount_value: number;
-        /**
-         * OptionDiscountCondition
-         *
-         * セット割の適用条件
-         */
-        conditions: 'simultaneous' | 'existing_member' | 'family_2_plus' | 'options_3_plus';
-        store_id?: string | null;
-        /**
-         * OptionDiscountStatus
-         *
-         * セット割の有効/無効ステータス
-         */
-        status?: 'active' | 'inactive';
-    };
-    path?: never;
-    query?: never;
-    url: '/crm/option-discounts';
-};
-
-export type PostCrmOptionDiscountsErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    400: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type PostCrmOptionDiscountsError = PostCrmOptionDiscountsErrors[keyof PostCrmOptionDiscountsErrors];
-
-export type PostCrmOptionDiscountsResponses = {
-    /**
-     * CreateOptionDiscountResponse
-     *
-     * セット割作成レスポンス
-     */
-    201: {
-        message: string;
-        /**
-         * OptionDiscountDetail
-         *
-         * セット割詳細
-         */
-        option_discount: {
-            /**
-             * セット割ID
-             */
-            id: string;
-            /**
-             * セット割名
-             */
-            name: string;
-            /**
-             * セット割コード
-             */
-            code: string;
-            /**
-             * 対象契約名一覧
-             */
-            target_contracts: Array<string>;
-            /**
-             * 対象オプション名一覧
-             */
-            target_options: Array<string>;
-            /**
-             * OptionDiscountType
-             *
-             * 割引タイプ
-             */
-            discount_type: 'fixed_amount' | 'percentage';
-            /**
-             * 割引値
-             */
-            discount_value: number;
-            /**
-             * OptionDiscountCondition
-             *
-             * 適用条件
-             */
-            conditions: 'simultaneous' | 'existing_member' | 'family_2_plus' | 'options_3_plus';
-            /**
-             * 対象店舗ID（null = 全店舗）
-             */
-            store_id: string | null;
-            /**
-             * 対象店舗名（null = 全店舗）
-             */
-            store_name: string | null;
-            /**
-             * 適用数
-             */
-            applied_count: number;
-            /**
-             * OptionDiscountStatus
-             *
-             * ステータス
-             */
-            status: 'active' | 'inactive';
-            /**
-             * 説明文
-             */
-            description: string | null;
-            /**
-             * 適用ルール
-             */
-            rules: Array<string>;
-            /**
-             * 作成日時
-             */
-            created_at: string;
-            /**
-             * 最終更新日時
-             */
-            updated_at: string;
-            /**
-             * 更新者
-             */
-            updated_by: string;
-        };
-    };
-};
-
-export type PostCrmOptionDiscountsResponse = PostCrmOptionDiscountsResponses[keyof PostCrmOptionDiscountsResponses];
 
 export type GetCrmOptionsByIdChangeHistoryData = {
     body?: never;

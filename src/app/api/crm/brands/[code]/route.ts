@@ -3,88 +3,91 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/app/api/_mock-db';
 import {
   UpdateBrandRequestSchema,
+  type UpdateBrandResponse,
   UpdateBrandResponseSchema,
-  normalizeBrandCode,
 } from '@/app/api/_schemas/brand.schema';
 import { ErrorResponseSchema } from '@/app/api/_schemas/staff.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
 
+function normalizeBrandIdentifier(value: string): string {
+  return value.trim().toLowerCase();
+}
+
 registerRoute({
   method: 'patch',
   path: '/crm/brands/{code}',
-  summary: 'Update Y-07 brand master',
-  description: 'ブランド基本設定を更新する（本部のみ）',
+  summary: 'Update Y-07 brand master row',
+  description: 'ブランド基本設定の更新。本部のみ編集可能。',
   tags: ['Brands'],
-  parameters: [
-    {
-      name: 'code',
-      in: 'path',
-      required: true,
-      description: 'Brand code',
-      schema: { type: 'string' },
-    },
-  ],
   requestBody: {
     schema: UpdateBrandRequestSchema,
-    description: 'ブランド設定更新リクエスト',
+    description: 'Brand update payload',
   },
   responses: [
     {
       status: 200,
       schema: UpdateBrandResponseSchema,
-      description: 'Updated successfully',
+      description: 'Updated',
     },
-    { status: 400, schema: ErrorResponseSchema, description: 'Validation error' },
-    { status: 404, schema: ErrorResponseSchema, description: 'Not found' },
-    { status: 500, schema: ErrorResponseSchema, description: 'Internal server error' },
+    {
+      status: 400,
+      schema: ErrorResponseSchema,
+      description: 'Bad request',
+    },
+    {
+      status: 404,
+      schema: ErrorResponseSchema,
+      description: 'Not found',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
   ],
 });
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ code: string }> },
-) {
+export async function PATCH(request: NextRequest, context: { params: Promise<{ code: string }> }) {
   try {
-    const { code } = await params;
-    const normalizedCode = normalizeBrandCode(code);
-    const body = await request.json();
+    const { code } = await context.params;
+    const brand = db.brands.getByCode(code);
 
-    const validation = UpdateBrandRequestSchema.safeParse(body);
-    if (!validation.success) {
-      const errors = validation.error.issues.map((issue) => issue.message).join(', ');
-      return NextResponse.json({ error: errors }, { status: 400 });
-    }
-
-    const existing = db.brands.getByCode(normalizedCode);
-    if (!existing) {
+    if (!brand) {
       return NextResponse.json({ error: 'Brand not found' }, { status: 404 });
     }
 
-    const normalizedBrandId = validation.data.brand_id
-      ? normalizeBrandCode(validation.data.brand_id)
-      : undefined;
+    const body = await request.json();
+    const parsedBody = UpdateBrandRequestSchema.safeParse(body);
 
-    if (normalizedBrandId) {
-      const existingBrandId = db.brands.getByBrandId(normalizedBrandId);
-      if (existingBrandId && normalizeBrandCode(existingBrandId.code) !== normalizedCode) {
-        return NextResponse.json({ error: 'Brand ID already exists' }, { status: 400 });
-      }
+    if (!parsedBody.success) {
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
     }
 
-    const updated = db.brands.update(normalizedCode, {
-      ...validation.data,
-      ...(normalizedBrandId ? { brand_id: normalizedBrandId } : {}),
-    });
-    if (!updated) {
-      return NextResponse.json({ error: 'Failed to update brand' }, { status: 500 });
+    const normalizedBrandId = parsedBody.data.brand_id
+      ? normalizeBrandIdentifier(parsedBody.data.brand_id)
+      : null;
+    const duplicateBrand = normalizedBrandId ? db.brands.getByBrandId(normalizedBrandId) : null;
+
+    if (duplicateBrand && duplicateBrand.code !== brand.code) {
+      return NextResponse.json(
+        { error: '同じブランドIDのブランドが既に存在します' },
+        { status: 400 },
+      );
     }
 
-    return NextResponse.json(
-      { message: 'ブランド設定を保存しました', brand: updated },
-      { status: 200 },
-    );
+    const updatedBrand = db.brands.update(code, parsedBody.data);
+    if (!updatedBrand) {
+      return NextResponse.json({ error: 'Brand not found' }, { status: 404 });
+    }
+
+    const response: UpdateBrandResponse = {
+      message: 'ブランド設定を保存しました',
+      brand: updatedBrand,
+    };
+
+    return NextResponse.json(response);
   } catch (error) {
-    console.error('PATCH /crm/brands/[code] error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('Error updating brand:', error);
+    return NextResponse.json({ error: 'Failed to update brand' }, { status: 500 });
   }
 }

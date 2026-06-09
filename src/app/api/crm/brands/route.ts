@@ -5,14 +5,16 @@ import {
   CreateBrandRequestSchema,
   type CreateBrandResponse,
   CreateBrandResponseSchema,
-  type GetBrandsQuery,
   GetBrandsQuerySchema,
   type GetBrandsResponse,
   GetBrandsResponseSchema,
-  normalizeBrandCode,
 } from '@/app/api/_schemas/brand.schema';
 import { ErrorResponseSchema } from '@/app/api/_schemas/staff.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
+
+function normalizeBrandIdentifier(value: string): string {
+  return value.trim().toLowerCase();
+}
 
 registerRoute({
   method: 'get',
@@ -41,43 +43,15 @@ registerRoute({
   ],
 });
 
-export async function GET(request: NextRequest) {
-  try {
-    const queryObj: Record<string, string | undefined> = {};
-    request.nextUrl.searchParams.forEach((value, key) => {
-      queryObj[key] = value;
-    });
-
-    const validation = GetBrandsQuerySchema.safeParse(queryObj);
-    if (!validation.success) {
-      const errors = validation.error.issues.map((issue) => issue.message).join(', ');
-      return NextResponse.json({ error: errors }, { status: 400 });
-    }
-
-    const { page, limit }: GetBrandsQuery = validation.data;
-    const total = db.brands.count();
-    const total_pages = Math.ceil(total / limit) || 0;
-
-    const response: GetBrandsResponse = {
-      brands: db.brands.getList({ page, limit }),
-      pagination: { page, limit, total, total_pages },
-    };
-    return NextResponse.json(response);
-  } catch (error) {
-    console.error('Error fetching brands:', error);
-    return NextResponse.json({ error: 'Failed to fetch brands' }, { status: 500 });
-  }
-}
-
 registerRoute({
   method: 'post',
   path: '/crm/brands',
-  summary: 'Create Y-07 brand master',
-  description: 'ブランド基本設定を新規作成する（本部のみ）',
+  summary: 'Create Y-07 brand master row',
+  description: 'ブランド基本設定の新規作成。本部のみ編集可能。',
   tags: ['Brands'],
   requestBody: {
     schema: CreateBrandRequestSchema,
-    description: 'ブランド設定作成リクエスト',
+    description: 'Brand create payload',
   },
   responses: [
     {
@@ -85,34 +59,71 @@ registerRoute({
       schema: CreateBrandResponseSchema,
       description: 'Created',
     },
-    { status: 400, schema: ErrorResponseSchema, description: 'Bad request' },
-    { status: 500, schema: ErrorResponseSchema, description: 'Internal server error' },
+    {
+      status: 400,
+      schema: ErrorResponseSchema,
+      description: 'Bad request',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
   ],
 });
+
+export async function GET(request: NextRequest) {
+  try {
+    const queryObject: Record<string, string | undefined> = {};
+    request.nextUrl.searchParams.forEach((value, key) => {
+      queryObject[key] = value;
+    });
+
+    const parsedQuery = GetBrandsQuerySchema.safeParse(queryObject);
+    if (!parsedQuery.success) {
+      return NextResponse.json({ error: 'Invalid query parameters' }, { status: 400 });
+    }
+
+    const { page, limit, search } = parsedQuery.data;
+    const allTotal = db.brands.count();
+    const total = db.brands.count(search);
+
+    const response: GetBrandsResponse = {
+      brands: db.brands.getList({ page, limit, search }),
+      pagination: {
+        page,
+        limit,
+        total,
+        total_pages: Math.max(1, Math.ceil(total / limit)),
+        all_total: allTotal,
+      },
+    };
+
+    return NextResponse.json(response);
+  } catch (error) {
+    console.error('Error fetching brands:', error);
+    return NextResponse.json({ error: 'Failed to fetch brands' }, { status: 500 });
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const validation = CreateBrandRequestSchema.safeParse(body);
+    const parsedBody = CreateBrandRequestSchema.safeParse(body);
 
-    if (!validation.success) {
-      const errors = validation.error.issues.map((issue) => issue.message).join(', ');
-      return NextResponse.json({ error: errors }, { status: 400 });
+    if (!parsedBody.success) {
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
     }
 
-    const normalizedBrandId = normalizeBrandCode(validation.data.brand_id);
-    if (db.brands.getByBrandId(normalizedBrandId)) {
-      return NextResponse.json({ error: 'Brand ID already exists' }, { status: 400 });
+    const normalizedBrandId = normalizeBrandIdentifier(parsedBody.data.brand_id);
+    if (db.brands.getByBrandId(normalizedBrandId) || db.brands.getByCode(normalizedBrandId)) {
+      return NextResponse.json(
+        { error: '同じブランドIDのブランドが既に存在します' },
+        { status: 400 },
+      );
     }
 
-    if (db.brands.getByCode(normalizedBrandId)) {
-      return NextResponse.json({ error: 'Generated brand code already exists' }, { status: 400 });
-    }
-
-    const brand = db.brands.add({
-      ...validation.data,
-      brand_id: normalizedBrandId,
-    });
+    const brand = db.brands.add(parsedBody.data);
     const response: CreateBrandResponse = {
       message: 'ブランドを作成しました',
       brand,
@@ -120,7 +131,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(response, { status: 201 });
   } catch (error) {
-    console.error('POST /crm/brands error:', error);
+    console.error('Error creating brand:', error);
     return NextResponse.json({ error: 'Failed to create brand' }, { status: 500 });
   }
 }

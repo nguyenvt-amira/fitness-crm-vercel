@@ -123,6 +123,13 @@ export enum Permission {
   OptionDiscountsEdit = 'option-discounts.edit',
   OptionDiscountsCreate = 'option-discounts.create',
   OptionDiscountsDelete = 'option-discounts.delete',
+
+  // -------------------------------------------------------------------------
+  // Brands
+  // -------------------------------------------------------------------------
+  BrandsView = 'brands.view',
+  BrandsEdit = 'brands.edit',
+  BrandsCreate = 'brands.create',
 }
 
 /** Authenticated user stored in context */

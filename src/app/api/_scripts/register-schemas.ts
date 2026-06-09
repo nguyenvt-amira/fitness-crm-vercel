@@ -13,7 +13,6 @@ import * as leaveSchemas from '../_schemas/leave.schema';
 import * as mainContractSchemas from '../_schemas/main-contract.schema';
 import * as memberSchemas from '../_schemas/member.schema';
 import * as membershipApplicationSchemas from '../_schemas/membership-application.schema';
-import * as optionDiscountSchemas from '../_schemas/option-discount.schema';
 import * as optionMasterSchemas from '../_schemas/option-master.schema';
 import * as positionSchemas from '../_schemas/position.schema';
 import * as promoCodeSchemas from '../_schemas/promo-code.schema';
@@ -882,16 +881,24 @@ export function registerAllSchemas() {
     registry.register('ManagedBrandCode', brandSchemas.ManagedBrandCodeSchema),
   );
   registeredSchemaMap.set(
+    'BrandIdInput',
+    registry.register('BrandIdInput', brandSchemas.BrandIdInputSchema),
+  );
+  registeredSchemaMap.set(
+    'BrandPagination',
+    registry.register('BrandPagination', brandSchemas.BrandPaginationSchema),
+  );
+  registeredSchemaMap.set(
     'BrandItem',
     registry.register('BrandItem', brandSchemas.BrandItemSchema),
   );
   registeredSchemaMap.set(
-    'GetBrandsResponse',
-    registry.register('GetBrandsResponse', brandSchemas.GetBrandsResponseSchema),
-  );
-  registeredSchemaMap.set(
     'GetBrandsQuery',
     registry.register('GetBrandsQuery', brandSchemas.GetBrandsQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'GetBrandsResponse',
+    registry.register('GetBrandsResponse', brandSchemas.GetBrandsResponseSchema),
   );
   registeredSchemaMap.set(
     'CreateBrandRequest',
@@ -1053,41 +1060,6 @@ export function registerAllSchemas() {
   registeredSchemaMap.set(
     'GateStopReleaseResponse',
     registry.register('GateStopReleaseResponse', memberSchemas.GateStopReleaseResponseSchema),
-  );
-
-  // Register option master schemas
-  registeredSchemaMap.set(
-    'OptionDiscountType',
-    registry.register('OptionDiscountType', optionDiscountSchemas.OptionDiscountTypeSchema),
-  );
-  registeredSchemaMap.set(
-    'OptionDiscountStatus',
-    registry.register('OptionDiscountStatus', optionDiscountSchemas.OptionDiscountStatusSchema),
-  );
-  registeredSchemaMap.set(
-    'OptionDiscountCondition',
-    registry.register(
-      'OptionDiscountCondition',
-      optionDiscountSchemas.OptionDiscountConditionSchema,
-    ),
-  );
-  registeredSchemaMap.set(
-    'OptionDiscountListItem',
-    registry.register('OptionDiscountListItem', optionDiscountSchemas.OptionDiscountListItemSchema),
-  );
-  registeredSchemaMap.set(
-    'GetOptionDiscountsQuery',
-    registry.register(
-      'GetOptionDiscountsQuery',
-      optionDiscountSchemas.GetOptionDiscountsQuerySchema,
-    ),
-  );
-  registeredSchemaMap.set(
-    'GetOptionDiscountsResponse',
-    registry.register(
-      'GetOptionDiscountsResponse',
-      optionDiscountSchemas.GetOptionDiscountsResponseSchema,
-    ),
   );
 
   // Register option master schemas
