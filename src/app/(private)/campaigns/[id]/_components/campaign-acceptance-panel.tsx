@@ -2,7 +2,9 @@
 
 import { useState } from 'react';
 
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Megaphone } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { StatusCard as StatusCardComponent } from '@/components/common/status-card';
 import {
@@ -18,6 +20,11 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 
+import {
+  getCrmCampaignsByIdQueryKey,
+  getCrmCampaignsQueryKey,
+  patchCrmCampaignsByIdMutation,
+} from '@/lib/api/@tanstack/react-query.gen';
 import type { CampaignDetail } from '@/lib/api/types.gen';
 
 type CampaignAcceptancePanelProps = {
@@ -25,7 +32,61 @@ type CampaignAcceptancePanelProps = {
 };
 
 export function CampaignAcceptancePanel({ campaign }: Readonly<CampaignAcceptancePanelProps>) {
+  const queryClient = useQueryClient();
+  const [open, setOpen] = useState(false);
   const [acceptEnabled, setAcceptEnabled] = useState(campaign.accept_status === 'active');
+
+  const updateMutation = useMutation({
+    ...patchCrmCampaignsByIdMutation(),
+    onSuccess: (response) => {
+      toast.success(response.message || 'キャンペーンを更新しました');
+      setAcceptEnabled(response.campaign.accept_status === 'active');
+      setOpen(false);
+      queryClient.invalidateQueries({ queryKey: getCrmCampaignsQueryKey() });
+      queryClient.invalidateQueries({
+        queryKey: getCrmCampaignsByIdQueryKey({ path: { id: campaign.id } }),
+      });
+    },
+    onError: () => {
+      toast.error('受付状態の更新に失敗しました');
+    },
+  });
+
+  const handleAcceptToggle = () => {
+    const nextAcceptStatus = acceptEnabled ? 'inactive' : 'active';
+
+    updateMutation.mutate({
+      path: { id: campaign.id },
+      body: {
+        name: campaign.name,
+        code: campaign.code,
+        brand: campaign.brand,
+        note: campaign.note,
+        accept_status: nextAcceptStatus,
+        status: campaign.status,
+        recruitment_period_start: campaign.recruitment_period_start,
+        recruitment_period_end: campaign.recruitment_period_end,
+        usage_period_start: campaign.usage_period_start,
+        usage_period_end: campaign.usage_period_end,
+        application_start_month_type: campaign.application_start_month_type,
+        application_custom_month: campaign.application_custom_month,
+        application_duration_months: campaign.application_duration_months,
+        main_contract_id: campaign.main_contract_id,
+        discount: {
+          first_month_enabled: campaign.discount.first_month_enabled,
+          second_month_enabled: campaign.discount.second_month_enabled,
+          amount: campaign.discount.amount,
+          rate: campaign.discount.rate,
+        },
+        auto_grant: {
+          enabled: campaign.auto_grant.enabled,
+          target_type: campaign.auto_grant.target_type,
+          gender_conditions: campaign.auto_grant.gender_conditions,
+          option_ids: campaign.auto_grant.option_ids,
+        },
+      },
+    } as never);
+  };
 
   return (
     <StatusCardComponent
@@ -37,7 +98,7 @@ export function CampaignAcceptancePanel({ campaign }: Readonly<CampaignAcceptanc
         'OFFで入会フローから非表示',
       ]}
       action={
-        <AlertDialog>
+        <AlertDialog open={open} onOpenChange={setOpen}>
           <AlertDialogTrigger
             render={
               <Button
@@ -63,9 +124,15 @@ export function CampaignAcceptancePanel({ campaign }: Readonly<CampaignAcceptanc
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>キャンセル</AlertDialogCancel>
-              <AlertDialogAction onClick={() => setAcceptEnabled(!acceptEnabled)}>
-                {acceptEnabled ? '停止する' : '再開する'}
+              <AlertDialogCancel disabled={updateMutation.isPending}>キャンセル</AlertDialogCancel>
+              <AlertDialogAction onClick={handleAcceptToggle} disabled={updateMutation.isPending}>
+                {updateMutation.isPending
+                  ? acceptEnabled
+                    ? '停止中...'
+                    : '再開中...'
+                  : acceptEnabled
+                    ? '停止する'
+                    : '再開する'}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
