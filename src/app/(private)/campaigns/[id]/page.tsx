@@ -74,8 +74,7 @@ export default function CampaignDetailPage() {
             <RoleGatedButton
               allowedRoles={[UserRole.Headquarter, UserRole.System]}
               variant="default"
-              size="sm"
-              className="h-9 gap-1.5 rounded-[10px] px-3 text-sm font-medium"
+              className="gap-1"
               onClick={() => router.push(navigate('/campaigns/[id]/edit', campaignId))}
             >
               <Pencil className="size-4" />
