@@ -27,14 +27,14 @@ export function CampaignForm({
 }: Readonly<CampaignFormProps>) {
   return (
     <div className="flex flex-col gap-6">
-      <Alert className="border-warning/50 bg-warning/10">
-        <AlertTriangle className="text-warning size-4" />
-        <AlertDescription className="text-muted-foreground text-xs">
-          {isEdit
-            ? '実施中のキャンペーンを変更すると、適用中の会員や申請中の導線にも影響します。'
-            : '実施中のキャンペーンを変更すると、適用中の会員にも影響します。'}
-        </AlertDescription>
-      </Alert>
+      {isEdit && (
+        <Alert className="border-warning/50 bg-warning/10">
+          <AlertTriangle className="text-warning size-4" />
+          <AlertDescription className="text-muted-foreground text-xs">
+            実施中のキャンペーンを変更すると、適用中の会員にも影響します。
+          </AlertDescription>
+        </Alert>
+      )}
 
       <CampaignFormBasicInfo isEdit={isEdit} campaignId={campaignId} />
       <CampaignFormPeriodSettings />
