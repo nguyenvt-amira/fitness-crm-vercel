@@ -3,19 +3,12 @@
 import { useParams, useRouter } from 'next/navigation';
 
 import { useQuery } from '@tanstack/react-query';
-import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 
 import { BackLink } from '@/components/common/back-link';
 import { DataStateBoundary } from '@/components/common/data-state-boundary';
 import { PageHeader } from '@/components/common/page-header';
 import { RoleGatedButton } from '@/components/common/role-gated-button';
-import { RoleGatedMenuItem } from '@/components/common/role-gated-menu-item';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { getCrmCampaignsByIdOptions } from '@/lib/api/@tanstack/react-query.gen';
@@ -80,32 +73,6 @@ export default function CampaignDetailPage() {
               <Pencil className="size-4" />
               編集
             </RoleGatedButton>
-
-            <DropdownMenu modal={false}>
-              <DropdownMenuTrigger className="border-input hover:bg-accent flex size-8 items-center justify-center rounded-[10px] border">
-                <MoreHorizontal className="size-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <RoleGatedMenuItem
-                  allowedRoles={[UserRole.Headquarter, UserRole.System]}
-                  onClick={() => router.push(navigate('/campaigns/[id]/edit', campaignId))}
-                >
-                  <Pencil className="size-4" />
-                  編集
-                </RoleGatedMenuItem>
-                <DropdownMenuSeparator />
-                <RoleGatedMenuItem
-                  allowedRoles={[UserRole.Headquarter, UserRole.System]}
-                  className="text-destructive focus:text-destructive"
-                  disabled
-                  tooltip="削除はこの画面では未対応です"
-                  onClick={() => undefined}
-                >
-                  <Trash2 className="size-4" />
-                  削除
-                </RoleGatedMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
         }
       />

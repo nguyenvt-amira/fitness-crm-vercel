@@ -2,13 +2,12 @@
 
 import { useRouter } from 'next/navigation';
 
-import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { MoreHorizontal, Pencil } from 'lucide-react';
 
 import { RoleGatedMenuItem } from '@/components/common/role-gated-menu-item';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
@@ -47,17 +46,6 @@ export function CampaignRowActions({ campaignId, className }: Readonly<CampaignR
         >
           <Pencil className="size-4" />
           編集
-        </RoleGatedMenuItem>
-        <DropdownMenuSeparator />
-        <RoleGatedMenuItem
-          allowedRoles={[UserRole.Headquarter, UserRole.System]}
-          className="text-destructive"
-          disabled
-          tooltip="削除はこの画面では未対応です"
-          onClick={(event) => event.stopPropagation()}
-        >
-          <Trash2 className="size-4" />
-          削除
         </RoleGatedMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

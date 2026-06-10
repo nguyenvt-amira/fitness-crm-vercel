@@ -25,11 +25,15 @@ import {
   getCrmCampaignsQueryKey,
   patchCrmCampaignsByIdMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
-import type { CampaignDetail } from '@/lib/api/types.gen';
+import type { CampaignDetail, PatchCrmCampaignsByIdData } from '@/lib/api/types.gen';
 
 type CampaignAcceptancePanelProps = {
   campaign: CampaignDetail;
 };
+
+function toRequestDate(value: string) {
+  return value.replaceAll('/', '-');
+}
 
 export function CampaignAcceptancePanel({ campaign }: Readonly<CampaignAcceptancePanelProps>) {
   const queryClient = useQueryClient();
@@ -54,37 +58,38 @@ export function CampaignAcceptancePanel({ campaign }: Readonly<CampaignAcceptanc
 
   const handleAcceptToggle = () => {
     const nextAcceptStatus = acceptEnabled ? 'inactive' : 'active';
+    const requestBody: NonNullable<PatchCrmCampaignsByIdData['body']> = {
+      name: campaign.name,
+      code: campaign.code,
+      brand: campaign.brand,
+      note: campaign.note ?? null,
+      accept_status: nextAcceptStatus,
+      status: campaign.status ?? 'active',
+      recruitment_period_start: toRequestDate(campaign.recruitment_period_start),
+      recruitment_period_end: toRequestDate(campaign.recruitment_period_end),
+      usage_period_start: toRequestDate(campaign.usage_period_start),
+      usage_period_end: toRequestDate(campaign.usage_period_end),
+      application_start_month_type: campaign.application_start_month_type,
+      application_custom_month: campaign.application_custom_month,
+      application_duration_months: campaign.application_duration_months,
+      main_contract_id: campaign.main_contract_id,
+      discount: {
+        first_month_enabled: campaign.discount.first_month_enabled,
+        second_month_enabled: campaign.discount.second_month_enabled,
+        amount: campaign.discount.amount,
+        rate: campaign.discount.rate,
+      },
+      auto_grant: {
+        enabled: campaign.auto_grant.enabled,
+        target_type: campaign.auto_grant.target_type,
+        gender_conditions: campaign.auto_grant.gender_conditions,
+        option_ids: campaign.auto_grant.option_ids,
+      },
+    };
 
     updateMutation.mutate({
       path: { id: campaign.id },
-      body: {
-        name: campaign.name,
-        code: campaign.code,
-        brand: campaign.brand,
-        note: campaign.note,
-        accept_status: nextAcceptStatus,
-        status: campaign.status,
-        recruitment_period_start: campaign.recruitment_period_start,
-        recruitment_period_end: campaign.recruitment_period_end,
-        usage_period_start: campaign.usage_period_start,
-        usage_period_end: campaign.usage_period_end,
-        application_start_month_type: campaign.application_start_month_type,
-        application_custom_month: campaign.application_custom_month,
-        application_duration_months: campaign.application_duration_months,
-        main_contract_id: campaign.main_contract_id,
-        discount: {
-          first_month_enabled: campaign.discount.first_month_enabled,
-          second_month_enabled: campaign.discount.second_month_enabled,
-          amount: campaign.discount.amount,
-          rate: campaign.discount.rate,
-        },
-        auto_grant: {
-          enabled: campaign.auto_grant.enabled,
-          target_type: campaign.auto_grant.target_type,
-          gender_conditions: campaign.auto_grant.gender_conditions,
-          option_ids: campaign.auto_grant.option_ids,
-        },
-      },
+      body: requestBody,
     } as never);
   };
 
