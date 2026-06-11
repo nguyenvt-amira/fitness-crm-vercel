@@ -81,6 +81,13 @@ import type {
   StoreLinkedOption,
 } from '@/app/api/_schemas/store-sales-settings.schema';
 import type { Store, StoreBusinessHours } from '@/app/api/_schemas/store.schema';
+import type {
+  SurveyQuestion,
+  SurveyTemplateChangeHistoryItem,
+  SurveyTemplateDetail,
+  SurveyTemplateListItem,
+  SurveyTemplateStatus,
+} from '@/app/api/_schemas/survey.schema';
 import type { ApprovalHistoryItem, TransferDetail } from '@/app/api/_schemas/transfer.schema';
 import type { VisitExperience } from '@/app/api/_schemas/visit-experience.schema';
 import type { VisitExperienceDetail } from '@/app/api/_schemas/visit-experience.schema';
@@ -335,6 +342,60 @@ function normalizeLockerDate(value: string | null | undefined): string | null {
 function resolveLockerContractTypeFromCode(code: string): LockerOptionType {
   if (code.includes('PRM')) return 'premium';
   return 'standard';
+}
+
+function toSurveyTemplateListItem(survey: SurveyTemplateDetail): SurveyTemplateListItem {
+  return {
+    id: survey.id,
+    name: survey.name,
+    type: survey.type,
+    trigger: survey.trigger,
+    brand: survey.brand,
+    question_count: survey.question_count,
+    response_count: survey.response_count,
+    response_rate: survey.response_rate,
+    last_response_date: survey.last_response_date,
+    status: survey.status,
+  };
+}
+
+function buildSurveyTemplateDetail(
+  survey: SurveyTemplateListItem,
+  overrides: Partial<Omit<SurveyTemplateDetail, keyof SurveyTemplateListItem>> = {},
+): SurveyTemplateDetail {
+  const questions = overrides.questions ?? [];
+
+  return {
+    ...survey,
+    question_count: survey.question_count || questions.length,
+    created_at: overrides.created_at ?? '2024/04/01',
+    updated_at: overrides.updated_at ?? '2026/03/10',
+    questions,
+  };
+}
+
+function buildSurveyTemplateChangeHistory(
+  survey: SurveyTemplateDetail,
+): SurveyTemplateChangeHistoryItem[] {
+  const currentStatus = survey.status === 'active' ? '有効' : '無効';
+  const previousStatus = survey.status === 'active' ? '無効' : '有効';
+
+  return [
+    {
+      date: `${survey.updated_at} 10:00`,
+      user: '管理者A',
+      field: 'ステータス',
+      from: previousStatus,
+      to: currentStatus,
+    },
+    {
+      date: `${survey.created_at} 09:00`,
+      user: '管理者A',
+      field: null,
+      from: null,
+      to: '新規作成',
+    },
+  ];
 }
 
 export type MembershipApplicationContractDetails = {
@@ -2503,6 +2564,21 @@ type DbType = {
     delete(id: string): boolean;
     add(data: UpsertOptionMasterBody): OptionMasterDetail;
     update(id: string, data: UpsertOptionMasterBody): OptionMasterDetail | undefined;
+  };
+  surveys: {
+    _rows: SurveyTemplateDetail[];
+    _changeHistory: Record<string, SurveyTemplateChangeHistoryItem[]>;
+    _seeded: boolean;
+    _seed(): void;
+    getList(): SurveyTemplateListItem[];
+    getById(id: string): SurveyTemplateDetail | undefined;
+    getChangeHistory(id: string): SurveyTemplateChangeHistoryItem[];
+    delete(id: string): boolean;
+    updateStatus(
+      id: string,
+      status: SurveyTemplateStatus,
+      reason?: string | null,
+    ): SurveyTemplateDetail | undefined;
   };
   optionDiscount: {
     _rows: GetOptionDiscountsResponse['option_discounts'];
@@ -8083,6 +8159,286 @@ function createDb() {
         this._rows.splice(index, 1);
         delete this._changeHistory[id];
         return true;
+      },
+    },
+    surveys: {
+      _rows: [] as SurveyTemplateDetail[],
+      _changeHistory: {} as Record<string, SurveyTemplateChangeHistoryItem[]>,
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+
+        const surveyQuestions: Record<string, SurveyQuestion[]> = {
+          'S-001': [
+            {
+              no: 1,
+              content: '入会のきっかけを教えてください',
+              format: 'multiple_choice',
+              required: true,
+              visible: true,
+              choices: [
+                { order: 1, text: '友人の紹介' },
+                { order: 2, text: 'Web広告' },
+                { order: 3, text: 'チラシ' },
+                { order: 4, text: '通りがかり' },
+                { order: 5, text: 'その他' },
+              ],
+            },
+            {
+              no: 2,
+              content: '主に利用したい時間帯はいつですか？',
+              format: 'single_choice',
+              required: true,
+              visible: true,
+              choices: [
+                { order: 1, text: '平日午前' },
+                { order: 2, text: '平日午後' },
+                { order: 3, text: '平日夜間' },
+                { order: 4, text: '土日祝' },
+              ],
+            },
+            {
+              no: 3,
+              content: '運動経験を教えてください',
+              format: 'single_choice',
+              required: true,
+              visible: false,
+              choices: [
+                { order: 1, text: '初心者' },
+                { order: 2, text: '1年未満' },
+                { order: 3, text: '1〜3年' },
+                { order: 4, text: '3年以上' },
+              ],
+            },
+            {
+              no: 4,
+              content: '当ジムに期待することを教えてください',
+              format: 'free_text',
+              required: false,
+              visible: true,
+              choices: [],
+            },
+            {
+              no: 5,
+              content: 'ご意見・ご要望（自由記入）',
+              format: 'free_text',
+              required: false,
+              visible: true,
+              choices: [],
+            },
+          ],
+          'S-002': [
+            {
+              no: 1,
+              content: '退会を検討した主な理由を教えてください',
+              format: 'single_choice',
+              required: true,
+              visible: true,
+              choices: [
+                { order: 1, text: '料金' },
+                { order: 2, text: '通いにくさ' },
+                { order: 3, text: 'サービス内容' },
+                { order: 4, text: '転居' },
+                { order: 5, text: 'その他' },
+              ],
+            },
+            {
+              no: 2,
+              content: '改善してほしい点があれば教えてください',
+              format: 'free_text',
+              required: false,
+              visible: true,
+              choices: [],
+            },
+          ],
+          'S-003': [
+            {
+              no: 1,
+              content: '施設の清潔さに満足していますか？',
+              format: 'single_choice',
+              required: true,
+              visible: true,
+              choices: [
+                { order: 1, text: '非常に満足' },
+                { order: 2, text: '満足' },
+                { order: 3, text: '普通' },
+                { order: 4, text: '不満' },
+              ],
+            },
+            {
+              no: 2,
+              content: '自由記述でご意見をお聞かせください',
+              format: 'free_text',
+              required: false,
+              visible: true,
+              choices: [],
+            },
+          ],
+          'S-004': [
+            {
+              no: 1,
+              content: 'トレーナーの説明は分かりやすかったですか？',
+              format: 'single_choice',
+              required: true,
+              visible: true,
+              choices: [
+                { order: 1, text: '非常に分かりやすい' },
+                { order: 2, text: '分かりやすい' },
+                { order: 3, text: '普通' },
+                { order: 4, text: '分かりにくい' },
+              ],
+            },
+          ],
+        };
+
+        const seedRows: SurveyTemplateListItem[] = [
+          {
+            id: 'S-001',
+            name: '入会時アンケート',
+            type: 'lifecycle',
+            trigger: 'join',
+            brand: 'joyfit',
+            question_count: 5,
+            response_count: 1840,
+            response_rate: 78.4,
+            last_response_date: '2026/03/10',
+            status: 'active',
+          },
+          {
+            id: 'S-002',
+            name: '退会理由アンケート',
+            type: 'lifecycle',
+            trigger: 'leave',
+            brand: 'fit365',
+            question_count: 8,
+            response_count: 420,
+            response_rate: 92.1,
+            last_response_date: '2026/03/08',
+            status: 'active',
+          },
+          {
+            id: 'S-003',
+            name: '施設満足度調査',
+            type: 'operational',
+            trigger: 'manual_delivery',
+            brand: 'joyfit',
+            question_count: 10,
+            response_count: 1560,
+            response_rate: 65.3,
+            last_response_date: '2026/03/05',
+            status: 'active',
+          },
+          {
+            id: 'S-004',
+            name: 'トレーナー評価',
+            type: 'operational',
+            trigger: 'conditional_trigger',
+            brand: 'fit365',
+            question_count: 6,
+            response_count: 410,
+            response_rate: 55.8,
+            last_response_date: '2026/02/28',
+            status: 'inactive',
+          },
+        ];
+
+        const detailOverrides: Record<
+          string,
+          Partial<Omit<SurveyTemplateDetail, keyof SurveyTemplateListItem>>
+        > = {
+          'S-001': {
+            created_at: '2024/04/01',
+            updated_at: '2026/03/10',
+            questions: surveyQuestions['S-001'],
+          },
+          'S-002': {
+            created_at: '2024/08/01',
+            updated_at: '2026/03/08',
+            questions: surveyQuestions['S-002'],
+          },
+          'S-003': {
+            created_at: '2025/01/15',
+            updated_at: '2026/03/05',
+            questions: surveyQuestions['S-003'],
+          },
+          'S-004': {
+            created_at: '2025/03/01',
+            updated_at: '2026/02/28',
+            questions: surveyQuestions['S-004'],
+          },
+        };
+
+        this._rows.push(
+          ...seedRows.map((row) => buildSurveyTemplateDetail(row, detailOverrides[row.id])),
+        );
+        this._changeHistory = Object.fromEntries(
+          this._rows.map((row) => [row.id, buildSurveyTemplateChangeHistory(row)]),
+        );
+      },
+      getList(): SurveyTemplateListItem[] {
+        this._seed();
+        return this._rows.map(toSurveyTemplateListItem);
+      },
+      getById(id: string): SurveyTemplateDetail | undefined {
+        this._seed();
+        return this._rows.find((row) => row.id === id);
+      },
+      getChangeHistory(id: string): SurveyTemplateChangeHistoryItem[] {
+        this._seed();
+        return this._changeHistory[id] ?? [];
+      },
+      delete(id: string): boolean {
+        this._seed();
+        const index = this._rows.findIndex((row) => row.id === id);
+        if (index === -1) {
+          return false;
+        }
+
+        this._rows.splice(index, 1);
+        delete this._changeHistory[id];
+        return true;
+      },
+      updateStatus(
+        id: string,
+        status: SurveyTemplateStatus,
+        reason?: string | null,
+      ): SurveyTemplateDetail | undefined {
+        this._seed();
+
+        const index = this._rows.findIndex((row) => row.id === id);
+        if (index === -1) {
+          return undefined;
+        }
+
+        const existing = this._rows[index]!;
+        const nextUpdatedAt =
+          status === 'inactive'
+            ? '2026/06/11'
+            : new Date().toLocaleDateString('ja-JP').replaceAll('-', '/');
+        const updated = {
+          ...existing,
+          status,
+          updated_at: nextUpdatedAt,
+        };
+
+        this._rows[index] = updated;
+        this._changeHistory[id] = [
+          {
+            date: `${nextUpdatedAt} 10:00`,
+            user: '管理者A',
+            field: reason ? 'ステータス / 理由' : 'ステータス',
+            from: existing.status === 'active' ? '有効' : '無効',
+            to: reason
+              ? `${status === 'active' ? '有効' : '無効'} (${reason})`
+              : status === 'active'
+                ? '有効'
+                : '無効',
+          },
+          ...(this._changeHistory[id] ?? []),
+        ];
+
+        return updated;
       },
     },
     optionDiscount: {

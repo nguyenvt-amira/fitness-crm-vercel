@@ -145,6 +145,14 @@ export enum Permission {
   LockersContractsCreate = 'lockers-contracts.create',
   LockersContractsEdit = 'lockers-contracts.edit',
   LockersContractsExport = 'lockers-contracts.export',
+
+  // -------------------------------------------------------------------------
+  // Surveys
+  // -------------------------------------------------------------------------
+  SurveysView = 'surveys.view',
+  SurveysEdit = 'surveys.edit',
+  SurveysCreate = 'surveys.create',
+  SurveysDelete = 'surveys.delete',
 }
 
 /** Authenticated user stored in context */

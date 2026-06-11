@@ -18,6 +18,7 @@ import * as optionDiscountSchemas from '../_schemas/option-discount.schema';
 import * as optionMasterSchemas from '../_schemas/option-master.schema';
 import * as positionSchemas from '../_schemas/position.schema';
 import * as promoCodeSchemas from '../_schemas/promo-code.schema';
+import * as surveySchemas from '../_schemas/survey.schema';
 import * as staffSchemas from '../_schemas/staff.schema';
 import * as storeAccessSettingsSchemas from '../_schemas/store-access-settings.schema';
 import * as storeSchemas from '../_schemas/store.schema';
@@ -1576,6 +1577,83 @@ export function registerAllSchemas() {
     registry.register(
       'PermitVisitExperienceError',
       visitExperienceSchemas.PermitVisitExperienceErrorSchema,
+    ),
+  );
+
+  // Register survey schemas
+  registeredSchemaMap.set(
+    'SurveyTemplateType',
+    registry.register('SurveyTemplateType', surveySchemas.SurveyTemplateTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'SurveyTemplateTrigger',
+    registry.register('SurveyTemplateTrigger', surveySchemas.SurveyTemplateTriggerSchema),
+  );
+  registeredSchemaMap.set(
+    'SurveyTemplateStatus',
+    registry.register('SurveyTemplateStatus', surveySchemas.SurveyTemplateStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'SurveyQuestionFormat',
+    registry.register('SurveyQuestionFormat', surveySchemas.SurveyQuestionFormatSchema),
+  );
+  registeredSchemaMap.set(
+    'SurveyQuestionChoice',
+    registry.register('SurveyQuestionChoice', surveySchemas.SurveyQuestionChoiceSchema),
+  );
+  registeredSchemaMap.set(
+    'SurveyQuestion',
+    registry.register('SurveyQuestion', surveySchemas.SurveyQuestionSchema),
+  );
+  registeredSchemaMap.set(
+    'SurveyTemplateListItem',
+    registry.register('SurveyTemplateListItem', surveySchemas.SurveyTemplateListItemSchema),
+  );
+  registeredSchemaMap.set(
+    'GetSurveyTemplatesQuery',
+    registry.register('GetSurveyTemplatesQuery', surveySchemas.GetSurveyTemplatesQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'GetSurveyTemplatesResponse',
+    registry.register('GetSurveyTemplatesResponse', surveySchemas.GetSurveyTemplatesResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'SurveyTemplateDetail',
+    registry.register('SurveyTemplateDetail', surveySchemas.SurveyTemplateDetailSchema),
+  );
+  registeredSchemaMap.set(
+    'GetSurveyTemplateDetailResponse',
+    registry.register(
+      'GetSurveyTemplateDetailResponse',
+      surveySchemas.GetSurveyTemplateDetailResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateSurveyTemplateStatusBody',
+    registry.register(
+      'UpdateSurveyTemplateStatusBody',
+      surveySchemas.UpdateSurveyTemplateStatusBodySchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateSurveyTemplateStatusResponse',
+    registry.register(
+      'UpdateSurveyTemplateStatusResponse',
+      surveySchemas.UpdateSurveyTemplateStatusResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'DeleteSurveyTemplateResponse',
+    registry.register(
+      'DeleteSurveyTemplateResponse',
+      surveySchemas.DeleteSurveyTemplateResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'SurveyTemplateChangeHistoryItem',
+    registry.register(
+      'SurveyTemplateChangeHistoryItem',
+      surveySchemas.SurveyTemplateChangeHistoryItemSchema,
     ),
   );
 }

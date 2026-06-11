@@ -95,6 +95,7 @@ const menuItems: MenuItem[] = [
       { label: '主契約管理', href: '/contracts' },
       { label: 'オプション管理', href: '/options' },
       { label: 'キャンペーン管理', href: '/campaigns' },
+      { label: 'アンケート管理', href: '/surveys' },
     ],
   },
   {
