@@ -88,7 +88,6 @@ export function CampaignsFilters({
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div className="flex flex-wrap items-end gap-2">
             <div className="flex flex-col gap-1">
-              <span className="text-muted-foreground text-[11px]">ブランド</span>
               <Select
                 value={filters.brand ?? 'all'}
                 onValueChange={(value) => {
@@ -112,7 +111,6 @@ export function CampaignsFilters({
             </div>
 
             <div className="flex flex-col gap-1">
-              <span className="text-muted-foreground text-[11px]">受付可否</span>
               <Select
                 value={filters.accept_status ?? 'all'}
                 onValueChange={(value) => {
@@ -139,7 +137,6 @@ export function CampaignsFilters({
             </div>
 
             <div className="flex flex-col gap-1">
-              <span className="text-muted-foreground text-[11px]">募集開始日</span>
               <DatePicker
                 date={recruitmentStartDate}
                 onDateChange={(date) => {
@@ -153,7 +150,6 @@ export function CampaignsFilters({
             </div>
 
             <div className="flex flex-col gap-1">
-              <span className="text-muted-foreground text-[11px]">募集終了日</span>
               <DatePicker
                 date={recruitmentEndDate}
                 onDateChange={(date) => {
