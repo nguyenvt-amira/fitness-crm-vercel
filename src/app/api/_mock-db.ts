@@ -82,12 +82,6 @@ import type {
 } from '@/app/api/_schemas/store-sales-settings.schema';
 import type { Store, StoreBusinessHours } from '@/app/api/_schemas/store.schema';
 import type {
-  SurveyResponseAnswer,
-  SurveyResponseDetail,
-  SurveyResponseListItem,
-  SurveyResponseStatus,
-} from '@/app/api/_schemas/survey-reporting.schema';
-import type {
   SurveyQuestion,
   SurveyTemplateChangeHistoryItem,
   SurveyTemplateDetail,
@@ -402,24 +396,6 @@ function buildSurveyTemplateChangeHistory(
       to: '新規作成',
     },
   ];
-}
-
-function toSurveyResponseListItem(response: SurveyResponseDetail): SurveyResponseListItem {
-  const { answers: _answers, ...listItem } = response;
-  void _answers;
-  return listItem;
-}
-
-function createSurveyResponseAnswer(
-  question: SurveyQuestion,
-  answer: string[],
-): SurveyResponseAnswer {
-  return {
-    question_no: question.no,
-    question: question.content,
-    format: question.format,
-    answer,
-  };
 }
 
 export type MembershipApplicationContractDetails = {
@@ -2604,14 +2580,6 @@ type DbType = {
       reason?: string | null,
     ): SurveyTemplateDetail | undefined;
   };
-  surveyReporting: {
-    _rows: SurveyResponseDetail[];
-    _seeded: boolean;
-    _seed(): void;
-    getList(): SurveyResponseListItem[];
-    getById(id: string): SurveyResponseDetail | undefined;
-    getAll(): SurveyResponseDetail[];
-  };
   optionDiscount: {
     _rows: GetOptionDiscountsResponse['option_discounts'];
     _changeHistory: Record<string, OptionDiscountChangeHistoryItem[]>;
@@ -2908,7 +2876,7 @@ type DbType = {
 };
 
 declare global {
-  var __fitnessDb_v13: DbType | undefined;
+  var __fitnessDb_v12: DbType | undefined;
 }
 
 // ─── Mock Payment History Data (A-01 FR-009-a) ──────────────────────────────
@@ -8473,179 +8441,6 @@ function createDb() {
         return updated;
       },
     },
-    surveyReporting: {
-      _rows: [] as SurveyResponseDetail[],
-      _seeded: false,
-      _seed(): void {
-        if (this._seeded) return;
-        this._seeded = true;
-
-        db.members._seed();
-        db.surveys._seed();
-
-        const members = db.members.getList();
-        const surveyIds = ['S-001', 'S-002', 'S-003', 'S-004'] as const;
-        const surveyMap = new Map(
-          surveyIds
-            .map((id) => db.surveys.getById(id))
-            .filter((survey): survey is NonNullable<typeof survey> => Boolean(survey))
-            .map((survey) => [survey.id, survey] as const),
-        );
-
-        const responseSeeds: Array<{
-          id: string;
-          memberIndex: number;
-          surveyId: (typeof surveyIds)[number];
-          responseDate: string;
-          status: SurveyResponseStatus;
-          answers: Record<number, string[]>;
-        }> = [
-          {
-            id: 'R-001',
-            memberIndex: 0,
-            surveyId: 'S-001',
-            responseDate: '2026/03/10 14:32',
-            status: 'completed',
-            answers: {
-              1: ['友人の紹介'],
-              2: ['平日夜間'],
-              3: ['1年未満'],
-              4: ['健康維持と体力向上。仕事帰りに気軽に利用できる点に魅力を感じました。'],
-              5: ['プロテインの種類をもう少し増やしてほしいです。'],
-            },
-          },
-          {
-            id: 'R-002',
-            memberIndex: 1,
-            surveyId: 'S-001',
-            responseDate: '2026/03/09 10:15',
-            status: 'completed',
-            answers: {
-              1: ['Web広告'],
-              2: ['平日午後'],
-              3: ['初心者'],
-              4: ['駅から近くて通いやすいです。'],
-              5: ['設備の案内がわかりやすいです。'],
-            },
-          },
-          {
-            id: 'R-003',
-            memberIndex: 2,
-            surveyId: 'S-001',
-            responseDate: '2026/03/08 18:41',
-            status: 'partial',
-            answers: {
-              1: ['チラシ'],
-              2: ['土日祝'],
-              3: ['3年以上'],
-              4: ['夜の営業時間をもう少し延ばしてほしいです。'],
-              5: [],
-            },
-          },
-          {
-            id: 'R-004',
-            memberIndex: 3,
-            surveyId: 'S-002',
-            responseDate: '2026/03/07 09:20',
-            status: 'completed',
-            answers: {
-              1: ['料金'],
-              2: ['価格がもう少し下がると継続しやすいです。'],
-            },
-          },
-          {
-            id: 'R-005',
-            memberIndex: 4,
-            surveyId: 'S-003',
-            responseDate: '2026/03/06 13:08',
-            status: 'completed',
-            answers: {
-              1: ['非常に満足'],
-              2: ['清掃回数を増やしてほしいです。'],
-            },
-          },
-          {
-            id: 'R-006',
-            memberIndex: 5,
-            surveyId: 'S-003',
-            responseDate: '2026/03/05 11:50',
-            status: 'partial',
-            answers: {
-              1: ['満足'],
-              2: [],
-            },
-          },
-          {
-            id: 'R-007',
-            memberIndex: 6,
-            surveyId: 'S-004',
-            responseDate: '2026/03/04 16:12',
-            status: 'completed',
-            answers: {
-              1: ['分かりやすい'],
-            },
-          },
-          {
-            id: 'R-008',
-            memberIndex: 7,
-            surveyId: 'S-004',
-            responseDate: '2026/03/03 15:44',
-            status: 'completed',
-            answers: {
-              1: ['非常に分かりやすい'],
-            },
-          },
-        ];
-
-        this._rows.push(
-          ...responseSeeds.flatMap((seed) => {
-            const member = members[seed.memberIndex % members.length];
-            const survey = surveyMap.get(seed.surveyId);
-            if (!member || !survey) {
-              return [];
-            }
-
-            const answers = survey.questions.map((question) =>
-              createSurveyResponseAnswer(question, seed.answers[question.no] ?? []),
-            );
-            const answeredCount = answers.filter((answer) => answer.answer.length > 0).length;
-
-            return [
-              {
-                id: seed.id,
-                response_date: seed.responseDate,
-                member_id: member.id,
-                member_number: member.member_number,
-                member_name: member.name_kanji,
-                survey_id: survey.id,
-                survey_name: survey.name,
-                template_type: survey.type,
-                brand: member.brand,
-                store_id: member.store_id,
-                store_name: member.store_name,
-                member_type: member.member_type,
-                answered_count: answeredCount,
-                total_count: survey.question_count,
-                status: seed.status,
-                answers,
-              } satisfies SurveyResponseDetail,
-            ];
-          }),
-        );
-      },
-      getList(): SurveyResponseListItem[] {
-        this._seed();
-        return this._rows.map(toSurveyResponseListItem);
-      },
-      getById(id: string): SurveyResponseDetail | undefined {
-        this._seed();
-        return this._rows.find((row) => row.id === id);
-      },
-      getAll(): SurveyResponseDetail[] {
-        this._seed();
-        return [...this._rows];
-      },
-    },
     optionDiscount: {
       _rows: [] as GetOptionDiscountsResponse['option_discounts'],
       _changeHistory: {} as Record<string, OptionDiscountChangeHistoryItem[]>,
@@ -12189,4 +11984,4 @@ function createDb() {
 // Without this, each route handler gets its own module instance and mutations are invisible
 // across routes.
 // Bump this key whenever the seed logic changes to force a fresh re-seed.
-export const db: DbType = (globalThis.__fitnessDb_v13 ??= createDb() as unknown as DbType);
+export const db: DbType = (globalThis.__fitnessDb_v12 ??= createDb() as unknown as DbType);

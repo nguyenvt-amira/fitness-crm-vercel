@@ -111,18 +111,16 @@ export function SurveysTableColumns({
     },
     {
       accessorKey: 'trigger',
-      enableSorting: false,
       header: ({ column }) => <DataTableColumnHeader column={column} title="発動トリガー" />,
       meta: { className: 'w-[132px]' },
       cell: ({ row }) => (
-        <Badge variant="outline" className="text-xs font-normal">
+        <span className="text-muted-foreground text-xs">
           {SURVEY_TRIGGER_LABELS[row.original.trigger]}
-        </Badge>
+        </span>
       ),
     },
     {
       accessorKey: 'brand',
-      enableSorting: false,
       header: ({ column }) => <DataTableColumnHeader column={column} title="ブランド" />,
       meta: { className: 'w-[110px]' },
       cell: ({ row }) => <BrandBadge brand={row.original.brand} />,
@@ -135,7 +133,7 @@ export function SurveysTableColumns({
       meta: { className: 'w-[84px] text-right' },
       cell: ({ row }) => (
         <span className="inline-block w-full text-right text-xs">
-          {row.original.question_count}問
+          {row.original.question_count}
         </span>
       ),
     },
@@ -147,7 +145,7 @@ export function SurveysTableColumns({
       meta: { className: 'w-[104px] text-right' },
       cell: ({ row }) => (
         <span className="inline-block w-full text-right text-xs">
-          {row.original.response_count.toLocaleString()}件
+          {row.original.response_count.toLocaleString()}
         </span>
       ),
     },

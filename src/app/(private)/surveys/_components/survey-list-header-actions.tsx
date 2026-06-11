@@ -1,19 +1,13 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-
 import { BarChart3, FileText, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { RoleGatedButton } from '@/components/common/role-gated-button';
 
-import { navigate } from '@/lib/routes/routes.util';
-
 import { Permission } from '@/types/permission.type';
 
 export function SurveyListHeaderActions() {
-  const router = useRouter();
-
   return (
     <>
       <RoleGatedButton
@@ -21,7 +15,8 @@ export function SurveyListHeaderActions() {
         type="button"
         variant="outline"
         className="gap-1"
-        onClick={() => router.push(navigate('/surveys/responses'))}
+        tooltip="この機能は未実装です"
+        onClick={() => toast.info('回答データ画面は次のスコープで実装します')}
       >
         <FileText className="size-4" />
         回答データ
@@ -31,7 +26,8 @@ export function SurveyListHeaderActions() {
         type="button"
         variant="outline"
         className="gap-1"
-        onClick={() => router.push(navigate('/surveys/analytics'))}
+        tooltip="この機能は未実装です"
+        onClick={() => toast.info('集計分析画面は次のスコープで実装します')}
       >
         <BarChart3 className="size-4" />
         集計分析

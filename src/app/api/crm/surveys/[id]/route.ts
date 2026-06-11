@@ -98,23 +98,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
       return NextResponse.json({ error: 'アンケートが見つかりません' }, { status: 404 });
     }
 
-    const currentMonthResponseCount =
-      {
-        'S-001': 156,
-        'S-002': 38,
-        'S-003': 124,
-        'S-004': 29,
-      }[detail.id] ?? 0;
-
-    return NextResponse.json(
-      {
-        survey: {
-          ...detail,
-          current_month_response_count: currentMonthResponseCount,
-        },
-      },
-      { status: 200 },
-    );
+    return NextResponse.json({ survey: detail }, { status: 200 });
   } catch (error) {
     console.error('GET /crm/surveys/[id] error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

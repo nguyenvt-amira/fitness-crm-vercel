@@ -24,7 +24,7 @@ import type { GetCrmSurveysByIdResponse } from '@/lib/api/types.gen';
 import { SurveyTemplateStatus } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
-import { SURVEY_STATUS_LABELS, formatSurveyDateOnly } from '../_constants/constants';
+import { SURVEY_STATUS_LABELS } from '../_constants/constants';
 import { SurveyBasicInfoSection } from './_components/survey-basic-info-section';
 import { SurveyDeleteDialog } from './_components/survey-delete-dialog';
 import { SurveyDetailHeaderActions } from './_components/survey-detail-header-actions';
@@ -34,7 +34,6 @@ import { SurveyQuestionsSection } from './_components/survey-questions-section';
 import { SurveySummaryCard } from './_components/survey-summary-card';
 
 type SurveyDetail = NonNullable<GetCrmSurveysByIdResponse>['survey'];
-type SurveyDetailWithSummary = SurveyDetail & { current_month_response_count?: number };
 
 export default function SurveyDetailPage() {
   const params = useParams();
@@ -95,12 +94,12 @@ export default function SurveyDetailPage() {
     );
   }
 
-  const survey: SurveyDetailWithSummary = data.survey;
+  const survey: SurveyDetail = data.survey;
   const isInactive = survey.status === SurveyTemplateStatus.INACTIVE;
   const statusTone = isInactive ? 'muted' : 'success';
   const statusMeta = [
-    `作成: ${formatSurveyDateOnly(survey.created_at)}`,
-    `最終回答: ${formatSurveyDateOnly(survey.last_response_date)}`,
+    `作成: ${survey.created_at}`,
+    `最終回答: ${survey.last_response_date ?? '—'}`,
   ];
 
   return (
@@ -153,8 +152,8 @@ export default function SurveyDetailPage() {
               />
               <SurveySummaryCard
                 responseCount={survey.response_count}
-                currentMonthResponseCount={survey.current_month_response_count ?? 0}
                 responseRate={survey.response_rate}
+                lastResponseDate={survey.last_response_date}
               />
             </>
           }
