@@ -209,6 +209,8 @@ export function usePromoCodesTab({
       queryClient.setQueryData<GetCrmPromoCodesResponse>(promoCodeQueryKey, (current) =>
         mergeResponse(current, response.promo_code),
       );
+      setDisableTarget(null);
+      setDisableReason('');
       void queryClient.invalidateQueries({
         queryKey: getCrmCampaignsByIdQueryKey({ path: { id: campaignId } }),
       });
@@ -247,27 +249,21 @@ export function usePromoCodesTab({
   const handleCopyCode = (code: string) => {
     setCopiedCode(code);
     void navigator.clipboard.writeText(code);
-    window.setTimeout(() => setCopiedCode(null), 2000);
+    setTimeout(() => setCopiedCode(null), 2000);
   };
 
   const handleDisableSubmit = () => {
     if (!disableTarget) {
-      return Promise.resolve();
+      return;
     }
 
-    return disableMutation
-      .mutateAsync({
-        path: { code: disableTarget.code },
-        body: {
-          status: 'inactive',
-          reason: disableReason,
-        },
-      })
-      .then(() => {
-        setDisableTarget(null);
-        setDisableReason('');
-      })
-      .catch(() => undefined);
+    disableMutation.mutate({
+      path: { code: disableTarget.code },
+      body: {
+        status: 'inactive',
+        reason: disableReason,
+      },
+    });
   };
 
   return {

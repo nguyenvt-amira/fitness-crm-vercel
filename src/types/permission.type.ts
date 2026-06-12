@@ -105,8 +105,8 @@ export enum Permission {
   CampaignsView = 'campaigns.view',
   CampaignsCreate = 'campaigns.create',
   CampaignsEdit = 'campaigns.edit',
-  CampaignsPromoCodeCreate = 'campaigns.promo-code.create',
-  CampaignsPromoCodeExport = 'campaigns.promo-code.export',
+  CampaignsPromoCodeCreate = 'campaigns-promo-code.create',
+  CampaignsPromoCodeExport = 'campaigns-promo-code.export',
 
   // -------------------------------------------------------------------------
   // Options

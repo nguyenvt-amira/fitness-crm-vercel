@@ -56,8 +56,13 @@ function CampaignEditForm({ id, defaultValues }: Readonly<CampaignEditFormProps>
     ...patchCrmCampaignsByIdMutation(),
     onSuccess: (res) => {
       toast.success(res.message || 'キャンペーンを更新しました');
-      queryClient.invalidateQueries({ queryKey: getCrmCampaignsQueryKey() });
-      queryClient.invalidateQueries({ queryKey: getCrmCampaignsByIdQueryKey({ path: { id } }) });
+      void queryClient.invalidateQueries({
+        queryKey: getCrmCampaignsQueryKey(),
+        refetchType: 'all',
+      });
+      void queryClient.invalidateQueries({
+        queryKey: getCrmCampaignsByIdQueryKey({ path: { id } }),
+      });
       router.push(navigate('/campaigns/[id]', id));
     },
     onError: (error) => {
