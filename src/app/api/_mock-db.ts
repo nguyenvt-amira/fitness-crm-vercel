@@ -4,9 +4,12 @@
  */
 import { type BlacklistDetail } from '@/app/api/_schemas/blacklist.schema';
 import type {
-  BrandItem,
+  BrandChangeHistoryItem,
+  BrandDetail,
+  BrandFeeGroup,
+  BrandListItem,
   CreateBrandRequest,
-  GetBrandsQuery,
+  UpdateBrandFeeGroupRequest,
   UpdateBrandRequest,
 } from '@/app/api/_schemas/brand.schema';
 import type {
@@ -400,81 +403,204 @@ function defaultPositionIdByRole(role: StaffListItem['role']): number {
 }
 
 /** ブランドマスタ */
-const SEED_BRAND_ROWS: BrandItem[] = [
+const SEED_BRAND_ROWS: BrandDetail[] = [
   {
     brand_id: 'joyfit',
     code: 'joyfit',
     display_name: 'JOYFIT',
-    enrollment_fee_yen: 2000,
-    registration_admin_fee_yen: 3000,
-    card_issuance_fee_yen: 0,
-    other_fee_description: null,
-    currency: 'JPY',
-    sort_order: 1,
-    created_at: '2024-01-01T00:00:00.000Z',
-    updated_at: '2026-03-15T10:30:00.000Z',
+    status: 'active',
+    fee_group_count: 4,
+    change_history_count: 3,
+    created_at: '2024-04-01T00:00:00.000Z',
+    updated_at: '2026-03-01T00:00:00.000Z',
     created_by: 'STF-001',
-    updated_by: 'STF-001',
+    updated_by: 'STF-002',
   },
   {
     brand_id: 'fit365',
     code: 'fit365',
     display_name: 'FIT365',
-    enrollment_fee_yen: null,
-    registration_admin_fee_yen: null,
-    card_issuance_fee_yen: 5000,
-    other_fee_description: 'セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）',
-    currency: 'JPY',
-    sort_order: 2,
-    created_at: '2024-01-01T00:00:00.000Z',
-    updated_at: '2026-03-15T10:30:00.000Z',
+    status: 'active',
+    fee_group_count: 1,
+    change_history_count: 1,
+    created_at: '2024-04-01T00:00:00.000Z',
+    updated_at: '2026-02-20T00:00:00.000Z',
     created_by: 'STF-001',
     updated_by: 'STF-001',
   },
+];
+
+const SEED_BRAND_FEE_GROUPS: BrandFeeGroup[] = [
   {
-    brand_id: 'joyfit24',
-    code: 'joyfit24',
+    parent_brand_code: 'joyfit',
+    parent_brand_name: 'JOYFIT',
+    sub_brand_code: 'joyfit',
+    sub_brand_id: 'joyfit',
+    display_name: 'JOYFIT',
+    status: 'active',
+    fee_master_id: 'EF001',
+    fee_items: [
+      {
+        item_code: 'enrollment-fee',
+        item_name: '入会金',
+        current_value_including_tax_yen: 11000,
+        effective_start_date: '2025/04/01',
+        scheduled_changes: [],
+      },
+      {
+        item_code: 'registration-admin-fee',
+        item_name: '登録事務手数料',
+        current_value_including_tax_yen: 3300,
+        effective_start_date: '2025/04/01',
+        scheduled_changes: [],
+      },
+    ],
+  },
+  {
+    parent_brand_code: 'joyfit',
+    parent_brand_name: 'JOYFIT',
+    sub_brand_code: 'joyfit24',
+    sub_brand_id: 'joyfit24',
     display_name: 'JOYFIT24',
-    enrollment_fee_yen: 2000,
-    registration_admin_fee_yen: 3000,
-    card_issuance_fee_yen: 0,
-    other_fee_description: null,
-    currency: 'JPY',
-    sort_order: 3,
-    created_at: '2024-01-01T00:00:00.000Z',
-    updated_at: '2026-03-15T10:30:00.000Z',
-    created_by: 'STF-001',
-    updated_by: 'STF-001',
+    status: 'active',
+    fee_master_id: 'EF002',
+    fee_items: [
+      {
+        item_code: 'enrollment-fee',
+        item_name: '入会金',
+        current_value_including_tax_yen: 11000,
+        effective_start_date: '2025/04/01',
+        scheduled_changes: [
+          {
+            effective_start_date: '2026/09/01',
+            registered_at: '2026/06/01',
+            registered_by: '山田 花子（本部）',
+            value_including_tax_yen: 12000,
+          },
+        ],
+      },
+      {
+        item_code: 'registration-admin-fee',
+        item_name: '登録事務手数料',
+        current_value_including_tax_yen: 3300,
+        effective_start_date: '2025/04/01',
+        scheduled_changes: [],
+      },
+    ],
   },
   {
-    brand_id: 'joyfit_yoga',
-    code: 'joyfit_yoga',
+    parent_brand_code: 'joyfit',
+    parent_brand_name: 'JOYFIT',
+    sub_brand_code: 'joyfit_yoga',
+    sub_brand_id: 'joyfit_yoga',
     display_name: 'JOYFIT YOGA',
-    enrollment_fee_yen: 2000,
-    registration_admin_fee_yen: 3000,
-    card_issuance_fee_yen: 0,
-    other_fee_description: null,
-    currency: 'JPY',
-    sort_order: 4,
-    created_at: '2024-01-01T00:00:00.000Z',
-    updated_at: '2026-03-15T10:30:00.000Z',
-    created_by: 'STF-001',
-    updated_by: 'STF-001',
+    status: 'active',
+    fee_master_id: 'EF003',
+    fee_items: [
+      {
+        item_code: 'enrollment-fee',
+        item_name: '入会金',
+        current_value_including_tax_yen: 9900,
+        effective_start_date: '2025/04/01',
+        scheduled_changes: [],
+      },
+      {
+        item_code: 'registration-admin-fee',
+        item_name: '登録事務手数料',
+        current_value_including_tax_yen: 3300,
+        effective_start_date: '2025/04/01',
+        scheduled_changes: [],
+      },
+    ],
   },
   {
-    brand_id: 'joyfit_plus',
-    code: 'joyfit_plus',
+    parent_brand_code: 'joyfit',
+    parent_brand_name: 'JOYFIT',
+    sub_brand_code: 'joyfit_plus',
+    sub_brand_id: 'joyfit_plus',
     display_name: 'JOYFIT+',
-    enrollment_fee_yen: 2000,
-    registration_admin_fee_yen: 3000,
-    card_issuance_fee_yen: 0,
-    other_fee_description: null,
-    currency: 'JPY',
-    sort_order: 5,
-    created_at: '2024-01-01T00:00:00.000Z',
-    updated_at: '2026-03-15T10:30:00.000Z',
-    created_by: 'STF-001',
-    updated_by: 'STF-001',
+    status: 'active',
+    fee_master_id: 'EF004',
+    fee_items: [
+      {
+        item_code: 'enrollment-fee',
+        item_name: '入会金',
+        current_value_including_tax_yen: 11000,
+        effective_start_date: '2025/04/01',
+        scheduled_changes: [],
+      },
+      {
+        item_code: 'registration-admin-fee',
+        item_name: '登録事務手数料',
+        current_value_including_tax_yen: 3300,
+        effective_start_date: '2025/04/01',
+        scheduled_changes: [],
+      },
+    ],
+  },
+  {
+    parent_brand_code: 'fit365',
+    parent_brand_name: 'FIT365',
+    sub_brand_code: 'fit365',
+    sub_brand_id: 'fit365',
+    display_name: 'FIT365',
+    status: 'active',
+    fee_master_id: 'EF101',
+    fee_items: [
+      {
+        item_code: 'card-issuance-fee',
+        item_name: 'カード発行料',
+        current_value_including_tax_yen: 5000,
+        effective_start_date: '2025/04/01',
+        scheduled_changes: [],
+      },
+      {
+        item_code: 'security-maintenance-fee',
+        item_name: 'セキュリティ管理費・施設メンテナンス料',
+        current_value_including_tax_yen: 4980,
+        effective_start_date: '2025/04/01',
+        scheduled_changes: [],
+      },
+    ],
+  },
+];
+
+const SEED_BRAND_CHANGE_HISTORIES: Array<BrandChangeHistoryItem & { brand_code: string }> = [
+  {
+    brand_code: 'joyfit',
+    changed_at: '2026/03/01 10:24:05',
+    changed_by: '山田 花子（本部）',
+    target_display_name: 'JOYFIT / JOYFIT24',
+    changed_field: '入会金 定価',
+    before_value: '¥10,000',
+    after_value: '¥11,000',
+  },
+  {
+    brand_code: 'joyfit',
+    changed_at: '2025/10/15 14:30:22',
+    changed_by: '鈴木 一郎（本部）',
+    target_display_name: 'JOYFIT / JOYFIT24',
+    changed_field: '有効開始日',
+    before_value: '2025/10/01',
+    after_value: '2025/11/01',
+  },
+  {
+    brand_code: 'joyfit',
+    changed_at: '2025/04/01 09:00:00',
+    changed_by: '田中 次郎（本部）',
+    target_display_name: 'JOYFIT / JOYFIT24',
+    changed_field: '入会金 定価',
+    before_value: '¥8,800',
+    after_value: '¥10,000',
+  },
+  {
+    brand_code: 'fit365',
+    changed_at: '2026/02/20 08:30:00',
+    changed_by: '山田 花子（本部）',
+    target_display_name: 'FIT365 / FIT365',
+    changed_field: 'カード発行料 定価',
+    before_value: '¥4,800',
+    after_value: '¥5,000',
   },
 ];
 
@@ -482,13 +608,23 @@ function normalizeBrandIdentifier(value: string): string {
   return value.trim().toLowerCase();
 }
 
-function matchesBrandKeyword(brand: BrandItem, keyword?: string): boolean {
-  const normalizedKeyword = keyword?.trim().toLowerCase();
-  if (!normalizedKeyword) return true;
+function toBrandListItem(brand: BrandDetail): BrandListItem {
+  return {
+    brand_id: brand.brand_id,
+    code: brand.code,
+    display_name: brand.display_name,
+    status: brand.status,
+  };
+}
 
-  return [brand.brand_id, brand.display_name, brand.other_fee_description ?? ''].some((value) =>
-    value.toLowerCase().includes(normalizedKeyword),
-  );
+function cloneBrandFeeGroup(group: BrandFeeGroup): BrandFeeGroup {
+  return {
+    ...group,
+    fee_items: group.fee_items.map((item) => ({
+      ...item,
+      scheduled_changes: item.scheduled_changes.map((change) => ({ ...change })),
+    })),
+  };
 }
 
 /** Resolve brand label from brand master with fallback */
@@ -1334,15 +1470,26 @@ type DbType = {
     replaceForStaff(staff_id: string, rows: Array<{ permission_code: string }>): void;
   };
   brands: {
-    _rows: BrandItem[];
+    _rows: BrandDetail[];
+    _feeGroups: BrandFeeGroup[];
+    _changeHistories: Array<BrandChangeHistoryItem & { brand_code: string }>;
     _seeded: boolean;
     _seed(): void;
-    getList(query?: Pick<GetBrandsQuery, 'page' | 'limit' | 'search'>): BrandItem[];
-    count(search?: string): number;
-    getByCode(code: string): BrandItem | undefined;
-    getByBrandId(brandId: string): BrandItem | undefined;
-    add(input: CreateBrandRequest): BrandItem;
-    update(code: string, patch: UpdateBrandRequest): BrandItem | undefined;
+    getList(): BrandListItem[];
+    getByCode(code: string): BrandDetail | undefined;
+    getByBrandId(brandId: string): BrandDetail | undefined;
+    getFeesByCode(code: string): BrandFeeGroup[];
+    getFeeGroup(code: string, subBrandCode: string): BrandFeeGroup | undefined;
+    getChangeHistoryByCode(code: string): BrandChangeHistoryItem[];
+    add(input: CreateBrandRequest): BrandDetail;
+    update(code: string, patch: UpdateBrandRequest): BrandDetail | undefined;
+    updateFeeGroup(
+      code: string,
+      subBrandCode: string,
+      patch: UpdateBrandFeeGroupRequest,
+    ): BrandFeeGroup | undefined;
+    disableFeeGroup(code: string, subBrandCode: string): BrandFeeGroup | undefined;
+    deleteFeeGroup(code: string, subBrandCode: string): boolean;
   };
   staffs: {
     _staffs: StaffListItem[];
@@ -7009,53 +7156,74 @@ function createDb() {
       },
     },
     brands: {
-      _rows: [] as BrandItem[],
+      _rows: [] as BrandDetail[],
+      _feeGroups: [] as BrandFeeGroup[],
+      _changeHistories: [] as Array<BrandChangeHistoryItem & { brand_code: string }>,
       _seeded: false,
       _seed(): void {
         if (this._seeded) return;
         this._seeded = true;
         this._rows.push(...SEED_BRAND_ROWS.map((b) => ({ ...b })));
+        this._feeGroups.push(...SEED_BRAND_FEE_GROUPS.map(cloneBrandFeeGroup));
+        this._changeHistories.push(...SEED_BRAND_CHANGE_HISTORIES.map((item) => ({ ...item })));
       },
-      getList(query?: Pick<GetBrandsQuery, 'page' | 'limit' | 'search'>): BrandItem[] {
+      getList(): BrandListItem[] {
         this._seed();
-        const page = query?.page ?? 1;
-        const limit = query?.limit ?? 25;
-        const filtered = [...this._rows]
-          .filter((brand) => matchesBrandKeyword(brand, query?.search))
-          .sort((a, b) => a.sort_order - b.sort_order);
-        const startIndex = (page - 1) * limit;
-        return filtered.slice(startIndex, startIndex + limit);
+        return this._rows.map(toBrandListItem);
       },
-      count(search?: string): number {
-        this._seed();
-        return this._rows.filter((brand) => matchesBrandKeyword(brand, search)).length;
-      },
-      getByCode(code: string): BrandItem | undefined {
+      getByCode(code: string): BrandDetail | undefined {
         this._seed();
         const normalizedCode = normalizeBrandIdentifier(code);
         return this._rows.find((row) => row.code === normalizedCode);
       },
-      getByBrandId(brandId: string): BrandItem | undefined {
+      getByBrandId(brandId: string): BrandDetail | undefined {
         this._seed();
         const normalizedBrandId = normalizeBrandIdentifier(brandId);
         return this._rows.find((row) => row.brand_id === normalizedBrandId);
       },
-      add(input: CreateBrandRequest): BrandItem {
+      getFeesByCode(code: string): BrandFeeGroup[] {
+        this._seed();
+        const normalizedCode = normalizeBrandIdentifier(code);
+        return this._feeGroups
+          .filter((group) => group.parent_brand_code === normalizedCode)
+          .map(cloneBrandFeeGroup);
+      },
+      getFeeGroup(code: string, subBrandCode: string): BrandFeeGroup | undefined {
+        this._seed();
+        const normalizedCode = normalizeBrandIdentifier(code);
+        const normalizedSubBrandCode = normalizeBrandIdentifier(subBrandCode);
+        const group = this._feeGroups.find(
+          (item) =>
+            item.parent_brand_code === normalizedCode &&
+            item.sub_brand_code === normalizedSubBrandCode,
+        );
+        return group ? cloneBrandFeeGroup(group) : undefined;
+      },
+      getChangeHistoryByCode(code: string): BrandChangeHistoryItem[] {
+        this._seed();
+        const normalizedCode = normalizeBrandIdentifier(code);
+        return this._changeHistories
+          .filter((item) => item.brand_code === normalizedCode)
+          .map((item) => ({
+            changed_at: item.changed_at,
+            changed_by: item.changed_by,
+            target_display_name: item.target_display_name,
+            changed_field: item.changed_field,
+            before_value: item.before_value,
+            after_value: item.after_value,
+          }));
+      },
+      add(input: CreateBrandRequest): BrandDetail {
         this._seed();
         const normalizedBrandId = normalizeBrandIdentifier(input.brand_id);
-        const nextSortOrder =
-          this._rows.length > 0 ? Math.max(...this._rows.map((row) => row.sort_order)) + 1 : 1;
         const now = new Date().toISOString();
-        const row: BrandItem = {
+        const row: BrandDetail = {
           brand_id: normalizedBrandId,
           code: normalizedBrandId,
           display_name: input.display_name.trim(),
-          enrollment_fee_yen: input.enrollment_fee_yen ?? null,
-          registration_admin_fee_yen: input.registration_admin_fee_yen ?? null,
-          card_issuance_fee_yen: input.card_issuance_fee_yen ?? null,
-          other_fee_description: input.other_fee_description?.trim() || null,
-          currency: 'JPY',
-          sort_order: nextSortOrder,
+          status: 'active',
+          fee_group_count: 0,
+          change_history_count: 0,
           created_at: now,
           updated_at: now,
           created_by: input.created_by ?? 'STF-001',
@@ -7064,37 +7232,105 @@ function createDb() {
         this._rows.push(row);
         return row;
       },
-      update(code: string, patch: UpdateBrandRequest): BrandItem | undefined {
+      update(code: string, patch: UpdateBrandRequest): BrandDetail | undefined {
         this._seed();
         const normalizedCode = normalizeBrandIdentifier(code);
         const idx = this._rows.findIndex((row) => row.code === normalizedCode);
         if (idx === -1) return undefined;
         const row = this._rows[idx]!;
-        const next: BrandItem = {
+        const next: BrandDetail = {
           ...row,
           display_name: patch.display_name?.trim() ?? row.display_name,
           brand_id: patch.brand_id ? normalizeBrandIdentifier(patch.brand_id) : row.brand_id,
-          enrollment_fee_yen:
-            patch.enrollment_fee_yen !== undefined
-              ? patch.enrollment_fee_yen
-              : row.enrollment_fee_yen,
-          registration_admin_fee_yen:
-            patch.registration_admin_fee_yen !== undefined
-              ? patch.registration_admin_fee_yen
-              : row.registration_admin_fee_yen,
-          card_issuance_fee_yen:
-            patch.card_issuance_fee_yen !== undefined
-              ? patch.card_issuance_fee_yen
-              : row.card_issuance_fee_yen,
-          other_fee_description:
-            patch.other_fee_description !== undefined
-              ? patch.other_fee_description?.trim() || null
-              : row.other_fee_description,
           updated_by: patch.updated_by ?? row.updated_by,
           updated_at: new Date().toISOString(),
         };
         this._rows[idx] = next;
         return next;
+      },
+      updateFeeGroup(
+        code: string,
+        subBrandCode: string,
+        patch: UpdateBrandFeeGroupRequest,
+      ): BrandFeeGroup | undefined {
+        this._seed();
+        const normalizedCode = normalizeBrandIdentifier(code);
+        const normalizedSubBrandCode = normalizeBrandIdentifier(subBrandCode);
+        const groupIndex = this._feeGroups.findIndex(
+          (item) =>
+            item.parent_brand_code === normalizedCode &&
+            item.sub_brand_code === normalizedSubBrandCode,
+        );
+        if (groupIndex === -1) return undefined;
+
+        const group = this._feeGroups[groupIndex]!;
+        const nextFeeItems = group.fee_items.map((item) => {
+          const patchItem = patch.fee_items.find((entry) => entry.item_code === item.item_code);
+          if (!patchItem) return item;
+
+          return {
+            ...item,
+            item_name: patchItem.item_name.trim(),
+            current_value_including_tax_yen: patchItem.current_value_including_tax_yen,
+            effective_start_date: patchItem.effective_start_date,
+          };
+        });
+
+        const nextGroup: BrandFeeGroup = {
+          ...group,
+          fee_items: nextFeeItems,
+        };
+        this._feeGroups[groupIndex] = nextGroup;
+
+        return cloneBrandFeeGroup(nextGroup);
+      },
+      disableFeeGroup(code: string, subBrandCode: string): BrandFeeGroup | undefined {
+        this._seed();
+        const normalizedCode = normalizeBrandIdentifier(code);
+        const normalizedSubBrandCode = normalizeBrandIdentifier(subBrandCode);
+        const groupIndex = this._feeGroups.findIndex(
+          (item) =>
+            item.parent_brand_code === normalizedCode &&
+            item.sub_brand_code === normalizedSubBrandCode,
+        );
+        if (groupIndex === -1) return undefined;
+
+        const group = this._feeGroups[groupIndex]!;
+        if (group.status === 'inactive') {
+          return cloneBrandFeeGroup(group);
+        }
+
+        const nextGroup: BrandFeeGroup = {
+          ...group,
+          status: 'inactive',
+        };
+        this._feeGroups[groupIndex] = nextGroup;
+
+        return cloneBrandFeeGroup(nextGroup);
+      },
+      deleteFeeGroup(code: string, subBrandCode: string): boolean {
+        this._seed();
+        const normalizedCode = normalizeBrandIdentifier(code);
+        const normalizedSubBrandCode = normalizeBrandIdentifier(subBrandCode);
+        const groupIndex = this._feeGroups.findIndex(
+          (item) =>
+            item.parent_brand_code === normalizedCode &&
+            item.sub_brand_code === normalizedSubBrandCode,
+        );
+        if (groupIndex === -1) return false;
+
+        this._feeGroups.splice(groupIndex, 1);
+
+        const brandIndex = this._rows.findIndex((row) => row.code === normalizedCode);
+        if (brandIndex >= 0) {
+          const brand = this._rows[brandIndex]!;
+          this._rows[brandIndex] = {
+            ...brand,
+            fee_group_count: Math.max(0, brand.fee_group_count - 1),
+          };
+        }
+
+        return true;
       },
     },
     staffs: {

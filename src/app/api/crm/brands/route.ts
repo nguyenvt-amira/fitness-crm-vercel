@@ -16,6 +16,18 @@ function normalizeBrandIdentifier(value: string): string {
   return value.trim().toLowerCase();
 }
 
+function matchesBrandKeyword(
+  brand: GetBrandsResponse['brands'][number],
+  keyword?: string,
+): boolean {
+  const normalizedKeyword = keyword?.trim().toLowerCase();
+  if (!normalizedKeyword) return true;
+
+  return [brand.brand_id, brand.display_name].some((value) =>
+    value.toLowerCase().includes(normalizedKeyword),
+  );
+}
+
 registerRoute({
   method: 'get',
   path: '/crm/brands',
@@ -85,17 +97,19 @@ export async function GET(request: NextRequest) {
     }
 
     const { page, limit, search } = parsedQuery.data;
-    const allTotal = db.brands.count();
-    const total = db.brands.count(search);
+    const allBrands = db.brands.getList();
+    const filteredBrands = allBrands.filter((brand) => matchesBrandKeyword(brand, search));
+    const startIndex = (page - 1) * limit;
+    const paginatedBrands = filteredBrands.slice(startIndex, startIndex + limit);
 
     const response: GetBrandsResponse = {
-      brands: db.brands.getList({ page, limit, search }),
+      brands: paginatedBrands,
       pagination: {
         page,
         limit,
-        total,
-        total_pages: Math.max(1, Math.ceil(total / limit)),
-        all_total: allTotal,
+        total: filteredBrands.length,
+        total_pages: Math.max(1, Math.ceil(filteredBrands.length / limit)),
+        all_total: allBrands.length,
       },
     };
 

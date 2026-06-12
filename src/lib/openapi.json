@@ -11245,7 +11245,7 @@
           "all_total": {
             "type": "integer",
             "minimum": 0,
-            "example": 5,
+            "example": 2,
             "description": "検索条件適用前の総件数"
           }
         },
@@ -11253,7 +11253,14 @@
         "title": "BrandPagination",
         "description": "ブランド一覧のページネーション情報"
       },
-      "BrandItem": {
+      "BrandStatus": {
+        "type": "string",
+        "enum": ["active", "inactive"],
+        "title": "BrandStatus",
+        "description": "ブランドまたはサブブランドの有効状態",
+        "example": "active"
+      },
+      "BrandListItem": {
         "type": "object",
         "properties": {
           "brand_id": {
@@ -11276,51 +11283,68 @@
             "example": "JOYFIT",
             "description": "ブランド名"
           },
-          "enrollment_fee_yen": {
-            "type": "integer",
-            "nullable": true,
-            "minimum": 0,
-            "example": 2000,
-            "description": "入会金（税別・円）"
-          },
-          "registration_admin_fee_yen": {
-            "type": "integer",
-            "nullable": true,
-            "minimum": 0,
-            "example": 3000,
-            "description": "登録事務手数料（税別・円）"
-          },
-          "card_issuance_fee_yen": {
-            "type": "integer",
-            "nullable": true,
-            "minimum": 0,
-            "example": 5000,
-            "description": "カード発行料（税別・円）"
-          },
-          "other_fee_description": {
+          "status": {
             "type": "string",
-            "nullable": true,
-            "example": "セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）",
-            "description": "その他費用の表示文言"
-          },
-          "currency": {
+            "enum": ["active", "inactive"],
+            "title": "BrandStatus",
+            "description": "ブランドまたはサブブランドの有効状態",
+            "example": "active"
+          }
+        },
+        "required": ["brand_id", "code", "display_name", "status"],
+        "title": "BrandListItem",
+        "description": "Y-07 ブランド一覧行"
+      },
+      "BrandDetail": {
+        "type": "object",
+        "properties": {
+          "brand_id": {
             "type": "string",
-            "enum": ["JPY"],
-            "description": "通貨コード"
+            "pattern": "^[a-z0-9_]+$",
+            "title": "ManagedBrandCode",
+            "description": "ブランドID",
+            "example": "joyfit"
           },
-          "sort_order": {
+          "code": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$",
+            "title": "ManagedBrandCode",
+            "description": "ブランドコード",
+            "example": "joyfit"
+          },
+          "display_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "JOYFIT",
+            "description": "ブランド名"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive"],
+            "title": "BrandStatus",
+            "description": "ブランドまたはサブブランドの有効状態",
+            "example": "active"
+          },
+          "fee_group_count": {
             "type": "integer",
-            "example": 1,
-            "description": "一覧表示順"
+            "minimum": 0,
+            "example": 4,
+            "description": "費用タブの件数"
+          },
+          "change_history_count": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 3,
+            "description": "変更履歴タブの件数"
           },
           "created_at": {
             "type": "string",
-            "example": "2024-01-01T00:00:00.000Z",
+            "example": "2024-04-01T00:00:00.000Z",
             "description": "作成日時"
           },
           "updated_at": {
             "type": "string",
-            "example": "2026-04-01T09:00:00.000Z",
+            "example": "2026-03-01T00:00:00.000Z",
             "description": "更新日時"
           },
           "created_by": {
@@ -11332,7 +11356,7 @@
           "updated_by": {
             "type": "string",
             "nullable": true,
-            "example": "STF-001",
+            "example": "STF-002",
             "description": "最終更新者スタッフID"
           }
         },
@@ -11340,17 +11364,1039 @@
           "brand_id",
           "code",
           "display_name",
-          "enrollment_fee_yen",
-          "registration_admin_fee_yen",
-          "card_issuance_fee_yen",
-          "other_fee_description",
-          "currency",
-          "sort_order",
+          "status",
+          "fee_group_count",
+          "change_history_count",
           "created_at",
           "updated_at"
         ],
-        "title": "BrandItem",
-        "description": "Y-07 ブランド基本設定"
+        "title": "BrandDetail",
+        "description": "Y-07 ブランド基本情報詳細"
+      },
+      "BrandScheduledFeeChange": {
+        "type": "object",
+        "properties": {
+          "effective_start_date": {
+            "type": "string",
+            "example": "2026/09/01",
+            "description": "予約適用開始日"
+          },
+          "registered_at": {
+            "type": "string",
+            "example": "2026/06/01",
+            "description": "予約登録日"
+          },
+          "registered_by": {
+            "type": "string",
+            "example": "山田 花子（本部）",
+            "description": "登録者名"
+          },
+          "value_including_tax_yen": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 12000,
+            "description": "予約後の定価（税込・円）"
+          }
+        },
+        "required": [
+          "effective_start_date",
+          "registered_at",
+          "registered_by",
+          "value_including_tax_yen"
+        ],
+        "title": "BrandScheduledFeeChange",
+        "description": "予約中の費用改定"
+      },
+      "BrandFeeItem": {
+        "type": "object",
+        "properties": {
+          "item_code": {
+            "type": "string",
+            "minLength": 1,
+            "example": "enrollment-fee",
+            "description": "費用項目コード"
+          },
+          "item_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "入会金",
+            "description": "費用項目名"
+          },
+          "current_value_including_tax_yen": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 11000,
+            "description": "現在の定価（税込・円）"
+          },
+          "effective_start_date": {
+            "type": "string",
+            "example": "2025/04/01",
+            "description": "現行設定の有効開始日"
+          },
+          "scheduled_changes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "effective_start_date": {
+                  "type": "string",
+                  "example": "2026/09/01",
+                  "description": "予約適用開始日"
+                },
+                "registered_at": {
+                  "type": "string",
+                  "example": "2026/06/01",
+                  "description": "予約登録日"
+                },
+                "registered_by": {
+                  "type": "string",
+                  "example": "山田 花子（本部）",
+                  "description": "登録者名"
+                },
+                "value_including_tax_yen": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "example": 12000,
+                  "description": "予約後の定価（税込・円）"
+                }
+              },
+              "required": [
+                "effective_start_date",
+                "registered_at",
+                "registered_by",
+                "value_including_tax_yen"
+              ],
+              "title": "BrandScheduledFeeChange",
+              "description": "予約中の費用改定"
+            },
+            "description": "予約中の改定一覧"
+          }
+        },
+        "required": [
+          "item_code",
+          "item_name",
+          "current_value_including_tax_yen",
+          "effective_start_date",
+          "scheduled_changes"
+        ],
+        "title": "BrandFeeItem",
+        "description": "サブブランドの費用項目"
+      },
+      "UpdateBrandFeeItem": {
+        "type": "object",
+        "properties": {
+          "item_code": {
+            "type": "string",
+            "minLength": 1,
+            "example": "enrollment-fee",
+            "description": "費用項目コード"
+          },
+          "item_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "example": "入会金",
+            "description": "費用項目名"
+          },
+          "current_value_including_tax_yen": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 11000,
+            "description": "現在の定価（税込・円）"
+          },
+          "effective_start_date": {
+            "type": "string",
+            "pattern": "^\\d{4}\\/\\d{2}\\/\\d{2}$",
+            "example": "2025/04/01",
+            "description": "現行設定の有効開始日"
+          }
+        },
+        "required": [
+          "item_code",
+          "item_name",
+          "current_value_including_tax_yen",
+          "effective_start_date"
+        ],
+        "title": "UpdateBrandFeeItem",
+        "description": "費用項目の更新入力"
+      },
+      "BrandFeeGroup": {
+        "type": "object",
+        "properties": {
+          "parent_brand_code": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$",
+            "title": "ManagedBrandCode",
+            "description": "親ブランドコード",
+            "example": "joyfit"
+          },
+          "parent_brand_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "JOYFIT",
+            "description": "親ブランド名"
+          },
+          "sub_brand_code": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$",
+            "title": "ManagedBrandCode",
+            "description": "サブブランドコード",
+            "example": "joyfit24"
+          },
+          "sub_brand_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$",
+            "title": "ManagedBrandCode",
+            "description": "サブブランドID",
+            "example": "joyfit24"
+          },
+          "display_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "JOYFIT24",
+            "description": "サブブランド名"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive"],
+            "title": "BrandStatus",
+            "description": "ブランドまたはサブブランドの有効状態",
+            "example": "active"
+          },
+          "fee_master_id": {
+            "type": "string",
+            "minLength": 1,
+            "example": "EF002",
+            "description": "費用マスタID"
+          },
+          "fee_items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "item_code": {
+                  "type": "string",
+                  "minLength": 1,
+                  "example": "enrollment-fee",
+                  "description": "費用項目コード"
+                },
+                "item_name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "example": "入会金",
+                  "description": "費用項目名"
+                },
+                "current_value_including_tax_yen": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "example": 11000,
+                  "description": "現在の定価（税込・円）"
+                },
+                "effective_start_date": {
+                  "type": "string",
+                  "example": "2025/04/01",
+                  "description": "現行設定の有効開始日"
+                },
+                "scheduled_changes": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "effective_start_date": {
+                        "type": "string",
+                        "example": "2026/09/01",
+                        "description": "予約適用開始日"
+                      },
+                      "registered_at": {
+                        "type": "string",
+                        "example": "2026/06/01",
+                        "description": "予約登録日"
+                      },
+                      "registered_by": {
+                        "type": "string",
+                        "example": "山田 花子（本部）",
+                        "description": "登録者名"
+                      },
+                      "value_including_tax_yen": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "example": 12000,
+                        "description": "予約後の定価（税込・円）"
+                      }
+                    },
+                    "required": [
+                      "effective_start_date",
+                      "registered_at",
+                      "registered_by",
+                      "value_including_tax_yen"
+                    ],
+                    "title": "BrandScheduledFeeChange",
+                    "description": "予約中の費用改定"
+                  },
+                  "description": "予約中の改定一覧"
+                }
+              },
+              "required": [
+                "item_code",
+                "item_name",
+                "current_value_including_tax_yen",
+                "effective_start_date",
+                "scheduled_changes"
+              ],
+              "title": "BrandFeeItem",
+              "description": "サブブランドの費用項目"
+            },
+            "description": "サブブランド配下の費用項目"
+          }
+        },
+        "required": [
+          "parent_brand_code",
+          "parent_brand_name",
+          "sub_brand_code",
+          "sub_brand_id",
+          "display_name",
+          "status",
+          "fee_master_id",
+          "fee_items"
+        ],
+        "title": "BrandFeeGroup",
+        "description": "ブランド詳細の費用タブに表示するサブブランド単位の費用マスタ"
+      },
+      "BrandChangeHistoryItem": {
+        "type": "object",
+        "properties": {
+          "changed_at": {
+            "type": "string",
+            "example": "2026/03/01 10:24:05",
+            "description": "変更日時"
+          },
+          "changed_by": {
+            "type": "string",
+            "minLength": 1,
+            "example": "山田 花子（本部）",
+            "description": "変更者"
+          },
+          "target_display_name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "JOYFIT / JOYFIT24",
+            "description": "対象"
+          },
+          "changed_field": {
+            "type": "string",
+            "minLength": 1,
+            "example": "入会金 定価",
+            "description": "変更項目"
+          },
+          "before_value": {
+            "type": "string",
+            "minLength": 1,
+            "example": "¥10,000",
+            "description": "変更前"
+          },
+          "after_value": {
+            "type": "string",
+            "minLength": 1,
+            "example": "¥11,000",
+            "description": "変更後"
+          }
+        },
+        "required": [
+          "changed_at",
+          "changed_by",
+          "target_display_name",
+          "changed_field",
+          "before_value",
+          "after_value"
+        ],
+        "title": "BrandChangeHistoryItem",
+        "description": "ブランド変更履歴の一覧行"
+      },
+      "GetBrandDetailResponse": {
+        "type": "object",
+        "properties": {
+          "brand": {
+            "type": "object",
+            "properties": {
+              "brand_id": {
+                "type": "string",
+                "pattern": "^[a-z0-9_]+$",
+                "title": "ManagedBrandCode",
+                "description": "ブランドID",
+                "example": "joyfit"
+              },
+              "code": {
+                "type": "string",
+                "pattern": "^[a-z0-9_]+$",
+                "title": "ManagedBrandCode",
+                "description": "ブランドコード",
+                "example": "joyfit"
+              },
+              "display_name": {
+                "type": "string",
+                "minLength": 1,
+                "example": "JOYFIT",
+                "description": "ブランド名"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["active", "inactive"],
+                "title": "BrandStatus",
+                "description": "ブランドまたはサブブランドの有効状態",
+                "example": "active"
+              },
+              "fee_group_count": {
+                "type": "integer",
+                "minimum": 0,
+                "example": 4,
+                "description": "費用タブの件数"
+              },
+              "change_history_count": {
+                "type": "integer",
+                "minimum": 0,
+                "example": 3,
+                "description": "変更履歴タブの件数"
+              },
+              "created_at": {
+                "type": "string",
+                "example": "2024-04-01T00:00:00.000Z",
+                "description": "作成日時"
+              },
+              "updated_at": {
+                "type": "string",
+                "example": "2026-03-01T00:00:00.000Z",
+                "description": "更新日時"
+              },
+              "created_by": {
+                "type": "string",
+                "nullable": true,
+                "example": "STF-001",
+                "description": "作成者スタッフID"
+              },
+              "updated_by": {
+                "type": "string",
+                "nullable": true,
+                "example": "STF-002",
+                "description": "最終更新者スタッフID"
+              }
+            },
+            "required": [
+              "brand_id",
+              "code",
+              "display_name",
+              "status",
+              "fee_group_count",
+              "change_history_count",
+              "created_at",
+              "updated_at"
+            ],
+            "title": "BrandDetail",
+            "description": "Y-07 ブランド基本情報詳細"
+          }
+        },
+        "required": ["brand"],
+        "title": "GetBrandDetailResponse",
+        "description": "ブランド詳細の基本情報"
+      },
+      "GetBrandFeesResponse": {
+        "type": "object",
+        "properties": {
+          "fee_groups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "parent_brand_code": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9_]+$",
+                  "title": "ManagedBrandCode",
+                  "description": "親ブランドコード",
+                  "example": "joyfit"
+                },
+                "parent_brand_name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "example": "JOYFIT",
+                  "description": "親ブランド名"
+                },
+                "sub_brand_code": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9_]+$",
+                  "title": "ManagedBrandCode",
+                  "description": "サブブランドコード",
+                  "example": "joyfit24"
+                },
+                "sub_brand_id": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9_]+$",
+                  "title": "ManagedBrandCode",
+                  "description": "サブブランドID",
+                  "example": "joyfit24"
+                },
+                "display_name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "example": "JOYFIT24",
+                  "description": "サブブランド名"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["active", "inactive"],
+                  "title": "BrandStatus",
+                  "description": "ブランドまたはサブブランドの有効状態",
+                  "example": "active"
+                },
+                "fee_master_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "example": "EF002",
+                  "description": "費用マスタID"
+                },
+                "fee_items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "item_code": {
+                        "type": "string",
+                        "minLength": 1,
+                        "example": "enrollment-fee",
+                        "description": "費用項目コード"
+                      },
+                      "item_name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "example": "入会金",
+                        "description": "費用項目名"
+                      },
+                      "current_value_including_tax_yen": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "example": 11000,
+                        "description": "現在の定価（税込・円）"
+                      },
+                      "effective_start_date": {
+                        "type": "string",
+                        "example": "2025/04/01",
+                        "description": "現行設定の有効開始日"
+                      },
+                      "scheduled_changes": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "effective_start_date": {
+                              "type": "string",
+                              "example": "2026/09/01",
+                              "description": "予約適用開始日"
+                            },
+                            "registered_at": {
+                              "type": "string",
+                              "example": "2026/06/01",
+                              "description": "予約登録日"
+                            },
+                            "registered_by": {
+                              "type": "string",
+                              "example": "山田 花子（本部）",
+                              "description": "登録者名"
+                            },
+                            "value_including_tax_yen": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "example": 12000,
+                              "description": "予約後の定価（税込・円）"
+                            }
+                          },
+                          "required": [
+                            "effective_start_date",
+                            "registered_at",
+                            "registered_by",
+                            "value_including_tax_yen"
+                          ],
+                          "title": "BrandScheduledFeeChange",
+                          "description": "予約中の費用改定"
+                        },
+                        "description": "予約中の改定一覧"
+                      }
+                    },
+                    "required": [
+                      "item_code",
+                      "item_name",
+                      "current_value_including_tax_yen",
+                      "effective_start_date",
+                      "scheduled_changes"
+                    ],
+                    "title": "BrandFeeItem",
+                    "description": "サブブランドの費用項目"
+                  },
+                  "description": "サブブランド配下の費用項目"
+                }
+              },
+              "required": [
+                "parent_brand_code",
+                "parent_brand_name",
+                "sub_brand_code",
+                "sub_brand_id",
+                "display_name",
+                "status",
+                "fee_master_id",
+                "fee_items"
+              ],
+              "title": "BrandFeeGroup",
+              "description": "ブランド詳細の費用タブに表示するサブブランド単位の費用マスタ"
+            },
+            "description": "費用タブ表示用のサブブランド一覧"
+          }
+        },
+        "required": ["fee_groups"],
+        "title": "GetBrandFeesResponse",
+        "description": "ブランド詳細の費用タブデータ"
+      },
+      "GetBrandChangeHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "histories": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "changed_at": {
+                  "type": "string",
+                  "example": "2026/03/01 10:24:05",
+                  "description": "変更日時"
+                },
+                "changed_by": {
+                  "type": "string",
+                  "minLength": 1,
+                  "example": "山田 花子（本部）",
+                  "description": "変更者"
+                },
+                "target_display_name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "example": "JOYFIT / JOYFIT24",
+                  "description": "対象"
+                },
+                "changed_field": {
+                  "type": "string",
+                  "minLength": 1,
+                  "example": "入会金 定価",
+                  "description": "変更項目"
+                },
+                "before_value": {
+                  "type": "string",
+                  "minLength": 1,
+                  "example": "¥10,000",
+                  "description": "変更前"
+                },
+                "after_value": {
+                  "type": "string",
+                  "minLength": 1,
+                  "example": "¥11,000",
+                  "description": "変更後"
+                }
+              },
+              "required": [
+                "changed_at",
+                "changed_by",
+                "target_display_name",
+                "changed_field",
+                "before_value",
+                "after_value"
+              ],
+              "title": "BrandChangeHistoryItem",
+              "description": "ブランド変更履歴の一覧行"
+            },
+            "description": "変更履歴一覧"
+          }
+        },
+        "required": ["histories"],
+        "title": "GetBrandChangeHistoryResponse",
+        "description": "ブランド詳細の変更履歴データ"
+      },
+      "UpdateBrandFeeGroupRequest": {
+        "type": "object",
+        "properties": {
+          "fee_items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "item_code": {
+                  "type": "string",
+                  "minLength": 1,
+                  "example": "enrollment-fee",
+                  "description": "費用項目コード"
+                },
+                "item_name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 255,
+                  "example": "入会金",
+                  "description": "費用項目名"
+                },
+                "current_value_including_tax_yen": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "example": 11000,
+                  "description": "現在の定価（税込・円）"
+                },
+                "effective_start_date": {
+                  "type": "string",
+                  "pattern": "^\\d{4}\\/\\d{2}\\/\\d{2}$",
+                  "example": "2025/04/01",
+                  "description": "現行設定の有効開始日"
+                }
+              },
+              "required": [
+                "item_code",
+                "item_name",
+                "current_value_including_tax_yen",
+                "effective_start_date"
+              ],
+              "title": "UpdateBrandFeeItem",
+              "description": "費用項目の更新入力"
+            },
+            "minItems": 1,
+            "description": "更新後の費用項目一覧"
+          },
+          "updated_by": {
+            "type": "string",
+            "minLength": 1,
+            "description": "更新者スタッフIDまたは表示名（モック用）",
+            "example": "山田 花子（本部）"
+          }
+        },
+        "required": ["fee_items"],
+        "title": "UpdateBrandFeeGroupRequest",
+        "description": "ブランド費用グループの更新"
+      },
+      "UpdateBrandFeeGroupResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "費用設定を保存しました"
+          },
+          "fee_group": {
+            "type": "object",
+            "properties": {
+              "parent_brand_code": {
+                "type": "string",
+                "pattern": "^[a-z0-9_]+$",
+                "title": "ManagedBrandCode",
+                "description": "親ブランドコード",
+                "example": "joyfit"
+              },
+              "parent_brand_name": {
+                "type": "string",
+                "minLength": 1,
+                "example": "JOYFIT",
+                "description": "親ブランド名"
+              },
+              "sub_brand_code": {
+                "type": "string",
+                "pattern": "^[a-z0-9_]+$",
+                "title": "ManagedBrandCode",
+                "description": "サブブランドコード",
+                "example": "joyfit24"
+              },
+              "sub_brand_id": {
+                "type": "string",
+                "pattern": "^[a-z0-9_]+$",
+                "title": "ManagedBrandCode",
+                "description": "サブブランドID",
+                "example": "joyfit24"
+              },
+              "display_name": {
+                "type": "string",
+                "minLength": 1,
+                "example": "JOYFIT24",
+                "description": "サブブランド名"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["active", "inactive"],
+                "title": "BrandStatus",
+                "description": "ブランドまたはサブブランドの有効状態",
+                "example": "active"
+              },
+              "fee_master_id": {
+                "type": "string",
+                "minLength": 1,
+                "example": "EF002",
+                "description": "費用マスタID"
+              },
+              "fee_items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "item_code": {
+                      "type": "string",
+                      "minLength": 1,
+                      "example": "enrollment-fee",
+                      "description": "費用項目コード"
+                    },
+                    "item_name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "example": "入会金",
+                      "description": "費用項目名"
+                    },
+                    "current_value_including_tax_yen": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "example": 11000,
+                      "description": "現在の定価（税込・円）"
+                    },
+                    "effective_start_date": {
+                      "type": "string",
+                      "example": "2025/04/01",
+                      "description": "現行設定の有効開始日"
+                    },
+                    "scheduled_changes": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "effective_start_date": {
+                            "type": "string",
+                            "example": "2026/09/01",
+                            "description": "予約適用開始日"
+                          },
+                          "registered_at": {
+                            "type": "string",
+                            "example": "2026/06/01",
+                            "description": "予約登録日"
+                          },
+                          "registered_by": {
+                            "type": "string",
+                            "example": "山田 花子（本部）",
+                            "description": "登録者名"
+                          },
+                          "value_including_tax_yen": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "example": 12000,
+                            "description": "予約後の定価（税込・円）"
+                          }
+                        },
+                        "required": [
+                          "effective_start_date",
+                          "registered_at",
+                          "registered_by",
+                          "value_including_tax_yen"
+                        ],
+                        "title": "BrandScheduledFeeChange",
+                        "description": "予約中の費用改定"
+                      },
+                      "description": "予約中の改定一覧"
+                    }
+                  },
+                  "required": [
+                    "item_code",
+                    "item_name",
+                    "current_value_including_tax_yen",
+                    "effective_start_date",
+                    "scheduled_changes"
+                  ],
+                  "title": "BrandFeeItem",
+                  "description": "サブブランドの費用項目"
+                },
+                "description": "サブブランド配下の費用項目"
+              }
+            },
+            "required": [
+              "parent_brand_code",
+              "parent_brand_name",
+              "sub_brand_code",
+              "sub_brand_id",
+              "display_name",
+              "status",
+              "fee_master_id",
+              "fee_items"
+            ],
+            "title": "BrandFeeGroup",
+            "description": "ブランド詳細の費用タブに表示するサブブランド単位の費用マスタ"
+          }
+        },
+        "required": ["message", "fee_group"],
+        "title": "UpdateBrandFeeGroupResponse",
+        "description": "更新後の費用グループ"
+      },
+      "DisableBrandFeeGroupResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "費用マスタを無効化しました"
+          },
+          "fee_group": {
+            "type": "object",
+            "properties": {
+              "parent_brand_code": {
+                "type": "string",
+                "pattern": "^[a-z0-9_]+$",
+                "title": "ManagedBrandCode",
+                "description": "親ブランドコード",
+                "example": "joyfit"
+              },
+              "parent_brand_name": {
+                "type": "string",
+                "minLength": 1,
+                "example": "JOYFIT",
+                "description": "親ブランド名"
+              },
+              "sub_brand_code": {
+                "type": "string",
+                "pattern": "^[a-z0-9_]+$",
+                "title": "ManagedBrandCode",
+                "description": "サブブランドコード",
+                "example": "joyfit24"
+              },
+              "sub_brand_id": {
+                "type": "string",
+                "pattern": "^[a-z0-9_]+$",
+                "title": "ManagedBrandCode",
+                "description": "サブブランドID",
+                "example": "joyfit24"
+              },
+              "display_name": {
+                "type": "string",
+                "minLength": 1,
+                "example": "JOYFIT24",
+                "description": "サブブランド名"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["active", "inactive"],
+                "title": "BrandStatus",
+                "description": "ブランドまたはサブブランドの有効状態",
+                "example": "active"
+              },
+              "fee_master_id": {
+                "type": "string",
+                "minLength": 1,
+                "example": "EF002",
+                "description": "費用マスタID"
+              },
+              "fee_items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "item_code": {
+                      "type": "string",
+                      "minLength": 1,
+                      "example": "enrollment-fee",
+                      "description": "費用項目コード"
+                    },
+                    "item_name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "example": "入会金",
+                      "description": "費用項目名"
+                    },
+                    "current_value_including_tax_yen": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "example": 11000,
+                      "description": "現在の定価（税込・円）"
+                    },
+                    "effective_start_date": {
+                      "type": "string",
+                      "example": "2025/04/01",
+                      "description": "現行設定の有効開始日"
+                    },
+                    "scheduled_changes": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "effective_start_date": {
+                            "type": "string",
+                            "example": "2026/09/01",
+                            "description": "予約適用開始日"
+                          },
+                          "registered_at": {
+                            "type": "string",
+                            "example": "2026/06/01",
+                            "description": "予約登録日"
+                          },
+                          "registered_by": {
+                            "type": "string",
+                            "example": "山田 花子（本部）",
+                            "description": "登録者名"
+                          },
+                          "value_including_tax_yen": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "example": 12000,
+                            "description": "予約後の定価（税込・円）"
+                          }
+                        },
+                        "required": [
+                          "effective_start_date",
+                          "registered_at",
+                          "registered_by",
+                          "value_including_tax_yen"
+                        ],
+                        "title": "BrandScheduledFeeChange",
+                        "description": "予約中の費用改定"
+                      },
+                      "description": "予約中の改定一覧"
+                    }
+                  },
+                  "required": [
+                    "item_code",
+                    "item_name",
+                    "current_value_including_tax_yen",
+                    "effective_start_date",
+                    "scheduled_changes"
+                  ],
+                  "title": "BrandFeeItem",
+                  "description": "サブブランドの費用項目"
+                },
+                "description": "サブブランド配下の費用項目"
+              }
+            },
+            "required": [
+              "parent_brand_code",
+              "parent_brand_name",
+              "sub_brand_code",
+              "sub_brand_id",
+              "display_name",
+              "status",
+              "fee_master_id",
+              "fee_items"
+            ],
+            "title": "BrandFeeGroup",
+            "description": "ブランド詳細の費用タブに表示するサブブランド単位の費用マスタ"
+          }
+        },
+        "required": ["message", "fee_group"],
+        "title": "DisableBrandFeeGroupResponse",
+        "description": "無効化後の費用グループ"
+      },
+      "DeleteBrandFeeGroupResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "費用マスタを削除しました"
+          },
+          "deleted_sub_brand_code": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$",
+            "title": "ManagedBrandCode",
+            "description": "削除したサブブランドコード",
+            "example": "joyfit24"
+          }
+        },
+        "required": ["message", "deleted_sub_brand_code"],
+        "title": "DeleteBrandFeeGroupResponse",
+        "description": "費用グループ削除レスポンス"
       },
       "GetBrandsQuery": {
         "type": "object",
@@ -11374,7 +12420,7 @@
             "type": "string",
             "maxLength": 255,
             "example": "joyfit",
-            "description": "ブランドID・ブランド名・その他費用で検索"
+            "description": "ブランドID・ブランド名で検索"
           }
         },
         "title": "GetBrandsQuery",
@@ -11408,81 +12454,17 @@
                   "example": "JOYFIT",
                   "description": "ブランド名"
                 },
-                "enrollment_fee_yen": {
-                  "type": "integer",
-                  "nullable": true,
-                  "minimum": 0,
-                  "example": 2000,
-                  "description": "入会金（税別・円）"
-                },
-                "registration_admin_fee_yen": {
-                  "type": "integer",
-                  "nullable": true,
-                  "minimum": 0,
-                  "example": 3000,
-                  "description": "登録事務手数料（税別・円）"
-                },
-                "card_issuance_fee_yen": {
-                  "type": "integer",
-                  "nullable": true,
-                  "minimum": 0,
-                  "example": 5000,
-                  "description": "カード発行料（税別・円）"
-                },
-                "other_fee_description": {
+                "status": {
                   "type": "string",
-                  "nullable": true,
-                  "example": "セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）",
-                  "description": "その他費用の表示文言"
-                },
-                "currency": {
-                  "type": "string",
-                  "enum": ["JPY"],
-                  "description": "通貨コード"
-                },
-                "sort_order": {
-                  "type": "integer",
-                  "example": 1,
-                  "description": "一覧表示順"
-                },
-                "created_at": {
-                  "type": "string",
-                  "example": "2024-01-01T00:00:00.000Z",
-                  "description": "作成日時"
-                },
-                "updated_at": {
-                  "type": "string",
-                  "example": "2026-04-01T09:00:00.000Z",
-                  "description": "更新日時"
-                },
-                "created_by": {
-                  "type": "string",
-                  "nullable": true,
-                  "example": "STF-001",
-                  "description": "作成者スタッフID"
-                },
-                "updated_by": {
-                  "type": "string",
-                  "nullable": true,
-                  "example": "STF-001",
-                  "description": "最終更新者スタッフID"
+                  "enum": ["active", "inactive"],
+                  "title": "BrandStatus",
+                  "description": "ブランドまたはサブブランドの有効状態",
+                  "example": "active"
                 }
               },
-              "required": [
-                "brand_id",
-                "code",
-                "display_name",
-                "enrollment_fee_yen",
-                "registration_admin_fee_yen",
-                "card_issuance_fee_yen",
-                "other_fee_description",
-                "currency",
-                "sort_order",
-                "created_at",
-                "updated_at"
-              ],
-              "title": "BrandItem",
-              "description": "Y-07 ブランド基本設定"
+              "required": ["brand_id", "code", "display_name", "status"],
+              "title": "BrandListItem",
+              "description": "Y-07 ブランド一覧行"
             },
             "description": "管理対象ブランド一覧"
           },
@@ -11516,7 +12498,7 @@
               "all_total": {
                 "type": "integer",
                 "minimum": 0,
-                "example": 5,
+                "example": 2,
                 "description": "検索条件適用前の総件数"
               }
             },
@@ -11527,7 +12509,7 @@
         },
         "required": ["brands", "pagination"],
         "title": "GetBrandsResponse",
-        "description": "ブランドマスタ一覧"
+        "description": "ブランド一覧"
       },
       "CreateBrandRequest": {
         "type": "object",
@@ -11546,30 +12528,6 @@
             "title": "BrandIdInput",
             "description": "ブランドID",
             "example": "joyfit"
-          },
-          "enrollment_fee_yen": {
-            "type": "integer",
-            "nullable": true,
-            "minimum": 0,
-            "description": "入会金（税別・円）"
-          },
-          "registration_admin_fee_yen": {
-            "type": "integer",
-            "nullable": true,
-            "minimum": 0,
-            "description": "登録事務手数料（税別・円）"
-          },
-          "card_issuance_fee_yen": {
-            "type": "integer",
-            "nullable": true,
-            "minimum": 0,
-            "description": "カード発行料（税別・円）"
-          },
-          "other_fee_description": {
-            "type": "string",
-            "nullable": true,
-            "maxLength": 1000,
-            "description": "その他費用"
           },
           "created_by": {
             "type": "string",
@@ -11612,51 +12570,33 @@
                 "example": "JOYFIT",
                 "description": "ブランド名"
               },
-              "enrollment_fee_yen": {
-                "type": "integer",
-                "nullable": true,
-                "minimum": 0,
-                "example": 2000,
-                "description": "入会金（税別・円）"
-              },
-              "registration_admin_fee_yen": {
-                "type": "integer",
-                "nullable": true,
-                "minimum": 0,
-                "example": 3000,
-                "description": "登録事務手数料（税別・円）"
-              },
-              "card_issuance_fee_yen": {
-                "type": "integer",
-                "nullable": true,
-                "minimum": 0,
-                "example": 5000,
-                "description": "カード発行料（税別・円）"
-              },
-              "other_fee_description": {
+              "status": {
                 "type": "string",
-                "nullable": true,
-                "example": "セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）",
-                "description": "その他費用の表示文言"
+                "enum": ["active", "inactive"],
+                "title": "BrandStatus",
+                "description": "ブランドまたはサブブランドの有効状態",
+                "example": "active"
               },
-              "currency": {
-                "type": "string",
-                "enum": ["JPY"],
-                "description": "通貨コード"
-              },
-              "sort_order": {
+              "fee_group_count": {
                 "type": "integer",
-                "example": 1,
-                "description": "一覧表示順"
+                "minimum": 0,
+                "example": 4,
+                "description": "費用タブの件数"
+              },
+              "change_history_count": {
+                "type": "integer",
+                "minimum": 0,
+                "example": 3,
+                "description": "変更履歴タブの件数"
               },
               "created_at": {
                 "type": "string",
-                "example": "2024-01-01T00:00:00.000Z",
+                "example": "2024-04-01T00:00:00.000Z",
                 "description": "作成日時"
               },
               "updated_at": {
                 "type": "string",
-                "example": "2026-04-01T09:00:00.000Z",
+                "example": "2026-03-01T00:00:00.000Z",
                 "description": "更新日時"
               },
               "created_by": {
@@ -11668,7 +12608,7 @@
               "updated_by": {
                 "type": "string",
                 "nullable": true,
-                "example": "STF-001",
+                "example": "STF-002",
                 "description": "最終更新者スタッフID"
               }
             },
@@ -11676,22 +12616,19 @@
               "brand_id",
               "code",
               "display_name",
-              "enrollment_fee_yen",
-              "registration_admin_fee_yen",
-              "card_issuance_fee_yen",
-              "other_fee_description",
-              "currency",
-              "sort_order",
+              "status",
+              "fee_group_count",
+              "change_history_count",
               "created_at",
               "updated_at"
             ],
-            "title": "BrandItem",
-            "description": "Y-07 ブランド基本設定"
+            "title": "BrandDetail",
+            "description": "Y-07 ブランド基本情報詳細"
           }
         },
         "required": ["message", "brand"],
         "title": "CreateBrandResponse",
-        "description": "作成後のブランド行"
+        "description": "作成後のブランド詳細"
       },
       "UpdateBrandRequest": {
         "type": "object",
@@ -11710,30 +12647,6 @@
             "description": "ブランドID",
             "example": "joyfit"
           },
-          "enrollment_fee_yen": {
-            "type": "integer",
-            "nullable": true,
-            "minimum": 0,
-            "description": "入会金（税別・円）"
-          },
-          "registration_admin_fee_yen": {
-            "type": "integer",
-            "nullable": true,
-            "minimum": 0,
-            "description": "登録事務手数料（税別・円）"
-          },
-          "card_issuance_fee_yen": {
-            "type": "integer",
-            "nullable": true,
-            "minimum": 0,
-            "description": "カード発行料（税別・円）"
-          },
-          "other_fee_description": {
-            "type": "string",
-            "nullable": true,
-            "maxLength": 1000,
-            "description": "その他費用"
-          },
           "updated_by": {
             "type": "string",
             "minLength": 1,
@@ -11742,7 +12655,7 @@
           }
         },
         "title": "UpdateBrandRequest",
-        "description": "Y-07 ブランド設定の部分更新"
+        "description": "Y-07 ブランド基本情報の部分更新"
       },
       "UpdateBrandResponse": {
         "type": "object",
@@ -11774,51 +12687,33 @@
                 "example": "JOYFIT",
                 "description": "ブランド名"
               },
-              "enrollment_fee_yen": {
-                "type": "integer",
-                "nullable": true,
-                "minimum": 0,
-                "example": 2000,
-                "description": "入会金（税別・円）"
-              },
-              "registration_admin_fee_yen": {
-                "type": "integer",
-                "nullable": true,
-                "minimum": 0,
-                "example": 3000,
-                "description": "登録事務手数料（税別・円）"
-              },
-              "card_issuance_fee_yen": {
-                "type": "integer",
-                "nullable": true,
-                "minimum": 0,
-                "example": 5000,
-                "description": "カード発行料（税別・円）"
-              },
-              "other_fee_description": {
+              "status": {
                 "type": "string",
-                "nullable": true,
-                "example": "セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）",
-                "description": "その他費用の表示文言"
+                "enum": ["active", "inactive"],
+                "title": "BrandStatus",
+                "description": "ブランドまたはサブブランドの有効状態",
+                "example": "active"
               },
-              "currency": {
-                "type": "string",
-                "enum": ["JPY"],
-                "description": "通貨コード"
-              },
-              "sort_order": {
+              "fee_group_count": {
                 "type": "integer",
-                "example": 1,
-                "description": "一覧表示順"
+                "minimum": 0,
+                "example": 4,
+                "description": "費用タブの件数"
+              },
+              "change_history_count": {
+                "type": "integer",
+                "minimum": 0,
+                "example": 3,
+                "description": "変更履歴タブの件数"
               },
               "created_at": {
                 "type": "string",
-                "example": "2024-01-01T00:00:00.000Z",
+                "example": "2024-04-01T00:00:00.000Z",
                 "description": "作成日時"
               },
               "updated_at": {
                 "type": "string",
-                "example": "2026-04-01T09:00:00.000Z",
+                "example": "2026-03-01T00:00:00.000Z",
                 "description": "更新日時"
               },
               "created_by": {
@@ -11830,7 +12725,7 @@
               "updated_by": {
                 "type": "string",
                 "nullable": true,
-                "example": "STF-001",
+                "example": "STF-002",
                 "description": "最終更新者スタッフID"
               }
             },
@@ -11838,22 +12733,19 @@
               "brand_id",
               "code",
               "display_name",
-              "enrollment_fee_yen",
-              "registration_admin_fee_yen",
-              "card_issuance_fee_yen",
-              "other_fee_description",
-              "currency",
-              "sort_order",
+              "status",
+              "fee_group_count",
+              "change_history_count",
               "created_at",
               "updated_at"
             ],
-            "title": "BrandItem",
-            "description": "Y-07 ブランド基本設定"
+            "title": "BrandDetail",
+            "description": "Y-07 ブランド基本情報詳細"
           }
         },
         "required": ["message", "brand"],
         "title": "UpdateBrandResponse",
-        "description": "更新後のブランド行"
+        "description": "更新後のブランド詳細"
       },
       "StaffListItem": {
         "type": "object",
@@ -17374,17 +18266,1155 @@
         }
       }
     },
-    "/crm/brands/{code}": {
-      "patch": {
-        "summary": "Update Y-07 brand master row",
-        "description": "ブランド基本設定の更新。本部のみ編集可能。",
+    "/crm/brands/{id}/change-history": {
+      "get": {
+        "summary": "Get Y-07 brand change history",
+        "description": "ブランド詳細画面の変更履歴タブで表示する履歴一覧。",
         "tags": ["Brands"],
         "parameters": [
           {
-            "name": "code",
+            "name": "id",
             "in": "path",
             "required": true,
-            "description": "code parameter",
+            "description": "id parameter",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Brand change history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "histories": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "changed_at": {
+                            "type": "string",
+                            "example": "2026/03/01 10:24:05",
+                            "description": "変更日時"
+                          },
+                          "changed_by": {
+                            "type": "string",
+                            "minLength": 1,
+                            "example": "山田 花子（本部）",
+                            "description": "変更者"
+                          },
+                          "target_display_name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "example": "JOYFIT / JOYFIT24",
+                            "description": "対象"
+                          },
+                          "changed_field": {
+                            "type": "string",
+                            "minLength": 1,
+                            "example": "入会金 定価",
+                            "description": "変更項目"
+                          },
+                          "before_value": {
+                            "type": "string",
+                            "minLength": 1,
+                            "example": "¥10,000",
+                            "description": "変更前"
+                          },
+                          "after_value": {
+                            "type": "string",
+                            "minLength": 1,
+                            "example": "¥11,000",
+                            "description": "変更後"
+                          }
+                        },
+                        "required": [
+                          "changed_at",
+                          "changed_by",
+                          "target_display_name",
+                          "changed_field",
+                          "before_value",
+                          "after_value"
+                        ],
+                        "title": "BrandChangeHistoryItem",
+                        "description": "ブランド変更履歴の一覧行"
+                      },
+                      "description": "変更履歴一覧"
+                    }
+                  },
+                  "required": ["histories"],
+                  "title": "GetBrandChangeHistoryResponse",
+                  "description": "ブランド詳細の変更履歴データ"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/brands/{id}/fees/{subBrandCode}/disable": {
+      "patch": {
+        "summary": "Disable Y-07 brand fee group",
+        "description": "ブランド詳細画面の費用タブでサブブランド単位の費用マスタを無効化する。",
+        "tags": ["Brands"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id parameter",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subBrandCode",
+            "in": "path",
+            "required": true,
+            "description": "subBrandCode parameter",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Disabled fee group",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "費用マスタを無効化しました"
+                    },
+                    "fee_group": {
+                      "type": "object",
+                      "properties": {
+                        "parent_brand_code": {
+                          "type": "string",
+                          "pattern": "^[a-z0-9_]+$",
+                          "title": "ManagedBrandCode",
+                          "description": "親ブランドコード",
+                          "example": "joyfit"
+                        },
+                        "parent_brand_name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "example": "JOYFIT",
+                          "description": "親ブランド名"
+                        },
+                        "sub_brand_code": {
+                          "type": "string",
+                          "pattern": "^[a-z0-9_]+$",
+                          "title": "ManagedBrandCode",
+                          "description": "サブブランドコード",
+                          "example": "joyfit24"
+                        },
+                        "sub_brand_id": {
+                          "type": "string",
+                          "pattern": "^[a-z0-9_]+$",
+                          "title": "ManagedBrandCode",
+                          "description": "サブブランドID",
+                          "example": "joyfit24"
+                        },
+                        "display_name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "example": "JOYFIT24",
+                          "description": "サブブランド名"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "BrandStatus",
+                          "description": "ブランドまたはサブブランドの有効状態",
+                          "example": "active"
+                        },
+                        "fee_master_id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "example": "EF002",
+                          "description": "費用マスタID"
+                        },
+                        "fee_items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "item_code": {
+                                "type": "string",
+                                "minLength": 1,
+                                "example": "enrollment-fee",
+                                "description": "費用項目コード"
+                              },
+                              "item_name": {
+                                "type": "string",
+                                "minLength": 1,
+                                "example": "入会金",
+                                "description": "費用項目名"
+                              },
+                              "current_value_including_tax_yen": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "example": 11000,
+                                "description": "現在の定価（税込・円）"
+                              },
+                              "effective_start_date": {
+                                "type": "string",
+                                "example": "2025/04/01",
+                                "description": "現行設定の有効開始日"
+                              },
+                              "scheduled_changes": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "effective_start_date": {
+                                      "type": "string",
+                                      "example": "2026/09/01",
+                                      "description": "予約適用開始日"
+                                    },
+                                    "registered_at": {
+                                      "type": "string",
+                                      "example": "2026/06/01",
+                                      "description": "予約登録日"
+                                    },
+                                    "registered_by": {
+                                      "type": "string",
+                                      "example": "山田 花子（本部）",
+                                      "description": "登録者名"
+                                    },
+                                    "value_including_tax_yen": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "example": 12000,
+                                      "description": "予約後の定価（税込・円）"
+                                    }
+                                  },
+                                  "required": [
+                                    "effective_start_date",
+                                    "registered_at",
+                                    "registered_by",
+                                    "value_including_tax_yen"
+                                  ],
+                                  "title": "BrandScheduledFeeChange",
+                                  "description": "予約中の費用改定"
+                                },
+                                "description": "予約中の改定一覧"
+                              }
+                            },
+                            "required": [
+                              "item_code",
+                              "item_name",
+                              "current_value_including_tax_yen",
+                              "effective_start_date",
+                              "scheduled_changes"
+                            ],
+                            "title": "BrandFeeItem",
+                            "description": "サブブランドの費用項目"
+                          },
+                          "description": "サブブランド配下の費用項目"
+                        }
+                      },
+                      "required": [
+                        "parent_brand_code",
+                        "parent_brand_name",
+                        "sub_brand_code",
+                        "sub_brand_id",
+                        "display_name",
+                        "status",
+                        "fee_master_id",
+                        "fee_items"
+                      ],
+                      "title": "BrandFeeGroup",
+                      "description": "ブランド詳細の費用タブに表示するサブブランド単位の費用マスタ"
+                    }
+                  },
+                  "required": ["message", "fee_group"],
+                  "title": "DisableBrandFeeGroupResponse",
+                  "description": "無効化後の費用グループ"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/brands/{id}/fees/{subBrandCode}": {
+      "patch": {
+        "summary": "Update Y-07 brand fee group",
+        "description": "ブランド詳細画面の費用タブでサブブランド単位の費用設定を更新する。",
+        "tags": ["Brands"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id parameter",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subBrandCode",
+            "in": "path",
+            "required": true,
+            "description": "subBrandCode parameter",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Brand fee group update payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fee_items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "item_code": {
+                          "type": "string",
+                          "minLength": 1,
+                          "example": "enrollment-fee",
+                          "description": "費用項目コード"
+                        },
+                        "item_name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 255,
+                          "example": "入会金",
+                          "description": "費用項目名"
+                        },
+                        "current_value_including_tax_yen": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 11000,
+                          "description": "現在の定価（税込・円）"
+                        },
+                        "effective_start_date": {
+                          "type": "string",
+                          "pattern": "^\\d{4}\\/\\d{2}\\/\\d{2}$",
+                          "example": "2025/04/01",
+                          "description": "現行設定の有効開始日"
+                        }
+                      },
+                      "required": [
+                        "item_code",
+                        "item_name",
+                        "current_value_including_tax_yen",
+                        "effective_start_date"
+                      ],
+                      "title": "UpdateBrandFeeItem",
+                      "description": "費用項目の更新入力"
+                    },
+                    "minItems": 1,
+                    "description": "更新後の費用項目一覧"
+                  },
+                  "updated_by": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "更新者スタッフIDまたは表示名（モック用）",
+                    "example": "山田 花子（本部）"
+                  }
+                },
+                "required": ["fee_items"],
+                "title": "UpdateBrandFeeGroupRequest",
+                "description": "ブランド費用グループの更新"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated fee group",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "費用設定を保存しました"
+                    },
+                    "fee_group": {
+                      "type": "object",
+                      "properties": {
+                        "parent_brand_code": {
+                          "type": "string",
+                          "pattern": "^[a-z0-9_]+$",
+                          "title": "ManagedBrandCode",
+                          "description": "親ブランドコード",
+                          "example": "joyfit"
+                        },
+                        "parent_brand_name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "example": "JOYFIT",
+                          "description": "親ブランド名"
+                        },
+                        "sub_brand_code": {
+                          "type": "string",
+                          "pattern": "^[a-z0-9_]+$",
+                          "title": "ManagedBrandCode",
+                          "description": "サブブランドコード",
+                          "example": "joyfit24"
+                        },
+                        "sub_brand_id": {
+                          "type": "string",
+                          "pattern": "^[a-z0-9_]+$",
+                          "title": "ManagedBrandCode",
+                          "description": "サブブランドID",
+                          "example": "joyfit24"
+                        },
+                        "display_name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "example": "JOYFIT24",
+                          "description": "サブブランド名"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "BrandStatus",
+                          "description": "ブランドまたはサブブランドの有効状態",
+                          "example": "active"
+                        },
+                        "fee_master_id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "example": "EF002",
+                          "description": "費用マスタID"
+                        },
+                        "fee_items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "item_code": {
+                                "type": "string",
+                                "minLength": 1,
+                                "example": "enrollment-fee",
+                                "description": "費用項目コード"
+                              },
+                              "item_name": {
+                                "type": "string",
+                                "minLength": 1,
+                                "example": "入会金",
+                                "description": "費用項目名"
+                              },
+                              "current_value_including_tax_yen": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "example": 11000,
+                                "description": "現在の定価（税込・円）"
+                              },
+                              "effective_start_date": {
+                                "type": "string",
+                                "example": "2025/04/01",
+                                "description": "現行設定の有効開始日"
+                              },
+                              "scheduled_changes": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "effective_start_date": {
+                                      "type": "string",
+                                      "example": "2026/09/01",
+                                      "description": "予約適用開始日"
+                                    },
+                                    "registered_at": {
+                                      "type": "string",
+                                      "example": "2026/06/01",
+                                      "description": "予約登録日"
+                                    },
+                                    "registered_by": {
+                                      "type": "string",
+                                      "example": "山田 花子（本部）",
+                                      "description": "登録者名"
+                                    },
+                                    "value_including_tax_yen": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "example": 12000,
+                                      "description": "予約後の定価（税込・円）"
+                                    }
+                                  },
+                                  "required": [
+                                    "effective_start_date",
+                                    "registered_at",
+                                    "registered_by",
+                                    "value_including_tax_yen"
+                                  ],
+                                  "title": "BrandScheduledFeeChange",
+                                  "description": "予約中の費用改定"
+                                },
+                                "description": "予約中の改定一覧"
+                              }
+                            },
+                            "required": [
+                              "item_code",
+                              "item_name",
+                              "current_value_including_tax_yen",
+                              "effective_start_date",
+                              "scheduled_changes"
+                            ],
+                            "title": "BrandFeeItem",
+                            "description": "サブブランドの費用項目"
+                          },
+                          "description": "サブブランド配下の費用項目"
+                        }
+                      },
+                      "required": [
+                        "parent_brand_code",
+                        "parent_brand_name",
+                        "sub_brand_code",
+                        "sub_brand_id",
+                        "display_name",
+                        "status",
+                        "fee_master_id",
+                        "fee_items"
+                      ],
+                      "title": "BrandFeeGroup",
+                      "description": "ブランド詳細の費用タブに表示するサブブランド単位の費用マスタ"
+                    }
+                  },
+                  "required": ["message", "fee_group"],
+                  "title": "UpdateBrandFeeGroupResponse",
+                  "description": "更新後の費用グループ"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Y-07 brand fee group",
+        "description": "ブランド詳細画面の費用タブでサブブランド単位の費用マスタを削除する。",
+        "tags": ["Brands"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id parameter",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subBrandCode",
+            "in": "path",
+            "required": true,
+            "description": "subBrandCode parameter",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted fee group",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "費用マスタを削除しました"
+                    },
+                    "deleted_sub_brand_code": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9_]+$",
+                      "title": "ManagedBrandCode",
+                      "description": "削除したサブブランドコード",
+                      "example": "joyfit24"
+                    }
+                  },
+                  "required": ["message", "deleted_sub_brand_code"],
+                  "title": "DeleteBrandFeeGroupResponse",
+                  "description": "費用グループ削除レスポンス"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/brands/{id}/fees": {
+      "get": {
+        "summary": "Get Y-07 brand fee groups",
+        "description": "ブランド詳細画面の費用タブで表示するサブブランド単位の費用マスタ一覧。",
+        "tags": ["Brands"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id parameter",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Brand fee groups",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "fee_groups": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "parent_brand_code": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9_]+$",
+                            "title": "ManagedBrandCode",
+                            "description": "親ブランドコード",
+                            "example": "joyfit"
+                          },
+                          "parent_brand_name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "example": "JOYFIT",
+                            "description": "親ブランド名"
+                          },
+                          "sub_brand_code": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9_]+$",
+                            "title": "ManagedBrandCode",
+                            "description": "サブブランドコード",
+                            "example": "joyfit24"
+                          },
+                          "sub_brand_id": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9_]+$",
+                            "title": "ManagedBrandCode",
+                            "description": "サブブランドID",
+                            "example": "joyfit24"
+                          },
+                          "display_name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "example": "JOYFIT24",
+                            "description": "サブブランド名"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["active", "inactive"],
+                            "title": "BrandStatus",
+                            "description": "ブランドまたはサブブランドの有効状態",
+                            "example": "active"
+                          },
+                          "fee_master_id": {
+                            "type": "string",
+                            "minLength": 1,
+                            "example": "EF002",
+                            "description": "費用マスタID"
+                          },
+                          "fee_items": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "item_code": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "example": "enrollment-fee",
+                                  "description": "費用項目コード"
+                                },
+                                "item_name": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "example": "入会金",
+                                  "description": "費用項目名"
+                                },
+                                "current_value_including_tax_yen": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "example": 11000,
+                                  "description": "現在の定価（税込・円）"
+                                },
+                                "effective_start_date": {
+                                  "type": "string",
+                                  "example": "2025/04/01",
+                                  "description": "現行設定の有効開始日"
+                                },
+                                "scheduled_changes": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "effective_start_date": {
+                                        "type": "string",
+                                        "example": "2026/09/01",
+                                        "description": "予約適用開始日"
+                                      },
+                                      "registered_at": {
+                                        "type": "string",
+                                        "example": "2026/06/01",
+                                        "description": "予約登録日"
+                                      },
+                                      "registered_by": {
+                                        "type": "string",
+                                        "example": "山田 花子（本部）",
+                                        "description": "登録者名"
+                                      },
+                                      "value_including_tax_yen": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "example": 12000,
+                                        "description": "予約後の定価（税込・円）"
+                                      }
+                                    },
+                                    "required": [
+                                      "effective_start_date",
+                                      "registered_at",
+                                      "registered_by",
+                                      "value_including_tax_yen"
+                                    ],
+                                    "title": "BrandScheduledFeeChange",
+                                    "description": "予約中の費用改定"
+                                  },
+                                  "description": "予約中の改定一覧"
+                                }
+                              },
+                              "required": [
+                                "item_code",
+                                "item_name",
+                                "current_value_including_tax_yen",
+                                "effective_start_date",
+                                "scheduled_changes"
+                              ],
+                              "title": "BrandFeeItem",
+                              "description": "サブブランドの費用項目"
+                            },
+                            "description": "サブブランド配下の費用項目"
+                          }
+                        },
+                        "required": [
+                          "parent_brand_code",
+                          "parent_brand_name",
+                          "sub_brand_code",
+                          "sub_brand_id",
+                          "display_name",
+                          "status",
+                          "fee_master_id",
+                          "fee_items"
+                        ],
+                        "title": "BrandFeeGroup",
+                        "description": "ブランド詳細の費用タブに表示するサブブランド単位の費用マスタ"
+                      },
+                      "description": "費用タブ表示用のサブブランド一覧"
+                    }
+                  },
+                  "required": ["fee_groups"],
+                  "title": "GetBrandFeesResponse",
+                  "description": "ブランド詳細の費用タブデータ"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/brands/{id}": {
+      "get": {
+        "summary": "Get Y-07 brand detail",
+        "description": "ブランド詳細画面の基本情報タブで表示するトップレベルブランド詳細。",
+        "tags": ["Brands"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id parameter",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Brand detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "brand": {
+                      "type": "object",
+                      "properties": {
+                        "brand_id": {
+                          "type": "string",
+                          "pattern": "^[a-z0-9_]+$",
+                          "title": "ManagedBrandCode",
+                          "description": "ブランドID",
+                          "example": "joyfit"
+                        },
+                        "code": {
+                          "type": "string",
+                          "pattern": "^[a-z0-9_]+$",
+                          "title": "ManagedBrandCode",
+                          "description": "ブランドコード",
+                          "example": "joyfit"
+                        },
+                        "display_name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "example": "JOYFIT",
+                          "description": "ブランド名"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "BrandStatus",
+                          "description": "ブランドまたはサブブランドの有効状態",
+                          "example": "active"
+                        },
+                        "fee_group_count": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 4,
+                          "description": "費用タブの件数"
+                        },
+                        "change_history_count": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 3,
+                          "description": "変更履歴タブの件数"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2024-04-01T00:00:00.000Z",
+                          "description": "作成日時"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026-03-01T00:00:00.000Z",
+                          "description": "更新日時"
+                        },
+                        "created_by": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "STF-001",
+                          "description": "作成者スタッフID"
+                        },
+                        "updated_by": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "STF-002",
+                          "description": "最終更新者スタッフID"
+                        }
+                      },
+                      "required": [
+                        "brand_id",
+                        "code",
+                        "display_name",
+                        "status",
+                        "fee_group_count",
+                        "change_history_count",
+                        "created_at",
+                        "updated_at"
+                      ],
+                      "title": "BrandDetail",
+                      "description": "Y-07 ブランド基本情報詳細"
+                    }
+                  },
+                  "required": ["brand"],
+                  "title": "GetBrandDetailResponse",
+                  "description": "ブランド詳細の基本情報"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Y-07 brand basic info",
+        "description": "ブランド基本情報の更新。本部のみ編集可能。",
+        "tags": ["Brands"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id parameter",
             "schema": {
               "type": "string"
             }
@@ -17411,30 +19441,6 @@
                     "description": "ブランドID",
                     "example": "joyfit"
                   },
-                  "enrollment_fee_yen": {
-                    "type": "integer",
-                    "nullable": true,
-                    "minimum": 0,
-                    "description": "入会金（税別・円）"
-                  },
-                  "registration_admin_fee_yen": {
-                    "type": "integer",
-                    "nullable": true,
-                    "minimum": 0,
-                    "description": "登録事務手数料（税別・円）"
-                  },
-                  "card_issuance_fee_yen": {
-                    "type": "integer",
-                    "nullable": true,
-                    "minimum": 0,
-                    "description": "カード発行料（税別・円）"
-                  },
-                  "other_fee_description": {
-                    "type": "string",
-                    "nullable": true,
-                    "maxLength": 1000,
-                    "description": "その他費用"
-                  },
                   "updated_by": {
                     "type": "string",
                     "minLength": 1,
@@ -17443,7 +19449,7 @@
                   }
                 },
                 "title": "UpdateBrandRequest",
-                "description": "Y-07 ブランド設定の部分更新"
+                "description": "Y-07 ブランド基本情報の部分更新"
               }
             }
           }
@@ -17483,51 +19489,33 @@
                           "example": "JOYFIT",
                           "description": "ブランド名"
                         },
-                        "enrollment_fee_yen": {
-                          "type": "integer",
-                          "nullable": true,
-                          "minimum": 0,
-                          "example": 2000,
-                          "description": "入会金（税別・円）"
-                        },
-                        "registration_admin_fee_yen": {
-                          "type": "integer",
-                          "nullable": true,
-                          "minimum": 0,
-                          "example": 3000,
-                          "description": "登録事務手数料（税別・円）"
-                        },
-                        "card_issuance_fee_yen": {
-                          "type": "integer",
-                          "nullable": true,
-                          "minimum": 0,
-                          "example": 5000,
-                          "description": "カード発行料（税別・円）"
-                        },
-                        "other_fee_description": {
+                        "status": {
                           "type": "string",
-                          "nullable": true,
-                          "example": "セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）",
-                          "description": "その他費用の表示文言"
+                          "enum": ["active", "inactive"],
+                          "title": "BrandStatus",
+                          "description": "ブランドまたはサブブランドの有効状態",
+                          "example": "active"
                         },
-                        "currency": {
-                          "type": "string",
-                          "enum": ["JPY"],
-                          "description": "通貨コード"
-                        },
-                        "sort_order": {
+                        "fee_group_count": {
                           "type": "integer",
-                          "example": 1,
-                          "description": "一覧表示順"
+                          "minimum": 0,
+                          "example": 4,
+                          "description": "費用タブの件数"
+                        },
+                        "change_history_count": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 3,
+                          "description": "変更履歴タブの件数"
                         },
                         "created_at": {
                           "type": "string",
-                          "example": "2024-01-01T00:00:00.000Z",
+                          "example": "2024-04-01T00:00:00.000Z",
                           "description": "作成日時"
                         },
                         "updated_at": {
                           "type": "string",
-                          "example": "2026-04-01T09:00:00.000Z",
+                          "example": "2026-03-01T00:00:00.000Z",
                           "description": "更新日時"
                         },
                         "created_by": {
@@ -17539,7 +19527,7 @@
                         "updated_by": {
                           "type": "string",
                           "nullable": true,
-                          "example": "STF-001",
+                          "example": "STF-002",
                           "description": "最終更新者スタッフID"
                         }
                       },
@@ -17547,22 +19535,19 @@
                         "brand_id",
                         "code",
                         "display_name",
-                        "enrollment_fee_yen",
-                        "registration_admin_fee_yen",
-                        "card_issuance_fee_yen",
-                        "other_fee_description",
-                        "currency",
-                        "sort_order",
+                        "status",
+                        "fee_group_count",
+                        "change_history_count",
                         "created_at",
                         "updated_at"
                       ],
-                      "title": "BrandItem",
-                      "description": "Y-07 ブランド基本設定"
+                      "title": "BrandDetail",
+                      "description": "Y-07 ブランド基本情報詳細"
                     }
                   },
                   "required": ["message", "brand"],
                   "title": "UpdateBrandResponse",
-                  "description": "更新後のブランド行"
+                  "description": "更新後のブランド詳細"
                 }
               }
             }
@@ -17668,10 +19653,10 @@
               "type": "string",
               "maxLength": 255,
               "example": "joyfit",
-              "description": "ブランドID・ブランド名・その他費用で検索"
+              "description": "ブランドID・ブランド名で検索"
             },
             "required": false,
-            "description": "ブランドID・ブランド名・その他費用で検索",
+            "description": "ブランドID・ブランド名で検索",
             "name": "search",
             "in": "query"
           }
@@ -17709,81 +19694,17 @@
                             "example": "JOYFIT",
                             "description": "ブランド名"
                           },
-                          "enrollment_fee_yen": {
-                            "type": "integer",
-                            "nullable": true,
-                            "minimum": 0,
-                            "example": 2000,
-                            "description": "入会金（税別・円）"
-                          },
-                          "registration_admin_fee_yen": {
-                            "type": "integer",
-                            "nullable": true,
-                            "minimum": 0,
-                            "example": 3000,
-                            "description": "登録事務手数料（税別・円）"
-                          },
-                          "card_issuance_fee_yen": {
-                            "type": "integer",
-                            "nullable": true,
-                            "minimum": 0,
-                            "example": 5000,
-                            "description": "カード発行料（税別・円）"
-                          },
-                          "other_fee_description": {
+                          "status": {
                             "type": "string",
-                            "nullable": true,
-                            "example": "セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）",
-                            "description": "その他費用の表示文言"
-                          },
-                          "currency": {
-                            "type": "string",
-                            "enum": ["JPY"],
-                            "description": "通貨コード"
-                          },
-                          "sort_order": {
-                            "type": "integer",
-                            "example": 1,
-                            "description": "一覧表示順"
-                          },
-                          "created_at": {
-                            "type": "string",
-                            "example": "2024-01-01T00:00:00.000Z",
-                            "description": "作成日時"
-                          },
-                          "updated_at": {
-                            "type": "string",
-                            "example": "2026-04-01T09:00:00.000Z",
-                            "description": "更新日時"
-                          },
-                          "created_by": {
-                            "type": "string",
-                            "nullable": true,
-                            "example": "STF-001",
-                            "description": "作成者スタッフID"
-                          },
-                          "updated_by": {
-                            "type": "string",
-                            "nullable": true,
-                            "example": "STF-001",
-                            "description": "最終更新者スタッフID"
+                            "enum": ["active", "inactive"],
+                            "title": "BrandStatus",
+                            "description": "ブランドまたはサブブランドの有効状態",
+                            "example": "active"
                           }
                         },
-                        "required": [
-                          "brand_id",
-                          "code",
-                          "display_name",
-                          "enrollment_fee_yen",
-                          "registration_admin_fee_yen",
-                          "card_issuance_fee_yen",
-                          "other_fee_description",
-                          "currency",
-                          "sort_order",
-                          "created_at",
-                          "updated_at"
-                        ],
-                        "title": "BrandItem",
-                        "description": "Y-07 ブランド基本設定"
+                        "required": ["brand_id", "code", "display_name", "status"],
+                        "title": "BrandListItem",
+                        "description": "Y-07 ブランド一覧行"
                       },
                       "description": "管理対象ブランド一覧"
                     },
@@ -17817,7 +19738,7 @@
                         "all_total": {
                           "type": "integer",
                           "minimum": 0,
-                          "example": 5,
+                          "example": 2,
                           "description": "検索条件適用前の総件数"
                         }
                       },
@@ -17828,7 +19749,7 @@
                   },
                   "required": ["brands", "pagination"],
                   "title": "GetBrandsResponse",
-                  "description": "ブランドマスタ一覧"
+                  "description": "ブランド一覧"
                 }
               }
             }
@@ -17901,30 +19822,6 @@
                     "description": "ブランドID",
                     "example": "joyfit"
                   },
-                  "enrollment_fee_yen": {
-                    "type": "integer",
-                    "nullable": true,
-                    "minimum": 0,
-                    "description": "入会金（税別・円）"
-                  },
-                  "registration_admin_fee_yen": {
-                    "type": "integer",
-                    "nullable": true,
-                    "minimum": 0,
-                    "description": "登録事務手数料（税別・円）"
-                  },
-                  "card_issuance_fee_yen": {
-                    "type": "integer",
-                    "nullable": true,
-                    "minimum": 0,
-                    "description": "カード発行料（税別・円）"
-                  },
-                  "other_fee_description": {
-                    "type": "string",
-                    "nullable": true,
-                    "maxLength": 1000,
-                    "description": "その他費用"
-                  },
                   "created_by": {
                     "type": "string",
                     "minLength": 1,
@@ -17974,51 +19871,33 @@
                           "example": "JOYFIT",
                           "description": "ブランド名"
                         },
-                        "enrollment_fee_yen": {
-                          "type": "integer",
-                          "nullable": true,
-                          "minimum": 0,
-                          "example": 2000,
-                          "description": "入会金（税別・円）"
-                        },
-                        "registration_admin_fee_yen": {
-                          "type": "integer",
-                          "nullable": true,
-                          "minimum": 0,
-                          "example": 3000,
-                          "description": "登録事務手数料（税別・円）"
-                        },
-                        "card_issuance_fee_yen": {
-                          "type": "integer",
-                          "nullable": true,
-                          "minimum": 0,
-                          "example": 5000,
-                          "description": "カード発行料（税別・円）"
-                        },
-                        "other_fee_description": {
+                        "status": {
                           "type": "string",
-                          "nullable": true,
-                          "example": "セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）",
-                          "description": "その他費用の表示文言"
+                          "enum": ["active", "inactive"],
+                          "title": "BrandStatus",
+                          "description": "ブランドまたはサブブランドの有効状態",
+                          "example": "active"
                         },
-                        "currency": {
-                          "type": "string",
-                          "enum": ["JPY"],
-                          "description": "通貨コード"
-                        },
-                        "sort_order": {
+                        "fee_group_count": {
                           "type": "integer",
-                          "example": 1,
-                          "description": "一覧表示順"
+                          "minimum": 0,
+                          "example": 4,
+                          "description": "費用タブの件数"
+                        },
+                        "change_history_count": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 3,
+                          "description": "変更履歴タブの件数"
                         },
                         "created_at": {
                           "type": "string",
-                          "example": "2024-01-01T00:00:00.000Z",
+                          "example": "2024-04-01T00:00:00.000Z",
                           "description": "作成日時"
                         },
                         "updated_at": {
                           "type": "string",
-                          "example": "2026-04-01T09:00:00.000Z",
+                          "example": "2026-03-01T00:00:00.000Z",
                           "description": "更新日時"
                         },
                         "created_by": {
@@ -18030,7 +19909,7 @@
                         "updated_by": {
                           "type": "string",
                           "nullable": true,
-                          "example": "STF-001",
+                          "example": "STF-002",
                           "description": "最終更新者スタッフID"
                         }
                       },
@@ -18038,22 +19917,19 @@
                         "brand_id",
                         "code",
                         "display_name",
-                        "enrollment_fee_yen",
-                        "registration_admin_fee_yen",
-                        "card_issuance_fee_yen",
-                        "other_fee_description",
-                        "currency",
-                        "sort_order",
+                        "status",
+                        "fee_group_count",
+                        "change_history_count",
                         "created_at",
                         "updated_at"
                       ],
-                      "title": "BrandItem",
-                      "description": "Y-07 ブランド基本設定"
+                      "title": "BrandDetail",
+                      "description": "Y-07 ブランド基本情報詳細"
                     }
                   },
                   "required": ["message", "brand"],
                   "title": "CreateBrandResponse",
-                  "description": "作成後のブランド行"
+                  "description": "作成後のブランド詳細"
                 }
               }
             }
@@ -36592,6 +38468,1277 @@
                     "error": {
                       "type": "string",
                       "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/option-discounts/{id}/change-history": {
+      "get": {
+        "summary": "Get option discount change history",
+        "description": "Get change history for a specific option discount",
+        "tags": ["Options"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Option Discount ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Option discount change history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "history": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "date": {
+                            "type": "string",
+                            "example": "2026/03/01 10:30"
+                          },
+                          "user": {
+                            "type": "string",
+                            "example": "テストユーザー"
+                          },
+                          "field": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "from": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "to": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["date", "user", "field", "from", "to"],
+                        "title": "OptionDiscountChangeHistoryItem",
+                        "description": "セット割変更履歴"
+                      }
+                    }
+                  },
+                  "required": ["history"],
+                  "title": "GetOptionDiscountChangeHistoryResponse",
+                  "description": "セット割変更履歴レスポンス"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/option-discounts/{id}": {
+      "get": {
+        "summary": "Get option discount detail",
+        "description": "Get detailed information for a specific option discount",
+        "tags": ["Options"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Option Discount ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Option discount detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "option_discount": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "SD001",
+                          "description": "セット割ID"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "レギュラー＋水素水セット",
+                          "description": "セット割名"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "SET-001",
+                          "description": "セット割コード"
+                        },
+                        "target_contracts": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "対象契約名一覧",
+                          "example": ["レギュラー会員"]
+                        },
+                        "target_options": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "対象オプション名一覧",
+                          "example": ["水素水"]
+                        },
+                        "discount_type": {
+                          "type": "string",
+                          "enum": ["fixed_amount", "percentage"],
+                          "title": "OptionDiscountType",
+                          "description": "割引タイプ"
+                        },
+                        "discount_value": {
+                          "type": "number",
+                          "minimum": 0,
+                          "example": 330,
+                          "description": "割引値"
+                        },
+                        "conditions": {
+                          "type": "string",
+                          "enum": [
+                            "simultaneous",
+                            "existing_member",
+                            "family_2_plus",
+                            "options_3_plus"
+                          ],
+                          "title": "OptionDiscountCondition",
+                          "description": "適用条件",
+                          "example": "simultaneous"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "対象店舗ID（null = 全店舗）"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "対象店舗名（null = 全店舗）"
+                        },
+                        "applied_count": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 180,
+                          "description": "適用数"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "OptionDiscountStatus",
+                          "description": "ステータス"
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "説明文"
+                        },
+                        "rules": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "適用ルール"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2025/06/20 16:45",
+                          "description": "作成日時"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026/03/01 10:30",
+                          "description": "最終更新日時"
+                        },
+                        "updated_by": {
+                          "type": "string",
+                          "example": "テストユーザー",
+                          "description": "更新者"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "code",
+                        "target_contracts",
+                        "target_options",
+                        "discount_type",
+                        "discount_value",
+                        "conditions",
+                        "store_id",
+                        "store_name",
+                        "applied_count",
+                        "status",
+                        "description",
+                        "rules",
+                        "created_at",
+                        "updated_at",
+                        "updated_by"
+                      ],
+                      "title": "OptionDiscountDetail",
+                      "description": "セット割詳細"
+                    }
+                  },
+                  "required": ["option_discount"],
+                  "title": "GetOptionDiscountDetailResponse",
+                  "description": "セット割詳細レスポンス"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete option discount",
+        "description": "Delete an option discount setting",
+        "tags": ["Options"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Option Discount ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "削除理由",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1,
+                    "example": "廃止のため"
+                  }
+                },
+                "required": ["reason"],
+                "title": "DeleteOptionDiscountRequest",
+                "description": "セット割削除リクエスト"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "セット割を削除しました"
+                    }
+                  },
+                  "required": ["message"],
+                  "title": "DeleteOptionDiscountResponse",
+                  "description": "セット割削除レスポンス"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Deletion blocked or validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update option discount",
+        "description": "Update an existing option discount setting by ID",
+        "tags": ["Options"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Option Discount ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "セット割更新リクエスト",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "code": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "target_contracts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  },
+                  "target_options": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  },
+                  "discount_type": {
+                    "type": "string",
+                    "enum": ["fixed_amount", "percentage"],
+                    "title": "OptionDiscountType",
+                    "description": "セット割の割引タイプ"
+                  },
+                  "discount_value": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "conditions": {
+                    "type": "string",
+                    "enum": ["simultaneous", "existing_member", "family_2_plus", "options_3_plus"],
+                    "title": "OptionDiscountCondition",
+                    "description": "セット割の適用条件"
+                  },
+                  "store_id": {
+                    "type": "string",
+                    "nullable": true,
+                    "default": null
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["active", "inactive"],
+                    "default": "active",
+                    "title": "OptionDiscountStatus",
+                    "description": "セット割の有効/無効ステータス"
+                  }
+                },
+                "required": [
+                  "name",
+                  "code",
+                  "target_contracts",
+                  "target_options",
+                  "discount_type",
+                  "discount_value",
+                  "conditions"
+                ],
+                "title": "UpsertOptionDiscountBody",
+                "description": "セット割作成・更新リクエスト"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "option_discount": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "SD001",
+                          "description": "セット割ID"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "レギュラー＋水素水セット",
+                          "description": "セット割名"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "SET-001",
+                          "description": "セット割コード"
+                        },
+                        "target_contracts": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "対象契約名一覧",
+                          "example": ["レギュラー会員"]
+                        },
+                        "target_options": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "対象オプション名一覧",
+                          "example": ["水素水"]
+                        },
+                        "discount_type": {
+                          "type": "string",
+                          "enum": ["fixed_amount", "percentage"],
+                          "title": "OptionDiscountType",
+                          "description": "割引タイプ"
+                        },
+                        "discount_value": {
+                          "type": "number",
+                          "minimum": 0,
+                          "example": 330,
+                          "description": "割引値"
+                        },
+                        "conditions": {
+                          "type": "string",
+                          "enum": [
+                            "simultaneous",
+                            "existing_member",
+                            "family_2_plus",
+                            "options_3_plus"
+                          ],
+                          "title": "OptionDiscountCondition",
+                          "description": "適用条件",
+                          "example": "simultaneous"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "対象店舗ID（null = 全店舗）"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "対象店舗名（null = 全店舗）"
+                        },
+                        "applied_count": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 180,
+                          "description": "適用数"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "OptionDiscountStatus",
+                          "description": "ステータス"
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "説明文"
+                        },
+                        "rules": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "適用ルール"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2025/06/20 16:45",
+                          "description": "作成日時"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026/03/01 10:30",
+                          "description": "最終更新日時"
+                        },
+                        "updated_by": {
+                          "type": "string",
+                          "example": "テストユーザー",
+                          "description": "更新者"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "code",
+                        "target_contracts",
+                        "target_options",
+                        "discount_type",
+                        "discount_value",
+                        "conditions",
+                        "store_id",
+                        "store_name",
+                        "applied_count",
+                        "status",
+                        "description",
+                        "rules",
+                        "created_at",
+                        "updated_at",
+                        "updated_by"
+                      ],
+                      "title": "OptionDiscountDetail",
+                      "description": "セット割詳細"
+                    }
+                  },
+                  "required": ["message", "option_discount"],
+                  "title": "UpdateOptionDiscountResponse",
+                  "description": "セット割更新レスポンス"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/option-discounts": {
+      "get": {
+        "summary": "Get option discounts list",
+        "description": "Get paginated list of option discount settings",
+        "tags": ["Options"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 25
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "セット割名・コードで検索"
+            },
+            "required": false,
+            "description": "セット割名・コードで検索",
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["fixed_amount", "percentage"],
+              "title": "OptionDiscountType",
+              "description": "セット割の割引タイプ"
+            },
+            "required": false,
+            "description": "セット割の割引タイプ",
+            "name": "discount_type",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["active", "inactive"],
+              "title": "OptionDiscountStatus",
+              "description": "セット割の有効/無効ステータス"
+            },
+            "required": false,
+            "description": "セット割の有効/無効ステータス",
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "id",
+                "name",
+                "code",
+                "discount_type",
+                "discount_value",
+                "store_name",
+                "applied_count",
+                "status"
+              ],
+              "default": "id"
+            },
+            "required": false,
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            },
+            "required": false,
+            "name": "sort_order",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Option discount list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "option_discounts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "SD001",
+                            "description": "セット割ID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "レギュラー＋水素水セット",
+                            "description": "セット割名"
+                          },
+                          "code": {
+                            "type": "string",
+                            "example": "SET-001",
+                            "description": "セット割コード"
+                          },
+                          "target_contracts": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "対象契約名一覧",
+                            "example": ["レギュラー会員"]
+                          },
+                          "target_options": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "対象オプション名一覧",
+                            "example": ["水素水"]
+                          },
+                          "discount_type": {
+                            "type": "string",
+                            "enum": ["fixed_amount", "percentage"],
+                            "title": "OptionDiscountType",
+                            "description": "割引タイプ"
+                          },
+                          "discount_value": {
+                            "type": "number",
+                            "minimum": 0,
+                            "example": 330,
+                            "description": "割引値"
+                          },
+                          "conditions": {
+                            "type": "string",
+                            "enum": [
+                              "simultaneous",
+                              "existing_member",
+                              "family_2_plus",
+                              "options_3_plus"
+                            ],
+                            "title": "OptionDiscountCondition",
+                            "description": "適用条件",
+                            "example": "simultaneous"
+                          },
+                          "store_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "対象店舗ID（null = 全店舗）"
+                          },
+                          "store_name": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "対象店舗名（null = 全店舗）"
+                          },
+                          "applied_count": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "example": 180,
+                            "description": "適用数"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["active", "inactive"],
+                            "title": "OptionDiscountStatus",
+                            "description": "ステータス"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "code",
+                          "target_contracts",
+                          "target_options",
+                          "discount_type",
+                          "discount_value",
+                          "conditions",
+                          "store_id",
+                          "store_name",
+                          "applied_count",
+                          "status"
+                        ],
+                        "title": "OptionDiscountListItem",
+                        "description": "セット割一覧アイテム"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "number"
+                        },
+                        "limit": {
+                          "type": "number"
+                        },
+                        "total": {
+                          "type": "number"
+                        },
+                        "total_pages": {
+                          "type": "number"
+                        }
+                      },
+                      "required": ["page", "limit", "total", "total_pages"]
+                    }
+                  },
+                  "required": ["option_discounts", "pagination"],
+                  "title": "GetOptionDiscountsResponse",
+                  "description": "セット割一覧レスポンス"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create option discount",
+        "description": "Create a new option discount setting (G-02)",
+        "tags": ["Options"],
+        "requestBody": {
+          "description": "セット割作成リクエスト",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "code": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "target_contracts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  },
+                  "target_options": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  },
+                  "discount_type": {
+                    "type": "string",
+                    "enum": ["fixed_amount", "percentage"],
+                    "title": "OptionDiscountType",
+                    "description": "セット割の割引タイプ"
+                  },
+                  "discount_value": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "conditions": {
+                    "type": "string",
+                    "enum": ["simultaneous", "existing_member", "family_2_plus", "options_3_plus"],
+                    "title": "OptionDiscountCondition",
+                    "description": "セット割の適用条件"
+                  },
+                  "store_id": {
+                    "type": "string",
+                    "nullable": true,
+                    "default": null
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["active", "inactive"],
+                    "default": "active",
+                    "title": "OptionDiscountStatus",
+                    "description": "セット割の有効/無効ステータス"
+                  }
+                },
+                "required": [
+                  "name",
+                  "code",
+                  "target_contracts",
+                  "target_options",
+                  "discount_type",
+                  "discount_value",
+                  "conditions"
+                ],
+                "title": "UpsertOptionDiscountBody",
+                "description": "セット割作成・更新リクエスト"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "option_discount": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "SD001",
+                          "description": "セット割ID"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "レギュラー＋水素水セット",
+                          "description": "セット割名"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "SET-001",
+                          "description": "セット割コード"
+                        },
+                        "target_contracts": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "対象契約名一覧",
+                          "example": ["レギュラー会員"]
+                        },
+                        "target_options": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "対象オプション名一覧",
+                          "example": ["水素水"]
+                        },
+                        "discount_type": {
+                          "type": "string",
+                          "enum": ["fixed_amount", "percentage"],
+                          "title": "OptionDiscountType",
+                          "description": "割引タイプ"
+                        },
+                        "discount_value": {
+                          "type": "number",
+                          "minimum": 0,
+                          "example": 330,
+                          "description": "割引値"
+                        },
+                        "conditions": {
+                          "type": "string",
+                          "enum": [
+                            "simultaneous",
+                            "existing_member",
+                            "family_2_plus",
+                            "options_3_plus"
+                          ],
+                          "title": "OptionDiscountCondition",
+                          "description": "適用条件",
+                          "example": "simultaneous"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "対象店舗ID（null = 全店舗）"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "対象店舗名（null = 全店舗）"
+                        },
+                        "applied_count": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 180,
+                          "description": "適用数"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "OptionDiscountStatus",
+                          "description": "ステータス"
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "説明文"
+                        },
+                        "rules": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "適用ルール"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2025/06/20 16:45",
+                          "description": "作成日時"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026/03/01 10:30",
+                          "description": "最終更新日時"
+                        },
+                        "updated_by": {
+                          "type": "string",
+                          "example": "テストユーザー",
+                          "description": "更新者"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "code",
+                        "target_contracts",
+                        "target_options",
+                        "discount_type",
+                        "discount_value",
+                        "conditions",
+                        "store_id",
+                        "store_name",
+                        "applied_count",
+                        "status",
+                        "description",
+                        "rules",
+                        "created_at",
+                        "updated_at",
+                        "updated_by"
+                      ],
+                      "title": "OptionDiscountDetail",
+                      "description": "セット割詳細"
+                    }
+                  },
+                  "required": ["message", "option_discount"],
+                  "title": "CreateOptionDiscountResponse",
+                  "description": "セット割作成レスポンス"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
                       "description": "Error message"
                     }
                   },

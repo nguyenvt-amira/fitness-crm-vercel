@@ -2,12 +2,12 @@ import { Suspense } from 'react';
 
 import { Loading } from '@/components/common/data-state-boundary/loading';
 
-import { BrandsPage as BrandsPageContent } from './_components/brands-page';
+import { BrandDetailPage as BrandDetailPageContent } from './_components/brand-detail-page';
 
-export default function BrandsPage() {
+export default function BrandDetailPage() {
   return (
     <Suspense fallback={<Loading />}>
-      <BrandsPageContent />
+      <BrandDetailPageContent />
     </Suspense>
   );
 }

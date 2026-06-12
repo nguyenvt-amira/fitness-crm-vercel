@@ -889,8 +889,76 @@ export function registerAllSchemas() {
     registry.register('BrandPagination', brandSchemas.BrandPaginationSchema),
   );
   registeredSchemaMap.set(
-    'BrandItem',
-    registry.register('BrandItem', brandSchemas.BrandItemSchema),
+    'BrandStatus',
+    registry.register('BrandStatus', brandSchemas.BrandStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'BrandListItem',
+    registry.register('BrandListItem', brandSchemas.BrandListItemSchema),
+  );
+  registeredSchemaMap.set(
+    'BrandDetail',
+    registry.register('BrandDetail', brandSchemas.BrandDetailSchema),
+  );
+  registeredSchemaMap.set(
+    'BrandScheduledFeeChange',
+    registry.register('BrandScheduledFeeChange', brandSchemas.BrandScheduledFeeChangeSchema),
+  );
+  registeredSchemaMap.set(
+    'BrandFeeItem',
+    registry.register('BrandFeeItem', brandSchemas.BrandFeeItemSchema),
+  );
+  registeredSchemaMap.set(
+    'UpdateBrandFeeItem',
+    registry.register('UpdateBrandFeeItem', brandSchemas.UpdateBrandFeeItemSchema),
+  );
+  registeredSchemaMap.set(
+    'BrandFeeGroup',
+    registry.register('BrandFeeGroup', brandSchemas.BrandFeeGroupSchema),
+  );
+  registeredSchemaMap.set(
+    'BrandChangeHistoryItem',
+    registry.register('BrandChangeHistoryItem', brandSchemas.BrandChangeHistoryItemSchema),
+  );
+  registeredSchemaMap.set(
+    'GetBrandDetailResponse',
+    registry.register('GetBrandDetailResponse', brandSchemas.GetBrandDetailResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'GetBrandFeesResponse',
+    registry.register('GetBrandFeesResponse', brandSchemas.GetBrandFeesResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'GetBrandChangeHistoryResponse',
+    registry.register(
+      'GetBrandChangeHistoryResponse',
+      brandSchemas.GetBrandChangeHistoryResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateBrandFeeGroupRequest',
+    registry.register('UpdateBrandFeeGroupRequest', brandSchemas.UpdateBrandFeeGroupRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'UpdateBrandFeeGroupResponse',
+    registry.register(
+      'UpdateBrandFeeGroupResponse',
+      brandSchemas.UpdateBrandFeeGroupResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'DisableBrandFeeGroupResponse',
+    registry.register(
+      'DisableBrandFeeGroupResponse',
+      brandSchemas.DisableBrandFeeGroupResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'DeleteBrandFeeGroupResponse',
+    registry.register(
+      'DeleteBrandFeeGroupResponse',
+      brandSchemas.DeleteBrandFeeGroupResponseSchema,
+    ),
   );
   registeredSchemaMap.set(
     'GetBrandsQuery',

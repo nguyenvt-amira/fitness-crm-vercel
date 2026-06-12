@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { db } from '@/app/api/_mock-db';
 import {
+  type GetBrandDetailResponse,
+  GetBrandDetailResponseSchema,
   UpdateBrandRequestSchema,
   type UpdateBrandResponse,
   UpdateBrandResponseSchema,
@@ -14,10 +16,35 @@ function normalizeBrandIdentifier(value: string): string {
 }
 
 registerRoute({
+  method: 'get',
+  path: '/crm/brands/{id}',
+  summary: 'Get Y-07 brand detail',
+  description: 'ブランド詳細画面の基本情報タブで表示するトップレベルブランド詳細。',
+  tags: ['Brands'],
+  responses: [
+    {
+      status: 200,
+      schema: GetBrandDetailResponseSchema,
+      description: 'Brand detail',
+    },
+    {
+      status: 404,
+      schema: ErrorResponseSchema,
+      description: 'Not found',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
+
+registerRoute({
   method: 'patch',
-  path: '/crm/brands/{code}',
-  summary: 'Update Y-07 brand master row',
-  description: 'ブランド基本設定の更新。本部のみ編集可能。',
+  path: '/crm/brands/{id}',
+  summary: 'Update Y-07 brand basic info',
+  description: 'ブランド基本情報の更新。本部のみ編集可能。',
   tags: ['Brands'],
   requestBody: {
     schema: UpdateBrandRequestSchema,
@@ -47,10 +74,27 @@ registerRoute({
   ],
 });
 
-export async function PATCH(request: NextRequest, context: { params: Promise<{ code: string }> }) {
+export async function GET(_request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
-    const { code } = await context.params;
-    const brand = db.brands.getByCode(code);
+    const { id } = await context.params;
+    const brand = db.brands.getByCode(id);
+
+    if (!brand) {
+      return NextResponse.json({ error: 'Brand not found' }, { status: 404 });
+    }
+
+    const response: GetBrandDetailResponse = { brand };
+    return NextResponse.json(response);
+  } catch (error) {
+    console.error('Error fetching brand detail:', error);
+    return NextResponse.json({ error: 'Failed to fetch brand detail' }, { status: 500 });
+  }
+}
+
+export async function PATCH(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await context.params;
+    const brand = db.brands.getByCode(id);
 
     if (!brand) {
       return NextResponse.json({ error: 'Brand not found' }, { status: 404 });
@@ -75,7 +119,7 @@ export async function PATCH(request: NextRequest, context: { params: Promise<{ c
       );
     }
 
-    const updatedBrand = db.brands.update(code, parsedBody.data);
+    const updatedBrand = db.brands.update(id, parsedBody.data);
     if (!updatedBrand) {
       return NextResponse.json({ error: 'Brand not found' }, { status: 404 });
     }

@@ -76,6 +76,7 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
 
   // Brands
   '/brands': Permission.BrandsView,
+  '/brands/:id': Permission.BrandsView,
 };
 
 // ---------------------------------------------------------------------------

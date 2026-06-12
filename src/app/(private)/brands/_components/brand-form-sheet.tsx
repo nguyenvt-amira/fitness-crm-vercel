@@ -25,7 +25,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { Textarea } from '@/components/ui/textarea';
 
 import { type BrandFormValues, brandFormSchema } from '../_schemas/brand-form.schema';
 
@@ -56,24 +55,9 @@ export function BrandFormSheet({
 
   useEffect(() => {
     form.reset(initialValues);
-  }, [form, initialValues, open, mode]);
+  }, [form, initialValues, mode, open]);
 
   const title = mode === 'create' ? 'ブランド新規登録' : 'ブランド編集';
-
-  const handleFeeChange = (value: string, onChange: (nextValue: number | null) => void) => {
-    if (value === '') {
-      onChange(null);
-      return;
-    }
-
-    const parsedValue = Number(value);
-    if (!Number.isFinite(parsedValue)) {
-      return;
-    }
-
-    onChange(Math.max(0, Math.trunc(parsedValue)));
-  };
-
   const handleSubmit = async (values: BrandFormValues) => {
     const errorMessage = await onSave(values);
     if (!errorMessage) return;
@@ -87,10 +71,7 @@ export function BrandFormSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        overlayClassName="supports-backdrop-filter:backdrop-blur-none"
-        className="flex w-[376px] flex-col gap-0 overflow-hidden p-0 sm:max-w-[376px]"
-      >
+      <SheetContent className="flex w-[384px] flex-col gap-0 overflow-hidden p-0 sm:max-w-[384px]">
         <div className="shrink-0 border-b px-6 py-4">
           <SheetHeader className="gap-0 p-0">
             <SheetTitle className="text-sm font-semibold">{title}</SheetTitle>
@@ -110,7 +91,7 @@ export function BrandFormSheet({
                   name="displayName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>
+                      <FormLabel className="text-sm font-medium">
                         ブランド名
                         <span className="text-destructive ml-1">*</span>
                       </FormLabel>
@@ -127,7 +108,7 @@ export function BrandFormSheet({
                   name="brandId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>
+                      <FormLabel className="text-sm font-medium">
                         ブランドID
                         <span className="text-destructive ml-1">*</span>
                       </FormLabel>
@@ -144,7 +125,7 @@ export function BrandFormSheet({
                         />
                       </FormControl>
                       <FormDescription className="text-xs">
-                        英数字とアンダースコアのみ。システム内部で使用されます。
+                        英数字のみ。システム内部で使用されます。
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -152,105 +133,26 @@ export function BrandFormSheet({
                 />
 
                 <div className="border-t pt-5">
-                  <p className="text-sm font-semibold">入会金・手数料</p>
+                  <p className="text-sm font-semibold">費用（入会金・手数料）</p>
+                  <p className="text-muted-foreground mt-1 text-xs leading-5">
+                    費用の設定はブランド詳細画面の「費用」タブで管理します。
+                  </p>
                 </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <FormField
-                    control={form.control}
-                    name="enrollmentFee"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>入会金（税別）</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            min={0}
-                            value={field.value ?? ''}
-                            onChange={(event) =>
-                              handleFeeChange(event.target.value, field.onChange)
-                            }
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="registrationAdminFee"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>登録事務手数料（税別）</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            min={0}
-                            value={field.value ?? ''}
-                            onChange={(event) =>
-                              handleFeeChange(event.target.value, field.onChange)
-                            }
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <FormField
-                  control={form.control}
-                  name="cardIssuanceFee"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>カード発行料（税別）</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min={0}
-                          value={field.value ?? ''}
-                          onChange={(event) => handleFeeChange(event.target.value, field.onChange)}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="otherFeeDescription"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>その他費用</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          rows={4}
-                          value={field.value}
-                          onChange={field.onChange}
-                          placeholder="例: セキュリティ管理費・施設メンテナンス料 4,980円（1年ごと）"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
               </div>
             </div>
 
-            <div className="flex shrink-0 items-center gap-2 border-t p-4">
+            <div className="flex shrink-0 flex-col gap-2 border-t p-4">
               <Button
                 type="button"
                 variant="outline"
-                className="flex-1"
+                className="h-8 w-full rounded-xl text-sm"
                 onClick={() => onOpenChange(false)}
               >
                 キャンセル
               </Button>
               <Button
                 type="submit"
-                className="flex-1"
+                className="h-8 w-full rounded-xl text-sm"
                 disabled={!form.formState.isValid || isSubmitting}
               >
                 保存する
