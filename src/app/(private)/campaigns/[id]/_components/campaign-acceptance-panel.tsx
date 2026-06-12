@@ -46,9 +46,13 @@ export function CampaignAcceptancePanel({ campaign }: Readonly<CampaignAcceptanc
       toast.success(response.message || 'キャンペーンを更新しました');
       setAcceptEnabled(response.campaign.accept_status === 'active');
       setOpen(false);
-      queryClient.invalidateQueries({ queryKey: getCrmCampaignsQueryKey() });
+      queryClient.invalidateQueries({
+        queryKey: getCrmCampaignsQueryKey(),
+        refetchType: 'all',
+      });
       queryClient.invalidateQueries({
         queryKey: getCrmCampaignsByIdQueryKey({ path: { id: campaign.id } }),
+        refetchType: 'all',
       });
     },
     onError: () => {

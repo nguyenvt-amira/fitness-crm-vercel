@@ -45,7 +45,10 @@ export default function CampaignCreatePage() {
     ...postCrmCampaignsMutation(),
     onSuccess: (res) => {
       toast.success(res.message || 'キャンペーンを作成しました');
-      queryClient.invalidateQueries({ queryKey: getCrmCampaignsQueryKey() });
+      queryClient.invalidateQueries({
+        queryKey: getCrmCampaignsQueryKey(),
+        refetchType: 'all',
+      });
       router.push(navigate('/campaigns/[id]', res.campaign.id));
     },
     onError: (error) => {

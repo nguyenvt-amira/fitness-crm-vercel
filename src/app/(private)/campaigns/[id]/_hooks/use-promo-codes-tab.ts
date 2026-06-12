@@ -51,7 +51,7 @@ function mapPreviewItemToResponse(
   campaignId: string,
   campaignName: string,
   promoCode: PromoCodePreview,
-): PromoCodeResponseItem {
+): GetCrmPromoCodesResponse['promo_codes'][number] {
   return {
     id: `preview-${promoCode.code}`,
     campaign_id: campaignId,
@@ -193,7 +193,12 @@ export function usePromoCodesTab({
         mergeResponse(current, response.promo_code),
       );
       void queryClient.invalidateQueries({
+        queryKey: promoCodeQueryKey,
+        refetchType: 'all',
+      });
+      void queryClient.invalidateQueries({
         queryKey: getCrmCampaignsByIdQueryKey({ path: { id: campaignId } }),
+        refetchType: 'all',
       });
     },
     onError: (error) => {
@@ -209,10 +214,15 @@ export function usePromoCodesTab({
       queryClient.setQueryData<GetCrmPromoCodesResponse>(promoCodeQueryKey, (current) =>
         mergeResponse(current, response.promo_code),
       );
+      void queryClient.invalidateQueries({
+        queryKey: promoCodeQueryKey,
+        refetchType: 'all',
+      });
       setDisableTarget(null);
       setDisableReason('');
       void queryClient.invalidateQueries({
         queryKey: getCrmCampaignsByIdQueryKey({ path: { id: campaignId } }),
+        refetchType: 'all',
       });
     },
     onError: (error) => {
