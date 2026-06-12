@@ -124,7 +124,7 @@ export function BasicInfoTab({ campaign }: Readonly<BasicInfoTabProps>) {
                 <Field
                   label="キャンペーンコード"
                   value={
-                    <code className="inline-flex rounded-[4px] bg-[oklch(0.935_0.003_197)] px-2 py-1 font-mono text-sm font-normal text-[oklch(0.32_0_0)]">
+                    <code className="bg-muted text-foreground inline-flex rounded px-2 py-1 font-mono text-sm font-normal">
                       {campaign.code}
                     </code>
                   }

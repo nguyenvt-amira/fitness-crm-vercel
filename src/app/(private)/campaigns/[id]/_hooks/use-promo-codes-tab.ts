@@ -14,7 +14,7 @@ import {
   patchCrmPromoCodesByCodeMutation,
   postCrmPromoCodesMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
-import type { GetCrmPromoCodesResponse, PostCrmPromoCodesData } from '@/lib/api/types.gen';
+import type { GetCrmPromoCodesResponse } from '@/lib/api/types.gen';
 
 import { UserRole } from '@/types/permission.type';
 
@@ -87,23 +87,6 @@ function mapRecordToRow(record: PromoCodeResponseItem): PromoCodeListRow {
     issuedByLabel: record.issued_by_label,
     discountTotalLabel: record.discount_total_label,
     status: record.status,
-  };
-}
-
-function buildPromoCodeCreateBody(result: PromoCodeIssuanceResult): PostCrmPromoCodesData['body'] {
-  return {
-    campaignId: result.campaignId,
-    campaignName: result.campaignName,
-    code: result.code,
-    description: result.description,
-    validFrom: result.validFrom,
-    validTo: result.validTo,
-    usageCount: result.usageCount,
-    usageCap: result.usageCap,
-    usageCapMode: result.usageCapMode,
-    storeScope: result.storeScope,
-    issuedByLabel: result.issuedByLabel,
-    status: result.status,
   };
 }
 
@@ -240,7 +223,20 @@ export function usePromoCodesTab({
   const handleCreate = async (result: PromoCodeIssuanceResult) => {
     try {
       await createMutation.mutateAsync({
-        body: buildPromoCodeCreateBody(result),
+        body: {
+          campaignId: result.campaignId,
+          campaignName: result.campaignName,
+          code: result.code,
+          description: result.description,
+          validFrom: result.validFrom,
+          validTo: result.validTo,
+          usageCount: result.usageCount,
+          usageCap: result.usageCap,
+          usageCapMode: result.usageCapMode,
+          storeScope: result.storeScope,
+          issuedByLabel: result.issuedByLabel,
+          status: result.status,
+        },
       });
       return true;
     } catch {
@@ -254,24 +250,24 @@ export function usePromoCodesTab({
     window.setTimeout(() => setCopiedCode(null), 2000);
   };
 
-  const handleDisableSubmit = async () => {
+  const handleDisableSubmit = () => {
     if (!disableTarget) {
-      return;
+      return Promise.resolve();
     }
 
-    try {
-      await disableMutation.mutateAsync({
+    return disableMutation
+      .mutateAsync({
         path: { code: disableTarget.code },
         body: {
           status: 'inactive',
           reason: disableReason,
         },
-      });
-      setDisableTarget(null);
-      setDisableReason('');
-    } catch {
-      // toast handled in mutation
-    }
+      })
+      .then(() => {
+        setDisableTarget(null);
+        setDisableReason('');
+      })
+      .catch(() => undefined);
   };
 
   return {

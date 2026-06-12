@@ -19,7 +19,7 @@ import { Card } from '@/components/ui/card';
 import { getCrmCampaignsOptions } from '@/lib/api/@tanstack/react-query.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
-import { UserRole } from '@/types/permission.type';
+import { Permission } from '@/types/permission.type';
 
 import { CampaignsFilters } from './_components/campaigns-filters';
 import { CampaignsTableColumns } from './_components/campaigns-table-columns';
@@ -74,7 +74,7 @@ function CampaignsPageContent() {
         }
         actions={
           <RoleGatedButton
-            allowedRoles={[UserRole.Headquarter, UserRole.System]}
+            requiredPermission={Permission.CampaignsCreate}
             onClick={() => router.push(navigate('/campaigns/create'))}
           >
             <Plus className="size-4" />

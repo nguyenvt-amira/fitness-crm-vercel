@@ -13,7 +13,7 @@ import {
 
 import { navigate } from '@/lib/routes/routes.util';
 
-import { UserRole } from '@/types/permission.type';
+import { Permission } from '@/types/permission.type';
 
 type CampaignRowActionsProps = {
   campaignId: string;
@@ -38,7 +38,7 @@ export function CampaignRowActions({ campaignId, className }: Readonly<CampaignR
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" onClick={(event) => event.stopPropagation()}>
         <RoleGatedMenuItem
-          allowedRoles={[UserRole.Headquarter, UserRole.System]}
+          requiredPermission={Permission.CampaignsEdit}
           onClick={(event) => {
             event.stopPropagation();
             handleEdit();

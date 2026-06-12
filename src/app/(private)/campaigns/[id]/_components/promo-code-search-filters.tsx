@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { UserRole } from '@/types/permission.type';
+import { Permission } from '@/types/permission.type';
 
 import {
   PROMO_CODE_ISSUER_FILTER_OPTIONS,
@@ -67,7 +67,7 @@ export function PromoCodeSearchFilters({
           ) : (
             <>
               <RoleGatedButton
-                allowedRoles={[UserRole.Headquarter, UserRole.System, UserRole.Manager]}
+                requiredPermission={Permission.CampaignsPromoCodeExport}
                 variant="outline"
                 size="sm"
                 className="gap-1"
@@ -78,12 +78,7 @@ export function PromoCodeSearchFilters({
                 CSV出力
               </RoleGatedButton>
               <RoleGatedButton
-                allowedRoles={[
-                  UserRole.Headquarter,
-                  UserRole.System,
-                  UserRole.Manager,
-                  UserRole.Staff,
-                ]}
+                requiredPermission={Permission.CampaignsPromoCodeCreate}
                 size="sm"
                 className="gap-1"
                 onClick={onOpenCreate}

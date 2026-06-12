@@ -15,7 +15,7 @@ import { getCrmCampaignsByIdOptions } from '@/lib/api/@tanstack/react-query.gen'
 import type { CampaignDetail } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
-import { UserRole } from '@/types/permission.type';
+import { Permission } from '@/types/permission.type';
 
 import { BasicInfoTab } from './_components/basic-info-tab';
 import { CampaignDetailSkeleton } from './_components/campaign-detail-skeleton';
@@ -65,7 +65,7 @@ export default function CampaignDetailPage() {
         actions={
           <div className="flex items-center gap-2">
             <RoleGatedButton
-              allowedRoles={[UserRole.Headquarter, UserRole.System]}
+              requiredPermission={Permission.CampaignsEdit}
               variant="default"
               className="gap-1"
               onClick={() => router.push(navigate('/campaigns/[id]/edit', campaignId))}
