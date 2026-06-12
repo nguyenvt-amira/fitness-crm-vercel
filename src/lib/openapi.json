@@ -15142,6 +15142,292 @@
         "title": "GateStopReleaseResponse",
         "description": "Result of gate stop release"
       },
+      "OptionDiscountType": {
+        "type": "string",
+        "enum": ["fixed_amount", "percentage"],
+        "title": "OptionDiscountType",
+        "description": "セット割の割引タイプ"
+      },
+      "OptionDiscountStatus": {
+        "type": "string",
+        "enum": ["active", "inactive"],
+        "title": "OptionDiscountStatus",
+        "description": "セット割の有効/無効ステータス"
+      },
+      "OptionDiscountCondition": {
+        "type": "string",
+        "enum": ["simultaneous", "existing_member", "family_2_plus", "options_3_plus"],
+        "title": "OptionDiscountCondition",
+        "description": "セット割の適用条件"
+      },
+      "OptionDiscountListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "SD001",
+            "description": "セット割ID"
+          },
+          "name": {
+            "type": "string",
+            "example": "レギュラー＋水素水セット",
+            "description": "セット割名"
+          },
+          "code": {
+            "type": "string",
+            "example": "SET-001",
+            "description": "セット割コード"
+          },
+          "target_contracts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "対象契約名一覧",
+            "example": ["レギュラー会員"]
+          },
+          "target_options": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "対象オプション名一覧",
+            "example": ["水素水"]
+          },
+          "discount_type": {
+            "type": "string",
+            "enum": ["fixed_amount", "percentage"],
+            "title": "OptionDiscountType",
+            "description": "割引タイプ"
+          },
+          "discount_value": {
+            "type": "number",
+            "minimum": 0,
+            "example": 330,
+            "description": "割引値"
+          },
+          "conditions": {
+            "type": "string",
+            "enum": ["simultaneous", "existing_member", "family_2_plus", "options_3_plus"],
+            "title": "OptionDiscountCondition",
+            "description": "適用条件",
+            "example": "simultaneous"
+          },
+          "store_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "対象店舗ID（null = 全店舗）"
+          },
+          "store_name": {
+            "type": "string",
+            "nullable": true,
+            "description": "対象店舗名（null = 全店舗）"
+          },
+          "applied_count": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 180,
+            "description": "適用数"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive"],
+            "title": "OptionDiscountStatus",
+            "description": "ステータス"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "code",
+          "target_contracts",
+          "target_options",
+          "discount_type",
+          "discount_value",
+          "conditions",
+          "store_id",
+          "store_name",
+          "applied_count",
+          "status"
+        ],
+        "title": "OptionDiscountListItem",
+        "description": "セット割一覧アイテム"
+      },
+      "GetOptionDiscountsQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 25
+          },
+          "search": {
+            "type": "string",
+            "description": "セット割名・コードで検索"
+          },
+          "discount_type": {
+            "type": "string",
+            "enum": ["fixed_amount", "percentage"],
+            "title": "OptionDiscountType",
+            "description": "セット割の割引タイプ"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive"],
+            "title": "OptionDiscountStatus",
+            "description": "セット割の有効/無効ステータス"
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": [
+              "id",
+              "name",
+              "code",
+              "discount_type",
+              "discount_value",
+              "store_name",
+              "applied_count",
+              "status"
+            ],
+            "default": "id"
+          },
+          "sort_order": {
+            "type": "string",
+            "enum": ["asc", "desc"],
+            "default": "asc"
+          }
+        },
+        "title": "GetOptionDiscountsQuery",
+        "description": "セット割一覧取得クエリ"
+      },
+      "GetOptionDiscountsResponse": {
+        "type": "object",
+        "properties": {
+          "option_discounts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "SD001",
+                  "description": "セット割ID"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "レギュラー＋水素水セット",
+                  "description": "セット割名"
+                },
+                "code": {
+                  "type": "string",
+                  "example": "SET-001",
+                  "description": "セット割コード"
+                },
+                "target_contracts": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "対象契約名一覧",
+                  "example": ["レギュラー会員"]
+                },
+                "target_options": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "対象オプション名一覧",
+                  "example": ["水素水"]
+                },
+                "discount_type": {
+                  "type": "string",
+                  "enum": ["fixed_amount", "percentage"],
+                  "title": "OptionDiscountType",
+                  "description": "割引タイプ"
+                },
+                "discount_value": {
+                  "type": "number",
+                  "minimum": 0,
+                  "example": 330,
+                  "description": "割引値"
+                },
+                "conditions": {
+                  "type": "string",
+                  "enum": ["simultaneous", "existing_member", "family_2_plus", "options_3_plus"],
+                  "title": "OptionDiscountCondition",
+                  "description": "適用条件",
+                  "example": "simultaneous"
+                },
+                "store_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "対象店舗ID（null = 全店舗）"
+                },
+                "store_name": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "対象店舗名（null = 全店舗）"
+                },
+                "applied_count": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "example": 180,
+                  "description": "適用数"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["active", "inactive"],
+                  "title": "OptionDiscountStatus",
+                  "description": "ステータス"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "code",
+                "target_contracts",
+                "target_options",
+                "discount_type",
+                "discount_value",
+                "conditions",
+                "store_id",
+                "store_name",
+                "applied_count",
+                "status"
+              ],
+              "title": "OptionDiscountListItem",
+              "description": "セット割一覧アイテム"
+            }
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "number"
+              },
+              "limit": {
+                "type": "number"
+              },
+              "total": {
+                "type": "number"
+              },
+              "total_pages": {
+                "type": "number"
+              }
+            },
+            "required": ["page", "limit", "total", "total_pages"]
+          }
+        },
+        "required": ["option_discounts", "pagination"],
+        "title": "GetOptionDiscountsResponse",
+        "description": "セット割一覧レスポンス"
+      },
       "OptionType": {
         "type": "string",
         "enum": ["standard", "metered", "auto_attached"],
