@@ -344,6 +344,24 @@ export const routes = {
     pattern: '/visit-experiences/:id',
     private: true,
   },
+  '/surveys/analytics': {
+    router: '/surveys/analytics',
+    filePath: '(private)/surveys/analytics',
+    pattern: '/surveys/analytics',
+    private: true,
+  },
+  '/surveys/responses': {
+    router: '/surveys/responses',
+    filePath: '(private)/surveys/responses',
+    pattern: '/surveys/responses',
+    private: true,
+  },
+  '/surveys/responses/[responseId]': {
+    router: (responseId: string | number) => `/surveys/responses/${responseId}`,
+    filePath: '(private)/surveys/responses/[responseId]',
+    pattern: '/surveys/responses/:responseId',
+    private: true,
+  },
   '/login': {
     router: '/login',
     filePath: '(public)/login',
@@ -411,6 +429,9 @@ export const routeKeys = [
   '/surveys/[id]',
   '/visit-experiences',
   '/visit-experiences/[id]',
+  '/surveys/analytics',
+  '/surveys/responses',
+  '/surveys/responses/[responseId]',
   '/login',
 ] as const;
 
@@ -473,5 +494,8 @@ export const routePatterns = [
   '/surveys/:id',
   '/visit-experiences',
   '/visit-experiences/:id',
+  '/surveys/analytics',
+  '/surveys/responses',
+  '/surveys/responses/:responseId',
   '/login',
 ] as const;

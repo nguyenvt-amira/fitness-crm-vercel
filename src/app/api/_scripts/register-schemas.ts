@@ -19,6 +19,7 @@ import * as optionMasterSchemas from '../_schemas/option-master.schema';
 import * as positionSchemas from '../_schemas/position.schema';
 import * as promoCodeSchemas from '../_schemas/promo-code.schema';
 import * as surveySchemas from '../_schemas/survey.schema';
+import * as surveyReportingSchemas from '../_schemas/survey-reporting.schema';
 import * as staffSchemas from '../_schemas/staff.schema';
 import * as storeAccessSettingsSchemas from '../_schemas/store-access-settings.schema';
 import * as storeSchemas from '../_schemas/store.schema';
@@ -1654,6 +1655,129 @@ export function registerAllSchemas() {
     registry.register(
       'SurveyTemplateChangeHistoryItem',
       surveySchemas.SurveyTemplateChangeHistoryItemSchema,
+    ),
+  );
+
+  // Register survey reporting schemas
+  registeredSchemaMap.set(
+    'SurveyResponseStatus',
+    registry.register('SurveyResponseStatus', surveyReportingSchemas.SurveyResponseStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'SurveyResponseAnswer',
+    registry.register('SurveyResponseAnswer', surveyReportingSchemas.SurveyResponseAnswerSchema),
+  );
+  registeredSchemaMap.set(
+    'SurveyResponseListItem',
+    registry.register(
+      'SurveyResponseListItem',
+      surveyReportingSchemas.SurveyResponseListItemSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetSurveyResponsesQuery',
+    registry.register(
+      'GetSurveyResponsesQuery',
+      surveyReportingSchemas.GetSurveyResponsesQuerySchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetSurveyResponsesResponse',
+    registry.register(
+      'GetSurveyResponsesResponse',
+      surveyReportingSchemas.GetSurveyResponsesResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'SurveyResponseDetail',
+    registry.register('SurveyResponseDetail', surveyReportingSchemas.SurveyResponseDetailSchema),
+  );
+  registeredSchemaMap.set(
+    'GetSurveyResponseDetailResponse',
+    registry.register(
+      'GetSurveyResponseDetailResponse',
+      surveyReportingSchemas.GetSurveyResponseDetailResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'SurveyAnalyticsChoiceStat',
+    registry.register(
+      'SurveyAnalyticsChoiceStat',
+      surveyReportingSchemas.SurveyAnalyticsChoiceStatSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'SurveyAnalyticsFreeTextSample',
+    registry.register(
+      'SurveyAnalyticsFreeTextSample',
+      surveyReportingSchemas.SurveyAnalyticsFreeTextSampleSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'SurveyAnalyticsSelectQuestion',
+    registry.register(
+      'SurveyAnalyticsSelectQuestion',
+      surveyReportingSchemas.SurveyAnalyticsSelectQuestionSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'SurveyAnalyticsFreeTextQuestion',
+    registry.register(
+      'SurveyAnalyticsFreeTextQuestion',
+      surveyReportingSchemas.SurveyAnalyticsFreeTextQuestionSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'SurveyAnalyticsQuestion',
+    registry.register(
+      'SurveyAnalyticsQuestion',
+      surveyReportingSchemas.SurveyAnalyticsQuestionSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'SurveyAnalyticsContext',
+    registry.register(
+      'SurveyAnalyticsContext',
+      surveyReportingSchemas.SurveyAnalyticsContextSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'SurveyAnalyticsKpi',
+    registry.register('SurveyAnalyticsKpi', surveyReportingSchemas.SurveyAnalyticsKpiSchema),
+  );
+  registeredSchemaMap.set(
+    'GetSurveyAnalyticsQuery',
+    registry.register(
+      'GetSurveyAnalyticsQuery',
+      surveyReportingSchemas.GetSurveyAnalyticsQuerySchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetSurveyAnalyticsResponse',
+    registry.register(
+      'GetSurveyAnalyticsResponse',
+      surveyReportingSchemas.GetSurveyAnalyticsResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'SurveyCsvExportRequest',
+    registry.register(
+      'SurveyCsvExportRequest',
+      surveyReportingSchemas.SurveyCsvExportRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'SurveyAnalyticsCsvExportRequest',
+    registry.register(
+      'SurveyAnalyticsCsvExportRequest',
+      surveyReportingSchemas.SurveyAnalyticsCsvExportRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'SurveyCsvExportResponse',
+    registry.register(
+      'SurveyCsvExportResponse',
+      surveyReportingSchemas.SurveyCsvExportResponseSchema,
     ),
   );
 }

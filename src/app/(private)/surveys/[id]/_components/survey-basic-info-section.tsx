@@ -9,6 +9,7 @@ import {
   SURVEY_TRIGGER_LABELS,
   SURVEY_TYPE_BADGE_CLASSES,
   SURVEY_TYPE_LABELS,
+  formatSurveyDateOnly,
 } from '../../_constants/constants';
 
 type SurveyDetail = NonNullable<GetCrmSurveysByIdResponse>['survey'];
@@ -44,8 +45,8 @@ export function SurveyBasicInfoSection({ survey }: SurveyBasicInfoSectionProps) 
               </Badge>
             }
           />
-          <Field label="作成日" value={survey.created_at} />
-          <Field label="最終更新日" value={survey.updated_at} />
+          <Field label="作成日" value={formatSurveyDateOnly(survey.created_at)} />
+          <Field label="最終更新日" value={formatSurveyDateOnly(survey.updated_at)} />
         </div>
       </CardContent>
     </Card>

@@ -115,9 +115,9 @@ export function SurveysTableColumns({
       header: ({ column }) => <DataTableColumnHeader column={column} title="発動トリガー" />,
       meta: { className: 'w-[132px]' },
       cell: ({ row }) => (
-        <span className="text-muted-foreground text-xs">
+        <Badge variant="outline" className="text-xs font-normal">
           {SURVEY_TRIGGER_LABELS[row.original.trigger]}
-        </span>
+        </Badge>
       ),
     },
     {
