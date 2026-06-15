@@ -1,12 +1,19 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import { BarChart3, FileText, Plus } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { RoleGatedButton } from '@/components/common/role-gated-button';
+
+import { navigate } from '@/lib/routes/routes.util';
 
 import { Permission } from '@/types/permission.type';
 
 export function SurveyListHeaderActions() {
+  const router = useRouter();
+
   return (
     <>
       <RoleGatedButton

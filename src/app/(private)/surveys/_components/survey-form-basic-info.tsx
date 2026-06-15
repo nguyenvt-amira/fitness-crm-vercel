@@ -30,6 +30,14 @@ interface SurveyFormBasicInfoSectionProps {
 
 export function SurveyFormBasicInfoSection({ isEdit }: Readonly<SurveyFormBasicInfoSectionProps>) {
   const form = useFormContext<SurveyFormValues>();
+  const brandOptions = Object.entries(SURVEY_BRAND_LABELS) as [
+    keyof typeof SURVEY_BRAND_LABELS,
+    string,
+  ][];
+  const triggerOptions = Object.entries(SURVEY_TRIGGER_LABELS) as [
+    keyof typeof SURVEY_TRIGGER_LABELS,
+    string,
+  ][];
 
   return (
     <Card>
@@ -76,7 +84,7 @@ export function SurveyFormBasicInfoSection({ isEdit }: Readonly<SurveyFormBasicI
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {Object.entries(SURVEY_BRAND_LABELS).map(([value, label]) => (
+                      {brandOptions.map(([value, label]) => (
                         <SelectItem key={value} value={value}>
                           {label}
                         </SelectItem>
@@ -140,7 +148,7 @@ export function SurveyFormBasicInfoSection({ isEdit }: Readonly<SurveyFormBasicI
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {Object.entries(SURVEY_TRIGGER_LABELS).map(([value, label]) => (
+                    {triggerOptions.map(([value, label]) => (
                       <SelectItem key={value} value={value}>
                         {label}
                       </SelectItem>
