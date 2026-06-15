@@ -1623,6 +1623,24 @@ export function registerAllSchemas() {
     registry.register('SurveyTemplateDetail', surveySchemas.SurveyTemplateDetailSchema),
   );
   registeredSchemaMap.set(
+    'SurveyTemplateUpsertQuestion',
+    registry.register(
+      'SurveyTemplateUpsertQuestion',
+      surveySchemas.SurveyTemplateUpsertQuestionSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'SurveyTemplateUpsertBody',
+    registry.register('SurveyTemplateUpsertBody', surveySchemas.SurveyTemplateUpsertBodySchema),
+  );
+  registeredSchemaMap.set(
+    'SurveyTemplateUpsertResponse',
+    registry.register(
+      'SurveyTemplateUpsertResponse',
+      surveySchemas.SurveyTemplateUpsertResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
     'GetSurveyTemplateDetailResponse',
     registry.register(
       'GetSurveyTemplateDetailResponse',

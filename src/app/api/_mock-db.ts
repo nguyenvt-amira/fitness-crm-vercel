@@ -87,6 +87,7 @@ import type {
   SurveyTemplateDetail,
   SurveyTemplateListItem,
   SurveyTemplateStatus,
+  SurveyTemplateUpsertBody,
 } from '@/app/api/_schemas/survey.schema';
 import type { ApprovalHistoryItem, TransferDetail } from '@/app/api/_schemas/transfer.schema';
 import type { VisitExperience } from '@/app/api/_schemas/visit-experience.schema';
@@ -2574,6 +2575,8 @@ type DbType = {
     getById(id: string): SurveyTemplateDetail | undefined;
     getChangeHistory(id: string): SurveyTemplateChangeHistoryItem[];
     delete(id: string): boolean;
+    add(data: SurveyTemplateUpsertBody): SurveyTemplateDetail;
+    update(id: string, data: SurveyTemplateUpsertBody): SurveyTemplateDetail | undefined;
     updateStatus(
       id: string,
       status: SurveyTemplateStatus,
@@ -8177,6 +8180,7 @@ function createDb() {
               format: 'multiple_choice',
               required: true,
               visible: true,
+              has_responses: true,
               choices: [
                 { order: 1, text: '友人の紹介' },
                 { order: 2, text: 'Web広告' },
@@ -8191,6 +8195,7 @@ function createDb() {
               format: 'single_choice',
               required: true,
               visible: true,
+              has_responses: true,
               choices: [
                 { order: 1, text: '平日午前' },
                 { order: 2, text: '平日午後' },
@@ -8204,6 +8209,7 @@ function createDb() {
               format: 'single_choice',
               required: true,
               visible: false,
+              has_responses: true,
               choices: [
                 { order: 1, text: '初心者' },
                 { order: 2, text: '1年未満' },
@@ -8217,6 +8223,7 @@ function createDb() {
               format: 'free_text',
               required: false,
               visible: true,
+              has_responses: false,
               choices: [],
             },
             {
@@ -8225,6 +8232,7 @@ function createDb() {
               format: 'free_text',
               required: false,
               visible: true,
+              has_responses: false,
               choices: [],
             },
           ],
@@ -8235,6 +8243,7 @@ function createDb() {
               format: 'single_choice',
               required: true,
               visible: true,
+              has_responses: true,
               choices: [
                 { order: 1, text: '料金' },
                 { order: 2, text: '通いにくさ' },
@@ -8249,6 +8258,7 @@ function createDb() {
               format: 'free_text',
               required: false,
               visible: true,
+              has_responses: false,
               choices: [],
             },
           ],
@@ -8259,6 +8269,7 @@ function createDb() {
               format: 'single_choice',
               required: true,
               visible: true,
+              has_responses: true,
               choices: [
                 { order: 1, text: '非常に満足' },
                 { order: 2, text: '満足' },
@@ -8272,6 +8283,7 @@ function createDb() {
               format: 'free_text',
               required: false,
               visible: true,
+              has_responses: false,
               choices: [],
             },
           ],
@@ -8282,6 +8294,7 @@ function createDb() {
               format: 'single_choice',
               required: true,
               visible: true,
+              has_responses: true,
               choices: [
                 { order: 1, text: '非常に分かりやすい' },
                 { order: 2, text: '分かりやすい' },
@@ -8398,6 +8411,87 @@ function createDb() {
         this._rows.splice(index, 1);
         delete this._changeHistory[id];
         return true;
+      },
+      add(data: SurveyTemplateUpsertBody): SurveyTemplateDetail {
+        this._seed();
+
+        const nextNumber = this._rows.reduce((max, row) => {
+          const numeric = Number.parseInt(row.id.replace(/^S-/, ''), 10);
+          return Number.isFinite(numeric) && numeric > max ? numeric : max;
+        }, 0);
+        const id = `S-${String(nextNumber + 1).padStart(3, '0')}`;
+        const now = new Date().toLocaleDateString('ja-JP').replaceAll('-', '/');
+        const created = buildSurveyTemplateDetail(
+          {
+            id,
+            name: data.name,
+            type: data.type,
+            trigger: data.trigger,
+            brand: data.brand,
+            question_count: data.questions.length,
+            response_count: 0,
+            response_rate: 0,
+            last_response_date: null,
+            status: data.status,
+          },
+          {
+            created_at: now,
+            updated_at: now,
+            questions: data.questions.map((question) => ({
+              ...question,
+              has_responses: question.has_responses ?? false,
+            })) as SurveyQuestion[],
+          },
+        );
+
+        this._rows.push(created);
+        this._changeHistory[id] = [
+          {
+            date: `${now} 10:00`,
+            user: '管理者A',
+            field: null,
+            from: null,
+            to: '新規作成',
+          },
+        ];
+
+        return created;
+      },
+      update(id: string, data: SurveyTemplateUpsertBody): SurveyTemplateDetail | undefined {
+        this._seed();
+        const index = this._rows.findIndex((row) => row.id === id);
+        if (index === -1) return undefined;
+
+        const existing = this._rows[index]!;
+        const now = new Date().toLocaleDateString('ja-JP').replaceAll('-', '/');
+        const updated: SurveyTemplateDetail = {
+          ...existing,
+          name: data.name,
+          type: data.type,
+          trigger: data.trigger,
+          brand: data.brand,
+          status: data.status,
+          question_count: data.questions.length,
+          updated_at: now,
+          questions: data.questions.map((question) => ({
+            ...question,
+            has_responses: question.has_responses ?? false,
+          })) as SurveyQuestion[],
+        };
+
+        this._rows[index] = updated;
+        this._changeHistory[id] = [
+          {
+            date: `${now} 10:00`,
+            user: '管理者A',
+            field: 'フォーム',
+            from: existing.name,
+            to: data.name,
+          },
+          ...(this._changeHistory[id] ?? []),
+        ];
+
+        return updated;
       },
       updateStatus(
         id: string,

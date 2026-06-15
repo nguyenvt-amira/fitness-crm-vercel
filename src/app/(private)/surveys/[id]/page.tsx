@@ -112,7 +112,12 @@ export default function SurveyDetailPage() {
           />
         }
         title={survey.name}
-        actions={<SurveyDetailHeaderActions onDeleteClick={() => setDeleteDialogOpen(true)} />}
+        actions={
+          <SurveyDetailHeaderActions
+            surveyId={surveyId}
+            onDeleteClick={() => setDeleteDialogOpen(true)}
+          />
+        }
       />
 
       <main className="flex-1 overflow-auto px-6 py-4">

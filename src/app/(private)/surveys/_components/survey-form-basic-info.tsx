@@ -1,0 +1,167 @@
+'use client';
+
+import { useFormContext } from 'react-hook-form';
+
+import { AlertTriangle } from 'lucide-react';
+
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
+import {
+  SURVEY_BRAND_LABELS,
+  SURVEY_TRIGGER_LABELS,
+  SURVEY_TYPE_LABELS,
+} from '../_constants/constants';
+import type { SurveyFormValues } from '../_schemas/survey-form.schema';
+
+interface SurveyFormBasicInfoSectionProps {
+  isEdit: boolean;
+}
+
+export function SurveyFormBasicInfoSection({ isEdit }: Readonly<SurveyFormBasicInfoSectionProps>) {
+  const form = useFormContext<SurveyFormValues>();
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">基本情報</CardTitle>
+      </CardHeader>
+      <CardContent className="px-4">
+        <div className="flex flex-col gap-6">
+          <div className="grid grid-cols-2 gap-6">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    アンケート名<span className="text-destructive ml-0.5">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="例: 入会時アンケート" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="brand"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    ブランド<span className="text-destructive ml-0.5">*</span>
+                  </FormLabel>
+                  <Select
+                    key={`survey-brand-${field.value ?? 'empty'}`}
+                    value={field.value ?? undefined}
+                    onValueChange={field.onChange}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="ブランドを選択">
+                          {field.value ? SURVEY_BRAND_LABELS[field.value] : undefined}
+                        </SelectValue>
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.entries(SURVEY_BRAND_LABELS).map(([value, label]) => (
+                        <SelectItem key={value} value={value}>
+                          {label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  種別<span className="text-destructive ml-0.5">*</span>
+                </FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    className="flex items-center gap-6"
+                  >
+                    <div className="flex items-center gap-2">
+                      <RadioGroupItem value="lifecycle" id="survey-type-lifecycle" />
+                      <FormLabel
+                        htmlFor="survey-type-lifecycle"
+                        className="cursor-pointer text-sm font-normal"
+                      >
+                        {SURVEY_TYPE_LABELS.lifecycle}
+                      </FormLabel>
+                    </div>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="trigger"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  発動トリガー<span className="text-destructive ml-0.5">*</span>
+                </FormLabel>
+                <Select
+                  key={`survey-trigger-${field.value ?? 'empty'}`}
+                  value={field.value ?? undefined}
+                  onValueChange={field.onChange}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="発動トリガーを選択">
+                        {field.value ? SURVEY_TRIGGER_LABELS[field.value] : undefined}
+                      </SelectValue>
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {Object.entries(SURVEY_TRIGGER_LABELS).map(([value, label]) => (
+                      <SelectItem key={value} value={value}>
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {isEdit && (
+            <Alert className="border-warning/50 bg-warning/10">
+              <AlertTriangle className="text-warning size-4" />
+              <AlertDescription className="text-muted-foreground text-xs">
+                回答済みデータがある状態で設問を変更すると、既存の回答との整合性が失われます。
+              </AlertDescription>
+            </Alert>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

@@ -332,22 +332,22 @@ export const routes = {
     pattern: '/surveys/:id',
     private: true,
   },
-  '/visit-experiences': {
-    router: '/visit-experiences',
-    filePath: '(private)/visit-experiences',
-    pattern: '/visit-experiences',
-    private: true,
-  },
-  '/visit-experiences/[id]': {
-    router: (id: string | number) => `/visit-experiences/${id}`,
-    filePath: '(private)/visit-experiences/[id]',
-    pattern: '/visit-experiences/:id',
+  '/surveys/[id]/edit': {
+    router: (id: string | number) => `/surveys/${id}/edit`,
+    filePath: '(private)/surveys/[id]/edit',
+    pattern: '/surveys/:id/edit',
     private: true,
   },
   '/surveys/analytics': {
     router: '/surveys/analytics',
     filePath: '(private)/surveys/analytics',
     pattern: '/surveys/analytics',
+    private: true,
+  },
+  '/surveys/create': {
+    router: '/surveys/create',
+    filePath: '(private)/surveys/create',
+    pattern: '/surveys/create',
     private: true,
   },
   '/surveys/responses': {
@@ -360,6 +360,18 @@ export const routes = {
     router: (responseId: string | number) => `/surveys/responses/${responseId}`,
     filePath: '(private)/surveys/responses/[responseId]',
     pattern: '/surveys/responses/:responseId',
+    private: true,
+  },
+  '/visit-experiences': {
+    router: '/visit-experiences',
+    filePath: '(private)/visit-experiences',
+    pattern: '/visit-experiences',
+    private: true,
+  },
+  '/visit-experiences/[id]': {
+    router: (id: string | number) => `/visit-experiences/${id}`,
+    filePath: '(private)/visit-experiences/[id]',
+    pattern: '/visit-experiences/:id',
     private: true,
   },
   '/login': {
@@ -427,11 +439,13 @@ export const routeKeys = [
   '/stores/create',
   '/surveys',
   '/surveys/[id]',
-  '/visit-experiences',
-  '/visit-experiences/[id]',
+  '/surveys/[id]/edit',
   '/surveys/analytics',
+  '/surveys/create',
   '/surveys/responses',
   '/surveys/responses/[responseId]',
+  '/visit-experiences',
+  '/visit-experiences/[id]',
   '/login',
 ] as const;
 
@@ -492,10 +506,12 @@ export const routePatterns = [
   '/stores/create',
   '/surveys',
   '/surveys/:id',
-  '/visit-experiences',
-  '/visit-experiences/:id',
+  '/surveys/:id/edit',
   '/surveys/analytics',
+  '/surveys/create',
   '/surveys/responses',
   '/surveys/responses/:responseId',
+  '/visit-experiences',
+  '/visit-experiences/:id',
   '/login',
 ] as const;

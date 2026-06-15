@@ -5,10 +5,68 @@ import {
   DeleteSurveyTemplateResponseSchema,
   ErrorResponseSchema,
   GetSurveyTemplateDetailResponseSchema,
+  SurveyTemplateUpsertBodySchema,
+  SurveyTemplateUpsertResponseSchema,
   UpdateSurveyTemplateStatusBodySchema,
   UpdateSurveyTemplateStatusResponseSchema,
 } from '@/app/api/_schemas/survey.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
+
+function jsonSurveyError(message: string, status: number) {
+  return NextResponse.json(
+    {
+      error: message,
+      detail: { message },
+    },
+    { status },
+  );
+}
+
+registerRoute({
+  method: 'put',
+  path: '/crm/surveys/{id}',
+  summary: 'Update survey template',
+  description: 'Update a lifecycle survey template',
+  tags: ['Surveys'],
+  parameters: [
+    {
+      name: 'id',
+      in: 'path',
+      required: true,
+      description: 'Survey template ID',
+      schema: { type: 'string' },
+    },
+  ],
+  requestBody: {
+    schema: SurveyTemplateUpsertBodySchema,
+    description: 'Lifecycle survey template upsert payload',
+  },
+  responses: [
+    { status: 200, schema: SurveyTemplateUpsertResponseSchema, description: 'Updated survey' },
+    { status: 400, schema: ErrorResponseSchema, description: 'Validation error' },
+    { status: 404, schema: ErrorResponseSchema, description: 'Not found' },
+    { status: 409, schema: ErrorResponseSchema, description: 'Duplicate trigger conflict' },
+    { status: 500, schema: ErrorResponseSchema, description: 'Internal server error' },
+  ],
+});
+
+registerRoute({
+  method: 'post',
+  path: '/crm/surveys',
+  summary: 'Create survey template',
+  description: 'Create a lifecycle survey template',
+  tags: ['Surveys'],
+  requestBody: {
+    schema: SurveyTemplateUpsertBodySchema,
+    description: 'Lifecycle survey template upsert payload',
+  },
+  responses: [
+    { status: 201, schema: SurveyTemplateUpsertResponseSchema, description: 'Created survey' },
+    { status: 400, schema: ErrorResponseSchema, description: 'Validation error' },
+    { status: 409, schema: ErrorResponseSchema, description: 'Duplicate trigger conflict' },
+    { status: 500, schema: ErrorResponseSchema, description: 'Internal server error' },
+  ],
+});
 
 registerRoute({
   method: 'get',
@@ -95,13 +153,77 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     const detail = db.surveys.getById(id);
 
     if (!detail) {
-      return NextResponse.json({ error: 'アンケートが見つかりません' }, { status: 404 });
+      return jsonSurveyError('アンケートが見つかりません', 404);
     }
 
     return NextResponse.json({ survey: detail }, { status: 200 });
   } catch (error) {
     console.error('GET /crm/surveys/[id] error:', error);
+    return jsonSurveyError('Internal server error', 500);
+  }
+}
+
+function findDuplicateActiveTrigger(trigger: string, surveyId?: string) {
+  return db.surveys
+    .getList()
+    .find(
+      (survey) =>
+        survey.trigger === trigger && survey.status === 'active' && survey.id !== surveyId,
+    );
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const validation = SurveyTemplateUpsertBodySchema.safeParse(body);
+    if (!validation.success) {
+      const errors = validation.error.issues.map((issue) => issue.message).join(', ');
+      return jsonSurveyError(errors, 400);
+    }
+
+    if (findDuplicateActiveTrigger(validation.data.trigger)) {
+      return NextResponse.json(
+        { error: '同一トリガーのアンケートが既に存在します' },
+        { status: 409 },
+      );
+    }
+
+    const survey = db.surveys.add(validation.data);
+    return NextResponse.json({ message: 'アンケートを登録しました', survey }, { status: 201 });
+  } catch (error) {
+    console.error('POST /crm/surveys error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await params;
+    const body = await request.json();
+    const validation = SurveyTemplateUpsertBodySchema.safeParse(body);
+    if (!validation.success) {
+      const errors = validation.error.issues.map((issue) => issue.message).join(', ');
+      return NextResponse.json({ error: errors }, { status: 400 });
+    }
+
+    const duplicate = findDuplicateActiveTrigger(validation.data.trigger, id);
+    if (duplicate) {
+      if (validation.data.replace_existing_survey_id === duplicate.id) {
+        db.surveys.updateStatus(duplicate.id, 'inactive', '変更保存により無効化');
+      } else {
+        return jsonSurveyError('同一トリガーのアンケートが既に存在します', 409);
+      }
+    }
+
+    const survey = db.surveys.update(id, validation.data);
+    if (!survey) {
+      return jsonSurveyError('アンケートが見つかりません', 404);
+    }
+
+    return NextResponse.json({ message: '変更を保存しました', survey }, { status: 200 });
+  } catch (error) {
+    console.error('PUT /crm/surveys/[id] error:', error);
+    return jsonSurveyError('Internal server error', 500);
   }
 }
 
@@ -114,13 +236,13 @@ export async function DELETE(
 
     const deleted = db.surveys.delete(id);
     if (!deleted) {
-      return NextResponse.json({ error: 'アンケートが見つかりません' }, { status: 404 });
+      return jsonSurveyError('アンケートが見つかりません', 404);
     }
 
     return NextResponse.json({ message: 'アンケートを削除しました' }, { status: 200 });
   } catch (error) {
     console.error('DELETE /crm/surveys/[id] error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return jsonSurveyError('Internal server error', 500);
   }
 }
 
@@ -132,12 +254,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const validation = UpdateSurveyTemplateStatusBodySchema.safeParse(body);
     if (!validation.success) {
       const errors = validation.error.issues.map((issue) => issue.message).join(', ');
-      return NextResponse.json({ error: errors }, { status: 400 });
+      return jsonSurveyError(errors, 400);
     }
 
     const updated = db.surveys.updateStatus(id, validation.data.status, validation.data.reason);
     if (!updated) {
-      return NextResponse.json({ error: 'アンケートが見つかりません' }, { status: 404 });
+      return jsonSurveyError('アンケートが見つかりません', 404);
     }
 
     const message =
@@ -148,6 +270,6 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     return NextResponse.json({ message, survey: updated }, { status: 200 });
   } catch (error) {
     console.error('PATCH /crm/surveys/[id] error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return jsonSurveyError('Internal server error', 500);
   }
 }

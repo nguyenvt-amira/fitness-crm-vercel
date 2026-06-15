@@ -1,7 +1,6 @@
 'use client';
 
 import { BarChart3, FileText, Plus } from 'lucide-react';
-import { toast } from 'sonner';
 
 import { RoleGatedButton } from '@/components/common/role-gated-button';
 
@@ -36,8 +35,7 @@ export function SurveyListHeaderActions() {
         requiredPermission={Permission.SurveysCreate}
         type="button"
         className="gap-1"
-        tooltip="この機能は未実装です"
-        onClick={() => toast.info('新規作成画面は次のスコープで実装します')}
+        onClick={() => router.push(navigate('/surveys/create'))}
       >
         <Plus className="size-4" />
         新規作成

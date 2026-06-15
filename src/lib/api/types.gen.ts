@@ -15757,6 +15757,10 @@ export type SurveyQuestion = {
      */
     visible: boolean;
     /**
+     * 回答データの有無
+     */
+    has_responses?: boolean;
+    /**
      * 選択肢一覧
      */
     choices: Array<{
@@ -16014,6 +16018,10 @@ export type SurveyTemplateDetail = {
          */
         visible: boolean;
         /**
+         * 回答データの有無
+         */
+        has_responses?: boolean;
+        /**
          * 選択肢一覧
          */
         choices: Array<{
@@ -16027,6 +16035,247 @@ export type SurveyTemplateDetail = {
             text: string;
         }>;
     }>;
+};
+
+/**
+ * SurveyTemplateUpsertQuestion
+ *
+ * アンケート設問更新用アイテム
+ */
+export type SurveyTemplateUpsertQuestion = {
+    /**
+     * 設問番号
+     */
+    no: number;
+    content: string;
+    /**
+     * SurveyQuestionFormat
+     *
+     * 回答形式
+     */
+    format: 'single_choice' | 'multiple_choice' | 'free_text';
+    /**
+     * 必答かどうか
+     */
+    required: boolean;
+    /**
+     * 表示状態
+     */
+    visible: boolean;
+    /**
+     * 回答データの有無
+     */
+    has_responses?: boolean;
+    /**
+     * 選択肢一覧
+     */
+    choices: Array<{
+        /**
+         * 表示順
+         */
+        order: number;
+        /**
+         * 選択肢テキスト
+         */
+        text: string;
+    }>;
+};
+
+/**
+ * SurveyTemplateUpsertBody
+ *
+ * アンケートテンプレート作成・更新リクエスト
+ */
+export type SurveyTemplateUpsertBody = {
+    /**
+     * アンケート名
+     */
+    name: string;
+    /**
+     * SurveyTemplateType
+     *
+     * 種別
+     */
+    type: 'lifecycle' | 'operational';
+    /**
+     * SurveyTemplateTrigger
+     *
+     * 発動トリガー
+     */
+    trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
+    /**
+     * StoreListBrand
+     *
+     * ブランド
+     */
+    brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * SurveyTemplateStatus
+     *
+     * 状態
+     */
+    status: 'active' | 'inactive';
+    /**
+     * 設問一覧
+     */
+    questions: Array<{
+        /**
+         * 設問番号
+         */
+        no: number;
+        content: string;
+        /**
+         * SurveyQuestionFormat
+         *
+         * 回答形式
+         */
+        format: 'single_choice' | 'multiple_choice' | 'free_text';
+        /**
+         * 必答かどうか
+         */
+        required: boolean;
+        /**
+         * 表示状態
+         */
+        visible: boolean;
+        /**
+         * 回答データの有無
+         */
+        has_responses?: boolean;
+        /**
+         * 選択肢一覧
+         */
+        choices: Array<{
+            /**
+             * 表示順
+             */
+            order: number;
+            /**
+             * 選択肢テキスト
+             */
+            text: string;
+        }>;
+    }>;
+    /**
+     * 同一トリガーの既存アンケートID
+     */
+    replace_existing_survey_id?: string | null;
+};
+
+/**
+ * SurveyTemplateUpsertResponse
+ *
+ * アンケートテンプレート作成・更新レスポンス
+ */
+export type SurveyTemplateUpsertResponse = {
+    message: string;
+    /**
+     * SurveyTemplateDetail
+     *
+     * アンケートテンプレート詳細
+     */
+    survey: {
+        /**
+         * アンケートID
+         */
+        id: string;
+        /**
+         * アンケート名
+         */
+        name: string;
+        /**
+         * SurveyTemplateType
+         *
+         * 種別
+         */
+        type: 'lifecycle' | 'operational';
+        /**
+         * SurveyTemplateTrigger
+         *
+         * 発動トリガー
+         */
+        trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
+        /**
+         * StoreListBrand
+         *
+         * ブランド
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * 設問数
+         */
+        question_count: number;
+        /**
+         * 回答件数
+         */
+        response_count: number;
+        /**
+         * 回答率(%)
+         */
+        response_rate: number;
+        /**
+         * 最終回答日
+         */
+        last_response_date: string | null;
+        /**
+         * SurveyTemplateStatus
+         *
+         * 状態
+         */
+        status: 'active' | 'inactive';
+        /**
+         * 作成日
+         */
+        created_at: string;
+        /**
+         * 最終更新日
+         */
+        updated_at: string;
+        /**
+         * 設問一覧
+         */
+        questions: Array<{
+            /**
+             * 設問番号
+             */
+            no: number;
+            /**
+             * 設問内容
+             */
+            content: string;
+            /**
+             * SurveyQuestionFormat
+             *
+             * 回答形式
+             */
+            format: 'single_choice' | 'multiple_choice' | 'free_text';
+            /**
+             * 必答かどうか
+             */
+            required: boolean;
+            /**
+             * 表示状態
+             */
+            visible: boolean;
+            /**
+             * 回答データの有無
+             */
+            has_responses?: boolean;
+            /**
+             * 選択肢一覧
+             */
+            choices: Array<{
+                /**
+                 * 表示順
+                 */
+                order: number;
+                /**
+                 * 選択肢テキスト
+                 */
+                text: string;
+            }>;
+        }>;
+    };
 };
 
 /**
@@ -16123,6 +16372,10 @@ export type GetSurveyTemplateDetailResponse = {
              * 表示状態
              */
             visible: boolean;
+            /**
+             * 回答データの有無
+             */
+            has_responses?: boolean;
             /**
              * 選択肢一覧
              */
@@ -16253,6 +16506,10 @@ export type UpdateSurveyTemplateStatusResponse = {
              * 表示状態
              */
             visible: boolean;
+            /**
+             * 回答データの有無
+             */
+            has_responses?: boolean;
             /**
              * 選択肢一覧
              */

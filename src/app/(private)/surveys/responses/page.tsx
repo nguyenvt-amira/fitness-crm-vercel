@@ -4,10 +4,9 @@ import { Suspense, useMemo, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import type { ColumnDef } from '@tanstack/react-table';
-import { Download } from 'lucide-react';
-import { toast } from 'sonner';
+import { FileDown } from 'lucide-react';
 
 import { BackLink } from '@/components/common/back-link';
 import { Loading } from '@/components/common/data-state-boundary/loading';
@@ -18,10 +17,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
-import {
-  getCrmSurveysResponsesOptions,
-  postCrmSurveysResponsesExportMutation,
-} from '@/lib/api/@tanstack/react-query.gen';
+import { getCrmSurveysResponsesOptions } from '@/lib/api/@tanstack/react-query.gen';
 import type { GetCrmSurveysResponsesResponse } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
@@ -40,25 +36,6 @@ function SurveyResponsesPageContent() {
 
   const { data, isLoading, isError, refetch } = useQuery({
     ...getCrmSurveysResponsesOptions({ query: queryParams }),
-  });
-
-  const exportMutation = useMutation({
-    ...postCrmSurveysResponsesExportMutation(),
-    onSuccess: (response) => {
-      const blob = new Blob([response.csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = response.filename;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
-      toast.success(response.message || 'CSVを作成しました');
-    },
-    onError: () => {
-      toast.error('CSV出力に失敗しました');
-    },
   });
 
   const responses = data?.responses ?? [];
@@ -84,13 +61,8 @@ function SurveyResponsesPageContent() {
           queryParams.survey_id ? `選択中アンケートID: ${queryParams.survey_id}` : undefined
         }
         actions={
-          <Button
-            variant="outline"
-            className="gap-1"
-            onClick={() => exportMutation.mutate({ body: queryParams })}
-            disabled={exportMutation.isPending}
-          >
-            <Download className="size-4" />
+          <Button variant="outline" className="gap-1" disabled title="CSV出力は未実装です">
+            <FileDown className="size-4" />
             CSV出力
           </Button>
         }
@@ -124,7 +96,7 @@ function SurveyResponsesPageContent() {
             <DataTable
               columns={columns}
               data={responses}
-              isLoading={isLoading || exportMutation.isPending}
+              isLoading={isLoading}
               variant="simple"
               className="rounded-none border-x-0 border-b-0"
               containerClassName={

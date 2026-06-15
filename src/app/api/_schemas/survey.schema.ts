@@ -57,6 +57,10 @@ export const SurveyQuestionSchema = z
     format: SurveyQuestionFormatSchema.openapi({ description: '回答形式' }),
     required: z.boolean().openapi({ example: true, description: '必答かどうか' }),
     visible: z.boolean().openapi({ example: true, description: '表示状態' }),
+    has_responses: z
+      .boolean()
+      .optional()
+      .openapi({ example: true, description: '回答データの有無' }),
     choices: z.array(SurveyQuestionChoiceSchema).openapi({ description: '選択肢一覧' }),
   })
   .openapi({
@@ -142,6 +146,53 @@ export const SurveyTemplateDetailSchema = SurveyTemplateListItemSchema.extend({
   description: 'アンケートテンプレート詳細',
 });
 
+export const SurveyTemplateUpsertQuestionSchema = z
+  .object({
+    no: z.number().int().positive().openapi({ example: 1, description: '設問番号' }),
+    content: z.string().openapi({ example: '入会のきっかけを教えてください' }),
+    format: SurveyQuestionFormatSchema.openapi({ description: '回答形式' }),
+    required: z.boolean().openapi({ example: true, description: '必答かどうか' }),
+    visible: z.boolean().openapi({ example: true, description: '表示状態' }),
+    has_responses: z
+      .boolean()
+      .optional()
+      .openapi({ example: true, description: '回答データの有無' }),
+    choices: z.array(SurveyQuestionChoiceSchema).openapi({ description: '選択肢一覧' }),
+  })
+  .openapi({
+    title: 'SurveyTemplateUpsertQuestion',
+    description: 'アンケート設問更新用アイテム',
+  });
+
+export const SurveyTemplateUpsertBodySchema = z
+  .object({
+    name: z.string().min(1).openapi({ description: 'アンケート名' }),
+    type: SurveyTemplateTypeSchema.openapi({ description: '種別' }),
+    trigger: SurveyTemplateTriggerSchema.openapi({ description: '発動トリガー' }),
+    brand: StoreListBrandSchema.openapi({ description: 'ブランド' }),
+    status: SurveyTemplateStatusSchema.openapi({ description: '状態' }),
+    questions: z.array(SurveyTemplateUpsertQuestionSchema).openapi({ description: '設問一覧' }),
+    replace_existing_survey_id: z
+      .string()
+      .nullable()
+      .optional()
+      .openapi({ description: '同一トリガーの既存アンケートID' }),
+  })
+  .openapi({
+    title: 'SurveyTemplateUpsertBody',
+    description: 'アンケートテンプレート作成・更新リクエスト',
+  });
+
+export const SurveyTemplateUpsertResponseSchema = z
+  .object({
+    message: z.string().openapi({ example: 'アンケートを登録しました' }),
+    survey: SurveyTemplateDetailSchema,
+  })
+  .openapi({
+    title: 'SurveyTemplateUpsertResponse',
+    description: 'アンケートテンプレート作成・更新レスポンス',
+  });
+
 export const GetSurveyTemplateDetailResponseSchema = z
   .object({
     survey: SurveyTemplateDetailSchema,
@@ -203,6 +254,9 @@ export type SurveyTemplateListItem = z.infer<typeof SurveyTemplateListItemSchema
 export type GetSurveyTemplatesQuery = z.infer<typeof GetSurveyTemplatesQuerySchema>;
 export type GetSurveyTemplatesResponse = z.infer<typeof GetSurveyTemplatesResponseSchema>;
 export type SurveyTemplateDetail = z.infer<typeof SurveyTemplateDetailSchema>;
+export type SurveyTemplateUpsertQuestion = z.infer<typeof SurveyTemplateUpsertQuestionSchema>;
+export type SurveyTemplateUpsertBody = z.infer<typeof SurveyTemplateUpsertBodySchema>;
+export type SurveyTemplateUpsertResponse = z.infer<typeof SurveyTemplateUpsertResponseSchema>;
 export type GetSurveyTemplateDetailResponse = z.infer<typeof GetSurveyTemplateDetailResponseSchema>;
 export type UpdateSurveyTemplateStatusBody = z.infer<typeof UpdateSurveyTemplateStatusBodySchema>;
 export type UpdateSurveyTemplateStatusResponse = z.infer<

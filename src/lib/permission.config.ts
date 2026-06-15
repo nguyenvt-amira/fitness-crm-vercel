@@ -71,6 +71,11 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
   // Surveys
   '/surveys': Permission.SurveysView,
   '/surveys/:id': Permission.SurveysView,
+  '/surveys/create': Permission.SurveysCreate,
+  '/surveys/:id/edit': Permission.SurveysEdit,
+  '/surveys/responses': Permission.SurveysView,
+  '/surveys/responses/:responseId': Permission.SurveysView,
+  '/surveys/analytics': Permission.SurveysView,
 
   // Option discounts
   '/option-discount': Permission.OptionDiscountsView,

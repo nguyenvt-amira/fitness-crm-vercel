@@ -15,10 +15,16 @@ import {
 import { Permission } from '@/types/permission.type';
 
 interface SurveyDetailHeaderActionsProps {
+  surveyId: string;
   onDeleteClick: () => void;
 }
 
-export function SurveyDetailHeaderActions({ onDeleteClick }: SurveyDetailHeaderActionsProps) {
+export function SurveyDetailHeaderActions({
+  surveyId,
+  onDeleteClick,
+}: SurveyDetailHeaderActionsProps) {
+  const router = useRouter();
+
   return (
     <div className="flex items-center gap-2">
       <RoleGatedButton
@@ -44,8 +50,7 @@ export function SurveyDetailHeaderActions({ onDeleteClick }: SurveyDetailHeaderA
       <RoleGatedButton
         requiredPermission={Permission.SurveysEdit}
         className="gap-1"
-        tooltip="この機能は未実装です"
-        onClick={() => toast.info('編集機能は次のスコープで実装します')}
+        onClick={() => router.push(navigate('/surveys/[id]/edit', surveyId))}
       >
         <Pencil className="size-4" />
         編集
