@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react';
 import { PAGE_SIZE } from '@/constants/app.constants';
 import { parseAsInteger, parseAsString, parseAsStringEnum, useQueryStates } from 'nuqs';
 
-import type { GetCrmSurveysResponsesData } from '@/lib/api/types.gen';
 import { MemberType, StoreListBrand, SurveyTemplateType } from '@/lib/api/types.gen';
+
+import type { GetCrmSurveysResponsesData } from '../../_lib/survey-reporting';
 
 export type SurveyResponsesFiltersState = {
   page: number;

@@ -81,6 +81,7 @@ import type {
   StoreLinkedOption,
 } from '@/app/api/_schemas/store-sales-settings.schema';
 import type { Store, StoreBusinessHours } from '@/app/api/_schemas/store.schema';
+import type { SurveyResponseDetail } from '@/app/api/_schemas/survey-reporting.schema';
 import type {
   SurveyQuestion,
   SurveyTemplateChangeHistoryItem,
@@ -2582,6 +2583,13 @@ type DbType = {
       status: SurveyTemplateStatus,
       reason?: string | null,
     ): SurveyTemplateDetail | undefined;
+  };
+  surveyReporting: {
+    _rows: SurveyResponseDetail[];
+    _seeded: boolean;
+    _seed(): void;
+    getAll(): SurveyResponseDetail[];
+    getById(id: string): SurveyResponseDetail | undefined;
   };
   optionDiscount: {
     _rows: GetOptionDiscountsResponse['option_discounts'];
@@ -8533,6 +8541,137 @@ function createDb() {
         ];
 
         return updated;
+      },
+    },
+    surveyReporting: {
+      _rows: [
+        {
+          id: 'R-001',
+          response_date: '2026/03/10 14:32',
+          member_id: 'M-00001',
+          member_number: 'M-00001',
+          member_name: '田中 太郎',
+          survey_id: 'S-001',
+          survey_name: '入会時アンケート',
+          template_type: 'lifecycle',
+          brand: 'fit365',
+          store_id: 'store-001',
+          store_name: 'FIT365八潮店',
+          member_type: 'regular',
+          answered_count: 5,
+          total_count: 5,
+          status: 'completed',
+          answers: [
+            {
+              question_no: 1,
+              question: '入会のきっかけを教えてください',
+              format: 'multiple_choice',
+              answer: ['友人の紹介', 'Web広告'],
+            },
+            {
+              question_no: 2,
+              question: '主に利用したい時間帯はいつですか？',
+              format: 'single_choice',
+              answer: ['平日夜間'],
+            },
+            {
+              question_no: 3,
+              question: '運動経験を教えてください',
+              format: 'single_choice',
+              answer: ['1〜3年'],
+            },
+            {
+              question_no: 4,
+              question: '当ジムに期待することを教えてください',
+              format: 'free_text',
+              answer: ['清潔さと通いやすさ'],
+            },
+            {
+              question_no: 5,
+              question: 'ご意見・ご要望（自由記入）',
+              format: 'free_text',
+              answer: ['夜の混雑が少し気になります'],
+            },
+          ],
+        },
+        {
+          id: 'R-002',
+          response_date: '2026/03/08 09:10',
+          member_id: 'M-00002',
+          member_number: 'M-00002',
+          member_name: '佐藤 花子',
+          survey_id: 'S-001',
+          survey_name: '入会時アンケート',
+          template_type: 'lifecycle',
+          brand: 'fit365',
+          store_id: 'store-001',
+          store_name: 'FIT365八潮店',
+          member_type: 'family',
+          answered_count: 3,
+          total_count: 5,
+          status: 'partial',
+          answers: [
+            {
+              question_no: 1,
+              question: '入会のきっかけを教えてください',
+              format: 'multiple_choice',
+              answer: ['チラシ'],
+            },
+            {
+              question_no: 2,
+              question: '主に利用したい時間帯はいつですか？',
+              format: 'single_choice',
+              answer: ['平日午前'],
+            },
+            {
+              question_no: 4,
+              question: '当ジムに期待することを教えてください',
+              format: 'free_text',
+              answer: ['子どもと一緒に通いやすい環境'],
+            },
+          ],
+        },
+        {
+          id: 'R-003',
+          response_date: '2026/03/05 17:55',
+          member_id: 'M-00003',
+          member_number: 'M-00003',
+          member_name: '鈴木 一郎',
+          survey_id: 'S-002',
+          survey_name: '退会時アンケート',
+          template_type: 'lifecycle',
+          brand: 'joyfit',
+          store_id: 'store-002',
+          store_name: 'JOYFIT大宮店',
+          member_type: 'regular',
+          answered_count: 2,
+          total_count: 2,
+          status: 'completed',
+          answers: [
+            {
+              question_no: 1,
+              question: '退会を検討した主な理由を教えてください',
+              format: 'single_choice',
+              answer: ['通いにくさ'],
+            },
+            {
+              question_no: 2,
+              question: '改善してほしい点があれば教えてください',
+              format: 'free_text',
+              answer: ['朝の時間帯の混雑緩和'],
+            },
+          ],
+        },
+      ] as SurveyResponseDetail[],
+      _seeded: true,
+      _seed(): void {
+        return;
+      },
+      getAll(): SurveyResponseDetail[] {
+        return this._rows;
+      },
+      getById(id: string): SurveyResponseDetail | undefined {
+        return this._rows.find((row) => row.id === id);
       },
     },
     optionDiscount: {

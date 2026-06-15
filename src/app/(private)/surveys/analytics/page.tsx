@@ -14,9 +14,9 @@ import { PageHeader } from '@/components/common/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
-import { getCrmSurveysAnalyticsOptions } from '@/lib/api/@tanstack/react-query.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
+import { getCrmSurveysAnalyticsOptions } from '../_lib/survey-reporting';
 import { SurveyAnalyticsFilters } from './_components/survey-analytics-filters';
 import { SurveyAnalyticsKpiSummary } from './_components/survey-analytics-kpi-summary';
 import { SurveyAnalyticsQuestionCards } from './_components/survey-analytics-question-cards';

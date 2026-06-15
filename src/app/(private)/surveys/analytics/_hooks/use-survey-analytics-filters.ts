@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react';
 import { endOfDay, endOfMonth, format, startOfMonth, subMonths } from 'date-fns';
 import { parseAsString, parseAsStringEnum, useQueryStates } from 'nuqs';
 
-import type { GetCrmSurveysAnalyticsData } from '@/lib/api/types.gen';
 import { MemberType, StoreListBrand } from '@/lib/api/types.gen';
+
+import type { GetCrmSurveysAnalyticsData } from '../../_lib/survey-reporting';
 
 export const SURVEY_ANALYTICS_PERIOD_LABELS = {
   all: '全期間',

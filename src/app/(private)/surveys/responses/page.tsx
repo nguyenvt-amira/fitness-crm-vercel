@@ -17,10 +17,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
-import { getCrmSurveysResponsesOptions } from '@/lib/api/@tanstack/react-query.gen';
-import type { GetCrmSurveysResponsesResponse } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
+import { getCrmSurveysResponsesOptions } from '../_lib/survey-reporting';
+import type { GetCrmSurveysResponsesResponse } from '../_lib/survey-reporting';
 import { SurveyResponsesFilters } from './_components/survey-responses-filters';
 import { SurveyResponsesTableColumns } from './_components/survey-responses-table-columns';
 import { SurveyResponsesFiltersProvider } from './_contexts/survey-responses-filters-context';
