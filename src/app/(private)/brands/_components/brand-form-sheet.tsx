@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,13 +18,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet';
+import { Separator } from '@/components/ui/separator';
+import { Sheet, SheetContent, SheetDescription, SheetFooter } from '@/components/ui/sheet';
 
 import { type BrandFormValues, brandFormSchema } from '../_schemas/brand-form.schema';
 
@@ -34,7 +29,7 @@ interface BrandFormSheetProps {
   initialValues: BrandFormValues;
   isSubmitting: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (values: BrandFormValues) => Promise<string | null> | string | null;
+  onSave: (values: BrandFormValues, onError: (message: string) => void) => void;
 }
 
 export function BrandFormSheet({
@@ -46,6 +41,7 @@ export function BrandFormSheet({
   onSave,
 }: BrandFormSheetProps) {
   const scrollToFirstError = useScrollToFirstError();
+  const lastResetBrandIdRef = useRef<string | null>(null);
 
   const form = useForm<BrandFormValues>({
     resolver: zodResolver(brandFormSchema) as never,
@@ -54,30 +50,41 @@ export function BrandFormSheet({
   });
 
   useEffect(() => {
-    form.reset(initialValues);
-  }, [form, initialValues, mode, open]);
+    if (!open) return;
+
+    // Reset only when opening for a different brand.
+    if (lastResetBrandIdRef.current !== initialValues.brandId) {
+      form.reset(initialValues);
+      lastResetBrandIdRef.current = initialValues.brandId;
+    }
+  }, [open, form, initialValues]);
+
+  useEffect(() => {
+    if (!open) {
+      lastResetBrandIdRef.current = null;
+    }
+  }, [open]);
 
   const title = mode === 'create' ? 'ブランド新規登録' : 'ブランド編集';
-  const handleSubmit = async (values: BrandFormValues) => {
-    const errorMessage = await onSave(values);
-    if (!errorMessage) return;
-
-    form.setError('brandId', {
-      type: 'manual',
-      message: errorMessage,
+  const handleSubmit = (values: BrandFormValues) => {
+    form.clearErrors('brandId');
+    onSave(values, (message) => {
+      form.setError('brandId', {
+        type: 'manual',
+        message,
+      });
+      scrollToFirstError();
     });
-    scrollToFirstError();
   };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="flex w-[384px] flex-col gap-0 overflow-hidden p-0 sm:max-w-[384px]">
-        <div className="shrink-0 border-b px-6 py-4">
-          <SheetHeader className="gap-0 p-0">
-            <SheetTitle className="text-sm font-semibold">{title}</SheetTitle>
-            <SheetDescription className="sr-only">{title}フォーム</SheetDescription>
-          </SheetHeader>
+        <div className="px-6 py-4">
+          <h2 className="text-sm font-semibold">{title}</h2>
+          <SheetDescription className="sr-only">{title}フォーム</SheetDescription>
         </div>
+        <Separator />
 
         <Form {...form}>
           <form
@@ -132,32 +139,35 @@ export function BrandFormSheet({
                   )}
                 />
 
-                <div className="border-t pt-5">
-                  <p className="text-sm font-semibold">費用（入会金・手数料）</p>
-                  <p className="text-muted-foreground mt-1 text-xs leading-5">
+                <Separator className="-mx-6 w-[calc(100%+48px)]" />
+
+                <div className="flex flex-col gap-1">
+                  <p className="text-xs font-semibold text-slate-600">費用（入会金・手数料）</p>
+                  <p className="text-muted-foreground text-xs leading-5">
                     費用の設定はブランド詳細画面の「費用」タブで管理します。
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="flex shrink-0 flex-col gap-2 border-t p-4">
+            <Separator />
+            <SheetFooter className="gap-2 px-6 pt-4 pb-6">
               <Button
                 type="button"
                 variant="outline"
-                className="h-8 w-full rounded-xl text-sm"
+                className="h-8 w-full rounded-md text-sm"
                 onClick={() => onOpenChange(false)}
               >
                 キャンセル
               </Button>
               <Button
                 type="submit"
-                className="h-8 w-full rounded-xl text-sm"
+                className="bg-foreground text-background hover:bg-foreground/90 h-8 w-full rounded-md text-sm"
                 disabled={!form.formState.isValid || isSubmitting}
               >
                 保存する
               </Button>
-            </div>
+            </SheetFooter>
           </form>
         </Form>
       </SheetContent>

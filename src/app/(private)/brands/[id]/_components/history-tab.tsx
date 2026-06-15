@@ -29,14 +29,14 @@ export function HistoryTab({ brandId }: { brandId: string }) {
       onRetry={() => refetch()}
       emptyTitle="変更履歴がありません"
     >
-      <Card className="overflow-hidden rounded-2xl border p-0">
-        <div className="flex items-center gap-2 border-b px-4 py-4">
+      <Card className="gap-0 overflow-hidden rounded-lg border p-0">
+        <div className="flex items-center gap-2 border-b px-4 pt-4 pb-3">
           <History className="size-4" />
           <h2 className="text-sm font-semibold">変更履歴</h2>
         </div>
 
         <div className="overflow-x-auto">
-          <Table className="min-w-[980px]">
+          <Table className="h-[40px] min-w-[980px]">
             <TableHeader className="bg-muted/50">
               <TableRow className="hover:bg-transparent">
                 <TableHead className="px-4 text-xs font-semibold">変更日時</TableHead>
@@ -50,14 +50,20 @@ export function HistoryTab({ brandId }: { brandId: string }) {
             <TableBody>
               {data?.histories.map((history) => (
                 <TableRow key={`${history.changed_at}-${history.changed_field}`}>
-                  <TableCell className="px-4 py-4 text-xs">{history.changed_at}</TableCell>
+                  <TableCell className="text-muted-foreground px-4 py-4 text-xs">
+                    {history.changed_at}
+                  </TableCell>
                   <TableCell className="px-4 py-4 text-xs">{history.changed_by}</TableCell>
-                  <TableCell className="px-4 py-4 text-xs">{history.target_display_name}</TableCell>
-                  <TableCell className="px-4 text-xs font-semibold">
+                  <TableCell className="text-muted-foreground px-4 py-4 text-xs">
+                    {history.target_display_name}
+                  </TableCell>
+                  <TableCell className="px-4 text-xs font-medium">
                     {history.changed_field}
                   </TableCell>
-                  <TableCell className="px-4 py-4 text-xs">{history.before_value}</TableCell>
-                  <TableCell className="px-4 py-4 text-xs font-semibold">
+                  <TableCell className="text-muted-foreground px-4 py-4 text-xs">
+                    {history.before_value}
+                  </TableCell>
+                  <TableCell className="px-4 py-4 text-xs font-medium">
                     {history.after_value}
                   </TableCell>
                 </TableRow>

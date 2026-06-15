@@ -96,10 +96,13 @@ export async function PATCH(
 
     const expectedCodes = new Set(feeGroup.fee_items.map((item) => item.item_code));
     const payloadCodes = new Set(payload.fee_items.map((item) => item.item_code));
-    if (
-      expectedCodes.size !== payloadCodes.size ||
-      [...expectedCodes].some((itemCode) => !payloadCodes.has(itemCode))
-    ) {
+    const hasDifferentLength = payload.fee_items.length !== feeGroup.fee_items.length;
+    const hasDuplicateCodes = payloadCodes.size !== payload.fee_items.length;
+    const hasUnknownOrMissingCodes =
+      payloadCodes.size !== expectedCodes.size ||
+      [...payloadCodes].some((itemCode) => !expectedCodes.has(itemCode));
+
+    if (hasDifferentLength || hasDuplicateCodes || hasUnknownOrMissingCodes) {
       return NextResponse.json(
         { error: 'Fee items do not match the target group' },
         { status: 400 },

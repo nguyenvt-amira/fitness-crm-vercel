@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -105,7 +105,7 @@ interface BrandFeeGroupEditSheetProps {
   feeGroup: BrandFeeGroup | null;
   isSubmitting: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (values: BrandFeeGroupFormValues) => Promise<string | null> | string | null;
+  onSave: (values: BrandFeeGroupFormValues, onError: (message: string) => void) => void;
 }
 
 export function BrandFeeGroupEditSheet({
@@ -116,6 +116,7 @@ export function BrandFeeGroupEditSheet({
   onSave,
 }: BrandFeeGroupEditSheetProps) {
   const scrollToFirstError = useScrollToFirstError();
+  const lastResetFeeMasterIdRef = useRef<string | null>(null);
   const form = useForm<BrandFeeGroupFormValues>({
     resolver: zodResolver(brandFeeGroupFormSchema) as never,
     mode: 'onChange',
@@ -132,23 +133,34 @@ export function BrandFeeGroupEditSheet({
   });
 
   useEffect(() => {
-    form.reset(buildDefaultValues(feeGroup));
-  }, [feeGroup, form, open]);
+    if (!open) return;
+
+    // Reset only when opening or switching to another fee group.
+    if (lastResetFeeMasterIdRef.current !== (feeGroup?.fee_master_id ?? null)) {
+      form.reset(buildDefaultValues(feeGroup));
+      lastResetFeeMasterIdRef.current = feeGroup?.fee_master_id ?? null;
+    }
+  }, [open, form, feeGroup]);
+
+  useEffect(() => {
+    if (!open) {
+      lastResetFeeMasterIdRef.current = null;
+    }
+  }, [open]);
 
   const canSubmit = form.formState.isValid && hasFeeGroupChanges(feeGroup, watchedFeeItems);
 
-  const handleSubmit = async (values: BrandFeeGroupFormValues) => {
+  const handleSubmit = (values: BrandFeeGroupFormValues) => {
     if (!hasFeeGroupChanges(feeGroup, values.feeItems)) {
       return;
     }
 
     form.clearErrors('root.serverError');
-    const errorMessage = await onSave(values);
-    if (!errorMessage) return;
-
-    form.setError('root.serverError', {
-      type: 'manual',
-      message: errorMessage,
+    onSave(values, (message) => {
+      form.setError('root.serverError', {
+        type: 'manual',
+        message,
+      });
     });
   };
 
@@ -158,8 +170,8 @@ export function BrandFeeGroupEditSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="flex w-[480px] flex-col gap-0 overflow-hidden p-0 sm:max-w-[480px]">
-        <div className="shrink-0 border-b px-6 py-4">
+      <SheetContent className="flex h-dvh w-[480px] flex-col gap-0 overflow-hidden p-0 sm:max-w-[480px]">
+        <div className="shrink-0 border-b px-5 py-3.5">
           <SheetHeader className="gap-0 p-0 text-left">
             <SheetTitle className="text-sm font-semibold">{title}</SheetTitle>
             <SheetDescription className="sr-only">{title}フォーム</SheetDescription>
@@ -171,25 +183,25 @@ export function BrandFeeGroupEditSheet({
             className="flex min-h-0 flex-1 flex-col"
             onSubmit={form.handleSubmit(handleSubmit, scrollToFirstError)}
           >
-            <div className="flex-1 overflow-y-auto px-6 py-6">
-              <div className="space-y-6">
+            <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
+              <div className="space-y-4">
                 {fields.map((field, index) => {
                   const dateValue = watchedFeeItems?.[index]?.effectiveStartDate ?? '';
 
                   return (
-                    <div key={field.id} className="rounded-2xl border px-4 py-5">
+                    <div key={field.id} className="rounded-lg border px-4 py-4">
                       <p className="text-sm font-semibold">費用項目{toCircledNumeral(index + 1)}</p>
 
                       <FormField
                         control={form.control}
                         name={`feeItems.${index}.itemName`}
                         render={({ field: itemNameField }) => (
-                          <FormItem className="mt-4">
+                          <FormItem className="mt-3">
                             <FormLabel className="text-sm font-medium">費用項目名</FormLabel>
                             <FormControl>
                               <Input {...itemNameField} />
                             </FormControl>
-                            <FormDescription className="text-xs">
+                            <FormDescription className="text-xs leading-4">
                               項目名を変更できます（FR-010）
                             </FormDescription>
                             <FormMessage />
@@ -197,13 +209,13 @@ export function BrandFeeGroupEditSheet({
                         )}
                       />
 
-                      <div className="mt-4 flex items-center gap-2">
+                      <div className="mt-3 flex items-center gap-2">
                         <p className="text-sm font-medium text-slate-700">現行設定</p>
                         <FeeCurrentBadge />
                       </div>
 
-                      <div className="mt-3 rounded-xl border bg-slate-50/60 px-3 py-3">
-                        <div className="grid gap-3 md:grid-cols-2">
+                      <div className="bg-muted/30 mt-2.5 rounded-md border px-3 py-3">
+                        <div className="grid gap-2.5 md:grid-cols-2">
                           <FormField
                             control={form.control}
                             name={`feeItems.${index}.effectiveStartDate`}
@@ -216,7 +228,7 @@ export function BrandFeeGroupEditSheet({
                                 <FormControl>
                                   <DatePicker
                                     date={parseDateValue(dateField.value)}
-                                    placeholder="dd/mm/yyyy"
+                                    placeholder="yyyy/MM/dd"
                                     hasError={fieldState.invalid}
                                     onDateChange={(date) =>
                                       dateField.onChange(date ? format(date, 'yyyy/MM/dd') : '')
@@ -273,7 +285,7 @@ export function BrandFeeGroupEditSheet({
                         </div>
 
                         {isPastDate(dateValue) && (
-                          <Alert className="mt-3 border-orange-200 bg-orange-50 text-orange-800">
+                          <Alert className="mt-2.5 border-orange-200 bg-orange-50 px-3 py-2.5 text-orange-800">
                             <AlertTriangle className="mt-0.5 size-4" />
                             <AlertDescription className="text-xs leading-5 text-orange-800">
                               過去の日付が指定されています。登録は可能ですが、即座に適用が開始されます。
@@ -296,18 +308,18 @@ export function BrandFeeGroupEditSheet({
               </div>
             </div>
 
-            <div className="flex shrink-0 items-center justify-end gap-2 border-t px-6 py-4">
+            <div className="flex shrink-0 items-center justify-end gap-2 border-t px-5 pt-3.5 pb-8">
               <Button
                 type="button"
                 variant="outline"
-                className="h-8 rounded-xl text-sm"
+                className="h-8 rounded-md text-sm"
                 onClick={() => onOpenChange(false)}
               >
                 キャンセル
               </Button>
               <Button
                 type="submit"
-                className="h-8 rounded-xl text-sm"
+                className="h-8 rounded-md text-sm"
                 disabled={isSubmitting || !canSubmit}
               >
                 保存する

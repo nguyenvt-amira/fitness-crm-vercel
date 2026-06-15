@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge';
 
 interface BrandStatusBadgeProps {
   status: 'active' | 'inactive';
+  showDot?: boolean;
 }
 
 const BRAND_STATUS_LABELS: Record<BrandStatusBadgeProps['status'], string> = {
@@ -10,17 +11,17 @@ const BRAND_STATUS_LABELS: Record<BrandStatusBadgeProps['status'], string> = {
 };
 
 const BRAND_STATUS_CLASSES: Record<BrandStatusBadgeProps['status'], string> = {
-  active: 'border-green-200 bg-green-100 text-green-700',
-  inactive: 'border-amber-200 bg-amber-100 text-amber-700',
+  active: 'border-success/20 bg-success/15 text-success',
+  inactive: 'border-warning/20 bg-warning/15 text-warning',
 };
 
-export function BrandStatusBadge({ status }: BrandStatusBadgeProps) {
+export function BrandStatusBadge({ status, showDot = true }: BrandStatusBadgeProps) {
   return (
     <Badge
       variant="outline"
-      className={`h-5 gap-1 rounded-full px-2 py-0 text-[10px] font-semibold ${BRAND_STATUS_CLASSES[status]}`}
+      className={`h-5 gap-1 rounded-full px-2 py-0 text-[10px] font-medium ${BRAND_STATUS_CLASSES[status]}`}
     >
-      <span className="size-1.5 rounded-full bg-current" />
+      {showDot ? <span className="size-1.5 rounded-full bg-current" /> : null}
       {BRAND_STATUS_LABELS[status]}
     </Badge>
   );
