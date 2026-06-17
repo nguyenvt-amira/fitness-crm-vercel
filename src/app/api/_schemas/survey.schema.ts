@@ -56,7 +56,6 @@ export const SurveyQuestionSchema = z
       .openapi({ example: '入会のきっかけを教えてください', description: '設問内容' }),
     format: SurveyQuestionFormatSchema.openapi({ description: '回答形式' }),
     required: z.boolean().openapi({ example: true, description: '必答かどうか' }),
-    visible: z.boolean().openapi({ example: true, description: '表示状態' }),
     has_responses: z
       .boolean()
       .optional()
@@ -152,7 +151,6 @@ export const SurveyTemplateUpsertQuestionSchema = z
     content: z.string().openapi({ example: '入会のきっかけを教えてください' }),
     format: SurveyQuestionFormatSchema.openapi({ description: '回答形式' }),
     required: z.boolean().openapi({ example: true, description: '必答かどうか' }),
-    visible: z.boolean().openapi({ example: true, description: '表示状態' }),
     has_responses: z
       .boolean()
       .optional()

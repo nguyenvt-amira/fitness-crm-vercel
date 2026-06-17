@@ -89,7 +89,7 @@ function SurveyEditForm({
         onSubmit={(values) =>
           updateMutation.mutate({
             path: { id },
-            body: mapSurveyFormValuesToPayload(values),
+            body: mapSurveyFormValuesToPayload(values) as never,
           })
         }
       />

@@ -365,7 +365,11 @@ function buildSurveyTemplateDetail(
   survey: SurveyTemplateListItem,
   overrides: Partial<Omit<SurveyTemplateDetail, keyof SurveyTemplateListItem>> = {},
 ): SurveyTemplateDetail {
-  const questions = overrides.questions ?? [];
+  const questions =
+    overrides.questions?.map((question) => ({
+      ...question,
+      choices: question.choices.map((choice) => ({ ...choice })),
+    })) ?? [];
 
   return {
     ...survey,
@@ -8187,7 +8191,6 @@ function createDb() {
               content: '入会のきっかけを教えてください',
               format: 'multiple_choice',
               required: true,
-              visible: true,
               has_responses: true,
               choices: [
                 { order: 1, text: '友人の紹介' },
@@ -8202,7 +8205,6 @@ function createDb() {
               content: '主に利用したい時間帯はいつですか？',
               format: 'single_choice',
               required: true,
-              visible: true,
               has_responses: true,
               choices: [
                 { order: 1, text: '平日午前' },
@@ -8216,7 +8218,6 @@ function createDb() {
               content: '運動経験を教えてください',
               format: 'single_choice',
               required: true,
-              visible: false,
               has_responses: true,
               choices: [
                 { order: 1, text: '初心者' },
@@ -8230,7 +8231,6 @@ function createDb() {
               content: '当ジムに期待することを教えてください',
               format: 'free_text',
               required: false,
-              visible: true,
               has_responses: false,
               choices: [],
             },
@@ -8239,7 +8239,6 @@ function createDb() {
               content: 'ご意見・ご要望（自由記入）',
               format: 'free_text',
               required: false,
-              visible: true,
               has_responses: false,
               choices: [],
             },
@@ -8250,7 +8249,6 @@ function createDb() {
               content: '退会を検討した主な理由を教えてください',
               format: 'single_choice',
               required: true,
-              visible: true,
               has_responses: true,
               choices: [
                 { order: 1, text: '料金' },
@@ -8265,7 +8263,6 @@ function createDb() {
               content: '改善してほしい点があれば教えてください',
               format: 'free_text',
               required: false,
-              visible: true,
               has_responses: false,
               choices: [],
             },
@@ -8276,7 +8273,6 @@ function createDb() {
               content: '施設の清潔さに満足していますか？',
               format: 'single_choice',
               required: true,
-              visible: true,
               has_responses: true,
               choices: [
                 { order: 1, text: '非常に満足' },
@@ -8290,7 +8286,6 @@ function createDb() {
               content: '自由記述でご意見をお聞かせください',
               format: 'free_text',
               required: false,
-              visible: true,
               has_responses: false,
               choices: [],
             },
@@ -8301,7 +8296,6 @@ function createDb() {
               content: 'トレーナーの説明は分かりやすかったですか？',
               format: 'single_choice',
               required: true,
-              visible: true,
               has_responses: true,
               choices: [
                 { order: 1, text: '非常に分かりやすい' },
@@ -8448,6 +8442,7 @@ function createDb() {
             questions: data.questions.map((question) => ({
               ...question,
               has_responses: question.has_responses ?? false,
+              choices: question.choices.map((choice) => ({ ...choice })),
             })) as SurveyQuestion[],
           },
         );
@@ -8484,6 +8479,7 @@ function createDb() {
           questions: data.questions.map((question) => ({
             ...question,
             has_responses: question.has_responses ?? false,
+            choices: question.choices.map((choice) => ({ ...choice })),
           })) as SurveyQuestion[],
         };
 

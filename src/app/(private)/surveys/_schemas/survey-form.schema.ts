@@ -29,7 +29,6 @@ export const surveyQuestionFormSchema = z.object({
   content: z.string().trim().min(1, '設問内容を入力してください'),
   format: z.enum(SURVEY_QUESTION_FORMAT_VALUES),
   required: z.boolean(),
-  visible: z.boolean(),
   hasResponses: z.boolean(),
   choices: z.array(surveyQuestionChoiceFormSchema),
 });
@@ -86,7 +85,6 @@ export interface SurveyDetailLike {
     content: string;
     format: 'single_choice' | 'multiple_choice' | 'free_text';
     required: boolean;
-    visible: boolean;
     has_responses?: boolean;
     choices: Array<{ order: number; text: string }>;
   }>;
@@ -98,7 +96,6 @@ export function createEmptySurveyQuestion(id: string): SurveyQuestionFormValues 
     content: '',
     format: 'single_choice',
     required: true,
-    visible: true,
     hasResponses: false,
     choices: [{ id: `${id}-choice-1`, text: '' }],
   };
@@ -129,7 +126,6 @@ export function mapSurveyDetailToFormValues(survey: SurveyDetailLike): SurveyFor
       content: question.content,
       format: question.format,
       required: question.required,
-      visible: question.visible,
       hasResponses: Boolean(question.has_responses),
       choices: question.choices.map((choice, choiceIndex) => ({
         id: `q-${question.no}-${index}-choice-${choiceIndex + 1}`,
@@ -152,7 +148,6 @@ export function mapSurveyFormValuesToPayload(values: SurveyFormValues) {
       content: question.content.trim(),
       format: question.format,
       required: question.required,
-      visible: question.visible,
       choices: question.choices.map((choice, choiceIndex) => ({
         order: choiceIndex + 1,
         text: choice.text.trim(),

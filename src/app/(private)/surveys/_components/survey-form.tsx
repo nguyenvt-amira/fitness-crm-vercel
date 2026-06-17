@@ -24,6 +24,7 @@ import { type SurveyFormSubmitValues, type SurveyFormValues } from '../_schemas/
 import { SurveyFormBasicInfoSection } from './survey-form-basic-info';
 import { SurveyFormQuestionsSection } from './survey-form-questions';
 import { SurveyFormStatusSection } from './survey-form-status';
+import { SurveyFormStoreVisibilitySection } from './survey-form-store-visibility';
 
 interface SurveyFormProps {
   isEdit?: boolean;
@@ -83,12 +84,7 @@ export function SurveyForm({
   const confirmDeleteQuestion = () => {
     if (!deleteTarget) return;
 
-    if (deleteTarget.hasResponses) {
-      form.setValue(`questions.${deleteTarget.index}.visible`, false, {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
-    } else {
+    if (!deleteTarget.hasResponses) {
       const questions = form.getValues('questions');
       form.setValue(
         'questions',
@@ -112,6 +108,8 @@ export function SurveyForm({
               setDeleteTarget({ index, hasResponses: question.hasResponses });
             }}
           />
+
+          {isEdit && <SurveyFormStoreVisibilitySection />}
 
           <SurveyFormStatusSection />
 

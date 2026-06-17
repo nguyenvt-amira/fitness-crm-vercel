@@ -83,7 +83,7 @@ export default function SurveyCreatePage() {
             isSubmitting={createMutation.isPending}
             onCancel={() => router.push(navigate('/surveys'))}
             onSubmit={(values) =>
-              createMutation.mutate({ body: mapSurveyFormValuesToPayload(values) })
+              createMutation.mutate({ body: mapSurveyFormValuesToPayload(values) as never })
             }
           />
         </Form>

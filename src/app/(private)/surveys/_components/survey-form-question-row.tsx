@@ -24,8 +24,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import { cn } from '@/lib/utils';
-
 import { SURVEY_QUESTION_FORMAT_LABELS } from '../_constants/constants';
 import {
   SURVEY_QUESTION_FORMAT_VALUES,
@@ -68,8 +66,6 @@ export function SurveyQuestionRow({
   });
 
   const format = question?.format;
-  const visible = question?.visible ?? true;
-
   useEffect(() => {
     if (!format) return;
 
@@ -87,7 +83,7 @@ export function SurveyQuestionRow({
 
   return (
     <>
-      <TableRow className={cn(!visible && 'bg-muted/20')}>
+      <TableRow>
         <TableCell className="text-muted-foreground align-top text-xs">{index + 1}</TableCell>
         <TableCell className="align-top">
           <Input
@@ -133,10 +129,7 @@ export function SurveyQuestionRow({
               }
             />
             <span
-              className={cn(
-                'text-xs',
-                question?.required ? 'text-foreground font-semibold' : 'text-muted-foreground',
-              )}
+              className={`text-xs ${question?.required ? 'text-foreground font-semibold' : 'text-muted-foreground'}`}
             >
               {question?.required ? '必答' : '任意'}
             </span>
