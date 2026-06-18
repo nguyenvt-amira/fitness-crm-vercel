@@ -24,7 +24,7 @@ import { type SurveyFormSubmitValues, type SurveyFormValues } from '../_schemas/
 import { SurveyFormBasicInfoSection } from './survey-form-basic-info';
 import { SurveyFormQuestionsSection } from './survey-form-questions';
 import { SurveyFormStatusSection } from './survey-form-status';
-import { SurveyFormStoreVisibilitySection } from './survey-form-store-visibility';
+import { SurveyFormQuestionVisibilitySection } from './survey-form-store-visibility';
 
 interface SurveyFormProps {
   isEdit?: boolean;
@@ -84,14 +84,17 @@ export function SurveyForm({
   const confirmDeleteQuestion = () => {
     if (!deleteTarget) return;
 
-    if (!deleteTarget.hasResponses) {
-      const questions = form.getValues('questions');
-      form.setValue(
-        'questions',
-        questions.filter((_question, index: number) => index !== deleteTarget.index),
-        { shouldDirty: true, shouldValidate: true },
-      );
+    if (deleteTarget.hasResponses) {
+      setDeleteTarget(null);
+      return;
     }
+
+    const questions = form.getValues('questions');
+    form.setValue(
+      'questions',
+      questions.filter((_question, index: number) => index !== deleteTarget.index),
+      { shouldDirty: true, shouldValidate: true },
+    );
 
     setDeleteTarget(null);
   };
@@ -109,7 +112,7 @@ export function SurveyForm({
             }}
           />
 
-          {isEdit && <SurveyFormStoreVisibilitySection />}
+          {isEdit && <SurveyFormQuestionVisibilitySection />}
 
           <SurveyFormStatusSection />
 
@@ -164,24 +167,25 @@ export function SurveyForm({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {deleteTarget?.hasResponses ? 'この設問を削除できません' : 'この設問を削除しますか？'}
+              {deleteTarget?.hasResponses ? 'この設問は削除できません' : 'この設問を削除しますか？'}
             </AlertDialogTitle>
             <AlertDialogDescription>
               {deleteTarget?.hasResponses
-                ? 'この設問には回答データがあります。削除はできませんが、非表示に設定できます。'
+                ? 'この設問には回答データがあります。削除はできません。必要に応じて表示設定から非表示にしてください。'
                 : 'この操作は取り消せません。'}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>キャンセル</AlertDialogCancel>
             <AlertDialogAction
-              className={cn(
-                deleteTarget?.hasResponses &&
-                  'bg-warning text-warning-foreground hover:bg-warning/90',
-              )}
+              className={
+                deleteTarget?.hasResponses
+                  ? undefined
+                  : cn('bg-warning text-warning-foreground hover:bg-warning/90')
+              }
               onClick={confirmDeleteQuestion}
             >
-              {deleteTarget?.hasResponses ? '非表示にする' : '削除する'}
+              {deleteTarget?.hasResponses ? '閉じる' : '削除する'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

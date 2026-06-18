@@ -111,15 +111,17 @@ export function SurveyFormBasicInfoSection({ isEdit }: Readonly<SurveyFormBasicI
                     onValueChange={field.onChange}
                     className="flex items-center gap-6"
                   >
-                    <div className="flex items-center gap-2">
-                      <RadioGroupItem value="lifecycle" id="survey-type-lifecycle" />
-                      <FormLabel
-                        htmlFor="survey-type-lifecycle"
-                        className="cursor-pointer text-sm font-normal"
-                      >
-                        {SURVEY_TYPE_LABELS.lifecycle}
-                      </FormLabel>
-                    </div>
+                    {Object.entries(SURVEY_TYPE_LABELS).map(([value, label]) => (
+                      <div key={value} className="flex items-center gap-2">
+                        <RadioGroupItem value={value} id={`survey-type-${value}`} />
+                        <FormLabel
+                          htmlFor={`survey-type-${value}`}
+                          className="cursor-pointer text-sm font-normal"
+                        >
+                          {label}
+                        </FormLabel>
+                      </div>
+                    ))}
                   </RadioGroup>
                 </FormControl>
                 <FormMessage />
