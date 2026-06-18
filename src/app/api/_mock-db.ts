@@ -82,6 +82,7 @@ import type {
 } from '@/app/api/_schemas/store-sales-settings.schema';
 import type { Store, StoreBusinessHours } from '@/app/api/_schemas/store.schema';
 import type { ApprovalHistoryItem, TransferDetail } from '@/app/api/_schemas/transfer.schema';
+import type { VisitExperience } from '@/app/api/_schemas/visit-experience.schema';
 import {
   type LockerSlotLockSettingsMeta,
   applySlotLockSettings,
@@ -1187,6 +1188,294 @@ const SEED_USERS: UserRow[] = [
   },
 ];
 
+// ─── Visit Experiences Seed Data ─────────────────────────────────────────────
+
+function makeVeDate(offsetDays: number, hour: number, minute = 0): string {
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
+  d.setHours(hour, minute, 0, 0);
+  return d.toISOString().replace('Z', '+00:00');
+}
+
+const SEED_VISIT_EXPERIENCES: VisitExperience[] = [
+  // ── Today ──────────────────────────────────────────────────────────────────
+  {
+    id: 'VE-001',
+    customer_name: '山田 太郎',
+    status: 'visiting',
+    bl_match: false,
+    brand_name: 'JOYFIT',
+    store_name: 'JOYFIT渋谷店',
+    reserved_at: makeVeDate(0, 9, 0),
+    visit_start_at: makeVeDate(0, 9, 5),
+    visit_end_scheduled_at: makeVeDate(0, 10, 0),
+    visit_end_actual_at: null,
+  },
+  {
+    id: 'VE-002',
+    customer_name: '鈴木 花子',
+    status: 'application_received',
+    bl_match: false,
+    brand_name: 'JOYFIT',
+    store_name: 'JOYFIT渋谷店',
+    reserved_at: makeVeDate(0, 11, 0),
+    visit_start_at: null,
+    visit_end_scheduled_at: makeVeDate(0, 12, 0),
+    visit_end_actual_at: null,
+  },
+  {
+    id: 'VE-003',
+    customer_name: '佐藤 健二',
+    status: 'membership_applied',
+    bl_match: false,
+    brand_name: 'JOYFIT',
+    store_name: 'JOYFIT新宿店',
+    reserved_at: makeVeDate(0, 10, 30),
+    visit_start_at: makeVeDate(0, 10, 35),
+    visit_end_scheduled_at: makeVeDate(0, 11, 30),
+    visit_end_actual_at: makeVeDate(0, 11, 20),
+  },
+  {
+    id: 'VE-004',
+    customer_name: '田中 美咲',
+    status: 'cancelled',
+    bl_match: false,
+    brand_name: 'JOYFIT24',
+    store_name: 'JOYFIT24池袋店',
+    reserved_at: makeVeDate(0, 13, 0),
+    visit_start_at: null,
+    visit_end_scheduled_at: makeVeDate(0, 14, 0),
+    visit_end_actual_at: null,
+  },
+  {
+    id: 'VE-005',
+    customer_name: '伊藤 拓也',
+    status: 'visiting',
+    bl_match: true,
+    brand_name: 'JOYFIT',
+    store_name: 'JOYFIT渋谷店',
+    reserved_at: makeVeDate(0, 14, 0),
+    visit_start_at: makeVeDate(0, 14, 10),
+    visit_end_scheduled_at: makeVeDate(0, 15, 0),
+    visit_end_actual_at: null,
+  },
+  {
+    id: 'VE-006',
+    customer_name: '渡辺 奈々',
+    status: 'info_missing',
+    bl_match: false,
+    brand_name: 'JOYFIT YOGA',
+    store_name: 'JOYFIT YOGA恵比寿店',
+    reserved_at: makeVeDate(0, 15, 0),
+    visit_start_at: null,
+    visit_end_scheduled_at: makeVeDate(0, 16, 0),
+    visit_end_actual_at: null,
+  },
+  {
+    id: 'VE-007',
+    customer_name: '中村 さくら',
+    status: 'bl_checking',
+    bl_match: false,
+    brand_name: 'JOYFIT',
+    store_name: 'JOYFIT新宿店',
+    reserved_at: makeVeDate(0, 16, 0),
+    visit_start_at: null,
+    visit_end_scheduled_at: makeVeDate(0, 17, 0),
+    visit_end_actual_at: null,
+  },
+  // ── Yesterday ──────────────────────────────────────────────────────────────
+  {
+    id: 'VE-008',
+    customer_name: '小林 翔太',
+    status: 'visit_completed',
+    bl_match: false,
+    brand_name: 'JOYFIT',
+    store_name: 'JOYFIT渋谷店',
+    reserved_at: makeVeDate(-1, 10, 0),
+    visit_start_at: makeVeDate(-1, 10, 5),
+    visit_end_scheduled_at: makeVeDate(-1, 11, 0),
+    visit_end_actual_at: makeVeDate(-1, 10, 55),
+  },
+  {
+    id: 'VE-009',
+    customer_name: '加藤 陽子',
+    status: 'membership_applied',
+    bl_match: false,
+    brand_name: 'JOYFIT24',
+    store_name: 'JOYFIT24池袋店',
+    reserved_at: makeVeDate(-1, 13, 30),
+    visit_start_at: makeVeDate(-1, 13, 35),
+    visit_end_scheduled_at: makeVeDate(-1, 14, 30),
+    visit_end_actual_at: makeVeDate(-1, 14, 25),
+  },
+  {
+    id: 'VE-010',
+    customer_name: '吉田 博',
+    status: 'cancelled',
+    bl_match: false,
+    brand_name: 'JOYFIT',
+    store_name: 'JOYFIT渋谷店',
+    reserved_at: makeVeDate(-1, 11, 0),
+    visit_start_at: null,
+    visit_end_scheduled_at: makeVeDate(-1, 12, 0),
+    visit_end_actual_at: null,
+  },
+  // ── 3 days ago ─────────────────────────────────────────────────────────────
+  {
+    id: 'VE-011',
+    customer_name: '山本 由美',
+    status: 'visit_completed',
+    bl_match: false,
+    brand_name: 'JOYFIT YOGA',
+    store_name: 'JOYFIT YOGA恵比寿店',
+    reserved_at: makeVeDate(-2, 9, 0),
+    visit_start_at: makeVeDate(-2, 9, 10),
+    visit_end_scheduled_at: makeVeDate(-2, 10, 0),
+    visit_end_actual_at: makeVeDate(-2, 9, 58),
+  },
+  {
+    id: 'VE-012',
+    customer_name: '松本 浩二',
+    status: 'membership_applied',
+    bl_match: false,
+    brand_name: 'JOYFIT',
+    store_name: 'JOYFIT新宿店',
+    reserved_at: makeVeDate(-2, 14, 0),
+    visit_start_at: makeVeDate(-2, 14, 8),
+    visit_end_scheduled_at: makeVeDate(-2, 15, 0),
+    visit_end_actual_at: makeVeDate(-2, 14, 50),
+  },
+  // ── 5 days ago ─────────────────────────────────────────────────────────────
+  {
+    id: 'VE-013',
+    customer_name: '井上 千夏',
+    status: 'visit_completed',
+    bl_match: false,
+    brand_name: 'JOYFIT24',
+    store_name: 'JOYFIT24池袋店',
+    reserved_at: makeVeDate(-5, 10, 0),
+    visit_start_at: makeVeDate(-5, 10, 3),
+    visit_end_scheduled_at: makeVeDate(-5, 11, 0),
+    visit_end_actual_at: makeVeDate(-5, 10, 58),
+  },
+  {
+    id: 'VE-014',
+    customer_name: '木村 悠斗',
+    status: 'cancelled',
+    bl_match: true,
+    brand_name: 'JOYFIT',
+    store_name: 'JOYFIT渋谷店',
+    reserved_at: makeVeDate(-5, 15, 30),
+    visit_start_at: null,
+    visit_end_scheduled_at: makeVeDate(-5, 16, 30),
+    visit_end_actual_at: null,
+  },
+  // ── 8 days ago ─────────────────────────────────────────────────────────────
+  {
+    id: 'VE-015',
+    customer_name: '林 美穂',
+    status: 'membership_applied',
+    bl_match: false,
+    brand_name: 'JOYFIT YOGA',
+    store_name: 'JOYFIT YOGA恵比寿店',
+    reserved_at: makeVeDate(-8, 11, 0),
+    visit_start_at: makeVeDate(-8, 11, 5),
+    visit_end_scheduled_at: makeVeDate(-8, 12, 0),
+    visit_end_actual_at: makeVeDate(-8, 11, 55),
+  },
+  {
+    id: 'VE-016',
+    customer_name: '清水 大輔',
+    status: 'visit_completed',
+    bl_match: false,
+    brand_name: 'JOYFIT',
+    store_name: 'JOYFIT新宿店',
+    reserved_at: makeVeDate(-8, 14, 0),
+    visit_start_at: makeVeDate(-8, 14, 10),
+    visit_end_scheduled_at: makeVeDate(-8, 15, 0),
+    visit_end_actual_at: makeVeDate(-8, 14, 59),
+  },
+  {
+    id: 'VE-017',
+    customer_name: '山口 彩香',
+    status: 'application_received',
+    bl_match: false,
+    brand_name: 'JOYFIT+',
+    store_name: 'JOYFIT+銀座店',
+    reserved_at: makeVeDate(0, 17, 30),
+    visit_start_at: null,
+    visit_end_scheduled_at: makeVeDate(0, 18, 30),
+    visit_end_actual_at: null,
+  },
+  {
+    id: 'VE-018',
+    customer_name: '前田 竜也',
+    status: 'visiting',
+    bl_match: false,
+    brand_name: 'JOYFIT+',
+    store_name: 'JOYFIT+銀座店',
+    reserved_at: makeVeDate(0, 16, 30),
+    visit_start_at: makeVeDate(0, 16, 35),
+    visit_end_scheduled_at: makeVeDate(0, 17, 30),
+    visit_end_actual_at: null,
+  },
+];
+
+interface CorporateMasterRow {
+  id: string;
+  name: string;
+  code: string;
+}
+
+const SEED_ENROLLMENT_FEE_MASTERS: EnrollmentFeeMasterRow[] = [
+  {
+    id: 'EF001',
+    name: '標準入会金',
+    amount: 2200,
+    brand: 'JOYFIT',
+    application_type: 'normal',
+    isActive: true,
+  },
+  {
+    id: 'EF002',
+    name: 'ファミリー入会金',
+    amount: 1100,
+    brand: 'JOYFIT',
+    application_type: 'normal',
+    isActive: true,
+  },
+  {
+    id: 'EF003',
+    name: '法人入会金',
+    amount: 5500,
+    brand: '共通',
+    application_type: 'corporate',
+    isActive: true,
+  },
+  {
+    id: 'EF004',
+    name: '社員割引入会金',
+    amount: 0,
+    brand: '共通',
+    application_type: 'employee_discount',
+    isActive: true,
+  },
+  {
+    id: 'EF005',
+    name: '特別契約入会金',
+    amount: 0,
+    brand: '共通',
+    application_type: 'special_contract',
+    isActive: true,
+  },
+];
+
+const SEED_CORPORATE_MASTERS: CorporateMasterRow[] = [
+  { id: 'CORP-001', name: '株式会社サンプルA', code: 'CA001' },
+  { id: 'CORP-002', name: '株式会社サンプルB', code: 'CB002' },
+  { id: 'CORP-003', name: '株式会社サンプルC', code: 'CC003' },
+];
+
 const SEED_OPTION_DISCOUNT_CHANGE_HISTORY: Record<string, OptionDiscountChangeHistoryItem[]> = {
   SD001: [
     {
@@ -1304,55 +1593,6 @@ interface CorporateMasterRow {
   name: string;
   code: string;
 }
-
-const SEED_ENROLLMENT_FEE_MASTERS: EnrollmentFeeMasterRow[] = [
-  {
-    id: 'EF001',
-    name: '標準入会金',
-    amount: 2200,
-    brand: 'JOYFIT',
-    application_type: 'normal',
-    isActive: true,
-  },
-  {
-    id: 'EF002',
-    name: 'ファミリー入会金',
-    amount: 1100,
-    brand: 'JOYFIT',
-    application_type: 'normal',
-    isActive: true,
-  },
-  {
-    id: 'EF003',
-    name: '法人入会金',
-    amount: 5500,
-    brand: '共通',
-    application_type: 'corporate',
-    isActive: true,
-  },
-  {
-    id: 'EF004',
-    name: '社員割引入会金',
-    amount: 0,
-    brand: '共通',
-    application_type: 'employee_discount',
-    isActive: true,
-  },
-  {
-    id: 'EF005',
-    name: '特別契約入会金',
-    amount: 0,
-    brand: '共通',
-    application_type: 'special_contract',
-    isActive: true,
-  },
-];
-
-const SEED_CORPORATE_MASTERS: CorporateMasterRow[] = [
-  { id: 'CORP-001', name: '株式会社サンプルA', code: 'CA001' },
-  { id: 'CORP-002', name: '株式会社サンプルB', code: 'CB002' },
-  { id: 'CORP-003', name: '株式会社サンプルC', code: 'CC003' },
-];
 
 type DbType = {
   members: {
@@ -1932,6 +2172,13 @@ type DbType = {
     _seed(): void;
     getAll(): CorporateMasterRow[];
   };
+  visitExperiences: {
+    _rows: VisitExperience[];
+    _seeded: boolean;
+    _seed(): void;
+    getAll(): VisitExperience[];
+    getById(id: string): VisitExperience | undefined;
+  };
   users: {
     _rows: UserRow[];
     _seeded: boolean;
@@ -1943,7 +2190,7 @@ type DbType = {
 };
 
 declare global {
-  var __fitnessDb_v11: DbType | undefined;
+  var __fitnessDb_v12: DbType | undefined;
 }
 
 // ─── Mock Payment History Data (A-01 FR-009-a) ──────────────────────────────
@@ -10701,6 +10948,25 @@ function createDb() {
       },
     },
 
+    // ─── Visit Experiences ───────────────────────────────────────────────────
+    visitExperiences: {
+      _rows: [] as VisitExperience[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows = [...SEED_VISIT_EXPERIENCES];
+      },
+      getAll(): VisitExperience[] {
+        this._seed();
+        return [...this._rows];
+      },
+      getById(id: string): VisitExperience | undefined {
+        this._seed();
+        return this._rows.find((ve) => ve.id === id);
+      },
+    },
+
     // ─── Users (auth) ────────────────────────────────────────────────────────
     users: {
       _rows: [] as UserRow[],
@@ -10737,6 +11003,7 @@ function createDb() {
   db.enrollmentFeeMasters._seed();
   db.corporateMasters._seed();
   db.partnerCompanies._seed();
+  db.visitExperiences._seed();
   db.users._seed();
 
   return db;
@@ -10746,4 +11013,4 @@ function createDb() {
 // Without this, each route handler gets its own module instance and mutations are invisible
 // across routes.
 // Bump this key whenever the seed logic changes to force a fresh re-seed.
-export const db: DbType = (globalThis.__fitnessDb_v11 ??= createDb() as unknown as DbType);
+export const db: DbType = (globalThis.__fitnessDb_v12 ??= createDb() as unknown as DbType);

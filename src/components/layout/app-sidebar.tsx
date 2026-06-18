@@ -68,6 +68,12 @@ const menuItems: MenuItem[] = [
     label: '入会処理',
     icon: UserPlus,
     href: getRoutePattern('/membership-applications'),
+    subItems: [
+      {
+        label: '見学・体験管理',
+        href: getRoutePattern('/visit-experiences'),
+      },
+    ],
   },
   {
     label: '家族入会',

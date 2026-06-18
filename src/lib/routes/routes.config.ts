@@ -320,6 +320,18 @@ export const routes = {
     pattern: '/stores/create',
     private: true,
   },
+  '/visit-experiences': {
+    router: '/visit-experiences',
+    filePath: '(private)/visit-experiences',
+    pattern: '/visit-experiences',
+    private: true,
+  },
+  '/visit-experiences/[id]': {
+    router: (id: string | number) => `/visit-experiences/${id}`,
+    filePath: '(private)/visit-experiences/[id]',
+    pattern: '/visit-experiences/:id',
+    private: true,
+  },
   '/login': {
     router: '/login',
     filePath: '(public)/login',
@@ -383,6 +395,8 @@ export const routeKeys = [
   '/stores/[id]',
   '/stores/[id]/edit',
   '/stores/create',
+  '/visit-experiences',
+  '/visit-experiences/[id]',
   '/login',
 ] as const;
 
@@ -441,5 +455,7 @@ export const routePatterns = [
   '/stores/:id',
   '/stores/:id/edit',
   '/stores/create',
+  '/visit-experiences',
+  '/visit-experiences/:id',
   '/login',
 ] as const;
