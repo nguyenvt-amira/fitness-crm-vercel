@@ -107,6 +107,7 @@ export function useSurveyAnalyticsFilters() {
     setSearchInput('');
     setFilters({
       search: null,
+      survey_id: null,
       period: 'all',
       brand: null,
       store_id: null,
@@ -116,6 +117,7 @@ export function useSurveyAnalyticsFilters() {
 
   const hasActiveFilters =
     filters.search.length > 0 ||
+    filters.survey_id.length > 0 ||
     filters.period !== 'all' ||
     filters.brand !== null ||
     filters.store_id.length > 0 ||

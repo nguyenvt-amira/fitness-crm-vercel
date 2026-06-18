@@ -2,7 +2,6 @@
 
 import type { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
-import { toast } from 'sonner';
 
 import { BrandBadge } from '@/components/common/brand-badge';
 import { DataTableColumnHeader } from '@/components/common/data-table/data-table-column-header';
@@ -32,14 +31,17 @@ import {
 type SurveyRow = GetCrmSurveysResponse['surveys'][number];
 
 interface SurveysTableColumnsProps {
+  onEditClick?: (id: string) => void;
   onDeleteClick?: (survey: SurveyRow) => void;
 }
 
 function ActionsCell({
   survey,
+  onEditClick,
   onDeleteClick,
 }: {
   survey: SurveyRow;
+  onEditClick?: (id: string) => void;
   onDeleteClick?: (survey: SurveyRow) => void;
 }) {
   return (
@@ -55,7 +57,7 @@ function ActionsCell({
           requiredPermission={Permission.SurveysEdit}
           onClick={(event) => {
             event.stopPropagation();
-            toast.info('編集機能は次のスコープで実装します');
+            onEditClick?.(survey.id);
           }}
         >
           <Pencil className="size-4" />
@@ -79,6 +81,7 @@ function ActionsCell({
 }
 
 export function SurveysTableColumns({
+  onEditClick,
   onDeleteClick,
 }: SurveysTableColumnsProps): ColumnDef<SurveyRow>[] {
   return [
@@ -188,7 +191,13 @@ export function SurveysTableColumns({
       id: 'actions',
       header: () => null,
       meta: { className: 'w-[52px]' },
-      cell: ({ row }) => <ActionsCell survey={row.original} onDeleteClick={onDeleteClick} />,
+      cell: ({ row }) => (
+        <ActionsCell
+          survey={row.original}
+          onEditClick={onEditClick}
+          onDeleteClick={onDeleteClick}
+        />
+      ),
     },
   ];
 }

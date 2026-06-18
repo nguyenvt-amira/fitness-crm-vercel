@@ -65,6 +65,7 @@ export function useSurveyResponsesFilters() {
       page: 1,
       limit: PAGE_SIZE,
       search: null,
+      survey_id: null,
       period_from: null,
       period_to: null,
       brand: null,
@@ -76,6 +77,7 @@ export function useSurveyResponsesFilters() {
 
   const hasActiveFilters =
     filters.search.length > 0 ||
+    filters.survey_id.length > 0 ||
     filters.period_from.length > 0 ||
     filters.period_to.length > 0 ||
     filters.brand !== null ||

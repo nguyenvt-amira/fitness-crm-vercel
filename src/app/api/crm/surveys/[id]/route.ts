@@ -51,24 +51,6 @@ registerRoute({
 });
 
 registerRoute({
-  method: 'post',
-  path: '/crm/surveys',
-  summary: 'Create survey template',
-  description: 'Create a lifecycle survey template',
-  tags: ['Surveys'],
-  requestBody: {
-    schema: SurveyTemplateUpsertBodySchema,
-    description: 'Lifecycle survey template upsert payload',
-  },
-  responses: [
-    { status: 201, schema: SurveyTemplateUpsertResponseSchema, description: 'Created survey' },
-    { status: 400, schema: ErrorResponseSchema, description: 'Validation error' },
-    { status: 409, schema: ErrorResponseSchema, description: 'Duplicate trigger conflict' },
-    { status: 500, schema: ErrorResponseSchema, description: 'Internal server error' },
-  ],
-});
-
-registerRoute({
   method: 'get',
   path: '/crm/surveys/{id}',
   summary: 'Get survey template detail',
@@ -170,30 +152,6 @@ function findDuplicateActiveTrigger(trigger: string, surveyId?: string) {
       (survey) =>
         survey.trigger === trigger && survey.status === 'active' && survey.id !== surveyId,
     );
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const validation = SurveyTemplateUpsertBodySchema.safeParse(body);
-    if (!validation.success) {
-      const errors = validation.error.issues.map((issue) => issue.message).join(', ');
-      return jsonSurveyError(errors, 400);
-    }
-
-    if (findDuplicateActiveTrigger(validation.data.trigger)) {
-      return NextResponse.json(
-        { error: '同一トリガーのアンケートが既に存在します' },
-        { status: 409 },
-      );
-    }
-
-    const survey = db.surveys.add(validation.data);
-    return NextResponse.json({ message: 'アンケートを登録しました', survey }, { status: 201 });
-  } catch (error) {
-    console.error('POST /crm/surveys error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-  }
 }
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {

@@ -23,6 +23,7 @@ import {
 import type { GetCrmSurveysResponse } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
+import { SurveyDeleteDialog } from './[id]/_components/survey-delete-dialog';
 import { SurveyListHeaderActions } from './_components/survey-list-header-actions';
 import { SurveysFilters } from './_components/surveys-filters';
 import { SurveysTableColumns } from './_components/surveys-table-columns';
@@ -33,7 +34,7 @@ type SurveyRow = GetCrmSurveysResponse['surveys'][number];
 
 function SurveysPageContent() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<SurveyRow | null>(null);
   const filtersHook = useSurveysFilters();
   const { filters, setFilters, queryParams, currentPage, setCurrentPage, pageSize, setPageSize } =
     filtersHook;
@@ -49,12 +50,10 @@ function SurveysPageContent() {
     onSuccess: (response) => {
       toast.success(response.message || 'アンケートを削除しました');
       queryClient.invalidateQueries({ queryKey: getCrmSurveysQueryKey(), refetchType: 'all' });
+      setDeleteTarget(null);
     },
     onError: () => {
       toast.error('アンケートの削除に失敗しました');
-    },
-    onSettled: () => {
-      setDeletingId(null);
     },
   });
 
@@ -84,12 +83,14 @@ function SurveysPageContent() {
   const columns: ColumnDef<SurveyRow>[] = useMemo(
     () =>
       SurveysTableColumns({
+        onEditClick: (id) => {
+          router.push(navigate('/surveys/[id]/edit', id));
+        },
         onDeleteClick: (survey) => {
-          setDeletingId(survey.id);
-          deleteMutation.mutate({ path: { id: survey.id } });
+          setDeleteTarget(survey);
         },
       }),
-    [deleteMutation],
+    [router],
   );
 
   return (
@@ -132,7 +133,7 @@ function SurveysPageContent() {
                 isFilterOpen ? 'max-h-[calc(100vh-330px)]' : 'max-h-[calc(100vh-286px)]'
               }
               onRowClick={(row) => {
-                if (deletingId) {
+                if (deleteTarget) {
                   return;
                 }
                 router.push(navigate('/surveys/[id]', row.id));
@@ -156,6 +157,22 @@ function SurveysPageContent() {
           )}
         </Card>
       </div>
+
+      {deleteTarget && (
+        <SurveyDeleteDialog
+          surveyName={deleteTarget.name}
+          open={Boolean(deleteTarget)}
+          isPending={deleteMutation.isPending}
+          onOpenChange={(open) => {
+            if (!open) {
+              setDeleteTarget(null);
+            }
+          }}
+          onConfirm={() => {
+            deleteMutation.mutate({ path: { id: deleteTarget.id } });
+          }}
+        />
+      )}
     </>
   );
 }

@@ -370,10 +370,11 @@ function buildSurveyTemplateDetail(
       ...question,
       choices: question.choices.map((choice) => ({ ...choice })),
     })) ?? [];
+  const questionCount = overrides.questions?.length ?? survey.question_count;
 
   return {
     ...survey,
-    question_count: survey.question_count || questions.length,
+    question_count: questionCount,
     created_at: overrides.created_at ?? '2024/04/01',
     updated_at: overrides.updated_at ?? '2026/03/10',
     questions,

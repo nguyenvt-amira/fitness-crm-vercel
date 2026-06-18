@@ -44,18 +44,6 @@ export const surveyFormSchema = z
     questions: z.array(surveyQuestionFormSchema).min(1, '設問を1件以上追加してください'),
   })
   .superRefine((value, ctx) => {
-    const activeTriggers = new Set<SurveyTemplateTrigger>();
-    if (value.type === 'lifecycle') {
-      if (activeTriggers.has(value.trigger)) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['trigger'],
-          message: '同一トリガーのアンケートが既に存在します',
-        });
-      }
-      activeTriggers.add(value.trigger);
-    }
-
     value.questions.forEach((question, index) => {
       if (question.format !== 'free_text' && question.choices.length === 0) {
         ctx.addIssue({
@@ -148,6 +136,7 @@ export function mapSurveyFormValuesToPayload(values: SurveyFormValues) {
       content: question.content.trim(),
       format: question.format,
       required: question.required,
+      has_responses: question.hasResponses,
       choices: question.choices.map((choice, choiceIndex) => ({
         order: choiceIndex + 1,
         text: choice.text.trim(),
