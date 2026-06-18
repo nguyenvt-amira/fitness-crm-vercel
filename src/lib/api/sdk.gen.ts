@@ -2153,31 +2153,6 @@ export class Surveys {
     }
     
     /**
-     * Get survey templates
-     *
-     * Get paginated list of survey templates (G-04 FR-001 slice)
-     */
-    public static getCrmSurveys<ThrowOnError extends boolean = false>(options?: Options<GetCrmSurveysData, ThrowOnError>) {
-        return (options?.client ?? client).get<GetCrmSurveysResponses, GetCrmSurveysErrors, ThrowOnError>({ url: '/crm/surveys', ...options });
-    }
-    
-    /**
-     * Create survey template
-     *
-     * Create a lifecycle survey template
-     */
-    public static postCrmSurveys<ThrowOnError extends boolean = false>(options?: Options<PostCrmSurveysData, ThrowOnError>) {
-        return (options?.client ?? client).post<PostCrmSurveysResponses, PostCrmSurveysErrors, ThrowOnError>({
-            url: '/crm/surveys',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options?.headers
-            }
-        });
-    }
-    
-    /**
      * Export survey analytics CSV
      *
      * Export the current survey analytics view as CSV
@@ -2234,6 +2209,31 @@ export class Surveys {
      */
     public static getCrmSurveysResponses<ThrowOnError extends boolean = false>(options?: Options<GetCrmSurveysResponsesData, ThrowOnError>) {
         return (options?.client ?? client).get<GetCrmSurveysResponsesResponses, GetCrmSurveysResponsesErrors, ThrowOnError>({ url: '/crm/surveys/responses', ...options });
+    }
+    
+    /**
+     * Get survey templates
+     *
+     * Get paginated list of survey templates (G-04 FR-001 slice)
+     */
+    public static getCrmSurveys<ThrowOnError extends boolean = false>(options?: Options<GetCrmSurveysData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmSurveysResponses, GetCrmSurveysErrors, ThrowOnError>({ url: '/crm/surveys', ...options });
+    }
+    
+    /**
+     * Create survey template
+     *
+     * Create a lifecycle survey template
+     */
+    public static postCrmSurveys<ThrowOnError extends boolean = false>(options?: Options<PostCrmSurveysData, ThrowOnError>) {
+        return (options?.client ?? client).post<PostCrmSurveysResponses, PostCrmSurveysErrors, ThrowOnError>({
+            url: '/crm/surveys',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options?.headers
+            }
+        });
     }
 }
 

@@ -2,9 +2,6 @@
 
 import { useFormContext } from 'react-hook-form';
 
-import { AlertTriangle } from 'lucide-react';
-
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -24,11 +21,7 @@ import {
 } from '../_constants/constants';
 import type { SurveyFormValues } from '../_schemas/survey-form.schema';
 
-interface SurveyFormBasicInfoSectionProps {
-  isEdit: boolean;
-}
-
-export function SurveyFormBasicInfoSection({ isEdit }: Readonly<SurveyFormBasicInfoSectionProps>) {
+export function SurveyFormBasicInfoSection() {
   const form = useFormContext<SurveyFormValues>();
   const brandOptions = Object.entries(SURVEY_BRAND_LABELS) as [
     keyof typeof SURVEY_BRAND_LABELS,
@@ -161,15 +154,6 @@ export function SurveyFormBasicInfoSection({ isEdit }: Readonly<SurveyFormBasicI
               </FormItem>
             )}
           />
-
-          {isEdit && (
-            <Alert className="border-warning/50 bg-warning/10">
-              <AlertTriangle className="text-warning size-4" />
-              <AlertDescription className="text-muted-foreground text-xs">
-                回答済みデータがある状態で設問を変更すると、既存の回答との整合性が失われます。
-              </AlertDescription>
-            </Alert>
-          )}
         </div>
       </CardContent>
     </Card>

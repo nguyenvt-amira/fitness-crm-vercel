@@ -3948,74 +3948,6 @@ export const putCrmSurveysByIdMutation = (options?: Partial<Options<PutCrmSurvey
     return mutationOptions;
 };
 
-export const getCrmSurveysQueryKey = (options?: Options<GetCrmSurveysData>) => createQueryKey('getCrmSurveys', options);
-
-/**
- * Get survey templates
- *
- * Get paginated list of survey templates (G-04 FR-001 slice)
- */
-export const getCrmSurveysOptions = (options?: Options<GetCrmSurveysData>) => queryOptions<GetCrmSurveysResponse, GetCrmSurveysError, GetCrmSurveysResponse, ReturnType<typeof getCrmSurveysQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await Surveys.getCrmSurveys({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmSurveysQueryKey(options)
-});
-
-export const getCrmSurveysInfiniteQueryKey = (options?: Options<GetCrmSurveysData>): QueryKey<Options<GetCrmSurveysData>> => createQueryKey('getCrmSurveys', options, true);
-
-/**
- * Get survey templates
- *
- * Get paginated list of survey templates (G-04 FR-001 slice)
- */
-export const getCrmSurveysInfiniteOptions = (options?: Options<GetCrmSurveysData>) => infiniteQueryOptions<GetCrmSurveysResponse, GetCrmSurveysError, InfiniteData<GetCrmSurveysResponse>, QueryKey<Options<GetCrmSurveysData>>, number | Pick<QueryKey<Options<GetCrmSurveysData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<GetCrmSurveysData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            query: {
-                page: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await Surveys.getCrmSurveys({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmSurveysInfiniteQueryKey(options)
-});
-
-/**
- * Create survey template
- *
- * Create a lifecycle survey template
- */
-export const postCrmSurveysMutation = (options?: Partial<Options<PostCrmSurveysData>>): UseMutationOptions<PostCrmSurveysResponse, PostCrmSurveysError, Options<PostCrmSurveysData>> => {
-    const mutationOptions: UseMutationOptions<PostCrmSurveysResponse, PostCrmSurveysError, Options<PostCrmSurveysData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await Surveys.postCrmSurveys({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
 /**
  * Export survey analytics CSV
  *
@@ -4142,6 +4074,74 @@ export const getCrmSurveysResponsesInfiniteOptions = (options?: Options<GetCrmSu
     },
     queryKey: getCrmSurveysResponsesInfiniteQueryKey(options)
 });
+
+export const getCrmSurveysQueryKey = (options?: Options<GetCrmSurveysData>) => createQueryKey('getCrmSurveys', options);
+
+/**
+ * Get survey templates
+ *
+ * Get paginated list of survey templates (G-04 FR-001 slice)
+ */
+export const getCrmSurveysOptions = (options?: Options<GetCrmSurveysData>) => queryOptions<GetCrmSurveysResponse, GetCrmSurveysError, GetCrmSurveysResponse, ReturnType<typeof getCrmSurveysQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Surveys.getCrmSurveys({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmSurveysQueryKey(options)
+});
+
+export const getCrmSurveysInfiniteQueryKey = (options?: Options<GetCrmSurveysData>): QueryKey<Options<GetCrmSurveysData>> => createQueryKey('getCrmSurveys', options, true);
+
+/**
+ * Get survey templates
+ *
+ * Get paginated list of survey templates (G-04 FR-001 slice)
+ */
+export const getCrmSurveysInfiniteOptions = (options?: Options<GetCrmSurveysData>) => infiniteQueryOptions<GetCrmSurveysResponse, GetCrmSurveysError, InfiniteData<GetCrmSurveysResponse>, QueryKey<Options<GetCrmSurveysData>>, number | Pick<QueryKey<Options<GetCrmSurveysData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetCrmSurveysData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await Surveys.getCrmSurveys({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmSurveysInfiniteQueryKey(options)
+});
+
+/**
+ * Create survey template
+ *
+ * Create a lifecycle survey template
+ */
+export const postCrmSurveysMutation = (options?: Partial<Options<PostCrmSurveysData>>): UseMutationOptions<PostCrmSurveysResponse, PostCrmSurveysError, Options<PostCrmSurveysData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmSurveysResponse, PostCrmSurveysError, Options<PostCrmSurveysData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Surveys.postCrmSurveys({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
 
 /**
  * Approve transfer request

@@ -43,7 +43,7 @@ export const SurveyResponseListItemSchema = z
     brand: StoreListBrandSchema.openapi({ description: 'ブランド' }),
     store_id: z.string().openapi({ example: 'store-001', description: '店舗ID' }),
     store_name: z.string().openapi({ example: 'FIT365八潮店', description: '店舗名' }),
-    member_type: MemberTypeSchema.openapi({ description: '会員区分' }),
+    member_type: MemberTypeSchema.openapi({ description: '区分' }),
     answered_count: z
       .number()
       .int()

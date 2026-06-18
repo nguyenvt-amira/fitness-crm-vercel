@@ -25581,11 +25581,6 @@
             "example": true,
             "description": "必答かどうか"
           },
-          "visible": {
-            "type": "boolean",
-            "example": true,
-            "description": "表示状態"
-          },
           "has_responses": {
             "type": "boolean",
             "example": true,
@@ -25624,7 +25619,6 @@
           "content",
           "format",
           "required",
-          "visible",
           "choices"
         ],
         "title": "SurveyQuestion",
@@ -26063,11 +26057,6 @@
                   "example": true,
                   "description": "必答かどうか"
                 },
-                "visible": {
-                  "type": "boolean",
-                  "example": true,
-                  "description": "表示状態"
-                },
                 "has_responses": {
                   "type": "boolean",
                   "example": true,
@@ -26106,7 +26095,6 @@
                 "content",
                 "format",
                 "required",
-                "visible",
                 "choices"
               ],
               "title": "SurveyQuestion",
@@ -26162,11 +26150,6 @@
             "example": true,
             "description": "必答かどうか"
           },
-          "visible": {
-            "type": "boolean",
-            "example": true,
-            "description": "表示状態"
-          },
           "has_responses": {
             "type": "boolean",
             "example": true,
@@ -26205,7 +26188,6 @@
           "content",
           "format",
           "required",
-          "visible",
           "choices"
         ],
         "title": "SurveyTemplateUpsertQuestion",
@@ -26294,11 +26276,6 @@
                   "example": true,
                   "description": "必答かどうか"
                 },
-                "visible": {
-                  "type": "boolean",
-                  "example": true,
-                  "description": "表示状態"
-                },
                 "has_responses": {
                   "type": "boolean",
                   "example": true,
@@ -26337,7 +26314,6 @@
                 "content",
                 "format",
                 "required",
-                "visible",
                 "choices"
               ],
               "title": "SurveyTemplateUpsertQuestion",
@@ -26493,11 +26469,6 @@
                       "example": true,
                       "description": "必答かどうか"
                     },
-                    "visible": {
-                      "type": "boolean",
-                      "example": true,
-                      "description": "表示状態"
-                    },
                     "has_responses": {
                       "type": "boolean",
                       "example": true,
@@ -26536,7 +26507,6 @@
                     "content",
                     "format",
                     "required",
-                    "visible",
                     "choices"
                   ],
                   "title": "SurveyQuestion",
@@ -26698,11 +26668,6 @@
                       "example": true,
                       "description": "必答かどうか"
                     },
-                    "visible": {
-                      "type": "boolean",
-                      "example": true,
-                      "description": "表示状態"
-                    },
                     "has_responses": {
                       "type": "boolean",
                       "example": true,
@@ -26741,7 +26706,6 @@
                     "content",
                     "format",
                     "required",
-                    "visible",
                     "choices"
                   ],
                   "title": "SurveyQuestion",
@@ -26931,11 +26895,6 @@
                       "example": true,
                       "description": "必答かどうか"
                     },
-                    "visible": {
-                      "type": "boolean",
-                      "example": true,
-                      "description": "表示状態"
-                    },
                     "has_responses": {
                       "type": "boolean",
                       "example": true,
@@ -26974,7 +26933,6 @@
                     "content",
                     "format",
                     "required",
-                    "visible",
                     "choices"
                   ],
                   "title": "SurveyQuestion",
@@ -68901,11 +68859,6 @@
                           "example": true,
                           "description": "必答かどうか"
                         },
-                        "visible": {
-                          "type": "boolean",
-                          "example": true,
-                          "description": "表示状態"
-                        },
                         "has_responses": {
                           "type": "boolean",
                           "example": true,
@@ -68944,7 +68897,6 @@
                         "content",
                         "format",
                         "required",
-                        "visible",
                         "choices"
                       ],
                       "title": "SurveyTemplateUpsertQuestion",
@@ -69108,11 +69060,6 @@
                                 "example": true,
                                 "description": "必答かどうか"
                               },
-                              "visible": {
-                                "type": "boolean",
-                                "example": true,
-                                "description": "表示状態"
-                              },
                               "has_responses": {
                                 "type": "boolean",
                                 "example": true,
@@ -69151,7 +69098,6 @@
                               "content",
                               "format",
                               "required",
-                              "visible",
                               "choices"
                             ],
                             "title": "SurveyQuestion",
@@ -69428,11 +69374,6 @@
                                 "example": true,
                                 "description": "必答かどうか"
                               },
-                              "visible": {
-                                "type": "boolean",
-                                "example": true,
-                                "description": "表示状態"
-                              },
                               "has_responses": {
                                 "type": "boolean",
                                 "example": true,
@@ -69471,7 +69412,6 @@
                               "content",
                               "format",
                               "required",
-                              "visible",
                               "choices"
                             ],
                             "title": "SurveyQuestion",
@@ -69824,11 +69764,6 @@
                                 "example": true,
                                 "description": "必答かどうか"
                               },
-                              "visible": {
-                                "type": "boolean",
-                                "example": true,
-                                "description": "表示状態"
-                              },
                               "has_responses": {
                                 "type": "boolean",
                                 "example": true,
@@ -69867,7 +69802,6 @@
                               "content",
                               "format",
                               "required",
-                              "visible",
                               "choices"
                             ],
                             "title": "SurveyQuestion",
@@ -69929,767 +69863,6 @@
           },
           "404": {
             "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Invalid email or password",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Invalid email or password",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/crm/surveys": {
-      "post": {
-        "summary": "Create survey template",
-        "description": "Create a lifecycle survey template",
-        "tags": [
-          "Surveys"
-        ],
-        "requestBody": {
-          "description": "Lifecycle survey template upsert payload",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "description": "アンケート名"
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "lifecycle",
-                      "operational"
-                    ],
-                    "title": "SurveyTemplateType",
-                    "description": "種別"
-                  },
-                  "trigger": {
-                    "type": "string",
-                    "enum": [
-                      "join",
-                      "leave",
-                      "suspension_request",
-                      "transfer",
-                      "renewal",
-                      "manual_delivery",
-                      "conditional_trigger"
-                    ],
-                    "title": "SurveyTemplateTrigger",
-                    "description": "発動トリガー"
-                  },
-                  "brand": {
-                    "type": "string",
-                    "enum": [
-                      "joyfit",
-                      "fit365",
-                      "joyfit24",
-                      "joyfit_yoga",
-                      "joyfit_plus"
-                    ],
-                    "title": "StoreListBrand",
-                    "description": "ブランド"
-                  },
-                  "status": {
-                    "type": "string",
-                    "enum": [
-                      "active",
-                      "inactive"
-                    ],
-                    "title": "SurveyTemplateStatus",
-                    "description": "状態"
-                  },
-                  "questions": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "no": {
-                          "type": "integer",
-                          "minimum": 0,
-                          "exclusiveMinimum": true,
-                          "example": 1,
-                          "description": "設問番号"
-                        },
-                        "content": {
-                          "type": "string",
-                          "example": "入会のきっかけを教えてください"
-                        },
-                        "format": {
-                          "type": "string",
-                          "enum": [
-                            "single_choice",
-                            "multiple_choice",
-                            "free_text"
-                          ],
-                          "title": "SurveyQuestionFormat",
-                          "description": "回答形式"
-                        },
-                        "required": {
-                          "type": "boolean",
-                          "example": true,
-                          "description": "必答かどうか"
-                        },
-                        "visible": {
-                          "type": "boolean",
-                          "example": true,
-                          "description": "表示状態"
-                        },
-                        "has_responses": {
-                          "type": "boolean",
-                          "example": true,
-                          "description": "回答データの有無"
-                        },
-                        "choices": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "order": {
-                                "type": "integer",
-                                "minimum": 0,
-                                "exclusiveMinimum": true,
-                                "example": 1,
-                                "description": "表示順"
-                              },
-                              "text": {
-                                "type": "string",
-                                "example": "友人の紹介",
-                                "description": "選択肢テキスト"
-                              }
-                            },
-                            "required": [
-                              "order",
-                              "text"
-                            ],
-                            "title": "SurveyQuestionChoice",
-                            "description": "アンケート設問選択肢"
-                          },
-                          "description": "選択肢一覧"
-                        }
-                      },
-                      "required": [
-                        "no",
-                        "content",
-                        "format",
-                        "required",
-                        "visible",
-                        "choices"
-                      ],
-                      "title": "SurveyTemplateUpsertQuestion",
-                      "description": "アンケート設問更新用アイテム"
-                    },
-                    "description": "設問一覧"
-                  },
-                  "replace_existing_survey_id": {
-                    "type": "string",
-                    "nullable": true,
-                    "description": "同一トリガーの既存アンケートID"
-                  }
-                },
-                "required": [
-                  "name",
-                  "type",
-                  "trigger",
-                  "brand",
-                  "status",
-                  "questions"
-                ],
-                "title": "SurveyTemplateUpsertBody",
-                "description": "アンケートテンプレート作成・更新リクエスト"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created survey",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "アンケートを登録しました"
-                    },
-                    "survey": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string",
-                          "example": "S-001",
-                          "description": "アンケートID"
-                        },
-                        "name": {
-                          "type": "string",
-                          "example": "入会時アンケート",
-                          "description": "アンケート名"
-                        },
-                        "type": {
-                          "type": "string",
-                          "enum": [
-                            "lifecycle",
-                            "operational"
-                          ],
-                          "title": "SurveyTemplateType",
-                          "description": "種別"
-                        },
-                        "trigger": {
-                          "type": "string",
-                          "enum": [
-                            "join",
-                            "leave",
-                            "suspension_request",
-                            "transfer",
-                            "renewal",
-                            "manual_delivery",
-                            "conditional_trigger"
-                          ],
-                          "title": "SurveyTemplateTrigger",
-                          "description": "発動トリガー"
-                        },
-                        "brand": {
-                          "type": "string",
-                          "enum": [
-                            "joyfit",
-                            "fit365",
-                            "joyfit24",
-                            "joyfit_yoga",
-                            "joyfit_plus"
-                          ],
-                          "title": "StoreListBrand",
-                          "description": "ブランド"
-                        },
-                        "question_count": {
-                          "type": "integer",
-                          "minimum": 0,
-                          "example": 5,
-                          "description": "設問数"
-                        },
-                        "response_count": {
-                          "type": "integer",
-                          "minimum": 0,
-                          "example": 1840,
-                          "description": "回答件数"
-                        },
-                        "response_rate": {
-                          "type": "number",
-                          "minimum": 0,
-                          "maximum": 100,
-                          "example": 78.4,
-                          "description": "回答率(%)"
-                        },
-                        "last_response_date": {
-                          "type": "string",
-                          "nullable": true,
-                          "example": "2026/03/10",
-                          "description": "最終回答日"
-                        },
-                        "status": {
-                          "type": "string",
-                          "enum": [
-                            "active",
-                            "inactive"
-                          ],
-                          "title": "SurveyTemplateStatus",
-                          "description": "状態"
-                        },
-                        "created_at": {
-                          "type": "string",
-                          "example": "2024/04/01",
-                          "description": "作成日"
-                        },
-                        "updated_at": {
-                          "type": "string",
-                          "example": "2026/03/10",
-                          "description": "最終更新日"
-                        },
-                        "questions": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "no": {
-                                "type": "integer",
-                                "minimum": 0,
-                                "exclusiveMinimum": true,
-                                "example": 1,
-                                "description": "設問番号"
-                              },
-                              "content": {
-                                "type": "string",
-                                "example": "入会のきっかけを教えてください",
-                                "description": "設問内容"
-                              },
-                              "format": {
-                                "type": "string",
-                                "enum": [
-                                  "single_choice",
-                                  "multiple_choice",
-                                  "free_text"
-                                ],
-                                "title": "SurveyQuestionFormat",
-                                "description": "回答形式"
-                              },
-                              "required": {
-                                "type": "boolean",
-                                "example": true,
-                                "description": "必答かどうか"
-                              },
-                              "visible": {
-                                "type": "boolean",
-                                "example": true,
-                                "description": "表示状態"
-                              },
-                              "has_responses": {
-                                "type": "boolean",
-                                "example": true,
-                                "description": "回答データの有無"
-                              },
-                              "choices": {
-                                "type": "array",
-                                "items": {
-                                  "type": "object",
-                                  "properties": {
-                                    "order": {
-                                      "type": "integer",
-                                      "minimum": 0,
-                                      "exclusiveMinimum": true,
-                                      "example": 1,
-                                      "description": "表示順"
-                                    },
-                                    "text": {
-                                      "type": "string",
-                                      "example": "友人の紹介",
-                                      "description": "選択肢テキスト"
-                                    }
-                                  },
-                                  "required": [
-                                    "order",
-                                    "text"
-                                  ],
-                                  "title": "SurveyQuestionChoice",
-                                  "description": "アンケート設問選択肢"
-                                },
-                                "description": "選択肢一覧"
-                              }
-                            },
-                            "required": [
-                              "no",
-                              "content",
-                              "format",
-                              "required",
-                              "visible",
-                              "choices"
-                            ],
-                            "title": "SurveyQuestion",
-                            "description": "アンケート設問"
-                          },
-                          "description": "設問一覧"
-                        }
-                      },
-                      "required": [
-                        "id",
-                        "name",
-                        "type",
-                        "trigger",
-                        "brand",
-                        "question_count",
-                        "response_count",
-                        "response_rate",
-                        "last_response_date",
-                        "status",
-                        "created_at",
-                        "updated_at",
-                        "questions"
-                      ],
-                      "title": "SurveyTemplateDetail",
-                      "description": "アンケートテンプレート詳細"
-                    }
-                  },
-                  "required": [
-                    "message",
-                    "survey"
-                  ],
-                  "title": "SurveyTemplateUpsertResponse",
-                  "description": "アンケートテンプレート作成・更新レスポンス"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Invalid email or password",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Duplicate trigger conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Invalid email or password",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Invalid email or password",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "summary": "Get survey templates",
-        "description": "Get paginated list of survey templates (G-04 FR-001 slice)",
-        "tags": [
-          "Surveys"
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "default": 1
-            },
-            "required": false,
-            "name": "page",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 200,
-              "default": 20
-            },
-            "required": false,
-            "name": "limit",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "description": "アンケート名で検索"
-            },
-            "required": false,
-            "description": "アンケート名で検索",
-            "name": "search",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "enum": [
-                "lifecycle",
-                "operational"
-              ],
-              "title": "SurveyTemplateType",
-              "description": "アンケート種別"
-            },
-            "required": false,
-            "description": "アンケート種別",
-            "name": "type",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "enum": [
-                "joyfit",
-                "fit365",
-                "joyfit24",
-                "joyfit_yoga",
-                "joyfit_plus"
-              ],
-              "title": "StoreListBrand",
-              "description": "Store brand"
-            },
-            "required": false,
-            "description": "Store brand",
-            "name": "brand",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "enum": [
-                "active",
-                "inactive"
-              ],
-              "title": "SurveyTemplateStatus",
-              "description": "アンケートステータス"
-            },
-            "required": false,
-            "description": "アンケートステータス",
-            "name": "status",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "enum": [
-                "id",
-                "name",
-                "type",
-                "trigger",
-                "brand",
-                "question_count",
-                "response_count",
-                "response_rate",
-                "last_response_date",
-                "status"
-              ],
-              "default": "id"
-            },
-            "required": false,
-            "name": "sort_by",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ],
-              "default": "asc"
-            },
-            "required": false,
-            "name": "sort_order",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Survey template list",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "surveys": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "example": "S-001",
-                            "description": "アンケートID"
-                          },
-                          "name": {
-                            "type": "string",
-                            "example": "入会時アンケート",
-                            "description": "アンケート名"
-                          },
-                          "type": {
-                            "type": "string",
-                            "enum": [
-                              "lifecycle",
-                              "operational"
-                            ],
-                            "title": "SurveyTemplateType",
-                            "description": "種別"
-                          },
-                          "trigger": {
-                            "type": "string",
-                            "enum": [
-                              "join",
-                              "leave",
-                              "suspension_request",
-                              "transfer",
-                              "renewal",
-                              "manual_delivery",
-                              "conditional_trigger"
-                            ],
-                            "title": "SurveyTemplateTrigger",
-                            "description": "発動トリガー"
-                          },
-                          "brand": {
-                            "type": "string",
-                            "enum": [
-                              "joyfit",
-                              "fit365",
-                              "joyfit24",
-                              "joyfit_yoga",
-                              "joyfit_plus"
-                            ],
-                            "title": "StoreListBrand",
-                            "description": "ブランド"
-                          },
-                          "question_count": {
-                            "type": "integer",
-                            "minimum": 0,
-                            "example": 5,
-                            "description": "設問数"
-                          },
-                          "response_count": {
-                            "type": "integer",
-                            "minimum": 0,
-                            "example": 1840,
-                            "description": "回答件数"
-                          },
-                          "response_rate": {
-                            "type": "number",
-                            "minimum": 0,
-                            "maximum": 100,
-                            "example": 78.4,
-                            "description": "回答率(%)"
-                          },
-                          "last_response_date": {
-                            "type": "string",
-                            "nullable": true,
-                            "example": "2026/03/10",
-                            "description": "最終回答日"
-                          },
-                          "status": {
-                            "type": "string",
-                            "enum": [
-                              "active",
-                              "inactive"
-                            ],
-                            "title": "SurveyTemplateStatus",
-                            "description": "状態"
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "name",
-                          "type",
-                          "trigger",
-                          "brand",
-                          "question_count",
-                          "response_count",
-                          "response_rate",
-                          "last_response_date",
-                          "status"
-                        ],
-                        "title": "SurveyTemplateListItem",
-                        "description": "アンケートテンプレート一覧アイテム"
-                      }
-                    },
-                    "pagination": {
-                      "type": "object",
-                      "properties": {
-                        "page": {
-                          "type": "number"
-                        },
-                        "limit": {
-                          "type": "number"
-                        },
-                        "total": {
-                          "type": "number"
-                        },
-                        "total_pages": {
-                          "type": "number"
-                        }
-                      },
-                      "required": [
-                        "page",
-                        "limit",
-                        "total",
-                        "total_pages"
-                      ]
-                    }
-                  },
-                  "required": [
-                    "surveys",
-                    "pagination"
-                  ],
-                  "title": "GetSurveyTemplatesResponse",
-                  "description": "アンケートテンプレート一覧レスポンス"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
             "content": {
               "application/json": {
                 "schema": {
@@ -71403,7 +70576,7 @@
                             "corporate",
                             "one_day_member"
                           ],
-                          "description": "会員区分"
+                          "description": "区分"
                         },
                         "answered_count": {
                           "type": "integer",
@@ -71927,7 +71100,7 @@
                               "corporate",
                               "one_day_member"
                             ],
-                            "description": "会員区分"
+                            "description": "区分"
                           },
                           "answered_count": {
                             "type": "integer",
@@ -72002,6 +71175,755 @@
                   ],
                   "title": "GetSurveyResponsesResponse",
                   "description": "アンケート回答一覧レスポンス"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/surveys": {
+      "post": {
+        "summary": "Create survey template",
+        "description": "Create a lifecycle survey template",
+        "tags": [
+          "Surveys"
+        ],
+        "requestBody": {
+          "description": "Lifecycle survey template upsert payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "アンケート名"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "lifecycle",
+                      "operational"
+                    ],
+                    "title": "SurveyTemplateType",
+                    "description": "種別"
+                  },
+                  "trigger": {
+                    "type": "string",
+                    "enum": [
+                      "join",
+                      "leave",
+                      "suspension_request",
+                      "transfer",
+                      "renewal",
+                      "manual_delivery",
+                      "conditional_trigger"
+                    ],
+                    "title": "SurveyTemplateTrigger",
+                    "description": "発動トリガー"
+                  },
+                  "brand": {
+                    "type": "string",
+                    "enum": [
+                      "joyfit",
+                      "fit365",
+                      "joyfit24",
+                      "joyfit_yoga",
+                      "joyfit_plus"
+                    ],
+                    "title": "StoreListBrand",
+                    "description": "ブランド"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "active",
+                      "inactive"
+                    ],
+                    "title": "SurveyTemplateStatus",
+                    "description": "状態"
+                  },
+                  "questions": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "no": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "exclusiveMinimum": true,
+                          "example": 1,
+                          "description": "設問番号"
+                        },
+                        "content": {
+                          "type": "string",
+                          "example": "入会のきっかけを教えてください"
+                        },
+                        "format": {
+                          "type": "string",
+                          "enum": [
+                            "single_choice",
+                            "multiple_choice",
+                            "free_text"
+                          ],
+                          "title": "SurveyQuestionFormat",
+                          "description": "回答形式"
+                        },
+                        "required": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "必答かどうか"
+                        },
+                        "has_responses": {
+                          "type": "boolean",
+                          "example": true,
+                          "description": "回答データの有無"
+                        },
+                        "choices": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "order": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "exclusiveMinimum": true,
+                                "example": 1,
+                                "description": "表示順"
+                              },
+                              "text": {
+                                "type": "string",
+                                "example": "友人の紹介",
+                                "description": "選択肢テキスト"
+                              }
+                            },
+                            "required": [
+                              "order",
+                              "text"
+                            ],
+                            "title": "SurveyQuestionChoice",
+                            "description": "アンケート設問選択肢"
+                          },
+                          "description": "選択肢一覧"
+                        }
+                      },
+                      "required": [
+                        "no",
+                        "content",
+                        "format",
+                        "required",
+                        "choices"
+                      ],
+                      "title": "SurveyTemplateUpsertQuestion",
+                      "description": "アンケート設問更新用アイテム"
+                    },
+                    "description": "設問一覧"
+                  },
+                  "replace_existing_survey_id": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "同一トリガーの既存アンケートID"
+                  }
+                },
+                "required": [
+                  "name",
+                  "type",
+                  "trigger",
+                  "brand",
+                  "status",
+                  "questions"
+                ],
+                "title": "SurveyTemplateUpsertBody",
+                "description": "アンケートテンプレート作成・更新リクエスト"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created survey",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "アンケートを登録しました"
+                    },
+                    "survey": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "S-001",
+                          "description": "アンケートID"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "入会時アンケート",
+                          "description": "アンケート名"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "lifecycle",
+                            "operational"
+                          ],
+                          "title": "SurveyTemplateType",
+                          "description": "種別"
+                        },
+                        "trigger": {
+                          "type": "string",
+                          "enum": [
+                            "join",
+                            "leave",
+                            "suspension_request",
+                            "transfer",
+                            "renewal",
+                            "manual_delivery",
+                            "conditional_trigger"
+                          ],
+                          "title": "SurveyTemplateTrigger",
+                          "description": "発動トリガー"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "enum": [
+                            "joyfit",
+                            "fit365",
+                            "joyfit24",
+                            "joyfit_yoga",
+                            "joyfit_plus"
+                          ],
+                          "title": "StoreListBrand",
+                          "description": "ブランド"
+                        },
+                        "question_count": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 5,
+                          "description": "設問数"
+                        },
+                        "response_count": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 1840,
+                          "description": "回答件数"
+                        },
+                        "response_rate": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100,
+                          "example": 78.4,
+                          "description": "回答率(%)"
+                        },
+                        "last_response_date": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "2026/03/10",
+                          "description": "最終回答日"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "active",
+                            "inactive"
+                          ],
+                          "title": "SurveyTemplateStatus",
+                          "description": "状態"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2024/04/01",
+                          "description": "作成日"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026/03/10",
+                          "description": "最終更新日"
+                        },
+                        "questions": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "no": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "exclusiveMinimum": true,
+                                "example": 1,
+                                "description": "設問番号"
+                              },
+                              "content": {
+                                "type": "string",
+                                "example": "入会のきっかけを教えてください",
+                                "description": "設問内容"
+                              },
+                              "format": {
+                                "type": "string",
+                                "enum": [
+                                  "single_choice",
+                                  "multiple_choice",
+                                  "free_text"
+                                ],
+                                "title": "SurveyQuestionFormat",
+                                "description": "回答形式"
+                              },
+                              "required": {
+                                "type": "boolean",
+                                "example": true,
+                                "description": "必答かどうか"
+                              },
+                              "has_responses": {
+                                "type": "boolean",
+                                "example": true,
+                                "description": "回答データの有無"
+                              },
+                              "choices": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "order": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "exclusiveMinimum": true,
+                                      "example": 1,
+                                      "description": "表示順"
+                                    },
+                                    "text": {
+                                      "type": "string",
+                                      "example": "友人の紹介",
+                                      "description": "選択肢テキスト"
+                                    }
+                                  },
+                                  "required": [
+                                    "order",
+                                    "text"
+                                  ],
+                                  "title": "SurveyQuestionChoice",
+                                  "description": "アンケート設問選択肢"
+                                },
+                                "description": "選択肢一覧"
+                              }
+                            },
+                            "required": [
+                              "no",
+                              "content",
+                              "format",
+                              "required",
+                              "choices"
+                            ],
+                            "title": "SurveyQuestion",
+                            "description": "アンケート設問"
+                          },
+                          "description": "設問一覧"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "type",
+                        "trigger",
+                        "brand",
+                        "question_count",
+                        "response_count",
+                        "response_rate",
+                        "last_response_date",
+                        "status",
+                        "created_at",
+                        "updated_at",
+                        "questions"
+                      ],
+                      "title": "SurveyTemplateDetail",
+                      "description": "アンケートテンプレート詳細"
+                    }
+                  },
+                  "required": [
+                    "message",
+                    "survey"
+                  ],
+                  "title": "SurveyTemplateUpsertResponse",
+                  "description": "アンケートテンプレート作成・更新レスポンス"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate trigger conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get survey templates",
+        "description": "Get paginated list of survey templates (G-04 FR-001 slice)",
+        "tags": [
+          "Surveys"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 20
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "アンケート名で検索"
+            },
+            "required": false,
+            "description": "アンケート名で検索",
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "lifecycle",
+                "operational"
+              ],
+              "title": "SurveyTemplateType",
+              "description": "アンケート種別"
+            },
+            "required": false,
+            "description": "アンケート種別",
+            "name": "type",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "joyfit",
+                "fit365",
+                "joyfit24",
+                "joyfit_yoga",
+                "joyfit_plus"
+              ],
+              "title": "StoreListBrand",
+              "description": "Store brand"
+            },
+            "required": false,
+            "description": "Store brand",
+            "name": "brand",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "inactive"
+              ],
+              "title": "SurveyTemplateStatus",
+              "description": "アンケートステータス"
+            },
+            "required": false,
+            "description": "アンケートステータス",
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "id",
+                "name",
+                "type",
+                "trigger",
+                "brand",
+                "question_count",
+                "response_count",
+                "response_rate",
+                "last_response_date",
+                "status"
+              ],
+              "default": "id"
+            },
+            "required": false,
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            },
+            "required": false,
+            "name": "sort_order",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Survey template list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "surveys": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "S-001",
+                            "description": "アンケートID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "入会時アンケート",
+                            "description": "アンケート名"
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "lifecycle",
+                              "operational"
+                            ],
+                            "title": "SurveyTemplateType",
+                            "description": "種別"
+                          },
+                          "trigger": {
+                            "type": "string",
+                            "enum": [
+                              "join",
+                              "leave",
+                              "suspension_request",
+                              "transfer",
+                              "renewal",
+                              "manual_delivery",
+                              "conditional_trigger"
+                            ],
+                            "title": "SurveyTemplateTrigger",
+                            "description": "発動トリガー"
+                          },
+                          "brand": {
+                            "type": "string",
+                            "enum": [
+                              "joyfit",
+                              "fit365",
+                              "joyfit24",
+                              "joyfit_yoga",
+                              "joyfit_plus"
+                            ],
+                            "title": "StoreListBrand",
+                            "description": "ブランド"
+                          },
+                          "question_count": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "example": 5,
+                            "description": "設問数"
+                          },
+                          "response_count": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "example": 1840,
+                            "description": "回答件数"
+                          },
+                          "response_rate": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 100,
+                            "example": 78.4,
+                            "description": "回答率(%)"
+                          },
+                          "last_response_date": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "2026/03/10",
+                            "description": "最終回答日"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "active",
+                              "inactive"
+                            ],
+                            "title": "SurveyTemplateStatus",
+                            "description": "状態"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "type",
+                          "trigger",
+                          "brand",
+                          "question_count",
+                          "response_count",
+                          "response_rate",
+                          "last_response_date",
+                          "status"
+                        ],
+                        "title": "SurveyTemplateListItem",
+                        "description": "アンケートテンプレート一覧アイテム"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "number"
+                        },
+                        "limit": {
+                          "type": "number"
+                        },
+                        "total": {
+                          "type": "number"
+                        },
+                        "total_pages": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "page",
+                        "limit",
+                        "total",
+                        "total_pages"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "surveys",
+                    "pagination"
+                  ],
+                  "title": "GetSurveyTemplatesResponse",
+                  "description": "アンケートテンプレート一覧レスポンス"
                 }
               }
             }

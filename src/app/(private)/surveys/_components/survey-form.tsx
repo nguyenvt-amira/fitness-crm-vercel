@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
+import { AlertTriangle } from 'lucide-react';
+
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -103,7 +106,18 @@ export function SurveyForm({
     <>
       <form onSubmit={handleFormSubmit}>
         <div className="flex flex-col gap-6">
-          <SurveyFormBasicInfoSection isEdit={isEdit} />
+          {isEdit && (
+            <div className="mx-auto w-full max-w-[960px]">
+              <Alert className="border-warning/50 bg-warning/10 mb-6 w-full px-4 py-3">
+                <AlertTriangle className="text-warning size-4" />
+                <AlertDescription className="text-muted-foreground text-xs">
+                  回答済みデータがある状態で設問を変更すると、既存の回答との整合性が失われます。
+                </AlertDescription>
+              </Alert>
+            </div>
+          )}
+
+          <SurveyFormBasicInfoSection />
 
           <SurveyFormQuestionsSection
             onDeleteQuestion={(index) => {

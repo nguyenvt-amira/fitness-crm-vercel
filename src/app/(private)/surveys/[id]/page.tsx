@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useParams, useRouter } from 'next/navigation';
 
+import { formatDateYYYYMMDD } from '@/utils/date.util';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { startOfMonth } from 'date-fns';
 import { ClipboardList } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -25,6 +27,7 @@ import { SurveyTemplateStatus } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
 import { SURVEY_STATUS_LABELS } from '../_constants/constants';
+import { getCrmSurveysResponsesOptions } from '../_lib/survey-reporting';
 import { SurveyBasicInfoSection } from './_components/survey-basic-info-section';
 import { SurveyDeleteDialog } from './_components/survey-delete-dialog';
 import { SurveyDetailHeaderActions } from './_components/survey-detail-header-actions';
@@ -43,9 +46,28 @@ export default function SurveyDetailPage() {
   const [disableReason, setDisableReason] = useState('');
   const [disableDialogOpen, setDisableDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const currentMonthRange = useMemo(() => {
+    const today = new Date();
+    return {
+      periodFrom: formatDateYYYYMMDD(startOfMonth(today), ''),
+      periodTo: formatDateYYYYMMDD(today, ''),
+    };
+  }, []);
 
   const { data, isLoading, isError, refetch } = useQuery({
     ...getCrmSurveysByIdOptions({ path: { id: surveyId } }),
+  });
+
+  const { data: monthlyResponsesData } = useQuery({
+    ...getCrmSurveysResponsesOptions({
+      query: {
+        page: 1,
+        survey_id: surveyId,
+        period_from: currentMonthRange.periodFrom,
+        period_to: currentMonthRange.periodTo,
+        limit: 1,
+      },
+    }),
   });
 
   const disableMutation = useMutation({
@@ -156,9 +178,9 @@ export default function SurveyDetailPage() {
                 }
               />
               <SurveySummaryCard
-                responseCount={survey.response_count}
+                totalResponses={survey.response_count}
+                monthlyResponses={monthlyResponsesData?.pagination.total ?? 0}
                 responseRate={survey.response_rate}
-                lastResponseDate={survey.last_response_date}
               />
             </>
           }

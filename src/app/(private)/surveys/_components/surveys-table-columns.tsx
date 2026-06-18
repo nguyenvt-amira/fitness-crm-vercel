@@ -23,10 +23,10 @@ import { Permission } from '@/types/permission.type';
 import {
   SURVEY_STATUS_BADGE_CLASSES,
   SURVEY_STATUS_LABELS,
-  SURVEY_TRIGGER_LABELS,
   SURVEY_TYPE_BADGE_CLASSES,
   SURVEY_TYPE_LABELS,
 } from '../_constants/constants';
+import { SurveyTriggerBadge } from './survey-trigger-badge';
 
 type SurveyRow = GetCrmSurveysResponse['surveys'][number];
 
@@ -114,16 +114,14 @@ export function SurveysTableColumns({
     },
     {
       accessorKey: 'trigger',
+      enableSorting: false,
       header: ({ column }) => <DataTableColumnHeader column={column} title="発動トリガー" />,
       meta: { className: 'w-[132px]' },
-      cell: ({ row }) => (
-        <span className="text-muted-foreground text-xs">
-          {SURVEY_TRIGGER_LABELS[row.original.trigger]}
-        </span>
-      ),
+      cell: ({ row }) => <SurveyTriggerBadge trigger={row.original.trigger} />,
     },
     {
       accessorKey: 'brand',
+      enableSorting: false,
       header: ({ column }) => <DataTableColumnHeader column={column} title="ブランド" />,
       meta: { className: 'w-[110px]' },
       cell: ({ row }) => <BrandBadge brand={row.original.brand} />,

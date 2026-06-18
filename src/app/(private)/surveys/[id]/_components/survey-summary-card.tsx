@@ -1,26 +1,36 @@
-import { Field } from '@/components/common/field';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface SurveySummaryCardProps {
-  responseCount: number;
+  totalResponses: number;
+  monthlyResponses: number;
   responseRate: number;
-  lastResponseDate: string | null;
+}
+
+function SummaryRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <span className="text-muted-foreground text-xs">{label}</span>
+      <span className="text-sm font-semibold">{value}</span>
+    </div>
+  );
 }
 
 export function SurveySummaryCard({
-  responseCount,
+  totalResponses,
+  monthlyResponses,
   responseRate,
-  lastResponseDate,
 }: SurveySummaryCardProps) {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-sm">回答サマリー</CardTitle>
       </CardHeader>
-      <CardContent className="grid gap-4 px-4">
-        <Field label="回答件数" value={`${responseCount.toLocaleString()}件`} />
-        <Field label="回答率" value={`${responseRate.toFixed(1)}%`} />
-        <Field label="最終回答日" value={lastResponseDate ?? '—'} />
+      <CardContent className="px-4">
+        <div className="flex flex-col gap-4">
+          <SummaryRow label="総回答数" value={`${totalResponses.toLocaleString()}件`} />
+          <SummaryRow label="今月の回答" value={`${monthlyResponses.toLocaleString()}件`} />
+          <SummaryRow label="回答率" value={`${responseRate.toFixed(1)}%`} />
+        </div>
       </CardContent>
     </Card>
   );

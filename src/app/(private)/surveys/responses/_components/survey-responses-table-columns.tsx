@@ -88,7 +88,7 @@ export function SurveyResponsesTableColumns(): ColumnDef<SurveyResponseRow>[] {
     {
       accessorKey: 'member_type',
       enableSorting: false,
-      header: '会員区分',
+      header: '区分',
       meta: { className: 'w-[132px]' },
       cell: ({ row }) => (
         <Badge variant="outline" className="text-[10px] font-normal">

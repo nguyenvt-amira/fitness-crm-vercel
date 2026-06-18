@@ -5,11 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import type { GetCrmSurveysByIdResponse } from '@/lib/api/types.gen';
 
-import {
-  SURVEY_TRIGGER_LABELS,
-  SURVEY_TYPE_BADGE_CLASSES,
-  SURVEY_TYPE_LABELS,
-} from '../../_constants/constants';
+import { SurveyTriggerBadge } from '../../_components/survey-trigger-badge';
+import { SURVEY_TYPE_BADGE_CLASSES, SURVEY_TYPE_LABELS } from '../../_constants/constants';
 
 type SurveyDetail = NonNullable<GetCrmSurveysByIdResponse>['survey'];
 
@@ -36,14 +33,7 @@ export function SurveyBasicInfoSection({ survey }: SurveyBasicInfoSectionProps) 
             }
           />
           <Field label="ブランド" value={<BrandBadge brand={survey.brand} />} />
-          <Field
-            label="発動トリガー"
-            value={
-              <Badge variant="outline" className="text-xs font-normal">
-                {SURVEY_TRIGGER_LABELS[survey.trigger]}
-              </Badge>
-            }
-          />
+          <Field label="発動トリガー" value={<SurveyTriggerBadge trigger={survey.trigger} />} />
           <Field label="作成日" value={survey.created_at} />
           <Field label="最終更新日" value={survey.updated_at} />
         </div>

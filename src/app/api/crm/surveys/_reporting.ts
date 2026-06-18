@@ -97,7 +97,7 @@ function pickSelectedSurvey(query: SurveyResponseQuery): SurveyTemplateDetail | 
   const resolveSurveyDetail = (id?: string) => (id ? db.surveys.getById(id) : undefined);
 
   if (query.survey_id) {
-    return resolveSurveyDetail(query.survey_id) ?? resolveSurveyDetail(surveys[0]?.id);
+    return resolveSurveyDetail(query.survey_id);
   }
 
   if (query.search) {
@@ -174,7 +174,10 @@ export function buildSurveyAnalyticsResponse(
   query: GetSurveyAnalyticsQuery,
 ): GetSurveyAnalyticsResponse {
   const selectedSurvey = pickSelectedSurvey(query);
-  const surveyId = query.survey_id ?? selectedSurvey?.id;
+  const surveys = db.surveys.getList();
+  const defaultSurvey = query.survey_id ? undefined : db.surveys.getById(surveys[0]?.id ?? '');
+  const survey = selectedSurvey ?? defaultSurvey;
+  const surveyId = query.survey_id ?? survey?.id;
   const filtered = db.surveyReporting
     .getAll()
     .filter((row) => matchesFilters(row, { ...query, survey_id: surveyId }));
@@ -184,7 +187,6 @@ export function buildSurveyAnalyticsResponse(
   const responseRate =
     totalResponses > 0 ? Math.round((completedResponses / totalResponses) * 1000) / 10 : 0;
 
-  const survey = selectedSurvey ?? db.surveys.getById(db.surveys.getList()[0]?.id ?? '');
   const firstRow = filtered[0];
   const context: SurveyAnalyticsContext = {
     survey_id: survey?.id ?? surveyId ?? 'S-001',
@@ -226,7 +228,7 @@ export function buildSurveyResponsesCsv(rows: SurveyResponseDetail[]): SurveyCsv
     '種別',
     'ブランド',
     '店舗',
-    '会員区分',
+    '区分',
     '回答数',
     '設問総数',
     '状態',

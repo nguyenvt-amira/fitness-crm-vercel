@@ -15753,10 +15753,6 @@ export type SurveyQuestion = {
      */
     required: boolean;
     /**
-     * 表示状態
-     */
-    visible: boolean;
-    /**
      * 回答データの有無
      */
     has_responses?: boolean;
@@ -16014,10 +16010,6 @@ export type SurveyTemplateDetail = {
          */
         required: boolean;
         /**
-         * 表示状態
-         */
-        visible: boolean;
-        /**
          * 回答データの有無
          */
         has_responses?: boolean;
@@ -16058,10 +16050,6 @@ export type SurveyTemplateUpsertQuestion = {
      * 必答かどうか
      */
     required: boolean;
-    /**
-     * 表示状態
-     */
-    visible: boolean;
     /**
      * 回答データの有無
      */
@@ -16134,10 +16122,6 @@ export type SurveyTemplateUpsertBody = {
          * 必答かどうか
          */
         required: boolean;
-        /**
-         * 表示状態
-         */
-        visible: boolean;
         /**
          * 回答データの有無
          */
@@ -16254,10 +16238,6 @@ export type SurveyTemplateUpsertResponse = {
              */
             required: boolean;
             /**
-             * 表示状態
-             */
-            visible: boolean;
-            /**
              * 回答データの有無
              */
             has_responses?: boolean;
@@ -16368,10 +16348,6 @@ export type GetSurveyTemplateDetailResponse = {
              * 必答かどうか
              */
             required: boolean;
-            /**
-             * 表示状態
-             */
-            visible: boolean;
             /**
              * 回答データの有無
              */
@@ -16502,10 +16478,6 @@ export type UpdateSurveyTemplateStatusResponse = {
              * 必答かどうか
              */
             required: boolean;
-            /**
-             * 表示状態
-             */
-            visible: boolean;
             /**
              * 回答データの有無
              */
@@ -39535,10 +39507,6 @@ export type GetCrmSurveysByIdResponses = {
                  */
                 required: boolean;
                 /**
-                 * 表示状態
-                 */
-                visible: boolean;
-                /**
                  * 回答データの有無
                  */
                 has_responses?: boolean;
@@ -39721,10 +39689,6 @@ export type PatchCrmSurveysByIdResponses = {
                  */
                 required: boolean;
                 /**
-                 * 表示状態
-                 */
-                visible: boolean;
-                /**
                  * 回答データの有無
                  */
                 has_responses?: boolean;
@@ -39802,10 +39766,6 @@ export type PutCrmSurveysByIdData = {
              * 必答かどうか
              */
             required: boolean;
-            /**
-             * 表示状態
-             */
-            visible: boolean;
             /**
              * 回答データの有無
              */
@@ -39981,10 +39941,6 @@ export type PutCrmSurveysByIdResponses = {
                  */
                 required: boolean;
                 /**
-                 * 表示状態
-                 */
-                visible: boolean;
-                /**
                  * 回答データの有無
                  */
                 has_responses?: boolean;
@@ -40007,379 +39963,6 @@ export type PutCrmSurveysByIdResponses = {
 };
 
 export type PutCrmSurveysByIdResponse = PutCrmSurveysByIdResponses[keyof PutCrmSurveysByIdResponses];
-
-export type GetCrmSurveysData = {
-    body?: never;
-    path?: never;
-    query?: {
-        page?: number;
-        limit?: number;
-        /**
-         * アンケート名で検索
-         */
-        search?: string;
-        /**
-         * SurveyTemplateType
-         *
-         * アンケート種別
-         */
-        type?: 'lifecycle' | 'operational';
-        /**
-         * StoreListBrand
-         *
-         * Store brand
-         */
-        brand?: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
-        /**
-         * SurveyTemplateStatus
-         *
-         * アンケートステータス
-         */
-        status?: 'active' | 'inactive';
-        sort_by?: 'id' | 'name' | 'type' | 'trigger' | 'brand' | 'question_count' | 'response_count' | 'response_rate' | 'last_response_date' | 'status';
-        sort_order?: 'asc' | 'desc';
-    };
-    url: '/crm/surveys';
-};
-
-export type GetCrmSurveysErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    400: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type GetCrmSurveysError = GetCrmSurveysErrors[keyof GetCrmSurveysErrors];
-
-export type GetCrmSurveysResponses = {
-    /**
-     * GetSurveyTemplatesResponse
-     *
-     * アンケートテンプレート一覧レスポンス
-     */
-    200: {
-        surveys: Array<{
-            /**
-             * アンケートID
-             */
-            id: string;
-            /**
-             * アンケート名
-             */
-            name: string;
-            /**
-             * SurveyTemplateType
-             *
-             * 種別
-             */
-            type: 'lifecycle' | 'operational';
-            /**
-             * SurveyTemplateTrigger
-             *
-             * 発動トリガー
-             */
-            trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
-            /**
-             * StoreListBrand
-             *
-             * ブランド
-             */
-            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
-            /**
-             * 設問数
-             */
-            question_count: number;
-            /**
-             * 回答件数
-             */
-            response_count: number;
-            /**
-             * 回答率(%)
-             */
-            response_rate: number;
-            /**
-             * 最終回答日
-             */
-            last_response_date: string | null;
-            /**
-             * SurveyTemplateStatus
-             *
-             * 状態
-             */
-            status: 'active' | 'inactive';
-        }>;
-        pagination: {
-            page: number;
-            limit: number;
-            total: number;
-            total_pages: number;
-        };
-    };
-};
-
-export type GetCrmSurveysResponse = GetCrmSurveysResponses[keyof GetCrmSurveysResponses];
-
-export type PostCrmSurveysData = {
-    /**
-     * SurveyTemplateUpsertBody
-     *
-     * アンケートテンプレート作成・更新リクエスト
-     */
-    body?: {
-        /**
-         * アンケート名
-         */
-        name: string;
-        /**
-         * SurveyTemplateType
-         *
-         * 種別
-         */
-        type: 'lifecycle' | 'operational';
-        /**
-         * SurveyTemplateTrigger
-         *
-         * 発動トリガー
-         */
-        trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
-        /**
-         * StoreListBrand
-         *
-         * ブランド
-         */
-        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
-        /**
-         * SurveyTemplateStatus
-         *
-         * 状態
-         */
-        status: 'active' | 'inactive';
-        /**
-         * 設問一覧
-         */
-        questions: Array<{
-            /**
-             * 設問番号
-             */
-            no: number;
-            content: string;
-            /**
-             * SurveyQuestionFormat
-             *
-             * 回答形式
-             */
-            format: 'single_choice' | 'multiple_choice' | 'free_text';
-            /**
-             * 必答かどうか
-             */
-            required: boolean;
-            /**
-             * 表示状態
-             */
-            visible: boolean;
-            /**
-             * 回答データの有無
-             */
-            has_responses?: boolean;
-            /**
-             * 選択肢一覧
-             */
-            choices: Array<{
-                /**
-                 * 表示順
-                 */
-                order: number;
-                /**
-                 * 選択肢テキスト
-                 */
-                text: string;
-            }>;
-        }>;
-        /**
-         * 同一トリガーの既存アンケートID
-         */
-        replace_existing_survey_id?: string | null;
-    };
-    path?: never;
-    query?: never;
-    url: '/crm/surveys';
-};
-
-export type PostCrmSurveysErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    400: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    409: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type PostCrmSurveysError = PostCrmSurveysErrors[keyof PostCrmSurveysErrors];
-
-export type PostCrmSurveysResponses = {
-    /**
-     * SurveyTemplateUpsertResponse
-     *
-     * アンケートテンプレート作成・更新レスポンス
-     */
-    201: {
-        message: string;
-        /**
-         * SurveyTemplateDetail
-         *
-         * アンケートテンプレート詳細
-         */
-        survey: {
-            /**
-             * アンケートID
-             */
-            id: string;
-            /**
-             * アンケート名
-             */
-            name: string;
-            /**
-             * SurveyTemplateType
-             *
-             * 種別
-             */
-            type: 'lifecycle' | 'operational';
-            /**
-             * SurveyTemplateTrigger
-             *
-             * 発動トリガー
-             */
-            trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
-            /**
-             * StoreListBrand
-             *
-             * ブランド
-             */
-            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
-            /**
-             * 設問数
-             */
-            question_count: number;
-            /**
-             * 回答件数
-             */
-            response_count: number;
-            /**
-             * 回答率(%)
-             */
-            response_rate: number;
-            /**
-             * 最終回答日
-             */
-            last_response_date: string | null;
-            /**
-             * SurveyTemplateStatus
-             *
-             * 状態
-             */
-            status: 'active' | 'inactive';
-            /**
-             * 作成日
-             */
-            created_at: string;
-            /**
-             * 最終更新日
-             */
-            updated_at: string;
-            /**
-             * 設問一覧
-             */
-            questions: Array<{
-                /**
-                 * 設問番号
-                 */
-                no: number;
-                /**
-                 * 設問内容
-                 */
-                content: string;
-                /**
-                 * SurveyQuestionFormat
-                 *
-                 * 回答形式
-                 */
-                format: 'single_choice' | 'multiple_choice' | 'free_text';
-                /**
-                 * 必答かどうか
-                 */
-                required: boolean;
-                /**
-                 * 表示状態
-                 */
-                visible: boolean;
-                /**
-                 * 回答データの有無
-                 */
-                has_responses?: boolean;
-                /**
-                 * 選択肢一覧
-                 */
-                choices: Array<{
-                    /**
-                     * 表示順
-                     */
-                    order: number;
-                    /**
-                     * 選択肢テキスト
-                     */
-                    text: string;
-                }>;
-            }>;
-        };
-    };
-};
-
-export type PostCrmSurveysResponse = PostCrmSurveysResponses[keyof PostCrmSurveysResponses];
 
 export type PostCrmSurveysAnalyticsExportData = {
     /**
@@ -40781,7 +40364,7 @@ export type GetCrmSurveysResponsesByResponseIdResponses = {
              */
             store_name: string;
             /**
-             * 会員区分
+             * 区分
              */
             member_type: 'regular' | 'family' | 'corporate' | 'one_day_member';
             /**
@@ -41043,7 +40626,7 @@ export type GetCrmSurveysResponsesResponses = {
              */
             store_name: string;
             /**
-             * 会員区分
+             * 区分
              */
             member_type: 'regular' | 'family' | 'corporate' | 'one_day_member';
             /**
@@ -41071,6 +40654,371 @@ export type GetCrmSurveysResponsesResponses = {
 };
 
 export type GetCrmSurveysResponsesResponse = GetCrmSurveysResponsesResponses[keyof GetCrmSurveysResponsesResponses];
+
+export type GetCrmSurveysData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        limit?: number;
+        /**
+         * アンケート名で検索
+         */
+        search?: string;
+        /**
+         * SurveyTemplateType
+         *
+         * アンケート種別
+         */
+        type?: 'lifecycle' | 'operational';
+        /**
+         * StoreListBrand
+         *
+         * Store brand
+         */
+        brand?: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * SurveyTemplateStatus
+         *
+         * アンケートステータス
+         */
+        status?: 'active' | 'inactive';
+        sort_by?: 'id' | 'name' | 'type' | 'trigger' | 'brand' | 'question_count' | 'response_count' | 'response_rate' | 'last_response_date' | 'status';
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/surveys';
+};
+
+export type GetCrmSurveysErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmSurveysError = GetCrmSurveysErrors[keyof GetCrmSurveysErrors];
+
+export type GetCrmSurveysResponses = {
+    /**
+     * GetSurveyTemplatesResponse
+     *
+     * アンケートテンプレート一覧レスポンス
+     */
+    200: {
+        surveys: Array<{
+            /**
+             * アンケートID
+             */
+            id: string;
+            /**
+             * アンケート名
+             */
+            name: string;
+            /**
+             * SurveyTemplateType
+             *
+             * 種別
+             */
+            type: 'lifecycle' | 'operational';
+            /**
+             * SurveyTemplateTrigger
+             *
+             * 発動トリガー
+             */
+            trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
+            /**
+             * StoreListBrand
+             *
+             * ブランド
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * 設問数
+             */
+            question_count: number;
+            /**
+             * 回答件数
+             */
+            response_count: number;
+            /**
+             * 回答率(%)
+             */
+            response_rate: number;
+            /**
+             * 最終回答日
+             */
+            last_response_date: string | null;
+            /**
+             * SurveyTemplateStatus
+             *
+             * 状態
+             */
+            status: 'active' | 'inactive';
+        }>;
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmSurveysResponse = GetCrmSurveysResponses[keyof GetCrmSurveysResponses];
+
+export type PostCrmSurveysData = {
+    /**
+     * SurveyTemplateUpsertBody
+     *
+     * アンケートテンプレート作成・更新リクエスト
+     */
+    body?: {
+        /**
+         * アンケート名
+         */
+        name: string;
+        /**
+         * SurveyTemplateType
+         *
+         * 種別
+         */
+        type: 'lifecycle' | 'operational';
+        /**
+         * SurveyTemplateTrigger
+         *
+         * 発動トリガー
+         */
+        trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
+        /**
+         * StoreListBrand
+         *
+         * ブランド
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * SurveyTemplateStatus
+         *
+         * 状態
+         */
+        status: 'active' | 'inactive';
+        /**
+         * 設問一覧
+         */
+        questions: Array<{
+            /**
+             * 設問番号
+             */
+            no: number;
+            content: string;
+            /**
+             * SurveyQuestionFormat
+             *
+             * 回答形式
+             */
+            format: 'single_choice' | 'multiple_choice' | 'free_text';
+            /**
+             * 必答かどうか
+             */
+            required: boolean;
+            /**
+             * 回答データの有無
+             */
+            has_responses?: boolean;
+            /**
+             * 選択肢一覧
+             */
+            choices: Array<{
+                /**
+                 * 表示順
+                 */
+                order: number;
+                /**
+                 * 選択肢テキスト
+                 */
+                text: string;
+            }>;
+        }>;
+        /**
+         * 同一トリガーの既存アンケートID
+         */
+        replace_existing_survey_id?: string | null;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/surveys';
+};
+
+export type PostCrmSurveysErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmSurveysError = PostCrmSurveysErrors[keyof PostCrmSurveysErrors];
+
+export type PostCrmSurveysResponses = {
+    /**
+     * SurveyTemplateUpsertResponse
+     *
+     * アンケートテンプレート作成・更新レスポンス
+     */
+    201: {
+        message: string;
+        /**
+         * SurveyTemplateDetail
+         *
+         * アンケートテンプレート詳細
+         */
+        survey: {
+            /**
+             * アンケートID
+             */
+            id: string;
+            /**
+             * アンケート名
+             */
+            name: string;
+            /**
+             * SurveyTemplateType
+             *
+             * 種別
+             */
+            type: 'lifecycle' | 'operational';
+            /**
+             * SurveyTemplateTrigger
+             *
+             * 発動トリガー
+             */
+            trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
+            /**
+             * StoreListBrand
+             *
+             * ブランド
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * 設問数
+             */
+            question_count: number;
+            /**
+             * 回答件数
+             */
+            response_count: number;
+            /**
+             * 回答率(%)
+             */
+            response_rate: number;
+            /**
+             * 最終回答日
+             */
+            last_response_date: string | null;
+            /**
+             * SurveyTemplateStatus
+             *
+             * 状態
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 作成日
+             */
+            created_at: string;
+            /**
+             * 最終更新日
+             */
+            updated_at: string;
+            /**
+             * 設問一覧
+             */
+            questions: Array<{
+                /**
+                 * 設問番号
+                 */
+                no: number;
+                /**
+                 * 設問内容
+                 */
+                content: string;
+                /**
+                 * SurveyQuestionFormat
+                 *
+                 * 回答形式
+                 */
+                format: 'single_choice' | 'multiple_choice' | 'free_text';
+                /**
+                 * 必答かどうか
+                 */
+                required: boolean;
+                /**
+                 * 回答データの有無
+                 */
+                has_responses?: boolean;
+                /**
+                 * 選択肢一覧
+                 */
+                choices: Array<{
+                    /**
+                     * 表示順
+                     */
+                    order: number;
+                    /**
+                     * 選択肢テキスト
+                     */
+                    text: string;
+                }>;
+            }>;
+        };
+    };
+};
+
+export type PostCrmSurveysResponse = PostCrmSurveysResponses[keyof PostCrmSurveysResponses];
 
 export type PatchCrmTransfersByIdApproveData = {
     /**

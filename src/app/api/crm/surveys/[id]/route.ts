@@ -164,6 +164,11 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: errors }, { status: 400 });
     }
 
+    const existingSurvey = db.surveys.getById(id);
+    if (!existingSurvey) {
+      return jsonSurveyError('アンケートが見つかりません', 404);
+    }
+
     const duplicate = findDuplicateActiveTrigger(validation.data.trigger, id);
     if (duplicate) {
       if (validation.data.replace_existing_survey_id === duplicate.id) {
