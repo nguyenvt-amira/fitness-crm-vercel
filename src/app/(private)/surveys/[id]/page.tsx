@@ -20,6 +20,7 @@ import {
   getCrmSurveysByIdOptions,
   getCrmSurveysByIdQueryKey,
   getCrmSurveysQueryKey,
+  getCrmSurveysResponsesOptions,
   patchCrmSurveysByIdMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
 import type { GetCrmSurveysByIdResponse } from '@/lib/api/types.gen';
@@ -27,7 +28,6 @@ import { SurveyTemplateStatus } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
 import { SURVEY_STATUS_LABELS } from '../_constants/constants';
-import { getCrmSurveysResponsesOptions } from '../_lib/survey-reporting';
 import { SurveyBasicInfoSection } from './_components/survey-basic-info-section';
 import { SurveyDeleteDialog } from './_components/survey-delete-dialog';
 import { SurveyDetailHeaderActions } from './_components/survey-detail-header-actions';

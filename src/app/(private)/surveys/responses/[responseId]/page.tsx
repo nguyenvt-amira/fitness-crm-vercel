@@ -9,14 +9,12 @@ import { DataStateBoundary } from '@/components/common/data-state-boundary';
 import { PageHeader } from '@/components/common/page-header';
 import { Badge } from '@/components/ui/badge';
 
+import { getCrmSurveysResponsesByResponseIdOptions } from '@/lib/api/@tanstack/react-query.gen';
+import type { GetCrmSurveysResponsesByResponseIdResponse } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 import { cn } from '@/lib/utils';
 
 import { SURVEY_RESPONSE_STATUS_LABELS } from '../../_constants/constants';
-import {
-  type GetCrmSurveysResponsesByResponseIdResponse,
-  getCrmSurveysResponsesByResponseIdOptions,
-} from '../../_lib/survey-reporting';
 import { ResponseAnswersSection } from './_components/response-answers-section';
 import { ResponseBasicInfoSection } from './_components/response-basic-info-section';
 import { ResponseDetailHeaderActions } from './_components/response-detail-header-actions';

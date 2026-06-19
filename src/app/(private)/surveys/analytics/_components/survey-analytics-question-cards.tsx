@@ -1,8 +1,9 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
+import type { GetCrmSurveysAnalyticsResponse } from '@/lib/api/types.gen';
+
 import { SURVEY_QUESTION_FORMAT_LABELS, formatSurveyDateOnly } from '../../_constants/constants';
-import type { GetCrmSurveysAnalyticsResponse } from '../../_lib/survey-reporting';
 
 type SurveyAnalyticsQuestion = GetCrmSurveysAnalyticsResponse['questions'][number];
 

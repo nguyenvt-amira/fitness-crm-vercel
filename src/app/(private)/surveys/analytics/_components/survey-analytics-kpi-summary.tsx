@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 
-import type { GetCrmSurveysAnalyticsResponse } from '../../_lib/survey-reporting';
+import type { GetCrmSurveysAnalyticsResponse } from '@/lib/api/types.gen';
 
 interface SurveyAnalyticsKpiSummaryProps {
   kpis: GetCrmSurveysAnalyticsResponse['kpis'];

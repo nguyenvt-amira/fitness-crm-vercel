@@ -2,8 +2,9 @@ import { BrandBadge } from '@/components/common/brand-badge';
 import { Field } from '@/components/common/field';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
+import type { GetCrmSurveysResponsesByResponseIdResponse } from '@/lib/api/types.gen';
+
 import { formatSurveyDateOnly } from '../../../_constants/constants';
-import type { GetCrmSurveysResponsesByResponseIdResponse } from '../../../_lib/survey-reporting';
 
 type SurveyResponseDetail = NonNullable<GetCrmSurveysResponsesByResponseIdResponse>['response'];
 

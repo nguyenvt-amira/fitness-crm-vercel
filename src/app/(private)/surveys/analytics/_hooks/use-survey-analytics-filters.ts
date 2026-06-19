@@ -4,8 +4,7 @@ import { endOfDay, endOfMonth, format, startOfMonth, subMonths } from 'date-fns'
 import { parseAsString, parseAsStringEnum, useQueryStates } from 'nuqs';
 
 import { MemberType, StoreListBrand } from '@/lib/api/types.gen';
-
-import type { GetCrmSurveysAnalyticsData } from '../../_lib/survey-reporting';
+import type { GetCrmSurveysAnalyticsData } from '@/lib/api/types.gen';
 
 export const SURVEY_ANALYTICS_PERIOD_LABELS = {
   all: '全期間',

@@ -3,6 +3,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { BrandBadge } from '@/components/common/brand-badge';
 import { Badge } from '@/components/ui/badge';
 
+import type { GetCrmSurveysResponsesResponse } from '@/lib/api/types.gen';
 import { cn } from '@/lib/utils';
 
 import {
@@ -12,7 +13,6 @@ import {
   SURVEY_TYPE_LABELS,
   formatSurveyDateOnly,
 } from '../../_constants/constants';
-import type { GetCrmSurveysResponsesResponse } from '../../_lib/survey-reporting';
 
 type SurveyResponseRow = GetCrmSurveysResponsesResponse['responses'][number];
 
