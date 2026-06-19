@@ -58,3 +58,34 @@ export type GetVisitExperiencesResponse = z.infer<typeof GetVisitExperiencesResp
 export type GetVisitExperiencesSummaryResponse = z.infer<
   typeof GetVisitExperiencesSummaryResponseSchema
 >;
+
+export const VisitTimelineEntrySchema = z.object({
+  timestamp: z.string().datetime({ offset: true }),
+  operator: z.string(),
+  content: z.string(),
+});
+
+export const VisitExperienceDetailSchema = VisitExperienceSchema.extend({
+  customer_name_kana: z.string(),
+  birth_date: z.string(),
+  phone: z.string().nullable(),
+  email: z.string().nullable(),
+  address: z.string().nullable(),
+  id_document_type: z.string().nullable(),
+  id_document_verified: z.boolean(),
+  bl_match_reason: z.string().nullable(),
+  permit_issued_at: z.string().datetime({ offset: true }).nullable(),
+  b01_auth_method: z.string().nullable(),
+  b01_gate: z.string().nullable(),
+  b01_entry_at: z.string().datetime({ offset: true }).nullable(),
+  b01_exit_at: z.string().datetime({ offset: true }).nullable(),
+  timeline: z.array(VisitTimelineEntrySchema),
+});
+
+export const PermitVisitExperienceResponseSchema = z.object({
+  record: VisitExperienceDetailSchema,
+});
+
+export type VisitTimelineEntry = z.infer<typeof VisitTimelineEntrySchema>;
+export type VisitExperienceDetail = z.infer<typeof VisitExperienceDetailSchema>;
+export type PermitVisitExperienceResponse = z.infer<typeof PermitVisitExperienceResponseSchema>;

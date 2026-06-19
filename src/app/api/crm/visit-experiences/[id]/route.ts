@@ -13,7 +13,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
 
     return NextResponse.json(record);
   } catch (error) {
-    console.error('Error fetching visit experience by id:', error);
+    console.error('Error fetching visit experience detail:', error);
     return NextResponse.json({ error: 'Failed to fetch visit experience' }, { status: 500 });
   }
 }

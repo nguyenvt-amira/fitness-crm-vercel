@@ -56,3 +56,30 @@ export interface GetVisitExperiencesSummaryResponse {
   today_membership_count: number;
   today_cancelled_count: number;
 }
+
+export interface VisitTimelineEntry {
+  timestamp: string;
+  operator: string;
+  content: string;
+}
+
+export interface VisitExperienceDetail extends VisitExperience {
+  customer_name_kana: string;
+  birth_date: string;
+  phone: string | null;
+  email: string | null;
+  address: string | null;
+  id_document_type: string | null;
+  id_document_verified: boolean;
+  bl_match_reason: string | null;
+  permit_issued_at: string | null;
+  b01_auth_method: string | null;
+  b01_gate: string | null;
+  b01_entry_at: string | null;
+  b01_exit_at: string | null;
+  timeline: VisitTimelineEntry[];
+}
+
+export interface PermitVisitExperienceResponse {
+  record: VisitExperienceDetail;
+}

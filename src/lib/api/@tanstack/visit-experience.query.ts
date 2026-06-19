@@ -1,10 +1,11 @@
-import { queryOptions } from '@tanstack/react-query';
+import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import type {
   GetVisitExperiencesQuery,
   GetVisitExperiencesResponse,
   GetVisitExperiencesSummaryResponse,
-  VisitExperience,
+  PermitVisitExperienceResponse,
+  VisitExperienceDetail,
 } from '@/types/api/visit-experience.type';
 
 export const getCrmVisitExperiencesOptions = (params?: GetVisitExperiencesQuery) =>
@@ -35,12 +36,29 @@ export const getCrmVisitExperiencesSummaryOptions = () =>
     },
   });
 
-export const getCrmVisitExperiencesByIdOptions = (id: string) =>
-  queryOptions<VisitExperience>({
+export const getCrmVisitExperienceDetailOptions = (id: string) =>
+  queryOptions<VisitExperienceDetail>({
     queryKey: ['crm', 'visit-experiences', id],
     queryFn: async () => {
       const res = await fetch(`/api/crm/visit-experiences/${id}`);
-      if (!res.ok) throw new Error('Failed to fetch visit experience');
-      return res.json() as Promise<VisitExperience>;
+      if (!res.ok) throw new Error('Failed to fetch visit experience detail');
+      return res.json() as Promise<VisitExperienceDetail>;
     },
   });
+
+export const usePermitVisitExperienceMutation = (id: string) => {
+  const queryClient = useQueryClient();
+  return useMutation<PermitVisitExperienceResponse, Error>({
+    mutationFn: async () => {
+      const res = await fetch(`/api/crm/visit-experiences/${id}/permit`, { method: 'POST' });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error((body as { reason?: string }).reason ?? 'Failed to issue permit');
+      }
+      return res.json() as Promise<PermitVisitExperienceResponse>;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['crm', 'visit-experiences', id] });
+    },
+  });
+};

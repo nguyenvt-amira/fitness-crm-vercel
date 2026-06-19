@@ -1,33 +1,104 @@
-import Link from 'next/link';
+'use client';
 
-import { ArrowLeft } from 'lucide-react';
+import { use } from 'react';
 
-import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
+import { useQuery } from '@tanstack/react-query';
+
+import { BackLink } from '@/components/common/back-link';
+import { DataStateBoundary } from '@/components/common/data-state-boundary';
+import { PageHeader } from '@/components/common/page-header';
+import { Badge } from '@/components/ui/badge';
+
+import { getCrmVisitExperienceDetailOptions } from '@/lib/api/@tanstack/visit-experience.query';
 import { navigate } from '@/lib/routes/routes.util';
 
-export default async function VisitExperienceDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
+import { VISIT_EXPERIENCE_STATUS_LABELS } from '@/types/api/visit-experience.type';
+
+import { B01InfoCard } from './_components/b01-info-card';
+import { BlacklistResultCard } from './_components/blacklist-result-card';
+import { DetailSkeleton } from './_components/detail-skeleton';
+import { PermitActions } from './_components/permit-actions';
+import { PersonalInfoCard } from './_components/personal-info-card';
+import { ReservationInfoCard } from './_components/reservation-info-card';
+import { StatusPanel } from './_components/status-panel';
+import { TimelineCard } from './_components/timeline-card';
+
+const STATUS_BADGE_CLASS: Record<string, string> = {
+  application_received: 'bg-muted text-muted-foreground border-border',
+  info_missing: 'bg-warning/15 text-warning border-warning/20',
+  bl_checking: 'bg-destructive/15 text-destructive border-destructive/20',
+  visiting: 'bg-info/15 text-info border-info/20',
+  visit_completed: 'bg-muted text-muted-foreground border-border',
+  membership_applied: 'bg-success/15 text-success border-success/20',
+  cancelled: 'bg-muted text-muted-foreground border-border',
+};
+
+export default function VisitExperienceDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const router = useRouter();
+
+  const {
+    data: record,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery(getCrmVisitExperienceDetailOptions(id));
 
   return (
-    <main className="bg-muted/40 min-h-0 flex-1 overflow-auto p-6">
-      <div className="flex flex-col items-center justify-center gap-4 py-20">
-        <p className="text-muted-foreground text-sm">予約 {id} の詳細画面は準備中です。</p>
-        <Button
-          variant="outline"
-          nativeButton={false}
-          render={
-            <Link href={navigate('/visit-experiences')}>
-              <ArrowLeft className="mr-2 size-4" />
-              見学・体験一覧に戻る
-            </Link>
-          }
-        />
+    <>
+      <PageHeader
+        breadcrumb={
+          <BackLink
+            label="見学・体験管理に戻る"
+            onClick={() => router.push(navigate('/visit-experiences'))}
+          />
+        }
+        title={record?.customer_name ?? '見学・体験 詳細'}
+        subtitle={record ? `ID: ${record.id}` : undefined}
+        badge={
+          record ? (
+            <Badge
+              variant="outline"
+              className={`text-[10px] font-medium ${STATUS_BADGE_CLASS[record.status] ?? 'bg-muted text-muted-foreground border-border'}`}
+            >
+              {VISIT_EXPERIENCE_STATUS_LABELS[record.status] ?? record.status}
+            </Badge>
+          ) : undefined
+        }
+      />
+
+      <div className="p-6">
+        <DataStateBoundary
+          isLoading={isLoading}
+          isError={isError}
+          isEmpty={!record}
+          onRetry={refetch}
+          skeleton={<DetailSkeleton />}
+          emptyTitle="見学情報が見つかりません"
+          emptyDescription="IDを確認して再度お試しください"
+          errorTitle="見学情報の取得に失敗しました"
+        >
+          {record && (
+            <div className="flex flex-col gap-4 lg:flex-row">
+              {/* Left column (60%): personal info + BL result + timeline */}
+              <div className="flex min-w-0 flex-[3] flex-col gap-4">
+                <PersonalInfoCard record={record} />
+                <BlacklistResultCard record={record} />
+                <TimelineCard record={record} />
+              </div>
+
+              {/* Right column (40%): sticky status+actions + visit details + B-01 */}
+              <div className="flex w-full shrink-0 flex-col gap-4 lg:sticky lg:top-0 lg:w-[40%] lg:self-start">
+                <StatusPanel record={record} action={<PermitActions record={record} />} />
+                <ReservationInfoCard record={record} />
+                <B01InfoCard record={record} />
+              </div>
+            </div>
+          )}
+        </DataStateBoundary>
       </div>
-    </main>
+    </>
   );
 }
