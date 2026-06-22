@@ -7,6 +7,7 @@ import {
   type GetCrmLockersData,
   LockerShape,
   type LockerShape as LockerShapeValue,
+  type PostCrmLockersExportData,
 } from '@/lib/api/types.gen';
 
 type LockerSortBy = NonNullable<GetCrmLockersData['query']>['sort_by'];
@@ -58,9 +59,17 @@ export function useLockersFilters() {
     sort_order: filters.lockers_sort_order,
   };
 
+  const exportQueryParams: NonNullable<PostCrmLockersExportData['body']> = {
+    search: filters.lockers_search || undefined,
+    shape: filters.lockers_shape || undefined,
+    sort_by: filters.lockers_sort_by as LockerSortBy,
+    sort_order: filters.lockers_sort_order,
+  };
+
   return {
     filters,
     queryParams,
+    exportQueryParams,
     searchInput,
     setSearchInput,
     setFilters,

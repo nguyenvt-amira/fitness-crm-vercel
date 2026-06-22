@@ -9,6 +9,7 @@ import {
   type LockerContractStatus as LockerContractStatusValue,
   LockerOptionType,
   type LockerOptionType as LockerOptionTypeValue,
+  type PostCrmLockersContractsExportData,
 } from '@/lib/api/types.gen';
 
 type LockerContractsSortBy = NonNullable<GetCrmLockersContractsData['query']>['sort_by'];
@@ -69,9 +70,18 @@ export function useLockerContractsFilters() {
     sort_order: filters.locker_contracts_sort_order,
   };
 
+  const exportQueryParams: NonNullable<PostCrmLockersContractsExportData['body']> = {
+    search: filters.locker_contracts_search || undefined,
+    contract_type: filters.locker_contracts_type || undefined,
+    status: filters.locker_contracts_status || undefined,
+    sort_by: filters.locker_contracts_sort_by as LockerContractsSortBy,
+    sort_order: filters.locker_contracts_sort_order,
+  };
+
   return {
     filters,
     queryParams,
+    exportQueryParams,
     searchInput,
     setSearchInput,
     setFilters,

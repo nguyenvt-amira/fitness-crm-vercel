@@ -11,9 +11,10 @@ import {
   GetLockerContractsQuerySchema,
   type GetLockerContractsResponse,
   GetLockerContractsResponseSchema,
-  type LockerContractListItem,
 } from '@/app/api/_schemas/locker.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
+
+import { filterLockerContracts } from '../_utils/locker-query.util';
 
 registerRoute({
   method: 'post',
@@ -56,14 +57,6 @@ registerRoute({
   ],
 });
 
-function compareValues(a: string | number, b: string | number) {
-  if (typeof a === 'number' && typeof b === 'number') {
-    return a - b;
-  }
-
-  return String(a).localeCompare(String(b), 'ja');
-}
-
 export async function GET(request: NextRequest) {
   try {
     const authResult = getAuthUserFromRequest(request);
@@ -93,28 +86,12 @@ export async function GET(request: NextRequest) {
       sort_order = 'asc',
     } = query;
 
-    let filtered: LockerContractListItem[] = [...db.lockerContracts.getList()];
-
-    if (search) {
-      const searchLower = search.toLowerCase().trim();
-      filtered = filtered.filter(
-        (row) =>
-          row.contract_id.toLowerCase().includes(searchLower) ||
-          row.member_name.toLowerCase().includes(searchLower),
-      );
-    }
-
-    if (contract_type) {
-      filtered = filtered.filter((row) => row.contract_type === contract_type);
-    }
-
-    if (status) {
-      filtered = filtered.filter((row) => row.status === status);
-    }
-
-    filtered.sort((a, b) => {
-      const result = compareValues(a[sort_by], b[sort_by]);
-      return sort_order === 'asc' ? result : -result;
+    const filtered = filterLockerContracts(db.lockerContracts.getList(), {
+      search,
+      contract_type,
+      status,
+      sort_by,
+      sort_order,
     });
 
     const total = filtered.length;

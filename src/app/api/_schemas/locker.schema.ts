@@ -237,6 +237,112 @@ export const GetLockerPendingSlotsQuerySchema = z
     description: 'Query parameters for pending locker slot list',
   });
 
+export const ExportLockersQuerySchema = GetLockersQuerySchema.omit({
+  page: true,
+  limit: true,
+}).openapi({
+  title: 'ExportLockersQuery',
+  description: 'Query parameters for locker list export (filters and sort only)',
+});
+
+export const ExportLockerContractsQuerySchema = GetLockerContractsQuerySchema.omit({
+  page: true,
+  limit: true,
+}).openapi({
+  title: 'ExportLockerContractsQuery',
+  description: 'Query parameters for locker contract list export (filters and sort only)',
+});
+
+export const ExportLockerPendingSlotsQuerySchema = GetLockerPendingSlotsQuerySchema.omit({
+  page: true,
+  limit: true,
+}).openapi({
+  title: 'ExportLockerPendingSlotsQuery',
+  description: 'Query parameters for pending locker slot list export (filters and sort only)',
+});
+
+export const ExportLockerSlotsQuerySchema = z
+  .object({
+    pending_only: z
+      .string()
+      .optional()
+      .openapi({ description: 'When "true", export pending-release slots only' }),
+  })
+  .transform((query) => ({
+    pending_only: query.pending_only === 'true',
+  }))
+  .openapi({
+    title: 'ExportLockerSlotsQuery',
+    description: 'Query parameters for locker slot export on locker detail screen',
+  });
+
+export const ExportLockersRequestSchema = GetLockersQuerySchema.omit({
+  page: true,
+  limit: true,
+}).openapi({
+  title: 'ExportLockersRequest',
+  description: 'Request body for locker list export (filters and sort only)',
+});
+
+export const ExportLockerContractsRequestSchema = GetLockerContractsQuerySchema.omit({
+  page: true,
+  limit: true,
+}).openapi({
+  title: 'ExportLockerContractsRequest',
+  description: 'Request body for locker contract list export (filters and sort only)',
+});
+
+export const ExportLockerPendingSlotsRequestSchema = GetLockerPendingSlotsQuerySchema.omit({
+  page: true,
+  limit: true,
+}).openapi({
+  title: 'ExportLockerPendingSlotsRequest',
+  description: 'Request body for pending locker slot list export (filters and sort only)',
+});
+
+export const ExportLockerSlotsRequestSchema = z
+  .object({
+    pending_only: z
+      .boolean()
+      .optional()
+      .openapi({ description: 'When true, export pending-release slots only' }),
+  })
+  .openapi({
+    title: 'ExportLockerSlotsRequest',
+    description: 'Request body for locker slot export on locker detail screen',
+  });
+
+export const ExportLockersResponseSchema = z
+  .object({
+    lockers: z.array(LockerListItemSchema).openapi({ description: 'Filtered locker rows' }),
+  })
+  .openapi({
+    title: 'ExportLockersResponse',
+    description: 'Locker list export data without pagination',
+  });
+
+export const ExportLockerContractsResponseSchema = z
+  .object({
+    contracts: z
+      .array(LockerContractListItemSchema)
+      .openapi({ description: 'Filtered locker contract rows' }),
+  })
+  .openapi({
+    title: 'ExportLockerContractsResponse',
+    description: 'Locker contract list export data without pagination',
+  });
+
+export const ExportLockerPendingSlotsResponseSchema = z
+  .object({
+    pending_slots: z
+      .array(LockerPendingSlotListItemSchema)
+      .openapi({ description: 'Filtered pending slot rows' }),
+  })
+  .openapi({
+    title: 'ExportLockerPendingSlotsResponse',
+    description: 'Pending locker slot list export data without pagination',
+  });
+
 export const GetLockersResponseSchema = z
   .object({
     lockers: z.array(LockerListItemSchema).openapi({ description: 'Locker rows' }),
@@ -564,6 +670,15 @@ export const LockerSlotItemSchema = z
   .openapi({
     title: 'LockerSlotItem',
     description: 'Detailed locker slot item used by the locker detail screen',
+  });
+
+export const ExportLockerSlotsResponseSchema = z
+  .object({
+    slots: z.array(LockerSlotItemSchema).openapi({ description: 'Filtered locker slot rows' }),
+  })
+  .openapi({
+    title: 'ExportLockerSlotsResponse',
+    description: 'Locker slot list export data for locker detail screen',
   });
 
 export const LockerSlotSummarySchema = z
@@ -991,6 +1106,20 @@ export type LockerSlotSummary = z.infer<typeof LockerSlotSummarySchema>;
 export type GetLockersQuery = z.infer<typeof GetLockersQuerySchema>;
 export type GetLockerContractsQuery = z.infer<typeof GetLockerContractsQuerySchema>;
 export type GetLockerPendingSlotsQuery = z.infer<typeof GetLockerPendingSlotsQuerySchema>;
+export type ExportLockersQuery = z.infer<typeof ExportLockersQuerySchema>;
+export type ExportLockerContractsQuery = z.infer<typeof ExportLockerContractsQuerySchema>;
+export type ExportLockerPendingSlotsQuery = z.infer<typeof ExportLockerPendingSlotsQuerySchema>;
+export type ExportLockerSlotsQuery = z.infer<typeof ExportLockerSlotsQuerySchema>;
+export type ExportLockersRequest = z.infer<typeof ExportLockersRequestSchema>;
+export type ExportLockerContractsRequest = z.infer<typeof ExportLockerContractsRequestSchema>;
+export type ExportLockerPendingSlotsRequest = z.infer<typeof ExportLockerPendingSlotsRequestSchema>;
+export type ExportLockerSlotsRequest = z.infer<typeof ExportLockerSlotsRequestSchema>;
+export type ExportLockersResponse = z.infer<typeof ExportLockersResponseSchema>;
+export type ExportLockerContractsResponse = z.infer<typeof ExportLockerContractsResponseSchema>;
+export type ExportLockerPendingSlotsResponse = z.infer<
+  typeof ExportLockerPendingSlotsResponseSchema
+>;
+export type ExportLockerSlotsResponse = z.infer<typeof ExportLockerSlotsResponseSchema>;
 export type GetLockersResponse = z.infer<typeof GetLockersResponseSchema>;
 export type GetLockerContractsResponse = z.infer<typeof GetLockerContractsResponseSchema>;
 export type LockerContractDetail = z.infer<typeof LockerContractDetailSchema>;

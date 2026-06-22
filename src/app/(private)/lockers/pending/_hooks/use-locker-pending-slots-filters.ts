@@ -7,6 +7,7 @@ import {
   type GetCrmLockersPendingSlotsData,
   LockerPendingLocation,
   type LockerPendingLocation as LockerPendingLocationValue,
+  type PostCrmLockersPendingSlotsExportData,
 } from '@/lib/api/types.gen';
 
 type LockerPendingSortBy = NonNullable<GetCrmLockersPendingSlotsData['query']>['sort_by'];
@@ -71,9 +72,20 @@ export function useLockerPendingSlotsFilters() {
     sort_order: filters.locker_pending_sort_order,
   };
 
+  const exportQueryParams: NonNullable<PostCrmLockersPendingSlotsExportData['body']> = {
+    search: filters.locker_pending_search || undefined,
+    store_id: filters.locker_pending_store_id || undefined,
+    locker_location: filters.locker_pending_location || undefined,
+    cancel_date_from: filters.locker_pending_cancel_from || undefined,
+    cancel_date_to: filters.locker_pending_cancel_to || undefined,
+    sort_by: filters.locker_pending_sort_by as LockerPendingSortBy,
+    sort_order: filters.locker_pending_sort_order,
+  };
+
   return {
     filters,
     queryParams,
+    exportQueryParams,
     searchInput,
     setSearchInput,
     setFilters,

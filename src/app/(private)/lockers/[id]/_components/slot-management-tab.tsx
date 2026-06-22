@@ -12,6 +12,7 @@ import type { GetCrmLockersByIdResponse } from '@/lib/api/types.gen';
 
 import { ReleaseConfirmDialog } from '../../_components/release-confirm-dialog';
 import { LOCKER_CONTRACT_STATUS_LABELS } from '../../_constants/constants';
+import { useLockerSlotsCsvExport } from '../../_hooks/use-locker-csv-export.hook';
 import { collectReleaseSlotNumbers } from '../../_utils/locker-slot-release.util';
 import { LOCKER_SLOT_STATUS_CELL_CLASSES } from '../_constants/constants';
 import { useLockerSlotMutations } from '../_hooks/use-locker-slot-mutations.hook';
@@ -33,6 +34,10 @@ export function SlotManagementTab({ locker }: SlotManagementTabProps) {
     }),
   });
   const lockerOptionMasters = lockerOptionMastersData?.options ?? [];
+  const { mutate: exportCsv, isPending: isExportingCsv } = useLockerSlotsCsvExport(
+    locker.locker_id,
+    lockerOptionMasters.map((item) => ({ code: item.code, name: item.name })),
+  );
 
   const [pendingOnly, setPendingOnly] = useState(false);
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
@@ -268,6 +273,13 @@ export function SlotManagementTab({ locker }: SlotManagementTabProps) {
           pendingSlots={pendingSlots}
           displayedSlots={displayedSlots}
           pendingOnly={pendingOnly}
+          onExportCsv={() =>
+            exportCsv({
+              path: { id: locker.id },
+              body: { pending_only: pendingOnly || undefined },
+            })
+          }
+          isExportingCsv={isExportingCsv}
           onPendingOnlyChange={handlePendingOnlyChange}
           checkedSlots={checkedSlots}
           onToggleCheck={toggleCheck}

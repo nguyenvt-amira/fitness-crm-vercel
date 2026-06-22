@@ -1,8 +1,9 @@
 'use client';
 
+import { useAuthUser } from '@/contexts/auth-user.context';
 import { Download, Unlock } from 'lucide-react';
-import { toast } from 'sonner';
 
+import { RoleGatedButton } from '@/components/common/role-gated-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -25,6 +26,8 @@ import {
 
 import type { GetCrmLockersByIdResponse, OptionMasterListItem } from '@/lib/api/types.gen';
 
+import { Permission } from '@/types/permission.type';
+
 import {
   LOCKER_CONTRACT_STATUS_BADGE_CLASSES,
   LOCKER_CONTRACT_STATUS_LABELS,
@@ -38,6 +41,8 @@ interface SlotContractsTableProps {
   pendingSlots: LockerSlot[];
   displayedSlots: LockerSlot[];
   pendingOnly: boolean;
+  onExportCsv: () => void;
+  isExportingCsv?: boolean;
   onPendingOnlyChange: (value: boolean) => void;
   checkedSlots: Set<string>;
   onToggleCheck: (slotId: string) => void;
@@ -53,6 +58,8 @@ export function SlotContractsTable({
   pendingSlots,
   displayedSlots,
   pendingOnly,
+  onExportCsv,
+  isExportingCsv = false,
   onPendingOnlyChange,
   checkedSlots,
   onToggleCheck,
@@ -62,6 +69,11 @@ export function SlotContractsTable({
   onContractTypeChange,
   isUpdatingSlot,
 }: SlotContractsTableProps) {
+  const { hasPermission } = useAuthUser();
+  const canEditSlot = hasPermission(Permission.LockersEdit);
+  const canAssignContract = hasPermission(Permission.LockersContractsEdit);
+  const canExportCsv = hasPermission(Permission.LockersExport);
+
   return (
     <Card className="gap-0 py-0">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b px-4 py-3">
@@ -90,25 +102,28 @@ export function SlotContractsTable({
             variant="outline"
             size="sm"
             className="gap-1 text-xs"
-            onClick={() => toast.info('CSV出力は準備中です')}
+            onClick={onExportCsv}
+            disabled={isExportingCsv || !canExportCsv}
           >
             <Download className="size-3" />
             CSV出力
           </Button>
-          <Button
-            size="sm"
-            className="gap-1 text-xs"
-            disabled={checkedSlots.size === 0}
-            onClick={onBulkRelease}
-          >
-            <Unlock className="size-3" />
-            一括開放
-            {checkedSlots.size > 0 ? (
-              <Badge variant="secondary" className="ml-0.5 h-4 px-1 text-[10px]">
-                {checkedSlots.size}
-              </Badge>
-            ) : null}
-          </Button>
+          {canEditSlot ? (
+            <Button
+              size="sm"
+              className="gap-1 text-xs"
+              disabled={checkedSlots.size === 0}
+              onClick={onBulkRelease}
+            >
+              <Unlock className="size-3" />
+              一括開放
+              {checkedSlots.size > 0 ? (
+                <Badge variant="secondary" className="ml-0.5 h-4 px-1 text-[10px]">
+                  {checkedSlots.size}
+                </Badge>
+              ) : null}
+            </Button>
+          ) : null}
         </div>
       </div>
 
@@ -141,7 +156,7 @@ export function SlotContractsTable({
                 onClick={() => onSelectSlot(slot.id)}
               >
                 <TableCell onClick={(event) => event.stopPropagation()}>
-                  {isPending ? (
+                  {isPending && canEditSlot ? (
                     <Checkbox
                       className="size-4"
                       checked={checkedSlots.has(slot.id)}
@@ -174,7 +189,7 @@ export function SlotContractsTable({
                   )}
                 </TableCell>
                 <TableCell onClick={(event) => event.stopPropagation()}>
-                  {slot.is_bottom_row ? (
+                  {slot.is_bottom_row && canAssignContract ? (
                     <Select
                       value={slot.contract_type_code ?? ''}
                       onValueChange={(code) => code && onContractTypeChange(slot.id, code)}
@@ -198,6 +213,10 @@ export function SlotContractsTable({
                         ))}
                       </SelectContent>
                     </Select>
+                  ) : slot.is_bottom_row ? (
+                    <span className="text-muted-foreground text-xs">
+                      {contractType?.name ?? '未割当'}
+                    </span>
                   ) : (
                     <span className="text-muted-foreground text-xs">—</span>
                   )}
@@ -213,8 +232,10 @@ export function SlotContractsTable({
                   <PasswordCell password={slot.password} />
                 </TableCell>
                 <TableCell onClick={(event) => event.stopPropagation()}>
-                  {isPending ? (
-                    <Button
+                  {isPending && canEditSlot ? (
+                    <RoleGatedButton
+                      requiredPermission={Permission.LockersEdit}
+                      denyTooltip="開放操作の権限がありません"
                       variant="outline"
                       size="sm"
                       className="h-7 gap-1 text-xs"
@@ -222,7 +243,7 @@ export function SlotContractsTable({
                     >
                       <Unlock className="size-3" />
                       開放
-                    </Button>
+                    </RoleGatedButton>
                   ) : null}
                 </TableCell>
               </TableRow>

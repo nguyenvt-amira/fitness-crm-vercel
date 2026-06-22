@@ -87,6 +87,7 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
   '/lockers/contracts/:id': Permission.LockersContractsView,
   '/lockers/contracts/create': Permission.LockersContractsCreate,
   '/lockers/contracts/:id/edit': Permission.LockersContractsEdit,
+  '/lockers/pending': Permission.LockersPendingView,
 };
 
 // ---------------------------------------------------------------------------
@@ -161,9 +162,13 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LockersCreate,
     Permission.LockersEdit,
     Permission.LockersDelete,
+    Permission.LockersExport,
+    Permission.LockersPendingView,
+    Permission.LockersPendingExport,
     Permission.LockersContractsView,
     Permission.LockersContractsCreate,
     Permission.LockersContractsEdit,
+    Permission.LockersContractsExport,
   ],
 
   [UserRole.Manager]: [
@@ -190,7 +195,16 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.OptionsView,
     Permission.BrandsView,
     Permission.LockersView,
+    Permission.LockersCreate,
+    Permission.LockersEdit,
+    Permission.LockersDelete,
+    Permission.LockersExport,
+    Permission.LockersPendingView,
+    Permission.LockersPendingExport,
     Permission.LockersContractsView,
+    Permission.LockersContractsCreate,
+    Permission.LockersContractsEdit,
+    Permission.LockersContractsExport,
   ],
 
   [UserRole.Staff]: [
@@ -221,7 +235,16 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.OptionsView,
     Permission.BrandsView,
     Permission.LockersView,
+    Permission.LockersCreate,
+    Permission.LockersEdit,
+    Permission.LockersDelete,
+    Permission.LockersExport,
+    Permission.LockersPendingView,
+    Permission.LockersPendingExport,
     Permission.LockersContractsView,
+    Permission.LockersContractsCreate,
+    Permission.LockersContractsEdit,
+    Permission.LockersContractsExport,
   ],
 
   [UserRole.Trainer]: [Permission.MembersView],
@@ -233,6 +256,9 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.MembershipApplicationsView,
     Permission.FamilyRegistrationsView,
     Permission.FamilyRegistrationsDashboardView,
+    Permission.LockersView,
+    Permission.LockersPendingView,
+    Permission.LockersPendingExport,
   ],
 };
 

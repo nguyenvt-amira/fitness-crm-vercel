@@ -411,6 +411,69 @@ export function registerAllSchemas() {
     'LockerErrorResponse',
     registry.register('LockerErrorResponse', lockerSchemas.ErrorResponseSchema),
   );
+  registeredSchemaMap.set(
+    'ExportLockersQuery',
+    registry.register('ExportLockersQuery', lockerSchemas.ExportLockersQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'ExportLockerContractsQuery',
+    registry.register('ExportLockerContractsQuery', lockerSchemas.ExportLockerContractsQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'ExportLockerPendingSlotsQuery',
+    registry.register(
+      'ExportLockerPendingSlotsQuery',
+      lockerSchemas.ExportLockerPendingSlotsQuerySchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'ExportLockerSlotsQuery',
+    registry.register('ExportLockerSlotsQuery', lockerSchemas.ExportLockerSlotsQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'ExportLockersRequest',
+    registry.register('ExportLockersRequest', lockerSchemas.ExportLockersRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'ExportLockerContractsRequest',
+    registry.register(
+      'ExportLockerContractsRequest',
+      lockerSchemas.ExportLockerContractsRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'ExportLockerPendingSlotsRequest',
+    registry.register(
+      'ExportLockerPendingSlotsRequest',
+      lockerSchemas.ExportLockerPendingSlotsRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'ExportLockerSlotsRequest',
+    registry.register('ExportLockerSlotsRequest', lockerSchemas.ExportLockerSlotsRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'ExportLockersResponse',
+    registry.register('ExportLockersResponse', lockerSchemas.ExportLockersResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'ExportLockerContractsResponse',
+    registry.register(
+      'ExportLockerContractsResponse',
+      lockerSchemas.ExportLockerContractsResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'ExportLockerPendingSlotsResponse',
+    registry.register(
+      'ExportLockerPendingSlotsResponse',
+      lockerSchemas.ExportLockerPendingSlotsResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'ExportLockerSlotsResponse',
+    registry.register('ExportLockerSlotsResponse', lockerSchemas.ExportLockerSlotsResponseSchema),
+  );
 
   // Register member schemas
   registeredSchemaMap.set(

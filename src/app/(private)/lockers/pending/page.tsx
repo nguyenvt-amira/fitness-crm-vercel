@@ -2,12 +2,14 @@
 
 import { Suspense, useCallback, useMemo, useState } from 'react';
 
+import { useAuthUser } from '@/contexts/auth-user.context';
 import { useQuery } from '@tanstack/react-query';
 import type { SortingState } from '@tanstack/react-table';
 import { Unlock } from 'lucide-react';
 
 import { Loading } from '@/components/common/data-state-boundary/loading';
 import { DataTable } from '@/components/common/data-table';
+import { RoleGatedButton } from '@/components/common/role-gated-button';
 import { TablePagination } from '@/components/common/table-pagination';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -16,6 +18,8 @@ import {
   getCrmLockersPendingSlotsOptions,
   getCrmStoresOptions,
 } from '@/lib/api/@tanstack/react-query.gen';
+
+import { Permission } from '@/types/permission.type';
 
 import { ReleaseConfirmDialog } from '../_components/release-confirm-dialog';
 import { useLockerBulkRelease } from '../_hooks/use-locker-bulk-release.hook';
@@ -28,6 +32,8 @@ import { getLockerPendingSlotsTableColumns } from './_components/locker-pending-
 import { useLockerPendingSlotsFilters } from './_hooks/use-locker-pending-slots-filters';
 
 function LockerPendingSlotsPageContent() {
+  const { hasPermission } = useAuthUser();
+  const canRelease = hasPermission(Permission.LockersEdit);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState<Map<string, LockerSlotReleaseTarget>>(
     new Map(),
@@ -132,12 +138,13 @@ function LockerPendingSlotsPageContent() {
   const columns = useMemo(
     () =>
       getLockerPendingSlotsTableColumns({
+        canSelect: canRelease,
         areAllCurrentRowsSelected,
         selectedIds,
         toggleAllCurrentRows,
         toggleRow,
       }),
-    [areAllCurrentRowsSelected, selectedIds, toggleAllCurrentRows, toggleRow],
+    [canRelease, areAllCurrentRowsSelected, selectedIds, toggleAllCurrentRows, toggleRow],
   );
 
   const handleSortingChange = (updater: SortingState | ((prev: SortingState) => SortingState)) => {
@@ -171,17 +178,23 @@ function LockerPendingSlotsPageContent() {
               stores={stores}
             />
 
-            {selectedCount > 0 && (
+            {canRelease && selectedCount > 0 && (
               <div className="border-primary/20 bg-primary/10 flex items-center gap-3 rounded-lg border px-3 py-2">
                 <span className="text-primary text-sm font-medium">{selectedCount}件選択中</span>
                 <Button variant="ghost" size="sm" onClick={() => setSelectedItems(new Map())}>
                   選択解除
                 </Button>
                 <div className="bg-primary/20 h-4 w-px" />
-                <Button size="sm" className="gap-1" onClick={handleBulkRelease}>
+                <RoleGatedButton
+                  requiredPermission={Permission.LockersEdit}
+                  denyTooltip="開放操作の権限がありません"
+                  size="sm"
+                  className="gap-1"
+                  onClick={handleBulkRelease}
+                >
                   <Unlock className="size-3.5" />
                   一括開放
-                </Button>
+                </RoleGatedButton>
               </div>
             )}
           </div>

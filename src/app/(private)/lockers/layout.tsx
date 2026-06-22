@@ -4,8 +4,9 @@ import type { ReactNode } from 'react';
 
 import { usePathname, useRouter } from 'next/navigation';
 
+import { useAuthUser } from '@/contexts/auth-user.context';
 import { useQuery } from '@tanstack/react-query';
-import { Plus } from 'lucide-react';
+import { Download, Plus } from 'lucide-react';
 
 import { PageHeader } from '@/components/common/page-header';
 import { RoleGatedButton } from '@/components/common/role-gated-button';
@@ -17,6 +18,8 @@ import type { RouteKey } from '@/lib/routes/routes.type';
 import { navigate } from '@/lib/routes/routes.util';
 
 import { Permission } from '@/types/permission.type';
+
+import { useLockerListCsvExport } from './_hooks/use-locker-list-csv-export.hook';
 
 type LockerTab = 'lockers' | 'contracts' | 'pending';
 
@@ -41,6 +44,29 @@ const LOCKER_CREATE_CONFIG: Partial<
   },
 };
 
+const CSV_EXPORT_CONFIG: Partial<
+  Record<LockerTab, { permission: Permission; denyTooltip: string }>
+> = {
+  lockers: {
+    permission: Permission.LockersExport,
+    denyTooltip: 'CSV出力の権限がありません',
+  },
+  contracts: {
+    permission: Permission.LockersContractsExport,
+    denyTooltip: 'CSV出力の権限がありません',
+  },
+  pending: {
+    permission: Permission.LockersPendingExport,
+    denyTooltip: 'CSV出力の権限がありません',
+  },
+};
+
+const TAB_VIEW_PERMISSIONS: Partial<Record<LockerTab, Permission>> = {
+  lockers: Permission.LockersView,
+  contracts: Permission.LockersContractsView,
+  pending: Permission.LockersPendingView,
+};
+
 function getActiveTab(pathname: string): LockerTab | null {
   if (pathname === navigate('/lockers/contracts')) return 'contracts';
   if (pathname === navigate('/lockers/pending')) return 'pending';
@@ -51,12 +77,15 @@ function getActiveTab(pathname: string): LockerTab | null {
 export default function LockersLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { hasPermission } = useAuthUser();
   const activeTab = getActiveTab(pathname);
 
   const { data: summary } = useQuery({
     ...getCrmLockersSummaryOptions(),
     enabled: activeTab !== null,
   });
+
+  const { exportCsv, isExportingCsv } = useLockerListCsvExport(activeTab ?? 'lockers');
 
   if (!activeTab) {
     return children;
@@ -70,55 +99,81 @@ export default function LockersLayout({ children }: { children: ReactNode }) {
   };
 
   const createConfig = LOCKER_CREATE_CONFIG[activeTab];
+  const csvExportConfig = CSV_EXPORT_CONFIG[activeTab];
+  const visibleTabs = (Object.keys(LOCKER_TAB_ROUTES) as LockerTab[]).filter((tab) => {
+    const required = TAB_VIEW_PERMISSIONS[tab];
+    return !required || hasPermission(required);
+  });
 
   return (
     <>
       <PageHeader
         title="ロッカー管理"
         actions={
-          createConfig ? (
-            <RoleGatedButton
-              requiredPermission={createConfig.permission}
-              denyTooltip={createConfig.denyTooltip}
-              onClick={() => router.push(navigate(createConfig.route))}
-            >
-              <Plus className="size-4" />
-              新規登録
-            </RoleGatedButton>
-          ) : undefined
+          <>
+            {csvExportConfig ? (
+              <RoleGatedButton
+                variant="outline"
+                className="gap-1"
+                requiredPermission={csvExportConfig.permission}
+                denyTooltip={csvExportConfig.denyTooltip}
+                onClick={exportCsv}
+                disabled={isExportingCsv}
+              >
+                <Download className="size-4" />
+                CSV出力
+              </RoleGatedButton>
+            ) : null}
+            {createConfig ? (
+              <RoleGatedButton
+                requiredPermission={createConfig.permission}
+                denyTooltip={createConfig.denyTooltip}
+                onClick={() => router.push(navigate(createConfig.route))}
+              >
+                <Plus className="size-4" />
+                新規登録
+              </RoleGatedButton>
+            ) : null}
+          </>
         }
       />
 
       <div className="flex flex-1 flex-col gap-4 p-6 pt-4">
         <Tabs value={activeTab} onValueChange={handleTabChange}>
           <TabsList>
-            <TabsTrigger value="lockers" className="text-sm">
-              ロッカー一覧
-              <Badge
-                variant="outline"
-                className="bg-muted-foreground/15 text-muted-foreground ml-1 min-w-5 border-transparent px-1 font-medium tabular-nums"
-              >
-                {summary?.lockers_count ?? 0}
-              </Badge>
-            </TabsTrigger>
-            <TabsTrigger value="contracts" className="text-sm">
-              契約一覧
-              <Badge
-                variant="outline"
-                className="bg-muted-foreground/15 text-muted-foreground ml-1 min-w-5 border-transparent px-1 font-medium tabular-nums"
-              >
-                {summary?.contracts_count ?? 0}
-              </Badge>
-            </TabsTrigger>
-            <TabsTrigger value="pending" className="text-sm">
-              開放待ち一覧
-              <Badge
-                variant="outline"
-                className="bg-muted-foreground/15 text-muted-foreground ml-1 min-w-5 border-transparent px-1 font-medium tabular-nums"
-              >
-                {summary?.pending_slots_count ?? 0}
-              </Badge>
-            </TabsTrigger>
+            {visibleTabs.includes('lockers') ? (
+              <TabsTrigger value="lockers" className="text-sm">
+                ロッカー一覧
+                <Badge
+                  variant="outline"
+                  className="bg-muted-foreground/15 text-muted-foreground ml-1 min-w-5 border-transparent px-1 font-medium tabular-nums"
+                >
+                  {summary?.lockers_count ?? 0}
+                </Badge>
+              </TabsTrigger>
+            ) : null}
+            {visibleTabs.includes('contracts') ? (
+              <TabsTrigger value="contracts" className="text-sm">
+                契約一覧
+                <Badge
+                  variant="outline"
+                  className="bg-muted-foreground/15 text-muted-foreground ml-1 min-w-5 border-transparent px-1 font-medium tabular-nums"
+                >
+                  {summary?.contracts_count ?? 0}
+                </Badge>
+              </TabsTrigger>
+            ) : null}
+            {visibleTabs.includes('pending') ? (
+              <TabsTrigger value="pending" className="text-sm">
+                開放待ち一覧
+                <Badge
+                  variant="outline"
+                  className="bg-muted-foreground/15 text-muted-foreground ml-1 min-w-5 border-transparent px-1 font-medium tabular-nums"
+                >
+                  {summary?.pending_slots_count ?? 0}
+                </Badge>
+              </TabsTrigger>
+            ) : null}
           </TabsList>
         </Tabs>
 

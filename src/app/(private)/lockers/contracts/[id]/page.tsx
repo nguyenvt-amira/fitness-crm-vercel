@@ -12,7 +12,6 @@ import { DataStateBoundary } from '@/components/common/data-state-boundary';
 import { PageHeader } from '@/components/common/page-header';
 import { RoleGatedButton } from '@/components/common/role-gated-button';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { getCrmLockersContractsByIdOptions } from '@/lib/api/@tanstack/react-query.gen';
@@ -91,7 +90,7 @@ export default function LockerContractDetailPage() {
         actions={
           <div className="flex items-center gap-2">
             <RoleGatedButton
-              requiredPermission={Permission.LockersEdit}
+              requiredPermission={Permission.LockersContractsEdit}
               variant="outline"
               size="sm"
               className="gap-1"
@@ -103,15 +102,17 @@ export default function LockerContractDetailPage() {
             </RoleGatedButton>
 
             {canTerminate && (
-              <Button
+              <RoleGatedButton
+                requiredPermission={Permission.LockersContractsEdit}
                 variant="outline"
                 size="sm"
                 className="text-destructive hover:text-destructive gap-1"
+                denyTooltip="解約操作の権限がありません"
                 onClick={() => setTerminateOpen(true)}
               >
                 <XCircle className="size-4" />
                 解約する
-              </Button>
+              </RoleGatedButton>
             )}
           </div>
         }

@@ -11,9 +11,10 @@ import {
   GetLockersQuerySchema,
   type GetLockersResponse,
   GetLockersResponseSchema,
-  type LockerListItem,
 } from '@/app/api/_schemas/locker.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
+
+import { filterLockers } from './_utils/locker-query.util';
 
 registerRoute({
   method: 'post',
@@ -47,14 +48,6 @@ registerRoute({
   ],
 });
 
-function compareValues(a: string | number, b: string | number) {
-  if (typeof a === 'number' && typeof b === 'number') {
-    return a - b;
-  }
-
-  return String(a).localeCompare(String(b), 'ja');
-}
-
 export async function GET(request: NextRequest) {
   try {
     const authResult = getAuthUserFromRequest(request);
@@ -76,24 +69,11 @@ export async function GET(request: NextRequest) {
     const query: GetLockersQuery = validationResult.data;
     const { page, limit, search, shape, sort_by = 'locker_id', sort_order = 'asc' } = query;
 
-    let filtered: LockerListItem[] = [...db.lockers.getList()];
-
-    if (search) {
-      const searchLower = search.toLowerCase().trim();
-      filtered = filtered.filter(
-        (row) =>
-          row.locker_id.toLowerCase().includes(searchLower) ||
-          row.area.toLowerCase().includes(searchLower),
-      );
-    }
-
-    if (shape) {
-      filtered = filtered.filter((row) => row.shape === shape);
-    }
-
-    filtered.sort((a, b) => {
-      const result = compareValues(a[sort_by], b[sort_by]);
-      return sort_order === 'asc' ? result : -result;
+    const filtered = filterLockers(db.lockers.getList(), {
+      search,
+      shape,
+      sort_by,
+      sort_order,
     });
 
     const total = filtered.length;

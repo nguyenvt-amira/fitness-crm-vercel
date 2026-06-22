@@ -22,6 +22,7 @@ function pendingDaysClass(days: number) {
 }
 
 type LockerPendingSlotsTableColumnsOptions = {
+  canSelect?: boolean;
   areAllCurrentRowsSelected: boolean;
   selectedIds: Set<string>;
   toggleAllCurrentRows: () => void;
@@ -29,36 +30,39 @@ type LockerPendingSlotsTableColumnsOptions = {
 };
 
 export function getLockerPendingSlotsTableColumns({
+  canSelect = true,
   areAllCurrentRowsSelected,
   selectedIds,
   toggleAllCurrentRows,
   toggleRow,
 }: LockerPendingSlotsTableColumnsOptions): ColumnDef<LockerPendingRow>[] {
+  const selectColumn: ColumnDef<LockerPendingRow> = {
+    id: 'select',
+    header: () => (
+      <div className="flex justify-center">
+        <Checkbox checked={areAllCurrentRowsSelected} onCheckedChange={toggleAllCurrentRows} />
+      </div>
+    ),
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <Checkbox
+          checked={selectedIds.has(row.original.id)}
+          onCheckedChange={() =>
+            toggleRow({
+              id: row.original.id,
+              locker_id: row.original.locker_id,
+              slot_number: row.original.slot_number,
+            })
+          }
+        />
+      </div>
+    ),
+    enableSorting: false,
+    meta: { className: 'w-10 text-center' },
+  };
+
   return [
-    {
-      id: 'select',
-      header: () => (
-        <div className="flex justify-center">
-          <Checkbox checked={areAllCurrentRowsSelected} onCheckedChange={toggleAllCurrentRows} />
-        </div>
-      ),
-      cell: ({ row }) => (
-        <div className="flex justify-center">
-          <Checkbox
-            checked={selectedIds.has(row.original.id)}
-            onCheckedChange={() =>
-              toggleRow({
-                id: row.original.id,
-                locker_id: row.original.locker_id,
-                slot_number: row.original.slot_number,
-              })
-            }
-          />
-        </div>
-      ),
-      enableSorting: false,
-      meta: { className: 'w-10 text-center' },
-    },
+    ...(canSelect ? [selectColumn] : []),
     {
       accessorKey: 'slot_number',
       header: ({ column }) => <DataTableColumnHeader column={column} title="スロット番号" />,

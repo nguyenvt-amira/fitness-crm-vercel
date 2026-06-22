@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 
+import { useAuthUser } from '@/contexts/auth-user.context';
 import { useQuery } from '@tanstack/react-query';
 import { Pencil, Trash2 } from 'lucide-react';
 
@@ -32,9 +33,12 @@ export default function LockerDetailPage() {
   const params = useParams();
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { hasPermission } = useAuthUser();
+  const canManageSlots = hasPermission(Permission.LockersEdit);
 
   const lockerId = params.id as string;
-  const activeTab = searchParams.get('tab') ?? 'info';
+  const requestedTab = searchParams.get('tab') ?? 'info';
+  const activeTab = requestedTab === 'slots' && !canManageSlots ? 'info' : requestedTab;
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const { data, isLoading, isError, refetch } = useQuery({
@@ -117,7 +121,7 @@ export default function LockerDetailPage() {
         <div className="px-6 pt-4">
           <TabsList>
             <TabsTrigger value="info">ロッカー情報</TabsTrigger>
-            <TabsTrigger value="slots">スロット管理</TabsTrigger>
+            {canManageSlots ? <TabsTrigger value="slots">スロット管理</TabsTrigger> : null}
             <TabsTrigger value="history">変更履歴</TabsTrigger>
           </TabsList>
         </div>
@@ -126,9 +130,11 @@ export default function LockerDetailPage() {
           <LockerInfoTab locker={locker} />
         </TabsContent>
 
-        <TabsContent value="slots" className="min-h-0 flex-1 overflow-y-auto px-6 py-4">
-          <SlotManagementTab locker={locker} />
-        </TabsContent>
+        {canManageSlots ? (
+          <TabsContent value="slots" className="min-h-0 flex-1 overflow-y-auto px-6 py-4">
+            <SlotManagementTab locker={locker} />
+          </TabsContent>
+        ) : null}
 
         <TabsContent value="history" className="min-h-0 flex-1 overflow-y-auto px-6 py-4">
           <LockerHistoryTab lockerId={lockerId} />

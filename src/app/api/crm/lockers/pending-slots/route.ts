@@ -8,9 +8,10 @@ import {
   GetLockerPendingSlotsQuerySchema,
   type GetLockerPendingSlotsResponse,
   GetLockerPendingSlotsResponseSchema,
-  type LockerPendingSlotListItem,
 } from '@/app/api/_schemas/locker.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
+
+import { filterLockerPendingSlots } from '../_utils/locker-query.util';
 
 registerRoute({
   method: 'get',
@@ -29,14 +30,6 @@ registerRoute({
     { status: 500, schema: ErrorResponseSchema, description: 'Internal server error' },
   ],
 });
-
-function compareValues(a: string | number, b: string | number) {
-  if (typeof a === 'number' && typeof b === 'number') {
-    return a - b;
-  }
-
-  return String(a).localeCompare(String(b), 'ja');
-}
 
 export async function GET(request: NextRequest) {
   try {
@@ -69,36 +62,14 @@ export async function GET(request: NextRequest) {
       sort_order = 'asc',
     } = query;
 
-    let filtered: LockerPendingSlotListItem[] = [...db.lockerPendingSlots.getList()];
-
-    if (search) {
-      const searchLower = search.toLowerCase().trim();
-      filtered = filtered.filter(
-        (row) =>
-          row.slot_number.toLowerCase().includes(searchLower) ||
-          row.member_name.toLowerCase().includes(searchLower),
-      );
-    }
-
-    if (store_id) {
-      filtered = filtered.filter((row) => row.store_id === store_id);
-    }
-
-    if (locker_location) {
-      filtered = filtered.filter((row) => row.locker_location === locker_location);
-    }
-
-    if (cancel_date_from) {
-      filtered = filtered.filter((row) => row.cancel_date >= cancel_date_from);
-    }
-
-    if (cancel_date_to) {
-      filtered = filtered.filter((row) => row.cancel_date <= cancel_date_to);
-    }
-
-    filtered.sort((a, b) => {
-      const result = compareValues(a[sort_by], b[sort_by]);
-      return sort_order === 'asc' ? result : -result;
+    const filtered = filterLockerPendingSlots(db.lockerPendingSlots.getList(), {
+      search,
+      store_id,
+      locker_location,
+      cancel_date_from,
+      cancel_date_to,
+      sort_by,
+      sort_order,
     });
 
     const total = filtered.length;

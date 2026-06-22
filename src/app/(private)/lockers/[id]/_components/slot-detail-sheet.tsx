@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { LockerPasswordEditor } from '@/app/(private)/lockers/_components/locker-password-editor';
+import { useAuthUser } from '@/contexts/auth-user.context';
 import { formatDateYYYYMMDD } from '@/utils/date.util';
 import { CircleDollarSign, KeyRound, Lock, Unlock, User } from 'lucide-react';
 
@@ -35,6 +36,8 @@ import type {
 } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
+import { Permission } from '@/types/permission.type';
+
 import {
   LOCKER_CONTRACT_STATUS_BADGE_CLASSES,
   LOCKER_CONTRACT_STATUS_LABELS,
@@ -52,6 +55,7 @@ interface SlotContractTypeSectionProps {
   slot: SlotItem;
   lockerOptionMasters: OptionMasterListItem[];
   isUpdating: boolean;
+  canAssignContract: boolean;
   onContractTypeSave: (slotId: string, code: string) => void;
 }
 
@@ -59,6 +63,7 @@ function SlotContractTypeSection({
   slot,
   lockerOptionMasters,
   isUpdating,
+  canAssignContract,
   onContractTypeSave,
 }: SlotContractTypeSectionProps) {
   const [selectedContractCode, setSelectedContractCode] = useState(slot.contract_type_code ?? '');
@@ -107,41 +112,45 @@ function SlotContractTypeSection({
           <p className="text-muted-foreground text-xs">
             {isAssigned ? '契約種類を変更' : '契約種類を割り当てる'}
           </p>
-          <div className="flex items-center gap-2">
-            <Select
-              value={selectedContractCode}
-              onValueChange={(code) => code && setSelectedContractCode(code)}
-            >
-              <SelectTrigger className="h-8 flex-1 text-xs">
-                <SelectValue placeholder="契約種類を選択...">
-                  {selectedContractCode
-                    ? lockerOptionMasters.find((item) => item.code === selectedContractCode)?.name
-                    : undefined}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                {lockerOptionMasters.map((item) => (
-                  <SelectItem key={item.code} value={item.code}>
-                    <span className="flex items-center gap-2">
-                      <span>{item.name}</span>
-                      <span className="text-muted-foreground">
-                        ¥{item.price_including_tax.toLocaleString()}/月
+          {canAssignContract ? (
+            <div className="flex items-center gap-2">
+              <Select
+                value={selectedContractCode}
+                onValueChange={(code) => code && setSelectedContractCode(code)}
+              >
+                <SelectTrigger className="h-8 flex-1 text-xs">
+                  <SelectValue placeholder="契約種類を選択...">
+                    {selectedContractCode
+                      ? lockerOptionMasters.find((item) => item.code === selectedContractCode)?.name
+                      : undefined}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  {lockerOptionMasters.map((item) => (
+                    <SelectItem key={item.code} value={item.code}>
+                      <span className="flex items-center gap-2">
+                        <span>{item.name}</span>
+                        <span className="text-muted-foreground">
+                          ¥{item.price_including_tax.toLocaleString()}/月
+                        </span>
                       </span>
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button
-              size="sm"
-              variant={isAssigned ? 'outline' : 'default'}
-              className="shrink-0 text-xs"
-              disabled={!selectedContractCode || isUpdating}
-              onClick={() => onContractTypeSave(slot.id, selectedContractCode)}
-            >
-              {isAssigned ? '変更' : '割り当て'}
-            </Button>
-          </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button
+                size="sm"
+                variant={isAssigned ? 'outline' : 'default'}
+                className="shrink-0 text-xs"
+                disabled={!selectedContractCode || isUpdating}
+                onClick={() => onContractTypeSave(slot.id, selectedContractCode)}
+              >
+                {isAssigned ? '変更' : '割り当て'}
+              </Button>
+            </div>
+          ) : (
+            <p className="text-muted-foreground text-xs">契約種類の割当権限がありません</p>
+          )}
         </div>
       </div>
     </div>
@@ -178,6 +187,9 @@ export function SlotDetailSheet({
   onSendReminder,
 }: SlotDetailSheetProps) {
   const router = useRouter();
+  const { hasPermission } = useAuthUser();
+  const canEditSlot = hasPermission(Permission.LockersEdit);
+  const canAssignContract = hasPermission(Permission.LockersContractsEdit);
   const [editingLockType, setEditingLockType] = useState(false);
   const [selectedLockType, setSelectedLockType] = useState<LockerLockType>('dial');
   const [slotSettingDialogOpen, setSlotSettingDialogOpen] = useState(false);
@@ -253,7 +265,7 @@ export function SlotDetailSheet({
                 </div>
                 <div className="col-span-2">
                   <p className="text-muted-foreground mb-2 text-xs">施錠方法</p>
-                  {editingLockType ? (
+                  {editingLockType && canEditSlot ? (
                     <div className="bg-muted/30 flex flex-col gap-3 rounded-lg border p-3">
                       <Select
                         value={selectedLockType}
@@ -316,7 +328,7 @@ export function SlotDetailSheet({
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
-                      ) : (
+                      ) : canEditSlot ? (
                         <Button
                           variant="outline"
                           size="sm"
@@ -328,7 +340,7 @@ export function SlotDetailSheet({
                         >
                           変更
                         </Button>
-                      )}
+                      ) : null}
                     </div>
                   )}
                 </div>
@@ -339,17 +351,19 @@ export function SlotDetailSheet({
                   </Badge>
                 </div>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-4 w-full gap-2 text-xs"
-                onClick={() => {
-                  setSlotSettingFormKey((key) => key + 1);
-                  setSlotSettingDialogOpen(true);
-                }}
-              >
-                スロット設定を編集
-              </Button>
+              {canEditSlot ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-4 w-full gap-2 text-xs"
+                  onClick={() => {
+                    setSlotSettingFormKey((key) => key + 1);
+                    setSlotSettingDialogOpen(true);
+                  }}
+                >
+                  スロット設定を編集
+                </Button>
+              ) : null}
             </div>
 
             <Separator className="-mx-6 w-[calc(100%+48px)]" />
@@ -399,11 +413,17 @@ export function SlotDetailSheet({
                         <KeyRound className="size-3" />
                         パスワード管理
                       </h3>
-                      <LockerPasswordEditor
-                        currentPassword={slot.password}
-                        isSaving={isUpdating}
-                        onSave={(password) => onUpdateSlot(slot.id, { password })}
-                      />
+                      {canEditSlot ? (
+                        <LockerPasswordEditor
+                          currentPassword={slot.password}
+                          isSaving={isUpdating}
+                          onSave={(password) => onUpdateSlot(slot.id, { password })}
+                        />
+                      ) : (
+                        <p className="text-muted-foreground text-xs">
+                          パスワード変更の権限がありません
+                        </p>
+                      )}
                     </div>
                   </>
                 ) : null}
@@ -428,6 +448,7 @@ export function SlotDetailSheet({
                       slot={slot}
                       lockerOptionMasters={lockerOptionMasters}
                       isUpdating={isUpdating}
+                      canAssignContract={canAssignContract}
                       onContractTypeSave={onContractTypeSave}
                     />
                   </>
@@ -450,7 +471,7 @@ export function SlotDetailSheet({
                     >
                       契約詳細を見る
                     </Button>
-                    {slot.status === 'pending_release' ? (
+                    {slot.status === 'pending_release' && canEditSlot ? (
                       <Button
                         variant="outline"
                         size="sm"
