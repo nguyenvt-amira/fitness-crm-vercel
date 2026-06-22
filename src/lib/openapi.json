@@ -6741,9 +6741,14 @@
         "title": "DeleteLockerResponse",
         "description": "Locker delete response"
       },
-      "ReleaseLockerSlotsRequest": {
+      "BulkReleaseLockerSlotsItem": {
         "type": "object",
         "properties": {
+          "locker_id": {
+            "type": "string",
+            "example": "locker-001",
+            "description": "Locker internal id"
+          },
           "slot_numbers": {
             "type": "array",
             "items": {
@@ -6759,17 +6764,62 @@
           }
         },
         "required": [
+          "locker_id",
           "slot_numbers"
         ],
-        "title": "ReleaseLockerSlotsRequest",
-        "description": "Request to release pending locker slots"
+        "title": "BulkReleaseLockerSlotsItem",
+        "description": "Locker slot release target grouped by locker"
       },
-      "ReleaseLockerSlotsResponse": {
+      "BulkReleaseLockerSlotsRequest": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "locker_id": {
+                  "type": "string",
+                  "example": "locker-001",
+                  "description": "Locker internal id"
+                },
+                "slot_numbers": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 1,
+                  "example": [
+                    "A-007",
+                    "A-025"
+                  ],
+                  "description": "Slot numbers to release"
+                }
+              },
+              "required": [
+                "locker_id",
+                "slot_numbers"
+              ],
+              "title": "BulkReleaseLockerSlotsItem",
+              "description": "Locker slot release target grouped by locker"
+            },
+            "minItems": 1,
+            "description": "Release targets grouped by locker"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "BulkReleaseLockerSlotsRequest",
+        "description": "Request to release pending locker slots across one or more lockers"
+      },
+      "BulkReleaseLockerSlotsResponse": {
         "type": "object",
         "properties": {
           "message": {
             "type": "string",
-            "example": "2件のスロットを開放しました"
+            "example": "3件のスロットを開放しました"
           },
           "released_slot_numbers": {
             "type": "array",
@@ -6778,725 +6828,30 @@
             },
             "example": [
               "A-007",
-              "A-025"
+              "A-025",
+              "B-003"
             ],
             "description": "Released slot numbers"
           },
-          "locker": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "example": "locker-001",
-                "description": "Internal locker row id"
-              },
-              "locker_id": {
-                "type": "string",
-                "example": "LK-001",
-                "description": "Locker display id"
-              },
-              "store_id": {
-                "type": "string",
-                "example": "store-006",
-                "description": "Store internal id"
-              },
-              "store_name": {
-                "type": "string",
-                "example": "JOYFIT24 新宿店",
-                "description": "Store name"
-              },
-              "area": {
-                "type": "string",
-                "example": "1F 男性更衣室",
-                "description": "Locker area"
-              },
-              "location_symbol": {
-                "type": "string",
-                "example": "A",
-                "description": "Location symbol prefix"
-              },
-              "shape": {
-                "type": "string",
-                "enum": [
-                  "3x9",
-                  "3x6",
-                  "2x10",
-                  "2x4"
-                ],
-                "title": "LockerShape",
-                "description": "Locker shape"
-              },
-              "slot_numbering_pattern": {
-                "type": "string",
-                "enum": [
-                  "top_left_to_right",
-                  "bottom_left_to_right",
-                  "top_left_to_bottom",
-                  "top_right_to_left"
-                ],
-                "title": "LockerNumberingPattern",
-                "description": "Slot numbering direction pattern"
-              },
-              "start_number": {
-                "type": "integer",
-                "example": 1,
-                "description": "Slot numbering start value"
-              },
-              "default_open_type": {
-                "type": "string",
-                "enum": [
-                  "door",
-                  "drawer"
-                ],
-                "title": "LockerSlotOpenType",
-                "description": "Default open type for slots"
-              },
-              "default_lock_type": {
-                "type": "string",
-                "enum": [
-                  "dial",
-                  "cylinder"
-                ],
-                "title": "LockerLockType",
-                "description": "Default lock type for slots"
-              },
-              "slot_lock_settings": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "slot_number": {
-                      "type": "string",
-                      "example": "A-001",
-                      "description": "Slot number"
-                    },
-                    "lock_type": {
-                      "type": "string",
-                      "enum": [
-                        "dial",
-                        "cylinder"
-                      ],
-                      "title": "LockerLockType",
-                      "description": "Lock type override"
-                    },
-                    "password": {
-                      "type": "string",
-                      "nullable": true,
-                      "pattern": "^\\d{4}$",
-                      "example": "3847",
-                      "description": "Dial password override"
-                    }
-                  },
-                  "required": [
-                    "slot_number",
-                    "lock_type"
-                  ],
-                  "title": "LockerSlotLockSetting",
-                  "description": "Per-slot lock type and password override"
-                },
-                "description": "Per-slot lock overrides"
-              },
-              "option_type": {
-                "type": "string",
-                "enum": [
-                  "none",
-                  "standard",
-                  "premium"
-                ],
-                "title": "LockerOptionType",
-                "description": "Option contract type"
-              },
-              "slots": {
-                "type": "integer",
-                "example": 27,
-                "description": "Total slots"
-              },
-              "available_slots": {
-                "type": "integer",
-                "example": 18,
-                "description": "Available slots"
-              },
-              "in_use_slots": {
-                "type": "integer",
-                "example": 9,
-                "description": "In-use slots"
-              },
-              "numbering_pattern": {
-                "type": "string",
-                "example": "A-001〜A-027",
-                "description": "Locker numbering pattern"
-              },
-              "has_active_slots": {
-                "type": "boolean",
-                "example": true,
-                "description": "Whether the locker has in-use or pending-release slots"
-              },
-              "option_contract_master": {
-                "type": "object",
-                "nullable": true,
-                "properties": {
-                  "id": {
-                    "type": "string",
-                    "example": "OP036",
-                    "description": "Option master id"
-                  },
-                  "name": {
-                    "type": "string",
-                    "example": "プレミアムロッカー",
-                    "description": "Option master name"
-                  },
-                  "code": {
-                    "type": "string",
-                    "example": "LK-3x9-PREMIUM-001",
-                    "description": "Option master code"
-                  },
-                  "price_including_tax": {
-                    "type": "integer",
-                    "example": 1650,
-                    "description": "Monthly price including tax"
-                  }
-                },
-                "required": [
-                  "id",
-                  "name",
-                  "code",
-                  "price_including_tax"
-                ],
-                "title": "LockerOptionMasterRef",
-                "description": "Assigned option contract master"
-              },
-              "contract_type_code": {
-                "type": "string",
-                "nullable": true,
-                "example": "LK-3x9-PREMIUM-001",
-                "description": "Locker contract type code"
-              },
-              "guide_text": {
-                "type": "string",
-                "nullable": true,
-                "example": "更衣室入口から右手奥、男性専用エリアの隣",
-                "description": "Guide text for staff"
-              },
-              "note": {
-                "type": "string",
-                "nullable": true,
-                "example": "1F男性更衣室入口付近に設置。プレミアムロッカーとして契約可能。",
-                "description": "Additional note"
-              },
-              "image_url": {
-                "type": "string",
-                "nullable": true,
-                "description": "Locker image URL"
-              },
-              "created_at": {
-                "type": "string",
-                "example": "2025/01/15 10:00",
-                "description": "Created at"
-              },
-              "updated_at": {
-                "type": "string",
-                "example": "2026/03/10 09:00",
-                "description": "Updated at"
-              },
-              "summary": {
-                "type": "object",
-                "properties": {
-                  "total_slots": {
-                    "type": "integer",
-                    "example": 27,
-                    "description": "Total slots"
-                  },
-                  "available_slots": {
-                    "type": "integer",
-                    "example": 17,
-                    "description": "Available slots"
-                  },
-                  "in_use_slots": {
-                    "type": "integer",
-                    "example": 8,
-                    "description": "In-use slots"
-                  },
-                  "pending_release_slots": {
-                    "type": "integer",
-                    "example": 2,
-                    "description": "Pending-release slots"
-                  },
-                  "utilization_rate_percent": {
-                    "type": "number",
-                    "example": 37,
-                    "description": "Utilization rate percentage"
-                  }
-                },
-                "required": [
-                  "total_slots",
-                  "available_slots",
-                  "in_use_slots",
-                  "pending_release_slots",
-                  "utilization_rate_percent"
-                ],
-                "title": "LockerSlotSummary",
-                "description": "Slot summary"
-              },
-              "slot_items": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "example": "slot-locker-001-A-001",
-                      "description": "Slot row id"
-                    },
-                    "locker_id": {
-                      "type": "string",
-                      "example": "locker-001",
-                      "description": "Locker internal id"
-                    },
-                    "slot_number": {
-                      "type": "string",
-                      "example": "A-001",
-                      "description": "Slot number"
-                    },
-                    "row_number": {
-                      "type": "integer",
-                      "example": 1,
-                      "description": "Visual row number"
-                    },
-                    "column_number": {
-                      "type": "integer",
-                      "example": 1,
-                      "description": "Visual column number"
-                    },
-                    "is_bottom_row": {
-                      "type": "boolean",
-                      "example": true,
-                      "description": "Whether the slot is in the bottom row"
-                    },
-                    "status": {
-                      "type": "string",
-                      "enum": [
-                        "available",
-                        "in_use",
-                        "pending_release"
-                      ],
-                      "title": "LockerSlotStatus",
-                      "description": "Slot status"
-                    },
-                    "lock_type": {
-                      "type": "string",
-                      "enum": [
-                        "dial",
-                        "cylinder"
-                      ],
-                      "title": "LockerLockType",
-                      "description": "Lock type"
-                    },
-                    "open_type": {
-                      "type": "string",
-                      "enum": [
-                        "door",
-                        "drawer"
-                      ],
-                      "title": "LockerSlotOpenType",
-                      "description": "Open type"
-                    },
-                    "width_cm": {
-                      "type": "integer",
-                      "example": 35,
-                      "description": "Slot width in cm"
-                    },
-                    "height_cm": {
-                      "type": "integer",
-                      "example": 40,
-                      "description": "Slot height in cm"
-                    },
-                    "depth_cm": {
-                      "type": "integer",
-                      "example": 50,
-                      "description": "Slot depth in cm"
-                    },
-                    "password": {
-                      "type": "string",
-                      "nullable": true,
-                      "example": "3847",
-                      "description": "Dial password"
-                    },
-                    "member_name": {
-                      "type": "string",
-                      "nullable": true,
-                      "example": "田中 花子",
-                      "description": "Assigned member name"
-                    },
-                    "member_id": {
-                      "type": "string",
-                      "nullable": true,
-                      "example": "M-0042",
-                      "description": "Assigned member id"
-                    },
-                    "cancel_date": {
-                      "type": "string",
-                      "nullable": true,
-                      "example": "2026/04/30",
-                      "description": "Scheduled cancel date"
-                    },
-                    "contract_start_date": {
-                      "type": "string",
-                      "nullable": true,
-                      "example": "2025/06/01",
-                      "description": "Contract start date"
-                    },
-                    "option_contract_name": {
-                      "type": "string",
-                      "nullable": true,
-                      "example": "プレミアムロッカー",
-                      "description": "Assigned option contract name"
-                    },
-                    "contract_id": {
-                      "type": "string",
-                      "nullable": true,
-                      "example": "CNT-001",
-                      "description": "Locker contract id"
-                    },
-                    "contract_type_code": {
-                      "type": "string",
-                      "nullable": true,
-                      "example": "LK-DSC-001",
-                      "description": "Assigned contract type code"
-                    },
-                    "individual_fee": {
-                      "type": "integer",
-                      "nullable": true,
-                      "example": 880,
-                      "description": "Individual fee for bottom-row slot"
-                    },
-                    "fee_applied_at": {
-                      "type": "string",
-                      "nullable": true,
-                      "example": "2026/02/01",
-                      "description": "Individual fee applied date"
-                    },
-                    "reminder_notifications": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "example": "notify-001",
-                            "description": "Notification id"
-                          },
-                          "sent_at": {
-                            "type": "string",
-                            "example": "2026/04/10 10:00",
-                            "description": "Sent timestamp"
-                          },
-                          "method": {
-                            "type": "string",
-                            "enum": [
-                              "push",
-                              "in_app"
-                            ],
-                            "title": "LockerReminderNotificationMethod",
-                            "description": "Delivery method"
-                          },
-                          "status": {
-                            "type": "string",
-                            "enum": [
-                              "unsent",
-                              "sent",
-                              "failed"
-                            ],
-                            "title": "LockerReminderNotificationStatus",
-                            "description": "Delivery status"
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "sent_at",
-                          "method",
-                          "status"
-                        ],
-                        "title": "LockerReminderNotification",
-                        "description": "Reminder notification history item for a pending-release slot"
-                      },
-                      "description": "Reminder notification history"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "locker_id",
-                    "slot_number",
-                    "row_number",
-                    "column_number",
-                    "is_bottom_row",
-                    "status",
-                    "lock_type",
-                    "open_type",
-                    "width_cm",
-                    "height_cm",
-                    "depth_cm",
-                    "password",
-                    "member_name",
-                    "member_id",
-                    "cancel_date",
-                    "contract_start_date",
-                    "option_contract_name",
-                    "contract_id",
-                    "contract_type_code",
-                    "individual_fee",
-                    "fee_applied_at",
-                    "reminder_notifications"
-                  ],
-                  "title": "LockerSlotItem",
-                  "description": "Detailed locker slot item used by the locker detail screen"
-                },
-                "description": "Detailed slots"
-              },
-              "contracts": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "example": "locker-contract-001",
-                      "description": "Internal row id"
-                    },
-                    "contract_id": {
-                      "type": "string",
-                      "example": "CNT-001",
-                      "description": "Contract display id"
-                    },
-                    "locker_id": {
-                      "type": "string",
-                      "example": "locker-001",
-                      "description": "Locker internal id"
-                    },
-                    "store_id": {
-                      "type": "string",
-                      "example": "store-006",
-                      "description": "Store internal id"
-                    },
-                    "store_name": {
-                      "type": "string",
-                      "example": "JOYFIT24 新宿店",
-                      "description": "Store name"
-                    },
-                    "member_name": {
-                      "type": "string",
-                      "example": "田中 太郎",
-                      "description": "Member name"
-                    },
-                    "member_id": {
-                      "type": "string",
-                      "example": "MBR-00245",
-                      "description": "Member id"
-                    },
-                    "locker_number": {
-                      "type": "string",
-                      "example": "A-012",
-                      "description": "Locker slot number"
-                    },
-                    "contract_type": {
-                      "type": "string",
-                      "enum": [
-                        "none",
-                        "standard",
-                        "premium"
-                      ],
-                      "title": "LockerOptionType",
-                      "description": "Contract type"
-                    },
-                    "start_date": {
-                      "type": "string",
-                      "example": "2025-04-01T00:00:00Z",
-                      "description": "Contract start date-time (ISO 8601 UTC)"
-                    },
-                    "end_date": {
-                      "type": "string",
-                      "example": "2026-03-31T00:00:00Z",
-                      "description": "Contract end date-time (ISO 8601 UTC)"
-                    },
-                    "status": {
-                      "type": "string",
-                      "enum": [
-                        "in_use",
-                        "pending_release",
-                        "available"
-                      ],
-                      "title": "LockerContractStatus",
-                      "description": "Contract status"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "contract_id",
-                    "locker_id",
-                    "store_id",
-                    "store_name",
-                    "member_name",
-                    "member_id",
-                    "locker_number",
-                    "contract_type",
-                    "start_date",
-                    "end_date",
-                    "status"
-                  ],
-                  "title": "LockerContractListItem",
-                  "description": "Locker contract list row"
-                },
-                "description": "Associated contracts"
-              },
-              "pending_slots": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "example": "pending-slot-001",
-                      "description": "Internal row id"
-                    },
-                    "locker_id": {
-                      "type": "string",
-                      "example": "locker-001",
-                      "description": "Locker internal id"
-                    },
-                    "store_id": {
-                      "type": "string",
-                      "example": "store-006",
-                      "description": "Store internal id"
-                    },
-                    "store_name": {
-                      "type": "string",
-                      "example": "JOYFIT24 新宿店",
-                      "description": "Store name"
-                    },
-                    "locker_location": {
-                      "type": "string",
-                      "enum": [
-                        "a_changing_room",
-                        "b_gym_area",
-                        "c_pool_side",
-                        "f_entrance"
-                      ],
-                      "title": "LockerPendingLocation",
-                      "description": "Locker location"
-                    },
-                    "locker_name": {
-                      "type": "string",
-                      "example": "ロッカーA",
-                      "description": "Locker name"
-                    },
-                    "slot_number": {
-                      "type": "string",
-                      "example": "A-003",
-                      "description": "Slot number"
-                    },
-                    "member_name": {
-                      "type": "string",
-                      "example": "鈴木 花子",
-                      "description": "Member name"
-                    },
-                    "member_id": {
-                      "type": "string",
-                      "example": "MBR-00234",
-                      "description": "Member id"
-                    },
-                    "cancel_date": {
-                      "type": "string",
-                      "example": "2026/03/15",
-                      "description": "Cancel date"
-                    },
-                    "pending_since": {
-                      "type": "string",
-                      "example": "2026/03/16",
-                      "description": "Pending since"
-                    },
-                    "pending_days": {
-                      "type": "integer",
-                      "example": 31,
-                      "description": "Pending days"
-                    },
-                    "size": {
-                      "type": "string",
-                      "example": "W35×H40×D50",
-                      "description": "Locker slot size"
-                    },
-                    "lock_type": {
-                      "type": "string",
-                      "enum": [
-                        "dial",
-                        "cylinder"
-                      ],
-                      "title": "LockerLockType",
-                      "description": "Lock type"
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "locker_id",
-                    "store_id",
-                    "store_name",
-                    "locker_location",
-                    "locker_name",
-                    "slot_number",
-                    "member_name",
-                    "member_id",
-                    "cancel_date",
-                    "pending_since",
-                    "pending_days",
-                    "size",
-                    "lock_type"
-                  ],
-                  "title": "LockerPendingSlotListItem",
-                  "description": "Pending locker slot list row"
-                },
-                "description": "Pending slots"
-              }
+          "locker_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
             },
-            "required": [
-              "id",
-              "locker_id",
-              "store_id",
-              "store_name",
-              "area",
-              "location_symbol",
-              "shape",
-              "slot_numbering_pattern",
-              "start_number",
-              "default_open_type",
-              "default_lock_type",
-              "slot_lock_settings",
-              "option_type",
-              "slots",
-              "available_slots",
-              "in_use_slots",
-              "numbering_pattern",
-              "has_active_slots",
-              "option_contract_master",
-              "contract_type_code",
-              "guide_text",
-              "note",
-              "image_url",
-              "created_at",
-              "updated_at",
-              "summary",
-              "slot_items",
-              "contracts",
-              "pending_slots"
+            "example": [
+              "locker-001",
+              "locker-002"
             ],
-            "title": "LockerDetail",
-            "description": "Updated locker detail"
+            "description": "Affected locker ids"
           }
         },
         "required": [
           "message",
           "released_slot_numbers",
-          "locker"
+          "locker_ids"
         ],
-        "title": "ReleaseLockerSlotsResponse",
-        "description": "Locker slot release response"
+        "title": "BulkReleaseLockerSlotsResponse",
+        "description": "Bulk locker slot release response"
       },
       "UpdateLockerSlotRequest": {
         "type": "object",
@@ -38334,862 +37689,6 @@
         }
       }
     },
-    "/crm/lockers/{id}/slots/release": {
-      "post": {
-        "summary": "Release pending locker slots",
-        "description": "Mark pending-release locker slots as available after cleaning and clear linked member data",
-        "tags": [
-          "Lockers"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "Locker internal id",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "Slot numbers to release",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "slot_numbers": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "minLength": 1
-                    },
-                    "minItems": 1,
-                    "example": [
-                      "A-007",
-                      "A-025"
-                    ],
-                    "description": "Slot numbers to release"
-                  }
-                },
-                "required": [
-                  "slot_numbers"
-                ],
-                "title": "ReleaseLockerSlotsRequest",
-                "description": "Request to release pending locker slots"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Slots released successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "2件のスロットを開放しました"
-                    },
-                    "released_slot_numbers": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "example": [
-                        "A-007",
-                        "A-025"
-                      ],
-                      "description": "Released slot numbers"
-                    },
-                    "locker": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string",
-                          "example": "locker-001",
-                          "description": "Internal locker row id"
-                        },
-                        "locker_id": {
-                          "type": "string",
-                          "example": "LK-001",
-                          "description": "Locker display id"
-                        },
-                        "store_id": {
-                          "type": "string",
-                          "example": "store-006",
-                          "description": "Store internal id"
-                        },
-                        "store_name": {
-                          "type": "string",
-                          "example": "JOYFIT24 新宿店",
-                          "description": "Store name"
-                        },
-                        "area": {
-                          "type": "string",
-                          "example": "1F 男性更衣室",
-                          "description": "Locker area"
-                        },
-                        "location_symbol": {
-                          "type": "string",
-                          "example": "A",
-                          "description": "Location symbol prefix"
-                        },
-                        "shape": {
-                          "type": "string",
-                          "enum": [
-                            "3x9",
-                            "3x6",
-                            "2x10",
-                            "2x4"
-                          ],
-                          "title": "LockerShape",
-                          "description": "Locker shape"
-                        },
-                        "slot_numbering_pattern": {
-                          "type": "string",
-                          "enum": [
-                            "top_left_to_right",
-                            "bottom_left_to_right",
-                            "top_left_to_bottom",
-                            "top_right_to_left"
-                          ],
-                          "title": "LockerNumberingPattern",
-                          "description": "Slot numbering direction pattern"
-                        },
-                        "start_number": {
-                          "type": "integer",
-                          "example": 1,
-                          "description": "Slot numbering start value"
-                        },
-                        "default_open_type": {
-                          "type": "string",
-                          "enum": [
-                            "door",
-                            "drawer"
-                          ],
-                          "title": "LockerSlotOpenType",
-                          "description": "Default open type for slots"
-                        },
-                        "default_lock_type": {
-                          "type": "string",
-                          "enum": [
-                            "dial",
-                            "cylinder"
-                          ],
-                          "title": "LockerLockType",
-                          "description": "Default lock type for slots"
-                        },
-                        "slot_lock_settings": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "slot_number": {
-                                "type": "string",
-                                "example": "A-001",
-                                "description": "Slot number"
-                              },
-                              "lock_type": {
-                                "type": "string",
-                                "enum": [
-                                  "dial",
-                                  "cylinder"
-                                ],
-                                "title": "LockerLockType",
-                                "description": "Lock type override"
-                              },
-                              "password": {
-                                "type": "string",
-                                "nullable": true,
-                                "pattern": "^\\d{4}$",
-                                "example": "3847",
-                                "description": "Dial password override"
-                              }
-                            },
-                            "required": [
-                              "slot_number",
-                              "lock_type"
-                            ],
-                            "title": "LockerSlotLockSetting",
-                            "description": "Per-slot lock type and password override"
-                          },
-                          "description": "Per-slot lock overrides"
-                        },
-                        "option_type": {
-                          "type": "string",
-                          "enum": [
-                            "none",
-                            "standard",
-                            "premium"
-                          ],
-                          "title": "LockerOptionType",
-                          "description": "Option contract type"
-                        },
-                        "slots": {
-                          "type": "integer",
-                          "example": 27,
-                          "description": "Total slots"
-                        },
-                        "available_slots": {
-                          "type": "integer",
-                          "example": 18,
-                          "description": "Available slots"
-                        },
-                        "in_use_slots": {
-                          "type": "integer",
-                          "example": 9,
-                          "description": "In-use slots"
-                        },
-                        "numbering_pattern": {
-                          "type": "string",
-                          "example": "A-001〜A-027",
-                          "description": "Locker numbering pattern"
-                        },
-                        "has_active_slots": {
-                          "type": "boolean",
-                          "example": true,
-                          "description": "Whether the locker has in-use or pending-release slots"
-                        },
-                        "option_contract_master": {
-                          "type": "object",
-                          "nullable": true,
-                          "properties": {
-                            "id": {
-                              "type": "string",
-                              "example": "OP036",
-                              "description": "Option master id"
-                            },
-                            "name": {
-                              "type": "string",
-                              "example": "プレミアムロッカー",
-                              "description": "Option master name"
-                            },
-                            "code": {
-                              "type": "string",
-                              "example": "LK-3x9-PREMIUM-001",
-                              "description": "Option master code"
-                            },
-                            "price_including_tax": {
-                              "type": "integer",
-                              "example": 1650,
-                              "description": "Monthly price including tax"
-                            }
-                          },
-                          "required": [
-                            "id",
-                            "name",
-                            "code",
-                            "price_including_tax"
-                          ],
-                          "title": "LockerOptionMasterRef",
-                          "description": "Assigned option contract master"
-                        },
-                        "contract_type_code": {
-                          "type": "string",
-                          "nullable": true,
-                          "example": "LK-3x9-PREMIUM-001",
-                          "description": "Locker contract type code"
-                        },
-                        "guide_text": {
-                          "type": "string",
-                          "nullable": true,
-                          "example": "更衣室入口から右手奥、男性専用エリアの隣",
-                          "description": "Guide text for staff"
-                        },
-                        "note": {
-                          "type": "string",
-                          "nullable": true,
-                          "example": "1F男性更衣室入口付近に設置。プレミアムロッカーとして契約可能。",
-                          "description": "Additional note"
-                        },
-                        "image_url": {
-                          "type": "string",
-                          "nullable": true,
-                          "description": "Locker image URL"
-                        },
-                        "created_at": {
-                          "type": "string",
-                          "example": "2025/01/15 10:00",
-                          "description": "Created at"
-                        },
-                        "updated_at": {
-                          "type": "string",
-                          "example": "2026/03/10 09:00",
-                          "description": "Updated at"
-                        },
-                        "summary": {
-                          "type": "object",
-                          "properties": {
-                            "total_slots": {
-                              "type": "integer",
-                              "example": 27,
-                              "description": "Total slots"
-                            },
-                            "available_slots": {
-                              "type": "integer",
-                              "example": 17,
-                              "description": "Available slots"
-                            },
-                            "in_use_slots": {
-                              "type": "integer",
-                              "example": 8,
-                              "description": "In-use slots"
-                            },
-                            "pending_release_slots": {
-                              "type": "integer",
-                              "example": 2,
-                              "description": "Pending-release slots"
-                            },
-                            "utilization_rate_percent": {
-                              "type": "number",
-                              "example": 37,
-                              "description": "Utilization rate percentage"
-                            }
-                          },
-                          "required": [
-                            "total_slots",
-                            "available_slots",
-                            "in_use_slots",
-                            "pending_release_slots",
-                            "utilization_rate_percent"
-                          ],
-                          "title": "LockerSlotSummary",
-                          "description": "Slot summary"
-                        },
-                        "slot_items": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string",
-                                "example": "slot-locker-001-A-001",
-                                "description": "Slot row id"
-                              },
-                              "locker_id": {
-                                "type": "string",
-                                "example": "locker-001",
-                                "description": "Locker internal id"
-                              },
-                              "slot_number": {
-                                "type": "string",
-                                "example": "A-001",
-                                "description": "Slot number"
-                              },
-                              "row_number": {
-                                "type": "integer",
-                                "example": 1,
-                                "description": "Visual row number"
-                              },
-                              "column_number": {
-                                "type": "integer",
-                                "example": 1,
-                                "description": "Visual column number"
-                              },
-                              "is_bottom_row": {
-                                "type": "boolean",
-                                "example": true,
-                                "description": "Whether the slot is in the bottom row"
-                              },
-                              "status": {
-                                "type": "string",
-                                "enum": [
-                                  "available",
-                                  "in_use",
-                                  "pending_release"
-                                ],
-                                "title": "LockerSlotStatus",
-                                "description": "Slot status"
-                              },
-                              "lock_type": {
-                                "type": "string",
-                                "enum": [
-                                  "dial",
-                                  "cylinder"
-                                ],
-                                "title": "LockerLockType",
-                                "description": "Lock type"
-                              },
-                              "open_type": {
-                                "type": "string",
-                                "enum": [
-                                  "door",
-                                  "drawer"
-                                ],
-                                "title": "LockerSlotOpenType",
-                                "description": "Open type"
-                              },
-                              "width_cm": {
-                                "type": "integer",
-                                "example": 35,
-                                "description": "Slot width in cm"
-                              },
-                              "height_cm": {
-                                "type": "integer",
-                                "example": 40,
-                                "description": "Slot height in cm"
-                              },
-                              "depth_cm": {
-                                "type": "integer",
-                                "example": 50,
-                                "description": "Slot depth in cm"
-                              },
-                              "password": {
-                                "type": "string",
-                                "nullable": true,
-                                "example": "3847",
-                                "description": "Dial password"
-                              },
-                              "member_name": {
-                                "type": "string",
-                                "nullable": true,
-                                "example": "田中 花子",
-                                "description": "Assigned member name"
-                              },
-                              "member_id": {
-                                "type": "string",
-                                "nullable": true,
-                                "example": "M-0042",
-                                "description": "Assigned member id"
-                              },
-                              "cancel_date": {
-                                "type": "string",
-                                "nullable": true,
-                                "example": "2026/04/30",
-                                "description": "Scheduled cancel date"
-                              },
-                              "contract_start_date": {
-                                "type": "string",
-                                "nullable": true,
-                                "example": "2025/06/01",
-                                "description": "Contract start date"
-                              },
-                              "option_contract_name": {
-                                "type": "string",
-                                "nullable": true,
-                                "example": "プレミアムロッカー",
-                                "description": "Assigned option contract name"
-                              },
-                              "contract_id": {
-                                "type": "string",
-                                "nullable": true,
-                                "example": "CNT-001",
-                                "description": "Locker contract id"
-                              },
-                              "contract_type_code": {
-                                "type": "string",
-                                "nullable": true,
-                                "example": "LK-DSC-001",
-                                "description": "Assigned contract type code"
-                              },
-                              "individual_fee": {
-                                "type": "integer",
-                                "nullable": true,
-                                "example": 880,
-                                "description": "Individual fee for bottom-row slot"
-                              },
-                              "fee_applied_at": {
-                                "type": "string",
-                                "nullable": true,
-                                "example": "2026/02/01",
-                                "description": "Individual fee applied date"
-                              },
-                              "reminder_notifications": {
-                                "type": "array",
-                                "items": {
-                                  "type": "object",
-                                  "properties": {
-                                    "id": {
-                                      "type": "string",
-                                      "example": "notify-001",
-                                      "description": "Notification id"
-                                    },
-                                    "sent_at": {
-                                      "type": "string",
-                                      "example": "2026/04/10 10:00",
-                                      "description": "Sent timestamp"
-                                    },
-                                    "method": {
-                                      "type": "string",
-                                      "enum": [
-                                        "push",
-                                        "in_app"
-                                      ],
-                                      "title": "LockerReminderNotificationMethod",
-                                      "description": "Delivery method"
-                                    },
-                                    "status": {
-                                      "type": "string",
-                                      "enum": [
-                                        "unsent",
-                                        "sent",
-                                        "failed"
-                                      ],
-                                      "title": "LockerReminderNotificationStatus",
-                                      "description": "Delivery status"
-                                    }
-                                  },
-                                  "required": [
-                                    "id",
-                                    "sent_at",
-                                    "method",
-                                    "status"
-                                  ],
-                                  "title": "LockerReminderNotification",
-                                  "description": "Reminder notification history item for a pending-release slot"
-                                },
-                                "description": "Reminder notification history"
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "locker_id",
-                              "slot_number",
-                              "row_number",
-                              "column_number",
-                              "is_bottom_row",
-                              "status",
-                              "lock_type",
-                              "open_type",
-                              "width_cm",
-                              "height_cm",
-                              "depth_cm",
-                              "password",
-                              "member_name",
-                              "member_id",
-                              "cancel_date",
-                              "contract_start_date",
-                              "option_contract_name",
-                              "contract_id",
-                              "contract_type_code",
-                              "individual_fee",
-                              "fee_applied_at",
-                              "reminder_notifications"
-                            ],
-                            "title": "LockerSlotItem",
-                            "description": "Detailed locker slot item used by the locker detail screen"
-                          },
-                          "description": "Detailed slots"
-                        },
-                        "contracts": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string",
-                                "example": "locker-contract-001",
-                                "description": "Internal row id"
-                              },
-                              "contract_id": {
-                                "type": "string",
-                                "example": "CNT-001",
-                                "description": "Contract display id"
-                              },
-                              "locker_id": {
-                                "type": "string",
-                                "example": "locker-001",
-                                "description": "Locker internal id"
-                              },
-                              "store_id": {
-                                "type": "string",
-                                "example": "store-006",
-                                "description": "Store internal id"
-                              },
-                              "store_name": {
-                                "type": "string",
-                                "example": "JOYFIT24 新宿店",
-                                "description": "Store name"
-                              },
-                              "member_name": {
-                                "type": "string",
-                                "example": "田中 太郎",
-                                "description": "Member name"
-                              },
-                              "member_id": {
-                                "type": "string",
-                                "example": "MBR-00245",
-                                "description": "Member id"
-                              },
-                              "locker_number": {
-                                "type": "string",
-                                "example": "A-012",
-                                "description": "Locker slot number"
-                              },
-                              "contract_type": {
-                                "type": "string",
-                                "enum": [
-                                  "none",
-                                  "standard",
-                                  "premium"
-                                ],
-                                "title": "LockerOptionType",
-                                "description": "Contract type"
-                              },
-                              "start_date": {
-                                "type": "string",
-                                "example": "2025-04-01T00:00:00Z",
-                                "description": "Contract start date-time (ISO 8601 UTC)"
-                              },
-                              "end_date": {
-                                "type": "string",
-                                "example": "2026-03-31T00:00:00Z",
-                                "description": "Contract end date-time (ISO 8601 UTC)"
-                              },
-                              "status": {
-                                "type": "string",
-                                "enum": [
-                                  "in_use",
-                                  "pending_release",
-                                  "available"
-                                ],
-                                "title": "LockerContractStatus",
-                                "description": "Contract status"
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "contract_id",
-                              "locker_id",
-                              "store_id",
-                              "store_name",
-                              "member_name",
-                              "member_id",
-                              "locker_number",
-                              "contract_type",
-                              "start_date",
-                              "end_date",
-                              "status"
-                            ],
-                            "title": "LockerContractListItem",
-                            "description": "Locker contract list row"
-                          },
-                          "description": "Associated contracts"
-                        },
-                        "pending_slots": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string",
-                                "example": "pending-slot-001",
-                                "description": "Internal row id"
-                              },
-                              "locker_id": {
-                                "type": "string",
-                                "example": "locker-001",
-                                "description": "Locker internal id"
-                              },
-                              "store_id": {
-                                "type": "string",
-                                "example": "store-006",
-                                "description": "Store internal id"
-                              },
-                              "store_name": {
-                                "type": "string",
-                                "example": "JOYFIT24 新宿店",
-                                "description": "Store name"
-                              },
-                              "locker_location": {
-                                "type": "string",
-                                "enum": [
-                                  "a_changing_room",
-                                  "b_gym_area",
-                                  "c_pool_side",
-                                  "f_entrance"
-                                ],
-                                "title": "LockerPendingLocation",
-                                "description": "Locker location"
-                              },
-                              "locker_name": {
-                                "type": "string",
-                                "example": "ロッカーA",
-                                "description": "Locker name"
-                              },
-                              "slot_number": {
-                                "type": "string",
-                                "example": "A-003",
-                                "description": "Slot number"
-                              },
-                              "member_name": {
-                                "type": "string",
-                                "example": "鈴木 花子",
-                                "description": "Member name"
-                              },
-                              "member_id": {
-                                "type": "string",
-                                "example": "MBR-00234",
-                                "description": "Member id"
-                              },
-                              "cancel_date": {
-                                "type": "string",
-                                "example": "2026/03/15",
-                                "description": "Cancel date"
-                              },
-                              "pending_since": {
-                                "type": "string",
-                                "example": "2026/03/16",
-                                "description": "Pending since"
-                              },
-                              "pending_days": {
-                                "type": "integer",
-                                "example": 31,
-                                "description": "Pending days"
-                              },
-                              "size": {
-                                "type": "string",
-                                "example": "W35×H40×D50",
-                                "description": "Locker slot size"
-                              },
-                              "lock_type": {
-                                "type": "string",
-                                "enum": [
-                                  "dial",
-                                  "cylinder"
-                                ],
-                                "title": "LockerLockType",
-                                "description": "Lock type"
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "locker_id",
-                              "store_id",
-                              "store_name",
-                              "locker_location",
-                              "locker_name",
-                              "slot_number",
-                              "member_name",
-                              "member_id",
-                              "cancel_date",
-                              "pending_since",
-                              "pending_days",
-                              "size",
-                              "lock_type"
-                            ],
-                            "title": "LockerPendingSlotListItem",
-                            "description": "Pending locker slot list row"
-                          },
-                          "description": "Pending slots"
-                        }
-                      },
-                      "required": [
-                        "id",
-                        "locker_id",
-                        "store_id",
-                        "store_name",
-                        "area",
-                        "location_symbol",
-                        "shape",
-                        "slot_numbering_pattern",
-                        "start_number",
-                        "default_open_type",
-                        "default_lock_type",
-                        "slot_lock_settings",
-                        "option_type",
-                        "slots",
-                        "available_slots",
-                        "in_use_slots",
-                        "numbering_pattern",
-                        "has_active_slots",
-                        "option_contract_master",
-                        "contract_type_code",
-                        "guide_text",
-                        "note",
-                        "image_url",
-                        "created_at",
-                        "updated_at",
-                        "summary",
-                        "slot_items",
-                        "contracts",
-                        "pending_slots"
-                      ],
-                      "title": "LockerDetail",
-                      "description": "Updated locker detail"
-                    }
-                  },
-                  "required": [
-                    "message",
-                    "released_slot_numbers",
-                    "locker"
-                  ],
-                  "title": "ReleaseLockerSlotsResponse",
-                  "description": "Locker slot release response"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Bad request"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ],
-                  "title": "LockerErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Locker or slot not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Bad request"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ],
-                  "title": "LockerErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Bad request"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ],
-                  "title": "LockerErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/crm/lockers/contracts/{id}/cancel": {
       "patch": {
         "summary": "Cancel locker contract",
@@ -42179,6 +40678,177 @@
           },
           "400": {
             "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Bad request"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "title": "LockerErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Bad request"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "title": "LockerErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/lockers/slots/release": {
+      "post": {
+        "summary": "Bulk release pending locker slots",
+        "description": "Mark pending-release locker slots as available after cleaning and clear linked member data across one or more lockers",
+        "tags": [
+          "Lockers"
+        ],
+        "requestBody": {
+          "description": "Release targets grouped by locker",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "locker_id": {
+                          "type": "string",
+                          "example": "locker-001",
+                          "description": "Locker internal id"
+                        },
+                        "slot_numbers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "minItems": 1,
+                          "example": [
+                            "A-007",
+                            "A-025"
+                          ],
+                          "description": "Slot numbers to release"
+                        }
+                      },
+                      "required": [
+                        "locker_id",
+                        "slot_numbers"
+                      ],
+                      "title": "BulkReleaseLockerSlotsItem",
+                      "description": "Locker slot release target grouped by locker"
+                    },
+                    "minItems": 1,
+                    "description": "Release targets grouped by locker"
+                  }
+                },
+                "required": [
+                  "items"
+                ],
+                "title": "BulkReleaseLockerSlotsRequest",
+                "description": "Request to release pending locker slots across one or more lockers"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Slots released successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "3件のスロットを開放しました"
+                    },
+                    "released_slot_numbers": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": [
+                        "A-007",
+                        "A-025",
+                        "B-003"
+                      ],
+                      "description": "Released slot numbers"
+                    },
+                    "locker_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": [
+                        "locker-001",
+                        "locker-002"
+                      ],
+                      "description": "Affected locker ids"
+                    }
+                  },
+                  "required": [
+                    "message",
+                    "released_slot_numbers",
+                    "locker_ids"
+                  ],
+                  "title": "BulkReleaseLockerSlotsResponse",
+                  "description": "Bulk locker slot release response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Bad request"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "title": "LockerErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No pending-release slots found",
             "content": {
               "application/json": {
                 "schema": {

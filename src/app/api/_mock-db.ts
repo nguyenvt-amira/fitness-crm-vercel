@@ -1740,6 +1740,9 @@ type DbType = {
       lockerId: string,
       slotNumbers: string[],
     ): { released_slot_numbers: string[] } | undefined;
+    releaseSlotsBulk(
+      items: Array<{ locker_id: string; slot_numbers: string[] }>,
+    ): { released_slot_numbers: string[]; locker_ids: string[] } | undefined;
     updateSlot(
       lockerId: string,
       slotId: string,
@@ -8230,6 +8233,26 @@ function createDb() {
         this.syncLockerListCounts(lockerId);
 
         return { released_slot_numbers: released };
+      },
+      releaseSlotsBulk(
+        items: Array<{ locker_id: string; slot_numbers: string[] }>,
+      ): { released_slot_numbers: string[]; locker_ids: string[] } | undefined {
+        const released: string[] = [];
+        const lockerIds: string[] = [];
+
+        for (const item of items) {
+          const result = this.releaseSlots(item.locker_id, item.slot_numbers);
+          if (!result) continue;
+
+          released.push(...result.released_slot_numbers);
+          if (!lockerIds.includes(item.locker_id)) {
+            lockerIds.push(item.locker_id);
+          }
+        }
+
+        if (released.length === 0) return undefined;
+
+        return { released_slot_numbers: released, locker_ids: lockerIds };
       },
       updateSlot(
         lockerId: string,

@@ -833,29 +833,44 @@ export const GetLockerUsedLocationSymbolsResponseSchema = z
     description: 'Used location symbols response',
   });
 
-export const ReleaseLockerSlotsRequestSchema = z
+export const BulkReleaseLockerSlotsItemSchema = z
   .object({
+    locker_id: z.string().openapi({ example: 'locker-001', description: 'Locker internal id' }),
     slot_numbers: z
       .array(z.string().min(1))
       .min(1)
       .openapi({ example: ['A-007', 'A-025'], description: 'Slot numbers to release' }),
   })
   .openapi({
-    title: 'ReleaseLockerSlotsRequest',
-    description: 'Request to release pending locker slots',
+    title: 'BulkReleaseLockerSlotsItem',
+    description: 'Locker slot release target grouped by locker',
   });
 
-export const ReleaseLockerSlotsResponseSchema = z
+export const BulkReleaseLockerSlotsRequestSchema = z
   .object({
-    message: z.string().openapi({ example: '2件のスロットを開放しました' }),
-    released_slot_numbers: z
-      .array(z.string())
-      .openapi({ example: ['A-007', 'A-025'], description: 'Released slot numbers' }),
-    locker: LockerDetailSchema.openapi({ description: 'Updated locker detail' }),
+    items: z
+      .array(BulkReleaseLockerSlotsItemSchema)
+      .min(1)
+      .openapi({ description: 'Release targets grouped by locker' }),
   })
   .openapi({
-    title: 'ReleaseLockerSlotsResponse',
-    description: 'Locker slot release response',
+    title: 'BulkReleaseLockerSlotsRequest',
+    description: 'Request to release pending locker slots across one or more lockers',
+  });
+
+export const BulkReleaseLockerSlotsResponseSchema = z
+  .object({
+    message: z.string().openapi({ example: '3件のスロットを開放しました' }),
+    released_slot_numbers: z
+      .array(z.string())
+      .openapi({ example: ['A-007', 'A-025', 'B-003'], description: 'Released slot numbers' }),
+    locker_ids: z
+      .array(z.string())
+      .openapi({ example: ['locker-001', 'locker-002'], description: 'Affected locker ids' }),
+  })
+  .openapi({
+    title: 'BulkReleaseLockerSlotsResponse',
+    description: 'Bulk locker slot release response',
   });
 
 export const UpdateLockerSlotRequestSchema = z
@@ -989,8 +1004,8 @@ export type GetLockerUsedLocationSymbolsQuery = z.infer<
 export type GetLockerUsedLocationSymbolsResponse = z.infer<
   typeof GetLockerUsedLocationSymbolsResponseSchema
 >;
-export type ReleaseLockerSlotsRequest = z.infer<typeof ReleaseLockerSlotsRequestSchema>;
-export type ReleaseLockerSlotsResponse = z.infer<typeof ReleaseLockerSlotsResponseSchema>;
+export type BulkReleaseLockerSlotsRequest = z.infer<typeof BulkReleaseLockerSlotsRequestSchema>;
+export type BulkReleaseLockerSlotsResponse = z.infer<typeof BulkReleaseLockerSlotsResponseSchema>;
 export type UpdateLockerSlotRequest = z.infer<typeof UpdateLockerSlotRequestSchema>;
 export type UpdateLockerSlotResponse = z.infer<typeof UpdateLockerSlotResponseSchema>;
 export type SendLockerSlotReminderRequest = z.infer<typeof SendLockerSlotReminderRequestSchema>;

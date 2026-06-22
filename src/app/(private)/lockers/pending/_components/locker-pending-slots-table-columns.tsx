@@ -11,6 +11,7 @@ import {
   LOCKER_LOCK_TYPE_LABELS,
   LOCKER_PENDING_LOCATION_LABELS,
 } from '../../_constants/constants';
+import type { LockerSlotReleaseTarget } from '../../_utils/locker-slot-release.util';
 
 type LockerPendingRow = GetCrmLockersPendingSlotsResponse['pending_slots'][number];
 
@@ -24,7 +25,7 @@ type LockerPendingSlotsTableColumnsOptions = {
   areAllCurrentRowsSelected: boolean;
   selectedIds: Set<string>;
   toggleAllCurrentRows: () => void;
-  toggleRow: (id: string) => void;
+  toggleRow: (target: LockerSlotReleaseTarget) => void;
 };
 
 export function getLockerPendingSlotsTableColumns({
@@ -45,7 +46,13 @@ export function getLockerPendingSlotsTableColumns({
         <div className="flex justify-center">
           <Checkbox
             checked={selectedIds.has(row.original.id)}
-            onCheckedChange={() => toggleRow(row.original.id)}
+            onCheckedChange={() =>
+              toggleRow({
+                id: row.original.id,
+                locker_id: row.original.locker_id,
+                slot_number: row.original.slot_number,
+              })
+            }
           />
         </div>
       ),

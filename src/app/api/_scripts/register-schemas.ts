@@ -368,12 +368,22 @@ export function registerAllSchemas() {
     registry.register('DeleteLockerResponse', lockerSchemas.DeleteLockerResponseSchema),
   );
   registeredSchemaMap.set(
-    'ReleaseLockerSlotsRequest',
-    registry.register('ReleaseLockerSlotsRequest', lockerSchemas.ReleaseLockerSlotsRequestSchema),
+    'BulkReleaseLockerSlotsItem',
+    registry.register('BulkReleaseLockerSlotsItem', lockerSchemas.BulkReleaseLockerSlotsItemSchema),
   );
   registeredSchemaMap.set(
-    'ReleaseLockerSlotsResponse',
-    registry.register('ReleaseLockerSlotsResponse', lockerSchemas.ReleaseLockerSlotsResponseSchema),
+    'BulkReleaseLockerSlotsRequest',
+    registry.register(
+      'BulkReleaseLockerSlotsRequest',
+      lockerSchemas.BulkReleaseLockerSlotsRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'BulkReleaseLockerSlotsResponse',
+    registry.register(
+      'BulkReleaseLockerSlotsResponse',
+      lockerSchemas.BulkReleaseLockerSlotsResponseSchema,
+    ),
   );
   registeredSchemaMap.set(
     'UpdateLockerSlotRequest',

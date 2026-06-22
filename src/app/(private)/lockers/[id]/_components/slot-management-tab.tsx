@@ -10,10 +10,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getCrmOptionsOptions } from '@/lib/api/@tanstack/react-query.gen';
 import type { GetCrmLockersByIdResponse } from '@/lib/api/types.gen';
 
+import { ReleaseConfirmDialog } from '../../_components/release-confirm-dialog';
 import { LOCKER_CONTRACT_STATUS_LABELS } from '../../_constants/constants';
+import { collectReleaseSlotNumbers } from '../../_utils/locker-slot-release.util';
 import { LOCKER_SLOT_STATUS_CELL_CLASSES } from '../_constants/constants';
 import { useLockerSlotMutations } from '../_hooks/use-locker-slot-mutations.hook';
-import { ReleaseConfirmDialog } from './release-confirm-dialog';
 import { SlotContractsTable } from './slot-contracts-table';
 import { SlotDetailSheet } from './slot-detail-sheet';
 
@@ -107,10 +108,11 @@ export function SlotManagementTab({ locker }: SlotManagementTabProps) {
   }, []);
 
   const handleBulkRelease = useCallback(() => {
-    const targets = Array.from(checkedSlots)
-      .map((id) => slots.find((slot) => slot.id === id))
-      .filter((slot) => slot?.status === 'pending_release')
-      .map((slot) => slot!.slot_number);
+    const targets = collectReleaseSlotNumbers(
+      checkedSlots,
+      slots,
+      (slot) => slot.status === 'pending_release',
+    );
     setReleaseTargets(targets);
     setReleaseDialogOpen(true);
   }, [checkedSlots, slots]);
@@ -121,13 +123,13 @@ export function SlotManagementTab({ locker }: SlotManagementTabProps) {
   }, []);
 
   const handleConfirmRelease = useCallback(() => {
-    void releaseSlots(releaseTargets)
-      .then(() => {
+    releaseSlots(releaseTargets, {
+      onSuccess: () => {
         setReleaseDialogOpen(false);
         setCheckedSlots(new Set());
         setSelectedSlotId(null);
-      })
-      .catch(() => undefined);
+      },
+    });
   }, [releaseSlots, releaseTargets]);
 
   const handlePendingOnlyChange = useCallback((value: boolean) => {

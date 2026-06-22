@@ -5,45 +5,18 @@ import { toast } from 'sonner';
 
 import {
   getCrmLockersByIdQueryKey,
-  getCrmLockersContractsQueryKey,
-  getCrmLockersPendingSlotsQueryKey,
-  getCrmLockersQueryKey,
-  getCrmLockersSummaryQueryKey,
   patchCrmLockersByIdSlotsBySlotIdMutation,
   postCrmLockersByIdSlotsBySlotIdReminderNotificationsMutation,
-  postCrmLockersByIdSlotsReleaseMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
 import type { PatchCrmLockersByIdSlotsBySlotIdData } from '@/lib/api/types.gen';
+
+import { useLockerBulkRelease } from '../../_hooks/use-locker-bulk-release.hook';
 
 type UpdateLockerSlotBody = NonNullable<PatchCrmLockersByIdSlotsBySlotIdData['body']>;
 
 export function useLockerSlotMutations(lockerId: string) {
   const queryClient = useQueryClient();
-
-  const releaseMutation = useMutation({
-    ...postCrmLockersByIdSlotsReleaseMutation(),
-    onSuccess: ({ message }) => {
-      queryClient.invalidateQueries({
-        queryKey: getCrmLockersByIdQueryKey({ path: { id: lockerId } }),
-      });
-      queryClient.invalidateQueries({
-        queryKey: getCrmLockersSummaryQueryKey(),
-      });
-      queryClient.invalidateQueries({
-        queryKey: getCrmLockersPendingSlotsQueryKey(),
-        refetchType: 'all',
-      });
-      queryClient.invalidateQueries({
-        queryKey: getCrmLockersContractsQueryKey(),
-        refetchType: 'all',
-      });
-      queryClient.invalidateQueries({ queryKey: getCrmLockersQueryKey(), refetchType: 'all' });
-      toast.success(message);
-    },
-    onError: () => {
-      toast.error('スロットの開放に失敗しました');
-    },
-  });
+  const { releaseSlotNumbers, isReleasing } = useLockerBulkRelease();
 
   const updateSlotMutation = useMutation({
     ...patchCrmLockersByIdSlotsBySlotIdMutation(),
@@ -71,11 +44,8 @@ export function useLockerSlotMutations(lockerId: string) {
     },
   });
 
-  const releaseSlots = (slotNumbers: string[]) =>
-    releaseMutation.mutateAsync({
-      path: { id: lockerId },
-      body: { slot_numbers: slotNumbers },
-    });
+  const releaseSlots = (slotNumbers: string[], callbacks?: { onSuccess?: () => void }) =>
+    releaseSlotNumbers(lockerId, slotNumbers, callbacks);
 
   const updateSlot = (slotId: string, body: UpdateLockerSlotBody) =>
     updateSlotMutation.mutateAsync({
@@ -93,7 +63,7 @@ export function useLockerSlotMutations(lockerId: string) {
     releaseSlots,
     updateSlot,
     sendReminder,
-    isReleasing: releaseMutation.isPending,
+    isReleasing,
     isUpdatingSlot: updateSlotMutation.isPending,
     isSendingReminder: reminderMutation.isPending,
   };

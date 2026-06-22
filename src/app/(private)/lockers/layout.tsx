@@ -94,19 +94,28 @@ export default function LockersLayout({ children }: { children: ReactNode }) {
           <TabsList>
             <TabsTrigger value="lockers" className="text-sm">
               ロッカー一覧
-              <Badge variant="outline" className="bg-muted ml-1 min-w-5 border-transparent px-1">
+              <Badge
+                variant="outline"
+                className="bg-muted-foreground/15 text-muted-foreground ml-1 min-w-5 border-transparent px-1 font-medium tabular-nums"
+              >
                 {summary?.lockers_count ?? 0}
               </Badge>
             </TabsTrigger>
             <TabsTrigger value="contracts" className="text-sm">
               契約一覧
-              <Badge variant="outline" className="bg-muted ml-1 min-w-5 border-transparent px-1">
+              <Badge
+                variant="outline"
+                className="bg-muted-foreground/15 text-muted-foreground ml-1 min-w-5 border-transparent px-1 font-medium tabular-nums"
+              >
                 {summary?.contracts_count ?? 0}
               </Badge>
             </TabsTrigger>
             <TabsTrigger value="pending" className="text-sm">
               開放待ち一覧
-              <Badge variant="outline" className="bg-muted ml-1 min-w-5 border-transparent px-1">
+              <Badge
+                variant="outline"
+                className="bg-muted-foreground/15 text-muted-foreground ml-1 min-w-5 border-transparent px-1 font-medium tabular-nums"
+              >
                 {summary?.pending_slots_count ?? 0}
               </Badge>
             </TabsTrigger>

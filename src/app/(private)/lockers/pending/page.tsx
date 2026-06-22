@@ -4,6 +4,7 @@ import { Suspense, useCallback, useMemo, useState } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
 import type { SortingState } from '@tanstack/react-table';
+import { Unlock } from 'lucide-react';
 
 import { Loading } from '@/components/common/data-state-boundary/loading';
 import { DataTable } from '@/components/common/data-table';
@@ -16,13 +17,24 @@ import {
   getCrmStoresOptions,
 } from '@/lib/api/@tanstack/react-query.gen';
 
+import { ReleaseConfirmDialog } from '../_components/release-confirm-dialog';
+import { useLockerBulkRelease } from '../_hooks/use-locker-bulk-release.hook';
+import {
+  type LockerSlotReleaseTarget,
+  releaseTargetsFromSelection,
+} from '../_utils/locker-slot-release.util';
 import { LockerPendingSlotsFilters } from './_components/locker-pending-slots-filters';
 import { getLockerPendingSlotsTableColumns } from './_components/locker-pending-slots-table-columns';
 import { useLockerPendingSlotsFilters } from './_hooks/use-locker-pending-slots-filters';
 
 function LockerPendingSlotsPageContent() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [selectedItems, setSelectedItems] = useState<Map<string, LockerSlotReleaseTarget>>(
+    new Map(),
+  );
+  const [releaseDialogOpen, setReleaseDialogOpen] = useState(false);
+  const [releaseTargets, setReleaseTargets] = useState<string[]>([]);
+  const { releaseTargets: releaseSelectedTargets, isReleasing } = useLockerBulkRelease();
   const {
     filters,
     queryParams,
@@ -54,7 +66,7 @@ function LockerPendingSlotsPageContent() {
     }),
   });
 
-  const pendingSlots = data?.pending_slots ?? [];
+  const pendingSlots = useMemo(() => data?.pending_slots ?? [], [data?.pending_slots]);
   const stores = storesResponse?.stores ?? [];
   const pagination = data?.pagination;
   const total = pagination?.total ?? 0;
@@ -66,34 +78,56 @@ function LockerPendingSlotsPageContent() {
     ? [{ id: filters.locker_pending_sort_by, desc: filters.locker_pending_sort_order === 'desc' }]
     : [];
 
-  const selectedCount = selectedIds.size;
+  const selectedIds = useMemo(() => new Set(selectedItems.keys()), [selectedItems]);
+  const selectedCount = selectedItems.size;
   const currentPageIds = pendingSlots.map((row) => row.id);
   const areAllCurrentRowsSelected =
     currentPageIds.length > 0 && currentPageIds.every((id) => selectedIds.has(id));
 
-  const toggleRow = useCallback((id: string) => {
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
+  const toggleRow = useCallback((target: LockerSlotReleaseTarget) => {
+    setSelectedItems((prev) => {
+      const next = new Map(prev);
+      if (next.has(target.id)) {
+        next.delete(target.id);
       } else {
-        next.add(id);
+        next.set(target.id, target);
       }
       return next;
     });
   }, []);
 
   const toggleAllCurrentRows = useCallback(() => {
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
+    setSelectedItems((prev) => {
+      const next = new Map(prev);
       if (areAllCurrentRowsSelected) {
         currentPageIds.forEach((id) => next.delete(id));
       } else {
-        currentPageIds.forEach((id) => next.add(id));
+        pendingSlots.forEach((row) => {
+          next.set(row.id, {
+            id: row.id,
+            locker_id: row.locker_id,
+            slot_number: row.slot_number,
+          });
+        });
       }
       return next;
     });
-  }, [areAllCurrentRowsSelected, currentPageIds]);
+  }, [areAllCurrentRowsSelected, currentPageIds, pendingSlots]);
+
+  const handleBulkRelease = useCallback(() => {
+    const targets = releaseTargetsFromSelection(selectedItems);
+    setReleaseTargets(targets.map((target) => target.slot_number));
+    setReleaseDialogOpen(true);
+  }, [selectedItems]);
+
+  const handleConfirmRelease = useCallback(() => {
+    releaseSelectedTargets(releaseTargetsFromSelection(selectedItems), {
+      onSuccess: () => {
+        setReleaseDialogOpen(false);
+        setSelectedItems(new Map());
+      },
+    });
+  }, [releaseSelectedTargets, selectedItems]);
 
   const columns = useMemo(
     () =>
@@ -120,58 +154,73 @@ function LockerPendingSlotsPageContent() {
   };
 
   return (
-    <Card className="gap-3 overflow-hidden rounded-xl border p-0">
-      <div className="p-3 pb-0">
-        <div className="flex flex-col gap-3">
-          <LockerPendingSlotsFilters
-            activeFilterCount={activeFilterCount}
-            clearFilters={clearFilters}
-            filters={filters}
-            hasActiveFilters={hasActiveFilters}
-            isFilterOpen={isFilterOpen}
-            searchInput={searchInput}
-            setFilters={setFilters}
-            setIsFilterOpen={setIsFilterOpen}
-            setSearchInput={setSearchInput}
-            stores={stores}
-          />
+    <>
+      <Card className="gap-3 overflow-hidden rounded-xl border p-0">
+        <div className="p-3 pb-0">
+          <div className="flex flex-col gap-3">
+            <LockerPendingSlotsFilters
+              activeFilterCount={activeFilterCount}
+              clearFilters={clearFilters}
+              filters={filters}
+              hasActiveFilters={hasActiveFilters}
+              isFilterOpen={isFilterOpen}
+              searchInput={searchInput}
+              setFilters={setFilters}
+              setIsFilterOpen={setIsFilterOpen}
+              setSearchInput={setSearchInput}
+              stores={stores}
+            />
 
-          {selectedCount > 0 && (
-            <div className="border-primary/20 bg-primary/10 flex items-center gap-3 rounded-lg border px-3 py-2">
-              <span className="text-primary text-sm font-medium">{selectedCount}件選択中</span>
-              <Button variant="ghost" size="sm" onClick={() => setSelectedIds(new Set())}>
-                選択解除
-              </Button>
-            </div>
-          )}
+            {selectedCount > 0 && (
+              <div className="border-primary/20 bg-primary/10 flex items-center gap-3 rounded-lg border px-3 py-2">
+                <span className="text-primary text-sm font-medium">{selectedCount}件選択中</span>
+                <Button variant="ghost" size="sm" onClick={() => setSelectedItems(new Map())}>
+                  選択解除
+                </Button>
+                <div className="bg-primary/20 h-4 w-px" />
+                <Button size="sm" className="gap-1" onClick={handleBulkRelease}>
+                  <Unlock className="size-3.5" />
+                  一括開放
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
 
-      <DataTable
-        columns={columns}
-        data={pendingSlots}
-        isLoading={isLoading}
-        variant="simple"
-        className="rounded-none border-x-0 border-b-0"
-        containerClassName={
-          isFilterOpen ? 'max-h-[calc(100vh-400px)]' : 'max-h-[calc(100vh-340px)]'
-        }
-        tableOptions={{
-          manualSorting: true,
-          onSortingChange: handleSortingChange,
-          state: { sorting },
-        }}
-      />
+        <DataTable
+          columns={columns}
+          data={pendingSlots}
+          isLoading={isLoading}
+          variant="simple"
+          className="rounded-none border-x-0 border-b-0"
+          containerClassName={
+            isFilterOpen ? 'max-h-[calc(100vh-400px)]' : 'max-h-[calc(100vh-340px)]'
+          }
+          tableOptions={{
+            manualSorting: true,
+            onSortingChange: handleSortingChange,
+            state: { sorting },
+          }}
+        />
 
-      <TablePagination
-        currentPage={page}
-        totalPages={totalPages}
-        total={total}
-        limit={limit}
-        onPageChange={setCurrentPage}
-        isLoading={isLoading}
+        <TablePagination
+          currentPage={page}
+          totalPages={totalPages}
+          total={total}
+          limit={limit}
+          onPageChange={setCurrentPage}
+          isLoading={isLoading}
+        />
+      </Card>
+
+      <ReleaseConfirmDialog
+        open={releaseDialogOpen}
+        onOpenChange={setReleaseDialogOpen}
+        targetSlots={releaseTargets}
+        onConfirm={handleConfirmRelease}
+        isPending={isReleasing}
       />
-    </Card>
+    </>
   );
 }
 
