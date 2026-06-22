@@ -68,7 +68,6 @@ function SurveyEditForm({
       queryClient.invalidateQueries({ queryKey: getCrmSurveysQueryKey(), refetchType: 'all' });
       queryClient.invalidateQueries({
         queryKey: getCrmSurveysByIdQueryKey({ path: { id } }),
-        refetchType: 'all',
       });
       router.push(navigate('/surveys/[id]', id));
     },

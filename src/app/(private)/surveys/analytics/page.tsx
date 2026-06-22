@@ -4,8 +4,10 @@ import { Suspense, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { useQuery } from '@tanstack/react-query';
+import { downloadCsv } from '@/utils/csv.util';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { ChevronRight, FileDown } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { BackLink } from '@/components/common/back-link';
 import { DataStateBoundary } from '@/components/common/data-state-boundary';
@@ -14,7 +16,10 @@ import { PageHeader } from '@/components/common/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
-import { getCrmSurveysAnalyticsOptions } from '@/lib/api/@tanstack/react-query.gen';
+import {
+  getCrmSurveysAnalyticsOptions,
+  postCrmSurveysAnalyticsExportMutation,
+} from '@/lib/api/@tanstack/react-query.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
 import { SurveyAnalyticsFilters } from './_components/survey-analytics-filters';
@@ -32,6 +37,16 @@ function SurveyAnalyticsPageContent() {
   const { data, isLoading, isError, refetch } = useQuery({
     ...getCrmSurveysAnalyticsOptions({ query: queryParams }),
   });
+  const exportMutation = useMutation({
+    ...postCrmSurveysAnalyticsExportMutation(),
+    onSuccess: (response) => {
+      downloadCsv(response.csv, response.filename);
+      toast.success(response.message || 'CSVを出力しました');
+    },
+    onError: (error) => {
+      toast.error(error.error || 'CSV出力に失敗しました');
+    },
+  });
 
   return (
     <>
@@ -46,9 +61,14 @@ function SurveyAnalyticsPageContent() {
         title="アンケート集計分析"
         badge={<Badge variant="secondary">{data?.context.total_responses ?? 0}件</Badge>}
         actions={
-          <Button variant="outline" className="gap-1" disabled title="CSV出力は未実装です">
+          <Button
+            variant="outline"
+            className="gap-1"
+            disabled={exportMutation.isPending}
+            onClick={() => exportMutation.mutate({ body: queryParams })}
+          >
             <FileDown className="size-4" />
-            CSV出力
+            {exportMutation.isPending ? '出力中...' : 'CSV出力'}
           </Button>
         }
       />

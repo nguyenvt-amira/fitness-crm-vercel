@@ -77,7 +77,6 @@ export default function SurveyDetailPage() {
       queryClient.invalidateQueries({ queryKey: getCrmSurveysQueryKey(), refetchType: 'all' });
       queryClient.invalidateQueries({
         queryKey: getCrmSurveysByIdQueryKey({ path: { id: surveyId } }),
-        refetchType: 'all',
       });
       setDisableReason('');
       setDisableDialogOpen(false);

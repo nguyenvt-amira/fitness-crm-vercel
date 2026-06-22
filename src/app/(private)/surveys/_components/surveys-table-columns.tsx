@@ -134,7 +134,7 @@ export function SurveysTableColumns({
       meta: { className: 'w-[84px] text-right' },
       cell: ({ row }) => (
         <span className="inline-block w-full text-right text-xs">
-          {row.original.question_count}
+          {row.original.question_count}問
         </span>
       ),
     },
@@ -146,7 +146,7 @@ export function SurveysTableColumns({
       meta: { className: 'w-[104px] text-right' },
       cell: ({ row }) => (
         <span className="inline-block w-full text-right text-xs">
-          {row.original.response_count.toLocaleString()}
+          {row.original.response_count.toLocaleString()}件
         </span>
       ),
     },

@@ -97,20 +97,24 @@ export function SurveyResponsesFilters({
 
       {isFilterOpen && (
         <div className="flex flex-wrap items-end gap-2">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col gap-1">
             <DatePicker
               date={periodFromDate}
               onDateChange={(date) => {
                 updateFilter('period_from', date ? format(date, 'yyyy/MM/dd', { locale: ja }) : '');
               }}
+              disabledDate={periodToDate ? (date) => date > periodToDate : undefined}
               placeholder="開始日"
             />
-            <span className="text-muted-foreground text-xs">〜</span>
+          </div>
+
+          <div className="flex flex-col gap-1">
             <DatePicker
               date={periodToDate}
               onDateChange={(date) => {
                 updateFilter('period_to', date ? format(date, 'yyyy/MM/dd', { locale: ja }) : '');
               }}
+              disabledDate={periodFromDate ? (date) => date < periodFromDate : undefined}
               placeholder="終了日"
             />
           </div>

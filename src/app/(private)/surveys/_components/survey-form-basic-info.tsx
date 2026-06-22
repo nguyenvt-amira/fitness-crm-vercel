@@ -14,11 +14,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import {
-  SURVEY_BRAND_LABELS,
-  SURVEY_TRIGGER_LABELS,
-  SURVEY_TYPE_LABELS,
-} from '../_constants/constants';
+import { SURVEY_BRAND_LABELS, SURVEY_TRIGGER_LABELS } from '../_constants/constants';
 import type { SurveyFormValues } from '../_schemas/survey-form.schema';
 
 export function SurveyFormBasicInfoSection() {
@@ -31,6 +27,7 @@ export function SurveyFormBasicInfoSection() {
     keyof typeof SURVEY_TRIGGER_LABELS,
     string,
   ][];
+  const surveyTypeOptions = [{ value: 'lifecycle', label: 'ライフサイクル' }] as const;
 
   return (
     <Card>
@@ -104,7 +101,7 @@ export function SurveyFormBasicInfoSection() {
                     onValueChange={field.onChange}
                     className="flex items-center gap-6"
                   >
-                    {Object.entries(SURVEY_TYPE_LABELS).map(([value, label]) => (
+                    {surveyTypeOptions.map(({ value, label }) => (
                       <div key={value} className="flex items-center gap-2">
                         <RadioGroupItem value={value} id={`survey-type-${value}`} />
                         <FormLabel

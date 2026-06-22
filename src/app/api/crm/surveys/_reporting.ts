@@ -16,9 +16,45 @@ import type { SurveyQuestion, SurveyTemplateDetail } from '@/app/api/_schemas/su
 
 type SurveyResponseQuery = GetSurveyResponsesQuery | GetSurveyAnalyticsQuery;
 
+const SURVEY_TYPE_LABELS = {
+  lifecycle: 'ライフサイクル',
+  operational: 'オペレーション',
+} as const;
+
+const SURVEY_QUESTION_FORMAT_LABELS = {
+  single_choice: '選択式（単一）',
+  multiple_choice: '選択式（複数）',
+  free_text: '自由記述',
+} as const;
+
+const SURVEY_RESPONSE_STATUS_LABELS = {
+  completed: '完了',
+  partial: '未完了',
+} as const;
+
+const SURVEY_RESPONSE_MEMBER_TYPE_LABELS = {
+  regular: '通常会員',
+  family: '家族会員',
+  corporate: '法人会員',
+  one_day_member: 'ビジター',
+} as const;
+
+const SURVEY_BRAND_LABELS = {
+  joyfit: 'JOYFIT',
+  fit365: 'FIT365',
+  joyfit24: 'JOYFIT24',
+  joyfit_yoga: 'JOYFIT YOGA',
+  joyfit_plus: 'JOYFIT+',
+} as const;
+
 function normalizeDateString(value?: string | null): string | undefined {
   const trimmed = value?.trim();
   return trimmed ? trimmed : undefined;
+}
+
+function formatSurveyDateOnly(value?: string | null): string {
+  if (!value) return '—';
+  return value.trim().split(' ')[0] ?? '—';
 }
 
 function compareDateStrings(value: string, from?: string, to?: string): boolean {
@@ -220,17 +256,15 @@ function csvEscape(value: string | number | null | undefined): string {
 
 export function buildSurveyResponsesCsv(rows: SurveyResponseDetail[]): SurveyCsvExportResponse {
   const header = [
-    '回答日時',
+    '回答日',
     '会員番号',
     '会員名',
-    'アンケートID',
     'アンケート名',
     '種別',
     'ブランド',
     '店舗',
     '区分',
     '回答数',
-    '設問総数',
     '状態',
   ];
 
@@ -238,18 +272,16 @@ export function buildSurveyResponsesCsv(rows: SurveyResponseDetail[]): SurveyCsv
     header.join(','),
     ...rows.map((row) =>
       [
-        row.response_date,
+        formatSurveyDateOnly(row.response_date),
         row.member_number,
         row.member_name,
-        row.survey_id,
         row.survey_name,
-        row.template_type,
-        row.brand,
+        SURVEY_TYPE_LABELS[row.template_type],
+        SURVEY_BRAND_LABELS[row.brand],
         row.store_name,
-        row.member_type,
-        `${row.answered_count}`,
-        `${row.total_count}`,
-        row.status === 'completed' ? '完了' : '未完了',
+        SURVEY_RESPONSE_MEMBER_TYPE_LABELS[row.member_type],
+        `${row.answered_count}/${row.total_count}問`,
+        SURVEY_RESPONSE_STATUS_LABELS[row.status],
       ]
         .map((value) => csvEscape(value))
         .join(','),
@@ -267,25 +299,34 @@ export function buildSurveyResponsesCsv(rows: SurveyResponseDetail[]): SurveyCsv
 export function buildSurveyAnalyticsCsv(
   response: GetSurveyAnalyticsResponse,
 ): SurveyCsvExportResponse {
+  const summaryRows = [
+    ['項目', '値'],
+    ['アンケート名', response.context.survey_name],
+    ['種別', SURVEY_TYPE_LABELS[response.context.template_type]],
+    ['ブランド', SURVEY_BRAND_LABELS[response.context.brand]],
+    ['店舗', response.context.store_name],
+    ['総回答数', `${response.kpis.total_responses.toLocaleString()}件`],
+    ['回答率', `${response.kpis.response_rate.toFixed(1)}%`],
+  ];
   const header = ['設問番号', '設問内容', '種類', '項目', '件数', '割合', '回答日時'];
 
-  const rows = response.questions.flatMap((question) => {
+  const questionRows = response.questions.flatMap((question) => {
     if (question.kind === 'free_text') {
       return question.samples.map((sample) => [
         question.no,
         question.content,
-        '自由記述',
+        SURVEY_QUESTION_FORMAT_LABELS[question.format],
         sample.text,
         1,
         '',
-        sample.answered_at,
+        formatSurveyDateOnly(sample.answered_at),
       ]);
     }
 
     return question.choices.map((choice) => [
       question.no,
       question.content,
-      question.format === 'single_choice' ? '選択式（単一）' : '選択式（複数）',
+      SURVEY_QUESTION_FORMAT_LABELS[question.format],
       choice.label,
       choice.count,
       `${choice.percentage.toFixed(1)}%`,
@@ -294,14 +335,16 @@ export function buildSurveyAnalyticsCsv(
   });
 
   const csv = [
+    ...summaryRows.map((row) => row.map((value) => csvEscape(value)).join(',')),
+    '',
     header.join(','),
-    ...rows.map((row) => row.map((value) => csvEscape(value)).join(',')),
+    ...questionRows.map((row) => row.map((value) => csvEscape(value)).join(',')),
   ].join('\n');
 
   return {
     message: 'CSVを作成しました',
     filename: `survey-analytics-${new Date().toISOString().slice(0, 10).replaceAll('-', '')}.csv`,
     csv,
-    row_count: rows.length,
+    row_count: summaryRows.length - 1 + questionRows.length,
   };
 }

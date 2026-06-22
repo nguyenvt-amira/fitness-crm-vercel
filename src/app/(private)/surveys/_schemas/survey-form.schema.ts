@@ -1,12 +1,6 @@
-import { StoreListBrandSchema } from '@/app/api/_schemas/store.schema';
-import {
-  SurveyTemplateStatusSchema,
-  SurveyTemplateTriggerSchema,
-  SurveyTemplateTypeSchema,
-} from '@/app/api/_schemas/survey.schema';
 import { z } from 'zod';
 
-import type {
+import {
   StoreListBrand,
   SurveyTemplateStatus,
   SurveyTemplateTrigger,
@@ -36,10 +30,10 @@ export const surveyQuestionFormSchema = z.object({
 export const surveyFormSchema = z
   .object({
     name: z.string().trim().min(1, 'アンケート名を入力してください'),
-    brand: StoreListBrandSchema,
-    type: SurveyTemplateTypeSchema,
-    trigger: SurveyTemplateTriggerSchema,
-    status: SurveyTemplateStatusSchema,
+    brand: z.nativeEnum(StoreListBrand),
+    type: z.nativeEnum(SurveyTemplateType),
+    trigger: z.nativeEnum(SurveyTemplateTrigger),
+    status: z.nativeEnum(SurveyTemplateStatus),
     replaceExistingSurveyId: z.string().nullable().optional(),
     questions: z.array(surveyQuestionFormSchema).min(1, '設問を1件以上追加してください'),
   })
@@ -58,6 +52,7 @@ export const surveyFormSchema = z
 export type SurveyFormValues = z.infer<typeof surveyFormSchema>;
 export type SurveyQuestionFormValues = z.infer<typeof surveyQuestionFormSchema>;
 export type SurveyQuestionChoiceFormValues = z.infer<typeof surveyQuestionChoiceFormSchema>;
+export type SurveyBrand = StoreListBrand;
 
 export type SurveyFormSubmitValues = SurveyFormValues;
 
@@ -66,7 +61,7 @@ export interface SurveyDetailLike {
   name: string;
   type: SurveyTemplateType;
   trigger: SurveyTemplateTrigger;
-  brand: StoreListBrand;
+  brand: SurveyBrand;
   status: SurveyTemplateStatus;
   questions: Array<{
     no: number;
