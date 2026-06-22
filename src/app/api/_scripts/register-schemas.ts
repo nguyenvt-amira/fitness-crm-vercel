@@ -10,6 +10,7 @@ import * as brandSchemas from '../_schemas/brand.schema';
 import * as campaignSchemas from '../_schemas/campaign.schema';
 import * as familyRegistrationSchemas from '../_schemas/family-registration.schema';
 import * as leaveSchemas from '../_schemas/leave.schema';
+import * as lockerSchemas from '../_schemas/locker.schema';
 import * as mainContractSchemas from '../_schemas/main-contract.schema';
 import * as memberSchemas from '../_schemas/member.schema';
 import * as membershipApplicationSchemas from '../_schemas/membership-application.schema';
@@ -211,6 +212,194 @@ export function registerAllSchemas() {
   registeredSchemaMap.set(
     'PromoCodeErrorResponse',
     registry.register('PromoCodeErrorResponse', promoCodeSchemas.PromoCodeErrorResponseSchema),
+  );
+  // Register locker schemas
+  registeredSchemaMap.set(
+    'LockerShape',
+    registry.register('LockerShape', lockerSchemas.LockerShapeSchema),
+  );
+  registeredSchemaMap.set(
+    'LockerNumberingPattern',
+    registry.register('LockerNumberingPattern', lockerSchemas.LockerNumberingPatternSchema),
+  );
+  registeredSchemaMap.set(
+    'LockerOptionType',
+    registry.register('LockerOptionType', lockerSchemas.LockerOptionTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'LockerContractStatus',
+    registry.register('LockerContractStatus', lockerSchemas.LockerContractStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'LockerPendingLocation',
+    registry.register('LockerPendingLocation', lockerSchemas.LockerPendingLocationSchema),
+  );
+  registeredSchemaMap.set(
+    'LockerLockType',
+    registry.register('LockerLockType', lockerSchemas.LockerLockTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'LockerSlotStatus',
+    registry.register('LockerSlotStatus', lockerSchemas.LockerSlotStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'LockerSlotOpenType',
+    registry.register('LockerSlotOpenType', lockerSchemas.LockerSlotOpenTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'LockerReminderNotificationStatus',
+    registry.register(
+      'LockerReminderNotificationStatus',
+      lockerSchemas.LockerReminderNotificationStatusSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'LockerReminderNotificationMethod',
+    registry.register(
+      'LockerReminderNotificationMethod',
+      lockerSchemas.LockerReminderNotificationMethodSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'LockerSortField',
+    registry.register('LockerSortField', lockerSchemas.LockerSortFieldSchema),
+  );
+  registeredSchemaMap.set(
+    'LockerContractSortField',
+    registry.register('LockerContractSortField', lockerSchemas.LockerContractSortFieldSchema),
+  );
+  registeredSchemaMap.set(
+    'LockerPendingSortField',
+    registry.register('LockerPendingSortField', lockerSchemas.LockerPendingSortFieldSchema),
+  );
+  registeredSchemaMap.set(
+    'LockerListItem',
+    registry.register('LockerListItem', lockerSchemas.LockerListItemSchema),
+  );
+  registeredSchemaMap.set(
+    'LockerContractListItem',
+    registry.register('LockerContractListItem', lockerSchemas.LockerContractListItemSchema),
+  );
+  registeredSchemaMap.set(
+    'LockerPendingSlotListItem',
+    registry.register('LockerPendingSlotListItem', lockerSchemas.LockerPendingSlotListItemSchema),
+  );
+  registeredSchemaMap.set(
+    'LockerPagination',
+    registry.register('LockerPagination', lockerSchemas.LockerPaginationSchema),
+  );
+  registeredSchemaMap.set(
+    'GetLockersQuery',
+    registry.register('GetLockersQuery', lockerSchemas.GetLockersQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'GetLockerContractsQuery',
+    registry.register('GetLockerContractsQuery', lockerSchemas.GetLockerContractsQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'GetLockerPendingSlotsQuery',
+    registry.register('GetLockerPendingSlotsQuery', lockerSchemas.GetLockerPendingSlotsQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'GetLockersResponse',
+    registry.register('GetLockersResponse', lockerSchemas.GetLockersResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'GetLockerContractsResponse',
+    registry.register('GetLockerContractsResponse', lockerSchemas.GetLockerContractsResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'GetLockerPendingSlotsResponse',
+    registry.register(
+      'GetLockerPendingSlotsResponse',
+      lockerSchemas.GetLockerPendingSlotsResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetLockerSummaryResponse',
+    registry.register('GetLockerSummaryResponse', lockerSchemas.GetLockerSummaryResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'LockerOptionMasterRef',
+    registry.register('LockerOptionMasterRef', lockerSchemas.LockerOptionMasterRefSchema),
+  );
+  registeredSchemaMap.set(
+    'LockerContractTypeMaster',
+    registry.register('LockerContractTypeMaster', lockerSchemas.LockerContractTypeMasterSchema),
+  );
+  registeredSchemaMap.set(
+    'LockerReminderNotification',
+    registry.register('LockerReminderNotification', lockerSchemas.LockerReminderNotificationSchema),
+  );
+  registeredSchemaMap.set(
+    'LockerSlotItem',
+    registry.register('LockerSlotItem', lockerSchemas.LockerSlotItemSchema),
+  );
+  registeredSchemaMap.set(
+    'LockerSlotSummary',
+    registry.register('LockerSlotSummary', lockerSchemas.LockerSlotSummarySchema),
+  );
+  registeredSchemaMap.set(
+    'LockerDetail',
+    registry.register('LockerDetail', lockerSchemas.LockerDetailSchema),
+  );
+  registeredSchemaMap.set(
+    'GetLockerDetailResponse',
+    registry.register('GetLockerDetailResponse', lockerSchemas.GetLockerDetailResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'GetLockerHistoryQuery',
+    registry.register('GetLockerHistoryQuery', lockerSchemas.GetLockerHistoryQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'LockerHistoryItem',
+    registry.register('LockerHistoryItem', lockerSchemas.LockerHistoryItemSchema),
+  );
+  registeredSchemaMap.set(
+    'LockerHistoryPagination',
+    registry.register('LockerHistoryPagination', lockerSchemas.LockerHistoryPaginationSchema),
+  );
+  registeredSchemaMap.set(
+    'GetLockerHistoryResponse',
+    registry.register('GetLockerHistoryResponse', lockerSchemas.GetLockerHistoryResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'DeleteLockerResponse',
+    registry.register('DeleteLockerResponse', lockerSchemas.DeleteLockerResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'ReleaseLockerSlotsRequest',
+    registry.register('ReleaseLockerSlotsRequest', lockerSchemas.ReleaseLockerSlotsRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'ReleaseLockerSlotsResponse',
+    registry.register('ReleaseLockerSlotsResponse', lockerSchemas.ReleaseLockerSlotsResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'UpdateLockerSlotRequest',
+    registry.register('UpdateLockerSlotRequest', lockerSchemas.UpdateLockerSlotRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'UpdateLockerSlotResponse',
+    registry.register('UpdateLockerSlotResponse', lockerSchemas.UpdateLockerSlotResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'SendLockerSlotReminderRequest',
+    registry.register(
+      'SendLockerSlotReminderRequest',
+      lockerSchemas.SendLockerSlotReminderRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'SendLockerSlotReminderResponse',
+    registry.register(
+      'SendLockerSlotReminderResponse',
+      lockerSchemas.SendLockerSlotReminderResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'LockerErrorResponse',
+    registry.register('LockerErrorResponse', lockerSchemas.ErrorResponseSchema),
   );
 
   // Register member schemas
@@ -1201,6 +1390,10 @@ export function registerAllSchemas() {
   registeredSchemaMap.set(
     'OptionCategory',
     registry.register('OptionCategory', optionMasterSchemas.OptionCategorySchema),
+  );
+  registeredSchemaMap.set(
+    'OptionMasterCategory',
+    registry.register('OptionMasterCategory', optionMasterSchemas.OptionMasterCategorySchema),
   );
   registeredSchemaMap.set(
     'OptionMasterDetail',

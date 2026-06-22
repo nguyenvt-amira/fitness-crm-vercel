@@ -77,6 +77,16 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
   // Brands
   '/brands': Permission.BrandsView,
   '/brands/:id': Permission.BrandsView,
+
+  // Lockers
+  '/lockers': Permission.LockersView,
+  '/lockers/:id': Permission.LockersView,
+  '/lockers/create': Permission.LockersCreate,
+  '/lockers/:id/edit': Permission.LockersEdit,
+  '/lockers/contracts': Permission.LockersContractsView,
+  '/lockers/contracts/:id': Permission.LockersContractsView,
+  '/lockers/contracts/create': Permission.LockersContractsCreate,
+  '/lockers/contracts/:id/edit': Permission.LockersContractsEdit,
 };
 
 // ---------------------------------------------------------------------------
@@ -147,6 +157,13 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.BrandsView,
     Permission.BrandsCreate,
     Permission.BrandsEdit,
+    Permission.LockersView,
+    Permission.LockersCreate,
+    Permission.LockersEdit,
+    Permission.LockersDelete,
+    Permission.LockersContractsView,
+    Permission.LockersContractsCreate,
+    Permission.LockersContractsEdit,
   ],
 
   [UserRole.Manager]: [
@@ -172,6 +189,8 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.CampaignsPromoCodeExport,
     Permission.OptionsView,
     Permission.BrandsView,
+    Permission.LockersView,
+    Permission.LockersContractsView,
   ],
 
   [UserRole.Staff]: [
@@ -201,6 +220,8 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.CampaignsPromoCodeExport,
     Permission.OptionsView,
     Permission.BrandsView,
+    Permission.LockersView,
+    Permission.LockersContractsView,
   ],
 
   [UserRole.Trainer]: [Permission.MembersView],

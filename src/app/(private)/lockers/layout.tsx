@@ -1,0 +1,120 @@
+'use client';
+
+import type { ReactNode } from 'react';
+
+import { usePathname, useRouter } from 'next/navigation';
+
+import { useQuery } from '@tanstack/react-query';
+import { Plus } from 'lucide-react';
+
+import { PageHeader } from '@/components/common/page-header';
+import { RoleGatedButton } from '@/components/common/role-gated-button';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+import { getCrmLockersSummaryOptions } from '@/lib/api/@tanstack/react-query.gen';
+import type { RouteKey } from '@/lib/routes/routes.type';
+import { navigate } from '@/lib/routes/routes.util';
+
+import { Permission } from '@/types/permission.type';
+
+type LockerTab = 'lockers' | 'contracts' | 'pending';
+
+const LOCKER_TAB_ROUTES: Record<LockerTab, RouteKey> = {
+  lockers: '/lockers',
+  contracts: '/lockers/contracts',
+  pending: '/lockers/pending',
+};
+
+const LOCKER_CREATE_CONFIG: Partial<
+  Record<LockerTab, { route: RouteKey; permission: Permission; denyTooltip: string }>
+> = {
+  lockers: {
+    route: '/lockers/create',
+    permission: Permission.LockersCreate,
+    denyTooltip: 'ロッカー登録の権限がありません',
+  },
+  contracts: {
+    route: '/lockers/contracts/create',
+    permission: Permission.LockersContractsCreate,
+    denyTooltip: 'ロッカー契約登録の権限がありません',
+  },
+};
+
+function getActiveTab(pathname: string): LockerTab | null {
+  if (pathname === navigate('/lockers/contracts')) return 'contracts';
+  if (pathname === navigate('/lockers/pending')) return 'pending';
+  if (pathname === navigate('/lockers')) return 'lockers';
+  return null;
+}
+
+export default function LockersLayout({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const activeTab = getActiveTab(pathname);
+
+  const { data: summary } = useQuery({
+    ...getCrmLockersSummaryOptions(),
+    enabled: activeTab !== null,
+  });
+
+  if (!activeTab) {
+    return children;
+  }
+
+  const handleTabChange = (tab: string) => {
+    const routeKey = LOCKER_TAB_ROUTES[tab as LockerTab];
+    if (routeKey) {
+      router.push(navigate(routeKey));
+    }
+  };
+
+  const createConfig = LOCKER_CREATE_CONFIG[activeTab];
+
+  return (
+    <>
+      <PageHeader
+        title="ロッカー管理"
+        actions={
+          createConfig ? (
+            <RoleGatedButton
+              requiredPermission={createConfig.permission}
+              denyTooltip={createConfig.denyTooltip}
+              onClick={() => router.push(navigate(createConfig.route))}
+            >
+              <Plus className="size-4" />
+              新規登録
+            </RoleGatedButton>
+          ) : undefined
+        }
+      />
+
+      <div className="flex flex-1 flex-col gap-4 p-6 pt-4">
+        <Tabs value={activeTab} onValueChange={handleTabChange}>
+          <TabsList>
+            <TabsTrigger value="lockers" className="text-sm">
+              ロッカー一覧
+              <Badge variant="outline" className="bg-muted ml-1 min-w-5 border-transparent px-1">
+                {summary?.lockers_count ?? 0}
+              </Badge>
+            </TabsTrigger>
+            <TabsTrigger value="contracts" className="text-sm">
+              契約一覧
+              <Badge variant="outline" className="bg-muted ml-1 min-w-5 border-transparent px-1">
+                {summary?.contracts_count ?? 0}
+              </Badge>
+            </TabsTrigger>
+            <TabsTrigger value="pending" className="text-sm">
+              開放待ち一覧
+              <Badge variant="outline" className="bg-muted ml-1 min-w-5 border-transparent px-1">
+                {summary?.pending_slots_count ?? 0}
+              </Badge>
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+
+        {children}
+      </div>
+    </>
+  );
+}

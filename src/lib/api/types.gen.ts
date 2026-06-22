@@ -2303,6 +2303,3227 @@ export type PromoCodeErrorResponse = {
 };
 
 /**
+ * LockerShape
+ *
+ * Locker shape / arrangement pattern
+ */
+export const LockerShape = {
+    '3X9': '3x9',
+    '3X6': '3x6',
+    '2X10': '2x10',
+    '2X4': '2x4'
+} as const;
+
+/**
+ * LockerShape
+ *
+ * Locker shape / arrangement pattern
+ */
+export type LockerShape = typeof LockerShape[keyof typeof LockerShape];
+
+/**
+ * LockerNumberingPattern
+ *
+ * Slot numbering direction pattern
+ */
+export const LockerNumberingPattern = {
+    TOP_LEFT_TO_RIGHT: 'top_left_to_right',
+    BOTTOM_LEFT_TO_RIGHT: 'bottom_left_to_right',
+    TOP_LEFT_TO_BOTTOM: 'top_left_to_bottom',
+    TOP_RIGHT_TO_LEFT: 'top_right_to_left'
+} as const;
+
+/**
+ * LockerNumberingPattern
+ *
+ * Slot numbering direction pattern
+ */
+export type LockerNumberingPattern = typeof LockerNumberingPattern[keyof typeof LockerNumberingPattern];
+
+/**
+ * LockerOptionType
+ *
+ * Locker option contract type
+ */
+export const LockerOptionType = {
+    NONE: 'none',
+    STANDARD: 'standard',
+    PREMIUM: 'premium'
+} as const;
+
+/**
+ * LockerOptionType
+ *
+ * Locker option contract type
+ */
+export type LockerOptionType = typeof LockerOptionType[keyof typeof LockerOptionType];
+
+/**
+ * LockerContractStatus
+ *
+ * Locker contract status
+ */
+export const LockerContractStatus = {
+    IN_USE: 'in_use',
+    PENDING_RELEASE: 'pending_release',
+    AVAILABLE: 'available'
+} as const;
+
+/**
+ * LockerContractStatus
+ *
+ * Locker contract status
+ */
+export type LockerContractStatus = typeof LockerContractStatus[keyof typeof LockerContractStatus];
+
+/**
+ * LockerPendingLocation
+ *
+ * Pending slot locker location
+ */
+export const LockerPendingLocation = {
+    A_CHANGING_ROOM: 'a_changing_room',
+    B_GYM_AREA: 'b_gym_area',
+    C_POOL_SIDE: 'c_pool_side',
+    F_ENTRANCE: 'f_entrance'
+} as const;
+
+/**
+ * LockerPendingLocation
+ *
+ * Pending slot locker location
+ */
+export type LockerPendingLocation = typeof LockerPendingLocation[keyof typeof LockerPendingLocation];
+
+/**
+ * LockerLockType
+ *
+ * Locker lock type
+ */
+export const LockerLockType = { DIAL: 'dial', CYLINDER: 'cylinder' } as const;
+
+/**
+ * LockerLockType
+ *
+ * Locker lock type
+ */
+export type LockerLockType = typeof LockerLockType[keyof typeof LockerLockType];
+
+/**
+ * LockerSlotStatus
+ *
+ * Locker slot status
+ */
+export const LockerSlotStatus = {
+    AVAILABLE: 'available',
+    IN_USE: 'in_use',
+    PENDING_RELEASE: 'pending_release'
+} as const;
+
+/**
+ * LockerSlotStatus
+ *
+ * Locker slot status
+ */
+export type LockerSlotStatus = typeof LockerSlotStatus[keyof typeof LockerSlotStatus];
+
+/**
+ * LockerSlotOpenType
+ *
+ * Locker slot open type
+ */
+export const LockerSlotOpenType = { DOOR: 'door', DRAWER: 'drawer' } as const;
+
+/**
+ * LockerSlotOpenType
+ *
+ * Locker slot open type
+ */
+export type LockerSlotOpenType = typeof LockerSlotOpenType[keyof typeof LockerSlotOpenType];
+
+/**
+ * LockerReminderNotificationStatus
+ *
+ * Reminder notification delivery status
+ */
+export const LockerReminderNotificationStatus = {
+    UNSENT: 'unsent',
+    SENT: 'sent',
+    FAILED: 'failed'
+} as const;
+
+/**
+ * LockerReminderNotificationStatus
+ *
+ * Reminder notification delivery status
+ */
+export type LockerReminderNotificationStatus = typeof LockerReminderNotificationStatus[keyof typeof LockerReminderNotificationStatus];
+
+/**
+ * LockerReminderNotificationMethod
+ *
+ * Reminder notification delivery method
+ */
+export const LockerReminderNotificationMethod = { PUSH: 'push', IN_APP: 'in_app' } as const;
+
+/**
+ * LockerReminderNotificationMethod
+ *
+ * Reminder notification delivery method
+ */
+export type LockerReminderNotificationMethod = typeof LockerReminderNotificationMethod[keyof typeof LockerReminderNotificationMethod];
+
+/**
+ * LockerSortField
+ *
+ * Sort field for locker list
+ */
+export const LockerSortField = {
+    LOCKER_ID: 'locker_id',
+    AREA: 'area',
+    SHAPE: 'shape',
+    OPTION_TYPE: 'option_type',
+    SLOTS: 'slots',
+    AVAILABLE_SLOTS: 'available_slots',
+    IN_USE_SLOTS: 'in_use_slots'
+} as const;
+
+/**
+ * LockerSortField
+ *
+ * Sort field for locker list
+ */
+export type LockerSortField = typeof LockerSortField[keyof typeof LockerSortField];
+
+/**
+ * LockerContractSortField
+ *
+ * Sort field for locker contract list
+ */
+export const LockerContractSortField = {
+    CONTRACT_ID: 'contract_id',
+    MEMBER_NAME: 'member_name',
+    LOCKER_NUMBER: 'locker_number',
+    CONTRACT_TYPE: 'contract_type',
+    START_DATE: 'start_date',
+    END_DATE: 'end_date',
+    STATUS: 'status'
+} as const;
+
+/**
+ * LockerContractSortField
+ *
+ * Sort field for locker contract list
+ */
+export type LockerContractSortField = typeof LockerContractSortField[keyof typeof LockerContractSortField];
+
+/**
+ * LockerPendingSortField
+ *
+ * Sort field for pending locker slot list
+ */
+export const LockerPendingSortField = {
+    SLOT_NUMBER: 'slot_number',
+    LOCKER_LOCATION: 'locker_location',
+    MEMBER_NAME: 'member_name',
+    CANCEL_DATE: 'cancel_date',
+    PENDING_SINCE: 'pending_since',
+    PENDING_DAYS: 'pending_days'
+} as const;
+
+/**
+ * LockerPendingSortField
+ *
+ * Sort field for pending locker slot list
+ */
+export type LockerPendingSortField = typeof LockerPendingSortField[keyof typeof LockerPendingSortField];
+
+/**
+ * LockerListItem
+ *
+ * Locker list row
+ */
+export type LockerListItem = {
+    /**
+     * Internal locker row id
+     */
+    id: string;
+    /**
+     * Locker display id
+     */
+    locker_id: string;
+    /**
+     * Store internal id
+     */
+    store_id: string;
+    /**
+     * Store name
+     */
+    store_name: string;
+    /**
+     * Locker area
+     */
+    area: string;
+    /**
+     * LockerShape
+     *
+     * Locker shape
+     */
+    shape: '3x9' | '3x6' | '2x10' | '2x4';
+    /**
+     * LockerOptionType
+     *
+     * Option contract type
+     */
+    option_type: 'none' | 'standard' | 'premium';
+    /**
+     * Total slots
+     */
+    slots: number;
+    /**
+     * Available slots
+     */
+    available_slots: number;
+    /**
+     * In-use slots
+     */
+    in_use_slots: number;
+    /**
+     * Locker numbering pattern
+     */
+    numbering_pattern: string;
+};
+
+/**
+ * LockerContractListItem
+ *
+ * Locker contract list row
+ */
+export type LockerContractListItem = {
+    /**
+     * Internal row id
+     */
+    id: string;
+    /**
+     * Contract display id
+     */
+    contract_id: string;
+    /**
+     * Locker internal id
+     */
+    locker_id: string;
+    /**
+     * Store internal id
+     */
+    store_id: string;
+    /**
+     * Store name
+     */
+    store_name: string;
+    /**
+     * Member name
+     */
+    member_name: string;
+    /**
+     * Member id
+     */
+    member_id: string;
+    /**
+     * Locker slot number
+     */
+    locker_number: string;
+    /**
+     * LockerOptionType
+     *
+     * Contract type
+     */
+    contract_type: 'none' | 'standard' | 'premium';
+    /**
+     * Contract start date-time (ISO 8601 UTC)
+     */
+    start_date: string;
+    /**
+     * Contract end date-time (ISO 8601 UTC)
+     */
+    end_date: string;
+    /**
+     * LockerContractStatus
+     *
+     * Contract status
+     */
+    status: 'in_use' | 'pending_release' | 'available';
+};
+
+/**
+ * LockerPendingSlotListItem
+ *
+ * Pending locker slot list row
+ */
+export type LockerPendingSlotListItem = {
+    /**
+     * Internal row id
+     */
+    id: string;
+    /**
+     * Locker internal id
+     */
+    locker_id: string;
+    /**
+     * Store internal id
+     */
+    store_id: string;
+    /**
+     * Store name
+     */
+    store_name: string;
+    /**
+     * LockerPendingLocation
+     *
+     * Locker location
+     */
+    locker_location: 'a_changing_room' | 'b_gym_area' | 'c_pool_side' | 'f_entrance';
+    /**
+     * Locker name
+     */
+    locker_name: string;
+    /**
+     * Slot number
+     */
+    slot_number: string;
+    /**
+     * Member name
+     */
+    member_name: string;
+    /**
+     * Member id
+     */
+    member_id: string;
+    /**
+     * Cancel date
+     */
+    cancel_date: string;
+    /**
+     * Pending since
+     */
+    pending_since: string;
+    /**
+     * Pending days
+     */
+    pending_days: number;
+    /**
+     * Locker slot size
+     */
+    size: string;
+    /**
+     * LockerLockType
+     *
+     * Lock type
+     */
+    lock_type: 'dial' | 'cylinder';
+};
+
+/**
+ * LockerPagination
+ *
+ * Pagination metadata for locker list endpoints
+ */
+export type LockerPagination = {
+    page: number;
+    limit: number;
+    total: number;
+    total_pages: number;
+};
+
+/**
+ * GetLockersQuery
+ *
+ * Query parameters for locker list
+ */
+export type GetLockersQuery = {
+    page?: number;
+    limit?: number;
+    /**
+     * Search by locker id or area
+     */
+    search?: string;
+    /**
+     * LockerShape
+     *
+     * Locker shape filter
+     */
+    shape?: '3x9' | '3x6' | '2x10' | '2x4';
+    /**
+     * LockerSortField
+     *
+     * Sort field
+     */
+    sort_by?: 'locker_id' | 'area' | 'shape' | 'option_type' | 'slots' | 'available_slots' | 'in_use_slots';
+    /**
+     * Sort order
+     */
+    sort_order?: 'asc' | 'desc';
+};
+
+/**
+ * GetLockerContractsQuery
+ *
+ * Query parameters for locker contract list
+ */
+export type GetLockerContractsQuery = {
+    page?: number;
+    limit?: number;
+    /**
+     * Search by contract id or member name
+     */
+    search?: string;
+    /**
+     * LockerOptionType
+     *
+     * Contract type filter
+     */
+    contract_type?: 'none' | 'standard' | 'premium';
+    /**
+     * LockerContractStatus
+     *
+     * Contract status filter
+     */
+    status?: 'in_use' | 'pending_release' | 'available';
+    /**
+     * LockerContractSortField
+     *
+     * Sort field
+     */
+    sort_by?: 'contract_id' | 'member_name' | 'locker_number' | 'contract_type' | 'start_date' | 'end_date' | 'status';
+    /**
+     * Sort order
+     */
+    sort_order?: 'asc' | 'desc';
+};
+
+/**
+ * GetLockerPendingSlotsQuery
+ *
+ * Query parameters for pending locker slot list
+ */
+export type GetLockerPendingSlotsQuery = {
+    page?: number;
+    limit?: number;
+    /**
+     * Search by slot number or member name
+     */
+    search?: string;
+    /**
+     * Store filter
+     */
+    store_id?: string;
+    /**
+     * LockerPendingLocation
+     *
+     * Location filter
+     */
+    locker_location?: 'a_changing_room' | 'b_gym_area' | 'c_pool_side' | 'f_entrance';
+    /**
+     * Cancel date from (YYYY/MM/DD)
+     */
+    cancel_date_from?: string;
+    /**
+     * Cancel date to (YYYY/MM/DD)
+     */
+    cancel_date_to?: string;
+    /**
+     * LockerPendingSortField
+     *
+     * Sort field
+     */
+    sort_by?: 'slot_number' | 'locker_location' | 'member_name' | 'cancel_date' | 'pending_since' | 'pending_days';
+    /**
+     * Sort order
+     */
+    sort_order?: 'asc' | 'desc';
+};
+
+/**
+ * GetLockersResponse
+ *
+ * Locker list response
+ */
+export type GetLockersResponse = {
+    /**
+     * Locker rows
+     */
+    lockers: Array<{
+        /**
+         * Internal locker row id
+         */
+        id: string;
+        /**
+         * Locker display id
+         */
+        locker_id: string;
+        /**
+         * Store internal id
+         */
+        store_id: string;
+        /**
+         * Store name
+         */
+        store_name: string;
+        /**
+         * Locker area
+         */
+        area: string;
+        /**
+         * LockerShape
+         *
+         * Locker shape
+         */
+        shape: '3x9' | '3x6' | '2x10' | '2x4';
+        /**
+         * LockerOptionType
+         *
+         * Option contract type
+         */
+        option_type: 'none' | 'standard' | 'premium';
+        /**
+         * Total slots
+         */
+        slots: number;
+        /**
+         * Available slots
+         */
+        available_slots: number;
+        /**
+         * In-use slots
+         */
+        in_use_slots: number;
+        /**
+         * Locker numbering pattern
+         */
+        numbering_pattern: string;
+    }>;
+    /**
+     * LockerPagination
+     *
+     * Pagination metadata for locker list endpoints
+     */
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        total_pages: number;
+    };
+};
+
+/**
+ * GetLockerContractsResponse
+ *
+ * Locker contract list response
+ */
+export type GetLockerContractsResponse = {
+    /**
+     * Locker contract rows
+     */
+    contracts: Array<{
+        /**
+         * Internal row id
+         */
+        id: string;
+        /**
+         * Contract display id
+         */
+        contract_id: string;
+        /**
+         * Locker internal id
+         */
+        locker_id: string;
+        /**
+         * Store internal id
+         */
+        store_id: string;
+        /**
+         * Store name
+         */
+        store_name: string;
+        /**
+         * Member name
+         */
+        member_name: string;
+        /**
+         * Member id
+         */
+        member_id: string;
+        /**
+         * Locker slot number
+         */
+        locker_number: string;
+        /**
+         * LockerOptionType
+         *
+         * Contract type
+         */
+        contract_type: 'none' | 'standard' | 'premium';
+        /**
+         * Contract start date-time (ISO 8601 UTC)
+         */
+        start_date: string;
+        /**
+         * Contract end date-time (ISO 8601 UTC)
+         */
+        end_date: string;
+        /**
+         * LockerContractStatus
+         *
+         * Contract status
+         */
+        status: 'in_use' | 'pending_release' | 'available';
+    }>;
+    /**
+     * LockerPagination
+     *
+     * Pagination metadata for locker list endpoints
+     */
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        total_pages: number;
+    };
+};
+
+/**
+ * GetLockerPendingSlotsResponse
+ *
+ * Pending locker slot list response
+ */
+export type GetLockerPendingSlotsResponse = {
+    /**
+     * Pending slot rows
+     */
+    pending_slots: Array<{
+        /**
+         * Internal row id
+         */
+        id: string;
+        /**
+         * Locker internal id
+         */
+        locker_id: string;
+        /**
+         * Store internal id
+         */
+        store_id: string;
+        /**
+         * Store name
+         */
+        store_name: string;
+        /**
+         * LockerPendingLocation
+         *
+         * Locker location
+         */
+        locker_location: 'a_changing_room' | 'b_gym_area' | 'c_pool_side' | 'f_entrance';
+        /**
+         * Locker name
+         */
+        locker_name: string;
+        /**
+         * Slot number
+         */
+        slot_number: string;
+        /**
+         * Member name
+         */
+        member_name: string;
+        /**
+         * Member id
+         */
+        member_id: string;
+        /**
+         * Cancel date
+         */
+        cancel_date: string;
+        /**
+         * Pending since
+         */
+        pending_since: string;
+        /**
+         * Pending days
+         */
+        pending_days: number;
+        /**
+         * Locker slot size
+         */
+        size: string;
+        /**
+         * LockerLockType
+         *
+         * Lock type
+         */
+        lock_type: 'dial' | 'cylinder';
+    }>;
+    /**
+     * LockerPagination
+     *
+     * Pagination metadata for locker list endpoints
+     */
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        total_pages: number;
+    };
+};
+
+/**
+ * GetLockerSummaryResponse
+ *
+ * Summary counters for the locker tabs
+ */
+export type GetLockerSummaryResponse = {
+    /**
+     * Locker row count
+     */
+    lockers_count: number;
+    /**
+     * Locker contract row count
+     */
+    contracts_count: number;
+    /**
+     * Pending slot row count
+     */
+    pending_slots_count: number;
+};
+
+/**
+ * LockerOptionMasterRef
+ *
+ * Lightweight locker-related option master reference
+ */
+export type LockerOptionMasterRef = {
+    /**
+     * Option master id
+     */
+    id: string;
+    /**
+     * Option master name
+     */
+    name: string;
+    /**
+     * Option master code
+     */
+    code: string;
+    /**
+     * Monthly price including tax
+     */
+    price_including_tax: number;
+};
+
+/**
+ * LockerContractTypeMaster
+ *
+ * Locker contract type master used in slot assignment
+ */
+export type LockerContractTypeMaster = {
+    /**
+     * Option master id
+     */
+    id: string;
+    /**
+     * Option master name
+     */
+    name: string;
+    /**
+     * Option master code
+     */
+    code: string;
+    /**
+     * Monthly price including tax
+     */
+    price_including_tax: number;
+    description: string | null;
+};
+
+/**
+ * LockerReminderNotification
+ *
+ * Reminder notification history item for a pending-release slot
+ */
+export type LockerReminderNotification = {
+    /**
+     * Notification id
+     */
+    id: string;
+    /**
+     * Sent timestamp
+     */
+    sent_at: string;
+    /**
+     * LockerReminderNotificationMethod
+     *
+     * Delivery method
+     */
+    method: 'push' | 'in_app';
+    /**
+     * LockerReminderNotificationStatus
+     *
+     * Delivery status
+     */
+    status: 'unsent' | 'sent' | 'failed';
+};
+
+/**
+ * LockerSlotItem
+ *
+ * Detailed locker slot item used by the locker detail screen
+ */
+export type LockerSlotItem = {
+    /**
+     * Slot row id
+     */
+    id: string;
+    /**
+     * Locker internal id
+     */
+    locker_id: string;
+    /**
+     * Slot number
+     */
+    slot_number: string;
+    /**
+     * Visual row number
+     */
+    row_number: number;
+    /**
+     * Visual column number
+     */
+    column_number: number;
+    /**
+     * Whether the slot is in the bottom row
+     */
+    is_bottom_row: boolean;
+    /**
+     * LockerSlotStatus
+     *
+     * Slot status
+     */
+    status: 'available' | 'in_use' | 'pending_release';
+    /**
+     * LockerLockType
+     *
+     * Lock type
+     */
+    lock_type: 'dial' | 'cylinder';
+    /**
+     * LockerSlotOpenType
+     *
+     * Open type
+     */
+    open_type: 'door' | 'drawer';
+    /**
+     * Slot width in cm
+     */
+    width_cm: number;
+    /**
+     * Slot height in cm
+     */
+    height_cm: number;
+    /**
+     * Slot depth in cm
+     */
+    depth_cm: number;
+    /**
+     * Dial password
+     */
+    password: string | null;
+    /**
+     * Assigned member name
+     */
+    member_name: string | null;
+    /**
+     * Assigned member id
+     */
+    member_id: string | null;
+    /**
+     * Scheduled cancel date
+     */
+    cancel_date: string | null;
+    /**
+     * Contract start date
+     */
+    contract_start_date: string | null;
+    /**
+     * Assigned option contract name
+     */
+    option_contract_name: string | null;
+    /**
+     * Locker contract id
+     */
+    contract_id: string | null;
+    /**
+     * Assigned contract type code
+     */
+    contract_type_code: string | null;
+    /**
+     * Individual fee for bottom-row slot
+     */
+    individual_fee: number | null;
+    /**
+     * Individual fee applied date
+     */
+    fee_applied_at: string | null;
+    /**
+     * Reminder notification history
+     */
+    reminder_notifications: Array<{
+        /**
+         * Notification id
+         */
+        id: string;
+        /**
+         * Sent timestamp
+         */
+        sent_at: string;
+        /**
+         * LockerReminderNotificationMethod
+         *
+         * Delivery method
+         */
+        method: 'push' | 'in_app';
+        /**
+         * LockerReminderNotificationStatus
+         *
+         * Delivery status
+         */
+        status: 'unsent' | 'sent' | 'failed';
+    }>;
+};
+
+/**
+ * LockerSlotSummary
+ *
+ * Locker slot usage summary
+ */
+export type LockerSlotSummary = {
+    /**
+     * Total slots
+     */
+    total_slots: number;
+    /**
+     * Available slots
+     */
+    available_slots: number;
+    /**
+     * In-use slots
+     */
+    in_use_slots: number;
+    /**
+     * Pending-release slots
+     */
+    pending_release_slots: number;
+    /**
+     * Utilization rate percentage
+     */
+    utilization_rate_percent: number;
+};
+
+/**
+ * LockerDetail
+ *
+ * Locker detail with associated contracts and pending slots
+ */
+export type LockerDetail = {
+    /**
+     * Internal locker row id
+     */
+    id: string;
+    /**
+     * Locker display id
+     */
+    locker_id: string;
+    /**
+     * Store internal id
+     */
+    store_id: string;
+    /**
+     * Store name
+     */
+    store_name: string;
+    /**
+     * Locker area
+     */
+    area: string;
+    /**
+     * Location symbol prefix
+     */
+    location_symbol: string;
+    /**
+     * LockerShape
+     *
+     * Locker shape
+     */
+    shape: '3x9' | '3x6' | '2x10' | '2x4';
+    /**
+     * LockerNumberingPattern
+     *
+     * Slot numbering direction pattern
+     */
+    slot_numbering_pattern: 'top_left_to_right' | 'bottom_left_to_right' | 'top_left_to_bottom' | 'top_right_to_left';
+    /**
+     * Slot numbering start value
+     */
+    start_number: number;
+    /**
+     * LockerSlotOpenType
+     *
+     * Default open type for slots
+     */
+    default_open_type: 'door' | 'drawer';
+    /**
+     * LockerLockType
+     *
+     * Default lock type for slots
+     */
+    default_lock_type: 'dial' | 'cylinder';
+    /**
+     * Per-slot lock overrides
+     */
+    slot_lock_settings: Array<{
+        /**
+         * Slot number
+         */
+        slot_number: string;
+        /**
+         * LockerLockType
+         *
+         * Lock type override
+         */
+        lock_type: 'dial' | 'cylinder';
+        /**
+         * Dial password override
+         */
+        password?: string | null;
+    }>;
+    /**
+     * LockerOptionType
+     *
+     * Option contract type
+     */
+    option_type: 'none' | 'standard' | 'premium';
+    /**
+     * Total slots
+     */
+    slots: number;
+    /**
+     * Available slots
+     */
+    available_slots: number;
+    /**
+     * In-use slots
+     */
+    in_use_slots: number;
+    /**
+     * Locker numbering pattern
+     */
+    numbering_pattern: string;
+    /**
+     * Whether the locker has in-use or pending-release slots
+     */
+    has_active_slots: boolean;
+    /**
+     * LockerOptionMasterRef
+     *
+     * Assigned option contract master
+     */
+    option_contract_master: {
+        /**
+         * Option master id
+         */
+        id: string;
+        /**
+         * Option master name
+         */
+        name: string;
+        /**
+         * Option master code
+         */
+        code: string;
+        /**
+         * Monthly price including tax
+         */
+        price_including_tax: number;
+    } | null;
+    /**
+     * Locker contract type code
+     */
+    contract_type_code: string | null;
+    /**
+     * Guide text for staff
+     */
+    guide_text: string | null;
+    /**
+     * Additional note
+     */
+    note: string | null;
+    /**
+     * Locker image URL
+     */
+    image_url: string | null;
+    /**
+     * Created at
+     */
+    created_at: string;
+    /**
+     * Updated at
+     */
+    updated_at: string;
+    /**
+     * LockerSlotSummary
+     *
+     * Slot summary
+     */
+    summary: {
+        /**
+         * Total slots
+         */
+        total_slots: number;
+        /**
+         * Available slots
+         */
+        available_slots: number;
+        /**
+         * In-use slots
+         */
+        in_use_slots: number;
+        /**
+         * Pending-release slots
+         */
+        pending_release_slots: number;
+        /**
+         * Utilization rate percentage
+         */
+        utilization_rate_percent: number;
+    };
+    /**
+     * Detailed slots
+     */
+    slot_items: Array<{
+        /**
+         * Slot row id
+         */
+        id: string;
+        /**
+         * Locker internal id
+         */
+        locker_id: string;
+        /**
+         * Slot number
+         */
+        slot_number: string;
+        /**
+         * Visual row number
+         */
+        row_number: number;
+        /**
+         * Visual column number
+         */
+        column_number: number;
+        /**
+         * Whether the slot is in the bottom row
+         */
+        is_bottom_row: boolean;
+        /**
+         * LockerSlotStatus
+         *
+         * Slot status
+         */
+        status: 'available' | 'in_use' | 'pending_release';
+        /**
+         * LockerLockType
+         *
+         * Lock type
+         */
+        lock_type: 'dial' | 'cylinder';
+        /**
+         * LockerSlotOpenType
+         *
+         * Open type
+         */
+        open_type: 'door' | 'drawer';
+        /**
+         * Slot width in cm
+         */
+        width_cm: number;
+        /**
+         * Slot height in cm
+         */
+        height_cm: number;
+        /**
+         * Slot depth in cm
+         */
+        depth_cm: number;
+        /**
+         * Dial password
+         */
+        password: string | null;
+        /**
+         * Assigned member name
+         */
+        member_name: string | null;
+        /**
+         * Assigned member id
+         */
+        member_id: string | null;
+        /**
+         * Scheduled cancel date
+         */
+        cancel_date: string | null;
+        /**
+         * Contract start date
+         */
+        contract_start_date: string | null;
+        /**
+         * Assigned option contract name
+         */
+        option_contract_name: string | null;
+        /**
+         * Locker contract id
+         */
+        contract_id: string | null;
+        /**
+         * Assigned contract type code
+         */
+        contract_type_code: string | null;
+        /**
+         * Individual fee for bottom-row slot
+         */
+        individual_fee: number | null;
+        /**
+         * Individual fee applied date
+         */
+        fee_applied_at: string | null;
+        /**
+         * Reminder notification history
+         */
+        reminder_notifications: Array<{
+            /**
+             * Notification id
+             */
+            id: string;
+            /**
+             * Sent timestamp
+             */
+            sent_at: string;
+            /**
+             * LockerReminderNotificationMethod
+             *
+             * Delivery method
+             */
+            method: 'push' | 'in_app';
+            /**
+             * LockerReminderNotificationStatus
+             *
+             * Delivery status
+             */
+            status: 'unsent' | 'sent' | 'failed';
+        }>;
+    }>;
+    /**
+     * Associated contracts
+     */
+    contracts: Array<{
+        /**
+         * Internal row id
+         */
+        id: string;
+        /**
+         * Contract display id
+         */
+        contract_id: string;
+        /**
+         * Locker internal id
+         */
+        locker_id: string;
+        /**
+         * Store internal id
+         */
+        store_id: string;
+        /**
+         * Store name
+         */
+        store_name: string;
+        /**
+         * Member name
+         */
+        member_name: string;
+        /**
+         * Member id
+         */
+        member_id: string;
+        /**
+         * Locker slot number
+         */
+        locker_number: string;
+        /**
+         * LockerOptionType
+         *
+         * Contract type
+         */
+        contract_type: 'none' | 'standard' | 'premium';
+        /**
+         * Contract start date-time (ISO 8601 UTC)
+         */
+        start_date: string;
+        /**
+         * Contract end date-time (ISO 8601 UTC)
+         */
+        end_date: string;
+        /**
+         * LockerContractStatus
+         *
+         * Contract status
+         */
+        status: 'in_use' | 'pending_release' | 'available';
+    }>;
+    /**
+     * Pending slots
+     */
+    pending_slots: Array<{
+        /**
+         * Internal row id
+         */
+        id: string;
+        /**
+         * Locker internal id
+         */
+        locker_id: string;
+        /**
+         * Store internal id
+         */
+        store_id: string;
+        /**
+         * Store name
+         */
+        store_name: string;
+        /**
+         * LockerPendingLocation
+         *
+         * Locker location
+         */
+        locker_location: 'a_changing_room' | 'b_gym_area' | 'c_pool_side' | 'f_entrance';
+        /**
+         * Locker name
+         */
+        locker_name: string;
+        /**
+         * Slot number
+         */
+        slot_number: string;
+        /**
+         * Member name
+         */
+        member_name: string;
+        /**
+         * Member id
+         */
+        member_id: string;
+        /**
+         * Cancel date
+         */
+        cancel_date: string;
+        /**
+         * Pending since
+         */
+        pending_since: string;
+        /**
+         * Pending days
+         */
+        pending_days: number;
+        /**
+         * Locker slot size
+         */
+        size: string;
+        /**
+         * LockerLockType
+         *
+         * Lock type
+         */
+        lock_type: 'dial' | 'cylinder';
+    }>;
+};
+
+/**
+ * GetLockerDetailResponse
+ *
+ * Locker detail response
+ */
+export type GetLockerDetailResponse = {
+    /**
+     * LockerDetail
+     *
+     * Locker detail with associated contracts and pending slots
+     */
+    locker: {
+        /**
+         * Internal locker row id
+         */
+        id: string;
+        /**
+         * Locker display id
+         */
+        locker_id: string;
+        /**
+         * Store internal id
+         */
+        store_id: string;
+        /**
+         * Store name
+         */
+        store_name: string;
+        /**
+         * Locker area
+         */
+        area: string;
+        /**
+         * Location symbol prefix
+         */
+        location_symbol: string;
+        /**
+         * LockerShape
+         *
+         * Locker shape
+         */
+        shape: '3x9' | '3x6' | '2x10' | '2x4';
+        /**
+         * LockerNumberingPattern
+         *
+         * Slot numbering direction pattern
+         */
+        slot_numbering_pattern: 'top_left_to_right' | 'bottom_left_to_right' | 'top_left_to_bottom' | 'top_right_to_left';
+        /**
+         * Slot numbering start value
+         */
+        start_number: number;
+        /**
+         * LockerSlotOpenType
+         *
+         * Default open type for slots
+         */
+        default_open_type: 'door' | 'drawer';
+        /**
+         * LockerLockType
+         *
+         * Default lock type for slots
+         */
+        default_lock_type: 'dial' | 'cylinder';
+        /**
+         * Per-slot lock overrides
+         */
+        slot_lock_settings: Array<{
+            /**
+             * Slot number
+             */
+            slot_number: string;
+            /**
+             * LockerLockType
+             *
+             * Lock type override
+             */
+            lock_type: 'dial' | 'cylinder';
+            /**
+             * Dial password override
+             */
+            password?: string | null;
+        }>;
+        /**
+         * LockerOptionType
+         *
+         * Option contract type
+         */
+        option_type: 'none' | 'standard' | 'premium';
+        /**
+         * Total slots
+         */
+        slots: number;
+        /**
+         * Available slots
+         */
+        available_slots: number;
+        /**
+         * In-use slots
+         */
+        in_use_slots: number;
+        /**
+         * Locker numbering pattern
+         */
+        numbering_pattern: string;
+        /**
+         * Whether the locker has in-use or pending-release slots
+         */
+        has_active_slots: boolean;
+        /**
+         * LockerOptionMasterRef
+         *
+         * Assigned option contract master
+         */
+        option_contract_master: {
+            /**
+             * Option master id
+             */
+            id: string;
+            /**
+             * Option master name
+             */
+            name: string;
+            /**
+             * Option master code
+             */
+            code: string;
+            /**
+             * Monthly price including tax
+             */
+            price_including_tax: number;
+        } | null;
+        /**
+         * Locker contract type code
+         */
+        contract_type_code: string | null;
+        /**
+         * Guide text for staff
+         */
+        guide_text: string | null;
+        /**
+         * Additional note
+         */
+        note: string | null;
+        /**
+         * Locker image URL
+         */
+        image_url: string | null;
+        /**
+         * Created at
+         */
+        created_at: string;
+        /**
+         * Updated at
+         */
+        updated_at: string;
+        /**
+         * LockerSlotSummary
+         *
+         * Slot summary
+         */
+        summary: {
+            /**
+             * Total slots
+             */
+            total_slots: number;
+            /**
+             * Available slots
+             */
+            available_slots: number;
+            /**
+             * In-use slots
+             */
+            in_use_slots: number;
+            /**
+             * Pending-release slots
+             */
+            pending_release_slots: number;
+            /**
+             * Utilization rate percentage
+             */
+            utilization_rate_percent: number;
+        };
+        /**
+         * Detailed slots
+         */
+        slot_items: Array<{
+            /**
+             * Slot row id
+             */
+            id: string;
+            /**
+             * Locker internal id
+             */
+            locker_id: string;
+            /**
+             * Slot number
+             */
+            slot_number: string;
+            /**
+             * Visual row number
+             */
+            row_number: number;
+            /**
+             * Visual column number
+             */
+            column_number: number;
+            /**
+             * Whether the slot is in the bottom row
+             */
+            is_bottom_row: boolean;
+            /**
+             * LockerSlotStatus
+             *
+             * Slot status
+             */
+            status: 'available' | 'in_use' | 'pending_release';
+            /**
+             * LockerLockType
+             *
+             * Lock type
+             */
+            lock_type: 'dial' | 'cylinder';
+            /**
+             * LockerSlotOpenType
+             *
+             * Open type
+             */
+            open_type: 'door' | 'drawer';
+            /**
+             * Slot width in cm
+             */
+            width_cm: number;
+            /**
+             * Slot height in cm
+             */
+            height_cm: number;
+            /**
+             * Slot depth in cm
+             */
+            depth_cm: number;
+            /**
+             * Dial password
+             */
+            password: string | null;
+            /**
+             * Assigned member name
+             */
+            member_name: string | null;
+            /**
+             * Assigned member id
+             */
+            member_id: string | null;
+            /**
+             * Scheduled cancel date
+             */
+            cancel_date: string | null;
+            /**
+             * Contract start date
+             */
+            contract_start_date: string | null;
+            /**
+             * Assigned option contract name
+             */
+            option_contract_name: string | null;
+            /**
+             * Locker contract id
+             */
+            contract_id: string | null;
+            /**
+             * Assigned contract type code
+             */
+            contract_type_code: string | null;
+            /**
+             * Individual fee for bottom-row slot
+             */
+            individual_fee: number | null;
+            /**
+             * Individual fee applied date
+             */
+            fee_applied_at: string | null;
+            /**
+             * Reminder notification history
+             */
+            reminder_notifications: Array<{
+                /**
+                 * Notification id
+                 */
+                id: string;
+                /**
+                 * Sent timestamp
+                 */
+                sent_at: string;
+                /**
+                 * LockerReminderNotificationMethod
+                 *
+                 * Delivery method
+                 */
+                method: 'push' | 'in_app';
+                /**
+                 * LockerReminderNotificationStatus
+                 *
+                 * Delivery status
+                 */
+                status: 'unsent' | 'sent' | 'failed';
+            }>;
+        }>;
+        /**
+         * Associated contracts
+         */
+        contracts: Array<{
+            /**
+             * Internal row id
+             */
+            id: string;
+            /**
+             * Contract display id
+             */
+            contract_id: string;
+            /**
+             * Locker internal id
+             */
+            locker_id: string;
+            /**
+             * Store internal id
+             */
+            store_id: string;
+            /**
+             * Store name
+             */
+            store_name: string;
+            /**
+             * Member name
+             */
+            member_name: string;
+            /**
+             * Member id
+             */
+            member_id: string;
+            /**
+             * Locker slot number
+             */
+            locker_number: string;
+            /**
+             * LockerOptionType
+             *
+             * Contract type
+             */
+            contract_type: 'none' | 'standard' | 'premium';
+            /**
+             * Contract start date-time (ISO 8601 UTC)
+             */
+            start_date: string;
+            /**
+             * Contract end date-time (ISO 8601 UTC)
+             */
+            end_date: string;
+            /**
+             * LockerContractStatus
+             *
+             * Contract status
+             */
+            status: 'in_use' | 'pending_release' | 'available';
+        }>;
+        /**
+         * Pending slots
+         */
+        pending_slots: Array<{
+            /**
+             * Internal row id
+             */
+            id: string;
+            /**
+             * Locker internal id
+             */
+            locker_id: string;
+            /**
+             * Store internal id
+             */
+            store_id: string;
+            /**
+             * Store name
+             */
+            store_name: string;
+            /**
+             * LockerPendingLocation
+             *
+             * Locker location
+             */
+            locker_location: 'a_changing_room' | 'b_gym_area' | 'c_pool_side' | 'f_entrance';
+            /**
+             * Locker name
+             */
+            locker_name: string;
+            /**
+             * Slot number
+             */
+            slot_number: string;
+            /**
+             * Member name
+             */
+            member_name: string;
+            /**
+             * Member id
+             */
+            member_id: string;
+            /**
+             * Cancel date
+             */
+            cancel_date: string;
+            /**
+             * Pending since
+             */
+            pending_since: string;
+            /**
+             * Pending days
+             */
+            pending_days: number;
+            /**
+             * Locker slot size
+             */
+            size: string;
+            /**
+             * LockerLockType
+             *
+             * Lock type
+             */
+            lock_type: 'dial' | 'cylinder';
+        }>;
+    };
+};
+
+/**
+ * GetLockerHistoryQuery
+ *
+ * Query parameters for locker change history
+ */
+export type GetLockerHistoryQuery = {
+    page?: number;
+    limit?: number;
+    /**
+     * Sort field
+     */
+    sort_by?: 'date' | 'user' | 'action' | 'detail';
+    /**
+     * Sort order
+     */
+    sort_order?: 'asc' | 'desc';
+};
+
+/**
+ * LockerHistoryItem
+ *
+ * Locker change history item
+ */
+export type LockerHistoryItem = {
+    /**
+     * History item id
+     */
+    id: string;
+    /**
+     * Date of change
+     */
+    date: string;
+    /**
+     * User who made the change
+     */
+    user: string;
+    /**
+     * Action type
+     */
+    action: string;
+    /**
+     * Change detail
+     */
+    detail: string;
+};
+
+/**
+ * LockerHistoryPagination
+ *
+ * Pagination metadata for locker history
+ */
+export type LockerHistoryPagination = {
+    page: number;
+    limit: number;
+    total: number;
+    total_pages: number;
+};
+
+/**
+ * GetLockerHistoryResponse
+ *
+ * Locker change history response
+ */
+export type GetLockerHistoryResponse = {
+    /**
+     * History items
+     */
+    history: Array<{
+        /**
+         * History item id
+         */
+        id: string;
+        /**
+         * Date of change
+         */
+        date: string;
+        /**
+         * User who made the change
+         */
+        user: string;
+        /**
+         * Action type
+         */
+        action: string;
+        /**
+         * Change detail
+         */
+        detail: string;
+    }>;
+    /**
+     * LockerHistoryPagination
+     *
+     * Pagination metadata for locker history
+     */
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        total_pages: number;
+    };
+};
+
+/**
+ * DeleteLockerResponse
+ *
+ * Locker delete response
+ */
+export type DeleteLockerResponse = {
+    message: string;
+};
+
+/**
+ * ReleaseLockerSlotsRequest
+ *
+ * Request to release pending locker slots
+ */
+export type ReleaseLockerSlotsRequest = {
+    /**
+     * Slot numbers to release
+     */
+    slot_numbers: Array<string>;
+};
+
+/**
+ * ReleaseLockerSlotsResponse
+ *
+ * Locker slot release response
+ */
+export type ReleaseLockerSlotsResponse = {
+    message: string;
+    /**
+     * Released slot numbers
+     */
+    released_slot_numbers: Array<string>;
+    /**
+     * LockerDetail
+     *
+     * Updated locker detail
+     */
+    locker: {
+        /**
+         * Internal locker row id
+         */
+        id: string;
+        /**
+         * Locker display id
+         */
+        locker_id: string;
+        /**
+         * Store internal id
+         */
+        store_id: string;
+        /**
+         * Store name
+         */
+        store_name: string;
+        /**
+         * Locker area
+         */
+        area: string;
+        /**
+         * Location symbol prefix
+         */
+        location_symbol: string;
+        /**
+         * LockerShape
+         *
+         * Locker shape
+         */
+        shape: '3x9' | '3x6' | '2x10' | '2x4';
+        /**
+         * LockerNumberingPattern
+         *
+         * Slot numbering direction pattern
+         */
+        slot_numbering_pattern: 'top_left_to_right' | 'bottom_left_to_right' | 'top_left_to_bottom' | 'top_right_to_left';
+        /**
+         * Slot numbering start value
+         */
+        start_number: number;
+        /**
+         * LockerSlotOpenType
+         *
+         * Default open type for slots
+         */
+        default_open_type: 'door' | 'drawer';
+        /**
+         * LockerLockType
+         *
+         * Default lock type for slots
+         */
+        default_lock_type: 'dial' | 'cylinder';
+        /**
+         * Per-slot lock overrides
+         */
+        slot_lock_settings: Array<{
+            /**
+             * Slot number
+             */
+            slot_number: string;
+            /**
+             * LockerLockType
+             *
+             * Lock type override
+             */
+            lock_type: 'dial' | 'cylinder';
+            /**
+             * Dial password override
+             */
+            password?: string | null;
+        }>;
+        /**
+         * LockerOptionType
+         *
+         * Option contract type
+         */
+        option_type: 'none' | 'standard' | 'premium';
+        /**
+         * Total slots
+         */
+        slots: number;
+        /**
+         * Available slots
+         */
+        available_slots: number;
+        /**
+         * In-use slots
+         */
+        in_use_slots: number;
+        /**
+         * Locker numbering pattern
+         */
+        numbering_pattern: string;
+        /**
+         * Whether the locker has in-use or pending-release slots
+         */
+        has_active_slots: boolean;
+        /**
+         * LockerOptionMasterRef
+         *
+         * Assigned option contract master
+         */
+        option_contract_master: {
+            /**
+             * Option master id
+             */
+            id: string;
+            /**
+             * Option master name
+             */
+            name: string;
+            /**
+             * Option master code
+             */
+            code: string;
+            /**
+             * Monthly price including tax
+             */
+            price_including_tax: number;
+        } | null;
+        /**
+         * Locker contract type code
+         */
+        contract_type_code: string | null;
+        /**
+         * Guide text for staff
+         */
+        guide_text: string | null;
+        /**
+         * Additional note
+         */
+        note: string | null;
+        /**
+         * Locker image URL
+         */
+        image_url: string | null;
+        /**
+         * Created at
+         */
+        created_at: string;
+        /**
+         * Updated at
+         */
+        updated_at: string;
+        /**
+         * LockerSlotSummary
+         *
+         * Slot summary
+         */
+        summary: {
+            /**
+             * Total slots
+             */
+            total_slots: number;
+            /**
+             * Available slots
+             */
+            available_slots: number;
+            /**
+             * In-use slots
+             */
+            in_use_slots: number;
+            /**
+             * Pending-release slots
+             */
+            pending_release_slots: number;
+            /**
+             * Utilization rate percentage
+             */
+            utilization_rate_percent: number;
+        };
+        /**
+         * Detailed slots
+         */
+        slot_items: Array<{
+            /**
+             * Slot row id
+             */
+            id: string;
+            /**
+             * Locker internal id
+             */
+            locker_id: string;
+            /**
+             * Slot number
+             */
+            slot_number: string;
+            /**
+             * Visual row number
+             */
+            row_number: number;
+            /**
+             * Visual column number
+             */
+            column_number: number;
+            /**
+             * Whether the slot is in the bottom row
+             */
+            is_bottom_row: boolean;
+            /**
+             * LockerSlotStatus
+             *
+             * Slot status
+             */
+            status: 'available' | 'in_use' | 'pending_release';
+            /**
+             * LockerLockType
+             *
+             * Lock type
+             */
+            lock_type: 'dial' | 'cylinder';
+            /**
+             * LockerSlotOpenType
+             *
+             * Open type
+             */
+            open_type: 'door' | 'drawer';
+            /**
+             * Slot width in cm
+             */
+            width_cm: number;
+            /**
+             * Slot height in cm
+             */
+            height_cm: number;
+            /**
+             * Slot depth in cm
+             */
+            depth_cm: number;
+            /**
+             * Dial password
+             */
+            password: string | null;
+            /**
+             * Assigned member name
+             */
+            member_name: string | null;
+            /**
+             * Assigned member id
+             */
+            member_id: string | null;
+            /**
+             * Scheduled cancel date
+             */
+            cancel_date: string | null;
+            /**
+             * Contract start date
+             */
+            contract_start_date: string | null;
+            /**
+             * Assigned option contract name
+             */
+            option_contract_name: string | null;
+            /**
+             * Locker contract id
+             */
+            contract_id: string | null;
+            /**
+             * Assigned contract type code
+             */
+            contract_type_code: string | null;
+            /**
+             * Individual fee for bottom-row slot
+             */
+            individual_fee: number | null;
+            /**
+             * Individual fee applied date
+             */
+            fee_applied_at: string | null;
+            /**
+             * Reminder notification history
+             */
+            reminder_notifications: Array<{
+                /**
+                 * Notification id
+                 */
+                id: string;
+                /**
+                 * Sent timestamp
+                 */
+                sent_at: string;
+                /**
+                 * LockerReminderNotificationMethod
+                 *
+                 * Delivery method
+                 */
+                method: 'push' | 'in_app';
+                /**
+                 * LockerReminderNotificationStatus
+                 *
+                 * Delivery status
+                 */
+                status: 'unsent' | 'sent' | 'failed';
+            }>;
+        }>;
+        /**
+         * Associated contracts
+         */
+        contracts: Array<{
+            /**
+             * Internal row id
+             */
+            id: string;
+            /**
+             * Contract display id
+             */
+            contract_id: string;
+            /**
+             * Locker internal id
+             */
+            locker_id: string;
+            /**
+             * Store internal id
+             */
+            store_id: string;
+            /**
+             * Store name
+             */
+            store_name: string;
+            /**
+             * Member name
+             */
+            member_name: string;
+            /**
+             * Member id
+             */
+            member_id: string;
+            /**
+             * Locker slot number
+             */
+            locker_number: string;
+            /**
+             * LockerOptionType
+             *
+             * Contract type
+             */
+            contract_type: 'none' | 'standard' | 'premium';
+            /**
+             * Contract start date-time (ISO 8601 UTC)
+             */
+            start_date: string;
+            /**
+             * Contract end date-time (ISO 8601 UTC)
+             */
+            end_date: string;
+            /**
+             * LockerContractStatus
+             *
+             * Contract status
+             */
+            status: 'in_use' | 'pending_release' | 'available';
+        }>;
+        /**
+         * Pending slots
+         */
+        pending_slots: Array<{
+            /**
+             * Internal row id
+             */
+            id: string;
+            /**
+             * Locker internal id
+             */
+            locker_id: string;
+            /**
+             * Store internal id
+             */
+            store_id: string;
+            /**
+             * Store name
+             */
+            store_name: string;
+            /**
+             * LockerPendingLocation
+             *
+             * Locker location
+             */
+            locker_location: 'a_changing_room' | 'b_gym_area' | 'c_pool_side' | 'f_entrance';
+            /**
+             * Locker name
+             */
+            locker_name: string;
+            /**
+             * Slot number
+             */
+            slot_number: string;
+            /**
+             * Member name
+             */
+            member_name: string;
+            /**
+             * Member id
+             */
+            member_id: string;
+            /**
+             * Cancel date
+             */
+            cancel_date: string;
+            /**
+             * Pending since
+             */
+            pending_since: string;
+            /**
+             * Pending days
+             */
+            pending_days: number;
+            /**
+             * Locker slot size
+             */
+            size: string;
+            /**
+             * LockerLockType
+             *
+             * Lock type
+             */
+            lock_type: 'dial' | 'cylinder';
+        }>;
+    };
+};
+
+/**
+ * UpdateLockerSlotRequest
+ *
+ * Request to update locker slot settings
+ */
+export type UpdateLockerSlotRequest = {
+    /**
+     * LockerLockType
+     *
+     * Lock type
+     */
+    lock_type?: 'dial' | 'cylinder';
+    /**
+     * LockerSlotOpenType
+     *
+     * Open type
+     */
+    open_type?: 'door' | 'drawer';
+    /**
+     * Slot width in cm
+     */
+    width_cm?: number;
+    /**
+     * Slot height in cm
+     */
+    height_cm?: number;
+    /**
+     * Slot depth in cm
+     */
+    depth_cm?: number;
+    /**
+     * Dial password (4 digits)
+     */
+    password?: string | null;
+    /**
+     * G-02 contract type code
+     */
+    contract_type_code?: string | null;
+};
+
+/**
+ * UpdateLockerSlotResponse
+ *
+ * Locker slot update response
+ */
+export type UpdateLockerSlotResponse = {
+    message: string;
+    /**
+     * LockerSlotItem
+     *
+     * Updated slot
+     */
+    slot: {
+        /**
+         * Slot row id
+         */
+        id: string;
+        /**
+         * Locker internal id
+         */
+        locker_id: string;
+        /**
+         * Slot number
+         */
+        slot_number: string;
+        /**
+         * Visual row number
+         */
+        row_number: number;
+        /**
+         * Visual column number
+         */
+        column_number: number;
+        /**
+         * Whether the slot is in the bottom row
+         */
+        is_bottom_row: boolean;
+        /**
+         * LockerSlotStatus
+         *
+         * Slot status
+         */
+        status: 'available' | 'in_use' | 'pending_release';
+        /**
+         * LockerLockType
+         *
+         * Lock type
+         */
+        lock_type: 'dial' | 'cylinder';
+        /**
+         * LockerSlotOpenType
+         *
+         * Open type
+         */
+        open_type: 'door' | 'drawer';
+        /**
+         * Slot width in cm
+         */
+        width_cm: number;
+        /**
+         * Slot height in cm
+         */
+        height_cm: number;
+        /**
+         * Slot depth in cm
+         */
+        depth_cm: number;
+        /**
+         * Dial password
+         */
+        password: string | null;
+        /**
+         * Assigned member name
+         */
+        member_name: string | null;
+        /**
+         * Assigned member id
+         */
+        member_id: string | null;
+        /**
+         * Scheduled cancel date
+         */
+        cancel_date: string | null;
+        /**
+         * Contract start date
+         */
+        contract_start_date: string | null;
+        /**
+         * Assigned option contract name
+         */
+        option_contract_name: string | null;
+        /**
+         * Locker contract id
+         */
+        contract_id: string | null;
+        /**
+         * Assigned contract type code
+         */
+        contract_type_code: string | null;
+        /**
+         * Individual fee for bottom-row slot
+         */
+        individual_fee: number | null;
+        /**
+         * Individual fee applied date
+         */
+        fee_applied_at: string | null;
+        /**
+         * Reminder notification history
+         */
+        reminder_notifications: Array<{
+            /**
+             * Notification id
+             */
+            id: string;
+            /**
+             * Sent timestamp
+             */
+            sent_at: string;
+            /**
+             * LockerReminderNotificationMethod
+             *
+             * Delivery method
+             */
+            method: 'push' | 'in_app';
+            /**
+             * LockerReminderNotificationStatus
+             *
+             * Delivery status
+             */
+            status: 'unsent' | 'sent' | 'failed';
+        }>;
+    };
+    /**
+     * LockerDetail
+     *
+     * Updated locker detail
+     */
+    locker: {
+        /**
+         * Internal locker row id
+         */
+        id: string;
+        /**
+         * Locker display id
+         */
+        locker_id: string;
+        /**
+         * Store internal id
+         */
+        store_id: string;
+        /**
+         * Store name
+         */
+        store_name: string;
+        /**
+         * Locker area
+         */
+        area: string;
+        /**
+         * Location symbol prefix
+         */
+        location_symbol: string;
+        /**
+         * LockerShape
+         *
+         * Locker shape
+         */
+        shape: '3x9' | '3x6' | '2x10' | '2x4';
+        /**
+         * LockerNumberingPattern
+         *
+         * Slot numbering direction pattern
+         */
+        slot_numbering_pattern: 'top_left_to_right' | 'bottom_left_to_right' | 'top_left_to_bottom' | 'top_right_to_left';
+        /**
+         * Slot numbering start value
+         */
+        start_number: number;
+        /**
+         * LockerSlotOpenType
+         *
+         * Default open type for slots
+         */
+        default_open_type: 'door' | 'drawer';
+        /**
+         * LockerLockType
+         *
+         * Default lock type for slots
+         */
+        default_lock_type: 'dial' | 'cylinder';
+        /**
+         * Per-slot lock overrides
+         */
+        slot_lock_settings: Array<{
+            /**
+             * Slot number
+             */
+            slot_number: string;
+            /**
+             * LockerLockType
+             *
+             * Lock type override
+             */
+            lock_type: 'dial' | 'cylinder';
+            /**
+             * Dial password override
+             */
+            password?: string | null;
+        }>;
+        /**
+         * LockerOptionType
+         *
+         * Option contract type
+         */
+        option_type: 'none' | 'standard' | 'premium';
+        /**
+         * Total slots
+         */
+        slots: number;
+        /**
+         * Available slots
+         */
+        available_slots: number;
+        /**
+         * In-use slots
+         */
+        in_use_slots: number;
+        /**
+         * Locker numbering pattern
+         */
+        numbering_pattern: string;
+        /**
+         * Whether the locker has in-use or pending-release slots
+         */
+        has_active_slots: boolean;
+        /**
+         * LockerOptionMasterRef
+         *
+         * Assigned option contract master
+         */
+        option_contract_master: {
+            /**
+             * Option master id
+             */
+            id: string;
+            /**
+             * Option master name
+             */
+            name: string;
+            /**
+             * Option master code
+             */
+            code: string;
+            /**
+             * Monthly price including tax
+             */
+            price_including_tax: number;
+        } | null;
+        /**
+         * Locker contract type code
+         */
+        contract_type_code: string | null;
+        /**
+         * Guide text for staff
+         */
+        guide_text: string | null;
+        /**
+         * Additional note
+         */
+        note: string | null;
+        /**
+         * Locker image URL
+         */
+        image_url: string | null;
+        /**
+         * Created at
+         */
+        created_at: string;
+        /**
+         * Updated at
+         */
+        updated_at: string;
+        /**
+         * LockerSlotSummary
+         *
+         * Slot summary
+         */
+        summary: {
+            /**
+             * Total slots
+             */
+            total_slots: number;
+            /**
+             * Available slots
+             */
+            available_slots: number;
+            /**
+             * In-use slots
+             */
+            in_use_slots: number;
+            /**
+             * Pending-release slots
+             */
+            pending_release_slots: number;
+            /**
+             * Utilization rate percentage
+             */
+            utilization_rate_percent: number;
+        };
+        /**
+         * Detailed slots
+         */
+        slot_items: Array<{
+            /**
+             * Slot row id
+             */
+            id: string;
+            /**
+             * Locker internal id
+             */
+            locker_id: string;
+            /**
+             * Slot number
+             */
+            slot_number: string;
+            /**
+             * Visual row number
+             */
+            row_number: number;
+            /**
+             * Visual column number
+             */
+            column_number: number;
+            /**
+             * Whether the slot is in the bottom row
+             */
+            is_bottom_row: boolean;
+            /**
+             * LockerSlotStatus
+             *
+             * Slot status
+             */
+            status: 'available' | 'in_use' | 'pending_release';
+            /**
+             * LockerLockType
+             *
+             * Lock type
+             */
+            lock_type: 'dial' | 'cylinder';
+            /**
+             * LockerSlotOpenType
+             *
+             * Open type
+             */
+            open_type: 'door' | 'drawer';
+            /**
+             * Slot width in cm
+             */
+            width_cm: number;
+            /**
+             * Slot height in cm
+             */
+            height_cm: number;
+            /**
+             * Slot depth in cm
+             */
+            depth_cm: number;
+            /**
+             * Dial password
+             */
+            password: string | null;
+            /**
+             * Assigned member name
+             */
+            member_name: string | null;
+            /**
+             * Assigned member id
+             */
+            member_id: string | null;
+            /**
+             * Scheduled cancel date
+             */
+            cancel_date: string | null;
+            /**
+             * Contract start date
+             */
+            contract_start_date: string | null;
+            /**
+             * Assigned option contract name
+             */
+            option_contract_name: string | null;
+            /**
+             * Locker contract id
+             */
+            contract_id: string | null;
+            /**
+             * Assigned contract type code
+             */
+            contract_type_code: string | null;
+            /**
+             * Individual fee for bottom-row slot
+             */
+            individual_fee: number | null;
+            /**
+             * Individual fee applied date
+             */
+            fee_applied_at: string | null;
+            /**
+             * Reminder notification history
+             */
+            reminder_notifications: Array<{
+                /**
+                 * Notification id
+                 */
+                id: string;
+                /**
+                 * Sent timestamp
+                 */
+                sent_at: string;
+                /**
+                 * LockerReminderNotificationMethod
+                 *
+                 * Delivery method
+                 */
+                method: 'push' | 'in_app';
+                /**
+                 * LockerReminderNotificationStatus
+                 *
+                 * Delivery status
+                 */
+                status: 'unsent' | 'sent' | 'failed';
+            }>;
+        }>;
+        /**
+         * Associated contracts
+         */
+        contracts: Array<{
+            /**
+             * Internal row id
+             */
+            id: string;
+            /**
+             * Contract display id
+             */
+            contract_id: string;
+            /**
+             * Locker internal id
+             */
+            locker_id: string;
+            /**
+             * Store internal id
+             */
+            store_id: string;
+            /**
+             * Store name
+             */
+            store_name: string;
+            /**
+             * Member name
+             */
+            member_name: string;
+            /**
+             * Member id
+             */
+            member_id: string;
+            /**
+             * Locker slot number
+             */
+            locker_number: string;
+            /**
+             * LockerOptionType
+             *
+             * Contract type
+             */
+            contract_type: 'none' | 'standard' | 'premium';
+            /**
+             * Contract start date-time (ISO 8601 UTC)
+             */
+            start_date: string;
+            /**
+             * Contract end date-time (ISO 8601 UTC)
+             */
+            end_date: string;
+            /**
+             * LockerContractStatus
+             *
+             * Contract status
+             */
+            status: 'in_use' | 'pending_release' | 'available';
+        }>;
+        /**
+         * Pending slots
+         */
+        pending_slots: Array<{
+            /**
+             * Internal row id
+             */
+            id: string;
+            /**
+             * Locker internal id
+             */
+            locker_id: string;
+            /**
+             * Store internal id
+             */
+            store_id: string;
+            /**
+             * Store name
+             */
+            store_name: string;
+            /**
+             * LockerPendingLocation
+             *
+             * Locker location
+             */
+            locker_location: 'a_changing_room' | 'b_gym_area' | 'c_pool_side' | 'f_entrance';
+            /**
+             * Locker name
+             */
+            locker_name: string;
+            /**
+             * Slot number
+             */
+            slot_number: string;
+            /**
+             * Member name
+             */
+            member_name: string;
+            /**
+             * Member id
+             */
+            member_id: string;
+            /**
+             * Cancel date
+             */
+            cancel_date: string;
+            /**
+             * Pending since
+             */
+            pending_since: string;
+            /**
+             * Pending days
+             */
+            pending_days: number;
+            /**
+             * Locker slot size
+             */
+            size: string;
+            /**
+             * LockerLockType
+             *
+             * Lock type
+             */
+            lock_type: 'dial' | 'cylinder';
+        }>;
+    };
+};
+
+/**
+ * SendLockerSlotReminderRequest
+ *
+ * Request to send locker slot reminder notifications
+ */
+export type SendLockerSlotReminderRequest = {
+    /**
+     * Days before cancel date to send reminder
+     */
+    reminder_days?: 7 | 14 | 30;
+};
+
+/**
+ * SendLockerSlotReminderResponse
+ *
+ * Locker slot reminder notification response
+ */
+export type SendLockerSlotReminderResponse = {
+    message: string;
+    /**
+     * Created notification records
+     */
+    notifications: Array<{
+        /**
+         * Notification id
+         */
+        id: string;
+        /**
+         * Sent timestamp
+         */
+        sent_at: string;
+        /**
+         * LockerReminderNotificationMethod
+         *
+         * Delivery method
+         */
+        method: 'push' | 'in_app';
+        /**
+         * LockerReminderNotificationStatus
+         *
+         * Delivery status
+         */
+        status: 'unsent' | 'sent' | 'failed';
+    }>;
+    /**
+     * LockerSlotItem
+     *
+     * Updated slot
+     */
+    slot: {
+        /**
+         * Slot row id
+         */
+        id: string;
+        /**
+         * Locker internal id
+         */
+        locker_id: string;
+        /**
+         * Slot number
+         */
+        slot_number: string;
+        /**
+         * Visual row number
+         */
+        row_number: number;
+        /**
+         * Visual column number
+         */
+        column_number: number;
+        /**
+         * Whether the slot is in the bottom row
+         */
+        is_bottom_row: boolean;
+        /**
+         * LockerSlotStatus
+         *
+         * Slot status
+         */
+        status: 'available' | 'in_use' | 'pending_release';
+        /**
+         * LockerLockType
+         *
+         * Lock type
+         */
+        lock_type: 'dial' | 'cylinder';
+        /**
+         * LockerSlotOpenType
+         *
+         * Open type
+         */
+        open_type: 'door' | 'drawer';
+        /**
+         * Slot width in cm
+         */
+        width_cm: number;
+        /**
+         * Slot height in cm
+         */
+        height_cm: number;
+        /**
+         * Slot depth in cm
+         */
+        depth_cm: number;
+        /**
+         * Dial password
+         */
+        password: string | null;
+        /**
+         * Assigned member name
+         */
+        member_name: string | null;
+        /**
+         * Assigned member id
+         */
+        member_id: string | null;
+        /**
+         * Scheduled cancel date
+         */
+        cancel_date: string | null;
+        /**
+         * Contract start date
+         */
+        contract_start_date: string | null;
+        /**
+         * Assigned option contract name
+         */
+        option_contract_name: string | null;
+        /**
+         * Locker contract id
+         */
+        contract_id: string | null;
+        /**
+         * Assigned contract type code
+         */
+        contract_type_code: string | null;
+        /**
+         * Individual fee for bottom-row slot
+         */
+        individual_fee: number | null;
+        /**
+         * Individual fee applied date
+         */
+        fee_applied_at: string | null;
+        /**
+         * Reminder notification history
+         */
+        reminder_notifications: Array<{
+            /**
+             * Notification id
+             */
+            id: string;
+            /**
+             * Sent timestamp
+             */
+            sent_at: string;
+            /**
+             * LockerReminderNotificationMethod
+             *
+             * Delivery method
+             */
+            method: 'push' | 'in_app';
+            /**
+             * LockerReminderNotificationStatus
+             *
+             * Delivery status
+             */
+            status: 'unsent' | 'sent' | 'failed';
+        }>;
+    };
+};
+
+/**
+ * LockerErrorResponse
+ *
+ * Error response
+ */
+export type LockerErrorResponse = {
+    error: string;
+};
+
+/**
  * MemberListItem
  *
  * Member information for list view
@@ -11126,6 +14347,12 @@ export type OptionMasterListItem = {
      */
     code: string;
     /**
+     * OptionMasterCategory
+     *
+     * オプション機能カテゴリ
+     */
+    category: 'gym_option' | 'locker_option' | 'lesson_plan' | 'insurance' | 'oneday_pass' | 'other';
+    /**
      * StoreListBrand
      *
      * ブランド
@@ -11187,6 +14414,10 @@ export type OptionMasterListItem = {
      * ステータス
      */
     status: 'active' | 'inactive';
+    /**
+     * 説明文
+     */
+    description: string | null;
 };
 
 /**
@@ -11220,6 +14451,12 @@ export type GetOptionMastersQuery = {
      */
     status?: 'active' | 'inactive';
     /**
+     * OptionMasterCategory
+     *
+     * オプション機能カテゴリで絞り込み
+     */
+    category?: 'gym_option' | 'locker_option' | 'lesson_plan' | 'insurance' | 'oneday_pass' | 'other';
+    /**
      * 店舗IDで絞り込み
      */
     store_id?: string;
@@ -11246,6 +14483,12 @@ export type GetOptionMastersResponse = {
          * オプションコード
          */
         code: string;
+        /**
+         * OptionMasterCategory
+         *
+         * オプション機能カテゴリ
+         */
+        category: 'gym_option' | 'locker_option' | 'lesson_plan' | 'insurance' | 'oneday_pass' | 'other';
         /**
          * StoreListBrand
          *
@@ -11308,6 +14551,10 @@ export type GetOptionMastersResponse = {
          * ステータス
          */
         status: 'active' | 'inactive';
+        /**
+         * 説明文
+         */
+        description: string | null;
     }>;
     pagination: {
         page: number;
@@ -11339,6 +14586,27 @@ export const OptionCategory = {
 export type OptionCategory = typeof OptionCategory[keyof typeof OptionCategory];
 
 /**
+ * OptionMasterCategory
+ *
+ * オプション機能カテゴリ
+ */
+export const OptionMasterCategory = {
+    GYM_OPTION: 'gym_option',
+    LOCKER_OPTION: 'locker_option',
+    LESSON_PLAN: 'lesson_plan',
+    INSURANCE: 'insurance',
+    ONEDAY_PASS: 'oneday_pass',
+    OTHER: 'other'
+} as const;
+
+/**
+ * OptionMasterCategory
+ *
+ * オプション機能カテゴリ
+ */
+export type OptionMasterCategory = typeof OptionMasterCategory[keyof typeof OptionMasterCategory];
+
+/**
  * OptionMasterDetail
  *
  * オプション詳細
@@ -11356,6 +14624,12 @@ export type OptionMasterDetail = {
      * オプションコード
      */
     code: string;
+    /**
+     * OptionMasterCategory
+     *
+     * オプション機能カテゴリ
+     */
+    category: 'gym_option' | 'locker_option' | 'lesson_plan' | 'insurance' | 'oneday_pass' | 'other';
     /**
      * StoreListBrand
      *
@@ -11419,6 +14693,10 @@ export type OptionMasterDetail = {
      */
     status: 'active' | 'inactive';
     /**
+     * 説明文
+     */
+    description: string | null;
+    /**
      * 料金（税抜）
      */
     price_excluding_tax: number;
@@ -11432,10 +14710,6 @@ export type OptionMasterDetail = {
      * 対象店舗範囲
      */
     store_range: string;
-    /**
-     * 説明文
-     */
-    description: string | null;
     /**
      * 備考
      */
@@ -11499,6 +14773,12 @@ export type GetOptionMasterDetailResponse = {
          */
         code: string;
         /**
+         * OptionMasterCategory
+         *
+         * オプション機能カテゴリ
+         */
+        category: 'gym_option' | 'locker_option' | 'lesson_plan' | 'insurance' | 'oneday_pass' | 'other';
+        /**
          * StoreListBrand
          *
          * ブランド
@@ -11561,6 +14841,10 @@ export type GetOptionMasterDetailResponse = {
          */
         status: 'active' | 'inactive';
         /**
+         * 説明文
+         */
+        description: string | null;
+        /**
          * 料金（税抜）
          */
         price_excluding_tax: number;
@@ -11574,10 +14858,6 @@ export type GetOptionMasterDetailResponse = {
          * 対象店舗範囲
          */
         store_range: string;
-        /**
-         * 説明文
-         */
-        description: string | null;
         /**
          * 備考
          */
@@ -11643,6 +14923,12 @@ export type UpsertOptionMasterBody = {
      * オプション分類
      */
     option_category: 'supplement' | 'drink' | 'rental' | 'locker' | 'insurance' | 'service';
+    /**
+     * OptionMasterCategory
+     *
+     * オプション機能カテゴリ（未指定時はコードから自動判定）
+     */
+    category?: 'gym_option' | 'locker_option' | 'lesson_plan' | 'insurance' | 'oneday_pass' | 'other';
     /**
      * 会計コード
      */
@@ -11739,6 +15025,12 @@ export type CreateOptionMasterResponse = {
          */
         code: string;
         /**
+         * OptionMasterCategory
+         *
+         * オプション機能カテゴリ
+         */
+        category: 'gym_option' | 'locker_option' | 'lesson_plan' | 'insurance' | 'oneday_pass' | 'other';
+        /**
          * StoreListBrand
          *
          * ブランド
@@ -11801,6 +15093,10 @@ export type CreateOptionMasterResponse = {
          */
         status: 'active' | 'inactive';
         /**
+         * 説明文
+         */
+        description: string | null;
+        /**
          * 料金（税抜）
          */
         price_excluding_tax: number;
@@ -11814,10 +15110,6 @@ export type CreateOptionMasterResponse = {
          * 対象店舗範囲
          */
         store_range: string;
-        /**
-         * 説明文
-         */
-        description: string | null;
         /**
          * 備考
          */
@@ -11883,6 +15175,12 @@ export type UpdateOptionMasterResponse = {
          */
         code: string;
         /**
+         * OptionMasterCategory
+         *
+         * オプション機能カテゴリ
+         */
+        category: 'gym_option' | 'locker_option' | 'lesson_plan' | 'insurance' | 'oneday_pass' | 'other';
+        /**
          * StoreListBrand
          *
          * ブランド
@@ -11945,6 +15243,10 @@ export type UpdateOptionMasterResponse = {
          */
         status: 'active' | 'inactive';
         /**
+         * 説明文
+         */
+        description: string | null;
+        /**
          * 料金（税抜）
          */
         price_excluding_tax: number;
@@ -11958,10 +15260,6 @@ export type UpdateOptionMasterResponse = {
          * 対象店舗範囲
          */
         store_range: string;
-        /**
-         * 説明文
-         */
-        description: string | null;
         /**
          * 備考
          */
@@ -17443,6 +20741,4288 @@ export type GetCrmLeavesResponses = {
 };
 
 export type GetCrmLeavesResponse = GetCrmLeavesResponses[keyof GetCrmLeavesResponses];
+
+export type GetCrmLockersByIdHistoryData = {
+    body?: never;
+    path: {
+        /**
+         * Locker internal id
+         */
+        id: string;
+    };
+    query?: {
+        page?: number;
+        limit?: number;
+        /**
+         * Sort field
+         */
+        sort_by?: 'date' | 'user' | 'action' | 'detail';
+        /**
+         * Sort order
+         */
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/lockers/{id}/history';
+};
+
+export type GetCrmLockersByIdHistoryErrors = {
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type GetCrmLockersByIdHistoryError = GetCrmLockersByIdHistoryErrors[keyof GetCrmLockersByIdHistoryErrors];
+
+export type GetCrmLockersByIdHistoryResponses = {
+    /**
+     * GetLockerHistoryResponse
+     *
+     * Locker change history response
+     */
+    200: {
+        /**
+         * History items
+         */
+        history: Array<{
+            /**
+             * History item id
+             */
+            id: string;
+            /**
+             * Date of change
+             */
+            date: string;
+            /**
+             * User who made the change
+             */
+            user: string;
+            /**
+             * Action type
+             */
+            action: string;
+            /**
+             * Change detail
+             */
+            detail: string;
+        }>;
+        /**
+         * LockerHistoryPagination
+         *
+         * Pagination metadata for locker history
+         */
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmLockersByIdHistoryResponse = GetCrmLockersByIdHistoryResponses[keyof GetCrmLockersByIdHistoryResponses];
+
+export type DeleteCrmLockersByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Locker internal id
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/lockers/{id}';
+};
+
+export type DeleteCrmLockersByIdErrors = {
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type DeleteCrmLockersByIdError = DeleteCrmLockersByIdErrors[keyof DeleteCrmLockersByIdErrors];
+
+export type DeleteCrmLockersByIdResponses = {
+    /**
+     * DeleteLockerResponse
+     *
+     * Locker delete response
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type DeleteCrmLockersByIdResponse = DeleteCrmLockersByIdResponses[keyof DeleteCrmLockersByIdResponses];
+
+export type GetCrmLockersByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Locker internal id
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/lockers/{id}';
+};
+
+export type GetCrmLockersByIdErrors = {
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type GetCrmLockersByIdError = GetCrmLockersByIdErrors[keyof GetCrmLockersByIdErrors];
+
+export type GetCrmLockersByIdResponses = {
+    /**
+     * GetLockerDetailResponse
+     *
+     * Locker detail response
+     */
+    200: {
+        /**
+         * LockerDetail
+         *
+         * Locker detail with associated contracts and pending slots
+         */
+        locker: {
+            /**
+             * Internal locker row id
+             */
+            id: string;
+            /**
+             * Locker display id
+             */
+            locker_id: string;
+            /**
+             * Store internal id
+             */
+            store_id: string;
+            /**
+             * Store name
+             */
+            store_name: string;
+            /**
+             * Locker area
+             */
+            area: string;
+            /**
+             * Location symbol prefix
+             */
+            location_symbol: string;
+            /**
+             * LockerShape
+             *
+             * Locker shape
+             */
+            shape: '3x9' | '3x6' | '2x10' | '2x4';
+            /**
+             * LockerNumberingPattern
+             *
+             * Slot numbering direction pattern
+             */
+            slot_numbering_pattern: 'top_left_to_right' | 'bottom_left_to_right' | 'top_left_to_bottom' | 'top_right_to_left';
+            /**
+             * Slot numbering start value
+             */
+            start_number: number;
+            /**
+             * LockerSlotOpenType
+             *
+             * Default open type for slots
+             */
+            default_open_type: 'door' | 'drawer';
+            /**
+             * LockerLockType
+             *
+             * Default lock type for slots
+             */
+            default_lock_type: 'dial' | 'cylinder';
+            /**
+             * Per-slot lock overrides
+             */
+            slot_lock_settings: Array<{
+                /**
+                 * Slot number
+                 */
+                slot_number: string;
+                /**
+                 * LockerLockType
+                 *
+                 * Lock type override
+                 */
+                lock_type: 'dial' | 'cylinder';
+                /**
+                 * Dial password override
+                 */
+                password?: string | null;
+            }>;
+            /**
+             * LockerOptionType
+             *
+             * Option contract type
+             */
+            option_type: 'none' | 'standard' | 'premium';
+            /**
+             * Total slots
+             */
+            slots: number;
+            /**
+             * Available slots
+             */
+            available_slots: number;
+            /**
+             * In-use slots
+             */
+            in_use_slots: number;
+            /**
+             * Locker numbering pattern
+             */
+            numbering_pattern: string;
+            /**
+             * Whether the locker has in-use or pending-release slots
+             */
+            has_active_slots: boolean;
+            /**
+             * LockerOptionMasterRef
+             *
+             * Assigned option contract master
+             */
+            option_contract_master: {
+                /**
+                 * Option master id
+                 */
+                id: string;
+                /**
+                 * Option master name
+                 */
+                name: string;
+                /**
+                 * Option master code
+                 */
+                code: string;
+                /**
+                 * Monthly price including tax
+                 */
+                price_including_tax: number;
+            } | null;
+            /**
+             * Locker contract type code
+             */
+            contract_type_code: string | null;
+            /**
+             * Guide text for staff
+             */
+            guide_text: string | null;
+            /**
+             * Additional note
+             */
+            note: string | null;
+            /**
+             * Locker image URL
+             */
+            image_url: string | null;
+            /**
+             * Created at
+             */
+            created_at: string;
+            /**
+             * Updated at
+             */
+            updated_at: string;
+            /**
+             * LockerSlotSummary
+             *
+             * Slot summary
+             */
+            summary: {
+                /**
+                 * Total slots
+                 */
+                total_slots: number;
+                /**
+                 * Available slots
+                 */
+                available_slots: number;
+                /**
+                 * In-use slots
+                 */
+                in_use_slots: number;
+                /**
+                 * Pending-release slots
+                 */
+                pending_release_slots: number;
+                /**
+                 * Utilization rate percentage
+                 */
+                utilization_rate_percent: number;
+            };
+            /**
+             * Detailed slots
+             */
+            slot_items: Array<{
+                /**
+                 * Slot row id
+                 */
+                id: string;
+                /**
+                 * Locker internal id
+                 */
+                locker_id: string;
+                /**
+                 * Slot number
+                 */
+                slot_number: string;
+                /**
+                 * Visual row number
+                 */
+                row_number: number;
+                /**
+                 * Visual column number
+                 */
+                column_number: number;
+                /**
+                 * Whether the slot is in the bottom row
+                 */
+                is_bottom_row: boolean;
+                /**
+                 * LockerSlotStatus
+                 *
+                 * Slot status
+                 */
+                status: 'available' | 'in_use' | 'pending_release';
+                /**
+                 * LockerLockType
+                 *
+                 * Lock type
+                 */
+                lock_type: 'dial' | 'cylinder';
+                /**
+                 * LockerSlotOpenType
+                 *
+                 * Open type
+                 */
+                open_type: 'door' | 'drawer';
+                /**
+                 * Slot width in cm
+                 */
+                width_cm: number;
+                /**
+                 * Slot height in cm
+                 */
+                height_cm: number;
+                /**
+                 * Slot depth in cm
+                 */
+                depth_cm: number;
+                /**
+                 * Dial password
+                 */
+                password: string | null;
+                /**
+                 * Assigned member name
+                 */
+                member_name: string | null;
+                /**
+                 * Assigned member id
+                 */
+                member_id: string | null;
+                /**
+                 * Scheduled cancel date
+                 */
+                cancel_date: string | null;
+                /**
+                 * Contract start date
+                 */
+                contract_start_date: string | null;
+                /**
+                 * Assigned option contract name
+                 */
+                option_contract_name: string | null;
+                /**
+                 * Locker contract id
+                 */
+                contract_id: string | null;
+                /**
+                 * Assigned contract type code
+                 */
+                contract_type_code: string | null;
+                /**
+                 * Individual fee for bottom-row slot
+                 */
+                individual_fee: number | null;
+                /**
+                 * Individual fee applied date
+                 */
+                fee_applied_at: string | null;
+                /**
+                 * Reminder notification history
+                 */
+                reminder_notifications: Array<{
+                    /**
+                     * Notification id
+                     */
+                    id: string;
+                    /**
+                     * Sent timestamp
+                     */
+                    sent_at: string;
+                    /**
+                     * LockerReminderNotificationMethod
+                     *
+                     * Delivery method
+                     */
+                    method: 'push' | 'in_app';
+                    /**
+                     * LockerReminderNotificationStatus
+                     *
+                     * Delivery status
+                     */
+                    status: 'unsent' | 'sent' | 'failed';
+                }>;
+            }>;
+            /**
+             * Associated contracts
+             */
+            contracts: Array<{
+                /**
+                 * Internal row id
+                 */
+                id: string;
+                /**
+                 * Contract display id
+                 */
+                contract_id: string;
+                /**
+                 * Locker internal id
+                 */
+                locker_id: string;
+                /**
+                 * Store internal id
+                 */
+                store_id: string;
+                /**
+                 * Store name
+                 */
+                store_name: string;
+                /**
+                 * Member name
+                 */
+                member_name: string;
+                /**
+                 * Member id
+                 */
+                member_id: string;
+                /**
+                 * Locker slot number
+                 */
+                locker_number: string;
+                /**
+                 * LockerOptionType
+                 *
+                 * Contract type
+                 */
+                contract_type: 'none' | 'standard' | 'premium';
+                /**
+                 * Contract start date-time (ISO 8601 UTC)
+                 */
+                start_date: string;
+                /**
+                 * Contract end date-time (ISO 8601 UTC)
+                 */
+                end_date: string;
+                /**
+                 * LockerContractStatus
+                 *
+                 * Contract status
+                 */
+                status: 'in_use' | 'pending_release' | 'available';
+            }>;
+            /**
+             * Pending slots
+             */
+            pending_slots: Array<{
+                /**
+                 * Internal row id
+                 */
+                id: string;
+                /**
+                 * Locker internal id
+                 */
+                locker_id: string;
+                /**
+                 * Store internal id
+                 */
+                store_id: string;
+                /**
+                 * Store name
+                 */
+                store_name: string;
+                /**
+                 * LockerPendingLocation
+                 *
+                 * Locker location
+                 */
+                locker_location: 'a_changing_room' | 'b_gym_area' | 'c_pool_side' | 'f_entrance';
+                /**
+                 * Locker name
+                 */
+                locker_name: string;
+                /**
+                 * Slot number
+                 */
+                slot_number: string;
+                /**
+                 * Member name
+                 */
+                member_name: string;
+                /**
+                 * Member id
+                 */
+                member_id: string;
+                /**
+                 * Cancel date
+                 */
+                cancel_date: string;
+                /**
+                 * Pending since
+                 */
+                pending_since: string;
+                /**
+                 * Pending days
+                 */
+                pending_days: number;
+                /**
+                 * Locker slot size
+                 */
+                size: string;
+                /**
+                 * LockerLockType
+                 *
+                 * Lock type
+                 */
+                lock_type: 'dial' | 'cylinder';
+            }>;
+        };
+    };
+};
+
+export type GetCrmLockersByIdResponse = GetCrmLockersByIdResponses[keyof GetCrmLockersByIdResponses];
+
+export type PatchCrmLockersByIdData = {
+    /**
+     * UpdateLockerRequest
+     *
+     * Request to update locker settings (shape cannot be changed)
+     */
+    body?: {
+        /**
+         * Location symbol (slot prefix)
+         */
+        location_symbol?: string;
+        /**
+         * Display area label
+         */
+        area_label?: string;
+        /**
+         * Member-facing guide text
+         */
+        guide_text?: string | null;
+        /**
+         * Staff-only note
+         */
+        note?: string | null;
+        /**
+         * Locker image (base64 or URL)
+         */
+        image_url?: string | null;
+        /**
+         * LockerNumberingPattern
+         *
+         * Slot numbering direction pattern
+         */
+        slot_numbering_pattern?: 'top_left_to_right' | 'bottom_left_to_right' | 'top_left_to_bottom' | 'top_right_to_left';
+        /**
+         * Slot numbering start value
+         */
+        start_number?: number;
+        /**
+         * LockerOptionType
+         *
+         * Option contract type
+         */
+        option_type?: 'none' | 'standard' | 'premium';
+        /**
+         * G-02 contract type code
+         */
+        contract_type_code?: string | null;
+        /**
+         * LockerSlotOpenType
+         *
+         * Default open type for slots
+         */
+        default_open_type?: 'door' | 'drawer';
+        /**
+         * LockerLockType
+         *
+         * Default lock type for slots
+         */
+        default_lock_type?: 'dial' | 'cylinder';
+        /**
+         * Per-slot lock overrides
+         */
+        slot_lock_settings?: Array<{
+            /**
+             * Slot number
+             */
+            slot_number: string;
+            /**
+             * LockerLockType
+             *
+             * Lock type override
+             */
+            lock_type: 'dial' | 'cylinder';
+            /**
+             * Dial password override
+             */
+            password?: string | null;
+        }>;
+    };
+    path: {
+        /**
+         * Locker internal id
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/lockers/{id}';
+};
+
+export type PatchCrmLockersByIdErrors = {
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type PatchCrmLockersByIdError = PatchCrmLockersByIdErrors[keyof PatchCrmLockersByIdErrors];
+
+export type PatchCrmLockersByIdResponses = {
+    /**
+     * UpdateLockerResponse
+     *
+     * Locker update response
+     */
+    200: {
+        message: string;
+        /**
+         * LockerDetail
+         *
+         * Locker detail with associated contracts and pending slots
+         */
+        locker: {
+            /**
+             * Internal locker row id
+             */
+            id: string;
+            /**
+             * Locker display id
+             */
+            locker_id: string;
+            /**
+             * Store internal id
+             */
+            store_id: string;
+            /**
+             * Store name
+             */
+            store_name: string;
+            /**
+             * Locker area
+             */
+            area: string;
+            /**
+             * Location symbol prefix
+             */
+            location_symbol: string;
+            /**
+             * LockerShape
+             *
+             * Locker shape
+             */
+            shape: '3x9' | '3x6' | '2x10' | '2x4';
+            /**
+             * LockerNumberingPattern
+             *
+             * Slot numbering direction pattern
+             */
+            slot_numbering_pattern: 'top_left_to_right' | 'bottom_left_to_right' | 'top_left_to_bottom' | 'top_right_to_left';
+            /**
+             * Slot numbering start value
+             */
+            start_number: number;
+            /**
+             * LockerSlotOpenType
+             *
+             * Default open type for slots
+             */
+            default_open_type: 'door' | 'drawer';
+            /**
+             * LockerLockType
+             *
+             * Default lock type for slots
+             */
+            default_lock_type: 'dial' | 'cylinder';
+            /**
+             * Per-slot lock overrides
+             */
+            slot_lock_settings: Array<{
+                /**
+                 * Slot number
+                 */
+                slot_number: string;
+                /**
+                 * LockerLockType
+                 *
+                 * Lock type override
+                 */
+                lock_type: 'dial' | 'cylinder';
+                /**
+                 * Dial password override
+                 */
+                password?: string | null;
+            }>;
+            /**
+             * LockerOptionType
+             *
+             * Option contract type
+             */
+            option_type: 'none' | 'standard' | 'premium';
+            /**
+             * Total slots
+             */
+            slots: number;
+            /**
+             * Available slots
+             */
+            available_slots: number;
+            /**
+             * In-use slots
+             */
+            in_use_slots: number;
+            /**
+             * Locker numbering pattern
+             */
+            numbering_pattern: string;
+            /**
+             * Whether the locker has in-use or pending-release slots
+             */
+            has_active_slots: boolean;
+            /**
+             * LockerOptionMasterRef
+             *
+             * Assigned option contract master
+             */
+            option_contract_master: {
+                /**
+                 * Option master id
+                 */
+                id: string;
+                /**
+                 * Option master name
+                 */
+                name: string;
+                /**
+                 * Option master code
+                 */
+                code: string;
+                /**
+                 * Monthly price including tax
+                 */
+                price_including_tax: number;
+            } | null;
+            /**
+             * Locker contract type code
+             */
+            contract_type_code: string | null;
+            /**
+             * Guide text for staff
+             */
+            guide_text: string | null;
+            /**
+             * Additional note
+             */
+            note: string | null;
+            /**
+             * Locker image URL
+             */
+            image_url: string | null;
+            /**
+             * Created at
+             */
+            created_at: string;
+            /**
+             * Updated at
+             */
+            updated_at: string;
+            /**
+             * LockerSlotSummary
+             *
+             * Slot summary
+             */
+            summary: {
+                /**
+                 * Total slots
+                 */
+                total_slots: number;
+                /**
+                 * Available slots
+                 */
+                available_slots: number;
+                /**
+                 * In-use slots
+                 */
+                in_use_slots: number;
+                /**
+                 * Pending-release slots
+                 */
+                pending_release_slots: number;
+                /**
+                 * Utilization rate percentage
+                 */
+                utilization_rate_percent: number;
+            };
+            /**
+             * Detailed slots
+             */
+            slot_items: Array<{
+                /**
+                 * Slot row id
+                 */
+                id: string;
+                /**
+                 * Locker internal id
+                 */
+                locker_id: string;
+                /**
+                 * Slot number
+                 */
+                slot_number: string;
+                /**
+                 * Visual row number
+                 */
+                row_number: number;
+                /**
+                 * Visual column number
+                 */
+                column_number: number;
+                /**
+                 * Whether the slot is in the bottom row
+                 */
+                is_bottom_row: boolean;
+                /**
+                 * LockerSlotStatus
+                 *
+                 * Slot status
+                 */
+                status: 'available' | 'in_use' | 'pending_release';
+                /**
+                 * LockerLockType
+                 *
+                 * Lock type
+                 */
+                lock_type: 'dial' | 'cylinder';
+                /**
+                 * LockerSlotOpenType
+                 *
+                 * Open type
+                 */
+                open_type: 'door' | 'drawer';
+                /**
+                 * Slot width in cm
+                 */
+                width_cm: number;
+                /**
+                 * Slot height in cm
+                 */
+                height_cm: number;
+                /**
+                 * Slot depth in cm
+                 */
+                depth_cm: number;
+                /**
+                 * Dial password
+                 */
+                password: string | null;
+                /**
+                 * Assigned member name
+                 */
+                member_name: string | null;
+                /**
+                 * Assigned member id
+                 */
+                member_id: string | null;
+                /**
+                 * Scheduled cancel date
+                 */
+                cancel_date: string | null;
+                /**
+                 * Contract start date
+                 */
+                contract_start_date: string | null;
+                /**
+                 * Assigned option contract name
+                 */
+                option_contract_name: string | null;
+                /**
+                 * Locker contract id
+                 */
+                contract_id: string | null;
+                /**
+                 * Assigned contract type code
+                 */
+                contract_type_code: string | null;
+                /**
+                 * Individual fee for bottom-row slot
+                 */
+                individual_fee: number | null;
+                /**
+                 * Individual fee applied date
+                 */
+                fee_applied_at: string | null;
+                /**
+                 * Reminder notification history
+                 */
+                reminder_notifications: Array<{
+                    /**
+                     * Notification id
+                     */
+                    id: string;
+                    /**
+                     * Sent timestamp
+                     */
+                    sent_at: string;
+                    /**
+                     * LockerReminderNotificationMethod
+                     *
+                     * Delivery method
+                     */
+                    method: 'push' | 'in_app';
+                    /**
+                     * LockerReminderNotificationStatus
+                     *
+                     * Delivery status
+                     */
+                    status: 'unsent' | 'sent' | 'failed';
+                }>;
+            }>;
+            /**
+             * Associated contracts
+             */
+            contracts: Array<{
+                /**
+                 * Internal row id
+                 */
+                id: string;
+                /**
+                 * Contract display id
+                 */
+                contract_id: string;
+                /**
+                 * Locker internal id
+                 */
+                locker_id: string;
+                /**
+                 * Store internal id
+                 */
+                store_id: string;
+                /**
+                 * Store name
+                 */
+                store_name: string;
+                /**
+                 * Member name
+                 */
+                member_name: string;
+                /**
+                 * Member id
+                 */
+                member_id: string;
+                /**
+                 * Locker slot number
+                 */
+                locker_number: string;
+                /**
+                 * LockerOptionType
+                 *
+                 * Contract type
+                 */
+                contract_type: 'none' | 'standard' | 'premium';
+                /**
+                 * Contract start date-time (ISO 8601 UTC)
+                 */
+                start_date: string;
+                /**
+                 * Contract end date-time (ISO 8601 UTC)
+                 */
+                end_date: string;
+                /**
+                 * LockerContractStatus
+                 *
+                 * Contract status
+                 */
+                status: 'in_use' | 'pending_release' | 'available';
+            }>;
+            /**
+             * Pending slots
+             */
+            pending_slots: Array<{
+                /**
+                 * Internal row id
+                 */
+                id: string;
+                /**
+                 * Locker internal id
+                 */
+                locker_id: string;
+                /**
+                 * Store internal id
+                 */
+                store_id: string;
+                /**
+                 * Store name
+                 */
+                store_name: string;
+                /**
+                 * LockerPendingLocation
+                 *
+                 * Locker location
+                 */
+                locker_location: 'a_changing_room' | 'b_gym_area' | 'c_pool_side' | 'f_entrance';
+                /**
+                 * Locker name
+                 */
+                locker_name: string;
+                /**
+                 * Slot number
+                 */
+                slot_number: string;
+                /**
+                 * Member name
+                 */
+                member_name: string;
+                /**
+                 * Member id
+                 */
+                member_id: string;
+                /**
+                 * Cancel date
+                 */
+                cancel_date: string;
+                /**
+                 * Pending since
+                 */
+                pending_since: string;
+                /**
+                 * Pending days
+                 */
+                pending_days: number;
+                /**
+                 * Locker slot size
+                 */
+                size: string;
+                /**
+                 * LockerLockType
+                 *
+                 * Lock type
+                 */
+                lock_type: 'dial' | 'cylinder';
+            }>;
+        };
+    };
+};
+
+export type PatchCrmLockersByIdResponse = PatchCrmLockersByIdResponses[keyof PatchCrmLockersByIdResponses];
+
+export type PostCrmLockersByIdSlotsBySlotIdReminderNotificationsData = {
+    /**
+     * SendLockerSlotReminderRequest
+     *
+     * Request to send locker slot reminder notifications
+     */
+    body?: {
+        /**
+         * Days before cancel date to send reminder
+         */
+        reminder_days?: 7 | 14 | 30;
+    };
+    path: {
+        /**
+         * Locker internal id
+         */
+        id: string;
+        /**
+         * Locker slot internal id
+         */
+        slotId: string;
+    };
+    query?: never;
+    url: '/crm/lockers/{id}/slots/{slotId}/reminder-notifications';
+};
+
+export type PostCrmLockersByIdSlotsBySlotIdReminderNotificationsErrors = {
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type PostCrmLockersByIdSlotsBySlotIdReminderNotificationsError = PostCrmLockersByIdSlotsBySlotIdReminderNotificationsErrors[keyof PostCrmLockersByIdSlotsBySlotIdReminderNotificationsErrors];
+
+export type PostCrmLockersByIdSlotsBySlotIdReminderNotificationsResponses = {
+    /**
+     * SendLockerSlotReminderResponse
+     *
+     * Locker slot reminder notification response
+     */
+    200: {
+        message: string;
+        /**
+         * Created notification records
+         */
+        notifications: Array<{
+            /**
+             * Notification id
+             */
+            id: string;
+            /**
+             * Sent timestamp
+             */
+            sent_at: string;
+            /**
+             * LockerReminderNotificationMethod
+             *
+             * Delivery method
+             */
+            method: 'push' | 'in_app';
+            /**
+             * LockerReminderNotificationStatus
+             *
+             * Delivery status
+             */
+            status: 'unsent' | 'sent' | 'failed';
+        }>;
+        /**
+         * LockerSlotItem
+         *
+         * Updated slot
+         */
+        slot: {
+            /**
+             * Slot row id
+             */
+            id: string;
+            /**
+             * Locker internal id
+             */
+            locker_id: string;
+            /**
+             * Slot number
+             */
+            slot_number: string;
+            /**
+             * Visual row number
+             */
+            row_number: number;
+            /**
+             * Visual column number
+             */
+            column_number: number;
+            /**
+             * Whether the slot is in the bottom row
+             */
+            is_bottom_row: boolean;
+            /**
+             * LockerSlotStatus
+             *
+             * Slot status
+             */
+            status: 'available' | 'in_use' | 'pending_release';
+            /**
+             * LockerLockType
+             *
+             * Lock type
+             */
+            lock_type: 'dial' | 'cylinder';
+            /**
+             * LockerSlotOpenType
+             *
+             * Open type
+             */
+            open_type: 'door' | 'drawer';
+            /**
+             * Slot width in cm
+             */
+            width_cm: number;
+            /**
+             * Slot height in cm
+             */
+            height_cm: number;
+            /**
+             * Slot depth in cm
+             */
+            depth_cm: number;
+            /**
+             * Dial password
+             */
+            password: string | null;
+            /**
+             * Assigned member name
+             */
+            member_name: string | null;
+            /**
+             * Assigned member id
+             */
+            member_id: string | null;
+            /**
+             * Scheduled cancel date
+             */
+            cancel_date: string | null;
+            /**
+             * Contract start date
+             */
+            contract_start_date: string | null;
+            /**
+             * Assigned option contract name
+             */
+            option_contract_name: string | null;
+            /**
+             * Locker contract id
+             */
+            contract_id: string | null;
+            /**
+             * Assigned contract type code
+             */
+            contract_type_code: string | null;
+            /**
+             * Individual fee for bottom-row slot
+             */
+            individual_fee: number | null;
+            /**
+             * Individual fee applied date
+             */
+            fee_applied_at: string | null;
+            /**
+             * Reminder notification history
+             */
+            reminder_notifications: Array<{
+                /**
+                 * Notification id
+                 */
+                id: string;
+                /**
+                 * Sent timestamp
+                 */
+                sent_at: string;
+                /**
+                 * LockerReminderNotificationMethod
+                 *
+                 * Delivery method
+                 */
+                method: 'push' | 'in_app';
+                /**
+                 * LockerReminderNotificationStatus
+                 *
+                 * Delivery status
+                 */
+                status: 'unsent' | 'sent' | 'failed';
+            }>;
+        };
+    };
+};
+
+export type PostCrmLockersByIdSlotsBySlotIdReminderNotificationsResponse = PostCrmLockersByIdSlotsBySlotIdReminderNotificationsResponses[keyof PostCrmLockersByIdSlotsBySlotIdReminderNotificationsResponses];
+
+export type PatchCrmLockersByIdSlotsBySlotIdData = {
+    /**
+     * UpdateLockerSlotRequest
+     *
+     * Request to update locker slot settings
+     */
+    body?: {
+        /**
+         * LockerLockType
+         *
+         * Lock type
+         */
+        lock_type?: 'dial' | 'cylinder';
+        /**
+         * LockerSlotOpenType
+         *
+         * Open type
+         */
+        open_type?: 'door' | 'drawer';
+        /**
+         * Slot width in cm
+         */
+        width_cm?: number;
+        /**
+         * Slot height in cm
+         */
+        height_cm?: number;
+        /**
+         * Slot depth in cm
+         */
+        depth_cm?: number;
+        /**
+         * Dial password (4 digits)
+         */
+        password?: string | null;
+        /**
+         * G-02 contract type code
+         */
+        contract_type_code?: string | null;
+    };
+    path: {
+        /**
+         * Locker internal id
+         */
+        id: string;
+        /**
+         * Locker slot internal id
+         */
+        slotId: string;
+    };
+    query?: never;
+    url: '/crm/lockers/{id}/slots/{slotId}';
+};
+
+export type PatchCrmLockersByIdSlotsBySlotIdErrors = {
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type PatchCrmLockersByIdSlotsBySlotIdError = PatchCrmLockersByIdSlotsBySlotIdErrors[keyof PatchCrmLockersByIdSlotsBySlotIdErrors];
+
+export type PatchCrmLockersByIdSlotsBySlotIdResponses = {
+    /**
+     * UpdateLockerSlotResponse
+     *
+     * Locker slot update response
+     */
+    200: {
+        message: string;
+        /**
+         * LockerSlotItem
+         *
+         * Updated slot
+         */
+        slot: {
+            /**
+             * Slot row id
+             */
+            id: string;
+            /**
+             * Locker internal id
+             */
+            locker_id: string;
+            /**
+             * Slot number
+             */
+            slot_number: string;
+            /**
+             * Visual row number
+             */
+            row_number: number;
+            /**
+             * Visual column number
+             */
+            column_number: number;
+            /**
+             * Whether the slot is in the bottom row
+             */
+            is_bottom_row: boolean;
+            /**
+             * LockerSlotStatus
+             *
+             * Slot status
+             */
+            status: 'available' | 'in_use' | 'pending_release';
+            /**
+             * LockerLockType
+             *
+             * Lock type
+             */
+            lock_type: 'dial' | 'cylinder';
+            /**
+             * LockerSlotOpenType
+             *
+             * Open type
+             */
+            open_type: 'door' | 'drawer';
+            /**
+             * Slot width in cm
+             */
+            width_cm: number;
+            /**
+             * Slot height in cm
+             */
+            height_cm: number;
+            /**
+             * Slot depth in cm
+             */
+            depth_cm: number;
+            /**
+             * Dial password
+             */
+            password: string | null;
+            /**
+             * Assigned member name
+             */
+            member_name: string | null;
+            /**
+             * Assigned member id
+             */
+            member_id: string | null;
+            /**
+             * Scheduled cancel date
+             */
+            cancel_date: string | null;
+            /**
+             * Contract start date
+             */
+            contract_start_date: string | null;
+            /**
+             * Assigned option contract name
+             */
+            option_contract_name: string | null;
+            /**
+             * Locker contract id
+             */
+            contract_id: string | null;
+            /**
+             * Assigned contract type code
+             */
+            contract_type_code: string | null;
+            /**
+             * Individual fee for bottom-row slot
+             */
+            individual_fee: number | null;
+            /**
+             * Individual fee applied date
+             */
+            fee_applied_at: string | null;
+            /**
+             * Reminder notification history
+             */
+            reminder_notifications: Array<{
+                /**
+                 * Notification id
+                 */
+                id: string;
+                /**
+                 * Sent timestamp
+                 */
+                sent_at: string;
+                /**
+                 * LockerReminderNotificationMethod
+                 *
+                 * Delivery method
+                 */
+                method: 'push' | 'in_app';
+                /**
+                 * LockerReminderNotificationStatus
+                 *
+                 * Delivery status
+                 */
+                status: 'unsent' | 'sent' | 'failed';
+            }>;
+        };
+        /**
+         * LockerDetail
+         *
+         * Updated locker detail
+         */
+        locker: {
+            /**
+             * Internal locker row id
+             */
+            id: string;
+            /**
+             * Locker display id
+             */
+            locker_id: string;
+            /**
+             * Store internal id
+             */
+            store_id: string;
+            /**
+             * Store name
+             */
+            store_name: string;
+            /**
+             * Locker area
+             */
+            area: string;
+            /**
+             * Location symbol prefix
+             */
+            location_symbol: string;
+            /**
+             * LockerShape
+             *
+             * Locker shape
+             */
+            shape: '3x9' | '3x6' | '2x10' | '2x4';
+            /**
+             * LockerNumberingPattern
+             *
+             * Slot numbering direction pattern
+             */
+            slot_numbering_pattern: 'top_left_to_right' | 'bottom_left_to_right' | 'top_left_to_bottom' | 'top_right_to_left';
+            /**
+             * Slot numbering start value
+             */
+            start_number: number;
+            /**
+             * LockerSlotOpenType
+             *
+             * Default open type for slots
+             */
+            default_open_type: 'door' | 'drawer';
+            /**
+             * LockerLockType
+             *
+             * Default lock type for slots
+             */
+            default_lock_type: 'dial' | 'cylinder';
+            /**
+             * Per-slot lock overrides
+             */
+            slot_lock_settings: Array<{
+                /**
+                 * Slot number
+                 */
+                slot_number: string;
+                /**
+                 * LockerLockType
+                 *
+                 * Lock type override
+                 */
+                lock_type: 'dial' | 'cylinder';
+                /**
+                 * Dial password override
+                 */
+                password?: string | null;
+            }>;
+            /**
+             * LockerOptionType
+             *
+             * Option contract type
+             */
+            option_type: 'none' | 'standard' | 'premium';
+            /**
+             * Total slots
+             */
+            slots: number;
+            /**
+             * Available slots
+             */
+            available_slots: number;
+            /**
+             * In-use slots
+             */
+            in_use_slots: number;
+            /**
+             * Locker numbering pattern
+             */
+            numbering_pattern: string;
+            /**
+             * Whether the locker has in-use or pending-release slots
+             */
+            has_active_slots: boolean;
+            /**
+             * LockerOptionMasterRef
+             *
+             * Assigned option contract master
+             */
+            option_contract_master: {
+                /**
+                 * Option master id
+                 */
+                id: string;
+                /**
+                 * Option master name
+                 */
+                name: string;
+                /**
+                 * Option master code
+                 */
+                code: string;
+                /**
+                 * Monthly price including tax
+                 */
+                price_including_tax: number;
+            } | null;
+            /**
+             * Locker contract type code
+             */
+            contract_type_code: string | null;
+            /**
+             * Guide text for staff
+             */
+            guide_text: string | null;
+            /**
+             * Additional note
+             */
+            note: string | null;
+            /**
+             * Locker image URL
+             */
+            image_url: string | null;
+            /**
+             * Created at
+             */
+            created_at: string;
+            /**
+             * Updated at
+             */
+            updated_at: string;
+            /**
+             * LockerSlotSummary
+             *
+             * Slot summary
+             */
+            summary: {
+                /**
+                 * Total slots
+                 */
+                total_slots: number;
+                /**
+                 * Available slots
+                 */
+                available_slots: number;
+                /**
+                 * In-use slots
+                 */
+                in_use_slots: number;
+                /**
+                 * Pending-release slots
+                 */
+                pending_release_slots: number;
+                /**
+                 * Utilization rate percentage
+                 */
+                utilization_rate_percent: number;
+            };
+            /**
+             * Detailed slots
+             */
+            slot_items: Array<{
+                /**
+                 * Slot row id
+                 */
+                id: string;
+                /**
+                 * Locker internal id
+                 */
+                locker_id: string;
+                /**
+                 * Slot number
+                 */
+                slot_number: string;
+                /**
+                 * Visual row number
+                 */
+                row_number: number;
+                /**
+                 * Visual column number
+                 */
+                column_number: number;
+                /**
+                 * Whether the slot is in the bottom row
+                 */
+                is_bottom_row: boolean;
+                /**
+                 * LockerSlotStatus
+                 *
+                 * Slot status
+                 */
+                status: 'available' | 'in_use' | 'pending_release';
+                /**
+                 * LockerLockType
+                 *
+                 * Lock type
+                 */
+                lock_type: 'dial' | 'cylinder';
+                /**
+                 * LockerSlotOpenType
+                 *
+                 * Open type
+                 */
+                open_type: 'door' | 'drawer';
+                /**
+                 * Slot width in cm
+                 */
+                width_cm: number;
+                /**
+                 * Slot height in cm
+                 */
+                height_cm: number;
+                /**
+                 * Slot depth in cm
+                 */
+                depth_cm: number;
+                /**
+                 * Dial password
+                 */
+                password: string | null;
+                /**
+                 * Assigned member name
+                 */
+                member_name: string | null;
+                /**
+                 * Assigned member id
+                 */
+                member_id: string | null;
+                /**
+                 * Scheduled cancel date
+                 */
+                cancel_date: string | null;
+                /**
+                 * Contract start date
+                 */
+                contract_start_date: string | null;
+                /**
+                 * Assigned option contract name
+                 */
+                option_contract_name: string | null;
+                /**
+                 * Locker contract id
+                 */
+                contract_id: string | null;
+                /**
+                 * Assigned contract type code
+                 */
+                contract_type_code: string | null;
+                /**
+                 * Individual fee for bottom-row slot
+                 */
+                individual_fee: number | null;
+                /**
+                 * Individual fee applied date
+                 */
+                fee_applied_at: string | null;
+                /**
+                 * Reminder notification history
+                 */
+                reminder_notifications: Array<{
+                    /**
+                     * Notification id
+                     */
+                    id: string;
+                    /**
+                     * Sent timestamp
+                     */
+                    sent_at: string;
+                    /**
+                     * LockerReminderNotificationMethod
+                     *
+                     * Delivery method
+                     */
+                    method: 'push' | 'in_app';
+                    /**
+                     * LockerReminderNotificationStatus
+                     *
+                     * Delivery status
+                     */
+                    status: 'unsent' | 'sent' | 'failed';
+                }>;
+            }>;
+            /**
+             * Associated contracts
+             */
+            contracts: Array<{
+                /**
+                 * Internal row id
+                 */
+                id: string;
+                /**
+                 * Contract display id
+                 */
+                contract_id: string;
+                /**
+                 * Locker internal id
+                 */
+                locker_id: string;
+                /**
+                 * Store internal id
+                 */
+                store_id: string;
+                /**
+                 * Store name
+                 */
+                store_name: string;
+                /**
+                 * Member name
+                 */
+                member_name: string;
+                /**
+                 * Member id
+                 */
+                member_id: string;
+                /**
+                 * Locker slot number
+                 */
+                locker_number: string;
+                /**
+                 * LockerOptionType
+                 *
+                 * Contract type
+                 */
+                contract_type: 'none' | 'standard' | 'premium';
+                /**
+                 * Contract start date-time (ISO 8601 UTC)
+                 */
+                start_date: string;
+                /**
+                 * Contract end date-time (ISO 8601 UTC)
+                 */
+                end_date: string;
+                /**
+                 * LockerContractStatus
+                 *
+                 * Contract status
+                 */
+                status: 'in_use' | 'pending_release' | 'available';
+            }>;
+            /**
+             * Pending slots
+             */
+            pending_slots: Array<{
+                /**
+                 * Internal row id
+                 */
+                id: string;
+                /**
+                 * Locker internal id
+                 */
+                locker_id: string;
+                /**
+                 * Store internal id
+                 */
+                store_id: string;
+                /**
+                 * Store name
+                 */
+                store_name: string;
+                /**
+                 * LockerPendingLocation
+                 *
+                 * Locker location
+                 */
+                locker_location: 'a_changing_room' | 'b_gym_area' | 'c_pool_side' | 'f_entrance';
+                /**
+                 * Locker name
+                 */
+                locker_name: string;
+                /**
+                 * Slot number
+                 */
+                slot_number: string;
+                /**
+                 * Member name
+                 */
+                member_name: string;
+                /**
+                 * Member id
+                 */
+                member_id: string;
+                /**
+                 * Cancel date
+                 */
+                cancel_date: string;
+                /**
+                 * Pending since
+                 */
+                pending_since: string;
+                /**
+                 * Pending days
+                 */
+                pending_days: number;
+                /**
+                 * Locker slot size
+                 */
+                size: string;
+                /**
+                 * LockerLockType
+                 *
+                 * Lock type
+                 */
+                lock_type: 'dial' | 'cylinder';
+            }>;
+        };
+    };
+};
+
+export type PatchCrmLockersByIdSlotsBySlotIdResponse = PatchCrmLockersByIdSlotsBySlotIdResponses[keyof PatchCrmLockersByIdSlotsBySlotIdResponses];
+
+export type PostCrmLockersByIdSlotsReleaseData = {
+    /**
+     * ReleaseLockerSlotsRequest
+     *
+     * Request to release pending locker slots
+     */
+    body?: {
+        /**
+         * Slot numbers to release
+         */
+        slot_numbers: Array<string>;
+    };
+    path: {
+        /**
+         * Locker internal id
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/lockers/{id}/slots/release';
+};
+
+export type PostCrmLockersByIdSlotsReleaseErrors = {
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type PostCrmLockersByIdSlotsReleaseError = PostCrmLockersByIdSlotsReleaseErrors[keyof PostCrmLockersByIdSlotsReleaseErrors];
+
+export type PostCrmLockersByIdSlotsReleaseResponses = {
+    /**
+     * ReleaseLockerSlotsResponse
+     *
+     * Locker slot release response
+     */
+    200: {
+        message: string;
+        /**
+         * Released slot numbers
+         */
+        released_slot_numbers: Array<string>;
+        /**
+         * LockerDetail
+         *
+         * Updated locker detail
+         */
+        locker: {
+            /**
+             * Internal locker row id
+             */
+            id: string;
+            /**
+             * Locker display id
+             */
+            locker_id: string;
+            /**
+             * Store internal id
+             */
+            store_id: string;
+            /**
+             * Store name
+             */
+            store_name: string;
+            /**
+             * Locker area
+             */
+            area: string;
+            /**
+             * Location symbol prefix
+             */
+            location_symbol: string;
+            /**
+             * LockerShape
+             *
+             * Locker shape
+             */
+            shape: '3x9' | '3x6' | '2x10' | '2x4';
+            /**
+             * LockerNumberingPattern
+             *
+             * Slot numbering direction pattern
+             */
+            slot_numbering_pattern: 'top_left_to_right' | 'bottom_left_to_right' | 'top_left_to_bottom' | 'top_right_to_left';
+            /**
+             * Slot numbering start value
+             */
+            start_number: number;
+            /**
+             * LockerSlotOpenType
+             *
+             * Default open type for slots
+             */
+            default_open_type: 'door' | 'drawer';
+            /**
+             * LockerLockType
+             *
+             * Default lock type for slots
+             */
+            default_lock_type: 'dial' | 'cylinder';
+            /**
+             * Per-slot lock overrides
+             */
+            slot_lock_settings: Array<{
+                /**
+                 * Slot number
+                 */
+                slot_number: string;
+                /**
+                 * LockerLockType
+                 *
+                 * Lock type override
+                 */
+                lock_type: 'dial' | 'cylinder';
+                /**
+                 * Dial password override
+                 */
+                password?: string | null;
+            }>;
+            /**
+             * LockerOptionType
+             *
+             * Option contract type
+             */
+            option_type: 'none' | 'standard' | 'premium';
+            /**
+             * Total slots
+             */
+            slots: number;
+            /**
+             * Available slots
+             */
+            available_slots: number;
+            /**
+             * In-use slots
+             */
+            in_use_slots: number;
+            /**
+             * Locker numbering pattern
+             */
+            numbering_pattern: string;
+            /**
+             * Whether the locker has in-use or pending-release slots
+             */
+            has_active_slots: boolean;
+            /**
+             * LockerOptionMasterRef
+             *
+             * Assigned option contract master
+             */
+            option_contract_master: {
+                /**
+                 * Option master id
+                 */
+                id: string;
+                /**
+                 * Option master name
+                 */
+                name: string;
+                /**
+                 * Option master code
+                 */
+                code: string;
+                /**
+                 * Monthly price including tax
+                 */
+                price_including_tax: number;
+            } | null;
+            /**
+             * Locker contract type code
+             */
+            contract_type_code: string | null;
+            /**
+             * Guide text for staff
+             */
+            guide_text: string | null;
+            /**
+             * Additional note
+             */
+            note: string | null;
+            /**
+             * Locker image URL
+             */
+            image_url: string | null;
+            /**
+             * Created at
+             */
+            created_at: string;
+            /**
+             * Updated at
+             */
+            updated_at: string;
+            /**
+             * LockerSlotSummary
+             *
+             * Slot summary
+             */
+            summary: {
+                /**
+                 * Total slots
+                 */
+                total_slots: number;
+                /**
+                 * Available slots
+                 */
+                available_slots: number;
+                /**
+                 * In-use slots
+                 */
+                in_use_slots: number;
+                /**
+                 * Pending-release slots
+                 */
+                pending_release_slots: number;
+                /**
+                 * Utilization rate percentage
+                 */
+                utilization_rate_percent: number;
+            };
+            /**
+             * Detailed slots
+             */
+            slot_items: Array<{
+                /**
+                 * Slot row id
+                 */
+                id: string;
+                /**
+                 * Locker internal id
+                 */
+                locker_id: string;
+                /**
+                 * Slot number
+                 */
+                slot_number: string;
+                /**
+                 * Visual row number
+                 */
+                row_number: number;
+                /**
+                 * Visual column number
+                 */
+                column_number: number;
+                /**
+                 * Whether the slot is in the bottom row
+                 */
+                is_bottom_row: boolean;
+                /**
+                 * LockerSlotStatus
+                 *
+                 * Slot status
+                 */
+                status: 'available' | 'in_use' | 'pending_release';
+                /**
+                 * LockerLockType
+                 *
+                 * Lock type
+                 */
+                lock_type: 'dial' | 'cylinder';
+                /**
+                 * LockerSlotOpenType
+                 *
+                 * Open type
+                 */
+                open_type: 'door' | 'drawer';
+                /**
+                 * Slot width in cm
+                 */
+                width_cm: number;
+                /**
+                 * Slot height in cm
+                 */
+                height_cm: number;
+                /**
+                 * Slot depth in cm
+                 */
+                depth_cm: number;
+                /**
+                 * Dial password
+                 */
+                password: string | null;
+                /**
+                 * Assigned member name
+                 */
+                member_name: string | null;
+                /**
+                 * Assigned member id
+                 */
+                member_id: string | null;
+                /**
+                 * Scheduled cancel date
+                 */
+                cancel_date: string | null;
+                /**
+                 * Contract start date
+                 */
+                contract_start_date: string | null;
+                /**
+                 * Assigned option contract name
+                 */
+                option_contract_name: string | null;
+                /**
+                 * Locker contract id
+                 */
+                contract_id: string | null;
+                /**
+                 * Assigned contract type code
+                 */
+                contract_type_code: string | null;
+                /**
+                 * Individual fee for bottom-row slot
+                 */
+                individual_fee: number | null;
+                /**
+                 * Individual fee applied date
+                 */
+                fee_applied_at: string | null;
+                /**
+                 * Reminder notification history
+                 */
+                reminder_notifications: Array<{
+                    /**
+                     * Notification id
+                     */
+                    id: string;
+                    /**
+                     * Sent timestamp
+                     */
+                    sent_at: string;
+                    /**
+                     * LockerReminderNotificationMethod
+                     *
+                     * Delivery method
+                     */
+                    method: 'push' | 'in_app';
+                    /**
+                     * LockerReminderNotificationStatus
+                     *
+                     * Delivery status
+                     */
+                    status: 'unsent' | 'sent' | 'failed';
+                }>;
+            }>;
+            /**
+             * Associated contracts
+             */
+            contracts: Array<{
+                /**
+                 * Internal row id
+                 */
+                id: string;
+                /**
+                 * Contract display id
+                 */
+                contract_id: string;
+                /**
+                 * Locker internal id
+                 */
+                locker_id: string;
+                /**
+                 * Store internal id
+                 */
+                store_id: string;
+                /**
+                 * Store name
+                 */
+                store_name: string;
+                /**
+                 * Member name
+                 */
+                member_name: string;
+                /**
+                 * Member id
+                 */
+                member_id: string;
+                /**
+                 * Locker slot number
+                 */
+                locker_number: string;
+                /**
+                 * LockerOptionType
+                 *
+                 * Contract type
+                 */
+                contract_type: 'none' | 'standard' | 'premium';
+                /**
+                 * Contract start date-time (ISO 8601 UTC)
+                 */
+                start_date: string;
+                /**
+                 * Contract end date-time (ISO 8601 UTC)
+                 */
+                end_date: string;
+                /**
+                 * LockerContractStatus
+                 *
+                 * Contract status
+                 */
+                status: 'in_use' | 'pending_release' | 'available';
+            }>;
+            /**
+             * Pending slots
+             */
+            pending_slots: Array<{
+                /**
+                 * Internal row id
+                 */
+                id: string;
+                /**
+                 * Locker internal id
+                 */
+                locker_id: string;
+                /**
+                 * Store internal id
+                 */
+                store_id: string;
+                /**
+                 * Store name
+                 */
+                store_name: string;
+                /**
+                 * LockerPendingLocation
+                 *
+                 * Locker location
+                 */
+                locker_location: 'a_changing_room' | 'b_gym_area' | 'c_pool_side' | 'f_entrance';
+                /**
+                 * Locker name
+                 */
+                locker_name: string;
+                /**
+                 * Slot number
+                 */
+                slot_number: string;
+                /**
+                 * Member name
+                 */
+                member_name: string;
+                /**
+                 * Member id
+                 */
+                member_id: string;
+                /**
+                 * Cancel date
+                 */
+                cancel_date: string;
+                /**
+                 * Pending since
+                 */
+                pending_since: string;
+                /**
+                 * Pending days
+                 */
+                pending_days: number;
+                /**
+                 * Locker slot size
+                 */
+                size: string;
+                /**
+                 * LockerLockType
+                 *
+                 * Lock type
+                 */
+                lock_type: 'dial' | 'cylinder';
+            }>;
+        };
+    };
+};
+
+export type PostCrmLockersByIdSlotsReleaseResponse = PostCrmLockersByIdSlotsReleaseResponses[keyof PostCrmLockersByIdSlotsReleaseResponses];
+
+export type PatchCrmLockersContractsByIdCancelData = {
+    /**
+     * CancelLockerContractRequest
+     *
+     * Payload to cancel a locker contract
+     */
+    body?: {
+        /**
+         * Termination date-time (ISO 8601 UTC)
+         */
+        termination_date: string;
+    };
+    path: {
+        /**
+         * Locker contract internal id
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/lockers/contracts/{id}/cancel';
+};
+
+export type PatchCrmLockersContractsByIdCancelErrors = {
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type PatchCrmLockersContractsByIdCancelError = PatchCrmLockersContractsByIdCancelErrors[keyof PatchCrmLockersContractsByIdCancelErrors];
+
+export type PatchCrmLockersContractsByIdCancelResponses = {
+    /**
+     * CancelLockerContractResponse
+     *
+     * Locker contract cancel response
+     */
+    200: {
+        message: string;
+        contract_id: string;
+        termination_date: string;
+    };
+};
+
+export type PatchCrmLockersContractsByIdCancelResponse = PatchCrmLockersContractsByIdCancelResponses[keyof PatchCrmLockersContractsByIdCancelResponses];
+
+export type GetCrmLockersContractsByIdChangeHistoryData = {
+    body?: never;
+    path: {
+        /**
+         * Locker contract internal id
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/lockers/contracts/{id}/change-history';
+};
+
+export type GetCrmLockersContractsByIdChangeHistoryErrors = {
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type GetCrmLockersContractsByIdChangeHistoryError = GetCrmLockersContractsByIdChangeHistoryErrors[keyof GetCrmLockersContractsByIdChangeHistoryErrors];
+
+export type GetCrmLockersContractsByIdChangeHistoryResponses = {
+    /**
+     * GetLockerContractChangeHistoryResponse
+     *
+     * Locker contract change history response
+     */
+    200: {
+        history: Array<{
+            date: string;
+            user: string;
+            field: string | null;
+            from: string | null;
+            to: string;
+        }>;
+    };
+};
+
+export type GetCrmLockersContractsByIdChangeHistoryResponse = GetCrmLockersContractsByIdChangeHistoryResponses[keyof GetCrmLockersContractsByIdChangeHistoryResponses];
+
+export type GetCrmLockersContractsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Locker contract internal id
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/lockers/contracts/{id}';
+};
+
+export type GetCrmLockersContractsByIdErrors = {
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type GetCrmLockersContractsByIdError = GetCrmLockersContractsByIdErrors[keyof GetCrmLockersContractsByIdErrors];
+
+export type GetCrmLockersContractsByIdResponses = {
+    /**
+     * GetLockerContractDetailResponse
+     *
+     * Locker contract detail response
+     */
+    200: {
+        /**
+         * LockerContractDetail
+         *
+         * Locker contract detail
+         */
+        contract: {
+            /**
+             * Internal row id
+             */
+            id: string;
+            /**
+             * Contract display id
+             */
+            contract_id: string;
+            /**
+             * Locker internal id
+             */
+            locker_id: string;
+            /**
+             * Store internal id
+             */
+            store_id: string;
+            /**
+             * Store name
+             */
+            store_name: string;
+            /**
+             * Member name
+             */
+            member_name: string;
+            /**
+             * Member id
+             */
+            member_id: string;
+            /**
+             * Locker slot number
+             */
+            locker_number: string;
+            /**
+             * LockerOptionType
+             *
+             * Contract type
+             */
+            contract_type: 'none' | 'standard' | 'premium';
+            /**
+             * Contract start date-time (ISO 8601 UTC)
+             */
+            start_date: string;
+            /**
+             * Contract end date-time (ISO 8601 UTC)
+             */
+            end_date: string;
+            /**
+             * LockerContractStatus
+             *
+             * Contract status
+             */
+            status: 'in_use' | 'pending_release' | 'available';
+            /**
+             * Locker display id
+             */
+            locker_display_id: string;
+            /**
+             * Locker area
+             */
+            locker_area: string;
+            /**
+             * G-02 contract type code
+             */
+            contract_type_code: string | null;
+            /**
+             * Option contract name
+             */
+            option_contract_name: string;
+            /**
+             * Slot size label
+             */
+            slot_size: string;
+            /**
+             * Member phone
+             */
+            member_phone: string;
+            /**
+             * Member email
+             */
+            member_email: string;
+            /**
+             * Contract termination date-time (ISO 8601 UTC)
+             */
+            termination_date: string | null;
+            /**
+             * Dial password
+             */
+            password: string | null;
+            /**
+             * Password last updated at (ISO 8601 UTC)
+             */
+            password_updated_at: string | null;
+            /**
+             * Created at
+             */
+            created_at: string;
+            /**
+             * Updated at
+             */
+            updated_at: string;
+        };
+    };
+};
+
+export type GetCrmLockersContractsByIdResponse = GetCrmLockersContractsByIdResponses[keyof GetCrmLockersContractsByIdResponses];
+
+export type PatchCrmLockersContractsByIdData = {
+    /**
+     * UpdateLockerContractRequest
+     *
+     * Request to update a locker contract
+     */
+    body?: {
+        /**
+         * Locker internal id
+         */
+        locker_id?: string;
+        /**
+         * Slot number
+         */
+        slot_number?: string;
+        /**
+         * G-02 contract type code
+         */
+        contract_type_code?: string;
+        /**
+         * Contract start date-time (ISO 8601 UTC)
+         */
+        start_date?: string;
+        /**
+         * Dial password (4 digits)
+         */
+        password?: string | null;
+    };
+    path: {
+        /**
+         * Locker contract internal id
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/lockers/contracts/{id}';
+};
+
+export type PatchCrmLockersContractsByIdErrors = {
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type PatchCrmLockersContractsByIdError = PatchCrmLockersContractsByIdErrors[keyof PatchCrmLockersContractsByIdErrors];
+
+export type PatchCrmLockersContractsByIdResponses = {
+    /**
+     * UpdateLockerContractResponse
+     *
+     * Locker contract update response
+     */
+    200: {
+        message: string;
+        /**
+         * LockerContractDetail
+         *
+         * Locker contract detail
+         */
+        contract: {
+            /**
+             * Internal row id
+             */
+            id: string;
+            /**
+             * Contract display id
+             */
+            contract_id: string;
+            /**
+             * Locker internal id
+             */
+            locker_id: string;
+            /**
+             * Store internal id
+             */
+            store_id: string;
+            /**
+             * Store name
+             */
+            store_name: string;
+            /**
+             * Member name
+             */
+            member_name: string;
+            /**
+             * Member id
+             */
+            member_id: string;
+            /**
+             * Locker slot number
+             */
+            locker_number: string;
+            /**
+             * LockerOptionType
+             *
+             * Contract type
+             */
+            contract_type: 'none' | 'standard' | 'premium';
+            /**
+             * Contract start date-time (ISO 8601 UTC)
+             */
+            start_date: string;
+            /**
+             * Contract end date-time (ISO 8601 UTC)
+             */
+            end_date: string;
+            /**
+             * LockerContractStatus
+             *
+             * Contract status
+             */
+            status: 'in_use' | 'pending_release' | 'available';
+            /**
+             * Locker display id
+             */
+            locker_display_id: string;
+            /**
+             * Locker area
+             */
+            locker_area: string;
+            /**
+             * G-02 contract type code
+             */
+            contract_type_code: string | null;
+            /**
+             * Option contract name
+             */
+            option_contract_name: string;
+            /**
+             * Slot size label
+             */
+            slot_size: string;
+            /**
+             * Member phone
+             */
+            member_phone: string;
+            /**
+             * Member email
+             */
+            member_email: string;
+            /**
+             * Contract termination date-time (ISO 8601 UTC)
+             */
+            termination_date: string | null;
+            /**
+             * Dial password
+             */
+            password: string | null;
+            /**
+             * Password last updated at (ISO 8601 UTC)
+             */
+            password_updated_at: string | null;
+            /**
+             * Created at
+             */
+            created_at: string;
+            /**
+             * Updated at
+             */
+            updated_at: string;
+        };
+    };
+};
+
+export type PatchCrmLockersContractsByIdResponse = PatchCrmLockersContractsByIdResponses[keyof PatchCrmLockersContractsByIdResponses];
+
+export type GetCrmLockersContractsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        limit?: number;
+        /**
+         * Search by contract id or member name
+         */
+        search?: string;
+        /**
+         * LockerOptionType
+         *
+         * Contract type filter
+         */
+        contract_type?: 'none' | 'standard' | 'premium';
+        /**
+         * LockerContractStatus
+         *
+         * Contract status filter
+         */
+        status?: 'in_use' | 'pending_release' | 'available';
+        /**
+         * LockerContractSortField
+         *
+         * Sort field
+         */
+        sort_by?: 'contract_id' | 'member_name' | 'locker_number' | 'contract_type' | 'start_date' | 'end_date' | 'status';
+        /**
+         * Sort order
+         */
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/lockers/contracts';
+};
+
+export type GetCrmLockersContractsErrors = {
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type GetCrmLockersContractsError = GetCrmLockersContractsErrors[keyof GetCrmLockersContractsErrors];
+
+export type GetCrmLockersContractsResponses = {
+    /**
+     * GetLockerContractsResponse
+     *
+     * Locker contract list response
+     */
+    200: {
+        /**
+         * Locker contract rows
+         */
+        contracts: Array<{
+            /**
+             * Internal row id
+             */
+            id: string;
+            /**
+             * Contract display id
+             */
+            contract_id: string;
+            /**
+             * Locker internal id
+             */
+            locker_id: string;
+            /**
+             * Store internal id
+             */
+            store_id: string;
+            /**
+             * Store name
+             */
+            store_name: string;
+            /**
+             * Member name
+             */
+            member_name: string;
+            /**
+             * Member id
+             */
+            member_id: string;
+            /**
+             * Locker slot number
+             */
+            locker_number: string;
+            /**
+             * LockerOptionType
+             *
+             * Contract type
+             */
+            contract_type: 'none' | 'standard' | 'premium';
+            /**
+             * Contract start date-time (ISO 8601 UTC)
+             */
+            start_date: string;
+            /**
+             * Contract end date-time (ISO 8601 UTC)
+             */
+            end_date: string;
+            /**
+             * LockerContractStatus
+             *
+             * Contract status
+             */
+            status: 'in_use' | 'pending_release' | 'available';
+        }>;
+        /**
+         * LockerPagination
+         *
+         * Pagination metadata for locker list endpoints
+         */
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmLockersContractsResponse = GetCrmLockersContractsResponses[keyof GetCrmLockersContractsResponses];
+
+export type PostCrmLockersContractsData = {
+    /**
+     * CreateLockerContractRequest
+     *
+     * Request to create a locker contract
+     */
+    body?: {
+        /**
+         * Member id
+         */
+        member_id: string;
+        /**
+         * Locker internal id
+         */
+        locker_id: string;
+        /**
+         * Slot number
+         */
+        slot_number: string;
+        /**
+         * G-02 contract type code
+         */
+        contract_type_code: string;
+        /**
+         * Contract start date-time (ISO 8601 UTC)
+         */
+        start_date: string;
+        /**
+         * Dial password (4 digits)
+         */
+        password?: string | null;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/lockers/contracts';
+};
+
+export type PostCrmLockersContractsErrors = {
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type PostCrmLockersContractsError = PostCrmLockersContractsErrors[keyof PostCrmLockersContractsErrors];
+
+export type PostCrmLockersContractsResponses = {
+    /**
+     * CreateLockerContractResponse
+     *
+     * Locker contract create response
+     */
+    200: {
+        message: string;
+        /**
+         * LockerContractDetail
+         *
+         * Locker contract detail
+         */
+        contract: {
+            /**
+             * Internal row id
+             */
+            id: string;
+            /**
+             * Contract display id
+             */
+            contract_id: string;
+            /**
+             * Locker internal id
+             */
+            locker_id: string;
+            /**
+             * Store internal id
+             */
+            store_id: string;
+            /**
+             * Store name
+             */
+            store_name: string;
+            /**
+             * Member name
+             */
+            member_name: string;
+            /**
+             * Member id
+             */
+            member_id: string;
+            /**
+             * Locker slot number
+             */
+            locker_number: string;
+            /**
+             * LockerOptionType
+             *
+             * Contract type
+             */
+            contract_type: 'none' | 'standard' | 'premium';
+            /**
+             * Contract start date-time (ISO 8601 UTC)
+             */
+            start_date: string;
+            /**
+             * Contract end date-time (ISO 8601 UTC)
+             */
+            end_date: string;
+            /**
+             * LockerContractStatus
+             *
+             * Contract status
+             */
+            status: 'in_use' | 'pending_release' | 'available';
+            /**
+             * Locker display id
+             */
+            locker_display_id: string;
+            /**
+             * Locker area
+             */
+            locker_area: string;
+            /**
+             * G-02 contract type code
+             */
+            contract_type_code: string | null;
+            /**
+             * Option contract name
+             */
+            option_contract_name: string;
+            /**
+             * Slot size label
+             */
+            slot_size: string;
+            /**
+             * Member phone
+             */
+            member_phone: string;
+            /**
+             * Member email
+             */
+            member_email: string;
+            /**
+             * Contract termination date-time (ISO 8601 UTC)
+             */
+            termination_date: string | null;
+            /**
+             * Dial password
+             */
+            password: string | null;
+            /**
+             * Password last updated at (ISO 8601 UTC)
+             */
+            password_updated_at: string | null;
+            /**
+             * Created at
+             */
+            created_at: string;
+            /**
+             * Updated at
+             */
+            updated_at: string;
+        };
+    };
+};
+
+export type PostCrmLockersContractsResponse = PostCrmLockersContractsResponses[keyof PostCrmLockersContractsResponses];
+
+export type GetCrmLockersPendingSlotsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        limit?: number;
+        /**
+         * Search by slot number or member name
+         */
+        search?: string;
+        /**
+         * Store filter
+         */
+        store_id?: string;
+        /**
+         * LockerPendingLocation
+         *
+         * Location filter
+         */
+        locker_location?: 'a_changing_room' | 'b_gym_area' | 'c_pool_side' | 'f_entrance';
+        /**
+         * Cancel date from (YYYY/MM/DD)
+         */
+        cancel_date_from?: string;
+        /**
+         * Cancel date to (YYYY/MM/DD)
+         */
+        cancel_date_to?: string;
+        /**
+         * LockerPendingSortField
+         *
+         * Sort field
+         */
+        sort_by?: 'slot_number' | 'locker_location' | 'member_name' | 'cancel_date' | 'pending_since' | 'pending_days';
+        /**
+         * Sort order
+         */
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/lockers/pending-slots';
+};
+
+export type GetCrmLockersPendingSlotsErrors = {
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type GetCrmLockersPendingSlotsError = GetCrmLockersPendingSlotsErrors[keyof GetCrmLockersPendingSlotsErrors];
+
+export type GetCrmLockersPendingSlotsResponses = {
+    /**
+     * GetLockerPendingSlotsResponse
+     *
+     * Pending locker slot list response
+     */
+    200: {
+        /**
+         * Pending slot rows
+         */
+        pending_slots: Array<{
+            /**
+             * Internal row id
+             */
+            id: string;
+            /**
+             * Locker internal id
+             */
+            locker_id: string;
+            /**
+             * Store internal id
+             */
+            store_id: string;
+            /**
+             * Store name
+             */
+            store_name: string;
+            /**
+             * LockerPendingLocation
+             *
+             * Locker location
+             */
+            locker_location: 'a_changing_room' | 'b_gym_area' | 'c_pool_side' | 'f_entrance';
+            /**
+             * Locker name
+             */
+            locker_name: string;
+            /**
+             * Slot number
+             */
+            slot_number: string;
+            /**
+             * Member name
+             */
+            member_name: string;
+            /**
+             * Member id
+             */
+            member_id: string;
+            /**
+             * Cancel date
+             */
+            cancel_date: string;
+            /**
+             * Pending since
+             */
+            pending_since: string;
+            /**
+             * Pending days
+             */
+            pending_days: number;
+            /**
+             * Locker slot size
+             */
+            size: string;
+            /**
+             * LockerLockType
+             *
+             * Lock type
+             */
+            lock_type: 'dial' | 'cylinder';
+        }>;
+        /**
+         * LockerPagination
+         *
+         * Pagination metadata for locker list endpoints
+         */
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmLockersPendingSlotsResponse = GetCrmLockersPendingSlotsResponses[keyof GetCrmLockersPendingSlotsResponses];
+
+export type GetCrmLockersData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        limit?: number;
+        /**
+         * Search by locker id or area
+         */
+        search?: string;
+        /**
+         * LockerShape
+         *
+         * Locker shape filter
+         */
+        shape?: '3x9' | '3x6' | '2x10' | '2x4';
+        /**
+         * LockerSortField
+         *
+         * Sort field
+         */
+        sort_by?: 'locker_id' | 'area' | 'shape' | 'option_type' | 'slots' | 'available_slots' | 'in_use_slots';
+        /**
+         * Sort order
+         */
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/lockers';
+};
+
+export type GetCrmLockersErrors = {
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type GetCrmLockersError = GetCrmLockersErrors[keyof GetCrmLockersErrors];
+
+export type GetCrmLockersResponses = {
+    /**
+     * GetLockersResponse
+     *
+     * Locker list response
+     */
+    200: {
+        /**
+         * Locker rows
+         */
+        lockers: Array<{
+            /**
+             * Internal locker row id
+             */
+            id: string;
+            /**
+             * Locker display id
+             */
+            locker_id: string;
+            /**
+             * Store internal id
+             */
+            store_id: string;
+            /**
+             * Store name
+             */
+            store_name: string;
+            /**
+             * Locker area
+             */
+            area: string;
+            /**
+             * LockerShape
+             *
+             * Locker shape
+             */
+            shape: '3x9' | '3x6' | '2x10' | '2x4';
+            /**
+             * LockerOptionType
+             *
+             * Option contract type
+             */
+            option_type: 'none' | 'standard' | 'premium';
+            /**
+             * Total slots
+             */
+            slots: number;
+            /**
+             * Available slots
+             */
+            available_slots: number;
+            /**
+             * In-use slots
+             */
+            in_use_slots: number;
+            /**
+             * Locker numbering pattern
+             */
+            numbering_pattern: string;
+        }>;
+        /**
+         * LockerPagination
+         *
+         * Pagination metadata for locker list endpoints
+         */
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmLockersResponse = GetCrmLockersResponses[keyof GetCrmLockersResponses];
+
+export type PostCrmLockersData = {
+    /**
+     * CreateLockerRequest
+     *
+     * Request to create a new locker
+     */
+    body?: {
+        /**
+         * Store internal id
+         */
+        store_id: string;
+        /**
+         * Location symbol (slot prefix)
+         */
+        location_symbol: string;
+        /**
+         * Display area label
+         */
+        area_label?: string;
+        /**
+         * Member-facing guide text
+         */
+        guide_text?: string | null;
+        /**
+         * Staff-only note
+         */
+        note?: string | null;
+        /**
+         * Locker image (base64 or URL)
+         */
+        image_url?: string | null;
+        /**
+         * LockerShape
+         *
+         * Locker shape
+         */
+        shape: '3x9' | '3x6' | '2x10' | '2x4';
+        /**
+         * LockerNumberingPattern
+         *
+         * Slot numbering direction pattern
+         */
+        slot_numbering_pattern: 'top_left_to_right' | 'bottom_left_to_right' | 'top_left_to_bottom' | 'top_right_to_left';
+        /**
+         * Slot numbering start value
+         */
+        start_number?: number;
+        /**
+         * LockerOptionType
+         *
+         * Option contract type
+         */
+        option_type: 'none' | 'standard' | 'premium';
+        /**
+         * G-02 contract type code
+         */
+        contract_type_code?: string | null;
+        /**
+         * LockerSlotOpenType
+         *
+         * Default open type for slots
+         */
+        default_open_type: 'door' | 'drawer';
+        /**
+         * LockerLockType
+         *
+         * Default lock type for slots
+         */
+        default_lock_type: 'dial' | 'cylinder';
+        /**
+         * Per-slot lock overrides
+         */
+        slot_lock_settings?: Array<{
+            /**
+             * Slot number
+             */
+            slot_number: string;
+            /**
+             * LockerLockType
+             *
+             * Lock type override
+             */
+            lock_type: 'dial' | 'cylinder';
+            /**
+             * Dial password override
+             */
+            password?: string | null;
+        }>;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/lockers';
+};
+
+export type PostCrmLockersErrors = {
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type PostCrmLockersError = PostCrmLockersErrors[keyof PostCrmLockersErrors];
+
+export type PostCrmLockersResponses = {
+    /**
+     * CreateLockerResponse
+     *
+     * Locker create response
+     */
+    200: {
+        message: string;
+        /**
+         * LockerDetail
+         *
+         * Locker detail with associated contracts and pending slots
+         */
+        locker: {
+            /**
+             * Internal locker row id
+             */
+            id: string;
+            /**
+             * Locker display id
+             */
+            locker_id: string;
+            /**
+             * Store internal id
+             */
+            store_id: string;
+            /**
+             * Store name
+             */
+            store_name: string;
+            /**
+             * Locker area
+             */
+            area: string;
+            /**
+             * Location symbol prefix
+             */
+            location_symbol: string;
+            /**
+             * LockerShape
+             *
+             * Locker shape
+             */
+            shape: '3x9' | '3x6' | '2x10' | '2x4';
+            /**
+             * LockerNumberingPattern
+             *
+             * Slot numbering direction pattern
+             */
+            slot_numbering_pattern: 'top_left_to_right' | 'bottom_left_to_right' | 'top_left_to_bottom' | 'top_right_to_left';
+            /**
+             * Slot numbering start value
+             */
+            start_number: number;
+            /**
+             * LockerSlotOpenType
+             *
+             * Default open type for slots
+             */
+            default_open_type: 'door' | 'drawer';
+            /**
+             * LockerLockType
+             *
+             * Default lock type for slots
+             */
+            default_lock_type: 'dial' | 'cylinder';
+            /**
+             * Per-slot lock overrides
+             */
+            slot_lock_settings: Array<{
+                /**
+                 * Slot number
+                 */
+                slot_number: string;
+                /**
+                 * LockerLockType
+                 *
+                 * Lock type override
+                 */
+                lock_type: 'dial' | 'cylinder';
+                /**
+                 * Dial password override
+                 */
+                password?: string | null;
+            }>;
+            /**
+             * LockerOptionType
+             *
+             * Option contract type
+             */
+            option_type: 'none' | 'standard' | 'premium';
+            /**
+             * Total slots
+             */
+            slots: number;
+            /**
+             * Available slots
+             */
+            available_slots: number;
+            /**
+             * In-use slots
+             */
+            in_use_slots: number;
+            /**
+             * Locker numbering pattern
+             */
+            numbering_pattern: string;
+            /**
+             * Whether the locker has in-use or pending-release slots
+             */
+            has_active_slots: boolean;
+            /**
+             * LockerOptionMasterRef
+             *
+             * Assigned option contract master
+             */
+            option_contract_master: {
+                /**
+                 * Option master id
+                 */
+                id: string;
+                /**
+                 * Option master name
+                 */
+                name: string;
+                /**
+                 * Option master code
+                 */
+                code: string;
+                /**
+                 * Monthly price including tax
+                 */
+                price_including_tax: number;
+            } | null;
+            /**
+             * Locker contract type code
+             */
+            contract_type_code: string | null;
+            /**
+             * Guide text for staff
+             */
+            guide_text: string | null;
+            /**
+             * Additional note
+             */
+            note: string | null;
+            /**
+             * Locker image URL
+             */
+            image_url: string | null;
+            /**
+             * Created at
+             */
+            created_at: string;
+            /**
+             * Updated at
+             */
+            updated_at: string;
+            /**
+             * LockerSlotSummary
+             *
+             * Slot summary
+             */
+            summary: {
+                /**
+                 * Total slots
+                 */
+                total_slots: number;
+                /**
+                 * Available slots
+                 */
+                available_slots: number;
+                /**
+                 * In-use slots
+                 */
+                in_use_slots: number;
+                /**
+                 * Pending-release slots
+                 */
+                pending_release_slots: number;
+                /**
+                 * Utilization rate percentage
+                 */
+                utilization_rate_percent: number;
+            };
+            /**
+             * Detailed slots
+             */
+            slot_items: Array<{
+                /**
+                 * Slot row id
+                 */
+                id: string;
+                /**
+                 * Locker internal id
+                 */
+                locker_id: string;
+                /**
+                 * Slot number
+                 */
+                slot_number: string;
+                /**
+                 * Visual row number
+                 */
+                row_number: number;
+                /**
+                 * Visual column number
+                 */
+                column_number: number;
+                /**
+                 * Whether the slot is in the bottom row
+                 */
+                is_bottom_row: boolean;
+                /**
+                 * LockerSlotStatus
+                 *
+                 * Slot status
+                 */
+                status: 'available' | 'in_use' | 'pending_release';
+                /**
+                 * LockerLockType
+                 *
+                 * Lock type
+                 */
+                lock_type: 'dial' | 'cylinder';
+                /**
+                 * LockerSlotOpenType
+                 *
+                 * Open type
+                 */
+                open_type: 'door' | 'drawer';
+                /**
+                 * Slot width in cm
+                 */
+                width_cm: number;
+                /**
+                 * Slot height in cm
+                 */
+                height_cm: number;
+                /**
+                 * Slot depth in cm
+                 */
+                depth_cm: number;
+                /**
+                 * Dial password
+                 */
+                password: string | null;
+                /**
+                 * Assigned member name
+                 */
+                member_name: string | null;
+                /**
+                 * Assigned member id
+                 */
+                member_id: string | null;
+                /**
+                 * Scheduled cancel date
+                 */
+                cancel_date: string | null;
+                /**
+                 * Contract start date
+                 */
+                contract_start_date: string | null;
+                /**
+                 * Assigned option contract name
+                 */
+                option_contract_name: string | null;
+                /**
+                 * Locker contract id
+                 */
+                contract_id: string | null;
+                /**
+                 * Assigned contract type code
+                 */
+                contract_type_code: string | null;
+                /**
+                 * Individual fee for bottom-row slot
+                 */
+                individual_fee: number | null;
+                /**
+                 * Individual fee applied date
+                 */
+                fee_applied_at: string | null;
+                /**
+                 * Reminder notification history
+                 */
+                reminder_notifications: Array<{
+                    /**
+                     * Notification id
+                     */
+                    id: string;
+                    /**
+                     * Sent timestamp
+                     */
+                    sent_at: string;
+                    /**
+                     * LockerReminderNotificationMethod
+                     *
+                     * Delivery method
+                     */
+                    method: 'push' | 'in_app';
+                    /**
+                     * LockerReminderNotificationStatus
+                     *
+                     * Delivery status
+                     */
+                    status: 'unsent' | 'sent' | 'failed';
+                }>;
+            }>;
+            /**
+             * Associated contracts
+             */
+            contracts: Array<{
+                /**
+                 * Internal row id
+                 */
+                id: string;
+                /**
+                 * Contract display id
+                 */
+                contract_id: string;
+                /**
+                 * Locker internal id
+                 */
+                locker_id: string;
+                /**
+                 * Store internal id
+                 */
+                store_id: string;
+                /**
+                 * Store name
+                 */
+                store_name: string;
+                /**
+                 * Member name
+                 */
+                member_name: string;
+                /**
+                 * Member id
+                 */
+                member_id: string;
+                /**
+                 * Locker slot number
+                 */
+                locker_number: string;
+                /**
+                 * LockerOptionType
+                 *
+                 * Contract type
+                 */
+                contract_type: 'none' | 'standard' | 'premium';
+                /**
+                 * Contract start date-time (ISO 8601 UTC)
+                 */
+                start_date: string;
+                /**
+                 * Contract end date-time (ISO 8601 UTC)
+                 */
+                end_date: string;
+                /**
+                 * LockerContractStatus
+                 *
+                 * Contract status
+                 */
+                status: 'in_use' | 'pending_release' | 'available';
+            }>;
+            /**
+             * Pending slots
+             */
+            pending_slots: Array<{
+                /**
+                 * Internal row id
+                 */
+                id: string;
+                /**
+                 * Locker internal id
+                 */
+                locker_id: string;
+                /**
+                 * Store internal id
+                 */
+                store_id: string;
+                /**
+                 * Store name
+                 */
+                store_name: string;
+                /**
+                 * LockerPendingLocation
+                 *
+                 * Locker location
+                 */
+                locker_location: 'a_changing_room' | 'b_gym_area' | 'c_pool_side' | 'f_entrance';
+                /**
+                 * Locker name
+                 */
+                locker_name: string;
+                /**
+                 * Slot number
+                 */
+                slot_number: string;
+                /**
+                 * Member name
+                 */
+                member_name: string;
+                /**
+                 * Member id
+                 */
+                member_id: string;
+                /**
+                 * Cancel date
+                 */
+                cancel_date: string;
+                /**
+                 * Pending since
+                 */
+                pending_since: string;
+                /**
+                 * Pending days
+                 */
+                pending_days: number;
+                /**
+                 * Locker slot size
+                 */
+                size: string;
+                /**
+                 * LockerLockType
+                 *
+                 * Lock type
+                 */
+                lock_type: 'dial' | 'cylinder';
+            }>;
+        };
+    };
+};
+
+export type PostCrmLockersResponse = PostCrmLockersResponses[keyof PostCrmLockersResponses];
+
+export type GetCrmLockersSummaryData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/lockers/summary';
+};
+
+export type GetCrmLockersSummaryErrors = {
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type GetCrmLockersSummaryError = GetCrmLockersSummaryErrors[keyof GetCrmLockersSummaryErrors];
+
+export type GetCrmLockersSummaryResponses = {
+    /**
+     * GetLockerSummaryResponse
+     *
+     * Summary counters for the locker tabs
+     */
+    200: {
+        /**
+         * Locker row count
+         */
+        lockers_count: number;
+        /**
+         * Locker contract row count
+         */
+        contracts_count: number;
+        /**
+         * Pending slot row count
+         */
+        pending_slots_count: number;
+    };
+};
+
+export type GetCrmLockersSummaryResponse = GetCrmLockersSummaryResponses[keyof GetCrmLockersSummaryResponses];
+
+export type GetCrmLockersUsedLocationSymbolsData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Store internal id
+         */
+        store_id: string;
+        /**
+         * Locker id to exclude (for edit mode)
+         */
+        exclude_locker_id?: string;
+    };
+    url: '/crm/lockers/used-location-symbols';
+};
+
+export type GetCrmLockersUsedLocationSymbolsErrors = {
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * LockerErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type GetCrmLockersUsedLocationSymbolsError = GetCrmLockersUsedLocationSymbolsErrors[keyof GetCrmLockersUsedLocationSymbolsErrors];
+
+export type GetCrmLockersUsedLocationSymbolsResponses = {
+    /**
+     * GetLockerUsedLocationSymbolsResponse
+     *
+     * Used location symbols response
+     */
+    200: {
+        /**
+         * Used location symbols in the store
+         */
+        location_symbols: Array<string>;
+    };
+};
+
+export type GetCrmLockersUsedLocationSymbolsResponse = GetCrmLockersUsedLocationSymbolsResponses[keyof GetCrmLockersUsedLocationSymbolsResponses];
 
 export type GetCrmMainContractsByIdChangeHistoryData = {
     body?: never;
@@ -26146,6 +33726,12 @@ export type GetCrmOptionsByIdResponses = {
              */
             code: string;
             /**
+             * OptionMasterCategory
+             *
+             * オプション機能カテゴリ
+             */
+            category: 'gym_option' | 'locker_option' | 'lesson_plan' | 'insurance' | 'oneday_pass' | 'other';
+            /**
              * StoreListBrand
              *
              * ブランド
@@ -26208,6 +33794,10 @@ export type GetCrmOptionsByIdResponses = {
              */
             status: 'active' | 'inactive';
             /**
+             * 説明文
+             */
+            description: string | null;
+            /**
              * 料金（税抜）
              */
             price_excluding_tax: number;
@@ -26221,10 +33811,6 @@ export type GetCrmOptionsByIdResponses = {
              * 対象店舗範囲
              */
             store_range: string;
-            /**
-             * 説明文
-             */
-            description: string | null;
             /**
              * 備考
              */
@@ -26294,6 +33880,12 @@ export type PatchCrmOptionsByIdData = {
          * オプション分類
          */
         option_category: 'supplement' | 'drink' | 'rental' | 'locker' | 'insurance' | 'service';
+        /**
+         * OptionMasterCategory
+         *
+         * オプション機能カテゴリ（未指定時はコードから自動判定）
+         */
+        category?: 'gym_option' | 'locker_option' | 'lesson_plan' | 'insurance' | 'oneday_pass' | 'other';
         /**
          * 会計コード
          */
@@ -26438,6 +34030,12 @@ export type PatchCrmOptionsByIdResponses = {
              */
             code: string;
             /**
+             * OptionMasterCategory
+             *
+             * オプション機能カテゴリ
+             */
+            category: 'gym_option' | 'locker_option' | 'lesson_plan' | 'insurance' | 'oneday_pass' | 'other';
+            /**
              * StoreListBrand
              *
              * ブランド
@@ -26500,6 +34098,10 @@ export type PatchCrmOptionsByIdResponses = {
              */
             status: 'active' | 'inactive';
             /**
+             * 説明文
+             */
+            description: string | null;
+            /**
              * 料金（税抜）
              */
             price_excluding_tax: number;
@@ -26513,10 +34115,6 @@ export type PatchCrmOptionsByIdResponses = {
              * 対象店舗範囲
              */
             store_range: string;
-            /**
-             * 説明文
-             */
-            description: string | null;
             /**
              * 備考
              */
@@ -26588,6 +34186,12 @@ export type GetCrmOptionsData = {
          */
         status?: 'active' | 'inactive';
         /**
+         * OptionMasterCategory
+         *
+         * オプション機能カテゴリで絞り込み
+         */
+        category?: 'gym_option' | 'locker_option' | 'lesson_plan' | 'insurance' | 'oneday_pass' | 'other';
+        /**
          * 店舗IDで絞り込み
          */
         store_id?: string;
@@ -26644,6 +34248,12 @@ export type GetCrmOptionsResponses = {
              * オプションコード
              */
             code: string;
+            /**
+             * OptionMasterCategory
+             *
+             * オプション機能カテゴリ
+             */
+            category: 'gym_option' | 'locker_option' | 'lesson_plan' | 'insurance' | 'oneday_pass' | 'other';
             /**
              * StoreListBrand
              *
@@ -26706,6 +34316,10 @@ export type GetCrmOptionsResponses = {
              * ステータス
              */
             status: 'active' | 'inactive';
+            /**
+             * 説明文
+             */
+            description: string | null;
         }>;
         pagination: {
             page: number;
@@ -26745,6 +34359,12 @@ export type PostCrmOptionsData = {
          * オプション分類
          */
         option_category: 'supplement' | 'drink' | 'rental' | 'locker' | 'insurance' | 'service';
+        /**
+         * OptionMasterCategory
+         *
+         * オプション機能カテゴリ（未指定時はコードから自動判定）
+         */
+        category?: 'gym_option' | 'locker_option' | 'lesson_plan' | 'insurance' | 'oneday_pass' | 'other';
         /**
          * 会計コード
          */
@@ -26873,6 +34493,12 @@ export type PostCrmOptionsResponses = {
              */
             code: string;
             /**
+             * OptionMasterCategory
+             *
+             * オプション機能カテゴリ
+             */
+            category: 'gym_option' | 'locker_option' | 'lesson_plan' | 'insurance' | 'oneday_pass' | 'other';
+            /**
              * StoreListBrand
              *
              * ブランド
@@ -26935,6 +34561,10 @@ export type PostCrmOptionsResponses = {
              */
             status: 'active' | 'inactive';
             /**
+             * 説明文
+             */
+            description: string | null;
+            /**
              * 料金（税抜）
              */
             price_excluding_tax: number;
@@ -26948,10 +34578,6 @@ export type PostCrmOptionsResponses = {
              * 対象店舗範囲
              */
             store_range: string;
-            /**
-             * 説明文
-             */
-            description: string | null;
             /**
              * 備考
              */

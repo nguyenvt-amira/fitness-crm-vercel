@@ -35,11 +35,19 @@ export const OptionCategorySchema = z
     description: 'オプション分類',
   });
 
+export const OptionMasterCategorySchema = z
+  .enum(['gym_option', 'locker_option', 'lesson_plan', 'insurance', 'oneday_pass', 'other'])
+  .openapi({
+    title: 'OptionMasterCategory',
+    description: 'オプション機能カテゴリ',
+  });
+
 export const OptionMasterListItemSchema = z
   .object({
     id: z.string().openapi({ example: 'OP002', description: 'オプションID' }),
     name: z.string().openapi({ example: '水素水', description: 'オプション名' }),
     code: z.string().openapi({ example: 'H2O-001', description: 'オプションコード' }),
+    category: OptionMasterCategorySchema.openapi({ description: 'オプション機能カテゴリ' }),
     brand: StoreListBrandSchema.openapi({ description: 'ブランド' }),
     option_type: OptionTypeSchema.openapi({ description: 'オプション種別' }),
     price_including_tax: z
@@ -66,6 +74,7 @@ export const OptionMasterListItemSchema = z
     store_name: z.string().nullable().openapi({ description: '対象店舗名（null = 全店舗）' }),
     accounting_code: z.string().openapi({ example: 'OPT-102', description: '会計コード' }),
     status: OptionStatusSchema.openapi({ description: 'ステータス' }),
+    description: z.string().nullable().openapi({ description: '説明文' }),
   })
   .openapi({
     title: 'OptionMasterListItem',
@@ -80,6 +89,9 @@ export const GetOptionMastersQuerySchema = z
     brand: StoreListBrandSchema.optional(),
     option_type: OptionTypeSchema.optional(),
     status: OptionStatusSchema.optional(),
+    category: OptionMasterCategorySchema.optional().openapi({
+      description: 'オプション機能カテゴリで絞り込み',
+    }),
     store_id: z.string().optional().openapi({ description: '店舗IDで絞り込み' }),
     sort_by: z
       .enum(['id', 'name', 'code', 'price_including_tax', 'member_count', 'tax_rate', 'status'])
@@ -113,7 +125,6 @@ export const OptionMasterDetailSchema = OptionMasterListItemSchema.extend({
     .openapi({ example: 1100, description: '料金（税抜）' }),
   option_category: OptionCategorySchema.openapi({ description: 'オプション分類' }),
   store_range: z.string().openapi({ example: '全店舗（12店舗）', description: '対象店舗範囲' }),
-  description: z.string().nullable().openapi({ description: '説明文' }),
   note: z.string().nullable().openapi({ description: '備考' }),
   member_app_image: z.string().nullable().openapi({ description: '会員公開用画像（base64）' }),
   created_at: z.string().openapi({ example: '2024-04-01T10:00:00+09:00', description: '作成日時' }),
@@ -144,6 +155,9 @@ export const UpsertOptionMasterBodySchema = z
     name: z.string().min(1, 'オプション名は必須です').openapi({ description: 'オプション名' }),
     code: z.string().min(1, 'コードは必須です').openapi({ description: 'コード' }),
     option_category: OptionCategorySchema.openapi({ description: 'オプション分類' }),
+    category: OptionMasterCategorySchema.optional().openapi({
+      description: 'オプション機能カテゴリ（未指定時はコードから自動判定）',
+    }),
     accounting_code: z.string().default('').openapi({ description: '会計コード' }),
     note: z.string().nullable().optional().openapi({ description: '備考' }),
     description: z.string().nullable().optional().openapi({ description: '説明文' }),
@@ -270,6 +284,7 @@ export type DeleteOptionMasterResponse = z.infer<typeof DeleteOptionMasterRespon
 export type CreateOptionMasterResponse = z.infer<typeof CreateOptionMasterResponseSchema>;
 export type UpdateOptionMasterResponse = z.infer<typeof UpdateOptionMasterResponseSchema>;
 export type OptionCategory = z.infer<typeof OptionCategorySchema>;
+export type OptionMasterCategory = z.infer<typeof OptionMasterCategorySchema>;
 export type OptionProrataMethod = z.infer<typeof OptionProrataMethodSchema>;
 export type OptionUsageRule = z.infer<typeof OptionUsageRuleSchema>;
 
