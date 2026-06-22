@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { startOfDay } from 'date-fns';
 import { toast } from 'sonner';
 
 import {
@@ -110,6 +111,7 @@ export function LockerContractTerminateDialog({
             date={terminationDate}
             placeholder="日付を選択"
             onDateChange={setTerminationDate}
+            disabledDate={(date) => date < startOfDay(new Date())}
           />
           <p className="text-muted-foreground text-xs">
             解約日まではスロット状態「使用中」を維持します。解約日経過後にシステムバッチで「開放待ち」へ自動遷移します。

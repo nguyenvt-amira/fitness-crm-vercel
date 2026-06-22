@@ -1,4 +1,5 @@
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
+import { isBefore, parseISO, startOfDay } from 'date-fns';
 import { z } from 'zod';
 
 extendZodWithOpenApi(z);
@@ -381,6 +382,25 @@ export const CancelLockerContractRequestSchema = z
       example: '2026-03-31T00:00:00Z',
       description: 'Termination date-time (ISO 8601 UTC)',
     }),
+  })
+  .superRefine((data, ctx) => {
+    const terminationDate = parseISO(data.termination_date);
+    if (Number.isNaN(terminationDate.getTime())) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['termination_date'],
+        message: '解約日の形式が正しくありません',
+      });
+      return;
+    }
+
+    if (isBefore(startOfDay(terminationDate), startOfDay(new Date()))) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['termination_date'],
+        message: '解約日は本日以降の日付を指定してください',
+      });
+    }
   })
   .openapi({
     title: 'CancelLockerContractRequest',
