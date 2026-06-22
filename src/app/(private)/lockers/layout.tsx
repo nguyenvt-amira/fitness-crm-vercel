@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 
 import { useAuthUser } from '@/contexts/auth-user.context';
 import { useQuery } from '@tanstack/react-query';
-import { Download, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 import { PageHeader } from '@/components/common/page-header';
 import { RoleGatedButton } from '@/components/common/role-gated-button';
@@ -19,7 +19,7 @@ import { navigate } from '@/lib/routes/routes.util';
 
 import { Permission } from '@/types/permission.type';
 
-import { useLockerListCsvExport } from './_hooks/use-locker-list-csv-export.hook';
+import { LockerListCsvExportButton } from './_components/locker-list-csv-export-button';
 
 type LockerTab = 'lockers' | 'contracts' | 'pending';
 
@@ -85,8 +85,6 @@ export default function LockersLayout({ children }: { children: ReactNode }) {
     enabled: activeTab !== null,
   });
 
-  const { exportCsv, isExportingCsv } = useLockerListCsvExport(activeTab ?? 'lockers');
-
   if (!activeTab) {
     return children;
   }
@@ -112,17 +110,11 @@ export default function LockersLayout({ children }: { children: ReactNode }) {
         actions={
           <>
             {csvExportConfig ? (
-              <RoleGatedButton
-                variant="outline"
-                className="gap-1"
-                requiredPermission={csvExportConfig.permission}
+              <LockerListCsvExportButton
+                activeTab={activeTab}
+                permission={csvExportConfig.permission}
                 denyTooltip={csvExportConfig.denyTooltip}
-                onClick={exportCsv}
-                disabled={isExportingCsv}
-              >
-                <Download className="size-4" />
-                CSV出力
-              </RoleGatedButton>
+              />
             ) : null}
             {createConfig ? (
               <RoleGatedButton
