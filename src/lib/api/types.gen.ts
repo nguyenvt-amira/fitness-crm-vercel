@@ -17043,6 +17043,637 @@ export type SurveyTemplateChangeHistoryItem = {
     to: string | null;
 };
 
+/**
+ * LessonType
+ *
+ * レッスン種別（スタジオ/パーソナル）
+ */
+export const LessonType = { STUDIO: 'studio', PERSONAL: 'personal' } as const;
+
+/**
+ * LessonType
+ *
+ * レッスン種別（スタジオ/パーソナル）
+ */
+export type LessonType = typeof LessonType[keyof typeof LessonType];
+
+/**
+ * LessonScheduleStatus
+ *
+ * レッスンスケジュールステータス
+ */
+export const LessonScheduleStatus = {
+    SCHEDULED: 'scheduled',
+    IN_PROGRESS: 'in_progress',
+    COMPLETED: 'completed',
+    CANCELLED: 'cancelled'
+} as const;
+
+/**
+ * LessonScheduleStatus
+ *
+ * レッスンスケジュールステータス
+ */
+export type LessonScheduleStatus = typeof LessonScheduleStatus[keyof typeof LessonScheduleStatus];
+
+/**
+ * PaymentStatus
+ *
+ * 支払いステータス
+ */
+export const PaymentStatus = {
+    PAID: 'paid',
+    UNPAID: 'unpaid',
+    PARTIAL: 'partial'
+} as const;
+
+/**
+ * PaymentStatus
+ *
+ * 支払いステータス
+ */
+export type PaymentStatus = typeof PaymentStatus[keyof typeof PaymentStatus];
+
+/**
+ * ScheduleAxis
+ *
+ * 表示軸（店舗/マイスケジュール）
+ */
+export const ScheduleAxis = { STORE: 'store', MY_SCHEDULE: 'my_schedule' } as const;
+
+/**
+ * ScheduleAxis
+ *
+ * 表示軸（店舗/マイスケジュール）
+ */
+export type ScheduleAxis = typeof ScheduleAxis[keyof typeof ScheduleAxis];
+
+/**
+ * ScheduleViewMode
+ *
+ * 表示モード（日/週/リスト）
+ */
+export const ScheduleViewMode = {
+    DAY: 'day',
+    WEEK: 'week',
+    LIST: 'list'
+} as const;
+
+/**
+ * ScheduleViewMode
+ *
+ * 表示モード（日/週/リスト）
+ */
+export type ScheduleViewMode = typeof ScheduleViewMode[keyof typeof ScheduleViewMode];
+
+/**
+ * ScheduleSortBy
+ *
+ * ソートキー
+ */
+export const ScheduleSortBy = {
+    START_TIME: 'start_time',
+    LESSON_NAME: 'lesson_name',
+    STUDIO_NAME: 'studio_name',
+    INSTRUCTOR_NAME: 'instructor_name',
+    BOOKED_COUNT: 'booked_count',
+    STATUS: 'status'
+} as const;
+
+/**
+ * ScheduleSortBy
+ *
+ * ソートキー
+ */
+export type ScheduleSortBy = typeof ScheduleSortBy[keyof typeof ScheduleSortBy];
+
+/**
+ * BookedMember
+ *
+ * 予約会員
+ */
+export type BookedMember = {
+    /**
+     * 会員ID
+     */
+    member_id: string;
+    /**
+     * 会員氏名
+     */
+    name: string;
+};
+
+/**
+ * LessonScheduleListItem
+ *
+ * レッスンスケジュール一覧アイテム
+ */
+export type LessonScheduleListItem = {
+    /**
+     * スケジュールID
+     */
+    id: string;
+    /**
+     * レッスン名
+     */
+    lesson_name: string;
+    /**
+     * LessonType
+     *
+     * レッスン種別（スタジオ/パーソナル）
+     */
+    lesson_type: 'studio' | 'personal';
+    /**
+     * スタジオ名
+     */
+    studio_name: string | null;
+    /**
+     * インストラクターID
+     */
+    instructor_id: string;
+    /**
+     * インストラクター名
+     */
+    instructor_name: string;
+    /**
+     * 店舗ID
+     */
+    store_id: string;
+    /**
+     * 店舗名
+     */
+    store_name: string;
+    /**
+     * 開始時刻 ISO8601
+     */
+    start_time: string;
+    /**
+     * 終了時刻 ISO8601
+     */
+    end_time: string;
+    /**
+     * 定員
+     */
+    capacity: number;
+    /**
+     * 予約数
+     */
+    booked_count: number;
+    /**
+     * キャンセル待ち数
+     */
+    waiting_count: number;
+    /**
+     * PaymentStatus
+     *
+     * 支払いステータス
+     */
+    payment_status: 'paid' | 'unpaid' | 'partial';
+    /**
+     * LessonScheduleStatus
+     *
+     * レッスンスケジュールステータス
+     */
+    status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
+    /**
+     * 要対応アラート
+     */
+    is_alert: boolean;
+    /**
+     * 予約会員リスト（my_schedule軸のみ）
+     */
+    booked_members?: Array<{
+        /**
+         * 会員ID
+         */
+        member_id: string;
+        /**
+         * 会員氏名
+         */
+        name: string;
+    }>;
+};
+
+/**
+ * LessonScheduleKpiSummary
+ *
+ * レッスンKPIサマリー
+ */
+export type LessonScheduleKpiSummary = {
+    /**
+     * 対象日付
+     */
+    date: string;
+    /**
+     * 本日のレッスン総数
+     */
+    total_lessons: number;
+    /**
+     * 予約総数
+     */
+    total_booked: number;
+    /**
+     * 定員総数
+     */
+    total_capacity: number;
+    /**
+     * 稼働率（%）
+     */
+    occupancy_rate: number;
+    /**
+     * アラート件数
+     */
+    alert_count: number;
+    /**
+     * キャンセル数
+     */
+    cancelled_count: number;
+};
+
+/**
+ * StoreScheduleSummary
+ *
+ * 店舗別スケジュールサマリー
+ */
+export type StoreScheduleSummary = {
+    /**
+     * 店舗ID
+     */
+    store_id: string;
+    /**
+     * 店舗名
+     */
+    store_name: string;
+    /**
+     * エリア
+     */
+    area: string;
+    /**
+     * 本日のレッスン数
+     */
+    total_lessons: number;
+    /**
+     * 予約数
+     */
+    total_booked: number;
+    /**
+     * 定員
+     */
+    total_capacity: number;
+    /**
+     * 稼働率（%）
+     */
+    occupancy_rate: number;
+    /**
+     * アラート件数
+     */
+    alert_count: number;
+};
+
+/**
+ * AreaScheduleKpiSummary
+ *
+ * エリア別KPIサマリー
+ */
+export type AreaScheduleKpiSummary = {
+    /**
+     * エリア名
+     */
+    area: string;
+    /**
+     * エリアレッスン総数
+     */
+    total_lessons: number;
+    /**
+     * エリア予約総数
+     */
+    total_booked: number;
+    /**
+     * エリア定員総数
+     */
+    total_capacity: number;
+    /**
+     * エリア稼働率（%）
+     */
+    occupancy_rate: number;
+    /**
+     * エリアアラート件数
+     */
+    alert_count: number;
+    /**
+     * エリア内店舗数
+     */
+    store_count: number;
+};
+
+/**
+ * ScheduleChangeDraft
+ *
+ * スケジュール変更リクエスト
+ */
+export type ScheduleChangeDraft = {
+    /**
+     * 変更後インストラクターID
+     */
+    new_instructor_id?: string;
+    /**
+     * 変更後開始時刻 ISO8601
+     */
+    new_start_time?: string;
+    /**
+     * 変更後終了時刻 ISO8601
+     */
+    new_end_time?: string;
+    /**
+     * 変更理由
+     */
+    reason?: string;
+};
+
+/**
+ * GetLessonSchedulesQuery
+ *
+ * レッスンスケジュール取得クエリ
+ */
+export type GetLessonSchedulesQuery = {
+    /**
+     * 対象日付 YYYY-MM-DD
+     */
+    date?: string;
+    /**
+     * 週開始日 YYYY-MM-DD（週表示時）
+     */
+    week_start?: string;
+    /**
+     * 店舗IDフィルター
+     */
+    store_id?: string;
+    /**
+     * スタジオ名フィルター
+     */
+    studio_name?: string;
+    /**
+     * インストラクターIDフィルター
+     */
+    instructor_id?: string;
+    /**
+     * ScheduleAxis
+     *
+     * 表示軸（店舗/マイスケジュール）
+     */
+    axis?: 'store' | 'my_schedule';
+    /**
+     * ScheduleSortBy
+     *
+     * ソートキー
+     */
+    sort_by?: 'start_time' | 'lesson_name' | 'studio_name' | 'instructor_name' | 'booked_count' | 'status';
+    sort_order?: 'asc' | 'desc';
+};
+
+/**
+ * GetStoreSummaryQuery
+ *
+ * 店舗サマリー取得クエリ
+ */
+export type GetStoreSummaryQuery = {
+    /**
+     * 対象日付 YYYY-MM-DD
+     */
+    date?: string;
+    /**
+     * 店舗サマリーソートキー
+     */
+    sort_by?: 'store_name' | 'total_lessons' | 'occupancy_rate' | 'alert_count';
+    sort_order?: 'asc' | 'desc';
+};
+
+/**
+ * GetLessonSchedulesResponse
+ *
+ * レッスンスケジュール一覧レスポンス
+ */
+export type GetLessonSchedulesResponse = {
+    schedules: Array<{
+        /**
+         * スケジュールID
+         */
+        id: string;
+        /**
+         * レッスン名
+         */
+        lesson_name: string;
+        /**
+         * LessonType
+         *
+         * レッスン種別（スタジオ/パーソナル）
+         */
+        lesson_type: 'studio' | 'personal';
+        /**
+         * スタジオ名
+         */
+        studio_name: string | null;
+        /**
+         * インストラクターID
+         */
+        instructor_id: string;
+        /**
+         * インストラクター名
+         */
+        instructor_name: string;
+        /**
+         * 店舗ID
+         */
+        store_id: string;
+        /**
+         * 店舗名
+         */
+        store_name: string;
+        /**
+         * 開始時刻 ISO8601
+         */
+        start_time: string;
+        /**
+         * 終了時刻 ISO8601
+         */
+        end_time: string;
+        /**
+         * 定員
+         */
+        capacity: number;
+        /**
+         * 予約数
+         */
+        booked_count: number;
+        /**
+         * キャンセル待ち数
+         */
+        waiting_count: number;
+        /**
+         * PaymentStatus
+         *
+         * 支払いステータス
+         */
+        payment_status: 'paid' | 'unpaid' | 'partial';
+        /**
+         * LessonScheduleStatus
+         *
+         * レッスンスケジュールステータス
+         */
+        status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
+        /**
+         * 要対応アラート
+         */
+        is_alert: boolean;
+        /**
+         * 予約会員リスト（my_schedule軸のみ）
+         */
+        booked_members?: Array<{
+            /**
+             * 会員ID
+             */
+            member_id: string;
+            /**
+             * 会員氏名
+             */
+            name: string;
+        }>;
+    }>;
+    total: number;
+};
+
+/**
+ * GetLessonScheduleKpiSummaryResponse
+ *
+ * KPIサマリーレスポンス
+ */
+export type GetLessonScheduleKpiSummaryResponse = {
+    /**
+     * LessonScheduleKpiSummary
+     *
+     * レッスンKPIサマリー
+     */
+    kpi: {
+        /**
+         * 対象日付
+         */
+        date: string;
+        /**
+         * 本日のレッスン総数
+         */
+        total_lessons: number;
+        /**
+         * 予約総数
+         */
+        total_booked: number;
+        /**
+         * 定員総数
+         */
+        total_capacity: number;
+        /**
+         * 稼働率（%）
+         */
+        occupancy_rate: number;
+        /**
+         * アラート件数
+         */
+        alert_count: number;
+        /**
+         * キャンセル数
+         */
+        cancelled_count: number;
+    };
+};
+
+/**
+ * GetStoreSummaryResponse
+ *
+ * 店舗別サマリーレスポンス
+ */
+export type GetStoreSummaryResponse = {
+    areas: Array<{
+        /**
+         * エリア名
+         */
+        area: string;
+        /**
+         * エリアレッスン総数
+         */
+        total_lessons: number;
+        /**
+         * エリア予約総数
+         */
+        total_booked: number;
+        /**
+         * エリア定員総数
+         */
+        total_capacity: number;
+        /**
+         * エリア稼働率（%）
+         */
+        occupancy_rate: number;
+        /**
+         * エリアアラート件数
+         */
+        alert_count: number;
+        /**
+         * エリア内店舗数
+         */
+        store_count: number;
+    }>;
+    stores: Array<{
+        /**
+         * 店舗ID
+         */
+        store_id: string;
+        /**
+         * 店舗名
+         */
+        store_name: string;
+        /**
+         * エリア
+         */
+        area: string;
+        /**
+         * 本日のレッスン数
+         */
+        total_lessons: number;
+        /**
+         * 予約数
+         */
+        total_booked: number;
+        /**
+         * 定員
+         */
+        total_capacity: number;
+        /**
+         * 稼働率（%）
+         */
+        occupancy_rate: number;
+        /**
+         * アラート件数
+         */
+        alert_count: number;
+    }>;
+    total: number;
+};
+
+/**
+ * ScheduleChangeResponse
+ *
+ * スケジュール変更レスポンス
+ */
+export type ScheduleChangeResponse = {
+    /**
+     * 完了メッセージ
+     */
+    message: string;
+    /**
+     * スケジュールID
+     */
+    id: string;
+};
+
 export type PostAuthLoginData = {
     /**
      * LoginRequest
@@ -23287,6 +23918,457 @@ export type GetCrmLeavesResponses = {
 };
 
 export type GetCrmLeavesResponse = GetCrmLeavesResponses[keyof GetCrmLeavesResponses];
+
+export type PostCrmLessonSchedulesByIdChangeData = {
+    /**
+     * ScheduleChangeDraft
+     *
+     * スケジュール変更リクエスト
+     */
+    body?: {
+        /**
+         * 変更後インストラクターID
+         */
+        new_instructor_id?: string;
+        /**
+         * 変更後開始時刻 ISO8601
+         */
+        new_start_time?: string;
+        /**
+         * 変更後終了時刻 ISO8601
+         */
+        new_end_time?: string;
+        /**
+         * 変更理由
+         */
+        reason?: string;
+    };
+    path: {
+        /**
+         * スケジュールID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/lesson-schedules/{id}/change';
+};
+
+export type PostCrmLessonSchedulesByIdChangeErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmLessonSchedulesByIdChangeError = PostCrmLessonSchedulesByIdChangeErrors[keyof PostCrmLessonSchedulesByIdChangeErrors];
+
+export type PostCrmLessonSchedulesByIdChangeResponses = {
+    /**
+     * ScheduleChangeResponse
+     *
+     * スケジュール変更レスポンス
+     */
+    200: {
+        /**
+         * 完了メッセージ
+         */
+        message: string;
+        /**
+         * スケジュールID
+         */
+        id: string;
+    };
+};
+
+export type PostCrmLessonSchedulesByIdChangeResponse = PostCrmLessonSchedulesByIdChangeResponses[keyof PostCrmLessonSchedulesByIdChangeResponses];
+
+export type GetCrmLessonSchedulesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * 対象日付 YYYY-MM-DD
+         */
+        date?: string;
+        /**
+         * 週開始日 YYYY-MM-DD（週表示時）
+         */
+        week_start?: string;
+        /**
+         * 店舗IDフィルター
+         */
+        store_id?: string;
+        /**
+         * スタジオ名フィルター
+         */
+        studio_name?: string;
+        /**
+         * インストラクターIDフィルター
+         */
+        instructor_id?: string;
+        /**
+         * ScheduleAxis
+         *
+         * 表示軸（店舗/マイスケジュール）
+         */
+        axis?: 'store' | 'my_schedule';
+        /**
+         * ScheduleSortBy
+         *
+         * ソートキー
+         */
+        sort_by?: 'start_time' | 'lesson_name' | 'studio_name' | 'instructor_name' | 'booked_count' | 'status';
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/lesson-schedules';
+};
+
+export type GetCrmLessonSchedulesErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmLessonSchedulesError = GetCrmLessonSchedulesErrors[keyof GetCrmLessonSchedulesErrors];
+
+export type GetCrmLessonSchedulesResponses = {
+    /**
+     * GetLessonSchedulesResponse
+     *
+     * レッスンスケジュール一覧レスポンス
+     */
+    200: {
+        schedules: Array<{
+            /**
+             * スケジュールID
+             */
+            id: string;
+            /**
+             * レッスン名
+             */
+            lesson_name: string;
+            /**
+             * LessonType
+             *
+             * レッスン種別（スタジオ/パーソナル）
+             */
+            lesson_type: 'studio' | 'personal';
+            /**
+             * スタジオ名
+             */
+            studio_name: string | null;
+            /**
+             * インストラクターID
+             */
+            instructor_id: string;
+            /**
+             * インストラクター名
+             */
+            instructor_name: string;
+            /**
+             * 店舗ID
+             */
+            store_id: string;
+            /**
+             * 店舗名
+             */
+            store_name: string;
+            /**
+             * 開始時刻 ISO8601
+             */
+            start_time: string;
+            /**
+             * 終了時刻 ISO8601
+             */
+            end_time: string;
+            /**
+             * 定員
+             */
+            capacity: number;
+            /**
+             * 予約数
+             */
+            booked_count: number;
+            /**
+             * キャンセル待ち数
+             */
+            waiting_count: number;
+            /**
+             * PaymentStatus
+             *
+             * 支払いステータス
+             */
+            payment_status: 'paid' | 'unpaid' | 'partial';
+            /**
+             * LessonScheduleStatus
+             *
+             * レッスンスケジュールステータス
+             */
+            status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
+            /**
+             * 要対応アラート
+             */
+            is_alert: boolean;
+            /**
+             * 予約会員リスト（my_schedule軸のみ）
+             */
+            booked_members?: Array<{
+                /**
+                 * 会員ID
+                 */
+                member_id: string;
+                /**
+                 * 会員氏名
+                 */
+                name: string;
+            }>;
+        }>;
+        total: number;
+    };
+};
+
+export type GetCrmLessonSchedulesResponse = GetCrmLessonSchedulesResponses[keyof GetCrmLessonSchedulesResponses];
+
+export type GetCrmLessonSchedulesStoresSummaryData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * 対象日付 YYYY-MM-DD
+         */
+        date?: string;
+        /**
+         * 店舗サマリーソートキー
+         */
+        sort_by?: 'store_name' | 'total_lessons' | 'occupancy_rate' | 'alert_count';
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/lesson-schedules/stores/summary';
+};
+
+export type GetCrmLessonSchedulesStoresSummaryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmLessonSchedulesStoresSummaryError = GetCrmLessonSchedulesStoresSummaryErrors[keyof GetCrmLessonSchedulesStoresSummaryErrors];
+
+export type GetCrmLessonSchedulesStoresSummaryResponses = {
+    /**
+     * GetStoreSummaryResponse
+     *
+     * 店舗別サマリーレスポンス
+     */
+    200: {
+        areas: Array<{
+            /**
+             * エリア名
+             */
+            area: string;
+            /**
+             * エリアレッスン総数
+             */
+            total_lessons: number;
+            /**
+             * エリア予約総数
+             */
+            total_booked: number;
+            /**
+             * エリア定員総数
+             */
+            total_capacity: number;
+            /**
+             * エリア稼働率（%）
+             */
+            occupancy_rate: number;
+            /**
+             * エリアアラート件数
+             */
+            alert_count: number;
+            /**
+             * エリア内店舗数
+             */
+            store_count: number;
+        }>;
+        stores: Array<{
+            /**
+             * 店舗ID
+             */
+            store_id: string;
+            /**
+             * 店舗名
+             */
+            store_name: string;
+            /**
+             * エリア
+             */
+            area: string;
+            /**
+             * 本日のレッスン数
+             */
+            total_lessons: number;
+            /**
+             * 予約数
+             */
+            total_booked: number;
+            /**
+             * 定員
+             */
+            total_capacity: number;
+            /**
+             * 稼働率（%）
+             */
+            occupancy_rate: number;
+            /**
+             * アラート件数
+             */
+            alert_count: number;
+        }>;
+        total: number;
+    };
+};
+
+export type GetCrmLessonSchedulesStoresSummaryResponse = GetCrmLessonSchedulesStoresSummaryResponses[keyof GetCrmLessonSchedulesStoresSummaryResponses];
+
+export type GetCrmLessonSchedulesSummaryData = {
+    body?: never;
+    path?: never;
+    query?: {
+        date?: string;
+    };
+    url: '/crm/lesson-schedules/summary';
+};
+
+export type GetCrmLessonSchedulesSummaryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmLessonSchedulesSummaryError = GetCrmLessonSchedulesSummaryErrors[keyof GetCrmLessonSchedulesSummaryErrors];
+
+export type GetCrmLessonSchedulesSummaryResponses = {
+    /**
+     * GetLessonScheduleKpiSummaryResponse
+     *
+     * KPIサマリーレスポンス
+     */
+    200: {
+        /**
+         * LessonScheduleKpiSummary
+         *
+         * レッスンKPIサマリー
+         */
+        kpi: {
+            /**
+             * 対象日付
+             */
+            date: string;
+            /**
+             * 本日のレッスン総数
+             */
+            total_lessons: number;
+            /**
+             * 予約総数
+             */
+            total_booked: number;
+            /**
+             * 定員総数
+             */
+            total_capacity: number;
+            /**
+             * 稼働率（%）
+             */
+            occupancy_rate: number;
+            /**
+             * アラート件数
+             */
+            alert_count: number;
+            /**
+             * キャンセル数
+             */
+            cancelled_count: number;
+        };
+    };
+};
+
+export type GetCrmLessonSchedulesSummaryResponse = GetCrmLessonSchedulesSummaryResponses[keyof GetCrmLessonSchedulesSummaryResponses];
 
 export type GetCrmLockersByIdHistoryData = {
     body?: never;

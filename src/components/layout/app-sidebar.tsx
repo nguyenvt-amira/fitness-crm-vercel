@@ -3,7 +3,16 @@
 import { usePathname, useRouter } from 'next/navigation';
 
 import { useAuthUser } from '@/contexts/auth-user.context';
-import { Building, Home, type LucideIcon, Package, Settings, UserPlus, Users } from 'lucide-react';
+import {
+  Building,
+  Calendar,
+  Home,
+  type LucideIcon,
+  Package,
+  Settings,
+  UserPlus,
+  Users,
+} from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import {
@@ -72,6 +81,25 @@ const menuItems: MenuItem[] = [
       {
         label: '見学・体験管理',
         href: getRoutePattern('/visit-experiences'),
+      },
+    ],
+  },
+  {
+    label: '予約管理',
+    icon: Calendar,
+    href: getRoutePattern('/lesson-schedules'),
+    subItems: [
+      {
+        label: 'レッスン内容',
+        href: '/',
+      },
+      {
+        label: 'スタジオ',
+        href: '/',
+      },
+      {
+        label: '指導者',
+        href: '/',
       },
     ],
   },

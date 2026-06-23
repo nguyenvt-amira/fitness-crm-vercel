@@ -11,6 +11,7 @@ import * as campaignSchemas from '../_schemas/campaign.schema';
 import * as familyRegistrationSchemas from '../_schemas/family-registration.schema';
 import * as franchiseCompanySchemas from '../_schemas/franchise-company.schema';
 import * as leaveSchemas from '../_schemas/leave.schema';
+import * as lessonScheduleSchemas from '../_schemas/lesson-schedule.schema';
 import * as lockerSchemas from '../_schemas/locker.schema';
 import * as mainContractSchemas from '../_schemas/main-contract.schema';
 import * as memberSchemas from '../_schemas/member.schema';
@@ -1756,5 +1757,95 @@ export function registerAllSchemas() {
       'SurveyTemplateChangeHistoryItem',
       surveySchemas.SurveyTemplateChangeHistoryItemSchema,
     ),
+  );
+  
+  // D-01: Lesson Schedules
+
+  registeredSchemaMap.set(
+    'LessonType',
+    registry.register('LessonType', lessonScheduleSchemas.LessonTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'LessonScheduleStatus',
+    registry.register('LessonScheduleStatus', lessonScheduleSchemas.LessonScheduleStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'PaymentStatus',
+    registry.register('PaymentStatus', lessonScheduleSchemas.PaymentStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'ScheduleAxis',
+    registry.register('ScheduleAxis', lessonScheduleSchemas.ScheduleAxisSchema),
+  );
+  registeredSchemaMap.set(
+    'ScheduleViewMode',
+    registry.register('ScheduleViewMode', lessonScheduleSchemas.ScheduleViewModeSchema),
+  );
+  registeredSchemaMap.set(
+    'ScheduleSortBy',
+    registry.register('ScheduleSortBy', lessonScheduleSchemas.ScheduleSortBySchema),
+  );
+  registeredSchemaMap.set(
+    'BookedMember',
+    registry.register('BookedMember', lessonScheduleSchemas.BookedMemberSchema),
+  );
+  registeredSchemaMap.set(
+    'LessonScheduleListItem',
+    registry.register('LessonScheduleListItem', lessonScheduleSchemas.LessonScheduleListItemSchema),
+  );
+  registeredSchemaMap.set(
+    'LessonScheduleKpiSummary',
+    registry.register(
+      'LessonScheduleKpiSummary',
+      lessonScheduleSchemas.LessonScheduleKpiSummarySchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'StoreScheduleSummary',
+    registry.register('StoreScheduleSummary', lessonScheduleSchemas.StoreScheduleSummarySchema),
+  );
+  registeredSchemaMap.set(
+    'AreaScheduleKpiSummary',
+    registry.register('AreaScheduleKpiSummary', lessonScheduleSchemas.AreaScheduleKpiSummarySchema),
+  );
+  registeredSchemaMap.set(
+    'ScheduleChangeDraft',
+    registry.register('ScheduleChangeDraft', lessonScheduleSchemas.ScheduleChangeDraftSchema),
+  );
+  registeredSchemaMap.set(
+    'GetLessonSchedulesQuery',
+    registry.register(
+      'GetLessonSchedulesQuery',
+      lessonScheduleSchemas.GetLessonSchedulesQuerySchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetStoreSummaryQuery',
+    registry.register('GetStoreSummaryQuery', lessonScheduleSchemas.GetStoreSummaryQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'GetLessonSchedulesResponse',
+    registry.register(
+      'GetLessonSchedulesResponse',
+      lessonScheduleSchemas.GetLessonSchedulesResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetLessonScheduleKpiSummaryResponse',
+    registry.register(
+      'GetLessonScheduleKpiSummaryResponse',
+      lessonScheduleSchemas.GetLessonScheduleKpiSummaryResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetStoreSummaryResponse',
+    registry.register(
+      'GetStoreSummaryResponse',
+      lessonScheduleSchemas.GetStoreSummaryResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'ScheduleChangeResponse',
+    registry.register('ScheduleChangeResponse', lessonScheduleSchemas.ScheduleChangeResponseSchema),
   );
 }

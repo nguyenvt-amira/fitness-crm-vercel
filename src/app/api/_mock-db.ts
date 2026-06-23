@@ -30,6 +30,12 @@ import type {
 } from '@/app/api/_schemas/franchise-company.schema';
 import type { LeaveDetail, LeaveListItem } from '@/app/api/_schemas/leave.schema';
 import type {
+  AreaScheduleKpiSummary,
+  LessonScheduleKpiSummary,
+  LessonScheduleListItem,
+  StoreScheduleSummary,
+} from '@/app/api/_schemas/lesson-schedule.schema';
+import type {
   CreateLockerContractRequest,
   CreateLockerRequest,
   LockerContractChangeHistoryItem,
@@ -2488,6 +2494,702 @@ interface CorporateMasterRow {
   code: string;
 }
 
+// ---------------------------------------------------------------------------
+// D-01: Lesson Schedule seed data (aligned with lesson-schedule.tsx prototype)
+// ---------------------------------------------------------------------------
+
+const LESSON_SCHEDULE_STORE_AREAS: Record<string, string> = {
+  ST001: '埼玉',
+  ST002: '東京',
+  ST003: '東京',
+  ST004: '東京',
+  ST005: '東京',
+  ST006: '埼玉',
+  ST007: '北海道',
+};
+
+type LessonScheduleSeedSpec = {
+  store_id: string;
+  store_name: string;
+  start: string;
+  end: string;
+  lesson_name: string;
+  studio_name: string | null;
+  lesson_type: 'studio' | 'personal';
+  instructor_id: string;
+  instructor_name: string;
+  capacity: number;
+  booked_count: number;
+  waiting_count?: number;
+  status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
+  payment_status: 'paid' | 'unpaid' | 'partial';
+  is_alert?: boolean;
+  booked_members?: Array<{ member_id: string; name: string }>;
+};
+
+function lsFormatDate(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
+
+function lsWeekStart(from = new Date()): Date {
+  const d = new Date(from);
+  const diff = (d.getDay() + 6) % 7;
+  d.setDate(d.getDate() - diff);
+  return d;
+}
+
+function lsToIso(dateStr: string, time: string): string {
+  const [h, m = '00'] = time.split(':');
+  return `${dateStr}T${h.padStart(2, '0')}:${m.padStart(2, '0')}:00+09:00`;
+}
+
+/** Primary day schedule — mirrors TODAY_LESSONS + extra edge cases from lesson-schedule.tsx */
+function getLessonScheduleDayTemplates(): LessonScheduleSeedSpec[] {
+  return [
+    // FIT365八潮店 (6 lessons, alerts: 2, inProgress: ボディコンバット 13:00〜)
+    {
+      store_id: 'ST001',
+      store_name: 'FIT365八潮店',
+      start: '9:00',
+      end: '10:00',
+      lesson_name: 'ヨガ基礎クラス',
+      studio_name: 'Zumbaスタジオ',
+      lesson_type: 'studio',
+      instructor_id: 'U-004',
+      instructor_name: 'タムタ タム',
+      capacity: 16,
+      booked_count: 14,
+      status: 'completed',
+      payment_status: 'paid',
+      booked_members: [
+        { member_id: 'M101', name: '田中 花子' },
+        { member_id: 'M102', name: '佐藤 一郎' },
+        { member_id: 'M103', name: '山田 太郎' },
+      ],
+    },
+    {
+      store_id: 'ST001',
+      store_name: 'FIT365八潮店',
+      start: '10:30',
+      end: '11:30',
+      lesson_name: 'ホットヨガ リフレッシュ',
+      studio_name: 'ホットヨガスタジオA',
+      lesson_type: 'studio',
+      instructor_id: 'S002',
+      instructor_name: '鈴木 美咲',
+      capacity: 35,
+      booked_count: 35,
+      waiting_count: 4,
+      status: 'completed',
+      payment_status: 'paid',
+      is_alert: true,
+    },
+    {
+      store_id: 'ST001',
+      store_name: 'FIT365八潮店',
+      start: '13:00',
+      end: '14:00',
+      lesson_name: 'ボディコンバット',
+      studio_name: 'メインスタジオ',
+      lesson_type: 'studio',
+      instructor_id: 'S003',
+      instructor_name: '高橋 咲',
+      capacity: 17,
+      booked_count: 10,
+      status: 'in_progress',
+      payment_status: 'paid',
+      is_alert: true,
+    },
+    {
+      store_id: 'ST001',
+      store_name: 'FIT365八潮店',
+      start: '14:00',
+      end: '15:00',
+      lesson_name: 'パーソナル：渡辺様',
+      studio_name: 'パーソナルブースA',
+      lesson_type: 'personal',
+      instructor_id: 'S004',
+      instructor_name: '山田 太郎',
+      capacity: 1,
+      booked_count: 1,
+      status: 'scheduled',
+      payment_status: 'paid',
+    },
+    {
+      store_id: 'ST001',
+      store_name: 'FIT365八潮店',
+      start: '16:00',
+      end: '17:00',
+      lesson_name: 'パーソナル：中村様',
+      studio_name: 'パーソナルブースB',
+      lesson_type: 'personal',
+      instructor_id: 'S005',
+      instructor_name: '佐藤 健太',
+      capacity: 1,
+      booked_count: 1,
+      status: 'scheduled',
+      payment_status: 'unpaid',
+    },
+    {
+      store_id: 'ST001',
+      store_name: 'FIT365八潮店',
+      start: '18:00',
+      end: '19:00',
+      lesson_name: 'リラックスストレッチ',
+      studio_name: 'Zumbaスタジオ',
+      lesson_type: 'studio',
+      instructor_id: 'U-004',
+      instructor_name: 'タムタ タム',
+      capacity: 16,
+      booked_count: 5,
+      status: 'scheduled',
+      payment_status: 'paid',
+      is_alert: true,
+      booked_members: [
+        { member_id: 'M104', name: '木村 拓也' },
+        { member_id: 'M105', name: '森田 健一' },
+        { member_id: 'M106', name: '藤井 優' },
+      ],
+    },
+    // JOYFIT渋谷店 (8 lessons, booked: 92%, alerts: 0, inProgress: ヨガフロー 13:30〜)
+    {
+      store_id: 'ST002',
+      store_name: 'JOYFIT渋谷店',
+      start: '8:00',
+      end: '9:00',
+      lesson_name: 'モーニングヨガ',
+      studio_name: 'スタジオA',
+      lesson_type: 'studio',
+      instructor_id: 'S003',
+      instructor_name: '高橋 咲',
+      capacity: 18,
+      booked_count: 16,
+      status: 'completed',
+      payment_status: 'paid',
+    },
+    {
+      store_id: 'ST002',
+      store_name: 'JOYFIT渋谷店',
+      start: '10:00',
+      end: '11:00',
+      lesson_name: 'ピラティス入門',
+      studio_name: 'スタジオB',
+      lesson_type: 'studio',
+      instructor_id: 'S002',
+      instructor_name: '鈴木 美咲',
+      capacity: 20,
+      booked_count: 18,
+      status: 'completed',
+      payment_status: 'paid',
+    },
+    {
+      store_id: 'ST002',
+      store_name: 'JOYFIT渋谷店',
+      start: '11:30',
+      end: '12:30',
+      lesson_name: 'ZUMBA エナジー',
+      studio_name: 'スタジオA',
+      lesson_type: 'studio',
+      instructor_id: 'U-004',
+      instructor_name: 'タムタ タム',
+      capacity: 24,
+      booked_count: 22,
+      status: 'completed',
+      payment_status: 'paid',
+    },
+    {
+      store_id: 'ST002',
+      store_name: 'JOYFIT渋谷店',
+      start: '13:30',
+      end: '14:30',
+      lesson_name: 'ヨガフロー',
+      studio_name: 'スタジオB',
+      lesson_type: 'studio',
+      instructor_id: 'S002',
+      instructor_name: '鈴木 美咲',
+      capacity: 20,
+      booked_count: 19,
+      status: 'in_progress',
+      payment_status: 'paid',
+    },
+    {
+      store_id: 'ST002',
+      store_name: 'JOYFIT渋谷店',
+      start: '15:00',
+      end: '16:00',
+      lesson_name: 'パーソナル：佐々木様',
+      studio_name: 'PTルーム1',
+      lesson_type: 'personal',
+      instructor_id: 'S006',
+      instructor_name: '田中 優太',
+      capacity: 1,
+      booked_count: 1,
+      status: 'scheduled',
+      payment_status: 'paid',
+    },
+    {
+      store_id: 'ST002',
+      store_name: 'JOYFIT渋谷店',
+      start: '17:00',
+      end: '18:00',
+      lesson_name: 'ボディコンバット',
+      studio_name: 'スタジオA',
+      lesson_type: 'studio',
+      instructor_id: 'S003',
+      instructor_name: '高橋 咲',
+      capacity: 24,
+      booked_count: 20,
+      status: 'scheduled',
+      payment_status: 'paid',
+    },
+    {
+      store_id: 'ST002',
+      store_name: 'JOYFIT渋谷店',
+      start: '19:00',
+      end: '20:00',
+      lesson_name: 'ナイトピラティス',
+      studio_name: 'スタジオB',
+      lesson_type: 'studio',
+      instructor_id: 'S002',
+      instructor_name: '鈴木 美咲',
+      capacity: 20,
+      booked_count: 18,
+      status: 'scheduled',
+      payment_status: 'paid',
+    },
+    {
+      store_id: 'ST002',
+      store_name: 'JOYFIT渋谷店',
+      start: '20:30',
+      end: '21:30',
+      lesson_name: 'パーソナル：木村様',
+      studio_name: 'PTルーム2',
+      lesson_type: 'personal',
+      instructor_id: 'S006',
+      instructor_name: '田中 優太',
+      capacity: 1,
+      booked_count: 1,
+      status: 'scheduled',
+      payment_status: 'unpaid',
+    },
+    // JOYFIT新宿店 (5 lessons, alerts: 1)
+    {
+      store_id: 'ST003',
+      store_name: 'JOYFIT新宿店',
+      start: '10:00',
+      end: '11:00',
+      lesson_name: 'ヨガ基礎クラス',
+      studio_name: 'スタジオA',
+      lesson_type: 'studio',
+      instructor_id: 'S007',
+      instructor_name: '佐藤 花',
+      capacity: 18,
+      booked_count: 11,
+      status: 'completed',
+      payment_status: 'paid',
+    },
+    {
+      store_id: 'ST003',
+      store_name: 'JOYFIT新宿店',
+      start: '12:00',
+      end: '13:00',
+      lesson_name: 'パワーヨガ',
+      studio_name: 'スタジオB',
+      lesson_type: 'studio',
+      instructor_id: 'S007',
+      instructor_name: '佐藤 花',
+      capacity: 20,
+      booked_count: 14,
+      status: 'completed',
+      payment_status: 'paid',
+      is_alert: true,
+    },
+    {
+      store_id: 'ST003',
+      store_name: 'JOYFIT新宿店',
+      start: '15:00',
+      end: '16:00',
+      lesson_name: 'パーソナル：藤井様',
+      studio_name: 'PTルーム',
+      lesson_type: 'personal',
+      instructor_id: 'S008',
+      instructor_name: '伊藤 麻衣',
+      capacity: 1,
+      booked_count: 1,
+      status: 'scheduled',
+      payment_status: 'paid',
+    },
+    {
+      store_id: 'ST003',
+      store_name: 'JOYFIT新宿店',
+      start: '17:30',
+      end: '18:30',
+      lesson_name: 'ストレッチ',
+      studio_name: 'スタジオA',
+      lesson_type: 'studio',
+      instructor_id: 'S007',
+      instructor_name: '佐藤 花',
+      capacity: 18,
+      booked_count: 12,
+      status: 'scheduled',
+      payment_status: 'partial',
+    },
+    {
+      store_id: 'ST003',
+      store_name: 'JOYFIT新宿店',
+      start: '19:00',
+      end: '20:00',
+      lesson_name: 'ZUMBA フィットネス',
+      studio_name: 'スタジオB',
+      lesson_type: 'studio',
+      instructor_id: 'S007',
+      instructor_name: '佐藤 花',
+      capacity: 20,
+      booked_count: 16,
+      status: 'scheduled',
+      payment_status: 'paid',
+    },
+    // JOYFIT24六本木店 (4 lessons, inProgress: ピラティス 13:00〜)
+    {
+      store_id: 'ST004',
+      store_name: 'JOYFIT24六本木店',
+      start: '9:00',
+      end: '10:00',
+      lesson_name: 'ピラティス基礎',
+      studio_name: 'メインスタジオ',
+      lesson_type: 'studio',
+      instructor_id: 'S009',
+      instructor_name: '小林 真理',
+      capacity: 12,
+      booked_count: 8,
+      status: 'completed',
+      payment_status: 'paid',
+    },
+    {
+      store_id: 'ST004',
+      store_name: 'JOYFIT24六本木店',
+      start: '13:00',
+      end: '14:00',
+      lesson_name: 'ピラティス',
+      studio_name: 'メインスタジオ',
+      lesson_type: 'studio',
+      instructor_id: 'S009',
+      instructor_name: '小林 真理',
+      capacity: 12,
+      booked_count: 9,
+      status: 'in_progress',
+      payment_status: 'paid',
+    },
+    {
+      store_id: 'ST004',
+      store_name: 'JOYFIT24六本木店',
+      start: '16:00',
+      end: '17:00',
+      lesson_name: 'パーソナル：田村様',
+      studio_name: 'PTルーム',
+      lesson_type: 'personal',
+      instructor_id: 'S010',
+      instructor_name: '渡辺 大輝',
+      capacity: 1,
+      booked_count: 1,
+      status: 'scheduled',
+      payment_status: 'paid',
+    },
+    {
+      store_id: 'ST004',
+      store_name: 'JOYFIT24六本木店',
+      start: '18:30',
+      end: '19:30',
+      lesson_name: 'リラックスヨガ',
+      studio_name: 'メインスタジオ',
+      lesson_type: 'studio',
+      instructor_id: 'S009',
+      instructor_name: '小林 真理',
+      capacity: 12,
+      booked_count: 6,
+      status: 'scheduled',
+      payment_status: 'paid',
+    },
+    // FIT365吉祥寺店 (7 lessons, alerts: 3)
+    {
+      store_id: 'ST005',
+      store_name: 'FIT365吉祥寺店',
+      start: '9:30',
+      end: '10:30',
+      lesson_name: 'ヨガ基礎',
+      studio_name: 'スタジオA',
+      lesson_type: 'studio',
+      instructor_id: 'U-004',
+      instructor_name: 'タムタ タム',
+      capacity: 18,
+      booked_count: 15,
+      status: 'completed',
+      payment_status: 'paid',
+      is_alert: true,
+    },
+    {
+      store_id: 'ST005',
+      store_name: 'FIT365吉祥寺店',
+      start: '11:00',
+      end: '12:00',
+      lesson_name: 'ホットヨガ',
+      studio_name: 'ホットスタジオ',
+      lesson_type: 'studio',
+      instructor_id: 'S002',
+      instructor_name: '鈴木 美咲',
+      capacity: 30,
+      booked_count: 28,
+      status: 'completed',
+      payment_status: 'paid',
+      is_alert: true,
+    },
+    {
+      store_id: 'ST005',
+      store_name: 'FIT365吉祥寺店',
+      start: '13:00',
+      end: '14:00',
+      lesson_name: 'ZUMBA',
+      studio_name: 'スタジオA',
+      lesson_type: 'studio',
+      instructor_id: 'U-004',
+      instructor_name: 'タムタ タム',
+      capacity: 20,
+      booked_count: 17,
+      status: 'completed',
+      payment_status: 'paid',
+    },
+    {
+      store_id: 'ST005',
+      store_name: 'FIT365吉祥寺店',
+      start: '14:30',
+      end: '15:30',
+      lesson_name: 'パーソナル：高田様',
+      studio_name: 'PTルーム1',
+      lesson_type: 'personal',
+      instructor_id: 'S006',
+      instructor_name: '田中 優太',
+      capacity: 1,
+      booked_count: 1,
+      status: 'scheduled',
+      payment_status: 'unpaid',
+    },
+    {
+      store_id: 'ST005',
+      store_name: 'FIT365吉祥寺店',
+      start: '16:00',
+      end: '17:00',
+      lesson_name: 'ピラティス',
+      studio_name: 'スタジオB',
+      lesson_type: 'studio',
+      instructor_id: 'S002',
+      instructor_name: '鈴木 美咲',
+      capacity: 20,
+      booked_count: 18,
+      status: 'scheduled',
+      payment_status: 'paid',
+      is_alert: true,
+    },
+    {
+      store_id: 'ST005',
+      store_name: 'FIT365吉祥寺店',
+      start: '18:00',
+      end: '19:00',
+      lesson_name: 'ボディコンバット',
+      studio_name: 'スタジオA',
+      lesson_type: 'studio',
+      instructor_id: 'S003',
+      instructor_name: '高橋 咲',
+      capacity: 18,
+      booked_count: 14,
+      status: 'scheduled',
+      payment_status: 'paid',
+    },
+    {
+      store_id: 'ST005',
+      store_name: 'FIT365吉祥寺店',
+      start: '20:00',
+      end: '21:00',
+      lesson_name: 'ナイトストレッチ',
+      studio_name: 'スタジオB',
+      lesson_type: 'studio',
+      instructor_id: 'S002',
+      instructor_name: '鈴木 美咲',
+      capacity: 20,
+      booked_count: 10,
+      status: 'scheduled',
+      payment_status: 'paid',
+    },
+    // FIT365大宮店 (3 lessons, inProgress: ZUMBA 13:15〜)
+    {
+      store_id: 'ST006',
+      store_name: 'FIT365大宮店',
+      start: '10:00',
+      end: '11:00',
+      lesson_name: '朝ヨガ',
+      studio_name: 'スタジオA',
+      lesson_type: 'studio',
+      instructor_id: 'S007',
+      instructor_name: '佐藤 花',
+      capacity: 18,
+      booked_count: 10,
+      status: 'completed',
+      payment_status: 'paid',
+    },
+    {
+      store_id: 'ST006',
+      store_name: 'FIT365大宮店',
+      start: '13:15',
+      end: '14:15',
+      lesson_name: 'ZUMBA',
+      studio_name: 'スタジオA',
+      lesson_type: 'studio',
+      instructor_id: 'S007',
+      instructor_name: '佐藤 花',
+      capacity: 20,
+      booked_count: 8,
+      status: 'in_progress',
+      payment_status: 'paid',
+    },
+    {
+      store_id: 'ST006',
+      store_name: 'FIT365大宮店',
+      start: '18:00',
+      end: '19:00',
+      lesson_name: 'パーソナル：松本様',
+      studio_name: 'PTルーム',
+      lesson_type: 'personal',
+      instructor_id: 'S008',
+      instructor_name: '伊藤 麻衣',
+      capacity: 1,
+      booked_count: 1,
+      status: 'scheduled',
+      payment_status: 'paid',
+    },
+    // MY_LESSONS: trainer (タムタ タム / U-004) at another store
+    {
+      store_id: 'ST007',
+      store_name: '旭川アモール',
+      start: '14:00',
+      end: '15:00',
+      lesson_name: 'パーソナル：渡辺様',
+      studio_name: 'パーソナルブースA',
+      lesson_type: 'personal',
+      instructor_id: 'U-004',
+      instructor_name: 'タムタ タム',
+      capacity: 1,
+      booked_count: 1,
+      status: 'scheduled',
+      payment_status: 'paid',
+      booked_members: [{ member_id: 'M107', name: '渡辺 直美' }],
+    },
+    // Extra edge cases for testing
+    {
+      store_id: 'ST001',
+      store_name: 'FIT365八潮店',
+      start: '20:00',
+      end: '21:00',
+      lesson_name: 'ナイトヨガ',
+      studio_name: 'Zumbaスタジオ',
+      lesson_type: 'studio',
+      instructor_id: 'S002',
+      instructor_name: '鈴木 美咲',
+      capacity: 16,
+      booked_count: 0,
+      status: 'scheduled',
+      payment_status: 'paid',
+      is_alert: true,
+    },
+    {
+      store_id: 'ST003',
+      store_name: 'JOYFIT新宿店',
+      start: '21:00',
+      end: '22:00',
+      lesson_name: 'ナイトヨガ',
+      studio_name: 'スタジオA',
+      lesson_type: 'studio',
+      instructor_id: 'S007',
+      instructor_name: '佐藤 花',
+      capacity: 18,
+      booked_count: 6,
+      status: 'cancelled',
+      payment_status: 'paid',
+    },
+  ];
+}
+
+function lessonSeedToRow(
+  spec: LessonScheduleSeedSpec,
+  dateStr: string,
+  id: number,
+  statusOverride?: LessonScheduleSeedSpec['status'],
+): LessonScheduleListItem {
+  const status = statusOverride ?? spec.status;
+  return {
+    id: `LS${String(id).padStart(4, '0')}`,
+    lesson_name: spec.lesson_name,
+    lesson_type: spec.lesson_type,
+    studio_name: spec.studio_name,
+    instructor_id: spec.instructor_id,
+    instructor_name: spec.instructor_name,
+    store_id: spec.store_id,
+    store_name: spec.store_name,
+    start_time: lsToIso(dateStr, spec.start),
+    end_time: lsToIso(dateStr, spec.end),
+    capacity: spec.capacity,
+    booked_count: status === 'cancelled' ? 0 : spec.booked_count,
+    waiting_count: spec.waiting_count ?? 0,
+    payment_status: spec.payment_status,
+    status,
+    is_alert: spec.is_alert ?? false,
+    booked_members: spec.booked_members,
+  };
+}
+
+function makeLessonSchedules(): LessonScheduleListItem[] {
+  const schedules: LessonScheduleListItem[] = [];
+  let id = 1;
+  const today = new Date();
+  const todayStr = lsFormatDate(today);
+  const weekStart = lsWeekStart(today);
+  const dayTemplates = getLessonScheduleDayTemplates();
+
+  // Full reference data on today (all statuses / alerts / payment cases)
+  dayTemplates.forEach((spec) => {
+    schedules.push(lessonSeedToRow(spec, todayStr, id++));
+  });
+
+  // Week view: lighter scheduled-only copies for other days of the current week
+  for (let dayOffset = 0; dayOffset < 7; dayOffset++) {
+    const date = new Date(weekStart);
+    date.setDate(date.getDate() + dayOffset);
+    const dateStr = lsFormatDate(date);
+    if (dateStr === todayStr) continue;
+
+    dayTemplates
+      .filter((spec) => spec.status !== 'cancelled')
+      .slice(0, 12)
+      .forEach((spec, idx) => {
+        schedules.push(
+          lessonSeedToRow(
+            {
+              ...spec,
+              booked_count: Math.max(1, spec.booked_count - (idx % 3)),
+              is_alert: false,
+              booked_members: undefined,
+            },
+            dateStr,
+            id++,
+            'scheduled',
+          ),
+        );
+      });
+  }
+
+  return schedules;
+}
+
+const SEED_LESSON_SCHEDULES: LessonScheduleListItem[] = makeLessonSchedules();
+
 type DbType = {
   members: {
     _members: MemberRow[];
@@ -3118,10 +3820,25 @@ type DbType = {
     getById(id: string): UserRow | undefined;
     getList(): UserRow[];
   };
+  lessonSchedules: {
+    _rows: LessonScheduleListItem[];
+    _seeded: boolean;
+    _seed(): void;
+    getList(): LessonScheduleListItem[];
+    getById(id: string): LessonScheduleListItem | undefined;
+    update(id: string, patch: Partial<LessonScheduleListItem>): LessonScheduleListItem | undefined;
+    getKpiSummary(date: string): LessonScheduleKpiSummary;
+    getStoreSummary(date: string): {
+      areas: AreaScheduleKpiSummary[];
+      stores: StoreScheduleSummary[];
+    };
+  };
 };
 
 declare global {
   var __fitnessDb_v13: DbType | undefined;
+  var __fitnessDb_v14: DbType | undefined;
+  var __fitnessDb_v15: DbType | undefined;
 }
 
 // ─── Mock Payment History Data (A-01 FR-009-a) ──────────────────────────────
@@ -12592,6 +13309,118 @@ function createDb() {
         return [...this._rows];
       },
     },
+
+    // ─── D-01: Lesson Schedules ──────────────────────────────────────────────
+    lessonSchedules: {
+      _rows: [] as LessonScheduleListItem[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows = [...SEED_LESSON_SCHEDULES];
+      },
+      getList(): LessonScheduleListItem[] {
+        this._seed();
+        return [...this._rows];
+      },
+      getById(id: string): LessonScheduleListItem | undefined {
+        this._seed();
+        return this._rows.find((r) => r.id === id);
+      },
+      update(
+        id: string,
+        patch: Partial<LessonScheduleListItem>,
+      ): LessonScheduleListItem | undefined {
+        this._seed();
+        const idx = this._rows.findIndex((r) => r.id === id);
+        if (idx === -1) return undefined;
+        this._rows[idx] = { ...this._rows[idx], ...patch };
+        return this._rows[idx];
+      },
+      getKpiSummary(date: string): LessonScheduleKpiSummary {
+        this._seed();
+        const day = this._rows.filter((r) => r.start_time.startsWith(date));
+        const total_lessons = day.length;
+        const total_booked = day.reduce((s, r) => s + r.booked_count, 0);
+        const total_capacity = day.reduce((s, r) => s + r.capacity, 0);
+        const occupancy_rate =
+          total_capacity > 0 ? Math.round((total_booked / total_capacity) * 1000) / 10 : 0;
+        const alert_count = day.filter((r) => r.is_alert).length;
+        const cancelled_count = day.filter((r) => r.status === 'cancelled').length;
+        return {
+          date,
+          total_lessons,
+          total_booked,
+          total_capacity,
+          occupancy_rate,
+          alert_count,
+          cancelled_count,
+        };
+      },
+      getStoreSummary(date: string): {
+        areas: AreaScheduleKpiSummary[];
+        stores: StoreScheduleSummary[];
+      } {
+        this._seed();
+        const day = this._rows.filter((r) => r.start_time.startsWith(date));
+        const storeMap = new Map<string, StoreScheduleSummary>();
+        const areaMap = new Map<string, AreaScheduleKpiSummary>();
+        const storeAreaMap = LESSON_SCHEDULE_STORE_AREAS;
+        day.forEach((r) => {
+          const area = storeAreaMap[r.store_id] ?? 'その他';
+          if (!storeMap.has(r.store_id)) {
+            storeMap.set(r.store_id, {
+              store_id: r.store_id,
+              store_name: r.store_name,
+              area,
+              total_lessons: 0,
+              total_booked: 0,
+              total_capacity: 0,
+              occupancy_rate: 0,
+              alert_count: 0,
+            });
+          }
+          const s = storeMap.get(r.store_id)!;
+          s.total_lessons++;
+          s.total_booked += r.booked_count;
+          s.total_capacity += r.capacity;
+          if (r.is_alert) s.alert_count++;
+
+          if (!areaMap.has(area)) {
+            areaMap.set(area, {
+              area,
+              total_lessons: 0,
+              total_booked: 0,
+              total_capacity: 0,
+              occupancy_rate: 0,
+              alert_count: 0,
+              store_count: 0,
+            });
+          }
+          const a = areaMap.get(area)!;
+          a.total_lessons++;
+          a.total_booked += r.booked_count;
+          a.total_capacity += r.capacity;
+          if (r.is_alert) a.alert_count++;
+        });
+        const stores = Array.from(storeMap.values()).map((s) => ({
+          ...s,
+          occupancy_rate:
+            s.total_capacity > 0 ? Math.round((s.total_booked / s.total_capacity) * 1000) / 10 : 0,
+        }));
+        const storesByArea = stores.reduce<Record<string, number>>((acc, s) => {
+          acc[s.area] = (acc[s.area] ?? 0) + 1;
+          return acc;
+        }, {});
+        const areas = Array.from(areaMap.values()).map((a) => ({
+          ...a,
+          store_count: storesByArea[a.area] ?? 0,
+          occupancy_rate:
+            a.total_capacity > 0 ? Math.round((a.total_booked / a.total_capacity) * 1000) / 10 : 0,
+        }));
+        return { areas, stores };
+      },
+    },
   };
 
   // Seed mock data immediately when the singleton is first created
@@ -12609,6 +13438,7 @@ function createDb() {
   db.visitExperiences._seed();
   db.franchiseCompanies._seed();
   db.users._seed();
+  db.lessonSchedules._seed();
 
   return db;
 }
@@ -12617,4 +13447,4 @@ function createDb() {
 // Without this, each route handler gets its own module instance and mutations are invisible
 // across routes.
 // Bump this key whenever the seed logic changes to force a fresh re-seed.
-export const db: DbType = (globalThis.__fitnessDb_v13 ??= createDb() as unknown as DbType);
+export const db: DbType = (globalThis.__fitnessDb_v15 ??= createDb() as unknown as DbType);
