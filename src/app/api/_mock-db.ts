@@ -30,6 +30,17 @@ import type {
 } from '@/app/api/_schemas/franchise-company.schema';
 import type { LeaveDetail, LeaveListItem } from '@/app/api/_schemas/leave.schema';
 import type {
+  AttendanceStatus,
+  CancelType,
+  Reservation,
+  ReservationListResponse,
+  ReservationStats,
+  ReservationStatus,
+  SessionMemo,
+  StudioSpace,
+  StudioSpaceGridResponse,
+} from '@/app/api/_schemas/lesson-reservation.schema';
+import type {
   AreaScheduleKpiSummary,
   LessonScheduleKpiSummary,
   LessonScheduleListItem,
@@ -3190,6 +3201,373 @@ function makeLessonSchedules(): LessonScheduleListItem[] {
 
 const SEED_LESSON_SCHEDULES: LessonScheduleListItem[] = makeLessonSchedules();
 
+// ─── D-01: Reservation Seed Data ────────────────────────────────────────
+
+const SEED_RESERVATION_INSTRUCTORS: Array<{
+  instructor_id: string;
+  instructor_name: string;
+  store_id: string;
+}> = [
+  { instructor_id: 'U-004', instructor_name: 'タムタ タム', store_id: 'ST001' },
+  { instructor_id: 'S002', instructor_name: '鈴木 美咲', store_id: 'ST001' },
+  { instructor_id: 'S003', instructor_name: '高橋 咲', store_id: 'ST001' },
+  { instructor_id: 'S004', instructor_name: '山田 太郎', store_id: 'ST001' },
+  { instructor_id: 'S005', instructor_name: '佐藤 健太', store_id: 'ST001' },
+  { instructor_id: 'S006', instructor_name: '田中 優太', store_id: 'ST002' },
+  { instructor_id: 'S007', instructor_name: '佐藤 花', store_id: 'ST003' },
+  { instructor_id: 'S008', instructor_name: '伊藤 麻衣', store_id: 'ST003' },
+  { instructor_id: 'S009', instructor_name: '小林 真理', store_id: 'ST004' },
+  { instructor_id: 'S010', instructor_name: '渡辺 大輝', store_id: 'ST004' },
+];
+
+/** Studio space grid config per schedule_id (grid layout for studio lessons). */
+const SEED_STUDIO_SPACES: Record<string, StudioSpaceGridResponse> = {
+  // FIT365八潮店 Zumbaスタジオ — 8x2 grid, 16 capacity
+  LS0001: {
+    studio_name: 'Zumbaスタジオ',
+    total_capacity: 16,
+    grid_rows: 2,
+    grid_cols: 8,
+    spaces: Array.from({ length: 16 }, (_, i) => ({
+      id: `SP${String(i + 1).padStart(2, '0')}`,
+      space_number: `S${String(i + 1).padStart(2, '0')}`,
+      row: Math.floor(i / 8),
+      col: i % 8,
+      type: (i < 14 ? 'available' : 'reserved') as 'available' | 'reserved',
+      reservation_id: i < 14 ? null : `RD${String(i - 13).padStart(3, '0')}`,
+      member_name: i < 14 ? null : '予約済み',
+    })),
+  },
+  LS0006: {
+    studio_name: 'Zumbaスタジオ',
+    total_capacity: 16,
+    grid_rows: 2,
+    grid_cols: 8,
+    spaces: Array.from({ length: 16 }, (_, i) => ({
+      id: `SP${String(i + 17).padStart(2, '0')}`,
+      space_number: `S${String(i + 1).padStart(2, '0')}`,
+      row: Math.floor(i / 8),
+      col: i % 8,
+      type: (i < 5 ? 'reserved' : 'available') as 'reserved' | 'available',
+      reservation_id: i < 5 ? `RD${String(i + 100).padStart(3, '0')}` : null,
+      member_name: i < 5 ? '予約済み' : null,
+    })),
+  },
+  // JOYFIT渋谷店 スタジオA — 8x2 grid, 16 capacity
+  LS0007: {
+    studio_name: 'スタジオA',
+    total_capacity: 16,
+    grid_rows: 2,
+    grid_cols: 8,
+    spaces: Array.from({ length: 16 }, (_, i) => ({
+      id: `SP${String(i + 33).padStart(2, '0')}`,
+      space_number: `S${String(i + 1).padStart(2, '0')}`,
+      row: Math.floor(i / 8),
+      col: i % 8,
+      type: (i < 14 ? 'available' : 'equipment') as 'available' | 'equipment',
+      reservation_id: null,
+      member_name: null,
+    })),
+  },
+};
+
+/** Session memos attached to lesson schedules. */
+const SEED_SESSION_MEMOS: SessionMemo[] = [
+  {
+    id: 'MEMO001',
+    schedule_id: 'LS0001',
+    content: '本日のヨガ基礎クラスは beginner 向けに調整してください。',
+    author_id: 'ST001',
+    author_name: '田中 花子',
+    created_at: '2026-06-23T08:30:00+09:00',
+    updated_at: null,
+  },
+  {
+    id: 'MEMO002',
+    schedule_id: 'LS0001',
+    content: '参加者に膝の怪我をされている方がいます。注意して指導をお願いします。',
+    author_id: 'ST002',
+    author_name: '佐藤 一郎',
+    created_at: '2026-06-23T08:45:00+09:00',
+    updated_at: '2026-06-23T09:00:00+09:00',
+  },
+  {
+    id: 'MEMO003',
+    schedule_id: 'LS0003',
+    content: 'ボディコンバットのBGMリストを今週から新しいものに変更します。',
+    author_id: 'ST003',
+    author_name: '山田 太郎',
+    created_at: '2026-06-23T12:00:00+09:00',
+    updated_at: null,
+  },
+  {
+    id: 'MEMO004',
+    schedule_id: 'LS0007',
+    content: 'モーニングヨガ：室温設定をいつもより2度低めに設定してください。',
+    author_id: 'ST001',
+    author_name: '田中 花子',
+    created_at: '2026-06-23T07:00:00+09:00',
+    updated_at: null,
+  },
+  {
+    id: 'MEMO005',
+    schedule_id: 'LS0010',
+    content: 'ピラティス入門：本日新しいマットを使用します。準備をお願いします。',
+    author_id: 'ST004',
+    author_name: '木村 拓也',
+    created_at: '2026-06-23T09:30:00+09:00',
+    updated_at: '2026-06-23T09:45:00+09:00',
+  },
+];
+
+/** Reservation seed data covering all statuses and edge cases. */
+const SEED_RESERVATIONS: Reservation[] = [
+  // ── LS0001: FIT365八潮店 ヨガ基礎クラス (capacity 16, booked 14) ──
+  ...Array.from({ length: 10 }, (_, i) => ({
+    id: `R${String(i + 1).padStart(3, '0')}`,
+    schedule_id: 'LS0001',
+    member_id: `M${101 + i}`,
+    member_name: [
+      '田中 花子',
+      '佐藤 一郎',
+      '山田 太郎',
+      '木村 拓也',
+      '森田 健一',
+      '藤井 優',
+      '斉藤 美紀',
+      '伊藤 誠',
+      '渡辺 直美',
+      '中村 博',
+    ][i]!,
+    plan_type: '月額8回',
+    space_number: `S${String(i + 1).padStart(2, '0')}`,
+    reservation_date: '2026-06-23',
+    reservation_time: '08:45',
+    status: 'confirmed' as ReservationStatus,
+    attendance_status: 'unconfirmed' as AttendanceStatus,
+    cancel_type: null,
+    penalty_active: false,
+    penalty_end_date: null,
+    remaining_sessions: 3,
+    sent_notification: true,
+  })),
+  // 4 more for LS0001 with various statuses
+  {
+    id: 'R011',
+    schedule_id: 'LS0001',
+    member_id: 'M111',
+    member_name: '小林 真一',
+    plan_type: '月額4回',
+    space_number: 'S11',
+    reservation_date: '2026-06-23',
+    reservation_time: '08:50',
+    status: 'tentative',
+    attendance_status: 'unconfirmed',
+    cancel_type: null,
+    penalty_active: false,
+    penalty_end_date: null,
+    remaining_sessions: 2,
+    sent_notification: true,
+  },
+  {
+    id: 'R012',
+    schedule_id: 'LS0001',
+    member_id: 'M112',
+    member_name: '加藤 由美',
+    plan_type: '月額8回',
+    space_number: 'S12',
+    reservation_date: '2026-06-23',
+    reservation_time: '08:55',
+    status: 'cancelled',
+    attendance_status: 'unconfirmed',
+    cancel_type: 'member',
+    penalty_active: true,
+    penalty_end_date: '2026-07-07',
+    remaining_sessions: 5,
+    sent_notification: true,
+  },
+  {
+    id: 'R013',
+    schedule_id: 'LS0001',
+    member_id: 'M113',
+    member_name: '松本 隆',
+    plan_type: '都度',
+    space_number: 'S13',
+    reservation_date: '2026-06-23',
+    reservation_time: '08:40',
+    status: 'confirmed',
+    attendance_status: 'unconfirmed',
+    cancel_type: null,
+    penalty_active: false,
+    penalty_end_date: null,
+    remaining_sessions: 0,
+    sent_notification: false,
+  },
+  {
+    id: 'R014',
+    schedule_id: 'LS0001',
+    member_id: 'M114',
+    member_name: '井上 香織',
+    plan_type: '月額8回',
+    space_number: 'S14',
+    reservation_date: '2026-06-23',
+    reservation_time: '08:30',
+    status: 'confirmed',
+    attendance_status: 'unconfirmed',
+    cancel_type: null,
+    penalty_active: true,
+    penalty_end_date: '2026-07-14',
+    remaining_sessions: 0,
+    sent_notification: true,
+  },
+  // ── LS0002: FIT365八潮店 ホットヨガ リフレッシュ (capacity 35, booked 35) ──
+  ...Array.from({ length: 8 }, (_, i) => ({
+    id: `R${15 + i}`,
+    schedule_id: 'LS0002',
+    member_id: `M${201 + i}`,
+    member_name: [
+      '吉田 沙織',
+      '石川 圭',
+      '山口 優子',
+      '橋本 悟',
+      '長谷川 愛',
+      '本田 圭佑',
+      '武田 倫子',
+      '岡田 翔太',
+    ][i]!,
+    plan_type: '月額8回',
+    space_number: null,
+    reservation_date: '2026-06-23',
+    reservation_time: '10:00',
+    status: 'confirmed' as ReservationStatus,
+    attendance_status: 'unconfirmed' as AttendanceStatus,
+    cancel_type: null,
+    penalty_active: false,
+    penalty_end_date: null,
+    remaining_sessions: 4 - i,
+    sent_notification: true,
+  })),
+  // ── LS0003: FIT365八潮店 ボディコンバット (capacity 17, booked 10) ──
+  ...Array.from({ length: 5 }, (_, i) => ({
+    id: `R${23 + i}`,
+    schedule_id: 'LS0003',
+    member_id: `M${301 + i}`,
+    member_name: ['小川 茜', '斎藤 拓', '近藤 麻衣', '福田 大輔', '西村 真理'][i]!,
+    plan_type: i === 0 ? '都度' : '月額8回',
+    space_number: null,
+    reservation_date: '2026-06-23',
+    reservation_time: '12:30',
+    status: i === 4 ? ('cancelled' as ReservationStatus) : ('confirmed' as ReservationStatus),
+    attendance_status: 'unconfirmed' as AttendanceStatus,
+    cancel_type: i === 4 ? ('staff' as CancelType) : null,
+    penalty_active: false,
+    penalty_end_date: null,
+    remaining_sessions: i === 3 ? 0 : 6 - i,
+    sent_notification: true,
+  })),
+  // ── LS0006: FIT365八潮店 リラックスストレッチ (capacity 16, booked 5) ──
+  ...Array.from({ length: 5 }, (_, i) => ({
+    id: `R${28 + i}`,
+    schedule_id: 'LS0006',
+    member_id: `M${401 + i}`,
+    member_name: ['安藤 なつみ', '大野 智', '杉山 佳代', '野村 周平', '横山 美穂'][i]!,
+    plan_type: '月額4回',
+    space_number: null,
+    reservation_date: '2026-06-23',
+    reservation_time: '17:30',
+    status: i === 3 ? ('attended' as ReservationStatus) : ('confirmed' as ReservationStatus),
+    attendance_status:
+      i === 3 ? ('confirmed' as AttendanceStatus) : ('unconfirmed' as AttendanceStatus),
+    cancel_type: null,
+    penalty_active: false,
+    penalty_end_date: null,
+    remaining_sessions: 1,
+    sent_notification: i !== 4,
+  })),
+  // ── LS0004: FIT365八潮店 パーソナル：渡辺様 (capacity 1, booked 1) ──
+  {
+    id: 'R033',
+    schedule_id: 'LS0004',
+    member_id: 'M115',
+    member_name: '渡辺 誠',
+    plan_type: '都度',
+    space_number: 'S01',
+    reservation_date: '2026-06-23',
+    reservation_time: '13:30',
+    status: 'confirmed',
+    attendance_status: 'unconfirmed',
+    cancel_type: null,
+    penalty_active: false,
+    penalty_end_date: null,
+    remaining_sessions: 0,
+    sent_notification: true,
+  },
+  // ── LS0005: FIT365八潮店 パーソナル：中村様 (capacity 1, booked 1) ──
+  {
+    id: 'R034',
+    schedule_id: 'LS0005',
+    member_id: 'M116',
+    member_name: '中村 浩',
+    plan_type: '月額8回',
+    space_number: 'S01',
+    reservation_date: '2026-06-23',
+    reservation_time: '15:30',
+    status: 'confirmed',
+    attendance_status: 'unconfirmed',
+    cancel_type: null,
+    penalty_active: false,
+    penalty_end_date: null,
+    remaining_sessions: 3,
+    sent_notification: true,
+  },
+  // ── LS0007: JOYFIT渋谷店 モーニングヨガ (capacity 18, booked 16) ──
+  ...Array.from({ length: 8 }, (_, i) => ({
+    id: `R${35 + i}`,
+    schedule_id: 'LS0007',
+    member_id: `M${501 + i}`,
+    member_name: [
+      '田辺 歩',
+      '嶋田 聡',
+      '川村 真由',
+      '高原 大介',
+      '片山 由紀',
+      '黒田 誠',
+      '松永 千尋',
+      '丹羽 敦',
+    ][i]!,
+    plan_type: '月額8回',
+    space_number: null,
+    reservation_date: '2026-06-23',
+    reservation_time: '07:30',
+    status: i < 6 ? ('confirmed' as ReservationStatus) : ('tentative' as ReservationStatus),
+    attendance_status: 'unconfirmed' as AttendanceStatus,
+    cancel_type: null,
+    penalty_active: false,
+    penalty_end_date: null,
+    remaining_sessions: 4,
+    sent_notification: true,
+  })),
+  // ── LS0010: JOYFIT渋谷店 ピラティス入門 (capacity 16, booked 14) ──
+  ...Array.from({ length: 5 }, (_, i) => ({
+    id: `R${43 + i}`,
+    schedule_id: 'LS0010',
+    member_id: `M${601 + i}`,
+    member_name: ['村上 春樹', '吉岡 秀隆', '坂本 龍一', '松田 翔太', '綾瀬 はるか'][i]!,
+    plan_type: '月額4回',
+    space_number: null,
+    reservation_date: '2026-06-23',
+    reservation_time: '09:30',
+    status: i === 4 ? ('no_show' as ReservationStatus) : ('confirmed' as ReservationStatus),
+    attendance_status:
+      i === 4 ? ('no_show' as AttendanceStatus) : ('unconfirmed' as AttendanceStatus),
+    cancel_type: null,
+    penalty_active: i === 4,
+    penalty_end_date: i === 4 ? '2026-07-07' : null,
+    remaining_sessions: i === 4 ? 0 : 2,
+    sent_notification: true,
+  })),
+];
+
 type DbType = {
   members: {
     _members: MemberRow[];
@@ -3832,6 +4210,29 @@ type DbType = {
       areas: AreaScheduleKpiSummary[];
       stores: StoreScheduleSummary[];
     };
+  };
+  reservations: {
+    _rows: Reservation[];
+    _memoRows: SessionMemo[];
+    _seeded: boolean;
+    _seed(): void;
+    getByScheduleId(
+      scheduleId: string,
+      query?: { page?: number; pageSize?: number; sortBy?: string; sortOrder?: string },
+    ): ReservationListResponse;
+    getById(id: string): Reservation | undefined;
+    getStats(scheduleId: string): ReservationStats;
+    getSpaces(scheduleId: string): StudioSpaceGridResponse;
+    getMemos(scheduleId: string): SessionMemo[];
+    createMemo(scheduleId: string, data: { content: string }): SessionMemo;
+    deleteMemo(scheduleId: string, memoId: string): boolean;
+    create(data: {
+      member_id: string;
+      schedule_id: string;
+      space_number?: string;
+      send_notification?: boolean;
+    }): Reservation;
+    update(id: string, patch: Partial<Reservation>): Reservation | undefined;
   };
 };
 
@@ -13421,6 +13822,177 @@ function createDb() {
         return { areas, stores };
       },
     },
+
+    // ─── D-01: Reservations ─────────────────────────────────────────────────
+    reservations: {
+      _rows: [] as Reservation[],
+      _memoRows: [] as SessionMemo[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows = SEED_RESERVATIONS.map((r) => ({ ...r }));
+        this._memoRows = SEED_SESSION_MEMOS.map((m) => ({ ...m }));
+      },
+      getByScheduleId(
+        scheduleId: string,
+        query?: { page?: number; pageSize?: number; sortBy?: string; sortOrder?: string },
+      ): ReservationListResponse {
+        this._seed();
+        let filtered = this._rows.filter((r) => r.schedule_id === scheduleId);
+        const page = query?.page ?? 1;
+        const pageSize = query?.pageSize ?? 7;
+        const sortBy = query?.sortBy;
+        const sortOrder = query?.sortOrder ?? 'asc';
+        if (sortBy) {
+          filtered = [...filtered].sort((a, b) => {
+            const aVal = (a as any)[sortBy] ?? '';
+            const bVal = (b as any)[sortBy] ?? '';
+            const cmp = String(aVal).localeCompare(String(bVal), 'ja');
+            return sortOrder === 'desc' ? -cmp : cmp;
+          });
+        }
+        const total = filtered.length;
+        const totalPages = Math.ceil(total / pageSize);
+        const start = (page - 1) * pageSize;
+        const reservations = filtered.slice(start, start + pageSize);
+        return { reservations, total, page, pageSize, totalPages };
+      },
+      getById(id: string): Reservation | undefined {
+        this._seed();
+        return this._rows.find((r) => r.id === id);
+      },
+      getStats(scheduleId: string): ReservationStats {
+        this._seed();
+        const reservations = this._rows.filter((r) => r.schedule_id === scheduleId);
+        const total_capacity =
+          db.lessonSchedules.getById(scheduleId)?.capacity ?? reservations.length;
+        const total_reserved = reservations.filter(
+          (r) => r.status !== 'cancelled' && r.status !== 'no_show',
+        ).length;
+        const remaining_seats = Math.max(0, total_capacity - total_reserved);
+        const statusCounts: Record<string, number> = {};
+        for (const r of reservations) {
+          statusCounts[r.status] = (statusCounts[r.status] ?? 0) + 1;
+        }
+        const status_breakdown = (
+          ['confirmed', 'tentative', 'attended', 'no_show', 'cancelled'] as ReservationStatus[]
+        ).map((status) => ({
+          status,
+          count: statusCounts[status] ?? 0,
+          percentage:
+            reservations.length > 0
+              ? Math.round(((statusCounts[status] ?? 0) / reservations.length) * 1000) / 10
+              : 0,
+        }));
+        return {
+          schedule_id: scheduleId,
+          total_capacity,
+          total_reserved,
+          remaining_seats,
+          status_breakdown,
+        };
+      },
+      getSpaces(scheduleId: string): StudioSpaceGridResponse {
+        this._seed();
+        const seeded = SEED_STUDIO_SPACES[scheduleId];
+        if (seeded) return seeded;
+
+        const schedule = db.lessonSchedules.getById(scheduleId);
+        const capacity = schedule?.capacity ?? 16;
+        const gridCols = 8;
+        const gridRows = Math.ceil(capacity / gridCols);
+        const reservations = this._rows.filter(
+          (r) => r.schedule_id === scheduleId && r.status !== 'cancelled' && r.space_number,
+        );
+
+        return {
+          studio_name: schedule?.studio_name ?? 'スタジオ',
+          total_capacity: capacity,
+          grid_rows: gridRows,
+          grid_cols: gridCols,
+          spaces: Array.from({ length: capacity }, (_, i) => {
+            const spaceNumber = `S${String(i + 1).padStart(2, '0')}`;
+            const reservation = reservations.find((r) => r.space_number === spaceNumber);
+            return {
+              id: `SP-${scheduleId}-${i + 1}`,
+              space_number: spaceNumber,
+              row: Math.floor(i / gridCols),
+              col: i % gridCols,
+              type: reservation ? ('reserved' as const) : ('available' as const),
+              reservation_id: reservation?.id ?? null,
+              member_name: reservation?.member_name ?? null,
+            };
+          }),
+        };
+      },
+      getMemos(scheduleId: string): SessionMemo[] {
+        this._seed();
+        return this._memoRows.filter((m) => m.schedule_id === scheduleId);
+      },
+      createMemo(scheduleId: string, data: { content: string }): SessionMemo {
+        this._seed();
+        const newId = `MEMO${String(this._memoRows.length + 1).padStart(3, '0')}`;
+        const memo: SessionMemo = {
+          id: newId,
+          schedule_id: scheduleId,
+          content: data.content,
+          author_id: 'ST001',
+          author_name: '田中 花子',
+          created_at: new Date().toISOString(),
+          updated_at: null,
+        };
+        this._memoRows.push(memo);
+        return memo;
+      },
+      deleteMemo(scheduleId: string, memoId: string): boolean {
+        this._seed();
+        const idx = this._memoRows.findIndex(
+          (m) => m.id === memoId && m.schedule_id === scheduleId,
+        );
+        if (idx === -1) return false;
+        this._memoRows.splice(idx, 1);
+        return true;
+      },
+      create(data: {
+        member_id: string;
+        schedule_id: string;
+        space_number?: string;
+        send_notification?: boolean;
+      }): Reservation {
+        this._seed();
+        const newId = `R${String(this._rows.length + 1).padStart(3, '0')}`;
+        const schedule = db.lessonSchedules.getById(data.schedule_id);
+        const memberName =
+          db.members.getList().find((m) => m.id === data.member_id)?.name_kanji ?? '新規会員';
+        const reservation: Reservation = {
+          id: newId,
+          schedule_id: data.schedule_id,
+          member_id: data.member_id,
+          member_name: memberName,
+          plan_type: schedule?.lesson_type === 'personal' ? '都度' : '月額8回',
+          space_number: data.space_number ?? null,
+          reservation_date: new Date().toISOString().slice(0, 10),
+          reservation_time: new Date().toTimeString().slice(0, 5),
+          status: 'confirmed',
+          attendance_status: 'unconfirmed',
+          cancel_type: null,
+          penalty_active: false,
+          penalty_end_date: null,
+          remaining_sessions: 5,
+          sent_notification: data.send_notification ?? false,
+        };
+        this._rows.push(reservation);
+        return reservation;
+      },
+      update(id: string, patch: Partial<Reservation>): Reservation | undefined {
+        this._seed();
+        const idx = this._rows.findIndex((r) => r.id === id);
+        if (idx === -1) return undefined;
+        this._rows[idx] = { ...this._rows[idx], ...patch };
+        return this._rows[idx];
+      },
+    },
   };
 
   // Seed mock data immediately when the singleton is first created
@@ -13439,6 +14011,7 @@ function createDb() {
   db.franchiseCompanies._seed();
   db.users._seed();
   db.lessonSchedules._seed();
+  db.reservations._seed();
 
   return db;
 }
