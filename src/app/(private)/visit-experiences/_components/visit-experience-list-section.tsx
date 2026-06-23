@@ -23,7 +23,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import { getCrmVisitExperiencesOptions } from '@/lib/api/@tanstack/visit-experience.query';
+import { getCrmVisitExperiencesOptions } from '@/lib/api/@tanstack/react-query.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
 import type {
@@ -80,7 +80,9 @@ export function VisitExperienceListSection() {
     return params;
   }, [debouncedSearch, status, brand_name, store_name, date_range, page, limit]);
 
-  const { data, isLoading } = useQuery(getCrmVisitExperiencesOptions(queryParams));
+  const { data, isLoading } = useQuery({
+    ...getCrmVisitExperiencesOptions({ query: queryParams }),
+  });
 
   const items = data?.items ?? [];
   const total = data?.total ?? 0;

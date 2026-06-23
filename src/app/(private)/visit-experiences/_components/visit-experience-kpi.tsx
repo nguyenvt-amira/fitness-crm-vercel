@@ -5,10 +5,12 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
-import { getCrmVisitExperiencesSummaryOptions } from '@/lib/api/@tanstack/visit-experience.query';
+import { getCrmVisitExperiencesSummaryOptions } from '@/lib/api/@tanstack/react-query.gen';
 
 export function VisitExperienceKpi() {
-  const { data, isLoading } = useQuery(getCrmVisitExperiencesSummaryOptions());
+  const { data, isLoading } = useQuery({
+    ...getCrmVisitExperiencesSummaryOptions(),
+  });
 
   if (isLoading) {
     return (

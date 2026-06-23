@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, CheckCircle2, DoorOpen, Loader2, UserCheck } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -22,7 +23,10 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
-import { usePermitVisitExperienceMutation } from '@/lib/api/@tanstack/visit-experience.query';
+import {
+  getCrmVisitExperiencesByIdQueryKey,
+  postCrmVisitExperiencesByIdPermitMutation,
+} from '@/lib/api/@tanstack/react-query.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
 import type { VisitExperienceDetail } from '@/types/api/visit-experience.type';
@@ -76,19 +80,34 @@ function PermitDialog({
 
 export function PermitActions({ record }: PermitActionsProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const { mutate: permit, isPending } = usePermitVisitExperienceMutation(record.id);
+  const { mutate: permit, isPending } = useMutation({
+    ...postCrmVisitExperiencesByIdPermitMutation(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: getCrmVisitExperiencesByIdQueryKey({ path: { id: record.id } }),
+      });
+    },
+  });
 
   const handlePermit = () => {
     setDialogOpen(false);
-    permit(undefined, {
-      onSuccess: () => {
-        toast.success('見学許可を発行しました');
+    permit(
+      { path: { id: record.id } },
+      {
+        onSuccess: () => {
+          toast.success('見学許可を発行しました');
+        },
+        onError: (error) => {
+          const message =
+            error && typeof error === 'object' && 'reason' in error
+              ? String((error as { reason?: string }).reason)
+              : '許可の発行に失敗しました';
+          toast.error(message);
+        },
       },
-      onError: (err) => {
-        toast.error(err.message ?? '許可の発行に失敗しました');
-      },
-    });
+    );
   };
 
   const handleEnrollment = () => {

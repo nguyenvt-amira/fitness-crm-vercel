@@ -21,6 +21,7 @@ import * as promoCodeSchemas from '../_schemas/promo-code.schema';
 import * as staffSchemas from '../_schemas/staff.schema';
 import * as storeAccessSettingsSchemas from '../_schemas/store-access-settings.schema';
 import * as storeSchemas from '../_schemas/store.schema';
+import * as visitExperienceSchemas from '../_schemas/visit-experience.schema';
 import { registry } from './register-route';
 
 /**
@@ -1523,6 +1524,58 @@ export function registerAllSchemas() {
     registry.register(
       'DeleteOptionMasterResponse',
       optionMasterSchemas.DeleteOptionMasterResponseSchema,
+    ),
+  );
+
+  registeredSchemaMap.set(
+    'VisitExperienceStatus',
+    registry.register('VisitExperienceStatus', visitExperienceSchemas.VisitExperienceStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'VisitExperience',
+    registry.register('VisitExperience', visitExperienceSchemas.VisitExperienceSchema),
+  );
+  registeredSchemaMap.set(
+    'GetVisitExperiencesQuery',
+    registry.register(
+      'GetVisitExperiencesQuery',
+      visitExperienceSchemas.GetVisitExperiencesQuerySchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetVisitExperiencesResponse',
+    registry.register(
+      'GetVisitExperiencesResponse',
+      visitExperienceSchemas.GetVisitExperiencesResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetVisitExperiencesSummaryResponse',
+    registry.register(
+      'GetVisitExperiencesSummaryResponse',
+      visitExperienceSchemas.GetVisitExperiencesSummaryResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'VisitTimelineEntry',
+    registry.register('VisitTimelineEntry', visitExperienceSchemas.VisitTimelineEntrySchema),
+  );
+  registeredSchemaMap.set(
+    'VisitExperienceDetail',
+    registry.register('VisitExperienceDetail', visitExperienceSchemas.VisitExperienceDetailSchema),
+  );
+  registeredSchemaMap.set(
+    'PermitVisitExperienceResponse',
+    registry.register(
+      'PermitVisitExperienceResponse',
+      visitExperienceSchemas.PermitVisitExperienceResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'PermitVisitExperienceError',
+    registry.register(
+      'PermitVisitExperienceError',
+      visitExperienceSchemas.PermitVisitExperienceErrorSchema,
     ),
   );
 }

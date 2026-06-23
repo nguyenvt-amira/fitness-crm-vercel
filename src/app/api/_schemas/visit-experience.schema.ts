@@ -86,6 +86,10 @@ export const PermitVisitExperienceResponseSchema = z.object({
   record: VisitExperienceDetailSchema,
 });
 
+export const PermitVisitExperienceErrorSchema = z.object({
+  reason: z.string(),
+});
+
 export type VisitTimelineEntry = z.infer<typeof VisitTimelineEntrySchema>;
 export type VisitExperienceDetail = z.infer<typeof VisitExperienceDetailSchema>;
 export type PermitVisitExperienceResponse = z.infer<typeof PermitVisitExperienceResponseSchema>;

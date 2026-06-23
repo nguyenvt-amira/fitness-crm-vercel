@@ -11,7 +11,7 @@ import { DataStateBoundary } from '@/components/common/data-state-boundary';
 import { PageHeader } from '@/components/common/page-header';
 import { Badge } from '@/components/ui/badge';
 
-import { getCrmVisitExperienceDetailOptions } from '@/lib/api/@tanstack/visit-experience.query';
+import { getCrmVisitExperiencesByIdOptions } from '@/lib/api/@tanstack/react-query.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
 import { VISIT_EXPERIENCE_STATUS_LABELS } from '@/types/api/visit-experience.type';
@@ -44,7 +44,9 @@ export default function VisitExperienceDetailPage({ params }: { params: Promise<
     isLoading,
     isError,
     refetch,
-  } = useQuery(getCrmVisitExperienceDetailOptions(id));
+  } = useQuery({
+    ...getCrmVisitExperiencesByIdOptions({ path: { id } }),
+  });
 
   return (
     <>

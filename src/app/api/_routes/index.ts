@@ -148,5 +148,9 @@ import '@/app/api/crm/transfers/route';
 import '@/app/api/crm/uploads/presign/route';
 import '@/app/api/crm/uploads/route';
 import '@/app/api/crm/users/route';
+import '@/app/api/crm/visit-experiences/[id]/permit/route';
+import '@/app/api/crm/visit-experiences/[id]/route';
+import '@/app/api/crm/visit-experiences/route';
+import '@/app/api/crm/visit-experiences/summary/route';
 
 // Add more route imports here as you register them with OpenAPI
