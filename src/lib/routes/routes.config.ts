@@ -92,6 +92,12 @@ export const routes = {
     pattern: '/family-registrations/dashboard',
     private: true,
   },
+  '/lesson-schedules': {
+    router: '/lesson-schedules',
+    filePath: '(private)/lesson-schedules',
+    pattern: '/lesson-schedules',
+    private: true,
+  },
   '/lockers': {
     router: '/lockers',
     filePath: '(private)/lockers',
@@ -357,6 +363,7 @@ export const routeKeys = [
   '/family-registrations',
   '/family-registrations/[id]',
   '/family-registrations/dashboard',
+  '/lesson-schedules',
   '/lockers',
   '/lockers/[id]',
   '/lockers/[id]/edit',
@@ -417,6 +424,7 @@ export const routePatterns = [
   '/family-registrations',
   '/family-registrations/:id',
   '/family-registrations/dashboard',
+  '/lesson-schedules',
   '/lockers',
   '/lockers/:id',
   '/lockers/:id/edit',

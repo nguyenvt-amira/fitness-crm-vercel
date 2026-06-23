@@ -103,3 +103,14 @@ export function formatDateYYYYMM(value: DateInput, fallback?: string): string {
 export function formatDateYYYYMMDD(value: DateInput, fallback?: string): string {
   return formatDate(value, '{yyyy}/{mm}/{dd}', fallback);
 }
+
+/**
+ * Format: YYYY-MM-DD (local calendar date, not UTC)
+ * e.g. "2026-02-15"
+ */
+export function formatISODateLocal(value: DateInput, fallback: string = ''): string {
+  const d = parseDate(value);
+  if (!d) return fallback;
+  const parts = getDateParts(d);
+  return `${parts.yyyy}-${parts.mm}-${parts.dd}`;
+}

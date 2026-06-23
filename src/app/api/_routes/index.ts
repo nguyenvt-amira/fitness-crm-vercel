@@ -42,6 +42,11 @@ import '@/app/api/crm/leaves/[id]/execute-withdrawal/route';
 import '@/app/api/crm/leaves/[id]/reject/route';
 import '@/app/api/crm/leaves/[id]/route';
 import '@/app/api/crm/leaves/route';
+import '@/app/api/crm/lesson-schedules/[id]/change/route';
+// D-01: Lesson Schedules
+import '@/app/api/crm/lesson-schedules/route';
+import '@/app/api/crm/lesson-schedules/stores/summary/route';
+import '@/app/api/crm/lesson-schedules/summary/route';
 import '@/app/api/crm/lockers/[id]/history/route';
 import '@/app/api/crm/lockers/[id]/route';
 import '@/app/api/crm/lockers/[id]/slots/[slotId]/reminder-notifications/route';
