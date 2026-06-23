@@ -3,6 +3,8 @@
 **Feature Branch**: `[###-feature-name]`  
 **Created**: [DATE]  
 **Status**: Draft  
+**PO Spec**: `[SPEC_ID]` — [機能名] _(or "No PO spec found — derived from UI prototype only")_  
+**Source**: [UI prototype file] + [Requirement spec file]
 **Input**: User description: "$ARGUMENTS"
 
 ## User Scenarios & Testing _(mandatory)_
@@ -113,67 +115,6 @@ _Example of marking unclear requirements:_
 - **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
 - **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
 - **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
-
-## UI Specification _(optional — include when a wireframe or screenshot is provided)_
-
-<!--
-  PURPOSE: Map the wireframe/screenshot to concrete shadcn/Radix UI primitives so that
-  the implementer can reproduce the UI faithfully without re-interpreting the design.
-
-  RULES:
-  - Reference only components available in src/components/ui/ or src/components/common/
-  - Specify exact variant, size, and className hints where visible
-  - Describe layout using Tailwind layout classes (flex, grid, gap-*, etc.)
-  - Group by region: Page Layout → Section → Component
-  - Do NOT describe HOW to code — describe WHAT the component is and WHERE it sits
-
-  REMOVE THIS SECTION ENTIRELY if no wireframe/screenshot is provided.
--->
-
-### Page Layout
-
-<!--
-  Describe the overall page skeleton.
-  Example:
-  - Outer wrapper: `<div className="flex flex-col gap-6 p-6">`
-  - Header row: page title (left) + primary action button (right) — `flex items-center justify-between`
--->
-
-[Describe top-level layout regions and their arrangement]
-
-### [Section / Region Name]
-
-<!--
-  One sub-section per distinct UI region (e.g., "Filter Bar", "Data Table", "Delete Dialog").
-  For each component in this region provide:
-  | Element           | Component                        | Variant / Props                          | Notes                              |
-  |-------------------|----------------------------------|------------------------------------------|------------------------------------|
-  | Search input      | `<Input>`                        | `placeholder="Search…"` + search icon    | Left side of filter bar            |
--->
-
-| Element             | Component           | Variant / Props                 | Notes                   |
-| ------------------- | ------------------- | ------------------------------- | ----------------------- |
-| [e.g., Page title]  | `<h1>` / Typography | `text-2xl font-semibold`        | Top-left of header row  |
-| [e.g., Primary CTA] | `<Button>`          | `variant="default"` `size="sm"` | Top-right of header row |
-
-### [Another Section / Region Name]
-
-| Element   | Component   | Variant / Props | Notes            |
-| --------- | ----------- | --------------- | ---------------- |
-| [element] | [component] | [variant/props] | [position/notes] |
-
-### Dialog / Overlay Components _(if any)_
-
-<!--
-  List each Dialog, AlertDialog, Sheet, or Popover visible in the wireframe.
-  Describe trigger, title, body content, and footer actions.
--->
-
-| Dialog                      | Trigger                          | Title            | Body Summary                 | Footer Actions                             |
-| --------------------------- | -------------------------------- | ---------------- | ---------------------------- | ------------------------------------------ |
-| [e.g., Delete confirmation] | `<Button variant="destructive">` | "Delete [Item]?" | Reason select + warning text | Cancel + Confirm (`variant="destructive"`) |
-
----
 
 ## Assumptions
 

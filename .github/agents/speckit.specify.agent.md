@@ -1,5 +1,5 @@
 ---
-description: Create or update the feature specification from a natural language feature description.
+description: Create a screen-level specification from a screen name, UI page slug, or spec ID — reading requirement context and screen detail from dx-fitness/fitness-crm-ui via remote git.
 handoffs:
   - label: Build Technical Plan
     agent: speckit.plan
@@ -10,10 +10,19 @@ handoffs:
     send: true
 ---
 
+Please respond in English.
+
 ## User Input
 
 ```text
 $ARGUMENTS
+```
+
+Examples:
+
+```
+/speckit.specify  spec: FR-022 臨時休会の設定（A-01 会員管理（一覧））, design: dx-fitness/fitness-crm-ui: page=member-list
+/speckit.specify  spec: create member detail screen, design: dx-fitness/fitness-crm-ui: page=member-detail
 ```
 
 You **MUST** consider the user input before proceeding (if not empty).
@@ -63,89 +72,44 @@ The text the user typed after `/speckit.specify` in the triggering message **is*
 
 Given that feature description, do this:
 
-1. **Determine branch type and generate a slug**:
-
-   **Branch type** — infer from the feature description:
-   - Use `feat/` prefix for new features, enhancements, or additions
-   - Use `fix/` prefix for bug fixes, regressions, or corrections
+1. **Determine branch type and generate a concise short name** (2-4 words):
+   - **Branch type**: Use `fix` when the description is a bug fix (keywords: fix, bug, hotfix, regression, error, broken). Otherwise use `feat` (default).
+   - Analyze the feature description and extract the most meaningful keywords
+   - Create a 2-4 word short name that captures the essence of the feature
+   - Use action-noun format when possible (e.g., "user-auth", "payment-timeout")
+   - Do NOT include `feat-` or `fix-` in the short name — the `--type` flag provides the prefix
+   - Preserve technical terms and acronyms (OAuth2, API, JWT, etc.)
+   - Keep it concise but descriptive enough to understand the feature at a glance
    - Examples:
-     - "Add member search filter" → `feat/member-search-filter`
-     - "Fix rendering of member name on detail page" → `fix/render-member-name`
-     - "Implement OAuth2 login" → `feat/oauth2-login`
-     - "Fix payment timeout bug" → `fix/payment-timeout`
+     - "I want to add user authentication" → type: `feat`, short name: `user-auth`
+     - "Implement OAuth2 integration for the API" → type: `feat`, short name: `oauth2-api-integration`
+     - "Create a dashboard for analytics" → type: `feat`, short name: `analytics-dashboard`
+     - "Fix payment processing timeout bug" → type: `fix`, short name: `payment-timeout`
 
-   **Slug rules** — the part after `feat/` or `fix/`:
-   - 2–5 words, all lowercase, hyphen-separated
-   - Preserve technical acronyms (OAuth2, API, JWT, QR, etc.)
-   - No special characters other than hyphens
-   - Final branch name format: `feat/<slug>` or `fix/<slug>`
+2. **Create the feature branch** by running the script with `--short-name`, `--type`, and `--json`:
 
-2. **Checkout the base branch before creating the feature branch**:
+   **Branch naming mode**: Before running the script, check if `.specify/init-options.json` exists and read the `branch_naming` value.
+   - If `"prefix"` (project default): use `--type feat` or `--type fix`. Git branch will be `feat/<short-name>` or `fix/<short-name>`. Spec files go to `specs/<short-name>/` (flat, no `feat/` prefix or numeric index). Do NOT pass `--number` or `--timestamp`.
+   - If `"sequential"` or absent: use sequential numbering (legacy). Do NOT pass `--number` — the script auto-detects the next available number.
+   - If `branch_numbering` is `"timestamp"` (only in sequential mode): add `--timestamp`
 
-   **Determine base branch**:
-   - If the user explicitly named a base branch in their prompt (e.g., "branch off `dev`", "base: `QA`"), use that branch name.
-   - If no base branch is specified, use `dev` as the default.
+   - Bash (prefix mode — default): `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" --json --type feat --short-name "user-auth" "Add user authentication"`
+   - Bash (prefix mode, bug fix): `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" --json --type fix --short-name "payment-timeout" "Fix payment processing timeout"`
+   - Bash (legacy sequential): `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" --json --short-name "user-auth" "Add user authentication"`
+   - Bash (legacy timestamp): `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" --json --timestamp --short-name "user-auth" "Add user authentication"`
 
-   Run the checkout command first:
-
-   ```bash
-   git checkout <base-branch>
-   ```
-
-   If the checkout fails (branch does not exist locally), try fetching first:
-
-   ```bash
-   git fetch origin <base-branch> && git checkout <base-branch>
-   ```
-
-   If it still fails, stop and report the error to the user — do **not** proceed with branch creation from an unknown base.
-
-2.5. **Create the feature branch** by running the script with `--short-name` (and `--json`). The `--short-name` value MUST be the full branch name including the `feat/` or `fix/` prefix determined in step 1.
-
-**Branch numbering mode**: Before running the script, check if `.specify/init-options.json` exists and read the `branch_numbering` value.
-
-- If `"timestamp"`, add `--timestamp` (Bash) or `-Timestamp` (PowerShell) to the script invocation
-- If `"sequential"` or absent, do not add any extra flag (default behavior)
-
-- Bash example: `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" --json --short-name "feat/member-search-filter" "Add member search filter"`
-- Bash (timestamp): `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" --json --timestamp --short-name "feat/member-search-filter" "Add member search filter"`
-- PowerShell example: `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" -Json -ShortName "feat/member-search-filter" "Add member search filter"`
-- PowerShell (timestamp): `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" -Json -Timestamp -ShortName "feat/member-search-filter" "Add member search filter"`
-
-**IMPORTANT**:
-
-- Do NOT pass `--number` — the script determines the correct next number automatically
-- Always include the JSON flag (`--json` for Bash, `-Json` for PowerShell) so the output can be parsed reliably
-- You must only ever run this script once per feature
-- The JSON is provided in the terminal as output - always refer to it to get the actual content you're looking for
-- The JSON output will contain BRANCH_NAME and SPEC_FILE paths
-- For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot")
+   **IMPORTANT**:
+   - In prefix mode, always pass `--type feat` or `--type fix`
+   - In sequential mode, do NOT pass `--number` — the script determines the correct next number automatically
+   - Always include the JSON flag (`--json`) so the output can be parsed reliably
+   - You must only ever run this script once per feature
+   - The JSON is provided in the terminal as output - always refer to it to get the actual content you're looking for
+   - The JSON output will contain BRANCH_NAME and SPEC_FILE paths
+   - For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot")
 
 3. Load `.specify/templates/spec-template.md` to understand required sections.
 
-3.5. **Load Steering context** — Before writing any spec content, read the following steering files to understand the system domain, terminology, and existing module boundaries. Use this context throughout all subsequent steps to ensure the spec is consistent with the rest of the system.
-
-Files to read (all under `docs/steering/`):
-
-- `docs/steering/_index.md` — module registry and category overview
-- `docs/steering/architecture.md` — tech stack, folder structure, API design patterns
-- `docs/steering/business-flows.md` — end-to-end business flows and actor interactions
-- `docs/steering/business-glossary.md` — canonical business term definitions
-- `docs/steering/user-personas.md` — user types and their goalsWhile reading, identify:
-
-- **Which module category** (A–Z) the new feature belongs to, if any
-- **Related modules** that may be affected or referenced by this spec
-- **Business terms** already defined in the glossary that apply to this feature — use exact glossary terms in the spec (do not invent synonyms)
-- **Actors** from `user-personas.md` who interact with this feature
-- **Existing flows** in `business-flows.md` that this feature extends or modifies
-
-If any steering file does not exist, skip it silently and continue.
-
-4. **Detect UI screenshots**: Check whether the user attached one or more images (wireframes / mockups / screenshots) to this message.
-   - **If images are present**: set `HAS_WIREFRAME = true` — the spec MUST include a completed `UI Specification` section (see step 4.9 below)
-   - **If no images**: set `HAS_WIREFRAME = false` — omit the `UI Specification` section entirely from the spec
-
-5. Follow this execution flow:
+4. Follow this execution flow:
    1. Parse user description from Input
       If empty: ERROR "No feature description provided"
    2. Extract key concepts from description
@@ -169,37 +133,10 @@ If any steering file does not exist, skip it silently and continue.
       Each criterion must be verifiable without implementation details
    7. Identify Key Entities (if data involved)
    8. Return: SUCCESS (spec ready for planning)
-   9. **[Only when HAS_WIREFRAME = true] Analyse attached wireframes and populate UI Specification** — see detailed rules in the [UI Screenshot Analysis](#ui-screenshot-analysis) section below
 
-6. Write the specification to SPEC_FILE using the template structure, replacing placeholders with concrete details derived from the feature description (arguments) while preserving section order and headings.
-   - If `HAS_WIREFRAME = true`: include a fully populated `UI Specification` section (placed just before `Assumptions`)
-   - If `HAS_WIREFRAME = false`: omit the `UI Specification` section entirely
+5. Write the specification to SPEC_FILE using the template structure, replacing placeholders with concrete details derived from the feature description (arguments) while preserving section order and headings.
 
-6.5. **Update Steering** — After writing the spec, determine whether any steering file needs to be updated to reflect new or changed domain knowledge introduced by this spec. Apply updates directly; do not ask for permission.
-
-**When to update each file**:
-
-| Steering File          | Update if…                                                                                                   |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `_index.md`            | A new module/screen is introduced that does not yet appear in the Module Index table                         |
-| `business-glossary.md` | The spec introduces new business terms, actors, or domain concepts not yet defined in the glossary           |
-| `business-flows.md`    | The spec adds or materially changes an end-to-end business flow, or introduces a new flow not yet documented |
-| `architecture.md`      | The spec introduces a new technical pattern, integration, or structural convention not yet described         |
-| `user-personas.md`     | The spec introduces a new user type/actor or significantly extends an existing persona's responsibilities    |
-
-**Update rules**:
-
-- **Additive only**: only append new rows, sections, or bullet points. Do **not** remove or rewrite existing steering content.
-- **`_index.md` Module Index**: add one row per new module using the existing table format:
-  `| [Category] | [ID] | [Module Name] | \`docs/specs/[feature-dir]/spec.md\` | In Progress |`
-- **`business-glossary.md`**: add new terms to the most appropriate existing section table. If no section fits, append a new section at the bottom before the `*Last updated*` line.
-- **`business-flows.md`**: if a new flow is needed, append it as a new numbered subsection under `## 4. Key Business Flows`.
-- **Always update** the `*Last updated*` date at the bottom of any file you modify (ISO date: `April 2026` format).
-- **Do not update** a steering file if the spec contains only implementation details with no new business/domain knowledge.
-
-After updating, list each file modified and the specific change made (one line per file).
-
-7. **Specification Quality Validation**: After writing the initial spec, validate it against quality criteria:
+6. **Specification Quality Validation**: After writing the initial spec, validate it against quality criteria:
 
    a. **Create Spec Quality Checklist**: Generate a checklist file at `FEATURE_DIR/checklists/requirements.md` using the checklist template structure with these validation items:
 
@@ -227,16 +164,6 @@ After updating, list each file modified and the specific change made (one line p
    - [ ] Edge cases are identified
    - [ ] Scope is clearly bounded
    - [ ] Dependencies and assumptions identified
-
-   ## UI Specification (skip if no wireframe was provided)
-
-   - [ ] UI Specification section present in spec (required when wireframe attached)
-   - [ ] Every visible UI region has a corresponding sub-section
-   - [ ] All component cells reference a component from src/components/ui/ or src/components/common/
-   - [ ] Variant/Props column specifies exact shadcn variant string (e.g., `variant="destructive"`)
-   - [ ] Layout wrapper classes described (flex, grid, gap-\*, etc.)
-   - [ ] All dialogs/overlays listed with trigger, title, body, and footer actions
-   - [ ] No implementation code (JSX/HTML) — descriptions only
 
    ## Feature Readiness
 
@@ -300,9 +227,9 @@ After updating, list each file modified and the specific change made (one line p
 
    d. **Update Checklist**: After each validation iteration, update the checklist file with current pass/fail status
 
-8. Report completion with branch name, spec file path, checklist results, and readiness for the next phase (`/speckit.clarify` or `/speckit.plan`).
+7. Report completion with branch name, spec file path, checklist results, and readiness for the next phase (`/speckit.clarify` or `/speckit.plan`).
 
-9. **Check for extension hooks**: After reporting completion, check if `.specify/extensions.yml` exists in the project root.
+8. **Check for extension hooks**: After reporting completion, check if `.specify/extensions.yml` exists in the project root.
    - If it exists, read it and look for entries under the `hooks.after_specify` key
    - If the YAML cannot be parsed or is invalid, skip hook checking silently and continue normally
    - Filter out hooks where `enabled` is explicitly `false`. Treat hooks without an `enabled` field as enabled by default.
@@ -336,108 +263,6 @@ After updating, list each file modified and the specific change made (one line p
    - If no hooks are registered or `.specify/extensions.yml` does not exist, skip silently
 
 **NOTE:** The script creates and checks out the new branch and initializes the spec file before writing.
-
----
-
-## UI Screenshot Analysis
-
-> **Triggered only when `HAS_WIREFRAME = true`** — i.e., the user attached one or more images.
-
-### Goal
-
-Translate visual wireframe information into a deterministic, code-ready UI specification so that the implementer can reproduce the layout and component choices faithfully using shadcn/Radix UI primitives — without re-interpreting the design.
-
-### Allowed Component Inventory
-
-Only reference components that exist in the project. Before analysing, mentally load the following sources:
-
-- `src/components/ui/` — shadcn primitives (Button, Badge, Input, Select, Dialog, AlertDialog, Table, etc.)
-- `src/components/common/` — composite components (DataTable, BreadcrumbNav, DataStateBoundary, etc.)
-- Tailwind CSS v4 utility classes for layout
-
-If a visual element has no matching primitive, describe it as "custom component — suggest adding to `src/components/ui/`".
-
-### Analysis Steps
-
-For each attached screenshot/wireframe:
-
-1. **Identify regions** — divide the screen into named regions (e.g., "Page Header", "Filter Bar", "Data Table", "Empty State", "Delete Dialog"). Use the visual hierarchy.
-
-2. **For each region, enumerate elements** and for every element record:
-   - **Element** — plain name (e.g., "Search input", "Status badge", "Delete button")
-   - **Component** — exact component name with backtick-code formatting (e.g., `<Input>`, `<Badge>`, `<Button>`)
-   - **Variant / Props** — exact shadcn variant string and notable props visible or inferable from the wireframe:
-     - Buttons: `variant="default|secondary|destructive|outline|ghost|link"` + `size="default|sm|lg|icon"`
-     - Badges: `variant="default|secondary|destructive|outline"` + any overriding `className` (e.g., `"bg-green-500 text-white"`)
-     - Inputs: `placeholder="…"` text, presence of prefix/suffix icons
-     - Selects / Comboboxes: whether it is a `<Select>` (few fixed options) or `<Combobox>` (searchable)
-     - Dialogs: `<Dialog>` (form/informational) vs `<AlertDialog>` (destructive confirmation)
-   - **Notes** — position (left/right/center), alignment cues, approximate width hint (e.g., `w-full`, `w-64`), or any conditional rendering visible
-
-3. **Describe layout wrappers** for each region — use Tailwind layout classes only:
-   - Flex / grid arrangement, gap, alignment, padding
-   - Example: `flex items-center justify-between gap-4 px-6 py-4`
-
-4. **Identify overlays** — list every Dialog, AlertDialog, Sheet, Drawer, Popover, or Tooltip visible or implied by the wireframe. For each specify:
-   - **Trigger**: what opens it (button label + variant)
-   - **Title**: heading text
-   - **Body**: form fields, select lists, descriptions, warnings
-   - **Footer actions**: button labels + variants, left-to-right order
-
-5. **Infer missing details** conservatively — if a prop is not visible, use the shadcn default (e.g., `variant="default"`, `size="default"`). Do **not** invent custom variants that don't exist in the project.
-
-6. **Flag ambiguous elements** — if a UI element is too small or unclear to identify confidently, add a note: `[VISUAL UNCLEAR: brief description]`. Limit to 3 flags maximum.
-
-### Output Format
-
-Populate the `## UI Specification` section in the spec file following the template's table structure. Use one sub-section per identified region. Example:
-
-```markdown
-## UI Specification
-
-### Page Layout
-
-Overall wrapper: `flex flex-col gap-6 p-6`. Page is divided into three vertical stacks:
-
-1. Header row (title + action button)
-2. Filter bar
-3. Data table with pagination
-
-### Header Row
-
-| Element         | Component  | Variant / Props                 | Notes                           |
-| --------------- | ---------- | ------------------------------- | ------------------------------- |
-| Page title      | `<h1>`     | `text-2xl font-semibold`        | Left side                       |
-| "Invite" button | `<Button>` | `variant="default"` `size="sm"` | Right side, opens Invite Dialog |
-
-### Filter Bar
-
-Layout: `flex items-center gap-3 flex-wrap`
-
-| Element       | Component  | Variant / Props                                  | Notes                          |
-| ------------- | ---------- | ------------------------------------------------ | ------------------------------ |
-| Search input  | `<Input>`  | `placeholder="名前で検索…"` + search icon prefix | Grows to fill space (`flex-1`) |
-| Status filter | `<Select>` | Placeholder "ステータス"                         | Fixed width `w-40`             |
-| Clear button  | `<Button>` | `variant="ghost"` `size="sm"`                    | Shown only when filters active |
-
-### Dialog / Overlay Components
-
-| Dialog       | Trigger                                  | Title            | Body Summary                              | Footer Actions                                        |
-| ------------ | ---------------------------------------- | ---------------- | ----------------------------------------- | ----------------------------------------------------- |
-| Invite staff | Header "Invite" button                   | "スタッフ招待"   | Email input + Role select + Branch select | "キャンセル" (`ghost`) · "招待する" (`default`)       |
-| Delete staff | Row action "削除" button (`destructive`) | "スタッフを削除" | Warning text + Reason `<Select>`          | "キャンセル" (`outline`) · "削除する" (`destructive`) |
-```
-
-### Rules & Constraints
-
-- **No JSX / HTML code** — use component names in backtick notation only
-- **No `variant="success"`** — use `variant="default" className="bg-green-500 text-white"` (project constraint)
-- **Dialog vs AlertDialog**: use `<AlertDialog>` for destructive/irreversible actions; `<Dialog>` for all others
-- **Select vs Combobox**: use `<Select>` when options are ≤ ~10 fixed items; use `<Combobox>` when the list is long or searchable
-- **DataTable**: always `variant="simple"` for page-based pagination; `variant="default"` for infinite scroll
-- **Keep descriptions scannable** — one row per element; avoid paragraph prose in table cells
-
----
 
 ## Quick Guidelines
 

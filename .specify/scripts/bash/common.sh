@@ -61,16 +61,32 @@ get_current_branch() {
     fi
 
     # For non-git repos, try to find the latest feature directory
-    local specs_dir="$repo_root/docs/specs"
+    local specs_dir="$repo_root/specs"
 
     if [[ -d "$specs_dir" ]]; then
         local latest_feature=""
         local highest=0
         local latest_timestamp=""
+        local latest_mtime=0
+
+        for dir in "$specs_dir"/*; do
+            if [[ -d "$dir" && -f "$dir/spec.md" ]]; then
+                local dirname=$(basename "$dir")
+                local mtime
+                mtime=$(stat -c %Y "$dir" 2>/dev/null || stat -f %m "$dir" 2>/dev/null || echo 0)
+                if [[ "$mtime" -gt "$latest_mtime" ]]; then
+                    latest_mtime="$mtime"
+                    latest_feature="$dirname"
+                fi
+            fi
+        done
 
         for dir in "$specs_dir"/*; do
             if [[ -d "$dir" ]]; then
                 local dirname=$(basename "$dir")
+                if [[ "$dirname" == "feat" || "$dirname" == "fix" ]]; then
+                    continue
+                fi
                 if [[ "$dirname" =~ ^([0-9]{8}-[0-9]{6})- ]]; then
                     # Timestamp-based branch: compare lexicographically
                     local ts="${BASH_REMATCH[1]}"
@@ -124,6 +140,11 @@ check_feature_branch() {
         return 0
     fi
 
+    # Accept feat/* and fix/* prefix branches (project convention)
+    if [[ "$branch" =~ ^(feat|fix)/.+ ]]; then
+        return 0
+    fi
+
     # Accept sequential prefix (3+ digits) but exclude malformed timestamps
     # Malformed: 7-or-8 digit date + 6-digit time with no trailing slug (e.g. "2026031-143022" or "20260319-143022")
     local is_sequential=false
@@ -132,21 +153,27 @@ check_feature_branch() {
     fi
     if [[ "$is_sequential" != "true" ]] && [[ ! "$branch" =~ ^[0-9]{8}-[0-9]{6}- ]]; then
         echo "ERROR: Not on a feature branch. Current branch: $branch" >&2
-        echo "Feature branches should be named like: 001-feature-name, 1234-feature-name, or 20260319-143022-feature-name" >&2
+        echo "Feature branches should be named like: feat/feature-name, fix/bug-name, 001-feature-name, or 20260319-143022-feature-name" >&2
         return 1
     fi
 
     return 0
 }
 
-get_feature_dir() { echo "$1/docs/specs/$2"; }
+get_feature_dir() { echo "$1/specs/$2"; }
 
 # Find feature directory by numeric prefix instead of exact branch match
 # This allows multiple branches to work on the same spec (e.g., 004-fix-bug, 004-add-feature)
 find_feature_dir_by_prefix() {
     local repo_root="$1"
     local branch_name="$2"
-    local specs_dir="$repo_root/docs/specs"
+    local specs_dir="$repo_root/specs"
+
+    # feat/* and fix/* branches map to flat specs/<feature-name> (no prefix in specs path)
+    if [[ "$branch_name" =~ ^(feat|fix)/(.+)$ ]]; then
+        echo "$specs_dir/${BASH_REMATCH[2]}"
+        return
+    fi
 
     # Extract prefix from branch (e.g., "004" from "004-whatever" or "20260319-143022" from timestamp branches)
     local prefix=""
