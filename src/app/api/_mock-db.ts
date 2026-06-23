@@ -22,6 +22,10 @@ import type {
   FamilyRegistrationStatus,
   FamilyRelationship,
 } from '@/app/api/_schemas/family-registration.schema';
+import type {
+  CreateFranchiseCompanyBody,
+  FranchiseCompanyDetail,
+} from '@/app/api/_schemas/franchise-company.schema';
 import type { LeaveDetail, LeaveListItem } from '@/app/api/_schemas/leave.schema';
 import type {
   CreateLockerContractRequest,
@@ -1181,10 +1185,24 @@ export interface UserRow {
 
 interface FranchiseCompanyRow {
   id: string;
+  formal_name: string;
   display_name: string;
   type: 'direct' | 'fc';
+  direct_owned_flag: boolean;
+  corporate_number: string | null;
+  representative_name: string | null;
+  head_office_address: string | null;
+  phone: string | null;
+  contact_person: string | null;
+  contact_phone: string | null;
+  fc_contract_start_date: string | null;
+  fc_contract_renewal_date: string | null;
+  royalty_rate: number | null;
+  note: string | null;
   managed_store_count: number;
   status: 'active' | 'inactive';
+  created_at: string;
+  updated_at: string;
 }
 
 const SEED_USERS: UserRow[] = [
@@ -2108,47 +2126,155 @@ const SEED_VISIT_EXPERIENCES: VisitExperienceDetail[] = [
 const SEED_FRANCHISE_COMPANIES: FranchiseCompanyRow[] = [
   {
     id: 'fc-001',
+    formal_name: 'サンプルFC株式会社',
     display_name: 'サンプルFC株式会社',
     type: 'fc',
+    direct_owned_flag: false,
+    corporate_number: null,
+    representative_name: null,
+    head_office_address: null,
+    phone: null,
+    contact_person: null,
+    contact_phone: null,
+    fc_contract_start_date: null,
+    fc_contract_renewal_date: null,
+    royalty_rate: null,
+    note: null,
     managed_store_count: 1,
     status: 'active',
+    created_at: '2024-04-01T10:00:00+09:00',
+    updated_at: '2024-04-01T10:00:00+09:00',
   },
   {
     id: 'fc-002',
+    formal_name: '株式会社フィットネスパートナーズ',
     display_name: '株式会社フィットネスパートナーズ',
     type: 'fc',
+    direct_owned_flag: false,
+    corporate_number: null,
+    representative_name: null,
+    head_office_address: null,
+    phone: null,
+    contact_person: null,
+    contact_phone: null,
+    fc_contract_start_date: null,
+    fc_contract_renewal_date: null,
+    royalty_rate: null,
+    note: null,
     managed_store_count: 8,
     status: 'active',
+    created_at: '2024-04-01T10:00:00+09:00',
+    updated_at: '2024-04-01T10:00:00+09:00',
   },
   {
     id: 'fc-003',
+    formal_name: '株式会社フィットイースト',
     display_name: '株式会社フィットイースト',
     type: 'fc',
+    direct_owned_flag: false,
+    corporate_number: null,
+    representative_name: null,
+    head_office_address: null,
+    phone: null,
+    contact_person: null,
+    contact_phone: null,
+    fc_contract_start_date: null,
+    fc_contract_renewal_date: null,
+    royalty_rate: null,
+    note: null,
     managed_store_count: 5,
     status: 'active',
+    created_at: '2024-04-01T10:00:00+09:00',
+    updated_at: '2024-04-01T10:00:00+09:00',
   },
   {
     id: 'fc-004',
+    formal_name: '株式会社ノースフィットネス',
     display_name: '株式会社ノースフィットネス',
     type: 'fc',
+    direct_owned_flag: false,
+    corporate_number: null,
+    representative_name: null,
+    head_office_address: null,
+    phone: null,
+    contact_person: null,
+    contact_phone: null,
+    fc_contract_start_date: null,
+    fc_contract_renewal_date: null,
+    royalty_rate: null,
+    note: null,
     managed_store_count: 3,
     status: 'active',
+    created_at: '2024-04-01T10:00:00+09:00',
+    updated_at: '2024-04-01T10:00:00+09:00',
   },
   {
     id: 'dc-001',
+    formal_name: '株式会社ウェルネスフロンティア',
     display_name: '株式会社ウェルネスフロンティア',
     type: 'direct',
+    direct_owned_flag: true,
+    corporate_number: null,
+    representative_name: null,
+    head_office_address: null,
+    phone: null,
+    contact_person: null,
+    contact_phone: null,
+    fc_contract_start_date: null,
+    fc_contract_renewal_date: null,
+    royalty_rate: null,
+    note: null,
     managed_store_count: 42,
     status: 'active',
+    created_at: '2024-04-01T10:00:00+09:00',
+    updated_at: '2024-04-01T10:00:00+09:00',
   },
   {
     id: 'fc-005',
+    formal_name: '株式会社関西フィット',
     display_name: '株式会社関西フィット',
     type: 'fc',
+    direct_owned_flag: false,
+    corporate_number: null,
+    representative_name: null,
+    head_office_address: null,
+    phone: null,
+    contact_person: null,
+    contact_phone: null,
+    fc_contract_start_date: null,
+    fc_contract_renewal_date: null,
+    royalty_rate: null,
+    note: null,
     managed_store_count: 0,
     status: 'inactive',
+    created_at: '2024-04-01T10:00:00+09:00',
+    updated_at: '2024-04-01T10:00:00+09:00',
   },
 ];
+
+function buildFranchiseCompanyDetail(row: FranchiseCompanyRow): FranchiseCompanyDetail {
+  return {
+    id: row.id,
+    formal_name: row.formal_name,
+    display_name: row.display_name,
+    type: row.type,
+    direct_owned_flag: row.direct_owned_flag,
+    corporate_number: row.corporate_number,
+    representative_name: row.representative_name,
+    head_office_address: row.head_office_address,
+    phone: row.phone,
+    contact_person: row.contact_person,
+    contact_phone: row.contact_phone,
+    fc_contract_start_date: row.fc_contract_start_date,
+    fc_contract_renewal_date: row.fc_contract_renewal_date,
+    royalty_rate: row.royalty_rate,
+    note: row.note,
+    managed_store_count: row.managed_store_count,
+    status: row.status,
+    created_at: row.created_at,
+    updated_at: row.updated_at,
+  };
+}
 
 interface CorporateMasterRow {
   id: string;
@@ -2852,6 +2978,7 @@ type DbType = {
     _seed(): void;
     getList(): FranchiseCompanyRow[];
     getById(id: string): FranchiseCompanyRow | undefined;
+    create(input: CreateFranchiseCompanyBody): FranchiseCompanyDetail;
   };
   staffs: {
     _staffs: StaffListItem[];
@@ -11157,6 +11284,41 @@ function createDb() {
       getById(id: string): FranchiseCompanyRow | undefined {
         this._seed();
         return this._rows.find((row) => row.id === id);
+      },
+      create(input: CreateFranchiseCompanyBody): FranchiseCompanyDetail {
+        this._seed();
+
+        const maxNumericId = this._rows.reduce((max, row) => {
+          const match = row.id.match(/(\d+)$/);
+          const numericId = match ? Number.parseInt(match[1], 10) : Number.NaN;
+          return Number.isNaN(numericId) ? max : Math.max(max, numericId);
+        }, 0);
+
+        const now = new Date().toISOString();
+        const row: FranchiseCompanyRow = {
+          id: `FC-${String(maxNumericId + 1).padStart(3, '0')}`,
+          formal_name: input.formal_name,
+          display_name: input.display_name,
+          type: input.type,
+          direct_owned_flag: input.direct_owned_flag,
+          corporate_number: input.corporate_number ?? null,
+          representative_name: input.representative_name ?? null,
+          head_office_address: input.head_office_address ?? null,
+          phone: input.phone ?? null,
+          contact_person: input.contact_person ?? null,
+          contact_phone: input.contact_phone ?? null,
+          fc_contract_start_date: input.fc_contract_start_date ?? null,
+          fc_contract_renewal_date: input.fc_contract_renewal_date ?? null,
+          royalty_rate: input.royalty_rate ?? null,
+          note: input.note ?? null,
+          managed_store_count: 0,
+          status: input.status,
+          created_at: now,
+          updated_at: now,
+        };
+
+        this._rows.unshift(row);
+        return buildFranchiseCompanyDetail(row);
       },
     },
     staffs: {

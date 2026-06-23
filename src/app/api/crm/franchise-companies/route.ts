@@ -4,6 +4,9 @@ import { getAuthUserFromRequest } from '@/app/api/_lib/auth';
 import { db } from '@/app/api/_mock-db';
 import { ErrorResponseSchema } from '@/app/api/_schemas/auth.schema';
 import {
+  CreateFranchiseCompanyBodySchema,
+  type CreateFranchiseCompanyResponse,
+  CreateFranchiseCompanyResponseSchema,
   type FranchiseCompanyListItem,
   type GetFranchiseCompaniesQuery,
   GetFranchiseCompaniesQuerySchema,
@@ -23,6 +26,26 @@ registerRoute({
     { status: 200, schema: GetFranchiseCompaniesResponseSchema, description: 'Company list' },
     { status: 400, schema: ErrorResponseSchema, description: 'Bad request' },
     { status: 401, schema: ErrorResponseSchema, description: 'Unauthorized' },
+    { status: 403, schema: ErrorResponseSchema, description: 'Forbidden' },
+    { status: 500, schema: ErrorResponseSchema, description: 'Internal server error' },
+  ],
+});
+
+registerRoute({
+  method: 'post',
+  path: '/crm/franchise-companies',
+  summary: 'Create franchise company',
+  description: 'Create a new FC company for Y-03 FR-002',
+  tags: ['FranchiseCompanies'],
+  requestBody: {
+    schema: CreateFranchiseCompanyBodySchema,
+    description: 'FC企業作成リクエスト',
+  },
+  responses: [
+    { status: 201, schema: CreateFranchiseCompanyResponseSchema, description: 'Created' },
+    { status: 400, schema: ErrorResponseSchema, description: 'Bad request' },
+    { status: 401, schema: ErrorResponseSchema, description: 'Unauthorized' },
+    { status: 403, schema: ErrorResponseSchema, description: 'Forbidden' },
     { status: 500, schema: ErrorResponseSchema, description: 'Internal server error' },
   ],
 });
@@ -120,5 +143,43 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Error fetching franchise companies:', error);
     return NextResponse.json({ error: 'Failed to fetch franchise companies' }, { status: 500 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const authResult = getAuthUserFromRequest(request);
+    if (!authResult.ok) {
+      return NextResponse.json({ error: authResult.error }, { status: authResult.status });
+    }
+
+    if (authResult.user.role !== 'System' && authResult.user.role !== 'Headquarter') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    const body = await request.json();
+    const validationResult = CreateFranchiseCompanyBodySchema.safeParse(body);
+
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((issue) => issue.message).join(', ');
+      return NextResponse.json({ error: errors }, { status: 400 });
+    }
+
+    const franchise_company = db.franchiseCompanies.create({
+      ...validationResult.data,
+      formal_name: validationResult.data.formal_name.trim(),
+      display_name:
+        validationResult.data.display_name.trim() || validationResult.data.formal_name.trim(),
+    });
+
+    const response: CreateFranchiseCompanyResponse = {
+      message: 'FC企業を作成しました',
+      franchise_company,
+    };
+
+    return NextResponse.json(response, { status: 201 });
+  } catch (error) {
+    console.error('POST /crm/franchise-companies error:', error);
+    return NextResponse.json({ error: 'Failed to create franchise company' }, { status: 500 });
   }
 }

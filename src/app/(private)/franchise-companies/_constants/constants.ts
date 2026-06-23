@@ -1,25 +1,26 @@
-import type {
-  FranchiseCompanyStatus,
-  FranchiseCompanyType,
-} from '@/app/api/_schemas/franchise-company.schema';
+import { FranchiseCompanyStatus, FranchiseCompanyType } from '@/lib/api/types.gen';
 
-export const FRANCHISE_COMPANY_TYPE_VALUES = [
-  'direct',
-  'fc',
-] as const satisfies readonly FranchiseCompanyType[];
-export const FRANCHISE_COMPANY_STATUS_VALUES = [
-  'active',
-  'inactive',
-] as const satisfies readonly FranchiseCompanyStatus[];
+export const FRANCHISE_COMPANY_TYPE_VALUES = Object.values(
+  FranchiseCompanyType,
+) as FranchiseCompanyType[];
+
+export const FRANCHISE_COMPANY_STATUS_VALUES = Object.values(
+  FranchiseCompanyStatus,
+) as FranchiseCompanyStatus[];
 
 export const FRANCHISE_COMPANY_TYPE_LABELS: Record<FranchiseCompanyType, string> = {
-  direct: '直営',
-  fc: 'FC',
+  [FranchiseCompanyType.DIRECT]: '直営',
+  [FranchiseCompanyType.FC]: 'FC',
+};
+
+export const FRANCHISE_COMPANY_TYPE_FORM_LABELS: Record<FranchiseCompanyType, string> = {
+  [FranchiseCompanyType.DIRECT]: '直営',
+  [FranchiseCompanyType.FC]: 'フランチャイズ（FC）',
 };
 
 export const FRANCHISE_COMPANY_STATUS_LABELS: Record<FranchiseCompanyStatus, string> = {
-  active: '有効',
-  inactive: '無効',
+  [FranchiseCompanyStatus.ACTIVE]: '有効',
+  [FranchiseCompanyStatus.INACTIVE]: '無効',
 };
 
 export const FRANCHISE_COMPANY_TYPE_OPTIONS = [
@@ -39,11 +40,11 @@ export const FRANCHISE_COMPANY_STATUS_OPTIONS = [
 ] as const;
 
 export const FRANCHISE_COMPANY_TYPE_BADGE_CLASSES: Record<FranchiseCompanyType, string> = {
-  direct: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  fc: '',
+  [FranchiseCompanyType.DIRECT]: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  [FranchiseCompanyType.FC]: '',
 };
 
 export const FRANCHISE_COMPANY_STATUS_BADGE_CLASSES: Record<FranchiseCompanyStatus, string> = {
-  active: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  inactive: 'bg-muted text-muted-foreground border-border',
+  [FranchiseCompanyStatus.ACTIVE]: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  [FranchiseCompanyStatus.INACTIVE]: 'bg-muted text-muted-foreground border-border',
 };

@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 
+import { PAGE_SIZE } from '@/constants/app.constants';
+import { parseAsInteger, parseAsString, parseAsStringEnum, useQueryStates } from 'nuqs';
+
 import type {
   FranchiseCompanyStatus,
   FranchiseCompanyType,
   GetFranchiseCompaniesQuery,
-} from '@/app/api/_schemas/franchise-company.schema';
-import { PAGE_SIZE } from '@/constants/app.constants';
-import { parseAsInteger, parseAsString, parseAsStringEnum, useQueryStates } from 'nuqs';
+} from '@/lib/api/types.gen';
 
 import {
   FRANCHISE_COMPANY_STATUS_VALUES,
@@ -31,11 +32,11 @@ export function useFranchiseCompaniesFilters() {
       search: parseAsString.withDefault(''),
       company_type: parseAsStringEnum<FranchiseCompanyType>([...FRANCHISE_COMPANY_TYPE_VALUES]),
       status: parseAsStringEnum<FranchiseCompanyStatus>([...FRANCHISE_COMPANY_STATUS_VALUES]),
-      sort_by: parseAsStringEnum<GetFranchiseCompaniesQuery['sort_by']>([
+      sort_by: parseAsStringEnum<NonNullable<GetFranchiseCompaniesQuery['sort_by']>>([
         'id',
         'display_name',
       ]).withDefault('id'),
-      sort_order: parseAsStringEnum<GetFranchiseCompaniesQuery['sort_order']>([
+      sort_order: parseAsStringEnum<NonNullable<GetFranchiseCompaniesQuery['sort_order']>>([
         'asc',
         'desc',
       ]).withDefault('asc'),

@@ -98,6 +98,12 @@ export const routes = {
     pattern: '/franchise-companies',
     private: true,
   },
+  '/franchise-companies/create': {
+    router: '/franchise-companies/create',
+    filePath: '(private)/franchise-companies/create',
+    pattern: '/franchise-companies/create',
+    private: true,
+  },
   '/lockers': {
     router: '/lockers',
     filePath: '(private)/lockers',
@@ -406,6 +412,7 @@ export const routeKeys = [
   '/family-registrations/[id]',
   '/family-registrations/dashboard',
   '/franchise-companies',
+  '/franchise-companies/create',
   '/lockers',
   '/lockers/[id]',
   '/lockers/[id]/edit',
@@ -474,6 +481,7 @@ export const routePatterns = [
   '/family-registrations/:id',
   '/family-registrations/dashboard',
   '/franchise-companies',
+  '/franchise-companies/create',
   '/lockers',
   '/lockers/:id',
   '/lockers/:id/edit',

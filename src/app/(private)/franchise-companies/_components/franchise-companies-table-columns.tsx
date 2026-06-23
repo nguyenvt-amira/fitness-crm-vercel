@@ -1,11 +1,11 @@
 'use client';
 
-import type { FranchiseCompanyListItem } from '@/app/api/_schemas/franchise-company.schema';
 import type { ColumnDef } from '@tanstack/react-table';
 
 import { DataTableColumnHeader } from '@/components/common/data-table/data-table-column-header';
 import { Badge } from '@/components/ui/badge';
 
+import type { FranchiseCompanyListItem } from '@/lib/api/types.gen';
 import { cn } from '@/lib/utils';
 
 import {

@@ -2,6 +2,8 @@
 
 import { Suspense, useMemo, useState } from 'react';
 
+import { useRouter } from 'next/navigation';
+
 import { useQuery } from '@tanstack/react-query';
 import type { SortingState } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
@@ -16,6 +18,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 
 import { getCrmFranchiseCompaniesOptions } from '@/lib/api/@tanstack/react-query.gen';
+import { navigate } from '@/lib/routes/routes.util';
 
 import { Permission } from '@/types/permission.type';
 
@@ -24,6 +27,7 @@ import { FranchiseCompaniesTableColumns } from './_components/franchise-companie
 import { useFranchiseCompaniesFilters } from './_hooks/use-franchise-companies-filters';
 
 function FranchiseCompaniesPageContent() {
+  const router = useRouter();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const filtersHook = useFranchiseCompaniesFilters();
   const { filters, setFilters, queryParams, currentPage, setCurrentPage, pageSize, setPageSize } =
@@ -70,7 +74,11 @@ function FranchiseCompaniesPageContent() {
           </Badge>
         }
         actions={
-          <RoleGatedButton requiredPermission={Permission.FCCompaniesCreate} size="sm">
+          <RoleGatedButton
+            requiredPermission={Permission.FCCompaniesCreate}
+            size="sm"
+            onClick={() => router.push(navigate('/franchise-companies/create'))}
+          >
             <Plus className="size-4" />
             新規登録
           </RoleGatedButton>
