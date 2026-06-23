@@ -42,7 +42,20 @@ import '@/app/api/crm/leaves/[id]/execute-withdrawal/route';
 import '@/app/api/crm/leaves/[id]/reject/route';
 import '@/app/api/crm/leaves/[id]/route';
 import '@/app/api/crm/leaves/route';
+import '@/app/api/crm/lesson-schedules/[id]/cancel/route';
 import '@/app/api/crm/lesson-schedules/[id]/change/route';
+import '@/app/api/crm/lesson-schedules/[id]/instructor/change/route';
+import '@/app/api/crm/lesson-schedules/[id]/members/search/route';
+import '@/app/api/crm/lesson-schedules/[id]/memos/[memoId]/route';
+import '@/app/api/crm/lesson-schedules/[id]/memos/route';
+import '@/app/api/crm/lesson-schedules/[id]/reservations/[reservationId]/attendance/route';
+import '@/app/api/crm/lesson-schedules/[id]/reservations/[reservationId]/cancel/route';
+// D-01 FR-007: Lesson Reservations
+import '@/app/api/crm/lesson-schedules/[id]/reservations/route';
+import '@/app/api/crm/lesson-schedules/[id]/reservations/stats/route';
+import '@/app/api/crm/lesson-schedules/[id]/spaces/route';
+import '@/app/api/crm/lesson-schedules/[id]/studio/change/route';
+import '@/app/api/crm/lesson-schedules/[id]/time/change/route';
 // D-01: Lesson Schedules
 import '@/app/api/crm/lesson-schedules/route';
 import '@/app/api/crm/lesson-schedules/stores/summary/route';

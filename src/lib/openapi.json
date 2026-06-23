@@ -23083,6 +23083,970 @@
         "required": ["message", "id"],
         "title": "ScheduleChangeResponse",
         "description": "スケジュール変更レスポンス"
+      },
+      "ReservationStatus": {
+        "type": "string",
+        "enum": ["confirmed", "tentative", "attended", "no_show", "cancelled"],
+        "title": "ReservationStatus",
+        "description": "予約ステータス"
+      },
+      "AttendanceStatus": {
+        "type": "string",
+        "enum": ["unconfirmed", "confirmed", "no_show"],
+        "title": "AttendanceStatus",
+        "description": "出席ステータス"
+      },
+      "CancelType": {
+        "type": "string",
+        "enum": ["member", "staff", "instructor"],
+        "title": "CancelType",
+        "description": "キャンセル種別"
+      },
+      "Reservation": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "R001",
+            "description": "予約ID"
+          },
+          "schedule_id": {
+            "type": "string",
+            "example": "LS001",
+            "description": "レッスンスケジュールID"
+          },
+          "member_id": {
+            "type": "string",
+            "example": "M001",
+            "description": "会員ID"
+          },
+          "member_name": {
+            "type": "string",
+            "example": "山田 太郎",
+            "description": "会員名"
+          },
+          "plan_type": {
+            "type": "string",
+            "example": "月額8回",
+            "description": "プラン種別"
+          },
+          "space_number": {
+            "type": "string",
+            "nullable": true,
+            "example": "S03",
+            "description": "スペース番号"
+          },
+          "reservation_date": {
+            "type": "string",
+            "example": "2026-06-23",
+            "description": "予約日"
+          },
+          "reservation_time": {
+            "type": "string",
+            "example": "09:15",
+            "description": "予約時間"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["confirmed", "tentative", "attended", "no_show", "cancelled"],
+            "title": "ReservationStatus",
+            "description": "予約ステータス"
+          },
+          "attendance_status": {
+            "type": "string",
+            "enum": ["unconfirmed", "confirmed", "no_show"],
+            "title": "AttendanceStatus",
+            "description": "出席ステータス"
+          },
+          "cancel_type": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["member", "staff", "instructor", null],
+            "title": "CancelType",
+            "description": "キャンセル種別"
+          },
+          "penalty_active": {
+            "type": "boolean",
+            "default": false,
+            "description": "ペナルティ有効"
+          },
+          "penalty_end_date": {
+            "type": "string",
+            "nullable": true,
+            "description": "ペナルティ終了日"
+          },
+          "remaining_sessions": {
+            "type": "integer",
+            "example": 5,
+            "description": "残りセッション数"
+          },
+          "sent_notification": {
+            "type": "boolean",
+            "default": false,
+            "description": "通知送信済み"
+          }
+        },
+        "required": [
+          "id",
+          "schedule_id",
+          "member_id",
+          "member_name",
+          "plan_type",
+          "space_number",
+          "reservation_date",
+          "reservation_time",
+          "status",
+          "attendance_status",
+          "cancel_type",
+          "penalty_end_date",
+          "remaining_sessions"
+        ],
+        "title": "Reservation",
+        "description": "予約"
+      },
+      "ReservationListResponse": {
+        "type": "object",
+        "properties": {
+          "reservations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "R001",
+                  "description": "予約ID"
+                },
+                "schedule_id": {
+                  "type": "string",
+                  "example": "LS001",
+                  "description": "レッスンスケジュールID"
+                },
+                "member_id": {
+                  "type": "string",
+                  "example": "M001",
+                  "description": "会員ID"
+                },
+                "member_name": {
+                  "type": "string",
+                  "example": "山田 太郎",
+                  "description": "会員名"
+                },
+                "plan_type": {
+                  "type": "string",
+                  "example": "月額8回",
+                  "description": "プラン種別"
+                },
+                "space_number": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "S03",
+                  "description": "スペース番号"
+                },
+                "reservation_date": {
+                  "type": "string",
+                  "example": "2026-06-23",
+                  "description": "予約日"
+                },
+                "reservation_time": {
+                  "type": "string",
+                  "example": "09:15",
+                  "description": "予約時間"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["confirmed", "tentative", "attended", "no_show", "cancelled"],
+                  "title": "ReservationStatus",
+                  "description": "予約ステータス"
+                },
+                "attendance_status": {
+                  "type": "string",
+                  "enum": ["unconfirmed", "confirmed", "no_show"],
+                  "title": "AttendanceStatus",
+                  "description": "出席ステータス"
+                },
+                "cancel_type": {
+                  "type": "string",
+                  "nullable": true,
+                  "enum": ["member", "staff", "instructor", null],
+                  "title": "CancelType",
+                  "description": "キャンセル種別"
+                },
+                "penalty_active": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "ペナルティ有効"
+                },
+                "penalty_end_date": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "ペナルティ終了日"
+                },
+                "remaining_sessions": {
+                  "type": "integer",
+                  "example": 5,
+                  "description": "残りセッション数"
+                },
+                "sent_notification": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "通知送信済み"
+                }
+              },
+              "required": [
+                "id",
+                "schedule_id",
+                "member_id",
+                "member_name",
+                "plan_type",
+                "space_number",
+                "reservation_date",
+                "reservation_time",
+                "status",
+                "attendance_status",
+                "cancel_type",
+                "penalty_end_date",
+                "remaining_sessions"
+              ],
+              "title": "Reservation",
+              "description": "予約"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "example": 12,
+            "description": "総予約数"
+          },
+          "page": {
+            "type": "integer",
+            "example": 1,
+            "description": "現在のページ"
+          },
+          "pageSize": {
+            "type": "integer",
+            "example": 7,
+            "description": "1ページあたりの件数"
+          },
+          "totalPages": {
+            "type": "integer",
+            "example": 2,
+            "description": "総ページ数"
+          }
+        },
+        "required": ["reservations", "total", "page", "pageSize", "totalPages"],
+        "title": "ReservationListResponse",
+        "description": "予約一覧レスポンス"
+      },
+      "ReservationsQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "ページ番号"
+          },
+          "pageSize": {
+            "type": "integer",
+            "nullable": true,
+            "default": 7,
+            "description": "1ページあたりの件数"
+          },
+          "sortBy": {
+            "type": "string",
+            "enum": ["sequence", "member_name", "space_number", "reservation_date", "status"],
+            "description": "ソートキー"
+          },
+          "sortOrder": {
+            "type": "string",
+            "enum": ["asc", "desc"],
+            "description": "ソート順"
+          }
+        },
+        "title": "ReservationsQuery",
+        "description": "予約一覧クエリ"
+      },
+      "AddReservationRequest": {
+        "type": "object",
+        "properties": {
+          "member_id": {
+            "type": "string",
+            "example": "M005",
+            "description": "会員ID"
+          },
+          "schedule_id": {
+            "type": "string",
+            "example": "LS001",
+            "description": "スケジュールID"
+          },
+          "space_number": {
+            "type": "string",
+            "description": "スペース番号"
+          },
+          "send_notification": {
+            "type": "boolean",
+            "default": false,
+            "description": "通知送信"
+          }
+        },
+        "required": ["member_id", "schedule_id"],
+        "title": "AddReservationRequest",
+        "description": "予約追加リクエスト"
+      },
+      "CancelReservationRequest": {
+        "type": "object",
+        "properties": {
+          "cancel_type": {
+            "type": "string",
+            "enum": ["member", "staff", "instructor"],
+            "title": "CancelType",
+            "description": "キャンセル種別"
+          },
+          "send_notification": {
+            "type": "boolean",
+            "default": false,
+            "description": "キャンセル通知送信"
+          }
+        },
+        "required": ["cancel_type"],
+        "title": "CancelReservationRequest",
+        "description": "予約キャンセルリクエスト"
+      },
+      "CancelReservationResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "R001",
+            "description": "予約ID"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["cancelled"],
+            "description": "更新ステータス"
+          }
+        },
+        "required": ["id", "status"],
+        "title": "CancelReservationResponse",
+        "description": "予約キャンセルレスポンス"
+      },
+      "UpdateAttendanceRequest": {
+        "type": "object",
+        "properties": {
+          "attendance_status": {
+            "type": "string",
+            "enum": ["unconfirmed", "confirmed", "no_show"],
+            "title": "AttendanceStatus",
+            "description": "出席ステータス"
+          }
+        },
+        "required": ["attendance_status"],
+        "title": "UpdateAttendanceRequest",
+        "description": "出席更新リクエスト"
+      },
+      "StudioSpaceType": {
+        "type": "string",
+        "enum": ["available", "reserved", "equipment", "fixed_structure"],
+        "title": "StudioSpaceType",
+        "description": "スタジオスペース種別"
+      },
+      "StudioSpace": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "SP01",
+            "description": "スペースID"
+          },
+          "space_number": {
+            "type": "string",
+            "example": "S01",
+            "description": "スペース番号"
+          },
+          "row": {
+            "type": "integer",
+            "example": 0,
+            "description": "グリッド行"
+          },
+          "col": {
+            "type": "integer",
+            "example": 0,
+            "description": "グリッド列"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["available", "reserved", "equipment", "fixed_structure"],
+            "title": "StudioSpaceType",
+            "description": "スタジオスペース種別"
+          },
+          "reservation_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "予約ID"
+          },
+          "member_name": {
+            "type": "string",
+            "nullable": true,
+            "description": "会員名"
+          }
+        },
+        "required": ["id", "space_number", "row", "col", "type", "reservation_id", "member_name"],
+        "title": "StudioSpace",
+        "description": "スタジオスペース"
+      },
+      "StudioSpaceGridResponse": {
+        "type": "object",
+        "properties": {
+          "studio_name": {
+            "type": "string",
+            "example": "スタジオA",
+            "description": "スタジオ名"
+          },
+          "total_capacity": {
+            "type": "integer",
+            "example": 16,
+            "description": "総収容人数"
+          },
+          "grid_rows": {
+            "type": "integer",
+            "example": 2,
+            "description": "グリッド行数"
+          },
+          "grid_cols": {
+            "type": "integer",
+            "example": 8,
+            "description": "グリッド列数"
+          },
+          "spaces": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "SP01",
+                  "description": "スペースID"
+                },
+                "space_number": {
+                  "type": "string",
+                  "example": "S01",
+                  "description": "スペース番号"
+                },
+                "row": {
+                  "type": "integer",
+                  "example": 0,
+                  "description": "グリッド行"
+                },
+                "col": {
+                  "type": "integer",
+                  "example": 0,
+                  "description": "グリッド列"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": ["available", "reserved", "equipment", "fixed_structure"],
+                  "title": "StudioSpaceType",
+                  "description": "スタジオスペース種別"
+                },
+                "reservation_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "予約ID"
+                },
+                "member_name": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "会員名"
+                }
+              },
+              "required": [
+                "id",
+                "space_number",
+                "row",
+                "col",
+                "type",
+                "reservation_id",
+                "member_name"
+              ],
+              "title": "StudioSpace",
+              "description": "スタジオスペース"
+            }
+          }
+        },
+        "required": ["studio_name", "total_capacity", "grid_rows", "grid_cols", "spaces"],
+        "title": "StudioSpaceGridResponse",
+        "description": "スタジオスペースグリッドレスポンス"
+      },
+      "ReservationStats": {
+        "type": "object",
+        "properties": {
+          "schedule_id": {
+            "type": "string"
+          },
+          "total_capacity": {
+            "type": "integer",
+            "example": 14
+          },
+          "total_reserved": {
+            "type": "integer",
+            "example": 12
+          },
+          "remaining_seats": {
+            "type": "integer",
+            "example": 2
+          },
+          "status_breakdown": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "enum": ["confirmed", "tentative", "attended", "no_show", "cancelled"],
+                  "title": "ReservationStatus",
+                  "description": "予約ステータス"
+                },
+                "count": {
+                  "type": "integer",
+                  "example": 5
+                },
+                "percentage": {
+                  "type": "number",
+                  "example": 41.7
+                }
+              },
+              "required": ["status", "count", "percentage"]
+            }
+          }
+        },
+        "required": [
+          "schedule_id",
+          "total_capacity",
+          "total_reserved",
+          "remaining_seats",
+          "status_breakdown"
+        ],
+        "title": "ReservationStats",
+        "description": "予約統計"
+      },
+      "ReservationStatsResponse": {
+        "type": "object",
+        "properties": {
+          "stats": {
+            "type": "object",
+            "properties": {
+              "schedule_id": {
+                "type": "string"
+              },
+              "total_capacity": {
+                "type": "integer",
+                "example": 14
+              },
+              "total_reserved": {
+                "type": "integer",
+                "example": 12
+              },
+              "remaining_seats": {
+                "type": "integer",
+                "example": 2
+              },
+              "status_breakdown": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": ["confirmed", "tentative", "attended", "no_show", "cancelled"],
+                      "title": "ReservationStatus",
+                      "description": "予約ステータス"
+                    },
+                    "count": {
+                      "type": "integer",
+                      "example": 5
+                    },
+                    "percentage": {
+                      "type": "number",
+                      "example": 41.7
+                    }
+                  },
+                  "required": ["status", "count", "percentage"]
+                }
+              }
+            },
+            "required": [
+              "schedule_id",
+              "total_capacity",
+              "total_reserved",
+              "remaining_seats",
+              "status_breakdown"
+            ],
+            "title": "ReservationStats",
+            "description": "予約統計"
+          }
+        },
+        "required": ["stats"],
+        "title": "ReservationStatsResponse",
+        "description": "予約統計レスポンス"
+      },
+      "MemberSearchResult": {
+        "type": "object",
+        "properties": {
+          "member_id": {
+            "type": "string",
+            "example": "M001",
+            "description": "会員ID"
+          },
+          "name": {
+            "type": "string",
+            "example": "山田 太郎",
+            "description": "会員名"
+          },
+          "remaining_sessions": {
+            "type": "integer",
+            "example": 3,
+            "description": "残りセッション数"
+          },
+          "penalty_active": {
+            "type": "boolean",
+            "example": false,
+            "description": "ペナルティ有効"
+          },
+          "penalty_end_date": {
+            "type": "string",
+            "nullable": true,
+            "description": "ペナルティ終了日"
+          }
+        },
+        "required": [
+          "member_id",
+          "name",
+          "remaining_sessions",
+          "penalty_active",
+          "penalty_end_date"
+        ],
+        "title": "MemberSearchResult",
+        "description": "会員検索結果"
+      },
+      "MemberSearchResponse": {
+        "type": "object",
+        "properties": {
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "member_id": {
+                  "type": "string",
+                  "example": "M001",
+                  "description": "会員ID"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "山田 太郎",
+                  "description": "会員名"
+                },
+                "remaining_sessions": {
+                  "type": "integer",
+                  "example": 3,
+                  "description": "残りセッション数"
+                },
+                "penalty_active": {
+                  "type": "boolean",
+                  "example": false,
+                  "description": "ペナルティ有効"
+                },
+                "penalty_end_date": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "ペナルティ終了日"
+                }
+              },
+              "required": [
+                "member_id",
+                "name",
+                "remaining_sessions",
+                "penalty_active",
+                "penalty_end_date"
+              ],
+              "title": "MemberSearchResult",
+              "description": "会員検索結果"
+            }
+          }
+        },
+        "required": ["members"],
+        "title": "MemberSearchResponse",
+        "description": "会員検索レスポンス"
+      },
+      "MemberSearchQuery": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "minLength": 1,
+            "description": "検索クエリ"
+          }
+        },
+        "required": ["q"],
+        "title": "MemberSearchQuery",
+        "description": "会員検索クエリ"
+      },
+      "ChangeInstructorRequest": {
+        "type": "object",
+        "properties": {
+          "instructor_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "インストラクターID配列"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "変更理由"
+          },
+          "send_notification": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": ["instructor_ids", "reason"],
+        "title": "ChangeInstructorRequest",
+        "description": "インストラクター変更リクエスト"
+      },
+      "ChangeTimeRequest": {
+        "type": "object",
+        "properties": {
+          "start_time": {
+            "type": "string",
+            "description": "新しい開始時刻 ISO8601"
+          },
+          "end_time": {
+            "type": "string",
+            "description": "新しい終了時刻 ISO8601"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "変更理由"
+          },
+          "send_notification": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": ["start_time", "end_time", "reason"],
+        "title": "ChangeTimeRequest",
+        "description": "時間変更リクエスト"
+      },
+      "ChangeStudioRequest": {
+        "type": "object",
+        "properties": {
+          "studio_id": {
+            "type": "string",
+            "description": "スタジオID"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "変更理由"
+          },
+          "send_notification": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": ["studio_id", "reason"],
+        "title": "ChangeStudioRequest",
+        "description": "スタジオ変更リクエスト"
+      },
+      "ChangeResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "変更が完了しました"
+          }
+        },
+        "required": ["message"],
+        "title": "ChangeResponse",
+        "description": "変更レスポンス"
+      },
+      "CancelLessonRequest": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "type": "string",
+            "enum": ["this_only", "all_after"],
+            "description": "キャンセル範囲"
+          },
+          "cancel_reason": {
+            "type": "string",
+            "description": "キャンセル理由"
+          },
+          "cancel_reason_detail": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "send_notification": {
+            "type": "boolean",
+            "default": false
+          },
+          "process_refund": {
+            "type": "boolean",
+            "default": false
+          },
+          "notify_instructor": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": ["scope", "cancel_reason"],
+        "title": "CancelLessonRequest",
+        "description": "レッスンキャンセルリクエスト"
+      },
+      "CancelLessonResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "スケジュールID"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["cancelled"]
+          },
+          "cancelled_at": {
+            "type": "string",
+            "description": "キャンセル日時"
+          },
+          "cancelled_by": {
+            "type": "string",
+            "description": "キャンセル実施者"
+          },
+          "cancel_reason": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "example": "レッスンを中止しました"
+          }
+        },
+        "required": ["id", "status", "cancelled_at", "cancelled_by", "cancel_reason", "message"],
+        "title": "CancelLessonResponse",
+        "description": "レッスンキャンセルレスポンス"
+      },
+      "SessionMemo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "MEMO001",
+            "description": "メモID"
+          },
+          "schedule_id": {
+            "type": "string",
+            "example": "LS001",
+            "description": "スケジュールID"
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "メモ内容"
+          },
+          "author_id": {
+            "type": "string",
+            "example": "ST001",
+            "description": "作成者ID"
+          },
+          "author_name": {
+            "type": "string",
+            "example": "田中 花子",
+            "description": "作成者名"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "作成日時"
+          },
+          "updated_at": {
+            "type": "string",
+            "nullable": true,
+            "description": "更新日時"
+          }
+        },
+        "required": [
+          "id",
+          "schedule_id",
+          "content",
+          "author_id",
+          "author_name",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "SessionMemo",
+        "description": "セッションメモ"
+      },
+      "MemoListResponse": {
+        "type": "object",
+        "properties": {
+          "memos": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "MEMO001",
+                  "description": "メモID"
+                },
+                "schedule_id": {
+                  "type": "string",
+                  "example": "LS001",
+                  "description": "スケジュールID"
+                },
+                "content": {
+                  "type": "string",
+                  "maxLength": 1000,
+                  "description": "メモ内容"
+                },
+                "author_id": {
+                  "type": "string",
+                  "example": "ST001",
+                  "description": "作成者ID"
+                },
+                "author_name": {
+                  "type": "string",
+                  "example": "田中 花子",
+                  "description": "作成者名"
+                },
+                "created_at": {
+                  "type": "string",
+                  "description": "作成日時"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "更新日時"
+                }
+              },
+              "required": [
+                "id",
+                "schedule_id",
+                "content",
+                "author_id",
+                "author_name",
+                "created_at",
+                "updated_at"
+              ],
+              "title": "SessionMemo",
+              "description": "セッションメモ"
+            }
+          }
+        },
+        "required": ["memos"],
+        "title": "MemoListResponse",
+        "description": "メモ一覧レスポンス"
       }
     },
     "parameters": {}

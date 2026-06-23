@@ -16274,3 +16274,736 @@ export type ScheduleChangeResponse = {
      */
     id: string;
 };
+
+/**
+ * ReservationStatus
+ *
+ * 予約ステータス
+ */
+export const ReservationStatus = {
+    CONFIRMED: 'confirmed',
+    TENTATIVE: 'tentative',
+    ATTENDED: 'attended',
+    NO_SHOW: 'no_show',
+    CANCELLED: 'cancelled'
+} as const;
+
+/**
+ * ReservationStatus
+ *
+ * 予約ステータス
+ */
+export type ReservationStatus = typeof ReservationStatus[keyof typeof ReservationStatus];
+
+/**
+ * AttendanceStatus
+ *
+ * 出席ステータス
+ */
+export const AttendanceStatus = {
+    UNCONFIRMED: 'unconfirmed',
+    CONFIRMED: 'confirmed',
+    NO_SHOW: 'no_show'
+} as const;
+
+/**
+ * AttendanceStatus
+ *
+ * 出席ステータス
+ */
+export type AttendanceStatus = typeof AttendanceStatus[keyof typeof AttendanceStatus];
+
+/**
+ * CancelType
+ *
+ * キャンセル種別
+ */
+export const CancelType = {
+    MEMBER: 'member',
+    STAFF: 'staff',
+    INSTRUCTOR: 'instructor'
+} as const;
+
+/**
+ * CancelType
+ *
+ * キャンセル種別
+ */
+export type CancelType = typeof CancelType[keyof typeof CancelType];
+
+/**
+ * Reservation
+ *
+ * 予約
+ */
+export type Reservation = {
+    /**
+     * 予約ID
+     */
+    id: string;
+    /**
+     * レッスンスケジュールID
+     */
+    schedule_id: string;
+    /**
+     * 会員ID
+     */
+    member_id: string;
+    /**
+     * 会員名
+     */
+    member_name: string;
+    /**
+     * プラン種別
+     */
+    plan_type: string;
+    /**
+     * スペース番号
+     */
+    space_number: string | null;
+    /**
+     * 予約日
+     */
+    reservation_date: string;
+    /**
+     * 予約時間
+     */
+    reservation_time: string;
+    /**
+     * ReservationStatus
+     *
+     * 予約ステータス
+     */
+    status: 'confirmed' | 'tentative' | 'attended' | 'no_show' | 'cancelled';
+    /**
+     * AttendanceStatus
+     *
+     * 出席ステータス
+     */
+    attendance_status: 'unconfirmed' | 'confirmed' | 'no_show';
+    /**
+     * CancelType
+     *
+     * キャンセル種別
+     */
+    cancel_type: 'member' | 'staff' | 'instructor' | null;
+    /**
+     * ペナルティ有効
+     */
+    penalty_active?: boolean;
+    /**
+     * ペナルティ終了日
+     */
+    penalty_end_date: string | null;
+    /**
+     * 残りセッション数
+     */
+    remaining_sessions: number;
+    /**
+     * 通知送信済み
+     */
+    sent_notification?: boolean;
+};
+
+/**
+ * ReservationListResponse
+ *
+ * 予約一覧レスポンス
+ */
+export type ReservationListResponse = {
+    reservations: Array<{
+        /**
+         * 予約ID
+         */
+        id: string;
+        /**
+         * レッスンスケジュールID
+         */
+        schedule_id: string;
+        /**
+         * 会員ID
+         */
+        member_id: string;
+        /**
+         * 会員名
+         */
+        member_name: string;
+        /**
+         * プラン種別
+         */
+        plan_type: string;
+        /**
+         * スペース番号
+         */
+        space_number: string | null;
+        /**
+         * 予約日
+         */
+        reservation_date: string;
+        /**
+         * 予約時間
+         */
+        reservation_time: string;
+        /**
+         * ReservationStatus
+         *
+         * 予約ステータス
+         */
+        status: 'confirmed' | 'tentative' | 'attended' | 'no_show' | 'cancelled';
+        /**
+         * AttendanceStatus
+         *
+         * 出席ステータス
+         */
+        attendance_status: 'unconfirmed' | 'confirmed' | 'no_show';
+        /**
+         * CancelType
+         *
+         * キャンセル種別
+         */
+        cancel_type: 'member' | 'staff' | 'instructor' | null;
+        /**
+         * ペナルティ有効
+         */
+        penalty_active?: boolean;
+        /**
+         * ペナルティ終了日
+         */
+        penalty_end_date: string | null;
+        /**
+         * 残りセッション数
+         */
+        remaining_sessions: number;
+        /**
+         * 通知送信済み
+         */
+        sent_notification?: boolean;
+    }>;
+    /**
+     * 総予約数
+     */
+    total: number;
+    /**
+     * 現在のページ
+     */
+    page: number;
+    /**
+     * 1ページあたりの件数
+     */
+    pageSize: number;
+    /**
+     * 総ページ数
+     */
+    totalPages: number;
+};
+
+/**
+ * ReservationsQuery
+ *
+ * 予約一覧クエリ
+ */
+export type ReservationsQuery = {
+    /**
+     * ページ番号
+     */
+    page?: number;
+    /**
+     * 1ページあたりの件数
+     */
+    pageSize?: number | null;
+    /**
+     * ソートキー
+     */
+    sortBy?: 'sequence' | 'member_name' | 'space_number' | 'reservation_date' | 'status';
+    /**
+     * ソート順
+     */
+    sortOrder?: 'asc' | 'desc';
+};
+
+/**
+ * AddReservationRequest
+ *
+ * 予約追加リクエスト
+ */
+export type AddReservationRequest = {
+    /**
+     * 会員ID
+     */
+    member_id: string;
+    /**
+     * スケジュールID
+     */
+    schedule_id: string;
+    /**
+     * スペース番号
+     */
+    space_number?: string;
+    /**
+     * 通知送信
+     */
+    send_notification?: boolean;
+};
+
+/**
+ * CancelReservationRequest
+ *
+ * 予約キャンセルリクエスト
+ */
+export type CancelReservationRequest = {
+    /**
+     * CancelType
+     *
+     * キャンセル種別
+     */
+    cancel_type: 'member' | 'staff' | 'instructor';
+    /**
+     * キャンセル通知送信
+     */
+    send_notification?: boolean;
+};
+
+/**
+ * CancelReservationResponse
+ *
+ * 予約キャンセルレスポンス
+ */
+export type CancelReservationResponse = {
+    /**
+     * 予約ID
+     */
+    id: string;
+    /**
+     * 更新ステータス
+     */
+    status: 'cancelled';
+};
+
+/**
+ * UpdateAttendanceRequest
+ *
+ * 出席更新リクエスト
+ */
+export type UpdateAttendanceRequest = {
+    /**
+     * AttendanceStatus
+     *
+     * 出席ステータス
+     */
+    attendance_status: 'unconfirmed' | 'confirmed' | 'no_show';
+};
+
+/**
+ * StudioSpaceType
+ *
+ * スタジオスペース種別
+ */
+export const StudioSpaceType = {
+    AVAILABLE: 'available',
+    RESERVED: 'reserved',
+    EQUIPMENT: 'equipment',
+    FIXED_STRUCTURE: 'fixed_structure'
+} as const;
+
+/**
+ * StudioSpaceType
+ *
+ * スタジオスペース種別
+ */
+export type StudioSpaceType = typeof StudioSpaceType[keyof typeof StudioSpaceType];
+
+/**
+ * StudioSpace
+ *
+ * スタジオスペース
+ */
+export type StudioSpace = {
+    /**
+     * スペースID
+     */
+    id: string;
+    /**
+     * スペース番号
+     */
+    space_number: string;
+    /**
+     * グリッド行
+     */
+    row: number;
+    /**
+     * グリッド列
+     */
+    col: number;
+    /**
+     * StudioSpaceType
+     *
+     * スタジオスペース種別
+     */
+    type: 'available' | 'reserved' | 'equipment' | 'fixed_structure';
+    /**
+     * 予約ID
+     */
+    reservation_id: string | null;
+    /**
+     * 会員名
+     */
+    member_name: string | null;
+};
+
+/**
+ * StudioSpaceGridResponse
+ *
+ * スタジオスペースグリッドレスポンス
+ */
+export type StudioSpaceGridResponse = {
+    /**
+     * スタジオ名
+     */
+    studio_name: string;
+    /**
+     * 総収容人数
+     */
+    total_capacity: number;
+    /**
+     * グリッド行数
+     */
+    grid_rows: number;
+    /**
+     * グリッド列数
+     */
+    grid_cols: number;
+    spaces: Array<{
+        /**
+         * スペースID
+         */
+        id: string;
+        /**
+         * スペース番号
+         */
+        space_number: string;
+        /**
+         * グリッド行
+         */
+        row: number;
+        /**
+         * グリッド列
+         */
+        col: number;
+        /**
+         * StudioSpaceType
+         *
+         * スタジオスペース種別
+         */
+        type: 'available' | 'reserved' | 'equipment' | 'fixed_structure';
+        /**
+         * 予約ID
+         */
+        reservation_id: string | null;
+        /**
+         * 会員名
+         */
+        member_name: string | null;
+    }>;
+};
+
+/**
+ * ReservationStats
+ *
+ * 予約統計
+ */
+export type ReservationStats = {
+    schedule_id: string;
+    total_capacity: number;
+    total_reserved: number;
+    remaining_seats: number;
+    status_breakdown: Array<{
+        /**
+         * ReservationStatus
+         *
+         * 予約ステータス
+         */
+        status: 'confirmed' | 'tentative' | 'attended' | 'no_show' | 'cancelled';
+        count: number;
+        percentage: number;
+    }>;
+};
+
+/**
+ * ReservationStatsResponse
+ *
+ * 予約統計レスポンス
+ */
+export type ReservationStatsResponse = {
+    /**
+     * ReservationStats
+     *
+     * 予約統計
+     */
+    stats: {
+        schedule_id: string;
+        total_capacity: number;
+        total_reserved: number;
+        remaining_seats: number;
+        status_breakdown: Array<{
+            /**
+             * ReservationStatus
+             *
+             * 予約ステータス
+             */
+            status: 'confirmed' | 'tentative' | 'attended' | 'no_show' | 'cancelled';
+            count: number;
+            percentage: number;
+        }>;
+    };
+};
+
+/**
+ * MemberSearchResult
+ *
+ * 会員検索結果
+ */
+export type MemberSearchResult = {
+    /**
+     * 会員ID
+     */
+    member_id: string;
+    /**
+     * 会員名
+     */
+    name: string;
+    /**
+     * 残りセッション数
+     */
+    remaining_sessions: number;
+    /**
+     * ペナルティ有効
+     */
+    penalty_active: boolean;
+    /**
+     * ペナルティ終了日
+     */
+    penalty_end_date: string | null;
+};
+
+/**
+ * MemberSearchResponse
+ *
+ * 会員検索レスポンス
+ */
+export type MemberSearchResponse = {
+    members: Array<{
+        /**
+         * 会員ID
+         */
+        member_id: string;
+        /**
+         * 会員名
+         */
+        name: string;
+        /**
+         * 残りセッション数
+         */
+        remaining_sessions: number;
+        /**
+         * ペナルティ有効
+         */
+        penalty_active: boolean;
+        /**
+         * ペナルティ終了日
+         */
+        penalty_end_date: string | null;
+    }>;
+};
+
+/**
+ * MemberSearchQuery
+ *
+ * 会員検索クエリ
+ */
+export type MemberSearchQuery = {
+    /**
+     * 検索クエリ
+     */
+    q: string;
+};
+
+/**
+ * ChangeInstructorRequest
+ *
+ * インストラクター変更リクエスト
+ */
+export type ChangeInstructorRequest = {
+    /**
+     * インストラクターID配列
+     */
+    instructor_ids: Array<string>;
+    /**
+     * 変更理由
+     */
+    reason: string;
+    send_notification?: boolean;
+};
+
+/**
+ * ChangeTimeRequest
+ *
+ * 時間変更リクエスト
+ */
+export type ChangeTimeRequest = {
+    /**
+     * 新しい開始時刻 ISO8601
+     */
+    start_time: string;
+    /**
+     * 新しい終了時刻 ISO8601
+     */
+    end_time: string;
+    /**
+     * 変更理由
+     */
+    reason: string;
+    send_notification?: boolean;
+};
+
+/**
+ * ChangeStudioRequest
+ *
+ * スタジオ変更リクエスト
+ */
+export type ChangeStudioRequest = {
+    /**
+     * スタジオID
+     */
+    studio_id: string;
+    /**
+     * 変更理由
+     */
+    reason: string;
+    send_notification?: boolean;
+};
+
+/**
+ * ChangeResponse
+ *
+ * 変更レスポンス
+ */
+export type ChangeResponse = {
+    message: string;
+};
+
+/**
+ * CancelLessonRequest
+ *
+ * レッスンキャンセルリクエスト
+ */
+export type CancelLessonRequest = {
+    /**
+     * キャンセル範囲
+     */
+    scope: 'this_only' | 'all_after';
+    /**
+     * キャンセル理由
+     */
+    cancel_reason: string;
+    cancel_reason_detail?: string;
+    send_notification?: boolean;
+    process_refund?: boolean;
+    notify_instructor?: boolean;
+};
+
+/**
+ * CancelLessonResponse
+ *
+ * レッスンキャンセルレスポンス
+ */
+export type CancelLessonResponse = {
+    /**
+     * スケジュールID
+     */
+    id: string;
+    status: 'cancelled';
+    /**
+     * キャンセル日時
+     */
+    cancelled_at: string;
+    /**
+     * キャンセル実施者
+     */
+    cancelled_by: string;
+    cancel_reason: string;
+    message: string;
+};
+
+/**
+ * SessionMemo
+ *
+ * セッションメモ
+ */
+export type SessionMemo = {
+    /**
+     * メモID
+     */
+    id: string;
+    /**
+     * スケジュールID
+     */
+    schedule_id: string;
+    /**
+     * メモ内容
+     */
+    content: string;
+    /**
+     * 作成者ID
+     */
+    author_id: string;
+    /**
+     * 作成者名
+     */
+    author_name: string;
+    /**
+     * 作成日時
+     */
+    created_at: string;
+    /**
+     * 更新日時
+     */
+    updated_at: string | null;
+};
+
+/**
+ * MemoListResponse
+ *
+ * メモ一覧レスポンス
+ */
+export type MemoListResponse = {
+    memos: Array<{
+        /**
+         * メモID
+         */
+        id: string;
+        /**
+         * スケジュールID
+         */
+        schedule_id: string;
+        /**
+         * メモ内容
+         */
+        content: string;
+        /**
+         * 作成者ID
+         */
+        author_id: string;
+        /**
+         * 作成者名
+         */
+        author_name: string;
+        /**
+         * 作成日時
+         */
+        created_at: string;
+        /**
+         * 更新日時
+         */
+        updated_at: string | null;
+    }>;
+};

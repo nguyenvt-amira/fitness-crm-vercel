@@ -10,6 +10,7 @@ import * as brandSchemas from '../_schemas/brand.schema';
 import * as campaignSchemas from '../_schemas/campaign.schema';
 import * as familyRegistrationSchemas from '../_schemas/family-registration.schema';
 import * as leaveSchemas from '../_schemas/leave.schema';
+import * as lessonReservationSchemas from '../_schemas/lesson-reservation.schema';
 import * as lessonScheduleSchemas from '../_schemas/lesson-schedule.schema';
 import * as lockerSchemas from '../_schemas/locker.schema';
 import * as mainContractSchemas from '../_schemas/main-contract.schema';
@@ -1666,5 +1667,139 @@ export function registerAllSchemas() {
   registeredSchemaMap.set(
     'ScheduleChangeResponse',
     registry.register('ScheduleChangeResponse', lessonScheduleSchemas.ScheduleChangeResponseSchema),
+  );
+
+  // D-01 FR-007: Lesson Reservations
+  registeredSchemaMap.set(
+    'ReservationStatus',
+    registry.register('ReservationStatus', lessonReservationSchemas.ReservationStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'AttendanceStatus',
+    registry.register('AttendanceStatus', lessonReservationSchemas.AttendanceStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'CancelType',
+    registry.register('CancelType', lessonReservationSchemas.CancelTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'Reservation',
+    registry.register('Reservation', lessonReservationSchemas.ReservationSchema),
+  );
+  registeredSchemaMap.set(
+    'ReservationListResponse',
+    registry.register(
+      'ReservationListResponse',
+      lessonReservationSchemas.ReservationListResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'ReservationsQuery',
+    registry.register('ReservationsQuery', lessonReservationSchemas.ReservationsQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'AddReservationRequest',
+    registry.register(
+      'AddReservationRequest',
+      lessonReservationSchemas.AddReservationRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'CancelReservationRequest',
+    registry.register(
+      'CancelReservationRequest',
+      lessonReservationSchemas.CancelReservationRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'CancelReservationResponse',
+    registry.register(
+      'CancelReservationResponse',
+      lessonReservationSchemas.CancelReservationResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateAttendanceRequest',
+    registry.register(
+      'UpdateAttendanceRequest',
+      lessonReservationSchemas.UpdateAttendanceRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'StudioSpaceType',
+    registry.register('StudioSpaceType', lessonReservationSchemas.StudioSpaceTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'StudioSpace',
+    registry.register('StudioSpace', lessonReservationSchemas.StudioSpaceSchema),
+  );
+  registeredSchemaMap.set(
+    'StudioSpaceGridResponse',
+    registry.register(
+      'StudioSpaceGridResponse',
+      lessonReservationSchemas.StudioSpaceGridResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'ReservationStats',
+    registry.register('ReservationStats', lessonReservationSchemas.ReservationStatsSchema),
+  );
+  registeredSchemaMap.set(
+    'ReservationStatsResponse',
+    registry.register(
+      'ReservationStatsResponse',
+      lessonReservationSchemas.ReservationStatsResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'MemberSearchResult',
+    registry.register('MemberSearchResult', lessonReservationSchemas.MemberSearchResultSchema),
+  );
+  registeredSchemaMap.set(
+    'MemberSearchResponse',
+    registry.register('MemberSearchResponse', lessonReservationSchemas.MemberSearchResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'MemberSearchQuery',
+    registry.register('MemberSearchQuery', lessonReservationSchemas.MemberSearchQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'ChangeInstructorRequest',
+    registry.register(
+      'ChangeInstructorRequest',
+      lessonReservationSchemas.ChangeInstructorRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'ChangeTimeRequest',
+    registry.register('ChangeTimeRequest', lessonReservationSchemas.ChangeTimeRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'ChangeStudioRequest',
+    registry.register('ChangeStudioRequest', lessonReservationSchemas.ChangeStudioRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'ChangeResponse',
+    registry.register('ChangeResponse', lessonReservationSchemas.ChangeResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'CancelLessonRequest',
+    registry.register('CancelLessonRequest', lessonReservationSchemas.CancelLessonRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'CancelLessonResponse',
+    registry.register('CancelLessonResponse', lessonReservationSchemas.CancelLessonResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'SessionMemo',
+    registry.register('SessionMemo', lessonReservationSchemas.SessionMemoSchema),
+  );
+  registeredSchemaMap.set(
+    'CreateMemoRequest',
+    registry.register('CreateMemoRequest', lessonReservationSchemas.CreateMemoRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'MemoListResponse',
+    registry.register('MemoListResponse', lessonReservationSchemas.MemoListResponseSchema),
   );
 }
