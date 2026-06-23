@@ -9,6 +9,7 @@ import * as blacklistSchemas from '../_schemas/blacklist.schema';
 import * as brandSchemas from '../_schemas/brand.schema';
 import * as campaignSchemas from '../_schemas/campaign.schema';
 import * as familyRegistrationSchemas from '../_schemas/family-registration.schema';
+import * as franchiseCompanySchemas from '../_schemas/franchise-company.schema';
 import * as leaveSchemas from '../_schemas/leave.schema';
 import * as lockerSchemas from '../_schemas/locker.schema';
 import * as mainContractSchemas from '../_schemas/main-contract.schema';
@@ -18,11 +19,11 @@ import * as optionDiscountSchemas from '../_schemas/option-discount.schema';
 import * as optionMasterSchemas from '../_schemas/option-master.schema';
 import * as positionSchemas from '../_schemas/position.schema';
 import * as promoCodeSchemas from '../_schemas/promo-code.schema';
-import * as surveySchemas from '../_schemas/survey.schema';
-import * as surveyReportingSchemas from '../_schemas/survey-reporting.schema';
 import * as staffSchemas from '../_schemas/staff.schema';
 import * as storeAccessSettingsSchemas from '../_schemas/store-access-settings.schema';
 import * as storeSchemas from '../_schemas/store.schema';
+import * as surveyReportingSchemas from '../_schemas/survey-reporting.schema';
+import * as surveySchemas from '../_schemas/survey.schema';
 import * as visitExperienceSchemas from '../_schemas/visit-experience.schema';
 import { registry } from './register-route';
 
@@ -154,6 +155,38 @@ export function registerAllSchemas() {
   registeredSchemaMap.set(
     'CampaignDetail',
     registry.register('CampaignDetail', campaignSchemas.CampaignDetailSchema),
+  );
+  registeredSchemaMap.set(
+    'FranchiseCompanyType',
+    registry.register('FranchiseCompanyType', franchiseCompanySchemas.FranchiseCompanyTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'FranchiseCompanyStatus',
+    registry.register(
+      'FranchiseCompanyStatus',
+      franchiseCompanySchemas.FranchiseCompanyStatusSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'FranchiseCompanyListItem',
+    registry.register(
+      'FranchiseCompanyListItem',
+      franchiseCompanySchemas.FranchiseCompanyListItemSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetFranchiseCompaniesQuery',
+    registry.register(
+      'GetFranchiseCompaniesQuery',
+      franchiseCompanySchemas.GetFranchiseCompaniesQuerySchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetFranchiseCompaniesResponse',
+    registry.register(
+      'GetFranchiseCompaniesResponse',
+      franchiseCompanySchemas.GetFranchiseCompaniesResponseSchema,
+    ),
   );
   registeredSchemaMap.set(
     'GetCampaignsQuery',

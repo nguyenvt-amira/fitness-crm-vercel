@@ -62,6 +62,9 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
   '/campaigns/create': Permission.CampaignsCreate,
   '/campaigns/:id/edit': Permission.CampaignsEdit,
 
+  // Franchise companies
+  '/franchise-companies': Permission.FCCompaniesView,
+
   // Options
   '/options': Permission.OptionsView,
   '/options/:id': Permission.OptionsView,
@@ -153,6 +156,10 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.CampaignsEdit,
     Permission.CampaignsPromoCodeCreate,
     Permission.CampaignsPromoCodeExport,
+    Permission.FCCompaniesView,
+    Permission.FCCompaniesCreate,
+    Permission.FCCompaniesEdit,
+    Permission.FCCompaniesDelete,
     Permission.ContractsEdit,
     Permission.ContractsDelete,
     Permission.ContractsCreate,
@@ -205,6 +212,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.CampaignsView,
     Permission.CampaignsPromoCodeCreate,
     Permission.CampaignsPromoCodeExport,
+    Permission.FCCompaniesView,
     Permission.OptionsView,
     Permission.BrandsView,
     Permission.LockersView,

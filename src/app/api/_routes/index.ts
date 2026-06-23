@@ -35,6 +35,7 @@ import '@/app/api/crm/family-registrations/risk-evaluation/route';
 // Import family registrations routes
 import '@/app/api/crm/family-registrations/route';
 import '@/app/api/crm/family-registrations/summary/route';
+import '@/app/api/crm/franchise-companies/route';
 // Import leaves routes
 import '@/app/api/crm/leaves/[id]/approve/route';
 import '@/app/api/crm/leaves/[id]/cancel-withdrawal/route';

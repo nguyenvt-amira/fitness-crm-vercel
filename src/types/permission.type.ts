@@ -109,6 +109,14 @@ export enum Permission {
   CampaignsPromoCodeExport = 'campaigns-promo-code.export',
 
   // -------------------------------------------------------------------------
+  // Franchise companies
+  // -------------------------------------------------------------------------
+  FCCompaniesView = 'fc-companies.view',
+  FCCompaniesCreate = 'fc-companies.create',
+  FCCompaniesEdit = 'fc-companies.edit',
+  FCCompaniesDelete = 'fc-companies.delete',
+
+  // -------------------------------------------------------------------------
   // Options
   // -------------------------------------------------------------------------
   OptionsView = 'options.view',

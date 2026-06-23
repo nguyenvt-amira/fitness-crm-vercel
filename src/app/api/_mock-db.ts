@@ -1179,6 +1179,14 @@ export interface UserRow {
   role: 'System' | 'Headquarter' | 'Manager' | 'Staff' | 'Trainer' | 'Observer';
 }
 
+interface FranchiseCompanyRow {
+  id: string;
+  display_name: string;
+  type: 'direct' | 'fc';
+  managed_store_count: number;
+  status: 'active' | 'inactive';
+}
+
 const SEED_USERS: UserRow[] = [
   {
     id: 'U-000',
@@ -2097,6 +2105,50 @@ const SEED_VISIT_EXPERIENCES: VisitExperienceDetail[] = [
     ],
   },
 ];
+const SEED_FRANCHISE_COMPANIES: FranchiseCompanyRow[] = [
+  {
+    id: 'fc-001',
+    display_name: 'サンプルFC株式会社',
+    type: 'fc',
+    managed_store_count: 1,
+    status: 'active',
+  },
+  {
+    id: 'fc-002',
+    display_name: '株式会社フィットネスパートナーズ',
+    type: 'fc',
+    managed_store_count: 8,
+    status: 'active',
+  },
+  {
+    id: 'fc-003',
+    display_name: '株式会社フィットイースト',
+    type: 'fc',
+    managed_store_count: 5,
+    status: 'active',
+  },
+  {
+    id: 'fc-004',
+    display_name: '株式会社ノースフィットネス',
+    type: 'fc',
+    managed_store_count: 3,
+    status: 'active',
+  },
+  {
+    id: 'dc-001',
+    display_name: '株式会社ウェルネスフロンティア',
+    type: 'direct',
+    managed_store_count: 42,
+    status: 'active',
+  },
+  {
+    id: 'fc-005',
+    display_name: '株式会社関西フィット',
+    type: 'fc',
+    managed_store_count: 0,
+    status: 'inactive',
+  },
+];
 
 interface CorporateMasterRow {
   id: string;
@@ -2794,6 +2846,13 @@ type DbType = {
     disableFeeGroup(code: string, subBrandCode: string): BrandFeeGroup | undefined;
     deleteFeeGroup(code: string, subBrandCode: string): boolean;
   };
+  franchiseCompanies: {
+    _rows: FranchiseCompanyRow[];
+    _seeded: boolean;
+    _seed(): void;
+    getList(): FranchiseCompanyRow[];
+    getById(id: string): FranchiseCompanyRow | undefined;
+  };
   staffs: {
     _staffs: StaffListItem[];
     _details: Record<string, StaffDetail>;
@@ -2892,7 +2951,7 @@ type DbType = {
 };
 
 declare global {
-  var __fitnessDb_v12: DbType | undefined;
+  var __fitnessDb_v13: DbType | undefined;
 }
 
 // ─── Mock Payment History Data (A-01 FR-009-a) ──────────────────────────────
@@ -11083,6 +11142,23 @@ function createDb() {
         return true;
       },
     },
+    franchiseCompanies: {
+      _rows: [] as FranchiseCompanyRow[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows = SEED_FRANCHISE_COMPANIES.map((row) => ({ ...row }));
+      },
+      getList(): FranchiseCompanyRow[] {
+        this._seed();
+        return [...this._rows];
+      },
+      getById(id: string): FranchiseCompanyRow | undefined {
+        this._seed();
+        return this._rows.find((row) => row.id === id);
+      },
+    },
     staffs: {
       _staffs: [] as StaffListItem[],
       _details: {} as Record<string, StaffDetail>,
@@ -12205,6 +12281,7 @@ function createDb() {
   db.corporateMasters._seed();
   db.partnerCompanies._seed();
   db.visitExperiences._seed();
+  db.franchiseCompanies._seed();
   db.users._seed();
 
   return db;
@@ -12214,4 +12291,4 @@ function createDb() {
 // Without this, each route handler gets its own module instance and mutations are invisible
 // across routes.
 // Bump this key whenever the seed logic changes to force a fresh re-seed.
-export const db: DbType = (globalThis.__fitnessDb_v12 ??= createDb() as unknown as DbType);
+export const db: DbType = (globalThis.__fitnessDb_v13 ??= createDb() as unknown as DbType);

@@ -1497,6 +1497,134 @@ export type CampaignDetail = {
 };
 
 /**
+ * FranchiseCompanyType
+ *
+ * 直営 / FC 区分
+ */
+export const FranchiseCompanyType = { DIRECT: 'direct', FC: 'fc' } as const;
+
+/**
+ * FranchiseCompanyType
+ *
+ * 直営 / FC 区分
+ */
+export type FranchiseCompanyType = typeof FranchiseCompanyType[keyof typeof FranchiseCompanyType];
+
+/**
+ * FranchiseCompanyStatus
+ *
+ * FC企業ステータス
+ */
+export const FranchiseCompanyStatus = { ACTIVE: 'active', INACTIVE: 'inactive' } as const;
+
+/**
+ * FranchiseCompanyStatus
+ *
+ * FC企業ステータス
+ */
+export type FranchiseCompanyStatus = typeof FranchiseCompanyStatus[keyof typeof FranchiseCompanyStatus];
+
+/**
+ * FranchiseCompanyListItem
+ *
+ * FC企業一覧アイテム
+ */
+export type FranchiseCompanyListItem = {
+    /**
+     * FC企業ID
+     */
+    id: string;
+    /**
+     * 法人名（表示名）
+     */
+    display_name: string;
+    /**
+     * FranchiseCompanyType
+     *
+     * 直営 / FC 区分
+     */
+    type: 'direct' | 'fc';
+    /**
+     * 管轄店舗数
+     */
+    managed_store_count: number;
+    /**
+     * FranchiseCompanyStatus
+     *
+     * ステータス
+     */
+    status: 'active' | 'inactive';
+};
+
+/**
+ * GetFranchiseCompaniesQuery
+ *
+ * FC企業一覧取得クエリ
+ */
+export type GetFranchiseCompaniesQuery = {
+    page?: number;
+    limit?: number;
+    /**
+     * 法人名で検索
+     */
+    search?: string;
+    /**
+     * FranchiseCompanyType
+     *
+     * 直営 / FC 区分
+     */
+    company_type?: 'direct' | 'fc';
+    /**
+     * FranchiseCompanyStatus
+     *
+     * FC企業ステータス
+     */
+    status?: 'active' | 'inactive';
+    sort_by?: 'id' | 'display_name';
+    sort_order?: 'asc' | 'desc';
+};
+
+/**
+ * GetFranchiseCompaniesResponse
+ *
+ * FC企業一覧レスポンス
+ */
+export type GetFranchiseCompaniesResponse = {
+    franchise_companies: Array<{
+        /**
+         * FC企業ID
+         */
+        id: string;
+        /**
+         * 法人名（表示名）
+         */
+        display_name: string;
+        /**
+         * FranchiseCompanyType
+         *
+         * 直営 / FC 区分
+         */
+        type: 'direct' | 'fc';
+        /**
+         * 管轄店舗数
+         */
+        managed_store_count: number;
+        /**
+         * FranchiseCompanyStatus
+         *
+         * ステータス
+         */
+        status: 'active' | 'inactive';
+    }>;
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        total_pages: number;
+    };
+};
+
+/**
  * GetCampaignsQuery
  *
  * Campaign master list query
@@ -21050,6 +21178,116 @@ export type GetCrmFamilyRegistrationsSummaryResponses = {
 };
 
 export type GetCrmFamilyRegistrationsSummaryResponse = GetCrmFamilyRegistrationsSummaryResponses[keyof GetCrmFamilyRegistrationsSummaryResponses];
+
+export type GetCrmFranchiseCompaniesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        limit?: number;
+        /**
+         * 法人名で検索
+         */
+        search?: string;
+        /**
+         * FranchiseCompanyType
+         *
+         * 直営 / FC 区分
+         */
+        company_type?: 'direct' | 'fc';
+        /**
+         * FranchiseCompanyStatus
+         *
+         * FC企業ステータス
+         */
+        status?: 'active' | 'inactive';
+        sort_by?: 'id' | 'display_name';
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/franchise-companies';
+};
+
+export type GetCrmFranchiseCompaniesErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmFranchiseCompaniesError = GetCrmFranchiseCompaniesErrors[keyof GetCrmFranchiseCompaniesErrors];
+
+export type GetCrmFranchiseCompaniesResponses = {
+    /**
+     * GetFranchiseCompaniesResponse
+     *
+     * FC企業一覧レスポンス
+     */
+    200: {
+        franchise_companies: Array<{
+            /**
+             * FC企業ID
+             */
+            id: string;
+            /**
+             * 法人名（表示名）
+             */
+            display_name: string;
+            /**
+             * FranchiseCompanyType
+             *
+             * 直営 / FC 区分
+             */
+            type: 'direct' | 'fc';
+            /**
+             * 管轄店舗数
+             */
+            managed_store_count: number;
+            /**
+             * FranchiseCompanyStatus
+             *
+             * ステータス
+             */
+            status: 'active' | 'inactive';
+        }>;
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmFranchiseCompaniesResponse = GetCrmFranchiseCompaniesResponses[keyof GetCrmFranchiseCompaniesResponses];
 
 export type PostCrmLeavesByIdApproveData = {
     /**

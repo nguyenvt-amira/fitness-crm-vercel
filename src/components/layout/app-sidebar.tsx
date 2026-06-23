@@ -106,6 +106,7 @@ const menuItems: MenuItem[] = [
       { label: 'スタッフ管理', href: '/staffs' },
       { label: '店舗管理', href: '/stores' },
       { label: 'ブランド管理', href: '/brands' },
+      { label: 'FC企業管理', href: '/franchise-companies' },
     ],
   },
 ];
