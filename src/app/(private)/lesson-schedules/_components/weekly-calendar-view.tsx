@@ -59,6 +59,7 @@ interface WeeklyCalendarViewProps {
   schedules: LessonScheduleListItem[];
   weekStart: string;
   isLoading?: boolean;
+  onScheduleClick?: (item: LessonScheduleListItem) => void;
   onEditClick?: (item: LessonScheduleListItem) => void;
   canEdit?: boolean;
 }
@@ -67,6 +68,7 @@ export function WeeklyCalendarView({
   schedules,
   weekStart,
   isLoading = false,
+  onScheduleClick,
   onEditClick,
   canEdit = false,
 }: WeeklyCalendarViewProps) {
@@ -130,6 +132,7 @@ export function WeeklyCalendarView({
                     <WeeklyLessonCard
                       key={s.id}
                       item={s}
+                      onScheduleClick={onScheduleClick}
                       onEditClick={onEditClick}
                       canEdit={canEdit}
                     />

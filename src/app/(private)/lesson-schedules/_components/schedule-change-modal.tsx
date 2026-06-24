@@ -17,6 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
@@ -38,48 +39,9 @@ import {
 import type { LessonScheduleListItem } from '@/lib/api/types.gen';
 
 import { useLessonScheduleFiltersContext } from '../_contexts/lesson-schedule-filters-context';
-import { formatTimeRange, getLessonTypeLabel } from './lesson-schedule-display.util';
+import { formatTimeRange, getLessonTypeLabel, toTimeSlot } from './lesson-schedule-display.util';
 
 const NO_CHANGE = 'no-change';
-const TIME_INTERVAL_MINUTES = 15;
-
-function formatTime(iso: string): string {
-  return new Date(iso).toLocaleTimeString('ja-JP', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  });
-}
-
-function getTimezoneSuffix(iso: string): string {
-  const match = iso.match(/(Z|[+-]\d{2}:\d{2})$/);
-  return match?.[1] ?? '+09:00';
-}
-
-function buildIsoOnSameDay(baseIso: string, hour: number, minute: number): string {
-  const dateStr = baseIso.slice(0, 10);
-  const tz = getTimezoneSuffix(baseIso);
-  const hh = String(hour).padStart(2, '0');
-  const mm = String(minute).padStart(2, '0');
-  return `${dateStr}T${hh}:${mm}:00${tz}`;
-}
-
-function buildDayTimeOptions(baseIso: string): string[] {
-  const options: string[] = [];
-  for (let totalMinutes = 0; totalMinutes < 24 * 60; totalMinutes += TIME_INTERVAL_MINUTES) {
-    options.push(buildIsoOnSameDay(baseIso, Math.floor(totalMinutes / 60), totalMinutes % 60));
-  }
-  return options;
-}
-
-function mergeTimeOption(options: string[], extra: string): string[] {
-  if (options.includes(extra)) return options;
-  return [...options, extra].sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-}
-
-function isTimeBefore(start: string, end: string): boolean {
-  return new Date(start).getTime() < new Date(end).getTime();
-}
 
 function formatDateLabel(iso: string): string {
   const d = new Date(iso);
@@ -118,11 +80,14 @@ function ScheduleChangeModalContent({ schedule, onOpenChange }: ScheduleChangeMo
   const queryClient = useQueryClient();
   const { schedulesQueryParams } = useLessonScheduleFiltersContext();
 
+  const originalStart = toTimeSlot(schedule.start_time);
+  const originalEnd = toTimeSlot(schedule.end_time);
+
   const [changeScope, setChangeScope] = useState<'this-only' | 'all-after'>('this-only');
   const [sendNotification, setSendNotification] = useState(true);
   const [reason, setReason] = useState('');
-  const [startTime, setStartTime] = useState(schedule.start_time);
-  const [endTime, setEndTime] = useState(schedule.end_time);
+  const [startTime, setStartTime] = useState(originalStart);
+  const [endTime, setEndTime] = useState(originalEnd);
   const [instructorId, setInstructorId] = useState(NO_CHANGE);
   const [studioName, setStudioName] = useState(schedule.studio_name ?? '');
 
@@ -139,24 +104,7 @@ function ScheduleChangeModalContent({ schedule, onOpenChange }: ScheduleChangeMo
     ).filter((i) => i.id !== schedule.instructor_id);
   }, [schedulesQuery.data?.schedules, schedule.instructor_id]);
 
-  const dayTimeOptions = useMemo(() => {
-    let options = buildDayTimeOptions(schedule.start_time);
-    options = mergeTimeOption(options, schedule.start_time);
-    options = mergeTimeOption(options, schedule.end_time);
-    return options;
-  }, [schedule.start_time, schedule.end_time]);
-
-  const startTimeOptions = useMemo(
-    () => dayTimeOptions.filter((t) => !endTime || isTimeBefore(t, endTime)),
-    [dayTimeOptions, endTime],
-  );
-
-  const endTimeOptions = useMemo(
-    () => dayTimeOptions.filter((t) => !startTime || isTimeBefore(startTime, t)),
-    [dayTimeOptions, startTime],
-  );
-
-  const isTimeRangeValid = !startTime || !endTime || isTimeBefore(startTime, endTime);
+  const isTimeRangeValid = startTime < endTime;
 
   const changeMutation = useMutation({
     ...postCrmLessonSchedulesByIdChangeMutation(),
@@ -170,14 +118,14 @@ function ScheduleChangeModalContent({ schedule, onOpenChange }: ScheduleChangeMo
   });
 
   function handleConfirm() {
-    if (!reason.trim() || !isTimeBefore(startTime, endTime)) return;
+    if (!reason.trim() || !isTimeRangeValid) return;
 
     changeMutation.mutate({
       path: { id: schedule.id },
       body: {
         reason: reason.trim(),
-        new_start_time: startTime !== schedule.start_time ? startTime : undefined,
-        new_end_time: endTime !== schedule.end_time ? endTime : undefined,
+        new_start_time: startTime !== originalStart ? startTime : undefined,
+        new_end_time: endTime !== originalEnd ? endTime : undefined,
         new_instructor_id: instructorId !== NO_CHANGE ? instructorId : undefined,
       },
     });
@@ -263,36 +211,24 @@ function ScheduleChangeModalContent({ schedule, onOpenChange }: ScheduleChangeMo
         <div className="space-y-4">
           <div>
             <p className="mb-1 text-xs font-bold">開始・終了時間</p>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label className="text-muted-foreground mb-1 text-[10px]">開始時間</Label>
-                <Select value={startTime} onValueChange={(v) => v && setStartTime(v)}>
-                  <SelectTrigger className="h-9 text-sm">
-                    <SelectValue>{formatTime(startTime)}</SelectValue>
-                  </SelectTrigger>
-                  <SelectContent className="max-h-60">
-                    {startTimeOptions.map((time) => (
-                      <SelectItem key={time} value={time}>
-                        {formatTime(time)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Label className="mb-2 block text-xs font-medium">開始時刻</Label>
+                <Input
+                  type="time"
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                  className="h-9 text-sm"
+                />
               </div>
               <div>
-                <Label className="text-muted-foreground mb-1 text-[10px]">終了時間</Label>
-                <Select value={endTime} onValueChange={(v) => v && setEndTime(v)}>
-                  <SelectTrigger className="h-9 text-sm">
-                    <SelectValue>{formatTime(endTime)}</SelectValue>
-                  </SelectTrigger>
-                  <SelectContent className="max-h-60">
-                    {endTimeOptions.map((time) => (
-                      <SelectItem key={time} value={time}>
-                        {formatTime(time)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Label className="mb-2 block text-xs font-medium">終了時刻</Label>
+                <Input
+                  type="time"
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                  className="h-9 text-sm"
+                />
               </div>
             </div>
             {!isTimeRangeValid && (

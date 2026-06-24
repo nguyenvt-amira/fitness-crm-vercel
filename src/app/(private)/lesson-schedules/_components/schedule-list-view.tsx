@@ -14,9 +14,14 @@ import { scheduleListColumns } from './schedule-list-columns';
 interface ScheduleListViewProps {
   schedules: LessonScheduleListItem[];
   isLoading?: boolean;
+  onScheduleClick?: (item: LessonScheduleListItem) => void;
 }
 
-export function ScheduleListView({ schedules, isLoading = false }: ScheduleListViewProps) {
+export function ScheduleListView({
+  schedules,
+  isLoading = false,
+  onScheduleClick,
+}: ScheduleListViewProps) {
   const [sorting, setSorting] = useState<SortingState>([{ id: 'start_time', desc: false }]);
 
   if (isLoading) return <LessonScheduleTableSkeleton />;
@@ -27,6 +32,7 @@ export function ScheduleListView({ schedules, isLoading = false }: ScheduleListV
       data={schedules}
       variant="simple"
       totalRows={schedules.length}
+      onRowClick={onScheduleClick}
       tableOptions={{
         state: { sorting },
         onSortingChange: setSorting,

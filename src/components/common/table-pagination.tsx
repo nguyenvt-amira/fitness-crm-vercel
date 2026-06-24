@@ -97,14 +97,13 @@ export function TablePagination({
         <PaginationContent className="gap-1">
           <PaginationItem className="rounded-md border">
             <PaginationPrevious
+              text="前へ"
               onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
               className={cn(
                 'h-8 cursor-pointer',
                 isLoading || (currentPage <= 1 && 'pointer-events-none opacity-50'),
               )}
-            >
-              前へ
-            </PaginationPrevious>
+            />
           </PaginationItem>
 
           {isLoading
@@ -135,14 +134,13 @@ export function TablePagination({
 
           <PaginationItem className="rounded-md border">
             <PaginationNext
+              text="次へ"
               onClick={() => currentPage < totalPages && onPageChange(currentPage + 1)}
               className={cn(
                 'h-8 cursor-pointer',
                 isLoading || (currentPage >= totalPages && 'pointer-events-none opacity-50'),
               )}
-            >
-              次へ
-            </PaginationNext>
+            />
           </PaginationItem>
         </PaginationContent>
       </Pagination>

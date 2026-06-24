@@ -10,6 +10,8 @@ import {
 } from '@/app/api/_schemas/lesson-reservation.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
 
+import { applyTimeSlotToSchedule } from '../../../_lib/lesson-schedule-time.util';
+
 registerRoute({
   method: 'patch',
   path: '/crm/lesson-schedules/{scheduleId}/time/change',
@@ -26,11 +28,8 @@ registerRoute({
   ],
 });
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ scheduleId: string }> },
-) {
-  const { scheduleId } = await params;
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id: scheduleId } = await params;
   try {
     const existing = db.lessonSchedules.getById(scheduleId);
     if (!existing) {
@@ -45,8 +44,8 @@ export async function PATCH(
     }
 
     db.lessonSchedules.update(scheduleId, {
-      start_time: parsed.data.start_time,
-      end_time: parsed.data.end_time,
+      start_time: applyTimeSlotToSchedule(existing.start_time, parsed.data.start_time),
+      end_time: applyTimeSlotToSchedule(existing.start_time, parsed.data.end_time),
     });
 
     const response: ChangeResponse = { message: 'レッスン時間を変更しました' };

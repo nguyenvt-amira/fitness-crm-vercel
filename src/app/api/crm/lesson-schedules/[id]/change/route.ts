@@ -8,6 +8,8 @@ import {
 } from '@/app/api/_schemas/lesson-schedule.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
 
+import { applyTimeSlotToSchedule } from '../../_lib/lesson-schedule-time.util';
+
 registerRoute({
   method: 'post',
   path: '/crm/lesson-schedules/{id}/change',
@@ -51,8 +53,12 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     // Phase 1: apply change without validation
     const patch: Partial<typeof existing> = {};
-    if (parsed.data.new_start_time) patch.start_time = parsed.data.new_start_time;
-    if (parsed.data.new_end_time) patch.end_time = parsed.data.new_end_time;
+    if (parsed.data.new_start_time) {
+      patch.start_time = applyTimeSlotToSchedule(existing.start_time, parsed.data.new_start_time);
+    }
+    if (parsed.data.new_end_time) {
+      patch.end_time = applyTimeSlotToSchedule(existing.start_time, parsed.data.new_end_time);
+    }
     if (parsed.data.new_instructor_id) {
       patch.instructor_id = parsed.data.new_instructor_id;
     }

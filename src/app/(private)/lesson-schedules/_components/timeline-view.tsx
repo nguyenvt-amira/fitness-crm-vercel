@@ -35,6 +35,7 @@ interface TimelineViewProps {
   schedules: LessonScheduleListItem[];
   isLoading?: boolean;
   showBookedMembers?: boolean;
+  onScheduleClick?: (item: LessonScheduleListItem) => void;
   onEditClick?: (item: LessonScheduleListItem) => void;
   canEdit?: boolean;
 }
@@ -43,6 +44,7 @@ export function TimelineView({
   schedules,
   isLoading = false,
   showBookedMembers = false,
+  onScheduleClick,
   onEditClick,
   canEdit = false,
 }: TimelineViewProps) {
@@ -105,6 +107,7 @@ export function TimelineView({
                   item={item}
                   isLast={i === schedules.length - 1}
                   showBookedMembers={showBookedMembers}
+                  onScheduleClick={onScheduleClick}
                   onEditClick={onEditClick}
                   canEdit={canEdit}
                 />

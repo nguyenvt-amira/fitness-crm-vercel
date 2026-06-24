@@ -4,6 +4,19 @@ export function getLessonTypeLabel(type: LessonType): string {
   return type === 'studio' ? 'スタジオ' : 'パーソナル';
 }
 
+const TIME_SLOT_PATTERN = /^\d{1,2}:\d{2}(:\d{2})?$/;
+
+/** Normalize ISO datetime or HH:mm time slot to HH:mm */
+export function toTimeSlot(value: string): string {
+  if (TIME_SLOT_PATTERN.test(value)) {
+    const [hour, minute] = value.split(':');
+    return `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`;
+  }
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return value;
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
+
 export function getLessonTypeBadgeVariant(type: LessonType): 'default' | 'secondary' | 'outline' {
   return type === 'studio' ? 'secondary' : 'outline';
 }
@@ -69,11 +82,7 @@ export function getPaymentStatusVariant(
 }
 
 export function formatTimeRange(startTime: string, endTime: string): string {
-  const toHHMM = (iso: string) => {
-    const d = new Date(iso);
-    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-  };
-  return `${toHHMM(startTime)}〜${toHHMM(endTime)}`;
+  return `${toTimeSlot(startTime)}〜${toTimeSlot(endTime)}`;
 }
 
 export function formatBookingLabel(booked: number, capacity: number): string {
