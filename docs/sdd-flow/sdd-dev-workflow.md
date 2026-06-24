@@ -76,11 +76,11 @@ PO/PM commits prototype, flow screens, and spec assets to the feature branch and
 
 ### What to commit
 
-| Asset                          | Location                |
-| ------------------------------ | ----------------------- |
-| Prototype (HTML or Figma link) | `docs/specs/<feature>/` |
-| Flow screens (PNG / Figma)     | `docs/specs/<feature>/` |
-| Spec assets (Markdown notes)   | `docs/specs/<feature>/` |
+| Asset                          | Location           |
+| ------------------------------ | ------------------ |
+| Prototype (HTML or Figma link) | `specs/<feature>/` |
+| Flow screens (PNG / Figma)     | `specs/<feature>/` |
+| Spec assets (Markdown notes)   | `specs/<feature>/` |
 
 ---
 
@@ -90,7 +90,7 @@ PO/PM commits prototype, flow screens, and spec assets to the feature branch and
 
 Trigger SpecKit Specify with the feature description and commit reference. SpecKit pulls the spec assets from the branch, performs a diff, and generates `spec.md`.
 
-**Output:** `docs/specs/<feature>/spec.md` (draft — contains `[NEEDS CLARIFICATION]` tags)
+**Output:** `specs/<feature>/spec.md` (draft — contains `[NEEDS CLARIFICATION]` tags)
 
 ### Step 2 — Clarify (`speckit.clarify`)
 
@@ -100,12 +100,12 @@ SpecKit identifies up to 5 targeted clarification questions about underspecified
 - Resolve outside Dev authority → escalate to PO/PM, feed decision back to SpecKit
 - All `[NEEDS CLARIFICATION]` tags must be resolved before proceeding
 
-**Output:** `docs/specs/<feature>/spec.md` (finalized)
+**Output:** `specs/<feature>/spec.md` (finalized)
 
 Commit the finalized spec:
 
 ```bash
-git add docs/specs/<feature>/spec.md
+git add specs/<feature>/spec.md
 git commit -m "docs: finalize spec for <feature>"
 ```
 
@@ -117,16 +117,16 @@ SpecKit generates the technical implementation plan from the approved spec.
 
 **Output:**
 
-- `docs/specs/<feature>/plan.md`
-- `docs/specs/<feature>/research.md`
-- `docs/specs/<feature>/data-model.md`
-- `docs/specs/<feature>/contracts/api-contracts.md`
+- `specs/<feature>/plan.md`
+- `specs/<feature>/research.md`
+- `specs/<feature>/data-model.md`
+- `specs/<feature>/contracts/api-contracts.md`
 
 ### Step 4 — Task breakdown (`speckit.tasks`)
 
 SpecKit breaks the plan into a dependency-ordered task list.
 
-**Output:** `docs/specs/<feature>/tasks.md`
+**Output:** `specs/<feature>/tasks.md`
 
 ### Step 5 — Consistency analysis (`speckit.analyze`)
 
@@ -209,8 +209,8 @@ Feed `openapi.json` into SpecKit to generate the integration plan.
 
 **Output:**
 
-- `docs/specs/<feature>/plan-integrate-api.md`
-- `docs/specs/<feature>/tasks-integrate-api.md`
+- `specs/<feature>/plan-integrate-api.md`
+- `specs/<feature>/tasks-integrate-api.md`
 
 ### Step 2 — Implementation (`speckit.implement`)
 
@@ -220,8 +220,8 @@ Execute `tasks-integrate-api.md`. Verify all four states: `loading` / `error` / 
 git add .
 git commit -m "feat(<feature>): integrate real API (refs spec)"
 # Remove temp plan/task files from the branch
-git rm docs/specs/<feature>/plan-integrate-api.md
-git rm docs/specs/<feature>/tasks-integrate-api.md
+git rm specs/<feature>/plan-integrate-api.md
+git rm specs/<feature>/tasks-integrate-api.md
 git commit -m "chore: remove temp integration plan files"
 ```
 
@@ -335,7 +335,7 @@ A feature branch is ready to merge when ALL gates pass:
 ---
 
 ## Key Files Reference
-
+s
 | File                                              | Purpose                                                   |
 | ------------------------------------------------- | --------------------------------------------------------- |
 | `.specify/memory/constitution.md`                 | Project constitution — non-negotiable principles          |

@@ -2,6 +2,7 @@
 
 import { Suspense, useState } from 'react';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import { useAuthUser } from '@/contexts/auth-user.context';
@@ -115,10 +116,12 @@ function LessonSchedulePageInner() {
         title="予約管理"
         actions={
           !isTrainer ? (
-            <Button size="sm">
-              <Plus className="size-4" />
-              スケジュール登録
-            </Button>
+            <Link href={navigate('/lesson-schedules/create')}>
+              <Button size="sm">
+                <Plus className="size-4" />
+                スケジュール登録
+              </Button>
+            </Link>
           ) : undefined
         }
       />
