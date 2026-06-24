@@ -1,5 +1,9 @@
 'use client';
 
+import { useState } from 'react';
+
+import { useRouter } from 'next/navigation';
+
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 
 import { RoleGatedMenuItem } from '@/components/common/role-gated-menu-item';
@@ -10,15 +14,31 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+import type { FranchiseCompanyListItem } from '@/lib/api/types.gen';
+import { navigate } from '@/lib/routes/routes.util';
+
 import { Permission } from '@/types/permission.type';
 
 interface FranchiseCompanyRowActionsProps {
-  companyId: string;
+  company: FranchiseCompanyListItem;
+  onDeleteClick?: (company: FranchiseCompanyListItem) => void;
 }
 
-export function FranchiseCompanyRowActions({ companyId }: FranchiseCompanyRowActionsProps) {
+export function FranchiseCompanyRowActions({
+  company,
+  onDeleteClick,
+}: FranchiseCompanyRowActionsProps) {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const deleteBlockedReason =
+    company.status === 'active'
+      ? '有効なFC企業は削除できません'
+      : company.managed_store_count > 0
+        ? '管轄店舗があるため削除できません'
+        : null;
+
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger
         render={<Button variant="ghost" size="sm" />}
         onClick={(event) => event.stopPropagation()}
@@ -30,7 +50,8 @@ export function FranchiseCompanyRowActions({ companyId }: FranchiseCompanyRowAct
           requiredPermission={Permission.FCCompaniesEdit}
           onClick={(event) => {
             event.stopPropagation();
-            void companyId;
+            setOpen(false);
+            router.push(navigate('/franchise-companies/[id]/edit', company.id));
           }}
         >
           <Pencil className="size-4" />
@@ -39,9 +60,12 @@ export function FranchiseCompanyRowActions({ companyId }: FranchiseCompanyRowAct
         <RoleGatedMenuItem
           requiredPermission={Permission.FCCompaniesDelete}
           className="text-destructive"
+          disabled={deleteBlockedReason !== null}
+          tooltip={deleteBlockedReason ?? undefined}
           onClick={(event) => {
             event.stopPropagation();
-            void companyId;
+            setOpen(false);
+            onDeleteClick?.(company);
           }}
         >
           <Trash2 className="size-4" />

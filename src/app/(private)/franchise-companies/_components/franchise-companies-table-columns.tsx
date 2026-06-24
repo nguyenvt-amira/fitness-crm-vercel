@@ -16,7 +16,13 @@ import {
 } from '../_constants/constants';
 import { FranchiseCompanyRowActions } from './franchise-company-row-actions';
 
-export function FranchiseCompaniesTableColumns(): ColumnDef<FranchiseCompanyListItem>[] {
+interface FranchiseCompaniesTableColumnsProps {
+  onDeleteClick?: (company: FranchiseCompanyListItem) => void;
+}
+
+export function FranchiseCompaniesTableColumns({
+  onDeleteClick,
+}: FranchiseCompaniesTableColumnsProps = {}): ColumnDef<FranchiseCompanyListItem>[] {
   return [
     {
       accessorKey: 'id',
@@ -72,7 +78,9 @@ export function FranchiseCompaniesTableColumns(): ColumnDef<FranchiseCompanyList
     {
       id: 'actions',
       header: () => <span className="sr-only">操作</span>,
-      cell: ({ row }) => <FranchiseCompanyRowActions companyId={row.original.id} />,
+      cell: ({ row }) => (
+        <FranchiseCompanyRowActions company={row.original} onDeleteClick={onDeleteClick} />
+      ),
       meta: { className: 'w-10' },
       enableHiding: false,
       enableSorting: false,

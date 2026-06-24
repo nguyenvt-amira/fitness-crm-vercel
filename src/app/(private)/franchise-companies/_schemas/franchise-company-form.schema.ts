@@ -1,9 +1,6 @@
 import { z } from 'zod';
 
-import {
-  FRANCHISE_COMPANY_STATUS_VALUES,
-  FRANCHISE_COMPANY_TYPE_VALUES,
-} from '../_constants/constants';
+import { FranchiseCompanyStatus, FranchiseCompanyType } from '@/lib/api/types.gen';
 
 const DATE_VALUE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -11,7 +8,7 @@ export const franchiseCompanyFormSchema = z
   .object({
     formal_name: z.string().trim().min(1, '法人名（正式名称）は必須です'),
     display_name: z.string().default(''),
-    type: z.enum(FRANCHISE_COMPANY_TYPE_VALUES, { error: '直営/FC区分を選択してください' }),
+    type: z.nativeEnum(FranchiseCompanyType, { error: '直営/FC区分を選択してください' }),
     direct_owned_flag: z.boolean().default(false),
     corporate_number: z.string().default(''),
     representative_name: z.string().default(''),
@@ -40,7 +37,7 @@ export const franchiseCompanyFormSchema = z
         .optional(),
     ),
     note: z.string().default(''),
-    status: z.enum(FRANCHISE_COMPANY_STATUS_VALUES).default('active'),
+    status: z.nativeEnum(FranchiseCompanyStatus).default(FranchiseCompanyStatus.ACTIVE),
   })
   .superRefine((value, ctx) => {
     if (

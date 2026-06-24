@@ -18,10 +18,12 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 
 import { getCrmFranchiseCompaniesOptions } from '@/lib/api/@tanstack/react-query.gen';
+import type { FranchiseCompanyListItem } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
 import { Permission } from '@/types/permission.type';
 
+import { FranchiseCompanyDeleteDialog } from './[id]/_components/franchise-company-delete-dialog';
 import { FranchiseCompaniesFilters } from './_components/franchise-companies-filters';
 import { FranchiseCompaniesTableColumns } from './_components/franchise-companies-table-columns';
 import { useFranchiseCompaniesFilters } from './_hooks/use-franchise-companies-filters';
@@ -29,6 +31,7 @@ import { useFranchiseCompaniesFilters } from './_hooks/use-franchise-companies-f
 function FranchiseCompaniesPageContent() {
   const router = useRouter();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<FranchiseCompanyListItem | null>(null);
   const filtersHook = useFranchiseCompaniesFilters();
   const { filters, setFilters, queryParams, currentPage, setCurrentPage, pageSize, setPageSize } =
     filtersHook;
@@ -62,7 +65,22 @@ function FranchiseCompaniesPageContent() {
     });
   };
 
-  const columns = useMemo(() => FranchiseCompaniesTableColumns(), []);
+  const columns = useMemo(
+    () =>
+      FranchiseCompaniesTableColumns({
+        onDeleteClick: (company) => setDeleteTarget(company),
+      }),
+    [],
+  );
+
+  const deleteBlockedReason = deleteTarget
+    ? [
+        deleteTarget.status === 'active' ? '有効なFC企業は削除できません' : null,
+        deleteTarget.managed_store_count > 0 ? '管轄店舗があるため削除できません' : null,
+      ]
+        .filter(Boolean)
+        .join(' / ') || null
+    : null;
 
   return (
     <>
@@ -106,6 +124,7 @@ function FranchiseCompaniesPageContent() {
                 containerClassName={
                   isFilterOpen ? 'max-h-[calc(100vh-370px)]' : 'max-h-[calc(100vh-320px)]'
                 }
+                onRowClick={(row) => router.push(navigate('/franchise-companies/[id]', row.id))}
                 tableOptions={{
                   onSortingChange: handleSortingChange,
                   manualSorting: true,
@@ -150,6 +169,17 @@ function FranchiseCompaniesPageContent() {
           )}
         </Card>
       </div>
+
+      <FranchiseCompanyDeleteDialog
+        companyId={deleteTarget?.id ?? ''}
+        companyName={deleteTarget?.display_name ?? ''}
+        open={deleteTarget !== null}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null);
+        }}
+        redirectOnSuccess={false}
+        blockedReason={deleteBlockedReason}
+      />
     </>
   );
 }

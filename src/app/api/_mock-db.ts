@@ -25,6 +25,8 @@ import type {
 import type {
   CreateFranchiseCompanyBody,
   FranchiseCompanyDetail,
+  FranchiseCompanyHistoryItem,
+  UpdateFranchiseCompanyBody,
 } from '@/app/api/_schemas/franchise-company.schema';
 import type { LeaveDetail, LeaveListItem } from '@/app/api/_schemas/leave.schema';
 import type {
@@ -95,7 +97,6 @@ import type {
   SurveyTemplateUpsertBody,
 } from '@/app/api/_schemas/survey.schema';
 import type { ApprovalHistoryItem, TransferDetail } from '@/app/api/_schemas/transfer.schema';
-import type { VisitExperience } from '@/app/api/_schemas/visit-experience.schema';
 import type { VisitExperienceDetail } from '@/app/api/_schemas/visit-experience.schema';
 import {
   type LockerSlotLockSettingsMeta,
@@ -2161,7 +2162,7 @@ const SEED_FRANCHISE_COMPANIES: FranchiseCompanyRow[] = [
     fc_contract_renewal_date: null,
     royalty_rate: null,
     note: null,
-    managed_store_count: 8,
+    managed_store_count: 3,
     status: 'active',
     created_at: '2024-04-01T10:00:00+09:00',
     updated_at: '2024-04-01T10:00:00+09:00',
@@ -2182,7 +2183,7 @@ const SEED_FRANCHISE_COMPANIES: FranchiseCompanyRow[] = [
     fc_contract_renewal_date: null,
     royalty_rate: null,
     note: null,
-    managed_store_count: 5,
+    managed_store_count: 1,
     status: 'active',
     created_at: '2024-04-01T10:00:00+09:00',
     updated_at: '2024-04-01T10:00:00+09:00',
@@ -2203,7 +2204,7 @@ const SEED_FRANCHISE_COMPANIES: FranchiseCompanyRow[] = [
     fc_contract_renewal_date: null,
     royalty_rate: null,
     note: null,
-    managed_store_count: 3,
+    managed_store_count: 1,
     status: 'active',
     created_at: '2024-04-01T10:00:00+09:00',
     updated_at: '2024-04-01T10:00:00+09:00',
@@ -2274,6 +2275,44 @@ function buildFranchiseCompanyDetail(row: FranchiseCompanyRow): FranchiseCompany
     created_at: row.created_at,
     updated_at: row.updated_at,
   };
+}
+
+function buildFranchiseCompanyHistory(row: FranchiseCompanyRow): FranchiseCompanyHistoryItem[] {
+  const createdAt = row.created_at;
+  const updatedAt = row.updated_at;
+  const currentTypeLabel = row.type === 'fc' ? 'FC' : '直営';
+  const currentStatusLabel = row.status === 'active' ? '有効' : '無効';
+
+  return [
+    {
+      updated_at: createdAt,
+      operator: 'システム',
+      changed_item: '新規作成',
+      before: null,
+      after: row.formal_name,
+    },
+    {
+      updated_at: updatedAt,
+      operator: 'システム',
+      changed_item: '法人名（表示名）',
+      before: row.formal_name,
+      after: row.display_name,
+    },
+    {
+      updated_at: updatedAt,
+      operator: 'システム',
+      changed_item: '直営 / FC',
+      before: currentTypeLabel,
+      after: currentTypeLabel,
+    },
+    {
+      updated_at: updatedAt,
+      operator: 'システム',
+      changed_item: 'ステータス',
+      before: currentStatusLabel,
+      after: currentStatusLabel,
+    },
+  ];
 }
 
 interface CorporateMasterRow {
@@ -2974,11 +3013,15 @@ type DbType = {
   };
   franchiseCompanies: {
     _rows: FranchiseCompanyRow[];
+    _historyById: Record<string, FranchiseCompanyHistoryItem[]>;
     _seeded: boolean;
     _seed(): void;
     getList(): FranchiseCompanyRow[];
     getById(id: string): FranchiseCompanyRow | undefined;
+    getHistory(id: string): FranchiseCompanyHistoryItem[];
     create(input: CreateFranchiseCompanyBody): FranchiseCompanyDetail;
+    update(id: string, input: UpdateFranchiseCompanyBody): FranchiseCompanyDetail | undefined;
+    delete(id: string): boolean;
   };
   staffs: {
     _staffs: StaffListItem[];
@@ -9232,6 +9275,7 @@ function createDb() {
             mutualType: 'within_brand',
             area: 'kanto',
             operating_company_name: '株式会社ウェルネスフロンティア',
+            fc: 'fc-002',
             status: 'operating',
           },
           {
@@ -9243,6 +9287,7 @@ function createDb() {
             mutualType: 'none',
             area: 'kansai',
             operating_company_name: '株式会社ウェルネスフロンティア',
+            fc: 'fc-002',
             status: 'operating',
           },
           {
@@ -9253,6 +9298,7 @@ function createDb() {
             mutualOn: false,
             mutualType: 'none',
             contract: 'suspended',
+            fc: 'fc-002',
             area: 'chubu',
             operating_company_name: '株式会社JOYFITプラス',
             status: 'closed_temp',
@@ -9265,6 +9311,7 @@ function createDb() {
             mutualOn: true,
             mutualType: 'cross_brand',
             contract: 'draft',
+            fc: 'fc-002',
             area: 'kansai',
             operating_company_name: '株式会社フィット365',
             status: 'preparing',
@@ -9277,6 +9324,7 @@ function createDb() {
             mutualOn: false,
             mutualType: 'none',
             contract: 'terminated',
+            fc: 'fc-002',
             closing: '2025-12-31',
             area: 'other',
             operating_company_name: '株式会社ジェイフィット',
@@ -11271,11 +11319,15 @@ function createDb() {
     },
     franchiseCompanies: {
       _rows: [] as FranchiseCompanyRow[],
+      _historyById: {} as Record<string, FranchiseCompanyHistoryItem[]>,
       _seeded: false,
       _seed(): void {
         if (this._seeded) return;
         this._seeded = true;
         this._rows = SEED_FRANCHISE_COMPANIES.map((row) => ({ ...row }));
+        this._historyById = Object.fromEntries(
+          this._rows.map((row) => [row.id, buildFranchiseCompanyHistory(row)]),
+        );
       },
       getList(): FranchiseCompanyRow[] {
         this._seed();
@@ -11284,6 +11336,10 @@ function createDb() {
       getById(id: string): FranchiseCompanyRow | undefined {
         this._seed();
         return this._rows.find((row) => row.id === id);
+      },
+      getHistory(id: string): FranchiseCompanyHistoryItem[] {
+        this._seed();
+        return [...(this._historyById[id] ?? [])];
       },
       create(input: CreateFranchiseCompanyBody): FranchiseCompanyDetail {
         this._seed();
@@ -11318,7 +11374,115 @@ function createDb() {
         };
 
         this._rows.unshift(row);
+        this._historyById[row.id] = buildFranchiseCompanyHistory(row);
         return buildFranchiseCompanyDetail(row);
+      },
+      update(id: string, input: UpdateFranchiseCompanyBody): FranchiseCompanyDetail | undefined {
+        this._seed();
+        const current = this._rows.find((row) => row.id === id);
+        if (!current) return undefined;
+
+        const next: FranchiseCompanyRow = {
+          ...current,
+          formal_name:
+            input.formal_name !== undefined ? input.formal_name.trim() : current.formal_name,
+          display_name:
+            input.display_name !== undefined ? input.display_name.trim() : current.display_name,
+          type: input.type ?? current.type,
+          direct_owned_flag: input.direct_owned_flag ?? current.direct_owned_flag,
+          corporate_number:
+            input.corporate_number !== undefined
+              ? input.corporate_number
+              : current.corporate_number,
+          representative_name:
+            input.representative_name !== undefined
+              ? input.representative_name
+              : current.representative_name,
+          head_office_address:
+            input.head_office_address !== undefined
+              ? input.head_office_address
+              : current.head_office_address,
+          phone: input.phone !== undefined ? input.phone : current.phone,
+          contact_person:
+            input.contact_person !== undefined ? input.contact_person : current.contact_person,
+          contact_phone:
+            input.contact_phone !== undefined ? input.contact_phone : current.contact_phone,
+          fc_contract_start_date:
+            input.fc_contract_start_date !== undefined
+              ? input.fc_contract_start_date
+              : current.fc_contract_start_date,
+          fc_contract_renewal_date:
+            input.fc_contract_renewal_date !== undefined
+              ? input.fc_contract_renewal_date
+              : current.fc_contract_renewal_date,
+          royalty_rate:
+            input.royalty_rate !== undefined ? input.royalty_rate : current.royalty_rate,
+          note: input.note !== undefined ? input.note : current.note,
+          status: input.status ?? current.status,
+          updated_at: new Date().toISOString(),
+        };
+
+        const nextIndex = this._rows.findIndex((row) => row.id === id);
+        this._rows[nextIndex] = next;
+
+        const changes: FranchiseCompanyHistoryItem[] = [];
+        const now = next.updated_at;
+        const pushChange = (changed_item: string, before: string | null, after: string | null) => {
+          if (before === after) return;
+          changes.unshift({
+            updated_at: now,
+            operator: 'システム',
+            changed_item,
+            before,
+            after,
+          });
+        };
+
+        pushChange('法人名（正式名称）', current.formal_name, next.formal_name);
+        pushChange('法人名（表示名）', current.display_name, next.display_name);
+        pushChange(
+          '直営 / FC',
+          current.type === 'fc' ? 'FC' : '直営',
+          next.type === 'fc' ? 'FC' : '直営',
+        );
+        pushChange(
+          '直営店フラグ',
+          current.direct_owned_flag ? '有効' : '無効',
+          next.direct_owned_flag ? '有効' : '無効',
+        );
+        pushChange(
+          'ステータス',
+          current.status === 'active' ? '有効' : '無効',
+          next.status === 'active' ? '有効' : '無効',
+        );
+        if (input.note !== undefined) {
+          pushChange('備考', current.note, next.note);
+        }
+
+        if (changes.length > 0) {
+          this._historyById[id] = [...changes, ...(this._historyById[id] ?? [])];
+        }
+
+        return buildFranchiseCompanyDetail(next);
+      },
+      delete(id: string): boolean {
+        this._seed();
+        const currentIndex = this._rows.findIndex((row) => row.id === id);
+        if (currentIndex === -1) return false;
+
+        const current = this._rows[currentIndex]!;
+        this._historyById[id] = [
+          {
+            updated_at: new Date().toISOString(),
+            operator: 'システム',
+            changed_item: '削除',
+            before: current.display_name,
+            after: null,
+          },
+          ...(this._historyById[id] ?? []),
+        ];
+        this._rows.splice(currentIndex, 1);
+        return true;
       },
     },
     staffs: {

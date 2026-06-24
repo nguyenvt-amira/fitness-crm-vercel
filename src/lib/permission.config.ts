@@ -64,7 +64,9 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
 
   // Franchise companies
   '/franchise-companies': Permission.FCCompaniesView,
+  '/franchise-companies/:id': Permission.FCCompaniesView,
   '/franchise-companies/create': Permission.FCCompaniesCreate,
+  '/franchise-companies/:id/edit': Permission.FCCompaniesEdit,
 
   // Options
   '/options': Permission.OptionsView,

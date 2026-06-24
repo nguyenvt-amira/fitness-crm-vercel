@@ -1,6 +1,8 @@
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 
+import { StoreListBrandSchema, StoreListStatusSchema } from './store.schema';
+
 extendZodWithOpenApi(z);
 
 export const FranchiseCompanyTypeSchema = z
@@ -168,11 +170,126 @@ export const CreateFranchiseCompanyResponseSchema = z
     description: 'FC企業作成レスポンス',
   });
 
+export const FranchiseCompanyLinkedStoreSchema = z
+  .object({
+    id: z.string().openapi({ example: 'store-001', description: '内部ID' }),
+    store_id: z.string().openapi({ example: 'S-001', description: '店舗ID (表示)' }),
+    name: z.string().openapi({ example: 'Fit365八潮店', description: '店舗名' }),
+    brand: StoreListBrandSchema.openapi({ description: 'ブランド' }),
+    prefecture: z.string().nullable().openapi({ example: '東京都', description: '都道府県' }),
+    status: StoreListStatusSchema.openapi({ description: 'ステータス' }),
+  })
+  .openapi({
+    title: 'FranchiseCompanyLinkedStore',
+    description: 'FC企業詳細の管轄店舗行',
+  });
+
+export const FranchiseCompanyHistoryItemSchema = z
+  .object({
+    updated_at: z
+      .string()
+      .openapi({ example: '2026-06-23T09:00:00.000Z', description: '更新日時' }),
+    operator: z.string().openapi({ example: 'システム', description: '操作者' }),
+    changed_item: z.string().openapi({ example: 'ステータス', description: '変更項目' }),
+    before: z.string().nullable().openapi({ example: '有効', description: '変更前' }),
+    after: z.string().nullable().openapi({ example: '無効', description: '変更後' }),
+  })
+  .openapi({
+    title: 'FranchiseCompanyHistoryItem',
+    description: 'FC企業変更履歴行',
+  });
+
+export const GetFranchiseCompanyDetailResponseSchema = z
+  .object({
+    franchise_company: FranchiseCompanyDetailSchema,
+    linked_stores: z.array(FranchiseCompanyLinkedStoreSchema),
+    history: z.array(FranchiseCompanyHistoryItemSchema),
+  })
+  .openapi({
+    title: 'GetFranchiseCompanyDetailResponse',
+    description: 'FC企業詳細レスポンス',
+  });
+
+export const UpdateFranchiseCompanyBodySchema = z
+  .object({
+    formal_name: z.string().min(1).optional(),
+    display_name: z.string().optional(),
+    type: FranchiseCompanyTypeSchema.optional(),
+    direct_owned_flag: z.boolean().optional(),
+    corporate_number: z.string().nullable().optional(),
+    representative_name: z.string().nullable().optional(),
+    head_office_address: z.string().nullable().optional(),
+    phone: z.string().nullable().optional(),
+    contact_person: z.string().nullable().optional(),
+    contact_phone: z.string().nullable().optional(),
+    fc_contract_start_date: z.string().nullable().optional(),
+    fc_contract_renewal_date: z.string().nullable().optional(),
+    royalty_rate: z.number().nullable().optional(),
+    note: z.string().nullable().optional(),
+    status: FranchiseCompanyStatusSchema.optional(),
+  })
+  .superRefine((value, ctx) => {
+    if (
+      value.fc_contract_start_date &&
+      value.fc_contract_renewal_date &&
+      value.fc_contract_renewal_date < value.fc_contract_start_date
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['fc_contract_renewal_date'],
+        message: 'FC契約更新日は開始日以降の日付を指定してください',
+      });
+    }
+  })
+  .openapi({
+    title: 'UpdateFranchiseCompanyBody',
+    description: 'FC企業更新リクエスト',
+  });
+
+export const UpdateFranchiseCompanyResponseSchema = z
+  .object({
+    message: z.string().openapi({ example: 'FC企業を更新しました' }),
+    franchise_company: FranchiseCompanyDetailSchema,
+  })
+  .openapi({
+    title: 'UpdateFranchiseCompanyResponse',
+    description: 'FC企業更新レスポンス',
+  });
+
+export const DeleteFranchiseCompanyResponseSchema = z
+  .object({
+    message: z.string().openapi({ example: 'FC企業を削除しました' }),
+  })
+  .openapi({
+    title: 'DeleteFranchiseCompanyResponse',
+    description: 'FC企業削除レスポンス',
+  });
+
+export const GetFranchiseCompanyHistoryResponseSchema = z
+  .object({
+    history: z.array(FranchiseCompanyHistoryItemSchema),
+  })
+  .openapi({
+    title: 'GetFranchiseCompanyHistoryResponse',
+    description: 'FC企業変更履歴レスポンス',
+  });
+
 export type FranchiseCompanyListItem = z.infer<typeof FranchiseCompanyListItemSchema>;
 export type FranchiseCompanyDetail = z.infer<typeof FranchiseCompanyDetailSchema>;
+export type FranchiseCompanyLinkedStore = z.infer<typeof FranchiseCompanyLinkedStoreSchema>;
+export type FranchiseCompanyHistoryItem = z.infer<typeof FranchiseCompanyHistoryItemSchema>;
 export type GetFranchiseCompaniesQuery = z.infer<typeof GetFranchiseCompaniesQuerySchema>;
 export type GetFranchiseCompaniesResponse = z.infer<typeof GetFranchiseCompaniesResponseSchema>;
+export type GetFranchiseCompanyDetailResponse = z.infer<
+  typeof GetFranchiseCompanyDetailResponseSchema
+>;
 export type FranchiseCompanyType = z.infer<typeof FranchiseCompanyTypeSchema>;
 export type FranchiseCompanyStatus = z.infer<typeof FranchiseCompanyStatusSchema>;
 export type CreateFranchiseCompanyBody = z.infer<typeof CreateFranchiseCompanyBodySchema>;
 export type CreateFranchiseCompanyResponse = z.infer<typeof CreateFranchiseCompanyResponseSchema>;
+export type UpdateFranchiseCompanyBody = z.infer<typeof UpdateFranchiseCompanyBodySchema>;
+export type UpdateFranchiseCompanyResponse = z.infer<typeof UpdateFranchiseCompanyResponseSchema>;
+export type DeleteFranchiseCompanyResponse = z.infer<typeof DeleteFranchiseCompanyResponseSchema>;
+export type GetFranchiseCompanyHistoryResponse = z.infer<
+  typeof GetFranchiseCompanyHistoryResponseSchema
+>;

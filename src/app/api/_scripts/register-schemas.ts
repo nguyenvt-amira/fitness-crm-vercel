@@ -175,6 +175,20 @@ export function registerAllSchemas() {
     ),
   );
   registeredSchemaMap.set(
+    'FranchiseCompanyLinkedStore',
+    registry.register(
+      'FranchiseCompanyLinkedStore',
+      franchiseCompanySchemas.FranchiseCompanyLinkedStoreSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'FranchiseCompanyHistoryItem',
+    registry.register(
+      'FranchiseCompanyHistoryItem',
+      franchiseCompanySchemas.FranchiseCompanyHistoryItemSchema,
+    ),
+  );
+  registeredSchemaMap.set(
     'GetFranchiseCompaniesQuery',
     registry.register(
       'GetFranchiseCompaniesQuery',
@@ -186,6 +200,41 @@ export function registerAllSchemas() {
     registry.register(
       'GetFranchiseCompaniesResponse',
       franchiseCompanySchemas.GetFranchiseCompaniesResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetFranchiseCompanyDetailResponse',
+    registry.register(
+      'GetFranchiseCompanyDetailResponse',
+      franchiseCompanySchemas.GetFranchiseCompanyDetailResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateFranchiseCompanyBody',
+    registry.register(
+      'UpdateFranchiseCompanyBody',
+      franchiseCompanySchemas.UpdateFranchiseCompanyBodySchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateFranchiseCompanyResponse',
+    registry.register(
+      'UpdateFranchiseCompanyResponse',
+      franchiseCompanySchemas.UpdateFranchiseCompanyResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'DeleteFranchiseCompanyResponse',
+    registry.register(
+      'DeleteFranchiseCompanyResponse',
+      franchiseCompanySchemas.DeleteFranchiseCompanyResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetFranchiseCompanyHistoryResponse',
+    registry.register(
+      'GetFranchiseCompanyHistoryResponse',
+      franchiseCompanySchemas.GetFranchiseCompanyHistoryResponseSchema,
     ),
   );
   registeredSchemaMap.set(

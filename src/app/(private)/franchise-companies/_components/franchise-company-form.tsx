@@ -38,6 +38,7 @@ interface FranchiseCompanyFormProps {
   onCancel: () => void;
   onSubmit: (values: FranchiseCompanyFormSubmitValues) => void;
   onError?: () => void;
+  submitPermission?: Permission;
 }
 
 export function FranchiseCompanyForm({
@@ -45,6 +46,7 @@ export function FranchiseCompanyForm({
   onCancel,
   onSubmit,
   onError,
+  submitPermission = Permission.FCCompaniesCreate,
 }: Readonly<FranchiseCompanyFormProps>) {
   const form = useFormContext<FranchiseCompanyFormValues>();
   const contractStartDate = useWatch({ control: form.control, name: 'fc_contract_start_date' });
@@ -402,7 +404,7 @@ export function FranchiseCompanyForm({
         <RoleGatedButton
           type="button"
           size="lg"
-          requiredPermission={Permission.FCCompaniesCreate}
+          requiredPermission={submitPermission}
           disabled={isSubmitting}
           onClick={form.handleSubmit(
             onSubmit as (values: FranchiseCompanyFormValues) => void,
