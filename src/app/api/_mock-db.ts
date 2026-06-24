@@ -4329,9 +4329,7 @@ type DbType = {
       role: string;
       photo_url?: string;
     }>;
-    getById(
-      id: string,
-    ):
+    getById(id: string):
       | {
           instructor_id: string;
           instructor_name: string;
@@ -13914,6 +13912,8 @@ function createDb() {
         const day = this._rows.filter((r) => r.start_time.startsWith(date));
         const storeMap = new Map<string, StoreScheduleSummary>();
         const areaMap = new Map<string, AreaScheduleKpiSummary>();
+        const instructorSets = new Map<string, Set<string>>();
+        const inProgressMap = new Map<string, { lesson_name: string; start_time: string }>();
         const storeAreaMap = LESSON_SCHEDULE_STORE_AREAS;
         day.forEach((r) => {
           const area = storeAreaMap[r.store_id] ?? 'その他';
@@ -13927,6 +13927,9 @@ function createDb() {
               total_capacity: 0,
               occupancy_rate: 0,
               alert_count: 0,
+              assigned_staff_count: 0,
+              in_progress_lesson_name: null,
+              in_progress_start_time: null,
             });
           }
           const s = storeMap.get(r.store_id)!;
@@ -13934,6 +13937,22 @@ function createDb() {
           s.total_booked += r.booked_count;
           s.total_capacity += r.capacity;
           if (r.is_alert) s.alert_count++;
+
+          if (!instructorSets.has(r.store_id)) {
+            instructorSets.set(r.store_id, new Set());
+          }
+          instructorSets.get(r.store_id)!.add(r.instructor_id);
+
+          if (r.status === 'in_progress') {
+            const timeMatch = r.start_time.match(/T(\d{1,2}):(\d{2})/);
+            const startTime = timeMatch ? `${Number(timeMatch[1])}:${timeMatch[2]}` : null;
+            if (startTime) {
+              inProgressMap.set(r.store_id, {
+                lesson_name: r.lesson_name,
+                start_time: startTime,
+              });
+            }
+          }
 
           if (!areaMap.has(area)) {
             areaMap.set(area, {
@@ -13952,11 +13971,19 @@ function createDb() {
           a.total_capacity += r.capacity;
           if (r.is_alert) a.alert_count++;
         });
-        const stores = Array.from(storeMap.values()).map((s) => ({
-          ...s,
-          occupancy_rate:
-            s.total_capacity > 0 ? Math.round((s.total_booked / s.total_capacity) * 1000) / 10 : 0,
-        }));
+        const stores = Array.from(storeMap.values()).map((s) => {
+          const inProgress = inProgressMap.get(s.store_id);
+          return {
+            ...s,
+            occupancy_rate:
+              s.total_capacity > 0
+                ? Math.round((s.total_booked / s.total_capacity) * 1000) / 10
+                : 0,
+            assigned_staff_count: instructorSets.get(s.store_id)?.size ?? 0,
+            in_progress_lesson_name: inProgress?.lesson_name ?? null,
+            in_progress_start_time: inProgress?.start_time ?? null,
+          };
+        });
         const storesByArea = stores.reduce<Record<string, number>>((acc, s) => {
           acc[s.area] = (acc[s.area] ?? 0) + 1;
           return acc;
