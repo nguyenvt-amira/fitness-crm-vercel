@@ -66,16 +66,17 @@ fitness-crm/
 ├── .specify/memory/
 │   └── constitution.md
 ├── .github/copilot-instructions.md
+├── docs/
+│   ├── sdd-flow/
+│   │   ├── sdd-overview.md
+│   │   ├── sdd-dev-workflow.md
+│   │   └── sdd-sequence-flow.md
+│   └── steering/
+│       ├── _index.md
+│       ├── architecture.md
+│       ├── business-glossary.md
+│       └── ...
 └── specs/
-    ├── sdd-flow/
-    │   ├── sdd-overview.md
-    │   ├── sdd-dev-workflow.md
-    │   └── sdd-sequence-flow.md
-    ├── steering/
-    │   ├── _index.md
-    │   ├── architecture.md
-    │   ├── business-glossary.md
-    │   └── ...
     └── <feature>/
         ├── spec.md
         ├── plan.md
@@ -141,7 +142,7 @@ fitness-crm/
 ## 8. 更新ルール（要点）
 
 - Constitution: 新原則追加は提案・承認プロセス必須
-- Steering (`specs/steering/`): 新しい再発パターンや用語は追記（既存内容の削除・書き換えはしない）
+- Steering (`docs/steering/`): 新しい再発パターンや用語は追記（既存内容の削除・書き換えはしない）
 - Feature Spec: 仕様誤りは先にspec PRを出してから実装再開
 - Copilot Instructions: スタックや構造の変更時に即更新
 
@@ -149,12 +150,12 @@ fitness-crm/
 
 ## 9. 典型的な失敗と対策
 
-| 失敗                               | 根本原因                   | 対策                                                        |
-| ---------------------------------- | -------------------------- | ----------------------------------------------------------- |
-| 以前の判断と矛盾したコード生成     | 実装前に spec 未読込       | `spec.md` を必ず添付して実行                                |
-| `speckit.analyze` が CRITICAL 検出 | 原則I〜V未確認             | 承認前に Constitution Check を埋める                        |
-| `types.gen.ts` と Zod の乖離       | コード生成パイプライン省略 | `generate-openapi` → `generate-api` を徹底                  |
-| フィルター状態の同期ずれ           | Providerパターン不遵守     | `specs/steering/architecture.md` の Provider パターンに従う |
+| 失敗                               | 根本原因                   | 対策                                                       |
+| ---------------------------------- | -------------------------- | ---------------------------------------------------------- |
+| 以前の判断と矛盾したコード生成     | 実装前に spec 未読込       | `spec.md` を必ず添付して実行                               |
+| `speckit.analyze` が CRITICAL 検出 | 原則I〜V未確認             | 承認前に Constitution Check を埋める                       |
+| `types.gen.ts` と Zod の乖離       | コード生成パイプライン省略 | `generate-openapi` → `generate-api` を徹底                 |
+| フィルター状態の同期ずれ           | Providerパターン不遵守     | `docs/steering/architecture.md` の Provider パターンに従う |
 
 ---
 
@@ -162,7 +163,7 @@ fitness-crm/
 
 1. `sdd-overview.md` を読む（なぜSDDか）
 2. `constitution.md` を読む（非交渉ルール）
-3. `specs/steering/_index.md` と `specs/steering/architecture.md` を読む（全体パターンと構造）
+3. `docs/steering/_index.md` と `docs/steering/architecture.md` を読む（全体パターンと構造）
 4. `sdd-sequence-flow.md` を読む（全体フロー）
 5. `sdd-dev-workflow.md` を読む（フェーズ詳細）
 6. 完了済み機能例（`specs/staff-management/`）を確認

@@ -1,6 +1,5 @@
 {
   "ai": "copilot",
-  "branch_naming": "prefix",
   "branch_numbering": "sequential",
   "here": false,
   "integration": "copilot",

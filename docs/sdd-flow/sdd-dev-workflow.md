@@ -339,7 +339,7 @@ A feature branch is ready to merge when ALL gates pass:
 | File                                         | Purpose                                                   |
 | -------------------------------------------- | --------------------------------------------------------- |
 | `.specify/memory/constitution.md`            | Project constitution — non-negotiable principles          |
-| `specs/steering/`                            | System-wide patterns, glossary, and architecture          |
+| `docs/steering/`                             | System-wide patterns, glossary, and architecture          |
 | `.github/copilot-instructions.md`            | Active tech stack and project structure                   |
 | `specs/<feature>/spec.md`                    | Feature specification (SpecKit output)                    |
 | `specs/<feature>/plan.md`                    | Implementation plan (SpecKit output)                      |

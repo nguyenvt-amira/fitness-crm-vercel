@@ -37,15 +37,15 @@
 | タスク一覧                   | `docs/specs/<feature>/tasks.md`                             |
 | 調査・データモデル・契約など | `docs/specs/<feature>/research.md` など同一ディレクトリ配下 |
 
-プロトタイプやフロー画面の素材も、同じ `docs/specs/<feature>/` 配下に置く運用です（詳細は [sdd-flow/sdd-dev-workflow.md](./specs/sdd-flow/sdd-dev-workflow.md)）。
+プロトタイプやフロー画面の素材も、同じ `docs/specs/<feature>/` 配下に置く運用です（詳細は [sdd-flow/sdd-dev-workflow.md](./docs/sdd-flow/sdd-dev-workflow.md)）。
 
 ## フロー文書（手順の全体像）
 
-| 文書                                                             | 内容                                                                                  |
-| :--------------------------------------------------------------- | :------------------------------------------------------------------------------------ |
-| [sdd-flow/sdd-overview.md](./sdd-flow/sdd-overview.md)           | SDD を採用する理由と前提                                                              |
-| [sdd-flow/sdd-dev-workflow.md](./sdd-flow/sdd-dev-workflow.md)   | フェーズごとの作業手順（kickoff → specify → plan → tasks → analyze → implement など） |
-| [sdd-flow/sdd-team-protocol.md](./sdd-flow/sdd-team-protocol.md) | レイヤー構成・コンテキスト注入・更新ルール（ツール非依存）                            |
+| 文書                                                                  | 内容                                                                                  |
+| :-------------------------------------------------------------------- | :------------------------------------------------------------------------------------ |
+| [sdd-flow/sdd-overview.md](./docs/sdd-flow/sdd-overview.md)           | SDD を採用する理由と前提                                                              |
+| [sdd-flow/sdd-dev-workflow.md](./docs/sdd-flow/sdd-dev-workflow.md)   | フェーズごとの作業手順（kickoff → specify → plan → tasks → analyze → implement など） |
+| [sdd-flow/sdd-team-protocol.md](./docs/sdd-flow/sdd-team-protocol.md) | レイヤー構成・コンテキスト注入・更新ルール（ツール非依存）                            |
 
 # はじめに
 

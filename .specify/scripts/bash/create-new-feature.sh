@@ -7,7 +7,6 @@ DRY_RUN=false
 ALLOW_EXISTING=false
 SHORT_NAME=""
 BRANCH_NUMBER=""
-BRANCH_TYPE="feat"
 USE_TIMESTAMP=false
 ARGS=()
 i=1
@@ -53,39 +52,20 @@ while [ $i -le $# ]; do
         --timestamp)
             USE_TIMESTAMP=true
             ;;
-        --type)
-            if [ $((i + 1)) -gt $# ]; then
-                echo 'Error: --type requires a value (feat or fix)' >&2
-                exit 1
-            fi
-            i=$((i + 1))
-            next_arg="${!i}"
-            if [[ "$next_arg" == --* ]]; then
-                echo 'Error: --type requires a value (feat or fix)' >&2
-                exit 1
-            fi
-            if [[ "$next_arg" != "feat" && "$next_arg" != "fix" ]]; then
-                echo 'Error: --type must be "feat" or "fix"' >&2
-                exit 1
-            fi
-            BRANCH_TYPE="$next_arg"
-            ;;
         --help|-h)
-            echo "Usage: $0 [--json] [--dry-run] [--allow-existing-branch] [--short-name <name>] [--type feat|fix] [--number N] [--timestamp] <feature_description>"
+            echo "Usage: $0 [--json] [--dry-run] [--allow-existing-branch] [--short-name <name>] [--number N] [--timestamp] <feature_description>"
             echo ""
             echo "Options:"
             echo "  --json              Output in JSON format"
             echo "  --dry-run           Compute branch name and paths without creating branches, directories, or files"
             echo "  --allow-existing-branch  Switch to branch if it already exists instead of failing"
             echo "  --short-name <name> Provide a custom short name (2-4 words) for the branch"
-            echo "  --type feat|fix     Branch prefix type (default: feat). Used when branch_naming is \"prefix\""
             echo "  --number N          Specify branch number manually (overrides auto-detection)"
             echo "  --timestamp         Use timestamp prefix (YYYYMMDD-HHMMSS) instead of sequential numbering"
             echo "  --help, -h          Show this help message"
             echo ""
             echo "Examples:"
             echo "  $0 'Add user authentication system' --short-name 'user-auth'"
-            echo "  $0 --type fix --short-name 'payment-timeout' 'Fix payment processing timeout'"
             echo "  $0 'Implement OAuth2 integration for API' --number 5"
             echo "  $0 --timestamp --short-name 'user-auth' 'Add user authentication'"
             exit 0
@@ -99,7 +79,7 @@ done
 
 FEATURE_DESCRIPTION="${ARGS[*]}"
 if [ -z "$FEATURE_DESCRIPTION" ]; then
-    echo "Usage: $0 [--json] [--dry-run] [--allow-existing-branch] [--short-name <name>] [--type feat|fix] [--number N] [--timestamp] <feature_description>" >&2
+    echo "Usage: $0 [--json] [--dry-run] [--allow-existing-branch] [--short-name <name>] [--number N] [--timestamp] <feature_description>" >&2
     exit 1
 fi
 
@@ -223,18 +203,6 @@ fi
 
 cd "$REPO_ROOT"
 
-# Read branch naming mode from init-options.json (default: sequential)
-get_branch_naming_mode() {
-    local init_file="$REPO_ROOT/.specify/init-options.json"
-    if [ -f "$init_file" ] && command -v python3 >/dev/null 2>&1; then
-        python3 -c "import json; print(json.load(open('$init_file')).get('branch_naming', 'sequential'))" 2>/dev/null || echo "sequential"
-    else
-        echo "sequential"
-    fi
-}
-
-BRANCH_NAMING_MODE=$(get_branch_naming_mode)
-
 SPECS_DIR="$REPO_ROOT/specs"
 if [ "$DRY_RUN" != true ]; then
     mkdir -p "$SPECS_DIR"
@@ -297,22 +265,14 @@ else
     BRANCH_SUFFIX=$(generate_branch_name "$FEATURE_DESCRIPTION")
 fi
 
-# Strip redundant "fix-" prefix when branch type is fix
-if [ "$BRANCH_NAMING_MODE" = "prefix" ] && [ "$BRANCH_TYPE" = "fix" ]; then
-    BRANCH_SUFFIX=$(echo "$BRANCH_SUFFIX" | sed 's/^fix-//')
-fi
-
 # Warn if --number and --timestamp are both specified
 if [ "$USE_TIMESTAMP" = true ] && [ -n "$BRANCH_NUMBER" ]; then
     >&2 echo "[specify] Warning: --number is ignored when --timestamp is used"
     BRANCH_NUMBER=""
 fi
 
-# Determine branch name based on naming mode
-if [ "$BRANCH_NAMING_MODE" = "prefix" ]; then
-    FEATURE_NUM="$BRANCH_SUFFIX"
-    BRANCH_NAME="${BRANCH_TYPE}/${BRANCH_SUFFIX}"
-elif [ "$USE_TIMESTAMP" = true ]; then
+# Determine branch prefix
+if [ "$USE_TIMESTAMP" = true ]; then
     FEATURE_NUM=$(date +%Y%m%d-%H%M%S)
     BRANCH_NAME="${FEATURE_NUM}-${BRANCH_SUFFIX}"
 else
@@ -344,11 +304,9 @@ fi
 # Validate and truncate if necessary
 MAX_BRANCH_LENGTH=244
 if [ ${#BRANCH_NAME} -gt $MAX_BRANCH_LENGTH ]; then
-    if [ "$BRANCH_NAMING_MODE" = "prefix" ]; then
-        PREFIX_LENGTH=$(( ${#BRANCH_TYPE} + 1 ))
-    else
-        PREFIX_LENGTH=$(( ${#FEATURE_NUM} + 1 ))
-    fi
+    # Calculate how much we need to trim from suffix
+    # Account for prefix length: timestamp (15) + hyphen (1) = 16, or sequential (3) + hyphen (1) = 4
+    PREFIX_LENGTH=$(( ${#FEATURE_NUM} + 1 ))
     MAX_SUFFIX_LENGTH=$((MAX_BRANCH_LENGTH - PREFIX_LENGTH))
     
     # Truncate suffix at word boundary if possible
@@ -357,24 +315,14 @@ if [ ${#BRANCH_NAME} -gt $MAX_BRANCH_LENGTH ]; then
     TRUNCATED_SUFFIX=$(echo "$TRUNCATED_SUFFIX" | sed 's/-$//')
     
     ORIGINAL_BRANCH_NAME="$BRANCH_NAME"
-    if [ "$BRANCH_NAMING_MODE" = "prefix" ]; then
-        BRANCH_SUFFIX="$TRUNCATED_SUFFIX"
-        FEATURE_NUM="$BRANCH_SUFFIX"
-        BRANCH_NAME="${BRANCH_TYPE}/${BRANCH_SUFFIX}"
-    else
-        BRANCH_NAME="${FEATURE_NUM}-${TRUNCATED_SUFFIX}"
-    fi
+    BRANCH_NAME="${FEATURE_NUM}-${TRUNCATED_SUFFIX}"
     
     >&2 echo "[specify] Warning: Branch name exceeded GitHub's 244-byte limit"
     >&2 echo "[specify] Original: $ORIGINAL_BRANCH_NAME (${#ORIGINAL_BRANCH_NAME} bytes)"
     >&2 echo "[specify] Truncated to: $BRANCH_NAME (${#BRANCH_NAME} bytes)"
 fi
 
-if [ "$BRANCH_NAMING_MODE" = "prefix" ]; then
-    FEATURE_DIR="$SPECS_DIR/$BRANCH_SUFFIX"
-else
-    FEATURE_DIR="$SPECS_DIR/$BRANCH_NAME"
-fi
+FEATURE_DIR="$SPECS_DIR/$BRANCH_NAME"
 SPEC_FILE="$FEATURE_DIR/spec.md"
 
 if [ "$DRY_RUN" != true ]; then
@@ -395,9 +343,6 @@ if [ "$DRY_RUN" != true ]; then
                     fi
                 elif [ "$USE_TIMESTAMP" = true ]; then
                     >&2 echo "Error: Branch '$BRANCH_NAME' already exists. Rerun to get a new timestamp or use a different --short-name."
-                    exit 1
-                elif [ "$BRANCH_NAMING_MODE" = "prefix" ]; then
-                    >&2 echo "Error: Branch '$BRANCH_NAME' already exists. Please use a different --short-name or --type."
                     exit 1
                 else
                     >&2 echo "Error: Branch '$BRANCH_NAME' already exists. Please use a different feature name or specify a different number with --number."

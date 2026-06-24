@@ -86,22 +86,20 @@ Given that feature description, do this:
      - "Create a dashboard for analytics" → type: `feat`, short name: `analytics-dashboard`
      - "Fix payment processing timeout bug" → type: `fix`, short name: `payment-timeout`
 
-2. **Create the feature branch** by running the script with `--short-name`, `--type`, and `--json`:
+2. **Create the feature branch** by running the script with `--short-name` (and `--json`). In sequential mode, do NOT pass `--number` — the script auto-detects the next available number. In timestamp mode, the script generates a `YYYYMMDD-HHMMSS` prefix automatically:
 
-   **Branch naming mode**: Before running the script, check if `.specify/init-options.json` exists and read the `branch_naming` value.
-   - If `"prefix"` (project default): use `--type feat` or `--type fix`. Git branch will be `feat/<short-name>` or `fix/<short-name>`. Spec files go to `specs/<short-name>/` (flat, no `feat/` prefix or numeric index). Do NOT pass `--number` or `--timestamp`.
-   - If `"sequential"` or absent: use sequential numbering (legacy). Do NOT pass `--number` — the script auto-detects the next available number.
-   - If `branch_numbering` is `"timestamp"` (only in sequential mode): add `--timestamp`
+   **Branch numbering mode**: Before running the script, check if `.specify/init-options.json` exists and read the `branch_numbering` value.
+   - If `"timestamp"`, add `--timestamp` (Bash) or `-Timestamp` (PowerShell) to the script invocation
+   - If `"sequential"` or absent, do not add any extra flag (default behavior)
 
-   - Bash (prefix mode — default): `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" --json --type feat --short-name "user-auth" "Add user authentication"`
-   - Bash (prefix mode, bug fix): `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" --json --type fix --short-name "payment-timeout" "Fix payment processing timeout"`
-   - Bash (legacy sequential): `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" --json --short-name "user-auth" "Add user authentication"`
-   - Bash (legacy timestamp): `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" --json --timestamp --short-name "user-auth" "Add user authentication"`
+   - Bash example: `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" --json --short-name "user-auth" "Add user authentication"`
+   - Bash (timestamp): `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" --json --timestamp --short-name "user-auth" "Add user authentication"`
+   - PowerShell example: `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" -Json -ShortName "user-auth" "Add user authentication"`
+   - PowerShell (timestamp): `.specify/scripts/bash/create-new-feature.sh "$ARGUMENTS" -Json -Timestamp -ShortName "user-auth" "Add user authentication"`
 
    **IMPORTANT**:
-   - In prefix mode, always pass `--type feat` or `--type fix`
-   - In sequential mode, do NOT pass `--number` — the script determines the correct next number automatically
-   - Always include the JSON flag (`--json`) so the output can be parsed reliably
+   - Do NOT pass `--number` — the script determines the correct next number automatically
+   - Always include the JSON flag (`--json` for Bash, `-Json` for PowerShell) so the output can be parsed reliably
    - You must only ever run this script once per feature
    - The JSON is provided in the terminal as output - always refer to it to get the actual content you're looking for
    - The JSON output will contain BRANCH_NAME and SPEC_FILE paths

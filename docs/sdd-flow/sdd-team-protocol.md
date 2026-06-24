@@ -88,27 +88,28 @@ fitness-crm/
 ├── .github/
 │   └── copilot-instructions.md      ← Layer 1: tech stack + project structure
 │
+├── docs/
+│   ├── sdd-flow/
+│   │   ├── sdd-overview.md              ← What SDD is and why we use it
+│   │   ├── sdd-dev-workflow.md          ← Phase-by-phase workflow (this project)
+│   │   └── sdd-sequence-flow.md         ← Sequence diagram (roles + gates)
+│   │
+│   └── steering/                    ← System-wide domain knowledge (always loaded by agents)
+│       ├── _index.md                ← Navigation hub: module registry + category overview
+│       ├── architecture.md          ← Tech stack, folder structure, API design patterns
+│       ├── business-flows.md        ← End-to-end business flows and actor interactions
+│       ├── business-glossary.md     ← Canonical business term → technical mapping
+│       └── user-personas.md         ← User types, goals, and feature usage patterns
+│
 └── specs/
-    ├── sdd-flow/
-    │   ├── sdd-overview.md              ← What SDD is and why we use it
-    │   ├── sdd-dev-workflow.md          ← Phase-by-phase workflow (this project)
-    │   └── sdd-sequence-flow.md         ← Sequence diagram (roles + gates)
-    │
-    ├── steering/                    ← System-wide domain knowledge (always loaded by agents)
-    │   ├── _index.md                ← Navigation hub: module registry + category overview
-    │   ├── architecture.md          ← Tech stack, folder structure, API design patterns
-    │   ├── business-flows.md        ← End-to-end business flows and actor interactions
-    │   ├── business-glossary.md     ← Canonical business term → technical mapping
-    │   └── user-personas.md         ← User types, goals, and feature usage patterns
-    │
     └── <feature>/
-            ├── spec.md              ← Feature spec (speckit.specify output)
-            ├── plan.md              ← Implementation plan (speckit.plan output)
-            ├── tasks.md             ← Task list (speckit.tasks output)
-            ├── research.md          ← Research notes (speckit.plan output)
-            ├── data-model.md        ← Data model (speckit.plan output)
-            └── contracts/
-                └── api-contracts.md ← FE–BE API contract
+        ├── spec.md              ← Feature spec (speckit.specify output)
+        ├── plan.md              ← Implementation plan (speckit.plan output)
+        ├── tasks.md             ← Task list (speckit.tasks output)
+        ├── research.md          ← Research notes (speckit.plan output)
+        ├── data-model.md        ← Data model (speckit.plan output)
+        └── contracts/
+            └── api-contracts.md ← FE–BE API contract
 ```
 
 ---
@@ -255,21 +256,21 @@ draft → review → approved → implemented
 
 ## 7. Context Injection Per AI Tool
 
-| Tool               | Stock context (always loaded)                                                                                                                               | Flow context (per feature)                                             |
-| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| **GitHub Copilot** | `.github/copilot-instructions.md` auto-loaded. Add `.specify/memory/` + `specs/steering/` files to Copilot context via `#file:` references in agent prompt. | `@` attach `specs/<feature>/spec.md` before invoking any SpecKit skill |
-| **Cursor**         | Add `.specify/memory/` + `specs/steering/` + `.github/copilot-instructions.md` to `.cursorrules`                                                            | `@specs/<feature>/spec.md`                                             |
-| **Claude**         | Paste `copilot-instructions.md` + constitution + relevant steering files                                                                                    | Paste `spec.md` content                                                |
-| **Any chat AI**    | Copy-paste stock context blocks                                                                                                                             | Copy-paste spec.md                                                     |
+| Tool               | Stock context (always loaded)                                                                                                                              | Flow context (per feature)                                             |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| **GitHub Copilot** | `.github/copilot-instructions.md` auto-loaded. Add `.specify/memory/` + `docs/steering/` files to Copilot context via `#file:` references in agent prompt. | `@` attach `specs/<feature>/spec.md` before invoking any SpecKit skill |
+| **Cursor**         | Add `.specify/memory/` + `docs/steering/` + `.github/copilot-instructions.md` to `.cursorrules`                                                            | `@specs/<feature>/spec.md`                                             |
+| **Claude**         | Paste `copilot-instructions.md` + constitution + relevant steering files                                                                                   | Paste `spec.md` content                                                |
+| **Any chat AI**    | Copy-paste stock context blocks                                                                                                                            | Copy-paste spec.md                                                     |
 
 ### Recommended Copilot agent prompt prefix
 
 ```
 Before starting, read:
 - #file:.specify/memory/constitution.md
-- #file:specs/steering/_index.md
-- #file:specs/steering/architecture.md
-- #file:specs/steering/business-glossary.md
+- #file:docs/steering/_index.md
+- #file:docs/steering/architecture.md
+- #file:docs/steering/business-glossary.md
 - #file:.github/copilot-instructions.md
 - #file:specs/<feature>/spec.md
 
@@ -305,7 +306,7 @@ Do not proceed past speckit.tasks without running speckit.analyze first.
 | New feature pattern established            | Add to "Recent Changes" section      |
 | Structural refactor changes file locations | Update "Project Structure" section   |
 
-### Steering (`specs/steering/`)
+### Steering (`docs/steering/`)
 
 Steering files are **additive only** — never remove or rewrite existing content. Each file has its own update trigger:
 
@@ -323,14 +324,14 @@ Steering files are **additive only** — never remove or rewrite existing conten
 
 ## 9. Common Failure Modes and Fixes
 
-| Failure                                                   | Root cause                                      | Fix                                                                                                        |
-| --------------------------------------------------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| Agent generates code that contradicts an earlier decision | Spec not loaded before `speckit.implement`      | Always attach `spec.md` before invoking implement                                                          |
-| `speckit.analyze` flags CRITICAL constitution violation   | Principle I–V not checked during spec authoring | Fill Constitution Check table in spec before approving                                                     |
-| `types.gen.ts` drifts from Zod schemas                    | Codegen pipeline skipped after route change     | Run `generate-openapi` → `generate-api` every time a route or schema changes                               |
-| Two `useFiltersHook()` instances cause state desync       | Provider pattern not followed                   | Use a single filter hook in a Provider; child UI reads from context (see `specs/steering/architecture.md`) |
-| `speckit.implement` produces code outside feature scope   | Scope not explicitly defined in spec            | Add explicit "Out of scope" section to spec; re-run implement                                              |
-| MR blocked by lint errors                                 | `any` or missing types introduced               | Constitution Principle I; run `npm run type-check` + `npm run lint` before opening MR                      |
+| Failure                                                   | Root cause                                      | Fix                                                                                                       |
+| --------------------------------------------------------- | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Agent generates code that contradicts an earlier decision | Spec not loaded before `speckit.implement`      | Always attach `spec.md` before invoking implement                                                         |
+| `speckit.analyze` flags CRITICAL constitution violation   | Principle I–V not checked during spec authoring | Fill Constitution Check table in spec before approving                                                    |
+| `types.gen.ts` drifts from Zod schemas                    | Codegen pipeline skipped after route change     | Run `generate-openapi` → `generate-api` every time a route or schema changes                              |
+| Two `useFiltersHook()` instances cause state desync       | Provider pattern not followed                   | Use a single filter hook in a Provider; child UI reads from context (see `docs/steering/architecture.md`) |
+| `speckit.implement` produces code outside feature scope   | Scope not explicitly defined in spec            | Add explicit "Out of scope" section to spec; re-run implement                                             |
+| MR blocked by lint errors                                 | `any` or missing types introduced               | Constitution Principle I; run `npm run type-check` + `npm run lint` before opening MR                     |
 
 ---
 
@@ -338,7 +339,7 @@ Steering files are **additive only** — never remove or rewrite existing conten
 
 1. Read `sdd-overview.md` — understand _why_ SDD is used here
 2. Read `.specify/memory/constitution.md` — understand the non-negotiable rules
-3. Read `specs/steering/_index.md` and `specs/steering/architecture.md` — system-wide patterns and structure
+3. Read `docs/steering/_index.md` and `docs/steering/architecture.md` — system-wide patterns and structure
 4. Read `sdd-sequence-flow.md` — understand the full team flow and review gates
 5. Read `sdd-dev-workflow.md` — understand the phase-by-phase workflow
 6. Browse a completed feature (`specs/staff-management/`) as a reference implementation
