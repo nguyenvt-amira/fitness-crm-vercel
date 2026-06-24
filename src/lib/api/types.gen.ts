@@ -23872,6 +23872,389 @@ export type PatchCrmLessonSchedulesByScheduleIdTimeChangeResponses = {
 
 export type PatchCrmLessonSchedulesByScheduleIdTimeChangeResponse = PatchCrmLessonSchedulesByScheduleIdTimeChangeResponses[keyof PatchCrmLessonSchedulesByScheduleIdTimeChangeResponses];
 
+export type GetCrmInstructorsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * 店舗IDでフィルタ
+         */
+        store_id?: string;
+        /**
+         * 役割でフィルタ
+         */
+        role?: string;
+    };
+    url: '/crm/instructors';
+};
+
+export type GetCrmInstructorsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmInstructorsError = GetCrmInstructorsErrors[keyof GetCrmInstructorsErrors];
+
+export type GetCrmInstructorsResponses = {
+    /**
+     * GetInstructorsResponse
+     *
+     * インストラクター一覧レスポンス
+     */
+    200: {
+        instructors: Array<{
+            /**
+             * インストラクターID
+             */
+            instructor_id: string;
+            /**
+             * インストラクター名
+             */
+            instructor_name: string;
+            /**
+             * 店舗ID
+             */
+            store_id: string;
+            /**
+             * 役割
+             */
+            role: string;
+            /**
+             * プロフィール画像URL
+             */
+            photo_url?: string;
+        }>;
+    };
+};
+
+export type GetCrmInstructorsResponse = GetCrmInstructorsResponses[keyof GetCrmInstructorsResponses];
+
+export type GetCrmLessonsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * LessonType
+         *
+         * レッスン種別でフィルタ
+         */
+        lesson_type?: 'studio' | 'personal';
+    };
+    url: '/crm/lessons';
+};
+
+export type GetCrmLessonsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmLessonsError = GetCrmLessonsErrors[keyof GetCrmLessonsErrors];
+
+export type GetCrmLessonsResponses = {
+    /**
+     * GetLessonsResponse
+     *
+     * レッスン一覧レスポンス
+     */
+    200: {
+        lessons: Array<{
+            /**
+             * レッスンID
+             */
+            id: string;
+            /**
+             * レッスン名
+             */
+            name: string;
+            /**
+             * LessonType
+             *
+             * レッスン種別（スタジオ/パーソナル）
+             */
+            lesson_type: 'studio' | 'personal';
+            /**
+             * 所要時間（分）
+             */
+            duration: number;
+        }>;
+    };
+};
+
+export type GetCrmLessonsResponse = GetCrmLessonsResponses[keyof GetCrmLessonsResponses];
+
+export type PostCrmLessonSchedulesCreateData = {
+    /**
+     * CreateLessonScheduleRequest
+     *
+     * レッスンスケジュール登録リクエスト
+     */
+    body?: {
+        /**
+         * LessonType
+         *
+         * レッスン種別（スタジオ/パーソナル）
+         */
+        lesson_type: 'studio' | 'personal';
+        /**
+         * 店舗ID
+         */
+        store_id: string;
+        /**
+         * スタジオID（studio時必須）
+         */
+        studio_id?: string;
+        /**
+         * コース種別（personal時必須）
+         */
+        course_type?: '30min' | '60min' | 'trial';
+        /**
+         * スケジュールモード（単発/繰り返し）
+         */
+        schedule_mode: 'single' | 'recurring';
+        /**
+         * 日付 YYYY-MM-DD（single mode）
+         */
+        date?: string;
+        /**
+         * 開始日 YYYY-MM-DD（recurring mode）
+         */
+        start_date?: string;
+        /**
+         * 開始時刻 HH:mm
+         */
+        start_time: string;
+        /**
+         * 繰り返し種別（recurring時必須）
+         */
+        repeat_type?: 'weekly' | 'biweekly' | 'monthly';
+        /**
+         * 曜日配列 0=日 6=土
+         */
+        days_of_week?: Array<number>;
+        /**
+         * 終了条件（recurring時必須）
+         */
+        end_condition?: 'by_date' | 'by_count' | 'indefinite';
+        /**
+         * 終了日 YYYY-MM-DD
+         */
+        end_date?: string;
+        /**
+         * 回数 1-100
+         */
+        end_count?: number;
+        /**
+         * 休業日スキップ
+         */
+        skip_holidays?: boolean;
+        /**
+         * レッスンID
+         */
+        lesson_id: string;
+        /**
+         * インストラクターID配列（最小1）
+         */
+        instructor_ids: Array<string>;
+        /**
+         * 定員（studio時必須）
+         */
+        capacity?: number;
+        /**
+         * 公開設定
+         */
+        is_published: boolean;
+        /**
+         * 体験枠有効
+         */
+        trial_enabled?: boolean;
+        /**
+         * 体験枠モード（有効時必須）
+         */
+        trial_mode?: 'inclusive' | 'additional';
+        /**
+         * 体験枠定員 1-5
+         */
+        trial_capacity?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/lesson-schedules/create';
+};
+
+export type PostCrmLessonSchedulesCreateErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmLessonSchedulesCreateError = PostCrmLessonSchedulesCreateErrors[keyof PostCrmLessonSchedulesCreateErrors];
+
+export type PostCrmLessonSchedulesCreateResponses = {
+    /**
+     * CreateLessonScheduleResponse
+     *
+     * レッスンスケジュール登録レスポンス
+     */
+    201: {
+        /**
+         * 生成されたスケジュールID
+         */
+        id: string;
+        /**
+         * 完了メッセージ
+         */
+        message: string;
+        /**
+         * 作成されたスケジュール一覧（単発は1件、繰り返しは複数）
+         */
+        created_schedules: Array<{
+            /**
+             * スケジュールID
+             */
+            id: string;
+            /**
+             * 日付 YYYY-MM-DD
+             */
+            date: string;
+            /**
+             * 開始時刻 HH:mm
+             */
+            start_time: string;
+            /**
+             * 終了時刻 HH:mm
+             */
+            end_time: string;
+        }>;
+    };
+};
+
+export type PostCrmLessonSchedulesCreateResponse = PostCrmLessonSchedulesCreateResponses[keyof PostCrmLessonSchedulesCreateResponses];
+
+export type GetCrmLessonSchedulesInstructorAvailabilityData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * インストラクターID
+         */
+        instructor_id: string;
+        /**
+         * 対象日付
+         */
+        date: string;
+        /**
+         * 開始時刻 HH:mm
+         */
+        start_time: string;
+        /**
+         * 曜日（繰り返し確認用）
+         */
+        day_of_week?: number;
+    };
+    url: '/crm/lesson-schedules/instructor-availability';
+};
+
+export type GetCrmLessonSchedulesInstructorAvailabilityErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmLessonSchedulesInstructorAvailabilityError = GetCrmLessonSchedulesInstructorAvailabilityErrors[keyof GetCrmLessonSchedulesInstructorAvailabilityErrors];
+
+export type GetCrmLessonSchedulesInstructorAvailabilityResponses = {
+    /**
+     * InstructorAvailabilityResponse
+     *
+     * インストラクター空き確認レスポンス
+     */
+    200: {
+        /**
+         * 空きあり
+         */
+        available: boolean;
+        /**
+         * 重複スケジュール一覧
+         */
+        conflicts: Array<{
+            /**
+             * スケジュールID
+             */
+            schedule_id: string;
+            /**
+             * レッスン名
+             */
+            lesson_name: string;
+            /**
+             * 開始時刻
+             */
+            start_time: string;
+            /**
+             * 終了時刻
+             */
+            end_time: string;
+        }>;
+    };
+};
+
+export type GetCrmLessonSchedulesInstructorAvailabilityResponse = GetCrmLessonSchedulesInstructorAvailabilityResponses[keyof GetCrmLessonSchedulesInstructorAvailabilityResponses];
+
 export type GetCrmLessonSchedulesData = {
     body?: never;
     path?: never;
@@ -24230,6 +24613,312 @@ export type GetCrmLessonSchedulesSummaryResponses = {
 };
 
 export type GetCrmLessonSchedulesSummaryResponse = GetCrmLessonSchedulesSummaryResponses[keyof GetCrmLessonSchedulesSummaryResponses];
+
+export type DeleteCrmLessonSchedulesTemplatesByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Template ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/lesson-schedules/templates/{id}';
+};
+
+export type DeleteCrmLessonSchedulesTemplatesByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type DeleteCrmLessonSchedulesTemplatesByIdError = DeleteCrmLessonSchedulesTemplatesByIdErrors[keyof DeleteCrmLessonSchedulesTemplatesByIdErrors];
+
+export type DeleteCrmLessonSchedulesTemplatesByIdResponses = {
+    /**
+     * DeleteTemplateResponse
+     *
+     * テンプレート削除レスポンス
+     */
+    200: {
+        /**
+         * 完了メッセージ
+         */
+        message: string;
+    };
+};
+
+export type DeleteCrmLessonSchedulesTemplatesByIdResponse = DeleteCrmLessonSchedulesTemplatesByIdResponses[keyof DeleteCrmLessonSchedulesTemplatesByIdResponses];
+
+export type GetCrmLessonSchedulesTemplatesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/lesson-schedules/templates';
+};
+
+export type GetCrmLessonSchedulesTemplatesErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmLessonSchedulesTemplatesError = GetCrmLessonSchedulesTemplatesErrors[keyof GetCrmLessonSchedulesTemplatesErrors];
+
+export type GetCrmLessonSchedulesTemplatesResponses = {
+    /**
+     * GetTemplatesResponse
+     *
+     * テンプレート一覧レスポンス
+     */
+    200: {
+        templates: Array<{
+            /**
+             * テンプレートID
+             */
+            id: string;
+            /**
+             * テンプレート名
+             */
+            name: string;
+            /**
+             * 繰り返し種別
+             */
+            repeat_type: 'weekly' | 'biweekly' | 'monthly';
+            /**
+             * 曜日配列
+             */
+            days_of_week: Array<number>;
+            /**
+             * 終了条件
+             */
+            end_condition: 'by_date' | 'by_count' | 'indefinite';
+            /**
+             * 終了値
+             */
+            end_value: string | number | unknown;
+            /**
+             * 休業日スキップ
+             */
+            skip_holidays: boolean;
+            /**
+             * 開始時刻 HH:mm
+             */
+            start_time: string;
+            /**
+             * 店舗ID
+             */
+            store_id: string;
+            /**
+             * LessonType
+             *
+             * レッスン種別（スタジオ/パーソナル）
+             */
+            lesson_class: 'studio' | 'personal';
+            /**
+             * スタジオID
+             */
+            studio_id: string | null;
+            /**
+             * レッスンID
+             */
+            lesson_id: string;
+        }>;
+    };
+};
+
+export type GetCrmLessonSchedulesTemplatesResponse = GetCrmLessonSchedulesTemplatesResponses[keyof GetCrmLessonSchedulesTemplatesResponses];
+
+export type PostCrmLessonSchedulesTemplatesData = {
+    /**
+     * CreateTemplateRequest
+     *
+     * テンプレート作成リクエスト
+     */
+    body?: {
+        /**
+         * テンプレート名
+         */
+        name: string;
+        /**
+         * 繰り返し種別
+         */
+        repeat_type: 'weekly' | 'biweekly' | 'monthly';
+        /**
+         * 曜日配列
+         */
+        days_of_week: Array<number>;
+        /**
+         * 終了条件
+         */
+        end_condition: 'by_date' | 'by_count' | 'indefinite';
+        /**
+         * 終了値
+         */
+        end_value: string | number | unknown;
+        /**
+         * 休業日スキップ
+         */
+        skip_holidays: boolean;
+        /**
+         * 開始時刻 HH:mm
+         */
+        start_time: string;
+        /**
+         * 店舗ID
+         */
+        store_id: string;
+        /**
+         * LessonType
+         *
+         * レッスン種別（スタジオ/パーソナル）
+         */
+        lesson_class: 'studio' | 'personal';
+        /**
+         * スタジオID
+         */
+        studio_id: string | null;
+        /**
+         * レッスンID
+         */
+        lesson_id: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/lesson-schedules/templates';
+};
+
+export type PostCrmLessonSchedulesTemplatesErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmLessonSchedulesTemplatesError = PostCrmLessonSchedulesTemplatesErrors[keyof PostCrmLessonSchedulesTemplatesErrors];
+
+export type PostCrmLessonSchedulesTemplatesResponses = {
+    /**
+     * CreateTemplateResponse
+     *
+     * テンプレート作成レスポンス
+     */
+    201: {
+        /**
+         * 作成されたテンプレートID
+         */
+        id: string;
+        /**
+         * 完了メッセージ
+         */
+        message: string;
+    };
+};
+
+export type PostCrmLessonSchedulesTemplatesResponse = PostCrmLessonSchedulesTemplatesResponses[keyof PostCrmLessonSchedulesTemplatesResponses];
+
+export type GetCrmStudiosData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * 店舗IDでフィルタ
+         */
+        store_id?: string;
+    };
+    url: '/crm/studios';
+};
+
+export type GetCrmStudiosErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmStudiosError = GetCrmStudiosErrors[keyof GetCrmStudiosErrors];
+
+export type GetCrmStudiosResponses = {
+    /**
+     * GetStudiosResponse
+     *
+     * スタジオ一覧レスポンス
+     */
+    200: {
+        studios: Array<{
+            /**
+             * スタジオID
+             */
+            id: string;
+            /**
+             * スタジオ名
+             */
+            name: string;
+            /**
+             * 物理定員
+             */
+            physical_capacity: number;
+            /**
+             * 店舗ID
+             */
+            store_id: string;
+        }>;
+    };
+};
+
+export type GetCrmStudiosResponse = GetCrmStudiosResponses[keyof GetCrmStudiosResponses];
 
 export type GetCrmLockersByIdHistoryData = {
     body?: never;
@@ -40346,6 +41035,79 @@ export type PatchCrmStoresByIdBusinessHoursResponses = {
 };
 
 export type PatchCrmStoresByIdBusinessHoursResponse = PatchCrmStoresByIdBusinessHoursResponses[keyof PatchCrmStoresByIdBusinessHoursResponses];
+
+export type GetCrmStoresByStoreIdHolidaysData = {
+    body?: never;
+    path: {
+        /**
+         * Store ID
+         */
+        storeId: string;
+    };
+    query: {
+        /**
+         * 開始日
+         */
+        from: string;
+        /**
+         * 終了日
+         */
+        to: string;
+    };
+    url: '/crm/stores/{storeId}/holidays';
+};
+
+export type GetCrmStoresByStoreIdHolidaysErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmStoresByStoreIdHolidaysError = GetCrmStoresByStoreIdHolidaysErrors[keyof GetCrmStoresByStoreIdHolidaysErrors];
+
+export type GetCrmStoresByStoreIdHolidaysResponses = {
+    /**
+     * StoreHolidaysResponse
+     *
+     * 店舗休業日レスポンス
+     */
+    200: {
+        /**
+         * 休業日一覧
+         */
+        holidays: Array<{
+            /**
+             * 日付
+             */
+            date: string;
+            /**
+             * 休業日名
+             */
+            name: string;
+        }>;
+    };
+};
+
+export type GetCrmStoresByStoreIdHolidaysResponse = GetCrmStoresByStoreIdHolidaysResponses[keyof GetCrmStoresByStoreIdHolidaysResponses];
 
 export type DeleteCrmStoresByIdMainContractsByContractIdData = {
     body?: never;

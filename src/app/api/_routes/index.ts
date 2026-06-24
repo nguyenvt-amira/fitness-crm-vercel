@@ -35,6 +35,8 @@ import '@/app/api/crm/family-registrations/risk-evaluation/route';
 // Import family registrations routes
 import '@/app/api/crm/family-registrations/route';
 import '@/app/api/crm/family-registrations/summary/route';
+// D-01: Lesson Schedules
+import '@/app/api/crm/instructors/route';
 // Import leaves routes
 import '@/app/api/crm/leaves/[id]/approve/route';
 import '@/app/api/crm/leaves/[id]/cancel-withdrawal/route';
@@ -56,10 +58,14 @@ import '@/app/api/crm/lesson-schedules/[id]/reservations/stats/route';
 import '@/app/api/crm/lesson-schedules/[id]/spaces/route';
 import '@/app/api/crm/lesson-schedules/[id]/studio/change/route';
 import '@/app/api/crm/lesson-schedules/[id]/time/change/route';
-// D-01: Lesson Schedules
+import '@/app/api/crm/lesson-schedules/create/route';
+import '@/app/api/crm/lesson-schedules/instructor-availability/route';
 import '@/app/api/crm/lesson-schedules/route';
 import '@/app/api/crm/lesson-schedules/stores/summary/route';
 import '@/app/api/crm/lesson-schedules/summary/route';
+import '@/app/api/crm/lesson-schedules/templates/[id]/route';
+import '@/app/api/crm/lesson-schedules/templates/route';
+import '@/app/api/crm/lessons/route';
 import '@/app/api/crm/lockers/[id]/history/route';
 import '@/app/api/crm/lockers/[id]/route';
 import '@/app/api/crm/lockers/[id]/slots/[slotId]/reminder-notifications/route';
@@ -152,12 +158,14 @@ import '@/app/api/crm/staffs/route';
 // Import stores routes
 import '@/app/api/crm/stores/[id]/access-settings/route';
 import '@/app/api/crm/stores/[id]/business-hours/route';
+import '@/app/api/crm/stores/[id]/holidays/route';
 import '@/app/api/crm/stores/[id]/main-contracts/[contractId]/route';
 import '@/app/api/crm/stores/[id]/main-contracts/route';
 import '@/app/api/crm/stores/[id]/options/[optionId]/route';
 import '@/app/api/crm/stores/[id]/options/route';
 import '@/app/api/crm/stores/[id]/route';
 import '@/app/api/crm/stores/route';
+import '@/app/api/crm/studios/route';
 import '@/app/api/crm/transfers/[id]/approve/route';
 import '@/app/api/crm/transfers/[id]/reject/route';
 import '@/app/api/crm/transfers/[id]/route';

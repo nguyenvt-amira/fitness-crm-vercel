@@ -2935,6 +2935,54 @@ const SEED_RESERVATION_INSTRUCTORS: Array<{
   { instructor_id: 'S010', instructor_name: '渡辺 大輝', store_id: 'ST004' },
 ];
 
+// ─── D-01: Lesson Master Seed Data ─────────────────────────────────────
+
+const SEED_LESSONS: Array<{
+  id: string;
+  name: string;
+  lesson_type: 'studio' | 'personal';
+  duration: number;
+}> = [
+  // Studio lessons
+  { id: 'LSN-001', name: 'ヨガ入門', lesson_type: 'studio', duration: 60 },
+  { id: 'LSN-002', name: 'ヨガ中級', lesson_type: 'studio', duration: 60 },
+  { id: 'LSN-003', name: 'ピラティス', lesson_type: 'studio', duration: 50 },
+  { id: 'LSN-004', name: 'ズンバ', lesson_type: 'studio', duration: 45 },
+  { id: 'LSN-005', name: 'エアロビクス', lesson_type: 'studio', duration: 60 },
+  { id: 'LSN-006', name: 'バレトン', lesson_type: 'studio', duration: 60 },
+  { id: 'LSN-007', name: 'ボクサーサイズ', lesson_type: 'studio', duration: 45 },
+  { id: 'LSN-008', name: 'インターバルトレーニング', lesson_type: 'studio', duration: 30 },
+  // Personal training lessons
+  { id: 'LSN-101', name: 'パーソナルトレーニング 30分', lesson_type: 'personal', duration: 30 },
+  { id: 'LSN-102', name: 'パーソナルトレーニング 60分', lesson_type: 'personal', duration: 60 },
+  { id: 'LSN-103', name: '体験パーソナル', lesson_type: 'personal', duration: 30 },
+];
+
+// ─── D-03: Studio Seed Data ────────────────────────────────────────────
+
+const SEED_STUDIOS: Array<{
+  id: string;
+  name: string;
+  physical_capacity: number;
+  store_id: string;
+}> = [
+  // FIT365八潮店 (ST001)
+  { id: 'STU-001', name: 'Zumbaスタジオ', physical_capacity: 16, store_id: 'ST001' },
+  { id: 'STU-002', name: 'ヨガスタジオ', physical_capacity: 20, store_id: 'ST001' },
+  { id: 'STU-003', name: 'ピラティスルーム', physical_capacity: 12, store_id: 'ST001' },
+  // FIT365草加店 (ST002)
+  { id: 'STU-004', name: 'エアロスタジオ', physical_capacity: 25, store_id: 'ST002' },
+  { id: 'STU-005', name: 'ダンススタジオ', physical_capacity: 18, store_id: 'ST002' },
+  // JOYFIT新座店 (ST003)
+  { id: 'STU-006', name: 'マルチスタジオ', physical_capacity: 30, store_id: 'ST003' },
+  { id: 'STU-007', name: 'バイクスタジオ', physical_capacity: 20, store_id: 'ST003' },
+  // JOYFIT北本店 (ST004)
+  { id: 'STU-008', name: 'グループエクササイズルーム', physical_capacity: 20, store_id: 'ST004' },
+  // その他店舗
+  { id: 'STU-009', name: 'スタジオA', physical_capacity: 15, store_id: 'ST005' },
+  { id: 'STU-010', name: 'スタジオB', physical_capacity: 10, store_id: 'ST006' },
+];
+
 /** Studio space grid config per schedule_id (grid layout for studio lessons). */
 const SEED_STUDIO_SPACES: Record<string, StudioSpaceGridResponse> = {
   // FIT365八潮店 Zumbaスタジオ — 8x2 grid, 16 capacity
@@ -3883,12 +3931,112 @@ type DbType = {
     _seed(): void;
     getList(): LessonScheduleListItem[];
     getById(id: string): LessonScheduleListItem | undefined;
+    create(
+      input: import('./_schemas/lesson-schedule.schema').CreateLessonScheduleRequest & {
+        overrideId?: string;
+      },
+    ): import('./_schemas/lesson-schedule.schema').CreateLessonScheduleResponse;
     update(id: string, patch: Partial<LessonScheduleListItem>): LessonScheduleListItem | undefined;
     getKpiSummary(date: string): LessonScheduleKpiSummary;
     getStoreSummary(date: string): {
       areas: AreaScheduleKpiSummary[];
       stores: StoreScheduleSummary[];
     };
+    checkInstructorAvailability(
+      instructorId: string,
+      date: string,
+      startTime: string,
+    ): import('./_schemas/lesson-schedule.schema').InstructorAvailabilityResponse;
+  };
+  studios: {
+    _rows: Array<{
+      id: string;
+      name: string;
+      physical_capacity: number;
+      store_id: string;
+    }>;
+    _seeded: boolean;
+    _seed(): void;
+    getList(): Array<{
+      id: string;
+      name: string;
+      physical_capacity: number;
+      store_id: string;
+    }>;
+    getByStoreId(storeId: string): Array<{
+      id: string;
+      name: string;
+      physical_capacity: number;
+      store_id: string;
+    }>;
+  };
+  lessons: {
+    _rows: Array<{
+      id: string;
+      name: string;
+      lesson_type: 'studio' | 'personal';
+      duration: number;
+    }>;
+    _seeded: boolean;
+    _seed(): void;
+    getList(
+      lessonType?: 'studio' | 'personal',
+    ): Array<{ id: string; name: string; lesson_type: 'studio' | 'personal'; duration: number }>;
+    getById(
+      id: string,
+    ):
+      | { id: string; name: string; lesson_type: 'studio' | 'personal'; duration: number }
+      | undefined;
+  };
+  instructors: {
+    _rows: Array<{
+      instructor_id: string;
+      instructor_name: string;
+      store_id: string;
+      role: string;
+      photo_url?: string;
+    }>;
+    _seeded: boolean;
+    _seed(): void;
+    getList(
+      storeId?: string,
+      role?: string,
+    ): Array<{
+      instructor_id: string;
+      instructor_name: string;
+      store_id: string;
+      role: string;
+      photo_url?: string;
+    }>;
+    getById(
+      id: string,
+    ):
+      | {
+          instructor_id: string;
+          instructor_name: string;
+          store_id: string;
+          role: string;
+          photo_url?: string;
+        }
+      | undefined;
+  };
+  templates: {
+    _rows: import('./_schemas/lesson-schedule.schema').RepeatTemplate[];
+    _seeded: boolean;
+    _seed(): void;
+    getList(): import('./_schemas/lesson-schedule.schema').RepeatTemplate[];
+    getById(id: string): import('./_schemas/lesson-schedule.schema').RepeatTemplate | undefined;
+    create(
+      input: import('./_schemas/lesson-schedule.schema').CreateTemplateRequest,
+    ): import('./_schemas/lesson-schedule.schema').RepeatTemplate;
+    deleteById(id: string): boolean;
+  };
+  storeHolidays: {
+    getHolidays(
+      storeId: string,
+      from: string,
+      to: string,
+    ): import('./_schemas/lesson-schedule.schema').StoreHolidaysResponse;
   };
   reservations: {
     _rows: Reservation[];
@@ -12832,6 +12980,195 @@ function createDb() {
             a.total_capacity > 0 ? Math.round((a.total_booked / a.total_capacity) * 1000) / 10 : 0,
         }));
         return { areas, stores };
+      },
+      create(
+        input: import('./_schemas/lesson-schedule.schema').CreateLessonScheduleRequest & {
+          overrideId?: string;
+        },
+      ): import('./_schemas/lesson-schedule.schema').CreateLessonScheduleResponse {
+        this._seed();
+        const id =
+          input.overrideId ?? `LS-NEW-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        const startHour = Number.parseInt(input.start_time.split(':')[0], 10);
+        const endHour = startHour + 1;
+        const endTime = `${String(endHour).padStart(2, '0')}:${input.start_time.split(':')[1] ?? '00'}`;
+        const date = input.date ?? input.start_date ?? '';
+        const newSchedule: LessonScheduleListItem = {
+          id,
+          lesson_name: input.lesson_id,
+          lesson_type: input.lesson_type,
+          studio_name: null,
+          instructor_id: input.instructor_ids[0] ?? '',
+          instructor_name: '',
+          store_id: input.store_id,
+          store_name: '',
+          start_time: `${date}T${input.start_time}:00+09:00`,
+          end_time: `${date}T${endTime}:00+09:00`,
+          capacity: input.capacity ?? 0,
+          booked_count: 0,
+          waiting_count: 0,
+          payment_status: 'unpaid',
+          status: 'scheduled',
+          is_alert: false,
+        };
+        this._rows.push(newSchedule);
+        return {
+          id,
+          message: 'スケジュールを登録しました',
+          created_schedules: [{ id, date, start_time: input.start_time, end_time: endTime }],
+        };
+      },
+      checkInstructorAvailability(
+        instructorId: string,
+        date: string,
+        startTime: string,
+      ): import('./_schemas/lesson-schedule.schema').InstructorAvailabilityResponse {
+        this._seed();
+        const conflicts = this._rows.filter((r) => {
+          if (r.instructor_id !== instructorId) return false;
+          const rDate = r.start_time.split('T')[0];
+          if (rDate !== date) return false;
+          const rTime = r.start_time.split('T')[1]?.slice(0, 5);
+          return rTime === startTime;
+        });
+        return {
+          available: conflicts.length === 0,
+          conflicts: conflicts.map((r) => ({
+            schedule_id: r.id,
+            lesson_name: r.lesson_name,
+            start_time: r.start_time,
+            end_time: r.end_time,
+          })),
+        };
+      },
+    },
+
+    // ─── D-03: Studios ──────────────────────────────────────────────────────
+    studios: {
+      _rows: [] as Array<{
+        id: string;
+        name: string;
+        physical_capacity: number;
+        store_id: string;
+      }>,
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows = [...SEED_STUDIOS];
+      },
+      getList() {
+        this._seed();
+        return [...this._rows];
+      },
+      getByStoreId(storeId: string) {
+        this._seed();
+        return this._rows.filter((s) => s.store_id === storeId);
+      },
+    },
+
+    // ─── D-01: Lessons Master ───────────────────────────────────────────────
+    lessons: {
+      _rows: [] as Array<{
+        id: string;
+        name: string;
+        lesson_type: 'studio' | 'personal';
+        duration: number;
+      }>,
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows = [...SEED_LESSONS];
+      },
+      getList(lessonType?: 'studio' | 'personal') {
+        this._seed();
+        if (lessonType) return this._rows.filter((l) => l.lesson_type === lessonType);
+        return [...this._rows];
+      },
+      getById(id: string) {
+        this._seed();
+        return this._rows.find((l) => l.id === id);
+      },
+    },
+
+    // ─── D-04: Instructors ──────────────────────────────────────────────────
+    instructors: {
+      _rows: [] as Array<{
+        instructor_id: string;
+        instructor_name: string;
+        store_id: string;
+        role: string;
+        photo_url?: string;
+      }>,
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows = SEED_RESERVATION_INSTRUCTORS.map((inst) => ({
+          ...inst,
+          role: 'インストラクター',
+          photo_url: undefined,
+        }));
+      },
+      getList(storeId?: string, role?: string) {
+        this._seed();
+        let rows = [...this._rows];
+        if (storeId) rows = rows.filter((i) => i.store_id === storeId);
+        if (role) rows = rows.filter((i) => i.role === role);
+        return rows;
+      },
+      getById(id: string) {
+        this._seed();
+        return this._rows.find((i) => i.instructor_id === id);
+      },
+    },
+
+    // ─── D-03: Templates ────────────────────────────────────────────────────
+    templates: {
+      _rows: [] as import('./_schemas/lesson-schedule.schema').RepeatTemplate[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+      },
+      getList() {
+        this._seed();
+        return [...this._rows];
+      },
+      getById(id: string) {
+        this._seed();
+        return this._rows.find((t) => t.id === id);
+      },
+      create(
+        input: import('./_schemas/lesson-schedule.schema').CreateTemplateRequest,
+      ): import('./_schemas/lesson-schedule.schema').RepeatTemplate {
+        this._seed();
+        const id = `TMP-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        const template: import('./_schemas/lesson-schedule.schema').RepeatTemplate = {
+          ...input,
+          id,
+        };
+        this._rows.unshift(template);
+        return template;
+      },
+      deleteById(id: string): boolean {
+        this._seed();
+        const idx = this._rows.findIndex((t) => t.id === id);
+        if (idx === -1) return false;
+        this._rows.splice(idx, 1);
+        return true;
+      },
+    },
+
+    // ─── D-03: Store Holidays ───────────────────────────────────────────────
+    storeHolidays: {
+      getHolidays(
+        _storeId: string,
+        _from: string,
+        _to: string,
+      ): import('./_schemas/lesson-schedule.schema').StoreHolidaysResponse {
+        return { holidays: [] };
       },
     },
 
