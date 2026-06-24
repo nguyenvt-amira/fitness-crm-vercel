@@ -2,7 +2,7 @@ hooks:
   before_specify:
     - extension: "fitness-crm-ui-loader"
       command: "speckit.load-external"
-      description: "Load spec requirements and UI mockups from dx-fitness/fitness-crm-ui before creating spec"
+      description: "Load spec requirements from dx-fitness/fitness-spec and UI mockups from dx-fitness/fitness-crm-ui before creating spec"
       optional: false        # required to run, not optional
       prompt: "Load external context from fitness-crm-ui repo"
 
