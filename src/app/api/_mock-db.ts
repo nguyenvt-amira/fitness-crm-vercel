@@ -1057,7 +1057,7 @@ const SEED_OPTION_DISCOUNT_ROWS: OptionDiscountListItem[] = [
     id: 'SD005',
     name: 'プレミアム全部入りセット',
     code: 'SET-005',
-    target_contracts: ['プレミアム会員'],
+    target_contracts: ['シニア午前会員'],
     target_options: ['水素水', 'プロテインサーバー', 'タオルセット'],
     discount_type: 'fixed_amount',
     discount_value: 550,
