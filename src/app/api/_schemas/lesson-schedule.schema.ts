@@ -128,6 +128,19 @@ export const StoreScheduleSummarySchema = z
       .int()
       .nonnegative()
       .openapi({ example: 1, description: 'アラート件数' }),
+    assigned_staff_count: z
+      .number()
+      .int()
+      .nonnegative()
+      .openapi({ example: 3, description: '本日のアサインスタッフ数' }),
+    in_progress_lesson_name: z
+      .string()
+      .nullable()
+      .openapi({ example: 'ボディコンバット', description: '実施中レッスン名' }),
+    in_progress_start_time: z
+      .string()
+      .nullable()
+      .openapi({ example: '13:00', description: '実施中レッスン開始時刻' }),
   })
   .openapi({ title: 'StoreScheduleSummary', description: '店舗別スケジュールサマリー' });
 

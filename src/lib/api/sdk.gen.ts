@@ -462,6 +462,137 @@ export class FamilyRegistrations {
     }
 }
 
+export class LessonSchedules {
+    /**
+     * List instructors
+     *
+     * Get instructor list, optionally filtered by store or role
+     */
+    public static getCrmInstructors<ThrowOnError extends boolean = false>(options?: Options<GetCrmInstructorsData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmInstructorsResponses, GetCrmInstructorsErrors, ThrowOnError>({ url: '/crm/instructors', ...options });
+    }
+    
+    /**
+     * Change lesson schedule
+     *
+     * Apply a schedule change request. Phase 1: non-validating flow (D-01)
+     */
+    public static postCrmLessonSchedulesByIdChange<ThrowOnError extends boolean = false>(options: Options<PostCrmLessonSchedulesByIdChangeData, ThrowOnError>) {
+        return (options.client ?? client).post<PostCrmLessonSchedulesByIdChangeResponses, PostCrmLessonSchedulesByIdChangeErrors, ThrowOnError>({
+            url: '/crm/lesson-schedules/{id}/change',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Create lesson schedule
+     *
+     * Create a new lesson schedule (single or recurring)
+     */
+    public static postCrmLessonSchedulesCreate<ThrowOnError extends boolean = false>(options?: Options<PostCrmLessonSchedulesCreateData, ThrowOnError>) {
+        return (options?.client ?? client).post<PostCrmLessonSchedulesCreateResponses, PostCrmLessonSchedulesCreateErrors, ThrowOnError>({
+            url: '/crm/lesson-schedules/create',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options?.headers
+            }
+        });
+    }
+    
+    /**
+     * Check instructor availability
+     *
+     * Check if an instructor is available for a given date and time
+     */
+    public static getCrmLessonSchedulesInstructorAvailability<ThrowOnError extends boolean = false>(options: Options<GetCrmLessonSchedulesInstructorAvailabilityData, ThrowOnError>) {
+        return (options.client ?? client).get<GetCrmLessonSchedulesInstructorAvailabilityResponses, GetCrmLessonSchedulesInstructorAvailabilityErrors, ThrowOnError>({ url: '/crm/lesson-schedules/instructor-availability', ...options });
+    }
+    
+    /**
+     * Get lesson schedules
+     *
+     * Get lesson schedule list with filtering and sorting (D-01)
+     */
+    public static getCrmLessonSchedules<ThrowOnError extends boolean = false>(options?: Options<GetCrmLessonSchedulesData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmLessonSchedulesResponses, GetCrmLessonSchedulesErrors, ThrowOnError>({ url: '/crm/lesson-schedules', ...options });
+    }
+    
+    /**
+     * Get all-store schedule summary
+     *
+     * Get area-level KPI and per-store schedule summary (D-01)
+     */
+    public static getCrmLessonSchedulesStoresSummary<ThrowOnError extends boolean = false>(options?: Options<GetCrmLessonSchedulesStoresSummaryData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmLessonSchedulesStoresSummaryResponses, GetCrmLessonSchedulesStoresSummaryErrors, ThrowOnError>({ url: '/crm/lesson-schedules/stores/summary', ...options });
+    }
+    
+    /**
+     * Get lesson schedule KPI summary
+     *
+     * Get KPI summary for lesson schedules on a given date (D-01)
+     */
+    public static getCrmLessonSchedulesSummary<ThrowOnError extends boolean = false>(options?: Options<GetCrmLessonSchedulesSummaryData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmLessonSchedulesSummaryResponses, GetCrmLessonSchedulesSummaryErrors, ThrowOnError>({ url: '/crm/lesson-schedules/summary', ...options });
+    }
+    
+    /**
+     * Delete template
+     *
+     * Delete a saved recurring schedule template
+     */
+    public static deleteCrmLessonSchedulesTemplatesById<ThrowOnError extends boolean = false>(options: Options<DeleteCrmLessonSchedulesTemplatesByIdData, ThrowOnError>) {
+        return (options.client ?? client).delete<DeleteCrmLessonSchedulesTemplatesByIdResponses, DeleteCrmLessonSchedulesTemplatesByIdErrors, ThrowOnError>({ url: '/crm/lesson-schedules/templates/{id}', ...options });
+    }
+    
+    /**
+     * List templates
+     *
+     * Get saved recurring schedule templates
+     */
+    public static getCrmLessonSchedulesTemplates<ThrowOnError extends boolean = false>(options?: Options<GetCrmLessonSchedulesTemplatesData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmLessonSchedulesTemplatesResponses, GetCrmLessonSchedulesTemplatesErrors, ThrowOnError>({ url: '/crm/lesson-schedules/templates', ...options });
+    }
+    
+    /**
+     * Create template
+     *
+     * Save a new recurring schedule template
+     */
+    public static postCrmLessonSchedulesTemplates<ThrowOnError extends boolean = false>(options?: Options<PostCrmLessonSchedulesTemplatesData, ThrowOnError>) {
+        return (options?.client ?? client).post<PostCrmLessonSchedulesTemplatesResponses, PostCrmLessonSchedulesTemplatesErrors, ThrowOnError>({
+            url: '/crm/lesson-schedules/templates',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options?.headers
+            }
+        });
+    }
+    
+    /**
+     * List lessons
+     *
+     * Get lesson master list, optionally filtered by lesson type
+     */
+    public static getCrmLessons<ThrowOnError extends boolean = false>(options?: Options<GetCrmLessonsData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmLessonsResponses, GetCrmLessonsErrors, ThrowOnError>({ url: '/crm/lessons', ...options });
+    }
+    
+    /**
+     * List studios
+     *
+     * Get studio list, optionally filtered by store
+     */
+    public static getCrmStudios<ThrowOnError extends boolean = false>(options?: Options<GetCrmStudiosData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmStudiosResponses, GetCrmStudiosErrors, ThrowOnError>({ url: '/crm/studios', ...options });
+    }
+}
+
 export class Leaves {
     /**
      * Approve a leave/withdrawal request
@@ -727,137 +858,6 @@ export class LessonReservations {
                 ...options.headers
             }
         });
-    }
-}
-
-export class LessonSchedules {
-    /**
-     * Change lesson schedule
-     *
-     * Apply a schedule change request. Phase 1: non-validating flow (D-01)
-     */
-    public static postCrmLessonSchedulesByIdChange<ThrowOnError extends boolean = false>(options: Options<PostCrmLessonSchedulesByIdChangeData, ThrowOnError>) {
-        return (options.client ?? client).post<PostCrmLessonSchedulesByIdChangeResponses, PostCrmLessonSchedulesByIdChangeErrors, ThrowOnError>({
-            url: '/crm/lesson-schedules/{id}/change',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            }
-        });
-    }
-    
-    /**
-     * List instructors
-     *
-     * Get instructor list, optionally filtered by store or role
-     */
-    public static getCrmInstructors<ThrowOnError extends boolean = false>(options?: Options<GetCrmInstructorsData, ThrowOnError>) {
-        return (options?.client ?? client).get<GetCrmInstructorsResponses, GetCrmInstructorsErrors, ThrowOnError>({ url: '/crm/instructors', ...options });
-    }
-    
-    /**
-     * List lessons
-     *
-     * Get lesson master list, optionally filtered by lesson type
-     */
-    public static getCrmLessons<ThrowOnError extends boolean = false>(options?: Options<GetCrmLessonsData, ThrowOnError>) {
-        return (options?.client ?? client).get<GetCrmLessonsResponses, GetCrmLessonsErrors, ThrowOnError>({ url: '/crm/lessons', ...options });
-    }
-    
-    /**
-     * Create lesson schedule
-     *
-     * Create a new lesson schedule (single or recurring)
-     */
-    public static postCrmLessonSchedulesCreate<ThrowOnError extends boolean = false>(options?: Options<PostCrmLessonSchedulesCreateData, ThrowOnError>) {
-        return (options?.client ?? client).post<PostCrmLessonSchedulesCreateResponses, PostCrmLessonSchedulesCreateErrors, ThrowOnError>({
-            url: '/crm/lesson-schedules/create',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options?.headers
-            }
-        });
-    }
-    
-    /**
-     * Check instructor availability
-     *
-     * Check if an instructor is available for a given date and time
-     */
-    public static getCrmLessonSchedulesInstructorAvailability<ThrowOnError extends boolean = false>(options: Options<GetCrmLessonSchedulesInstructorAvailabilityData, ThrowOnError>) {
-        return (options.client ?? client).get<GetCrmLessonSchedulesInstructorAvailabilityResponses, GetCrmLessonSchedulesInstructorAvailabilityErrors, ThrowOnError>({ url: '/crm/lesson-schedules/instructor-availability', ...options });
-    }
-    
-    /**
-     * Get lesson schedules
-     *
-     * Get lesson schedule list with filtering and sorting (D-01)
-     */
-    public static getCrmLessonSchedules<ThrowOnError extends boolean = false>(options?: Options<GetCrmLessonSchedulesData, ThrowOnError>) {
-        return (options?.client ?? client).get<GetCrmLessonSchedulesResponses, GetCrmLessonSchedulesErrors, ThrowOnError>({ url: '/crm/lesson-schedules', ...options });
-    }
-    
-    /**
-     * Get all-store schedule summary
-     *
-     * Get area-level KPI and per-store schedule summary (D-01)
-     */
-    public static getCrmLessonSchedulesStoresSummary<ThrowOnError extends boolean = false>(options?: Options<GetCrmLessonSchedulesStoresSummaryData, ThrowOnError>) {
-        return (options?.client ?? client).get<GetCrmLessonSchedulesStoresSummaryResponses, GetCrmLessonSchedulesStoresSummaryErrors, ThrowOnError>({ url: '/crm/lesson-schedules/stores/summary', ...options });
-    }
-    
-    /**
-     * Get lesson schedule KPI summary
-     *
-     * Get KPI summary for lesson schedules on a given date (D-01)
-     */
-    public static getCrmLessonSchedulesSummary<ThrowOnError extends boolean = false>(options?: Options<GetCrmLessonSchedulesSummaryData, ThrowOnError>) {
-        return (options?.client ?? client).get<GetCrmLessonSchedulesSummaryResponses, GetCrmLessonSchedulesSummaryErrors, ThrowOnError>({ url: '/crm/lesson-schedules/summary', ...options });
-    }
-    
-    /**
-     * Delete template
-     *
-     * Delete a saved recurring schedule template
-     */
-    public static deleteCrmLessonSchedulesTemplatesById<ThrowOnError extends boolean = false>(options: Options<DeleteCrmLessonSchedulesTemplatesByIdData, ThrowOnError>) {
-        return (options.client ?? client).delete<DeleteCrmLessonSchedulesTemplatesByIdResponses, DeleteCrmLessonSchedulesTemplatesByIdErrors, ThrowOnError>({ url: '/crm/lesson-schedules/templates/{id}', ...options });
-    }
-    
-    /**
-     * List templates
-     *
-     * Get saved recurring schedule templates
-     */
-    public static getCrmLessonSchedulesTemplates<ThrowOnError extends boolean = false>(options?: Options<GetCrmLessonSchedulesTemplatesData, ThrowOnError>) {
-        return (options?.client ?? client).get<GetCrmLessonSchedulesTemplatesResponses, GetCrmLessonSchedulesTemplatesErrors, ThrowOnError>({ url: '/crm/lesson-schedules/templates', ...options });
-    }
-    
-    /**
-     * Create template
-     *
-     * Save a new recurring schedule template
-     */
-    public static postCrmLessonSchedulesTemplates<ThrowOnError extends boolean = false>(options?: Options<PostCrmLessonSchedulesTemplatesData, ThrowOnError>) {
-        return (options?.client ?? client).post<PostCrmLessonSchedulesTemplatesResponses, PostCrmLessonSchedulesTemplatesErrors, ThrowOnError>({
-            url: '/crm/lesson-schedules/templates',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options?.headers
-            }
-        });
-    }
-    
-    /**
-     * List studios
-     *
-     * Get studio list, optionally filtered by store
-     */
-    public static getCrmStudios<ThrowOnError extends boolean = false>(options?: Options<GetCrmStudiosData, ThrowOnError>) {
-        return (options?.client ?? client).get<GetCrmStudiosResponses, GetCrmStudiosErrors, ThrowOnError>({ url: '/crm/studios', ...options });
     }
 }
 

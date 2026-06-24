@@ -22548,6 +22548,24 @@
             "minimum": 0,
             "example": 1,
             "description": "アラート件数"
+          },
+          "assigned_staff_count": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 3,
+            "description": "本日のアサインスタッフ数"
+          },
+          "in_progress_lesson_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "ボディコンバット",
+            "description": "実施中レッスン名"
+          },
+          "in_progress_start_time": {
+            "type": "string",
+            "nullable": true,
+            "example": "13:00",
+            "description": "実施中レッスン開始時刻"
           }
         },
         "required": [
@@ -22558,7 +22576,10 @@
           "total_booked",
           "total_capacity",
           "occupancy_rate",
-          "alert_count"
+          "alert_count",
+          "assigned_staff_count",
+          "in_progress_lesson_name",
+          "in_progress_start_time"
         ],
         "title": "StoreScheduleSummary",
         "description": "店舗別スケジュールサマリー"
@@ -23041,6 +23062,24 @@
                   "minimum": 0,
                   "example": 1,
                   "description": "アラート件数"
+                },
+                "assigned_staff_count": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "example": 3,
+                  "description": "本日のアサインスタッフ数"
+                },
+                "in_progress_lesson_name": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "ボディコンバット",
+                  "description": "実施中レッスン名"
+                },
+                "in_progress_start_time": {
+                  "type": "string",
+                  "nullable": true,
+                  "example": "13:00",
+                  "description": "実施中レッスン開始時刻"
                 }
               },
               "required": [
@@ -23051,7 +23090,10 @@
                 "total_booked",
                 "total_capacity",
                 "occupancy_rate",
-                "alert_count"
+                "alert_count",
+                "assigned_staff_count",
+                "in_progress_lesson_name",
+                "in_progress_start_time"
               ],
               "title": "StoreScheduleSummary",
               "description": "店舗別スケジュールサマリー"
@@ -31747,6 +31789,103 @@
         }
       }
     },
+    "/crm/instructors": {
+      "get": {
+        "summary": "List instructors",
+        "description": "Get instructor list, optionally filtered by store or role",
+        "tags": ["LessonSchedules"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "店舗IDでフィルタ"
+            },
+            "required": false,
+            "description": "店舗IDでフィルタ",
+            "name": "store_id",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "役割でフィルタ"
+            },
+            "required": false,
+            "description": "役割でフィルタ",
+            "name": "role",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Instructor list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "instructors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "instructor_id": {
+                            "type": "string",
+                            "description": "インストラクターID"
+                          },
+                          "instructor_name": {
+                            "type": "string",
+                            "description": "インストラクター名"
+                          },
+                          "store_id": {
+                            "type": "string",
+                            "description": "店舗ID"
+                          },
+                          "role": {
+                            "type": "string",
+                            "description": "役割"
+                          },
+                          "photo_url": {
+                            "type": "string",
+                            "description": "プロフィール画像URL"
+                          }
+                        },
+                        "required": ["instructor_id", "instructor_name", "store_id", "role"],
+                        "title": "InstructorListItem",
+                        "description": "インストラクター一覧アイテム"
+                      }
+                    }
+                  },
+                  "required": ["instructors"],
+                  "title": "GetInstructorsResponse",
+                  "description": "インストラクター一覧レスポンス"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/leaves/{id}/approve": {
       "post": {
         "summary": "Approve a leave/withdrawal request",
@@ -35518,191 +35657,6 @@
         }
       }
     },
-    "/crm/instructors": {
-      "get": {
-        "summary": "List instructors",
-        "description": "Get instructor list, optionally filtered by store or role",
-        "tags": ["LessonSchedules"],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "description": "店舗IDでフィルタ"
-            },
-            "required": false,
-            "description": "店舗IDでフィルタ",
-            "name": "store_id",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "description": "役割でフィルタ"
-            },
-            "required": false,
-            "description": "役割でフィルタ",
-            "name": "role",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Instructor list",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "instructors": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "instructor_id": {
-                            "type": "string",
-                            "description": "インストラクターID"
-                          },
-                          "instructor_name": {
-                            "type": "string",
-                            "description": "インストラクター名"
-                          },
-                          "store_id": {
-                            "type": "string",
-                            "description": "店舗ID"
-                          },
-                          "role": {
-                            "type": "string",
-                            "description": "役割"
-                          },
-                          "photo_url": {
-                            "type": "string",
-                            "description": "プロフィール画像URL"
-                          }
-                        },
-                        "required": ["instructor_id", "instructor_name", "store_id", "role"],
-                        "title": "InstructorListItem",
-                        "description": "インストラクター一覧アイテム"
-                      }
-                    }
-                  },
-                  "required": ["instructors"],
-                  "title": "GetInstructorsResponse",
-                  "description": "インストラクター一覧レスポンス"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Invalid email or password",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/crm/lessons": {
-      "get": {
-        "summary": "List lessons",
-        "description": "Get lesson master list, optionally filtered by lesson type",
-        "tags": ["LessonSchedules"],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "enum": ["studio", "personal"],
-              "title": "LessonType",
-              "description": "レッスン種別でフィルタ"
-            },
-            "required": false,
-            "description": "レッスン種別でフィルタ",
-            "name": "lesson_type",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lesson list",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "lessons": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "description": "レッスンID"
-                          },
-                          "name": {
-                            "type": "string",
-                            "description": "レッスン名"
-                          },
-                          "lesson_type": {
-                            "type": "string",
-                            "enum": ["studio", "personal"],
-                            "title": "LessonType",
-                            "description": "レッスン種別（スタジオ/パーソナル）"
-                          },
-                          "duration": {
-                            "type": "integer",
-                            "minimum": 0,
-                            "description": "所要時間（分）"
-                          }
-                        },
-                        "required": ["id", "name", "lesson_type", "duration"],
-                        "title": "LessonListItem",
-                        "description": "レッスン一覧アイテム"
-                      }
-                    }
-                  },
-                  "required": ["lessons"],
-                  "title": "GetLessonsResponse",
-                  "description": "レッスン一覧レスポンス"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Invalid email or password",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/crm/lesson-schedules/create": {
       "post": {
         "summary": "Create lesson schedule",
@@ -36535,6 +36489,24 @@
                             "minimum": 0,
                             "example": 1,
                             "description": "アラート件数"
+                          },
+                          "assigned_staff_count": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "example": 3,
+                            "description": "本日のアサインスタッフ数"
+                          },
+                          "in_progress_lesson_name": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "ボディコンバット",
+                            "description": "実施中レッスン名"
+                          },
+                          "in_progress_start_time": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "13:00",
+                            "description": "実施中レッスン開始時刻"
                           }
                         },
                         "required": [
@@ -36545,7 +36517,10 @@
                           "total_booked",
                           "total_capacity",
                           "occupancy_rate",
-                          "alert_count"
+                          "alert_count",
+                          "assigned_staff_count",
+                          "in_progress_lesson_name",
+                          "in_progress_start_time"
                         ],
                         "title": "StoreScheduleSummary",
                         "description": "店舗別スケジュールサマリー"
@@ -37096,63 +37071,67 @@
         }
       }
     },
-    "/crm/studios": {
+    "/crm/lessons": {
       "get": {
-        "summary": "List studios",
-        "description": "Get studio list, optionally filtered by store",
+        "summary": "List lessons",
+        "description": "Get lesson master list, optionally filtered by lesson type",
         "tags": ["LessonSchedules"],
         "parameters": [
           {
             "schema": {
               "type": "string",
-              "description": "店舗IDでフィルタ"
+              "enum": ["studio", "personal"],
+              "title": "LessonType",
+              "description": "レッスン種別でフィルタ"
             },
             "required": false,
-            "description": "店舗IDでフィルタ",
-            "name": "store_id",
+            "description": "レッスン種別でフィルタ",
+            "name": "lesson_type",
             "in": "query"
           }
         ],
         "responses": {
           "200": {
-            "description": "Studio list",
+            "description": "Lesson list",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "studios": {
+                    "lessons": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "properties": {
                           "id": {
                             "type": "string",
-                            "description": "スタジオID"
+                            "description": "レッスンID"
                           },
                           "name": {
                             "type": "string",
-                            "description": "スタジオ名"
+                            "description": "レッスン名"
                           },
-                          "physical_capacity": {
+                          "lesson_type": {
+                            "type": "string",
+                            "enum": ["studio", "personal"],
+                            "title": "LessonType",
+                            "description": "レッスン種別（スタジオ/パーソナル）"
+                          },
+                          "duration": {
                             "type": "integer",
                             "minimum": 0,
-                            "description": "物理定員"
-                          },
-                          "store_id": {
-                            "type": "string",
-                            "description": "店舗ID"
+                            "description": "所要時間（分）"
                           }
                         },
-                        "required": ["id", "name", "physical_capacity", "store_id"],
-                        "title": "StudioListItem",
-                        "description": "スタジオ一覧アイテム"
+                        "required": ["id", "name", "lesson_type", "duration"],
+                        "title": "LessonListItem",
+                        "description": "レッスン一覧アイテム"
                       }
                     }
                   },
-                  "required": ["studios"],
-                  "title": "GetStudiosResponse",
-                  "description": "スタジオ一覧レスポンス"
+                  "required": ["lessons"],
+                  "title": "GetLessonsResponse",
+                  "description": "レッスン一覧レスポンス"
                 }
               }
             }
@@ -65742,6 +65721,90 @@
                   "required": ["error"],
                   "title": "ErrorResponse",
                   "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/studios": {
+      "get": {
+        "summary": "List studios",
+        "description": "Get studio list, optionally filtered by store",
+        "tags": ["LessonSchedules"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "店舗IDでフィルタ"
+            },
+            "required": false,
+            "description": "店舗IDでフィルタ",
+            "name": "store_id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Studio list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "studios": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "スタジオID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "スタジオ名"
+                          },
+                          "physical_capacity": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "description": "物理定員"
+                          },
+                          "store_id": {
+                            "type": "string",
+                            "description": "店舗ID"
+                          }
+                        },
+                        "required": ["id", "name", "physical_capacity", "store_id"],
+                        "title": "StudioListItem",
+                        "description": "スタジオ一覧アイテム"
+                      }
+                    }
+                  },
+                  "required": ["studios"],
+                  "title": "GetStudiosResponse",
+                  "description": "スタジオ一覧レスポンス"
                 }
               }
             }

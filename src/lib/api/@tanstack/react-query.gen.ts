@@ -866,6 +866,26 @@ export const getCrmFamilyRegistrationsSummaryOptions = (options?: Options<GetCrm
     queryKey: getCrmFamilyRegistrationsSummaryQueryKey(options)
 });
 
+export const getCrmInstructorsQueryKey = (options?: Options<GetCrmInstructorsData>) => createQueryKey('getCrmInstructors', options);
+
+/**
+ * List instructors
+ *
+ * Get instructor list, optionally filtered by store or role
+ */
+export const getCrmInstructorsOptions = (options?: Options<GetCrmInstructorsData>) => queryOptions<GetCrmInstructorsResponse, GetCrmInstructorsError, GetCrmInstructorsResponse, ReturnType<typeof getCrmInstructorsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await LessonSchedules.getCrmInstructors({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmInstructorsQueryKey(options)
+});
+
 /**
  * Approve a leave/withdrawal request
  *
@@ -1330,46 +1350,6 @@ export const patchCrmLessonSchedulesByScheduleIdTimeChangeMutation = (options?: 
     return mutationOptions;
 };
 
-export const getCrmInstructorsQueryKey = (options?: Options<GetCrmInstructorsData>) => createQueryKey('getCrmInstructors', options);
-
-/**
- * List instructors
- *
- * Get instructor list, optionally filtered by store or role
- */
-export const getCrmInstructorsOptions = (options?: Options<GetCrmInstructorsData>) => queryOptions<GetCrmInstructorsResponse, GetCrmInstructorsError, GetCrmInstructorsResponse, ReturnType<typeof getCrmInstructorsQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await LessonSchedules.getCrmInstructors({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmInstructorsQueryKey(options)
-});
-
-export const getCrmLessonsQueryKey = (options?: Options<GetCrmLessonsData>) => createQueryKey('getCrmLessons', options);
-
-/**
- * List lessons
- *
- * Get lesson master list, optionally filtered by lesson type
- */
-export const getCrmLessonsOptions = (options?: Options<GetCrmLessonsData>) => queryOptions<GetCrmLessonsResponse, GetCrmLessonsError, GetCrmLessonsResponse, ReturnType<typeof getCrmLessonsQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await LessonSchedules.getCrmLessons({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmLessonsQueryKey(options)
-});
-
 /**
  * Create lesson schedule
  *
@@ -1527,16 +1507,16 @@ export const postCrmLessonSchedulesTemplatesMutation = (options?: Partial<Option
     return mutationOptions;
 };
 
-export const getCrmStudiosQueryKey = (options?: Options<GetCrmStudiosData>) => createQueryKey('getCrmStudios', options);
+export const getCrmLessonsQueryKey = (options?: Options<GetCrmLessonsData>) => createQueryKey('getCrmLessons', options);
 
 /**
- * List studios
+ * List lessons
  *
- * Get studio list, optionally filtered by store
+ * Get lesson master list, optionally filtered by lesson type
  */
-export const getCrmStudiosOptions = (options?: Options<GetCrmStudiosData>) => queryOptions<GetCrmStudiosResponse, GetCrmStudiosError, GetCrmStudiosResponse, ReturnType<typeof getCrmStudiosQueryKey>>({
+export const getCrmLessonsOptions = (options?: Options<GetCrmLessonsData>) => queryOptions<GetCrmLessonsResponse, GetCrmLessonsError, GetCrmLessonsResponse, ReturnType<typeof getCrmLessonsQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await LessonSchedules.getCrmStudios({
+        const { data } = await LessonSchedules.getCrmLessons({
             ...options,
             ...queryKey[0],
             signal,
@@ -1544,7 +1524,7 @@ export const getCrmStudiosOptions = (options?: Options<GetCrmStudiosData>) => qu
         });
         return data;
     },
-    queryKey: getCrmStudiosQueryKey(options)
+    queryKey: getCrmLessonsQueryKey(options)
 });
 
 export const getCrmLockersByIdHistoryQueryKey = (options: Options<GetCrmLockersByIdHistoryData>) => createQueryKey('getCrmLockersByIdHistory', options);
@@ -4426,6 +4406,26 @@ export const postCrmStoresMutation = (options?: Partial<Options<PostCrmStoresDat
     };
     return mutationOptions;
 };
+
+export const getCrmStudiosQueryKey = (options?: Options<GetCrmStudiosData>) => createQueryKey('getCrmStudios', options);
+
+/**
+ * List studios
+ *
+ * Get studio list, optionally filtered by store
+ */
+export const getCrmStudiosOptions = (options?: Options<GetCrmStudiosData>) => queryOptions<GetCrmStudiosResponse, GetCrmStudiosError, GetCrmStudiosResponse, ReturnType<typeof getCrmStudiosQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await LessonSchedules.getCrmStudios({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmStudiosQueryKey(options)
+});
 
 /**
  * Approve transfer request

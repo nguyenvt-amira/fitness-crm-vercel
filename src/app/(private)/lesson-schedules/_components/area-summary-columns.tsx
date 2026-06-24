@@ -68,8 +68,11 @@ export const areaSummaryColumns: ColumnDef<StoreScheduleSummary>[] = [
   },
   {
     id: 'staff',
+    accessorKey: 'assigned_staff_count',
     header: ({ column }) => <SortHeader column={column} label="スタッフ" />,
-    cell: () => <span className="text-center text-xs">—</span>,
+    cell: ({ row }) => (
+      <span className="text-center text-xs">{row.original.assigned_staff_count}名</span>
+    ),
   },
   {
     accessorKey: 'alert_count',
@@ -88,7 +91,15 @@ export const areaSummaryColumns: ColumnDef<StoreScheduleSummary>[] = [
   },
   {
     id: 'in_progress',
+    accessorKey: 'in_progress_lesson_name',
     header: ({ column }) => <SortHeader column={column} label="実施中" />,
-    cell: () => <span className="text-muted-foreground text-xs">—</span>,
+    cell: ({ row }) => {
+      const { in_progress_lesson_name, in_progress_start_time } = row.original;
+      const label =
+        in_progress_lesson_name && in_progress_start_time
+          ? `${in_progress_lesson_name} ${in_progress_start_time}〜`
+          : '—';
+      return <span className="text-muted-foreground text-xs">{label}</span>;
+    },
   },
 ];

@@ -15929,6 +15929,18 @@ export type StoreScheduleSummary = {
      * アラート件数
      */
     alert_count: number;
+    /**
+     * 本日のアサインスタッフ数
+     */
+    assigned_staff_count: number;
+    /**
+     * 実施中レッスン名
+     */
+    in_progress_lesson_name: string | null;
+    /**
+     * 実施中レッスン開始時刻
+     */
+    in_progress_start_time: string | null;
 };
 
 /**
@@ -16255,6 +16267,18 @@ export type GetStoreSummaryResponse = {
          * アラート件数
          */
         alert_count: number;
+        /**
+         * 本日のアサインスタッフ数
+         */
+        assigned_staff_count: number;
+        /**
+         * 実施中レッスン名
+         */
+        in_progress_lesson_name: string | null;
+        /**
+         * 実施中レッスン開始時刻
+         */
+        in_progress_start_time: string | null;
     }>;
     total: number;
 };
@@ -21523,6 +21547,72 @@ export type GetCrmFamilyRegistrationsSummaryResponses = {
 
 export type GetCrmFamilyRegistrationsSummaryResponse = GetCrmFamilyRegistrationsSummaryResponses[keyof GetCrmFamilyRegistrationsSummaryResponses];
 
+export type GetCrmInstructorsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * 店舗IDでフィルタ
+         */
+        store_id?: string;
+        /**
+         * 役割でフィルタ
+         */
+        role?: string;
+    };
+    url: '/crm/instructors';
+};
+
+export type GetCrmInstructorsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmInstructorsError = GetCrmInstructorsErrors[keyof GetCrmInstructorsErrors];
+
+export type GetCrmInstructorsResponses = {
+    /**
+     * GetInstructorsResponse
+     *
+     * インストラクター一覧レスポンス
+     */
+    200: {
+        instructors: Array<{
+            /**
+             * インストラクターID
+             */
+            instructor_id: string;
+            /**
+             * インストラクター名
+             */
+            instructor_name: string;
+            /**
+             * 店舗ID
+             */
+            store_id: string;
+            /**
+             * 役割
+             */
+            role: string;
+            /**
+             * プロフィール画像URL
+             */
+            photo_url?: string;
+        }>;
+    };
+};
+
+export type GetCrmInstructorsResponse = GetCrmInstructorsResponses[keyof GetCrmInstructorsResponses];
+
 export type PostCrmLeavesByIdApproveData = {
     /**
      * ApproveLeaveRequest
@@ -23872,134 +23962,6 @@ export type PatchCrmLessonSchedulesByScheduleIdTimeChangeResponses = {
 
 export type PatchCrmLessonSchedulesByScheduleIdTimeChangeResponse = PatchCrmLessonSchedulesByScheduleIdTimeChangeResponses[keyof PatchCrmLessonSchedulesByScheduleIdTimeChangeResponses];
 
-export type GetCrmInstructorsData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * 店舗IDでフィルタ
-         */
-        store_id?: string;
-        /**
-         * 役割でフィルタ
-         */
-        role?: string;
-    };
-    url: '/crm/instructors';
-};
-
-export type GetCrmInstructorsErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type GetCrmInstructorsError = GetCrmInstructorsErrors[keyof GetCrmInstructorsErrors];
-
-export type GetCrmInstructorsResponses = {
-    /**
-     * GetInstructorsResponse
-     *
-     * インストラクター一覧レスポンス
-     */
-    200: {
-        instructors: Array<{
-            /**
-             * インストラクターID
-             */
-            instructor_id: string;
-            /**
-             * インストラクター名
-             */
-            instructor_name: string;
-            /**
-             * 店舗ID
-             */
-            store_id: string;
-            /**
-             * 役割
-             */
-            role: string;
-            /**
-             * プロフィール画像URL
-             */
-            photo_url?: string;
-        }>;
-    };
-};
-
-export type GetCrmInstructorsResponse = GetCrmInstructorsResponses[keyof GetCrmInstructorsResponses];
-
-export type GetCrmLessonsData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * LessonType
-         *
-         * レッスン種別でフィルタ
-         */
-        lesson_type?: 'studio' | 'personal';
-    };
-    url: '/crm/lessons';
-};
-
-export type GetCrmLessonsErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type GetCrmLessonsError = GetCrmLessonsErrors[keyof GetCrmLessonsErrors];
-
-export type GetCrmLessonsResponses = {
-    /**
-     * GetLessonsResponse
-     *
-     * レッスン一覧レスポンス
-     */
-    200: {
-        lessons: Array<{
-            /**
-             * レッスンID
-             */
-            id: string;
-            /**
-             * レッスン名
-             */
-            name: string;
-            /**
-             * LessonType
-             *
-             * レッスン種別（スタジオ/パーソナル）
-             */
-            lesson_type: 'studio' | 'personal';
-            /**
-             * 所要時間（分）
-             */
-            duration: number;
-        }>;
-    };
-};
-
-export type GetCrmLessonsResponse = GetCrmLessonsResponses[keyof GetCrmLessonsResponses];
-
 export type PostCrmLessonSchedulesCreateData = {
     /**
      * CreateLessonScheduleRequest
@@ -24535,6 +24497,18 @@ export type GetCrmLessonSchedulesStoresSummaryResponses = {
              * アラート件数
              */
             alert_count: number;
+            /**
+             * 本日のアサインスタッフ数
+             */
+            assigned_staff_count: number;
+            /**
+             * 実施中レッスン名
+             */
+            in_progress_lesson_name: string | null;
+            /**
+             * 実施中レッスン開始時刻
+             */
+            in_progress_start_time: string | null;
         }>;
         total: number;
     };
@@ -24862,19 +24836,21 @@ export type PostCrmLessonSchedulesTemplatesResponses = {
 
 export type PostCrmLessonSchedulesTemplatesResponse = PostCrmLessonSchedulesTemplatesResponses[keyof PostCrmLessonSchedulesTemplatesResponses];
 
-export type GetCrmStudiosData = {
+export type GetCrmLessonsData = {
     body?: never;
     path?: never;
     query?: {
         /**
-         * 店舗IDでフィルタ
+         * LessonType
+         *
+         * レッスン種別でフィルタ
          */
-        store_id?: string;
+        lesson_type?: 'studio' | 'personal';
     };
-    url: '/crm/studios';
+    url: '/crm/lessons';
 };
 
-export type GetCrmStudiosErrors = {
+export type GetCrmLessonsErrors = {
     /**
      * ErrorResponse
      *
@@ -24888,37 +24864,39 @@ export type GetCrmStudiosErrors = {
     };
 };
 
-export type GetCrmStudiosError = GetCrmStudiosErrors[keyof GetCrmStudiosErrors];
+export type GetCrmLessonsError = GetCrmLessonsErrors[keyof GetCrmLessonsErrors];
 
-export type GetCrmStudiosResponses = {
+export type GetCrmLessonsResponses = {
     /**
-     * GetStudiosResponse
+     * GetLessonsResponse
      *
-     * スタジオ一覧レスポンス
+     * レッスン一覧レスポンス
      */
     200: {
-        studios: Array<{
+        lessons: Array<{
             /**
-             * スタジオID
+             * レッスンID
              */
             id: string;
             /**
-             * スタジオ名
+             * レッスン名
              */
             name: string;
             /**
-             * 物理定員
+             * LessonType
+             *
+             * レッスン種別（スタジオ/パーソナル）
              */
-            physical_capacity: number;
+            lesson_type: 'studio' | 'personal';
             /**
-             * 店舗ID
+             * 所要時間（分）
              */
-            store_id: string;
+            duration: number;
         }>;
     };
 };
 
-export type GetCrmStudiosResponse = GetCrmStudiosResponses[keyof GetCrmStudiosResponses];
+export type GetCrmLessonsResponse = GetCrmLessonsResponses[keyof GetCrmLessonsResponses];
 
 export type GetCrmLockersByIdHistoryData = {
     body?: never;
@@ -42383,6 +42361,64 @@ export type PostCrmStoresResponses = {
 };
 
 export type PostCrmStoresResponse = PostCrmStoresResponses[keyof PostCrmStoresResponses];
+
+export type GetCrmStudiosData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * 店舗IDでフィルタ
+         */
+        store_id?: string;
+    };
+    url: '/crm/studios';
+};
+
+export type GetCrmStudiosErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmStudiosError = GetCrmStudiosErrors[keyof GetCrmStudiosErrors];
+
+export type GetCrmStudiosResponses = {
+    /**
+     * GetStudiosResponse
+     *
+     * スタジオ一覧レスポンス
+     */
+    200: {
+        studios: Array<{
+            /**
+             * スタジオID
+             */
+            id: string;
+            /**
+             * スタジオ名
+             */
+            name: string;
+            /**
+             * 物理定員
+             */
+            physical_capacity: number;
+            /**
+             * 店舗ID
+             */
+            store_id: string;
+        }>;
+    };
+};
+
+export type GetCrmStudiosResponse = GetCrmStudiosResponses[keyof GetCrmStudiosResponses];
 
 export type PatchCrmTransfersByIdApproveData = {
     /**
