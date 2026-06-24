@@ -22,6 +22,7 @@ interface TimelineItemProps {
   item: LessonScheduleListItem;
   isLast?: boolean;
   showBookedMembers?: boolean;
+  onScheduleClick?: (item: LessonScheduleListItem) => void;
   onEditClick?: (item: LessonScheduleListItem) => void;
   canEdit?: boolean;
 }
@@ -30,6 +31,7 @@ export function TimelineItem({
   item,
   isLast = false,
   showBookedMembers = false,
+  onScheduleClick,
   onEditClick,
   canEdit = false,
 }: TimelineItemProps) {
@@ -64,9 +66,10 @@ export function TimelineItem({
 
   return (
     <div
-      className={`group hover:bg-accent/50 relative -mx-2 flex gap-4 rounded-lg px-2 transition-colors ${
+      className={`group hover:bg-accent/50 relative -mx-2 flex cursor-pointer gap-4 rounded-lg px-2 transition-colors ${
         item.status === 'completed' ? 'opacity-60' : ''
       }`}
+      onClick={() => onScheduleClick?.(item)}
     >
       {/* Time column */}
       <div className="w-16 shrink-0 py-3 text-right">

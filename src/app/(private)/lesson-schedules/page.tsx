@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
+
+import { useRouter } from 'next/navigation';
 
 import { useAuthUser } from '@/contexts/auth-user.context';
 import { useQuery } from '@tanstack/react-query';
@@ -18,6 +20,7 @@ import {
   getCrmLessonSchedulesSummaryOptions,
 } from '@/lib/api/@tanstack/react-query.gen';
 import type { LessonScheduleListItem } from '@/lib/api/types.gen';
+import { navigate } from '@/lib/routes/routes.util';
 
 import { UserRole } from '@/types/permission.type';
 
@@ -42,6 +45,7 @@ import { useLessonScheduleFiltersContext } from './_contexts/lesson-schedule-fil
 // ---------------------------------------------------------------------------
 
 function LessonSchedulePageInner() {
+  const router = useRouter();
   const { user, isLoading: isUserLoading } = useAuthUser();
   const isTrainer = user?.role === UserRole.Trainer;
   const isAllStore =
@@ -79,6 +83,10 @@ function LessonSchedulePageInner() {
   });
 
   const [changeTarget, setChangeTarget] = useState<LessonScheduleListItem | null>(null);
+
+  const handleScheduleClick = (schedule: LessonScheduleListItem) => {
+    router.push(navigate('/lesson-schedules/[id]/reservations', schedule.id));
+  };
 
   // Derive filter options from loaded data
   const schedules = schedulesQuery.data?.schedules ?? [];
@@ -216,6 +224,7 @@ function LessonSchedulePageInner() {
               schedules={schedules}
               isLoading={schedulesQuery.isFetching && !schedulesQuery.data}
               showBookedMembers={effectiveAxis === 'my_schedule'}
+              onScheduleClick={handleScheduleClick}
               onEditClick={setChangeTarget}
               canEdit={!isTrainer}
             />
@@ -225,6 +234,7 @@ function LessonSchedulePageInner() {
               schedules={schedules}
               weekStart={filters.week_start}
               isLoading={schedulesQuery.isFetching && !schedulesQuery.data}
+              onScheduleClick={handleScheduleClick}
               onEditClick={setChangeTarget}
               canEdit={!isTrainer}
             />
@@ -233,6 +243,7 @@ function LessonSchedulePageInner() {
             <ScheduleListView
               schedules={schedules}
               isLoading={schedulesQuery.isFetching && !schedulesQuery.data}
+              onScheduleClick={handleScheduleClick}
             />
           )}
         </DataStateBoundary>
@@ -256,8 +267,10 @@ function LessonSchedulePageInner() {
 
 export default function LessonSchedulesPage() {
   return (
-    <LessonScheduleFiltersProvider>
-      <LessonSchedulePageInner />
-    </LessonScheduleFiltersProvider>
+    <Suspense fallback={<LessonSchedulePageSkeleton />}>
+      <LessonScheduleFiltersProvider>
+        <LessonSchedulePageInner />
+      </LessonScheduleFiltersProvider>
+    </Suspense>
   );
 }

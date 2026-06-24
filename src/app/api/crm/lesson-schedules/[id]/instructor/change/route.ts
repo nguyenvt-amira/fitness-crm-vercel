@@ -26,11 +26,8 @@ registerRoute({
   ],
 });
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ scheduleId: string }> },
-) {
-  const { scheduleId } = await params;
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id: scheduleId } = await params;
   try {
     const existing = db.lessonSchedules.getById(scheduleId);
     if (!existing) {

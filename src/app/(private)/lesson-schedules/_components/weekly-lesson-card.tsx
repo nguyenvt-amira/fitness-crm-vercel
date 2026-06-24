@@ -22,11 +22,17 @@ const EVENT_TYPE_BADGE: Record<string, { cls: string; label: string }> = {
 
 interface WeeklyLessonCardProps {
   item: LessonScheduleListItem;
+  onScheduleClick?: (item: LessonScheduleListItem) => void;
   onEditClick?: (item: LessonScheduleListItem) => void;
   canEdit?: boolean;
 }
 
-export function WeeklyLessonCard({ item, onEditClick, canEdit = false }: WeeklyLessonCardProps) {
+export function WeeklyLessonCard({
+  item,
+  onScheduleClick,
+  onEditClick,
+  canEdit = false,
+}: WeeklyLessonCardProps) {
   const typeBadge = EVENT_TYPE_BADGE[item.lesson_type] ?? EVENT_TYPE_BADGE.studio;
   const timeLabel = formatTimeRange(item.start_time, item.end_time);
 
@@ -53,6 +59,7 @@ export function WeeklyLessonCard({ item, onEditClick, canEdit = false }: WeeklyL
         className={`cursor-pointer rounded-md p-2 transition-shadow hover:shadow-sm ${
           isInternalOnly ? 'bg-muted/50 border border-dashed' : 'bg-card border'
         } ${item.status === 'cancelled' ? 'line-through opacity-50' : ''}`}
+        onClick={() => onScheduleClick?.(item)}
       >
         {/* Row 1: Type badge + Lesson name */}
         <div className="mb-1 flex items-center gap-1">

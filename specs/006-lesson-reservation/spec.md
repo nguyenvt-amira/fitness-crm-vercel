@@ -19,10 +19,10 @@ Staff or Trainer selects a specific session from the schedule list and is taken 
 
 **Acceptance Scenarios**:
 
-1. **Given** a session has been scheduled, **When** a staff member selects it from the schedule list, **Then** the reservation detail page opens showing the lesson header (name, date/time, studio, instructor names) and a "予約管理に戻る" breadcrumb link.
+1. **Given** a session has been scheduled, **When** a staff member selects it from the schedule list, **Then** the reservation detail page opens showing the PageHeader (title: lesson name; subtitle: date, time range, studio, and instructor names prefixed with "担当:"; badge: remaining seats or "中止済み") and a "予約管理に戻る" breadcrumb link.
 2. **Given** the reservation detail page is open for a studio lesson, **When** the page loads, **Then** a space reservation grid is displayed with color-coded cells: reserved (blue), available (white), equipment (orange), fixed structures/pillars (grey).
 3. **Given** the reservation detail page is open, **When** the page loads, **Then** a reservation list table is shown with columns: No, member name, plan type, space number, reservation date, status, attendance, and cancel action.
-4. **Given** the reservation detail page is open, **When** the page loads, **Then** the right sidebar shows lesson info (name, date, time, studio, instructors, capacity, reservation count, recurrence) and a reservation statistics panel with bar charts for each of the 5 statuses (confirmed, tentative, attended, no-show, cancelled).
+4. **Given** the reservation detail page is open, **When** the page loads, **Then** the right sidebar shows a "レッスン情報" card with: header link "レッスン内容管理で編集 →" (navigates to D-02 lesson content management), lesson name (clickable, primary color), date, time, studio, instructor(s) with profile photo avatar(s), 定員 and 予約数, a separator, then 繰り返し (recurrence pattern). Remaining seats (残席) are NOT shown in this card — they appear in the page header badge instead. A separate "予約統計" card shows bar charts for each of the 5 statuses (confirmed, tentative, attended, no-show, cancelled).
 5. **Given** there are more than 7 reservations, **When** the reservation list is rendered, **Then** pagination controls (page numbers, prev/next buttons) are displayed showing "1-7 / N件".
 
 ---
@@ -115,7 +115,11 @@ Trainer records session notes after a session and can delete erroneous entries.
 
 ### Functional Requirements
 
-- **FR-007-01**: System MUST display a detail header with session metadata: lesson name, date (with day of week), time range, studio name, and instructor names with profile photos.
+- **FR-007-01**: System MUST display a PageHeader detail header with session metadata:
+  - **Title**: lesson name.
+  - **Subtitle** (pipe-separated): date with day of week, time range, studio name (if present), and instructor name(s) prefixed with `担当:` (multiple instructors joined with `・`, e.g. `3月5日（水） 9:00〜10:00 | Zumbaスタジオ | 担当: 山田太郎・佐藤花子`).
+  - **Badge**: remaining seats count (`N/M 予約済（残りX席）`) or "中止済み" when cancelled.
+  - Instructor profile photos are shown in the right-sidebar "レッスン情報" card (not in the PageHeader subtitle).
 - **FR-007-02**: System MUST display a color-coded space reservation grid showing: reserved spaces (blue), available spaces (white/green), equipment spaces (orange), and fixed structures/pillars (grey). Each cell must show the space number.
 - **FR-007-03**: System MUST display a legend below the space grid explaining each color code.
 - **FR-007-04**: System MUST display a reservation statistics panel showing a bar chart with count and percentage for each of the 5 statuses: confirmed (予約済), tentative (仮予約), attended (出席確認済), no-show (無断キャンセル), cancelled (キャンセル済).
@@ -130,7 +134,12 @@ Trainer records session notes after a session and can delete erroneous entries.
 - **FR-007-13**: System MUST support a 3-step lesson cancellation wizard: Step 1 (impact confirmation — affected reservations count, notification count, refund amount; scope selection: "この回のみ" or "以降すべて"), Step 2 (reason input — predefined reason select, detail textarea, notification/refund/instructor-notification toggles), Step 3 (final confirmation summary).
 - **FR-007-14**: After lesson cancellation, System MUST display a "中止済み" badge in the header, a cancelled status card (cancellation date/time, operator, reason), disable the "この回を変更" dropdown, and show a "中止を取り消す" button.
 - **FR-007-15**: System MUST allow cancelling a specific space reservation from the grid via a popover showing member name and providing "会員詳細" and "予約取消" buttons.
-- **FR-007-16**: System MUST display the remaining available seats count (e.g., "12/14 予約済(残り2席)").
+- **FR-007-16**: System MUST display the remaining available seats count in the page header badge (e.g., "12/14 予約済(残り2席)"). The lesson info card MUST NOT duplicate the remaining seats field.
+- **FR-007-17**: System MUST display a "レッスン情報" card in the right sidebar with the following layout and behavior:
+  - **Header**: Card title "レッスン情報" with a "レッスン内容管理で編集 →" link that navigates to the D-02 lesson content management page for the associated lesson.
+  - **Fields (in order)**: lesson name (clickable, `text-primary`, links to the same D-02 destination), date (`yyyy/M/d(E)` format), time range (`H:mm 〜 H:mm` with spaces around 〜), studio name, instructor(s) displayed right-aligned with profile photo avatar and name (supports multiple instructors stacked vertically).
+  - **Capacity section**: 定員 and 予約数 displayed before a separator.
+  - **Recurrence section**: After the separator, display 繰り返し with the schedule's recurrence pattern label (e.g., "毎週 月・水・金・土・日" for recurring sessions, "単発" for one-off sessions).
 - **FR-006-01** (Manual reservation): System MUST allow staff to add manual reservations via a dialog with: session info header, member search (by name or ID) querying a backend API, member result table showing ID/name/remaining count/penalty status, space number assignment (auto or manual), notification toggle, and added members chip list.
 - **FR-006-02**: System MUST prevent adding a member with 0 remaining sessions ("残回数が不足しています" warning).
 - **FR-006-03**: System MUST prevent adding a member under active penalty ("予約不可期間中の会員です（〇月〇日まで）" warning).
@@ -185,6 +194,8 @@ Trainer records session notes after a session and can delete erroneous entries.
 - Session memo persistence is handled via backend API (save/delete operations).
 - Notification toggles in all modals initiate notification sending per the notification framework (FR-012).
 - All instructors are available in the system via D-04 instructor master.
+- The lesson info card's "レッスン内容管理で編集" link and clickable lesson name navigate to D-02 lesson content management. Until D-02 is implemented, the link may be a placeholder.
+- Recurrence pattern (`recurrence_label`) is derived from the schedule's recurrence settings at registration time. When no recurrence is configured, display "単発".
 
 ## Clarifications
 
