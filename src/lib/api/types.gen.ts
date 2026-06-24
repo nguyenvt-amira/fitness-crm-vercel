@@ -8694,6 +8694,213 @@ export type GateStopReleaseResponse = {
 };
 
 /**
+ * OptionDiscountType
+ *
+ * セット割の割引タイプ
+ */
+export const OptionDiscountType = { FIXED_AMOUNT: 'fixed_amount', PERCENTAGE: 'percentage' } as const;
+
+/**
+ * OptionDiscountType
+ *
+ * セット割の割引タイプ
+ */
+export type OptionDiscountType = typeof OptionDiscountType[keyof typeof OptionDiscountType];
+
+/**
+ * OptionDiscountStatus
+ *
+ * セット割の有効/無効ステータス
+ */
+export const OptionDiscountStatus = { ACTIVE: 'active', INACTIVE: 'inactive' } as const;
+
+/**
+ * OptionDiscountStatus
+ *
+ * セット割の有効/無効ステータス
+ */
+export type OptionDiscountStatus = typeof OptionDiscountStatus[keyof typeof OptionDiscountStatus];
+
+/**
+ * OptionDiscountCondition
+ *
+ * セット割の適用条件
+ */
+export const OptionDiscountCondition = {
+    SIMULTANEOUS: 'simultaneous',
+    EXISTING_MEMBER: 'existing_member',
+    FAMILY_2_PLUS: 'family_2_plus',
+    OPTIONS_3_PLUS: 'options_3_plus'
+} as const;
+
+/**
+ * OptionDiscountCondition
+ *
+ * セット割の適用条件
+ */
+export type OptionDiscountCondition = typeof OptionDiscountCondition[keyof typeof OptionDiscountCondition];
+
+/**
+ * OptionDiscountListItem
+ *
+ * セット割一覧アイテム
+ */
+export type OptionDiscountListItem = {
+    /**
+     * セット割ID
+     */
+    id: string;
+    /**
+     * セット割名
+     */
+    name: string;
+    /**
+     * セット割コード
+     */
+    code: string;
+    /**
+     * 対象契約名一覧
+     */
+    target_contracts: Array<string>;
+    /**
+     * 対象オプション名一覧
+     */
+    target_options: Array<string>;
+    /**
+     * OptionDiscountType
+     *
+     * 割引タイプ
+     */
+    discount_type: 'fixed_amount' | 'percentage';
+    /**
+     * 割引値
+     */
+    discount_value: number;
+    /**
+     * OptionDiscountCondition
+     *
+     * 適用条件
+     */
+    conditions: 'simultaneous' | 'existing_member' | 'family_2_plus' | 'options_3_plus';
+    /**
+     * 対象店舗ID（null = 全店舗）
+     */
+    store_id: string | null;
+    /**
+     * 対象店舗名（null = 全店舗）
+     */
+    store_name: string | null;
+    /**
+     * 適用数
+     */
+    applied_count: number;
+    /**
+     * OptionDiscountStatus
+     *
+     * ステータス
+     */
+    status: 'active' | 'inactive';
+};
+
+/**
+ * GetOptionDiscountsQuery
+ *
+ * セット割一覧取得クエリ
+ */
+export type GetOptionDiscountsQuery = {
+    page?: number;
+    limit?: number;
+    /**
+     * セット割名・コードで検索
+     */
+    search?: string;
+    /**
+     * OptionDiscountType
+     *
+     * セット割の割引タイプ
+     */
+    discount_type?: 'fixed_amount' | 'percentage';
+    /**
+     * OptionDiscountStatus
+     *
+     * セット割の有効/無効ステータス
+     */
+    status?: 'active' | 'inactive';
+    sort_by?: 'id' | 'name' | 'code' | 'discount_type' | 'discount_value' | 'store_name' | 'applied_count' | 'status';
+    sort_order?: 'asc' | 'desc';
+};
+
+/**
+ * GetOptionDiscountsResponse
+ *
+ * セット割一覧レスポンス
+ */
+export type GetOptionDiscountsResponse = {
+    option_discounts: Array<{
+        /**
+         * セット割ID
+         */
+        id: string;
+        /**
+         * セット割名
+         */
+        name: string;
+        /**
+         * セット割コード
+         */
+        code: string;
+        /**
+         * 対象契約名一覧
+         */
+        target_contracts: Array<string>;
+        /**
+         * 対象オプション名一覧
+         */
+        target_options: Array<string>;
+        /**
+         * OptionDiscountType
+         *
+         * 割引タイプ
+         */
+        discount_type: 'fixed_amount' | 'percentage';
+        /**
+         * 割引値
+         */
+        discount_value: number;
+        /**
+         * OptionDiscountCondition
+         *
+         * 適用条件
+         */
+        conditions: 'simultaneous' | 'existing_member' | 'family_2_plus' | 'options_3_plus';
+        /**
+         * 対象店舗ID（null = 全店舗）
+         */
+        store_id: string | null;
+        /**
+         * 対象店舗名（null = 全店舗）
+         */
+        store_name: string | null;
+        /**
+         * 適用数
+         */
+        applied_count: number;
+        /**
+         * OptionDiscountStatus
+         *
+         * ステータス
+         */
+        status: 'active' | 'inactive';
+    }>;
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        total_pages: number;
+    };
+};
+
+/**
  * OptionType
  *
  * オプション種別（通常/都次/自動付与）
@@ -20559,6 +20766,729 @@ export type GetCrmMembershipApplicationsResponses = {
 };
 
 export type GetCrmMembershipApplicationsResponse = GetCrmMembershipApplicationsResponses[keyof GetCrmMembershipApplicationsResponses];
+
+export type GetCrmOptionDiscountsByIdChangeHistoryData = {
+    body?: never;
+    path: {
+        /**
+         * Option Discount ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/option-discounts/{id}/change-history';
+};
+
+export type GetCrmOptionDiscountsByIdChangeHistoryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmOptionDiscountsByIdChangeHistoryError = GetCrmOptionDiscountsByIdChangeHistoryErrors[keyof GetCrmOptionDiscountsByIdChangeHistoryErrors];
+
+export type GetCrmOptionDiscountsByIdChangeHistoryResponses = {
+    /**
+     * GetOptionDiscountChangeHistoryResponse
+     *
+     * セット割変更履歴レスポンス
+     */
+    200: {
+        history: Array<{
+            date: string;
+            user: string;
+            field: string | null;
+            from: string | null;
+            to: string;
+        }>;
+    };
+};
+
+export type GetCrmOptionDiscountsByIdChangeHistoryResponse = GetCrmOptionDiscountsByIdChangeHistoryResponses[keyof GetCrmOptionDiscountsByIdChangeHistoryResponses];
+
+export type DeleteCrmOptionDiscountsByIdData = {
+    /**
+     * DeleteOptionDiscountRequest
+     *
+     * セット割削除リクエスト
+     */
+    body?: {
+        reason: string;
+    };
+    path: {
+        /**
+         * Option Discount ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/option-discounts/{id}';
+};
+
+export type DeleteCrmOptionDiscountsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type DeleteCrmOptionDiscountsByIdError = DeleteCrmOptionDiscountsByIdErrors[keyof DeleteCrmOptionDiscountsByIdErrors];
+
+export type DeleteCrmOptionDiscountsByIdResponses = {
+    /**
+     * DeleteOptionDiscountResponse
+     *
+     * セット割削除レスポンス
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type DeleteCrmOptionDiscountsByIdResponse = DeleteCrmOptionDiscountsByIdResponses[keyof DeleteCrmOptionDiscountsByIdResponses];
+
+export type GetCrmOptionDiscountsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Option Discount ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/option-discounts/{id}';
+};
+
+export type GetCrmOptionDiscountsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmOptionDiscountsByIdError = GetCrmOptionDiscountsByIdErrors[keyof GetCrmOptionDiscountsByIdErrors];
+
+export type GetCrmOptionDiscountsByIdResponses = {
+    /**
+     * GetOptionDiscountDetailResponse
+     *
+     * セット割詳細レスポンス
+     */
+    200: {
+        /**
+         * OptionDiscountDetail
+         *
+         * セット割詳細
+         */
+        option_discount: {
+            /**
+             * セット割ID
+             */
+            id: string;
+            /**
+             * セット割名
+             */
+            name: string;
+            /**
+             * セット割コード
+             */
+            code: string;
+            /**
+             * 対象契約名一覧
+             */
+            target_contracts: Array<string>;
+            /**
+             * 対象オプション名一覧
+             */
+            target_options: Array<string>;
+            /**
+             * OptionDiscountType
+             *
+             * 割引タイプ
+             */
+            discount_type: 'fixed_amount' | 'percentage';
+            /**
+             * 割引値
+             */
+            discount_value: number;
+            /**
+             * OptionDiscountCondition
+             *
+             * 適用条件
+             */
+            conditions: 'simultaneous' | 'existing_member' | 'family_2_plus' | 'options_3_plus';
+            /**
+             * 対象店舗ID（null = 全店舗）
+             */
+            store_id: string | null;
+            /**
+             * 対象店舗名（null = 全店舗）
+             */
+            store_name: string | null;
+            /**
+             * 適用数
+             */
+            applied_count: number;
+            /**
+             * OptionDiscountStatus
+             *
+             * ステータス
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 説明文
+             */
+            description: string | null;
+            /**
+             * 適用ルール
+             */
+            rules: Array<string>;
+            /**
+             * 作成日時
+             */
+            created_at: string;
+            /**
+             * 最終更新日時
+             */
+            updated_at: string;
+            /**
+             * 更新者
+             */
+            updated_by: string;
+        };
+    };
+};
+
+export type GetCrmOptionDiscountsByIdResponse = GetCrmOptionDiscountsByIdResponses[keyof GetCrmOptionDiscountsByIdResponses];
+
+export type PatchCrmOptionDiscountsByIdData = {
+    /**
+     * UpsertOptionDiscountBody
+     *
+     * セット割作成・更新リクエスト
+     */
+    body?: {
+        name: string;
+        code: string;
+        description?: string | null;
+        target_contracts: Array<string>;
+        target_options: Array<string>;
+        /**
+         * OptionDiscountType
+         *
+         * セット割の割引タイプ
+         */
+        discount_type: 'fixed_amount' | 'percentage';
+        discount_value: number;
+        /**
+         * OptionDiscountCondition
+         *
+         * セット割の適用条件
+         */
+        conditions: 'simultaneous' | 'existing_member' | 'family_2_plus' | 'options_3_plus';
+        store_id?: string | null;
+        /**
+         * OptionDiscountStatus
+         *
+         * セット割の有効/無効ステータス
+         */
+        status?: 'active' | 'inactive';
+    };
+    path: {
+        /**
+         * Option Discount ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/option-discounts/{id}';
+};
+
+export type PatchCrmOptionDiscountsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PatchCrmOptionDiscountsByIdError = PatchCrmOptionDiscountsByIdErrors[keyof PatchCrmOptionDiscountsByIdErrors];
+
+export type PatchCrmOptionDiscountsByIdResponses = {
+    /**
+     * UpdateOptionDiscountResponse
+     *
+     * セット割更新レスポンス
+     */
+    200: {
+        message: string;
+        /**
+         * OptionDiscountDetail
+         *
+         * セット割詳細
+         */
+        option_discount: {
+            /**
+             * セット割ID
+             */
+            id: string;
+            /**
+             * セット割名
+             */
+            name: string;
+            /**
+             * セット割コード
+             */
+            code: string;
+            /**
+             * 対象契約名一覧
+             */
+            target_contracts: Array<string>;
+            /**
+             * 対象オプション名一覧
+             */
+            target_options: Array<string>;
+            /**
+             * OptionDiscountType
+             *
+             * 割引タイプ
+             */
+            discount_type: 'fixed_amount' | 'percentage';
+            /**
+             * 割引値
+             */
+            discount_value: number;
+            /**
+             * OptionDiscountCondition
+             *
+             * 適用条件
+             */
+            conditions: 'simultaneous' | 'existing_member' | 'family_2_plus' | 'options_3_plus';
+            /**
+             * 対象店舗ID（null = 全店舗）
+             */
+            store_id: string | null;
+            /**
+             * 対象店舗名（null = 全店舗）
+             */
+            store_name: string | null;
+            /**
+             * 適用数
+             */
+            applied_count: number;
+            /**
+             * OptionDiscountStatus
+             *
+             * ステータス
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 説明文
+             */
+            description: string | null;
+            /**
+             * 適用ルール
+             */
+            rules: Array<string>;
+            /**
+             * 作成日時
+             */
+            created_at: string;
+            /**
+             * 最終更新日時
+             */
+            updated_at: string;
+            /**
+             * 更新者
+             */
+            updated_by: string;
+        };
+    };
+};
+
+export type PatchCrmOptionDiscountsByIdResponse = PatchCrmOptionDiscountsByIdResponses[keyof PatchCrmOptionDiscountsByIdResponses];
+
+export type GetCrmOptionDiscountsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        limit?: number;
+        /**
+         * セット割名・コードで検索
+         */
+        search?: string;
+        /**
+         * OptionDiscountType
+         *
+         * セット割の割引タイプ
+         */
+        discount_type?: 'fixed_amount' | 'percentage';
+        /**
+         * OptionDiscountStatus
+         *
+         * セット割の有効/無効ステータス
+         */
+        status?: 'active' | 'inactive';
+        sort_by?: 'id' | 'name' | 'code' | 'discount_type' | 'discount_value' | 'store_name' | 'applied_count' | 'status';
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/option-discounts';
+};
+
+export type GetCrmOptionDiscountsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmOptionDiscountsError = GetCrmOptionDiscountsErrors[keyof GetCrmOptionDiscountsErrors];
+
+export type GetCrmOptionDiscountsResponses = {
+    /**
+     * GetOptionDiscountsResponse
+     *
+     * セット割一覧レスポンス
+     */
+    200: {
+        option_discounts: Array<{
+            /**
+             * セット割ID
+             */
+            id: string;
+            /**
+             * セット割名
+             */
+            name: string;
+            /**
+             * セット割コード
+             */
+            code: string;
+            /**
+             * 対象契約名一覧
+             */
+            target_contracts: Array<string>;
+            /**
+             * 対象オプション名一覧
+             */
+            target_options: Array<string>;
+            /**
+             * OptionDiscountType
+             *
+             * 割引タイプ
+             */
+            discount_type: 'fixed_amount' | 'percentage';
+            /**
+             * 割引値
+             */
+            discount_value: number;
+            /**
+             * OptionDiscountCondition
+             *
+             * 適用条件
+             */
+            conditions: 'simultaneous' | 'existing_member' | 'family_2_plus' | 'options_3_plus';
+            /**
+             * 対象店舗ID（null = 全店舗）
+             */
+            store_id: string | null;
+            /**
+             * 対象店舗名（null = 全店舗）
+             */
+            store_name: string | null;
+            /**
+             * 適用数
+             */
+            applied_count: number;
+            /**
+             * OptionDiscountStatus
+             *
+             * ステータス
+             */
+            status: 'active' | 'inactive';
+        }>;
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmOptionDiscountsResponse = GetCrmOptionDiscountsResponses[keyof GetCrmOptionDiscountsResponses];
+
+export type PostCrmOptionDiscountsData = {
+    /**
+     * UpsertOptionDiscountBody
+     *
+     * セット割作成・更新リクエスト
+     */
+    body?: {
+        name: string;
+        code: string;
+        description?: string | null;
+        target_contracts: Array<string>;
+        target_options: Array<string>;
+        /**
+         * OptionDiscountType
+         *
+         * セット割の割引タイプ
+         */
+        discount_type: 'fixed_amount' | 'percentage';
+        discount_value: number;
+        /**
+         * OptionDiscountCondition
+         *
+         * セット割の適用条件
+         */
+        conditions: 'simultaneous' | 'existing_member' | 'family_2_plus' | 'options_3_plus';
+        store_id?: string | null;
+        /**
+         * OptionDiscountStatus
+         *
+         * セット割の有効/無効ステータス
+         */
+        status?: 'active' | 'inactive';
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/option-discounts';
+};
+
+export type PostCrmOptionDiscountsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmOptionDiscountsError = PostCrmOptionDiscountsErrors[keyof PostCrmOptionDiscountsErrors];
+
+export type PostCrmOptionDiscountsResponses = {
+    /**
+     * CreateOptionDiscountResponse
+     *
+     * セット割作成レスポンス
+     */
+    201: {
+        message: string;
+        /**
+         * OptionDiscountDetail
+         *
+         * セット割詳細
+         */
+        option_discount: {
+            /**
+             * セット割ID
+             */
+            id: string;
+            /**
+             * セット割名
+             */
+            name: string;
+            /**
+             * セット割コード
+             */
+            code: string;
+            /**
+             * 対象契約名一覧
+             */
+            target_contracts: Array<string>;
+            /**
+             * 対象オプション名一覧
+             */
+            target_options: Array<string>;
+            /**
+             * OptionDiscountType
+             *
+             * 割引タイプ
+             */
+            discount_type: 'fixed_amount' | 'percentage';
+            /**
+             * 割引値
+             */
+            discount_value: number;
+            /**
+             * OptionDiscountCondition
+             *
+             * 適用条件
+             */
+            conditions: 'simultaneous' | 'existing_member' | 'family_2_plus' | 'options_3_plus';
+            /**
+             * 対象店舗ID（null = 全店舗）
+             */
+            store_id: string | null;
+            /**
+             * 対象店舗名（null = 全店舗）
+             */
+            store_name: string | null;
+            /**
+             * 適用数
+             */
+            applied_count: number;
+            /**
+             * OptionDiscountStatus
+             *
+             * ステータス
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 説明文
+             */
+            description: string | null;
+            /**
+             * 適用ルール
+             */
+            rules: Array<string>;
+            /**
+             * 作成日時
+             */
+            created_at: string;
+            /**
+             * 最終更新日時
+             */
+            updated_at: string;
+            /**
+             * 更新者
+             */
+            updated_by: string;
+        };
+    };
+};
+
+export type PostCrmOptionDiscountsResponse = PostCrmOptionDiscountsResponses[keyof PostCrmOptionDiscountsResponses];
 
 export type GetCrmOptionsByIdChangeHistoryData = {
     body?: never;

@@ -27,6 +27,12 @@ import type {
 } from '@/app/api/_schemas/member.schema';
 import type { DirectEnrollmentRequest as DirectEnrollmentRequestType } from '@/app/api/_schemas/membership-application.schema';
 import type {
+  GetOptionDiscountsResponse,
+  OptionDiscountChangeHistoryItem,
+  OptionDiscountDetail,
+  OptionDiscountListItem,
+} from '@/app/api/_schemas/option-discount.schema';
+import type {
   OptionCategory,
   OptionMasterChangeHistoryItem,
   OptionMasterDetail,
@@ -951,6 +957,118 @@ const SEED_CORPORATE_MASTERS: CorporateMasterRow[] = [
   { id: 'CORP-003', name: '株式会社サンプルC', code: 'CC003' },
 ];
 
+const SEED_OPTION_DISCOUNT_CHANGE_HISTORY: Record<string, OptionDiscountChangeHistoryItem[]> = {
+  SD001: [
+    {
+      date: '2026/03/01 10:30',
+      user: 'テストユーザー',
+      field: '割引金額',
+      from: '¥220',
+      to: '¥330',
+    },
+    {
+      date: '2025/10/15 14:00',
+      user: '管理者A',
+      field: '適用条件',
+      from: '新規入会時のみ',
+      to: '同時申込時',
+    },
+    {
+      date: '2025/07/01 09:00',
+      user: '管理者A',
+      field: 'ステータス',
+      from: 'inactive',
+      to: 'active',
+    },
+    { date: '2025/06/20 16:45', user: 'テストユーザー', field: null, from: null, to: '新規作成' },
+  ],
+  SD002: [
+    { date: '2026/02/15 14:30', user: '管理者A', field: '割引金額', from: '¥250', to: '¥220' },
+    { date: '2025/08/10 11:00', user: 'テストユーザー', field: null, from: null, to: '新規作成' },
+  ],
+  SD003: [
+    { date: '2025/12/01 09:00', user: '管理者A', field: '割引率', from: '5%', to: '10%' },
+    { date: '2025/09/20 16:45', user: 'テストユーザー', field: null, from: null, to: '新規作成' },
+  ],
+  SD004: [
+    { date: '2026/01/10 13:00', user: 'テストユーザー', field: null, from: null, to: '新規作成' },
+  ],
+  SD005: [{ date: '2025/11/05 10:00', user: '管理者A', field: null, from: null, to: '新規作成' }],
+};
+
+const SEED_OPTION_DISCOUNT_ROWS: OptionDiscountListItem[] = [
+  {
+    id: 'SD001',
+    name: 'レギュラー＋水素水セット',
+    code: 'SET-001',
+    target_contracts: ['レギュラー会員'],
+    target_options: ['水素水'],
+    discount_type: 'fixed_amount',
+    discount_value: 330,
+    conditions: 'simultaneous',
+    store_id: null,
+    store_name: null,
+    applied_count: 180,
+    status: 'active',
+  },
+  {
+    id: 'SD002',
+    name: 'レギュラー＋プロテインセット',
+    code: 'SET-002',
+    target_contracts: ['レギュラー会員'],
+    target_options: ['プロテインサーバー'],
+    discount_type: 'fixed_amount',
+    discount_value: 220,
+    conditions: 'simultaneous',
+    store_id: null,
+    store_name: null,
+    applied_count: 95,
+    status: 'active',
+  },
+  {
+    id: 'SD003',
+    name: 'ファミリー＋ロッカーセット',
+    code: 'SET-003',
+    target_contracts: ['ファミリー会員（親）', 'ファミリー会員（子・大人）'],
+    target_options: ['パーソナルロッカー（S）'],
+    discount_type: 'percentage',
+    discount_value: 10,
+    conditions: 'family_2_plus',
+    store_id: null,
+    store_name: null,
+    applied_count: 42,
+    status: 'active',
+  },
+  {
+    id: 'SD004',
+    name: 'デイタイム＋タオルセット',
+    code: 'SET-004',
+    target_contracts: ['デイタイム会員'],
+    target_options: ['タオルセット'],
+    discount_type: 'fixed_amount',
+    discount_value: 110,
+    conditions: 'simultaneous',
+    store_id: 'store-001',
+    store_name: 'Fit365八潮店',
+    applied_count: 65,
+    status: 'active',
+  },
+  {
+    id: 'SD005',
+    name: 'プレミアム全部入りセット',
+    code: 'SET-005',
+    target_contracts: ['シニア午前会員'],
+    target_options: ['水素水', 'プロテインサーバー', 'タオルセット'],
+    discount_type: 'fixed_amount',
+    discount_value: 550,
+    conditions: 'options_3_plus',
+    store_id: null,
+    store_name: null,
+    applied_count: 0,
+    status: 'inactive',
+  },
+];
+
 type DbType = {
   members: {
     _members: MemberRow[];
@@ -1228,6 +1346,43 @@ type DbType = {
     delete(id: string): boolean;
     add(data: UpsertOptionMasterBody): OptionMasterDetail;
     update(id: string, data: UpsertOptionMasterBody): OptionMasterDetail | undefined;
+  };
+  optionDiscount: {
+    _rows: GetOptionDiscountsResponse['option_discounts'];
+    _changeHistory: Record<string, OptionDiscountChangeHistoryItem[]>;
+    _seeded: boolean;
+    _seed(): void;
+    getList(): GetOptionDiscountsResponse['option_discounts'];
+    getById(id: string): OptionDiscountDetail | undefined;
+    add(data: {
+      name: string;
+      code: string;
+      description?: string | null;
+      target_contracts: string[];
+      target_options: string[];
+      discount_type: string;
+      discount_value: number;
+      conditions: string;
+      store_id?: string | null;
+      status?: string;
+    }): OptionDiscountDetail;
+    update(
+      id: string,
+      data: {
+        name?: string;
+        code?: string;
+        description?: string | null;
+        target_contracts?: string[];
+        target_options?: string[];
+        discount_type?: string;
+        discount_value?: number;
+        conditions?: string;
+        store_id?: string | null;
+        status?: string;
+      },
+    ): OptionDiscountDetail | undefined;
+    delete(id: string): boolean;
+    getChangeHistory(id: string): OptionDiscountChangeHistoryItem[];
   };
   storeMainContracts: {
     _rows: Array<{ store_id: string; main_contract_id: string; linked_at: string }>;
@@ -5538,6 +5693,154 @@ function createDb() {
         this._rows.splice(index, 1);
         delete this._changeHistory[id];
         return true;
+      },
+    },
+    optionDiscount: {
+      _rows: [] as GetOptionDiscountsResponse['option_discounts'],
+      _changeHistory: {} as Record<string, OptionDiscountChangeHistoryItem[]>,
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows = SEED_OPTION_DISCOUNT_ROWS.map((row) => ({
+          ...row,
+          target_contracts: [...row.target_contracts],
+          target_options: [...row.target_options],
+        }));
+        this._changeHistory = {};
+        for (const [id, history] of Object.entries(SEED_OPTION_DISCOUNT_CHANGE_HISTORY)) {
+          this._changeHistory[id] = history.map((h) => ({ ...h }));
+        }
+      },
+      getList(): GetOptionDiscountsResponse['option_discounts'] {
+        this._seed();
+        return this._rows.map((row) => ({
+          ...row,
+          target_contracts: [...row.target_contracts],
+          target_options: [...row.target_options],
+        }));
+      },
+      getById(id: string): OptionDiscountDetail | undefined {
+        this._seed();
+        const row = this._rows.find((item) => item.id === id);
+        if (!row) return undefined;
+        return {
+          ...row,
+          target_contracts: [...row.target_contracts],
+          target_options: [...row.target_options],
+          description:
+            'レギュラー会員プランと水素水オプションを同時にお申し込みいただくと、月額料金から¥330を割引いたします。既存会員がオプションを追加する場合も適用対象となります。',
+          rules: [
+            '常時募集（キャンペーンとは別物）',
+            'セット内片方オプションの解除で割引解除、再追加で再適用',
+            'キャンペーン併用時、金額変動オプションがあれば不発動',
+          ],
+          created_at: '2025/06/20 16:45',
+          updated_at: '2026/03/01 10:30',
+          updated_by: 'テストユーザー',
+        };
+      },
+      delete(id: string): boolean {
+        this._seed();
+        const idx = this._rows.findIndex((r) => r.id === id);
+        if (idx === -1) return false;
+        this._rows.splice(idx, 1);
+        delete this._changeHistory[id];
+        return true;
+      },
+      getChangeHistory(id: string): OptionDiscountChangeHistoryItem[] {
+        this._seed();
+        return this._changeHistory[id] ?? [];
+      },
+      add(data: {
+        name: string;
+        code: string;
+        description?: string | null;
+        target_contracts: string[];
+        target_options: string[];
+        discount_type: string;
+        discount_value: number;
+        conditions: string;
+        store_id?: string | null;
+        status?: string;
+      }): OptionDiscountDetail {
+        this._seed();
+        const newId = `SD${String(this._rows.length + 1).padStart(3, '0')}`;
+        const now = new Date().toISOString().slice(0, 16).replace('T', ' ');
+        const entry: OptionDiscountListItem = {
+          id: newId,
+          name: data.name,
+          code: data.code,
+          target_contracts: [...data.target_contracts],
+          target_options: [...data.target_options],
+          discount_type: data.discount_type as 'fixed_amount' | 'percentage',
+          discount_value: data.discount_value,
+          conditions: data.conditions as
+            | 'simultaneous'
+            | 'existing_member'
+            | 'family_2_plus'
+            | 'options_3_plus',
+          store_id: data.store_id ?? null,
+          store_name: null,
+          applied_count: 0,
+          status: (data.status ?? 'active') as 'active' | 'inactive',
+        };
+        this._rows.push(entry);
+        const detail: OptionDiscountDetail = {
+          ...entry,
+          target_contracts: [...entry.target_contracts],
+          target_options: [...entry.target_options],
+          description: data.description ?? null,
+          rules: [],
+          created_at: now,
+          updated_at: now,
+          updated_by: 'テストユーザー',
+        };
+        return detail;
+      },
+      update(
+        id: string,
+        data: {
+          name?: string;
+          code?: string;
+          description?: string | null;
+          target_contracts?: string[];
+          target_options?: string[];
+          discount_type?: string;
+          discount_value?: number;
+          conditions?: string;
+          store_id?: string | null;
+          status?: string;
+        },
+      ): OptionDiscountDetail | undefined {
+        this._seed();
+        const idx = this._rows.findIndex((r) => r.id === id);
+        if (idx === -1) return undefined;
+        const existing = this._rows[idx];
+        const updated: OptionDiscountListItem = {
+          ...existing,
+          name: data.name ?? existing.name,
+          code: data.code ?? existing.code,
+          target_contracts: data.target_contracts
+            ? [...data.target_contracts]
+            : [...existing.target_contracts],
+          target_options: data.target_options
+            ? [...data.target_options]
+            : [...existing.target_options],
+          discount_type: (data.discount_type ?? existing.discount_type) as
+            | 'fixed_amount'
+            | 'percentage',
+          discount_value: data.discount_value ?? existing.discount_value,
+          conditions: (data.conditions ?? existing.conditions) as
+            | 'simultaneous'
+            | 'existing_member'
+            | 'family_2_plus'
+            | 'options_3_plus',
+          store_id: data.store_id !== undefined ? data.store_id : existing.store_id,
+          status: (data.status ?? existing.status) as 'active' | 'inactive',
+        };
+        this._rows[idx] = updated;
+        return this.getById(id);
       },
     },
     storeMainContracts: {
