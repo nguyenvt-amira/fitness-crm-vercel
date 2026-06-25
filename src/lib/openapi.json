@@ -24089,6 +24089,647 @@
         "required": ["memos"],
         "title": "MemoListResponse",
         "description": "メモ一覧レスポンス"
+      },
+      "LessonBrand": {
+        "type": "string",
+        "enum": ["joyfit", "fit365"],
+        "title": "LessonBrand",
+        "description": "Lesson content brand"
+      },
+      "LessonContentStatus": {
+        "type": "string",
+        "enum": ["active", "inactive"],
+        "title": "LessonContentStatus",
+        "description": "Lesson content status"
+      },
+      "LessonPricingType": {
+        "type": "string",
+        "enum": ["included", "paid"],
+        "title": "LessonPricingType",
+        "description": "Studio/body-care pricing type"
+      },
+      "LessonGenderRestriction": {
+        "type": "string",
+        "enum": ["none", "male", "female"],
+        "title": "LessonGenderRestriction",
+        "description": "Gender restriction"
+      },
+      "LessonKind": {
+        "type": "string",
+        "enum": ["studio", "bodycare"],
+        "title": "LessonKind",
+        "description": "Which lesson set (Studio vs Body care tab)"
+      },
+      "LessonContentItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "LSN-0001",
+            "description": "Lesson master ID"
+          },
+          "name": {
+            "type": "string",
+            "example": "ヨガベーシック",
+            "description": "Lesson name"
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["studio", "bodycare"],
+            "title": "LessonKind",
+            "description": "Which lesson set (Studio vs Body care tab)",
+            "example": "studio"
+          },
+          "brand": {
+            "type": "string",
+            "enum": ["joyfit", "fit365"],
+            "title": "LessonBrand",
+            "description": "Lesson content brand",
+            "example": "joyfit"
+          },
+          "duration": {
+            "type": "integer",
+            "example": 60,
+            "description": "Duration in minutes"
+          },
+          "pricing_type": {
+            "type": "string",
+            "enum": ["included", "paid"],
+            "title": "LessonPricingType",
+            "description": "Studio/body-care pricing type",
+            "example": "included"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive"],
+            "title": "LessonContentStatus",
+            "description": "Lesson content status",
+            "example": "active"
+          },
+          "gender_restriction": {
+            "type": "string",
+            "enum": ["none", "male", "female"],
+            "title": "LessonGenderRestriction",
+            "description": "Gender restriction",
+            "example": "none"
+          },
+          "lesson_category": {
+            "type": "string",
+            "example": "スタジオレッスン"
+          },
+          "category": {
+            "type": "string",
+            "example": "ヨガ"
+          },
+          "store_id": {
+            "type": "string",
+            "example": "store-001"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "example": false
+          },
+          "reservation_count": {
+            "type": "integer",
+            "example": 12
+          },
+          "max_reservation_count": {
+            "type": "integer",
+            "example": 20
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "kind",
+          "brand",
+          "duration",
+          "pricing_type",
+          "status",
+          "gender_restriction",
+          "lesson_category",
+          "category",
+          "store_id",
+          "is_deleted"
+        ],
+        "title": "LessonContentItem",
+        "description": "Studio / body care lesson master row"
+      },
+      "PersonalPlanItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "PLN-0001",
+            "description": "Plan ID"
+          },
+          "name": {
+            "type": "string",
+            "example": "パーソナル60",
+            "description": "Plan name"
+          },
+          "description": {
+            "type": "string",
+            "example": "60分のマンツーマン指導"
+          },
+          "category": {
+            "type": "string",
+            "example": "ダイエット"
+          },
+          "duration": {
+            "type": "integer",
+            "example": 60,
+            "description": "Duration in minutes"
+          },
+          "price": {
+            "type": "integer",
+            "example": 8000,
+            "description": "Price in yen"
+          },
+          "reservations": {
+            "type": "integer",
+            "example": 5
+          },
+          "max_reservations": {
+            "type": "integer",
+            "example": 10
+          },
+          "brand": {
+            "type": "string",
+            "enum": ["joyfit", "fit365"],
+            "title": "LessonBrand",
+            "description": "Lesson content brand",
+            "example": "fit365"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive"],
+            "title": "LessonContentStatus",
+            "description": "Lesson content status",
+            "example": "active"
+          },
+          "store_id": {
+            "type": "string",
+            "example": "store-001"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "example": false
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "category",
+          "duration",
+          "price",
+          "reservations",
+          "max_reservations",
+          "brand",
+          "status",
+          "store_id",
+          "is_deleted"
+        ],
+        "title": "PersonalPlanItem",
+        "description": "Personal training plan row"
+      },
+      "LessonPagination": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "example": 25
+          },
+          "total": {
+            "type": "integer",
+            "example": 37
+          },
+          "total_pages": {
+            "type": "integer",
+            "example": 2
+          }
+        },
+        "required": ["page", "limit", "total", "total_pages"],
+        "title": "LessonPagination",
+        "description": "Pagination information"
+      },
+      "GetLessonContentsQuery": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["studio", "bodycare"],
+            "default": "studio",
+            "title": "LessonKind",
+            "description": "Which lesson set (Studio vs Body care tab)"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "default": 1,
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "maximum": 50,
+            "default": 25,
+            "example": 25,
+            "description": "Items per page (max 50)"
+          },
+          "search": {
+            "type": "string",
+            "example": "ヨガ",
+            "description": "Partial match on name or id"
+          },
+          "lesson_category": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            },
+            "description": "Filter by lesson category"
+          },
+          "category": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            },
+            "description": "Filter by category"
+          },
+          "brand": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "enum": ["joyfit", "fit365"],
+              "title": "LessonBrand",
+              "description": "Lesson content brand"
+            },
+            "description": "Filter by brand"
+          },
+          "status": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "enum": ["active", "inactive"],
+              "title": "LessonContentStatus",
+              "description": "Lesson content status"
+            },
+            "description": "Filter by status"
+          },
+          "include_deleted": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "Include inactive / deleted rows"
+          },
+          "store_id": {
+            "type": "string",
+            "example": "store-001"
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": ["id", "name", "duration", "status", "brand"],
+            "default": "id"
+          },
+          "sort_order": {
+            "type": "string",
+            "enum": ["asc", "desc"],
+            "default": "asc"
+          }
+        },
+        "title": "GetLessonContentsQuery",
+        "description": "Query parameters for lesson contents list"
+      },
+      "GetLessonContentsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "LSN-0001",
+                  "description": "Lesson master ID"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "ヨガベーシック",
+                  "description": "Lesson name"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": ["studio", "bodycare"],
+                  "title": "LessonKind",
+                  "description": "Which lesson set (Studio vs Body care tab)",
+                  "example": "studio"
+                },
+                "brand": {
+                  "type": "string",
+                  "enum": ["joyfit", "fit365"],
+                  "title": "LessonBrand",
+                  "description": "Lesson content brand",
+                  "example": "joyfit"
+                },
+                "duration": {
+                  "type": "integer",
+                  "example": 60,
+                  "description": "Duration in minutes"
+                },
+                "pricing_type": {
+                  "type": "string",
+                  "enum": ["included", "paid"],
+                  "title": "LessonPricingType",
+                  "description": "Studio/body-care pricing type",
+                  "example": "included"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["active", "inactive"],
+                  "title": "LessonContentStatus",
+                  "description": "Lesson content status",
+                  "example": "active"
+                },
+                "gender_restriction": {
+                  "type": "string",
+                  "enum": ["none", "male", "female"],
+                  "title": "LessonGenderRestriction",
+                  "description": "Gender restriction",
+                  "example": "none"
+                },
+                "lesson_category": {
+                  "type": "string",
+                  "example": "スタジオレッスン"
+                },
+                "category": {
+                  "type": "string",
+                  "example": "ヨガ"
+                },
+                "store_id": {
+                  "type": "string",
+                  "example": "store-001"
+                },
+                "is_deleted": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "reservation_count": {
+                  "type": "integer",
+                  "example": 12
+                },
+                "max_reservation_count": {
+                  "type": "integer",
+                  "example": 20
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "kind",
+                "brand",
+                "duration",
+                "pricing_type",
+                "status",
+                "gender_restriction",
+                "lesson_category",
+                "category",
+                "store_id",
+                "is_deleted"
+              ],
+              "title": "LessonContentItem",
+              "description": "Studio / body care lesson master row"
+            },
+            "description": "Lesson content rows"
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "integer",
+                "example": 1
+              },
+              "limit": {
+                "type": "integer",
+                "example": 25
+              },
+              "total": {
+                "type": "integer",
+                "example": 37
+              },
+              "total_pages": {
+                "type": "integer",
+                "example": 2
+              }
+            },
+            "required": ["page", "limit", "total", "total_pages"],
+            "title": "LessonPagination",
+            "description": "Pagination information"
+          }
+        },
+        "required": ["data", "pagination"],
+        "title": "GetLessonContentsResponse",
+        "description": "Response for lesson contents list"
+      },
+      "GetPersonalPlansQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "default": 1,
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "maximum": 50,
+            "default": 25,
+            "example": 25,
+            "description": "Items per page (max 50)"
+          },
+          "search": {
+            "type": "string",
+            "example": "パーソナル",
+            "description": "Partial match on name or id"
+          },
+          "category": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            },
+            "description": "Filter by plan category"
+          },
+          "brand": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "enum": ["joyfit", "fit365"],
+              "title": "LessonBrand",
+              "description": "Lesson content brand"
+            },
+            "description": "Filter by brand"
+          },
+          "status": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string",
+              "enum": ["active", "inactive"],
+              "title": "LessonContentStatus",
+              "description": "Lesson content status"
+            },
+            "description": "Filter by status"
+          },
+          "include_deleted": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "Include inactive / deleted rows"
+          },
+          "store_id": {
+            "type": "string",
+            "example": "store-001"
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": ["id", "name", "category", "duration", "price"],
+            "default": "id"
+          },
+          "sort_order": {
+            "type": "string",
+            "enum": ["asc", "desc"],
+            "default": "asc"
+          }
+        },
+        "title": "GetPersonalPlansQuery",
+        "description": "Query parameters for personal plans list"
+      },
+      "GetPersonalPlansResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "PLN-0001",
+                  "description": "Plan ID"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "パーソナル60",
+                  "description": "Plan name"
+                },
+                "description": {
+                  "type": "string",
+                  "example": "60分のマンツーマン指導"
+                },
+                "category": {
+                  "type": "string",
+                  "example": "ダイエット"
+                },
+                "duration": {
+                  "type": "integer",
+                  "example": 60,
+                  "description": "Duration in minutes"
+                },
+                "price": {
+                  "type": "integer",
+                  "example": 8000,
+                  "description": "Price in yen"
+                },
+                "reservations": {
+                  "type": "integer",
+                  "example": 5
+                },
+                "max_reservations": {
+                  "type": "integer",
+                  "example": 10
+                },
+                "brand": {
+                  "type": "string",
+                  "enum": ["joyfit", "fit365"],
+                  "title": "LessonBrand",
+                  "description": "Lesson content brand",
+                  "example": "fit365"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["active", "inactive"],
+                  "title": "LessonContentStatus",
+                  "description": "Lesson content status",
+                  "example": "active"
+                },
+                "store_id": {
+                  "type": "string",
+                  "example": "store-001"
+                },
+                "is_deleted": {
+                  "type": "boolean",
+                  "example": false
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "category",
+                "duration",
+                "price",
+                "reservations",
+                "max_reservations",
+                "brand",
+                "status",
+                "store_id",
+                "is_deleted"
+              ],
+              "title": "PersonalPlanItem",
+              "description": "Personal training plan row"
+            },
+            "description": "Personal plan rows"
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "integer",
+                "example": 1
+              },
+              "limit": {
+                "type": "integer",
+                "example": 25
+              },
+              "total": {
+                "type": "integer",
+                "example": 37
+              },
+              "total_pages": {
+                "type": "integer",
+                "example": 2
+              }
+            },
+            "required": ["page", "limit", "total", "total_pages"],
+            "title": "LessonPagination",
+            "description": "Pagination information"
+          }
+        },
+        "required": ["data", "pagination"],
+        "title": "GetPersonalPlansResponse",
+        "description": "Response for personal plans list"
       }
     },
     "parameters": {}
@@ -37146,6 +37787,646 @@
                     "error": {
                       "type": "string",
                       "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/lesson-contents": {
+      "get": {
+        "summary": "Get lesson contents list",
+        "description": "Get paginated studio / body care lesson masters with filtering and sorting",
+        "tags": ["LessonContents"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["studio", "bodycare"],
+              "default": "studio",
+              "title": "LessonKind",
+              "description": "Which lesson set (Studio vs Body care tab)"
+            },
+            "required": false,
+            "description": "Which lesson set (Studio vs Body care tab)",
+            "name": "kind",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1,
+              "example": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 50,
+              "default": 25,
+              "example": 25,
+              "description": "Items per page (max 50)"
+            },
+            "required": false,
+            "description": "Items per page (max 50)",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "ヨガ",
+              "description": "Partial match on name or id"
+            },
+            "required": false,
+            "description": "Partial match on name or id",
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "description": "Filter by lesson category"
+            },
+            "required": false,
+            "description": "Filter by lesson category",
+            "name": "lesson_category",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "description": "Filter by category"
+            },
+            "required": false,
+            "description": "Filter by category",
+            "name": "category",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": ["joyfit", "fit365"],
+                "title": "LessonBrand",
+                "description": "Lesson content brand"
+              },
+              "description": "Filter by brand"
+            },
+            "required": false,
+            "description": "Filter by brand",
+            "name": "brand",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": ["active", "inactive"],
+                "title": "LessonContentStatus",
+                "description": "Lesson content status"
+              },
+              "description": "Filter by status"
+            },
+            "required": false,
+            "description": "Filter by status",
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "boolean",
+              "nullable": true,
+              "description": "Include inactive / deleted rows"
+            },
+            "required": false,
+            "description": "Include inactive / deleted rows",
+            "name": "include_deleted",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "store-001"
+            },
+            "required": false,
+            "name": "store_id",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["id", "name", "duration", "status", "brand"],
+              "default": "id"
+            },
+            "required": false,
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            },
+            "required": false,
+            "name": "sort_order",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of lesson contents",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "LSN-0001",
+                            "description": "Lesson master ID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "ヨガベーシック",
+                            "description": "Lesson name"
+                          },
+                          "kind": {
+                            "type": "string",
+                            "enum": ["studio", "bodycare"],
+                            "title": "LessonKind",
+                            "description": "Which lesson set (Studio vs Body care tab)",
+                            "example": "studio"
+                          },
+                          "brand": {
+                            "type": "string",
+                            "enum": ["joyfit", "fit365"],
+                            "title": "LessonBrand",
+                            "description": "Lesson content brand",
+                            "example": "joyfit"
+                          },
+                          "duration": {
+                            "type": "integer",
+                            "example": 60,
+                            "description": "Duration in minutes"
+                          },
+                          "pricing_type": {
+                            "type": "string",
+                            "enum": ["included", "paid"],
+                            "title": "LessonPricingType",
+                            "description": "Studio/body-care pricing type",
+                            "example": "included"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["active", "inactive"],
+                            "title": "LessonContentStatus",
+                            "description": "Lesson content status",
+                            "example": "active"
+                          },
+                          "gender_restriction": {
+                            "type": "string",
+                            "enum": ["none", "male", "female"],
+                            "title": "LessonGenderRestriction",
+                            "description": "Gender restriction",
+                            "example": "none"
+                          },
+                          "lesson_category": {
+                            "type": "string",
+                            "example": "スタジオレッスン"
+                          },
+                          "category": {
+                            "type": "string",
+                            "example": "ヨガ"
+                          },
+                          "store_id": {
+                            "type": "string",
+                            "example": "store-001"
+                          },
+                          "is_deleted": {
+                            "type": "boolean",
+                            "example": false
+                          },
+                          "reservation_count": {
+                            "type": "integer",
+                            "example": 12
+                          },
+                          "max_reservation_count": {
+                            "type": "integer",
+                            "example": 20
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "kind",
+                          "brand",
+                          "duration",
+                          "pricing_type",
+                          "status",
+                          "gender_restriction",
+                          "lesson_category",
+                          "category",
+                          "store_id",
+                          "is_deleted"
+                        ],
+                        "title": "LessonContentItem",
+                        "description": "Studio / body care lesson master row"
+                      },
+                      "description": "Lesson content rows"
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "limit": {
+                          "type": "integer",
+                          "example": 25
+                        },
+                        "total": {
+                          "type": "integer",
+                          "example": 37
+                        },
+                        "total_pages": {
+                          "type": "integer",
+                          "example": 2
+                        }
+                      },
+                      "required": ["page", "limit", "total", "total_pages"],
+                      "title": "LessonPagination",
+                      "description": "Pagination information"
+                    }
+                  },
+                  "required": ["data", "pagination"],
+                  "title": "GetLessonContentsResponse",
+                  "description": "Response for lesson contents list"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/personal-plans": {
+      "get": {
+        "summary": "Get personal training plans list",
+        "description": "Get paginated personal training plans with filtering and sorting",
+        "tags": ["LessonContents"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1,
+              "example": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 50,
+              "default": 25,
+              "example": 25,
+              "description": "Items per page (max 50)"
+            },
+            "required": false,
+            "description": "Items per page (max 50)",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "パーソナル",
+              "description": "Partial match on name or id"
+            },
+            "required": false,
+            "description": "Partial match on name or id",
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              },
+              "description": "Filter by plan category"
+            },
+            "required": false,
+            "description": "Filter by plan category",
+            "name": "category",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": ["joyfit", "fit365"],
+                "title": "LessonBrand",
+                "description": "Lesson content brand"
+              },
+              "description": "Filter by brand"
+            },
+            "required": false,
+            "description": "Filter by brand",
+            "name": "brand",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "string",
+                "enum": ["active", "inactive"],
+                "title": "LessonContentStatus",
+                "description": "Lesson content status"
+              },
+              "description": "Filter by status"
+            },
+            "required": false,
+            "description": "Filter by status",
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "boolean",
+              "nullable": true,
+              "description": "Include inactive / deleted rows"
+            },
+            "required": false,
+            "description": "Include inactive / deleted rows",
+            "name": "include_deleted",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "store-001"
+            },
+            "required": false,
+            "name": "store_id",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["id", "name", "category", "duration", "price"],
+              "default": "id"
+            },
+            "required": false,
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            },
+            "required": false,
+            "name": "sort_order",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of personal plans",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "PLN-0001",
+                            "description": "Plan ID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "パーソナル60",
+                            "description": "Plan name"
+                          },
+                          "description": {
+                            "type": "string",
+                            "example": "60分のマンツーマン指導"
+                          },
+                          "category": {
+                            "type": "string",
+                            "example": "ダイエット"
+                          },
+                          "duration": {
+                            "type": "integer",
+                            "example": 60,
+                            "description": "Duration in minutes"
+                          },
+                          "price": {
+                            "type": "integer",
+                            "example": 8000,
+                            "description": "Price in yen"
+                          },
+                          "reservations": {
+                            "type": "integer",
+                            "example": 5
+                          },
+                          "max_reservations": {
+                            "type": "integer",
+                            "example": 10
+                          },
+                          "brand": {
+                            "type": "string",
+                            "enum": ["joyfit", "fit365"],
+                            "title": "LessonBrand",
+                            "description": "Lesson content brand",
+                            "example": "fit365"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["active", "inactive"],
+                            "title": "LessonContentStatus",
+                            "description": "Lesson content status",
+                            "example": "active"
+                          },
+                          "store_id": {
+                            "type": "string",
+                            "example": "store-001"
+                          },
+                          "is_deleted": {
+                            "type": "boolean",
+                            "example": false
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "category",
+                          "duration",
+                          "price",
+                          "reservations",
+                          "max_reservations",
+                          "brand",
+                          "status",
+                          "store_id",
+                          "is_deleted"
+                        ],
+                        "title": "PersonalPlanItem",
+                        "description": "Personal training plan row"
+                      },
+                      "description": "Personal plan rows"
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "limit": {
+                          "type": "integer",
+                          "example": 25
+                        },
+                        "total": {
+                          "type": "integer",
+                          "example": 37
+                        },
+                        "total_pages": {
+                          "type": "integer",
+                          "example": 2
+                        }
+                      },
+                      "required": ["page", "limit", "total", "total_pages"],
+                      "title": "LessonPagination",
+                      "description": "Pagination information"
+                    }
+                  },
+                  "required": ["data", "pagination"],
+                  "title": "GetPersonalPlansResponse",
+                  "description": "Response for personal plans list"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
                       "description": "Error message"
                     }
                   },

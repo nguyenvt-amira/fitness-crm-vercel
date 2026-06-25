@@ -10,6 +10,7 @@ import * as brandSchemas from '../_schemas/brand.schema';
 import * as campaignSchemas from '../_schemas/campaign.schema';
 import * as familyRegistrationSchemas from '../_schemas/family-registration.schema';
 import * as leaveSchemas from '../_schemas/leave.schema';
+import * as lessonContentSchemas from '../_schemas/lesson-content.schema';
 import * as lessonReservationSchemas from '../_schemas/lesson-reservation.schema';
 import * as lessonScheduleSchemas from '../_schemas/lesson-schedule.schema';
 import * as lockerSchemas from '../_schemas/locker.schema';
@@ -1801,5 +1802,64 @@ export function registerAllSchemas() {
   registeredSchemaMap.set(
     'MemoListResponse',
     registry.register('MemoListResponse', lessonReservationSchemas.MemoListResponseSchema),
+  );
+
+  // D-02: Lesson Content Master (list/search)
+  registeredSchemaMap.set(
+    'LessonBrand',
+    registry.register('LessonBrand', lessonContentSchemas.LessonBrandSchema),
+  );
+  registeredSchemaMap.set(
+    'LessonContentStatus',
+    registry.register('LessonContentStatus', lessonContentSchemas.LessonContentStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'LessonPricingType',
+    registry.register('LessonPricingType', lessonContentSchemas.LessonPricingTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'LessonGenderRestriction',
+    registry.register(
+      'LessonGenderRestriction',
+      lessonContentSchemas.LessonGenderRestrictionSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'LessonKind',
+    registry.register('LessonKind', lessonContentSchemas.LessonKindSchema),
+  );
+  registeredSchemaMap.set(
+    'LessonContentItem',
+    registry.register('LessonContentItem', lessonContentSchemas.LessonContentItemSchema),
+  );
+  registeredSchemaMap.set(
+    'PersonalPlanItem',
+    registry.register('PersonalPlanItem', lessonContentSchemas.PersonalPlanItemSchema),
+  );
+  registeredSchemaMap.set(
+    'LessonPagination',
+    registry.register('LessonPagination', lessonContentSchemas.LessonPaginationSchema),
+  );
+  registeredSchemaMap.set(
+    'GetLessonContentsQuery',
+    registry.register('GetLessonContentsQuery', lessonContentSchemas.GetLessonContentsQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'GetLessonContentsResponse',
+    registry.register(
+      'GetLessonContentsResponse',
+      lessonContentSchemas.GetLessonContentsResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetPersonalPlansQuery',
+    registry.register('GetPersonalPlansQuery', lessonContentSchemas.GetPersonalPlansQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'GetPersonalPlansResponse',
+    registry.register(
+      'GetPersonalPlansResponse',
+      lessonContentSchemas.GetPersonalPlansResponseSchema,
+    ),
   );
 }

@@ -23,6 +23,7 @@ import type {
   FamilyRelationship,
 } from '@/app/api/_schemas/family-registration.schema';
 import type { LeaveDetail, LeaveListItem } from '@/app/api/_schemas/leave.schema';
+import type { LessonContentItem, PersonalPlanItem } from '@/app/api/_schemas/lesson-content.schema';
 import type {
   AttendanceStatus,
   CancelType,
@@ -2958,6 +2959,290 @@ const SEED_LESSONS: Array<{
   { id: 'LSN-103', name: '体験パーソナル', lesson_type: 'personal', duration: 30 },
 ];
 
+// ─── D-02: Lesson Content Master Seed Data (studio + body care) ──────────
+// Seeds ≥ 3 stores and includes inactive / soft-deleted rows to exercise the
+// "include deleted" path (Principle II seeding rule).
+
+const SEED_LESSON_CONTENTS: LessonContentItem[] = [
+  {
+    id: 'LSN-0001',
+    name: 'ヨガベーシック',
+    kind: 'studio',
+    brand: 'joyfit',
+    duration: 60,
+    pricing_type: 'included',
+    status: 'active',
+    gender_restriction: 'none',
+    lesson_category: 'スタジオレッスン',
+    category: 'ヨガ',
+    store_id: 'store-001',
+    is_deleted: false,
+    reservation_count: 14,
+    max_reservation_count: 16,
+  },
+  {
+    id: 'LSN-0002',
+    name: 'パワーエアロビクス60',
+    kind: 'studio',
+    brand: 'fit365',
+    duration: 60,
+    pricing_type: 'included',
+    status: 'active',
+    gender_restriction: 'none',
+    lesson_category: 'スタジオレッスン',
+    category: 'エアロビクス',
+    store_id: 'store-001',
+    is_deleted: false,
+    reservation_count: 15,
+    max_reservation_count: 17,
+  },
+  {
+    id: 'LSN-0003',
+    name: 'ホットヨガ リフレッシュ',
+    kind: 'studio',
+    brand: 'fit365',
+    duration: 60,
+    pricing_type: 'paid',
+    status: 'active',
+    gender_restriction: 'female',
+    lesson_category: 'スタジオレッスン',
+    category: 'ヨガ',
+    store_id: 'store-002',
+    is_deleted: false,
+    reservation_count: 35,
+    max_reservation_count: 35,
+  },
+  {
+    id: 'LSN-0004',
+    name: 'ボディコンバット',
+    kind: 'studio',
+    brand: 'fit365',
+    duration: 60,
+    pricing_type: 'included',
+    status: 'inactive',
+    gender_restriction: 'none',
+    lesson_category: 'スタジオレッスン',
+    category: 'エアロビクス',
+    store_id: 'store-001',
+    is_deleted: false,
+    reservation_count: 0,
+    max_reservation_count: 17,
+  },
+  {
+    id: 'LSN-0005',
+    name: 'ズンバフィットネス',
+    kind: 'studio',
+    brand: 'joyfit',
+    duration: 45,
+    pricing_type: 'included',
+    status: 'active',
+    gender_restriction: 'none',
+    lesson_category: 'スタジオレッスン',
+    category: 'ダンス',
+    store_id: 'store-002',
+    is_deleted: false,
+    reservation_count: 14,
+    max_reservation_count: 16,
+  },
+  {
+    id: 'LSN-0006',
+    name: 'リラックスストレッチ',
+    kind: 'studio',
+    brand: 'joyfit',
+    duration: 45,
+    pricing_type: 'included',
+    status: 'active',
+    gender_restriction: 'none',
+    lesson_category: 'スタジオレッスン',
+    category: 'ストレッチ',
+    store_id: 'store-003',
+    is_deleted: false,
+    reservation_count: 5,
+    max_reservation_count: 16,
+  },
+  {
+    id: 'LSN-0007',
+    name: 'ピラティス入門',
+    kind: 'studio',
+    brand: 'fit365',
+    duration: 45,
+    pricing_type: 'included',
+    status: 'active',
+    gender_restriction: 'none',
+    lesson_category: 'スタジオレッスン',
+    category: 'ピラティス',
+    store_id: 'store-003',
+    is_deleted: false,
+    reservation_count: 8,
+    max_reservation_count: 17,
+  },
+  {
+    id: 'LSN-0008',
+    name: 'シニアヨガ',
+    kind: 'studio',
+    brand: 'joyfit',
+    duration: 45,
+    pricing_type: 'included',
+    status: 'inactive',
+    gender_restriction: 'none',
+    lesson_category: 'スタジオレッスン',
+    category: 'ヨガ',
+    store_id: 'store-002',
+    is_deleted: true,
+    reservation_count: 0,
+    max_reservation_count: 15,
+  },
+  {
+    id: 'BDC-0001',
+    name: 'アロマリラクゼーション',
+    kind: 'bodycare',
+    brand: 'fit365',
+    duration: 60,
+    pricing_type: 'paid',
+    status: 'active',
+    gender_restriction: 'none',
+    lesson_category: 'ボディケア',
+    category: 'ボディケア',
+    store_id: 'store-001',
+    is_deleted: false,
+    reservation_count: 3,
+    max_reservation_count: 4,
+  },
+  {
+    id: 'BDC-0002',
+    name: 'ドライヘッドスパ',
+    kind: 'bodycare',
+    brand: 'fit365',
+    duration: 45,
+    pricing_type: 'paid',
+    status: 'active',
+    gender_restriction: 'none',
+    lesson_category: 'ボディケア',
+    category: 'ボディケア',
+    store_id: 'store-002',
+    is_deleted: false,
+    reservation_count: 4,
+    max_reservation_count: 5,
+  },
+  {
+    id: 'BDC-0003',
+    name: 'ストレッチ＆マッサージ',
+    kind: 'bodycare',
+    brand: 'joyfit',
+    duration: 30,
+    pricing_type: 'paid',
+    status: 'inactive',
+    gender_restriction: 'none',
+    lesson_category: 'ボディケア',
+    category: 'ボディケア',
+    store_id: 'store-003',
+    is_deleted: false,
+    reservation_count: 0,
+    max_reservation_count: 1,
+  },
+];
+
+const SEED_PERSONAL_PLANS: PersonalPlanItem[] = [
+  {
+    id: 'PLN-0001',
+    name: 'ダイエットプログラム 基本',
+    description: '体脂肪率低下を目指す基本プログラム',
+    category: 'ダイエット',
+    duration: 60,
+    price: 5500,
+    reservations: 8,
+    max_reservations: 10,
+    brand: 'fit365',
+    status: 'active',
+    store_id: 'store-001',
+    is_deleted: false,
+  },
+  {
+    id: 'PLN-0002',
+    name: '筋力アップ集中コース',
+    description: '短期間での筋力向上を目指すプログラム',
+    category: '筋力アップ',
+    duration: 90,
+    price: 7700,
+    reservations: 6,
+    max_reservations: 8,
+    brand: 'fit365',
+    status: 'active',
+    store_id: 'store-001',
+    is_deleted: false,
+  },
+  {
+    id: 'PLN-0003',
+    name: '姿勢改善プログラム',
+    description: 'デスクワーカー向け姿勢矯正',
+    category: '姿勢改善',
+    duration: 45,
+    price: 4400,
+    reservations: 12,
+    max_reservations: 15,
+    brand: 'joyfit',
+    status: 'active',
+    store_id: 'store-002',
+    is_deleted: false,
+  },
+  {
+    id: 'PLN-0004',
+    name: '体力づくりベーシック',
+    description: 'シニア向け基礎体力向上',
+    category: '体力づくり',
+    duration: 60,
+    price: 5500,
+    reservations: 3,
+    max_reservations: 5,
+    brand: 'joyfit',
+    status: 'active',
+    store_id: 'store-003',
+    is_deleted: false,
+  },
+  {
+    id: 'PLN-0005',
+    name: 'リハビリサポート',
+    description: '怪我や手術後のリハビリプログラム',
+    category: 'リハビリ',
+    duration: 45,
+    price: 6600,
+    reservations: 2,
+    max_reservations: 4,
+    brand: 'joyfit',
+    status: 'inactive',
+    store_id: 'store-002',
+    is_deleted: false,
+  },
+  {
+    id: 'PLN-0006',
+    name: 'ボディメイク上級',
+    description: 'コンテスト出場者向けの本格プログラム',
+    category: '筋力アップ',
+    duration: 90,
+    price: 8800,
+    reservations: 5,
+    max_reservations: 5,
+    brand: 'fit365',
+    status: 'active',
+    store_id: 'store-001',
+    is_deleted: false,
+  },
+  {
+    id: 'PLN-0007',
+    name: '産後ダイエットプラン',
+    description: '産後の体型回復を目的としたプログラム',
+    category: 'ダイエット',
+    duration: 45,
+    price: 4400,
+    reservations: 4,
+    max_reservations: 6,
+    brand: 'fit365',
+    status: 'inactive',
+    store_id: 'store-003',
+    is_deleted: true,
+  },
+];
+
 // ─── D-03: Studio Seed Data ────────────────────────────────────────────
 
 const SEED_STUDIOS: Array<{
@@ -3987,6 +4272,18 @@ type DbType = {
     ):
       | { id: string; name: string; lesson_type: 'studio' | 'personal'; duration: number }
       | undefined;
+  };
+  lessonContents: {
+    _rows: LessonContentItem[];
+    _seeded: boolean;
+    _seed(): void;
+    getList(): LessonContentItem[];
+  };
+  personalPlans: {
+    _rows: PersonalPlanItem[];
+    _seeded: boolean;
+    _seed(): void;
+    getList(): PersonalPlanItem[];
   };
   instructors: {
     _rows: Array<{
@@ -13116,6 +13413,36 @@ function createDb() {
       getById(id: string) {
         this._seed();
         return this._rows.find((l) => l.id === id);
+      },
+    },
+
+    // ─── D-02: Lesson Content Master (studio + body care) ────────────────────
+    lessonContents: {
+      _rows: [] as LessonContentItem[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows = [...SEED_LESSON_CONTENTS];
+      },
+      getList(): LessonContentItem[] {
+        this._seed();
+        return [...this._rows];
+      },
+    },
+
+    // ─── D-02: Personal training plans ───────────────────────────────────────
+    personalPlans: {
+      _rows: [] as PersonalPlanItem[],
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows = [...SEED_PERSONAL_PLANS];
+      },
+      getList(): PersonalPlanItem[] {
+        this._seed();
+        return [...this._rows];
       },
     },
 

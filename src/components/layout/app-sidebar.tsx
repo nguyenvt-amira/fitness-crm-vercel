@@ -91,7 +91,7 @@ const menuItems: MenuItem[] = [
     subItems: [
       {
         label: 'レッスン内容',
-        href: '/',
+        href: getRoutePattern('/lessons'),
       },
       {
         label: 'スタジオ',

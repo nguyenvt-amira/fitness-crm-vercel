@@ -17032,6 +17032,402 @@ export type MemoListResponse = {
     }>;
 };
 
+/**
+ * LessonBrand
+ *
+ * Lesson content brand
+ */
+export const LessonBrand = { JOYFIT: 'joyfit', FIT365: 'fit365' } as const;
+
+/**
+ * LessonBrand
+ *
+ * Lesson content brand
+ */
+export type LessonBrand = typeof LessonBrand[keyof typeof LessonBrand];
+
+/**
+ * LessonContentStatus
+ *
+ * Lesson content status
+ */
+export const LessonContentStatus = { ACTIVE: 'active', INACTIVE: 'inactive' } as const;
+
+/**
+ * LessonContentStatus
+ *
+ * Lesson content status
+ */
+export type LessonContentStatus = typeof LessonContentStatus[keyof typeof LessonContentStatus];
+
+/**
+ * LessonPricingType
+ *
+ * Studio/body-care pricing type
+ */
+export const LessonPricingType = { INCLUDED: 'included', PAID: 'paid' } as const;
+
+/**
+ * LessonPricingType
+ *
+ * Studio/body-care pricing type
+ */
+export type LessonPricingType = typeof LessonPricingType[keyof typeof LessonPricingType];
+
+/**
+ * LessonGenderRestriction
+ *
+ * Gender restriction
+ */
+export const LessonGenderRestriction = {
+    NONE: 'none',
+    MALE: 'male',
+    FEMALE: 'female'
+} as const;
+
+/**
+ * LessonGenderRestriction
+ *
+ * Gender restriction
+ */
+export type LessonGenderRestriction = typeof LessonGenderRestriction[keyof typeof LessonGenderRestriction];
+
+/**
+ * LessonKind
+ *
+ * Which lesson set (Studio vs Body care tab)
+ */
+export const LessonKind = { STUDIO: 'studio', BODYCARE: 'bodycare' } as const;
+
+/**
+ * LessonKind
+ *
+ * Which lesson set (Studio vs Body care tab)
+ */
+export type LessonKind = typeof LessonKind[keyof typeof LessonKind];
+
+/**
+ * LessonContentItem
+ *
+ * Studio / body care lesson master row
+ */
+export type LessonContentItem = {
+    /**
+     * Lesson master ID
+     */
+    id: string;
+    /**
+     * Lesson name
+     */
+    name: string;
+    /**
+     * LessonKind
+     *
+     * Which lesson set (Studio vs Body care tab)
+     */
+    kind: 'studio' | 'bodycare';
+    /**
+     * LessonBrand
+     *
+     * Lesson content brand
+     */
+    brand: 'joyfit' | 'fit365';
+    /**
+     * Duration in minutes
+     */
+    duration: number;
+    /**
+     * LessonPricingType
+     *
+     * Studio/body-care pricing type
+     */
+    pricing_type: 'included' | 'paid';
+    /**
+     * LessonContentStatus
+     *
+     * Lesson content status
+     */
+    status: 'active' | 'inactive';
+    /**
+     * LessonGenderRestriction
+     *
+     * Gender restriction
+     */
+    gender_restriction: 'none' | 'male' | 'female';
+    lesson_category: string;
+    category: string;
+    store_id: string;
+    is_deleted: boolean;
+    reservation_count?: number;
+    max_reservation_count?: number;
+};
+
+/**
+ * PersonalPlanItem
+ *
+ * Personal training plan row
+ */
+export type PersonalPlanItem = {
+    /**
+     * Plan ID
+     */
+    id: string;
+    /**
+     * Plan name
+     */
+    name: string;
+    description?: string;
+    category: string;
+    /**
+     * Duration in minutes
+     */
+    duration: number;
+    /**
+     * Price in yen
+     */
+    price: number;
+    reservations: number;
+    max_reservations: number;
+    /**
+     * LessonBrand
+     *
+     * Lesson content brand
+     */
+    brand: 'joyfit' | 'fit365';
+    /**
+     * LessonContentStatus
+     *
+     * Lesson content status
+     */
+    status: 'active' | 'inactive';
+    store_id: string;
+    is_deleted: boolean;
+};
+
+/**
+ * LessonPagination
+ *
+ * Pagination information
+ */
+export type LessonPagination = {
+    page: number;
+    limit: number;
+    total: number;
+    total_pages: number;
+};
+
+/**
+ * GetLessonContentsQuery
+ *
+ * Query parameters for lesson contents list
+ */
+export type GetLessonContentsQuery = {
+    /**
+     * LessonKind
+     *
+     * Which lesson set (Studio vs Body care tab)
+     */
+    kind?: 'studio' | 'bodycare';
+    page?: number;
+    /**
+     * Items per page (max 50)
+     */
+    limit?: number;
+    /**
+     * Partial match on name or id
+     */
+    search?: string;
+    /**
+     * Filter by lesson category
+     */
+    lesson_category?: Array<string> | null;
+    /**
+     * Filter by category
+     */
+    category?: Array<string> | null;
+    /**
+     * Filter by brand
+     */
+    brand?: Array<'joyfit' | 'fit365'> | null;
+    /**
+     * Filter by status
+     */
+    status?: Array<'active' | 'inactive'> | null;
+    /**
+     * Include inactive / deleted rows
+     */
+    include_deleted?: boolean | null;
+    store_id?: string;
+    sort_by?: 'id' | 'name' | 'duration' | 'status' | 'brand';
+    sort_order?: 'asc' | 'desc';
+};
+
+/**
+ * GetLessonContentsResponse
+ *
+ * Response for lesson contents list
+ */
+export type GetLessonContentsResponse = {
+    /**
+     * Lesson content rows
+     */
+    data: Array<{
+        /**
+         * Lesson master ID
+         */
+        id: string;
+        /**
+         * Lesson name
+         */
+        name: string;
+        /**
+         * LessonKind
+         *
+         * Which lesson set (Studio vs Body care tab)
+         */
+        kind: 'studio' | 'bodycare';
+        /**
+         * LessonBrand
+         *
+         * Lesson content brand
+         */
+        brand: 'joyfit' | 'fit365';
+        /**
+         * Duration in minutes
+         */
+        duration: number;
+        /**
+         * LessonPricingType
+         *
+         * Studio/body-care pricing type
+         */
+        pricing_type: 'included' | 'paid';
+        /**
+         * LessonContentStatus
+         *
+         * Lesson content status
+         */
+        status: 'active' | 'inactive';
+        /**
+         * LessonGenderRestriction
+         *
+         * Gender restriction
+         */
+        gender_restriction: 'none' | 'male' | 'female';
+        lesson_category: string;
+        category: string;
+        store_id: string;
+        is_deleted: boolean;
+        reservation_count?: number;
+        max_reservation_count?: number;
+    }>;
+    /**
+     * LessonPagination
+     *
+     * Pagination information
+     */
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        total_pages: number;
+    };
+};
+
+/**
+ * GetPersonalPlansQuery
+ *
+ * Query parameters for personal plans list
+ */
+export type GetPersonalPlansQuery = {
+    page?: number;
+    /**
+     * Items per page (max 50)
+     */
+    limit?: number;
+    /**
+     * Partial match on name or id
+     */
+    search?: string;
+    /**
+     * Filter by plan category
+     */
+    category?: Array<string> | null;
+    /**
+     * Filter by brand
+     */
+    brand?: Array<'joyfit' | 'fit365'> | null;
+    /**
+     * Filter by status
+     */
+    status?: Array<'active' | 'inactive'> | null;
+    /**
+     * Include inactive / deleted rows
+     */
+    include_deleted?: boolean | null;
+    store_id?: string;
+    sort_by?: 'id' | 'name' | 'category' | 'duration' | 'price';
+    sort_order?: 'asc' | 'desc';
+};
+
+/**
+ * GetPersonalPlansResponse
+ *
+ * Response for personal plans list
+ */
+export type GetPersonalPlansResponse = {
+    /**
+     * Personal plan rows
+     */
+    data: Array<{
+        /**
+         * Plan ID
+         */
+        id: string;
+        /**
+         * Plan name
+         */
+        name: string;
+        description?: string;
+        category: string;
+        /**
+         * Duration in minutes
+         */
+        duration: number;
+        /**
+         * Price in yen
+         */
+        price: number;
+        reservations: number;
+        max_reservations: number;
+        /**
+         * LessonBrand
+         *
+         * Lesson content brand
+         */
+        brand: 'joyfit' | 'fit365';
+        /**
+         * LessonContentStatus
+         *
+         * Lesson content status
+         */
+        status: 'active' | 'inactive';
+        store_id: string;
+        is_deleted: boolean;
+    }>;
+    /**
+     * LessonPagination
+     *
+     * Pagination information
+     */
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        total_pages: number;
+    };
+};
+
 export type PostAuthLoginData = {
     /**
      * LoginRequest
@@ -24897,6 +25293,280 @@ export type GetCrmLessonsResponses = {
 };
 
 export type GetCrmLessonsResponse = GetCrmLessonsResponses[keyof GetCrmLessonsResponses];
+
+export type GetCrmLessonContentsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * LessonKind
+         *
+         * Which lesson set (Studio vs Body care tab)
+         */
+        kind?: 'studio' | 'bodycare';
+        page?: number;
+        /**
+         * Items per page (max 50)
+         */
+        limit?: number;
+        /**
+         * Partial match on name or id
+         */
+        search?: string;
+        /**
+         * Filter by lesson category
+         */
+        lesson_category?: Array<string> | null;
+        /**
+         * Filter by category
+         */
+        category?: Array<string> | null;
+        /**
+         * Filter by brand
+         */
+        brand?: Array<'joyfit' | 'fit365'> | null;
+        /**
+         * Filter by status
+         */
+        status?: Array<'active' | 'inactive'> | null;
+        /**
+         * Include inactive / deleted rows
+         */
+        include_deleted?: boolean | null;
+        store_id?: string;
+        sort_by?: 'id' | 'name' | 'duration' | 'status' | 'brand';
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/lesson-contents';
+};
+
+export type GetCrmLessonContentsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmLessonContentsError = GetCrmLessonContentsErrors[keyof GetCrmLessonContentsErrors];
+
+export type GetCrmLessonContentsResponses = {
+    /**
+     * GetLessonContentsResponse
+     *
+     * Response for lesson contents list
+     */
+    200: {
+        /**
+         * Lesson content rows
+         */
+        data: Array<{
+            /**
+             * Lesson master ID
+             */
+            id: string;
+            /**
+             * Lesson name
+             */
+            name: string;
+            /**
+             * LessonKind
+             *
+             * Which lesson set (Studio vs Body care tab)
+             */
+            kind: 'studio' | 'bodycare';
+            /**
+             * LessonBrand
+             *
+             * Lesson content brand
+             */
+            brand: 'joyfit' | 'fit365';
+            /**
+             * Duration in minutes
+             */
+            duration: number;
+            /**
+             * LessonPricingType
+             *
+             * Studio/body-care pricing type
+             */
+            pricing_type: 'included' | 'paid';
+            /**
+             * LessonContentStatus
+             *
+             * Lesson content status
+             */
+            status: 'active' | 'inactive';
+            /**
+             * LessonGenderRestriction
+             *
+             * Gender restriction
+             */
+            gender_restriction: 'none' | 'male' | 'female';
+            lesson_category: string;
+            category: string;
+            store_id: string;
+            is_deleted: boolean;
+            reservation_count?: number;
+            max_reservation_count?: number;
+        }>;
+        /**
+         * LessonPagination
+         *
+         * Pagination information
+         */
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmLessonContentsResponse = GetCrmLessonContentsResponses[keyof GetCrmLessonContentsResponses];
+
+export type GetCrmPersonalPlansData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        /**
+         * Items per page (max 50)
+         */
+        limit?: number;
+        /**
+         * Partial match on name or id
+         */
+        search?: string;
+        /**
+         * Filter by plan category
+         */
+        category?: Array<string> | null;
+        /**
+         * Filter by brand
+         */
+        brand?: Array<'joyfit' | 'fit365'> | null;
+        /**
+         * Filter by status
+         */
+        status?: Array<'active' | 'inactive'> | null;
+        /**
+         * Include inactive / deleted rows
+         */
+        include_deleted?: boolean | null;
+        store_id?: string;
+        sort_by?: 'id' | 'name' | 'category' | 'duration' | 'price';
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/personal-plans';
+};
+
+export type GetCrmPersonalPlansErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmPersonalPlansError = GetCrmPersonalPlansErrors[keyof GetCrmPersonalPlansErrors];
+
+export type GetCrmPersonalPlansResponses = {
+    /**
+     * GetPersonalPlansResponse
+     *
+     * Response for personal plans list
+     */
+    200: {
+        /**
+         * Personal plan rows
+         */
+        data: Array<{
+            /**
+             * Plan ID
+             */
+            id: string;
+            /**
+             * Plan name
+             */
+            name: string;
+            description?: string;
+            category: string;
+            /**
+             * Duration in minutes
+             */
+            duration: number;
+            /**
+             * Price in yen
+             */
+            price: number;
+            reservations: number;
+            max_reservations: number;
+            /**
+             * LessonBrand
+             *
+             * Lesson content brand
+             */
+            brand: 'joyfit' | 'fit365';
+            /**
+             * LessonContentStatus
+             *
+             * Lesson content status
+             */
+            status: 'active' | 'inactive';
+            store_id: string;
+            is_deleted: boolean;
+        }>;
+        /**
+         * LessonPagination
+         *
+         * Pagination information
+         */
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmPersonalPlansResponse = GetCrmPersonalPlansResponses[keyof GetCrmPersonalPlansResponses];
 
 export type GetCrmLockersByIdHistoryData = {
     body?: never;
