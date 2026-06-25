@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 
+import { useAuthUser } from '@/contexts/auth-user.context';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   SortingState,
@@ -14,10 +15,10 @@ import { Plus } from 'lucide-react';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { toast } from 'sonner';
 
+import { RoleGatedButton } from '@/components/common/role-gated-button';
 import { TablePagination } from '@/components/common/table-pagination';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -32,6 +33,8 @@ import {
   patchCrmLessonSchedulesByScheduleIdReservationsByReservationIdAttendanceMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
 import type { Reservation, ReservationListResponse } from '@/lib/api/types.gen';
+
+import { Permission } from '@/types/permission.type';
 
 import { getReservationListColumns } from './reservation-list-columns';
 
@@ -53,6 +56,10 @@ export function ReservationListTable({
   const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1));
   const [sorting, setSorting] = useState<SortingState>([]);
   const queryClient = useQueryClient();
+  const { hasPermission } = useAuthUser();
+
+  const canManageReservation = hasPermission(Permission.LessonsReservationManage);
+  const canManageAttendance = hasPermission(Permission.LessonsAttendanceManage);
 
   const attendanceMutation = useMutation({
     ...patchCrmLessonSchedulesByScheduleIdReservationsByReservationIdAttendanceMutation(),
@@ -60,7 +67,6 @@ export function ReservationListTable({
       queryClient.invalidateQueries({
         queryKey: getCrmLessonSchedulesByScheduleIdReservationsQueryKey({
           path: { scheduleId },
-          query: { page, pageSize: PAGE_SIZE },
         }),
       });
     },
@@ -82,6 +88,8 @@ export function ReservationListTable({
   const columns = getReservationListColumns({
     onAttendanceChange: handleAttendanceChange,
     onCancelReservation,
+    canManageReservation,
+    canManageAttendance,
   });
 
   const table = useReactTable({
@@ -105,10 +113,15 @@ export function ReservationListTable({
               {data.total}件
             </Badge>
           </div>
-          <Button size="sm" className="h-8 text-xs" onClick={onAddReservation}>
+          <RoleGatedButton
+            requiredPermission={Permission.LessonsReservationManage}
+            size="sm"
+            className="h-8 text-xs"
+            onClick={onAddReservation}
+          >
             <Plus className="mr-1 size-3" />
             予約を追加
-          </Button>
+          </RoleGatedButton>
         </div>
       </CardHeader>
 

@@ -2,7 +2,6 @@
 
 import { Suspense, useState } from 'react';
 
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import { useAuthUser } from '@/contexts/auth-user.context';
@@ -11,8 +10,8 @@ import { Plus } from 'lucide-react';
 
 import { DataStateBoundary } from '@/components/common/data-state-boundary';
 import { PageHeader } from '@/components/common/page-header';
+import { RoleGatedButton } from '@/components/common/role-gated-button';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import {
@@ -23,7 +22,7 @@ import {
 import type { LessonScheduleListItem } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
-import { UserRole } from '@/types/permission.type';
+import { Permission, UserRole } from '@/types/permission.type';
 
 import { AreaKpiSummary } from './_components/area-kpi-summary';
 import { AreaSummaryTable } from './_components/area-summary-table';
@@ -47,8 +46,9 @@ import { useLessonScheduleFiltersContext } from './_contexts/lesson-schedule-fil
 
 function LessonSchedulePageInner() {
   const router = useRouter();
-  const { user, isLoading: isUserLoading } = useAuthUser();
+  const { user, isLoading: isUserLoading, hasPermission } = useAuthUser();
   const isTrainer = user?.role === UserRole.Trainer;
+  const canManageSchedule = hasPermission(Permission.LessonsScheduleManage);
   const isAllStore =
     user?.role === UserRole.Headquarter ||
     user?.role === UserRole.System ||
@@ -115,14 +115,14 @@ function LessonSchedulePageInner() {
       <PageHeader
         title="予約管理"
         actions={
-          !isTrainer ? (
-            <Link href={navigate('/lesson-schedules/create')}>
-              <Button size="sm">
-                <Plus className="size-4" />
-                スケジュール登録
-              </Button>
-            </Link>
-          ) : undefined
+          <RoleGatedButton
+            requiredPermission={Permission.LessonsScheduleManage}
+            size="sm"
+            onClick={() => router.push(navigate('/lesson-schedules/create'))}
+          >
+            <Plus className="size-4" />
+            スケジュール登録
+          </RoleGatedButton>
         }
       />
 
@@ -229,7 +229,7 @@ function LessonSchedulePageInner() {
               showBookedMembers={effectiveAxis === 'my_schedule'}
               onScheduleClick={handleScheduleClick}
               onEditClick={setChangeTarget}
-              canEdit={!isTrainer}
+              canEdit={canManageSchedule}
             />
           )}
           {filters.view === 'week' && (
@@ -239,7 +239,7 @@ function LessonSchedulePageInner() {
               isLoading={schedulesQuery.isFetching && !schedulesQuery.data}
               onScheduleClick={handleScheduleClick}
               onEditClick={setChangeTarget}
-              canEdit={!isTrainer}
+              canEdit={canManageSchedule}
             />
           )}
           {filters.view === 'list' && (

@@ -103,6 +103,12 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
   '/lockers/contracts/create': Permission.LockersContractsCreate,
   '/lockers/contracts/:id/edit': Permission.LockersContractsEdit,
   '/lockers/pending': Permission.LockersPendingView,
+
+  // Lessons / Reservations (D-01)
+  // View is open to every authenticated role (incl. Observer); creating a
+  // schedule requires the schedule-manage permission (denies Observer).
+  '/lesson-schedules': Permission.LessonsView,
+  '/lesson-schedules/create': Permission.LessonsScheduleManage,
 };
 
 // ---------------------------------------------------------------------------
@@ -192,6 +198,12 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LockersContractsCreate,
     Permission.LockersContractsEdit,
     Permission.LockersContractsExport,
+    Permission.LessonsView,
+    Permission.LessonsScheduleManage,
+    Permission.LessonsReservationManage,
+    Permission.LessonsAttendanceManage,
+    Permission.LessonsMemoManage,
+    Permission.LessonsPenaltyRelease,
   ],
 
   [UserRole.Manager]: [
@@ -230,6 +242,12 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LockersContractsEdit,
     Permission.LockersContractsExport,
     Permission.SurveysView,
+    Permission.LessonsView,
+    Permission.LessonsScheduleManage,
+    Permission.LessonsReservationManage,
+    Permission.LessonsAttendanceManage,
+    Permission.LessonsMemoManage,
+    Permission.LessonsPenaltyRelease,
   ],
 
   [UserRole.Staff]: [
@@ -271,10 +289,26 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LockersContractsEdit,
     Permission.LockersContractsExport,
     Permission.SurveysView,
+    Permission.LessonsView,
+    Permission.LessonsScheduleManage,
+    Permission.LessonsReservationManage,
+    Permission.LessonsAttendanceManage,
+    Permission.LessonsMemoManage,
+    Permission.LessonsPenaltyRelease,
   ],
 
-  [UserRole.Trainer]: [Permission.MembersView],
+  // Trainer: own-session scope. Can manage their schedules/reservations/
+  // attendance/memos but NOT release penalties (D-01 matrix).
+  [UserRole.Trainer]: [
+    Permission.MembersView,
+    Permission.LessonsView,
+    Permission.LessonsScheduleManage,
+    Permission.LessonsReservationManage,
+    Permission.LessonsAttendanceManage,
+    Permission.LessonsMemoManage,
+  ],
 
+  // Observer: read-only. May view schedules but performs no mutations.
   [UserRole.Observer]: [
     Permission.MembersView,
     Permission.MembersLeavesView,
@@ -285,6 +319,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LockersView,
     Permission.LockersPendingView,
     Permission.LockersPendingExport,
+    Permission.LessonsView,
   ],
 };
 

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 
+import { useAuthUser } from '@/contexts/auth-user.context';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
@@ -19,6 +20,8 @@ import {
 } from '@/lib/api/@tanstack/react-query.gen';
 import type { MemoListResponse } from '@/lib/api/types.gen';
 
+import { Permission } from '@/types/permission.type';
+
 interface SessionMemoCardProps {
   scheduleId: string;
   memosData: MemoListResponse;
@@ -35,6 +38,10 @@ function formatMemoDate(iso: string): string {
 export function SessionMemoCard({ scheduleId, memosData }: SessionMemoCardProps) {
   const [content, setContent] = useState('');
   const queryClient = useQueryClient();
+  const { hasPermission } = useAuthUser();
+
+  // FR-011 / FR-S001 — only roles with memo-manage may record/delete memos.
+  const canManageMemo = hasPermission(Permission.LessonsMemoManage);
 
   const memoQueryKey = getCrmLessonSchedulesByScheduleIdMemosQueryKey({
     path: { scheduleId },
@@ -90,15 +97,17 @@ export function SessionMemoCard({ scheduleId, memosData }: SessionMemoCardProps)
               <span className="text-xs font-medium">{formatMemoDate(memo.created_at)}</span>
               <div className="flex items-center gap-2">
                 <span className="text-muted-foreground text-[10px]">{memo.author_name}</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-muted-foreground hover:text-destructive h-5 w-5 p-0"
-                  onClick={() => handleDelete(memo.id)}
-                  disabled={deleteMemo.isPending}
-                >
-                  <Trash2 className="size-3" />
-                </Button>
+                {canManageMemo && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-muted-foreground hover:text-destructive h-5 w-5 p-0"
+                    onClick={() => handleDelete(memo.id)}
+                    disabled={deleteMemo.isPending}
+                  >
+                    <Trash2 className="size-3" />
+                  </Button>
+                )}
               </div>
             </div>
             <p className="text-muted-foreground text-xs leading-relaxed whitespace-pre-wrap">
@@ -112,20 +121,24 @@ export function SessionMemoCard({ scheduleId, memosData }: SessionMemoCardProps)
         )}
 
         {/* New memo input */}
-        <Textarea
-          className="min-h-[100px] text-sm"
-          placeholder="クラスの実施記録、参加者の様子、次回への申し送りなど"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-        <Button
-          size="sm"
-          className="h-8 w-full text-xs"
-          onClick={handleSave}
-          disabled={!content.trim() || createMemo.isPending}
-        >
-          メモを保存
-        </Button>
+        {canManageMemo && (
+          <>
+            <Textarea
+              className="min-h-[100px] text-sm"
+              placeholder="クラスの実施記録、参加者の様子、次回への申し送りなど"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
+            <Button
+              size="sm"
+              className="h-8 w-full text-xs"
+              onClick={handleSave}
+              disabled={!content.trim() || createMemo.isPending}
+            >
+              メモを保存
+            </Button>
+          </>
+        )}
       </CardContent>
     </Card>
   );

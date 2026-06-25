@@ -68,11 +68,37 @@ export function ReservationStatusBadge({ status }: { status: Reservation['status
 interface ReservationListColumnsOptions {
   onAttendanceChange: (reservationId: string, status: Reservation['attendance_status']) => void;
   onCancelReservation: (reservation: Reservation) => void;
+  /** FR-009 — whether the current role may change attendance status */
+  canManageAttendance: boolean;
+  /** FR-008 — whether the current role may cancel a reservation */
+  canManageReservation: boolean;
+}
+
+function AttendanceLabel({ status }: { status: Reservation['attendance_status'] }) {
+  if (status === 'confirmed') {
+    return (
+      <span className="text-success inline-flex items-center gap-1 text-[10px]">
+        <Check className="size-3" />
+        出席
+      </span>
+    );
+  }
+  if (status === 'no_show') {
+    return (
+      <span className="text-destructive inline-flex items-center gap-1 text-[10px]">
+        <X className="size-3" />
+        無断欠席
+      </span>
+    );
+  }
+  return <span className="text-muted-foreground text-[10px]">未確認</span>;
 }
 
 export function getReservationListColumns({
   onAttendanceChange,
   onCancelReservation,
+  canManageAttendance,
+  canManageReservation,
 }: ReservationListColumnsOptions): ColumnDef<Reservation>[] {
   return [
     {
@@ -207,22 +233,17 @@ export function getReservationListColumns({
       header: () => <span className="text-xs font-semibold">出席</span>,
       cell: ({ row }) => {
         const r = row.original;
+        if (!canManageAttendance) {
+          return (
+            <span className="inline-flex h-6 items-center px-2">
+              <AttendanceLabel status={r.attendance_status} />
+            </span>
+          );
+        }
         return (
           <DropdownMenu>
             <DropdownMenuTrigger className="hover:bg-accent hover:text-accent-foreground inline-flex h-6 items-center justify-center rounded-md px-2 text-[10px]">
-              {r.attendance_status === 'confirmed' ? (
-                <span className="text-success inline-flex items-center gap-1">
-                  <Check className="size-3" />
-                  出席
-                </span>
-              ) : r.attendance_status === 'no_show' ? (
-                <span className="text-destructive inline-flex items-center gap-1">
-                  <X className="size-3" />
-                  無断欠席
-                </span>
-              ) : (
-                <span className="text-muted-foreground">未確認</span>
-              )}
+              <AttendanceLabel status={r.attendance_status} />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="center">
               <DropdownMenuItem onClick={() => onAttendanceChange(r.id, 'unconfirmed')}>
@@ -242,19 +263,20 @@ export function getReservationListColumns({
     {
       id: 'cancel_action',
       header: () => null,
-      cell: ({ row }) => (
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-destructive h-7 text-xs"
-          onClick={(e) => {
-            e.stopPropagation();
-            onCancelReservation(row.original);
-          }}
-        >
-          取消
-        </Button>
-      ),
+      cell: ({ row }) =>
+        canManageReservation ? (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-destructive h-7 text-xs"
+            onClick={(e) => {
+              e.stopPropagation();
+              onCancelReservation(row.original);
+            }}
+          >
+            取消
+          </Button>
+        ) : null,
     },
   ];
 }

@@ -161,6 +161,15 @@ export enum Permission {
   SurveysEdit = 'surveys.edit',
   SurveysCreate = 'surveys.create',
   SurveysDelete = 'surveys.delete',
+  
+  // Lessons / Reservations (D-01)
+  // -------------------------------------------------------------------------
+  LessonsView = 'lessons.view',
+  LessonsScheduleManage = 'lessons.schedule-manage',
+  LessonsReservationManage = 'lessons.reservation-manage',
+  LessonsAttendanceManage = 'lessons.attendance-manage',
+  LessonsMemoManage = 'lessons.memo-manage',
+  LessonsPenaltyRelease = 'lessons.penalty-release',
 }
 
 /** Authenticated user stored in context */
