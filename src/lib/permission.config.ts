@@ -56,6 +56,12 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
   '/contracts/create': Permission.ContractsCreate,
   '/contracts/:id/edit': Permission.ContractsEdit,
 
+  // Campaigns
+  '/campaigns': Permission.CampaignsView,
+  '/campaigns/:id': Permission.CampaignsView,
+  '/campaigns/create': Permission.CampaignsCreate,
+  '/campaigns/:id/edit': Permission.CampaignsEdit,
+
   // Options
   '/options': Permission.OptionsView,
   '/options/:id': Permission.OptionsView,
@@ -118,6 +124,13 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.FamilyRegistrationsDashboardView,
     Permission.FamilyRegistrationsApprove,
     Permission.ContractsView,
+    Permission.CampaignsView,
+    Permission.CampaignsCreate,
+    Permission.CampaignsEdit,
+    Permission.CampaignsPromoCodeEdit,
+    Permission.CampaignsPromoCodeCreate,
+    Permission.CampaignsPromoCodeDelete,
+    Permission.CampaignsPromoCodeExport,
     Permission.ContractsEdit,
     Permission.ContractsDelete,
     Permission.ContractsCreate,
@@ -149,6 +162,11 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.FamilyRegistrationsView,
     Permission.FamilyRegistrationsDashboardView,
     Permission.ContractsView,
+    Permission.CampaignsView,
+    Permission.CampaignsPromoCodeEdit,
+    Permission.CampaignsPromoCodeCreate,
+    Permission.CampaignsPromoCodeDelete,
+    Permission.CampaignsPromoCodeExport,
     Permission.OptionsView,
   ],
 
@@ -174,6 +192,11 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.FamilyRegistrationsView,
     Permission.FamilyRegistrationsDashboardView,
     Permission.ContractsView,
+    Permission.CampaignsView,
+    Permission.CampaignsPromoCodeEdit,
+    Permission.CampaignsPromoCodeCreate,
+    Permission.CampaignsPromoCodeDelete,
+    Permission.CampaignsPromoCodeExport,
     Permission.OptionsView,
   ],
 

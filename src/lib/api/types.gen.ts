@@ -1001,6 +1001,1308 @@ export type RecentActivity = {
 };
 
 /**
+ * CampaignAcceptStatus
+ *
+ * Campaign acceptance availability
+ */
+export const CampaignAcceptStatus = { ACTIVE: 'active', INACTIVE: 'inactive' } as const;
+
+/**
+ * CampaignAcceptStatus
+ *
+ * Campaign acceptance availability
+ */
+export type CampaignAcceptStatus = typeof CampaignAcceptStatus[keyof typeof CampaignAcceptStatus];
+
+/**
+ * CampaignPeriodType
+ *
+ * Type of campaign period shown in the detail tab
+ */
+export const CampaignPeriodType = {
+    RECRUITMENT: 'recruitment',
+    USAGE: 'usage',
+    APPLICATION: 'application'
+} as const;
+
+/**
+ * CampaignPeriodType
+ *
+ * Type of campaign period shown in the detail tab
+ */
+export type CampaignPeriodType = typeof CampaignPeriodType[keyof typeof CampaignPeriodType];
+
+/**
+ * CampaignListItem
+ *
+ * Campaign master list item
+ */
+export type CampaignListItem = {
+    /**
+     * Campaign ID
+     */
+    id: string;
+    /**
+     * Campaign name
+     */
+    name: string;
+    /**
+     * Campaign code
+     */
+    code: string;
+    /**
+     * StoreListBrand
+     *
+     * Brand
+     */
+    brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * Recruitment period start date
+     */
+    recruitment_period_start: string;
+    /**
+     * Recruitment period end date
+     */
+    recruitment_period_end: string;
+    /**
+     * CampaignAcceptStatus
+     *
+     * Acceptance status
+     */
+    accept_status: 'active' | 'inactive';
+    /**
+     * Linked main contract name
+     */
+    main_contract_name: string;
+};
+
+/**
+ * CampaignDetailPeriod
+ *
+ * Campaign period block shown in detail tab 1
+ */
+export type CampaignDetailPeriod = {
+    /**
+     * CampaignPeriodType
+     *
+     * Period grouping key
+     */
+    period_type: 'recruitment' | 'usage' | 'application';
+    /**
+     * Period label
+     */
+    label: string;
+    /**
+     * Start date
+     */
+    start_date: string;
+    /**
+     * End date
+     */
+    end_date: string;
+};
+
+/**
+ * CampaignDetailDiscount
+ *
+ * Discount settings shown in the basic information tab
+ */
+export type CampaignDetailDiscount = {
+    /**
+     * Discount title
+     */
+    title: string;
+    /**
+     * Discount description
+     */
+    description: string;
+    /**
+     * Display text for the discount value
+     */
+    value_text: string;
+    /**
+     * Whether first month discount is enabled
+     */
+    first_month_enabled: boolean;
+    /**
+     * Whether second month discount is enabled
+     */
+    second_month_enabled: boolean;
+    /**
+     * Fixed discount amount in JPY
+     */
+    amount: number | null;
+    /**
+     * Discount rate percentage
+     */
+    rate: number | null;
+};
+
+/**
+ * CampaignDetailAutoGrant
+ *
+ * Auto-grant settings shown in the basic information tab
+ */
+export type CampaignDetailAutoGrant = {
+    /**
+     * Whether auto-grant is enabled
+     */
+    enabled: boolean;
+    /**
+     * Auto-grant title
+     */
+    title: string;
+    /**
+     * Timing description
+     */
+    timing_text: string;
+    /**
+     * Target contract description
+     */
+    target_text: string;
+    /**
+     * Additional description
+     */
+    description: string;
+    /**
+     * CampaignAutoGrantTarget
+     *
+     * Auto-grant target type
+     */
+    target_type: 'all' | 'conditional';
+    /**
+     * Gender conditions for auto-grant
+     */
+    gender_conditions: Array<'male' | 'female' | 'other'>;
+    /**
+     * Auto-granted option IDs
+     */
+    option_ids: Array<string>;
+    /**
+     * Auto-granted option names
+     */
+    option_names: Array<string>;
+};
+
+/**
+ * CampaignDetailStats
+ *
+ * Campaign summary metrics shown on the detail page
+ */
+export type CampaignDetailStats = {
+    /**
+     * Number of applied members
+     */
+    applied_member_count: number;
+    /**
+     * Number of applications
+     */
+    application_count: number;
+    /**
+     * New applications this month
+     */
+    monthly_new_application_count: number;
+};
+
+/**
+ * CampaignDetailMetadata
+ *
+ * Campaign detail audit metadata
+ */
+export type CampaignDetailMetadata = {
+    /**
+     * Created at
+     */
+    created_at: string;
+    /**
+     * Created by
+     */
+    created_by: string;
+    /**
+     * Updated at
+     */
+    updated_at: string;
+    /**
+     * Updated by
+     */
+    updated_by: string;
+};
+
+/**
+ * CampaignDetail
+ *
+ * Campaign master detail payload for tab 1
+ */
+export type CampaignDetail = {
+    /**
+     * Campaign ID
+     */
+    id: string;
+    /**
+     * Campaign name
+     */
+    name: string;
+    /**
+     * Campaign code
+     */
+    code: string;
+    /**
+     * StoreListBrand
+     *
+     * Brand
+     */
+    brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * Campaign note
+     */
+    note: string | null;
+    /**
+     * CampaignAcceptStatus
+     *
+     * Acceptance status
+     */
+    accept_status: 'active' | 'inactive';
+    /**
+     * CampaignStatus
+     *
+     * Campaign status
+     */
+    status: 'active' | 'inactive';
+    /**
+     * Acceptance status helper text
+     */
+    accept_status_message: string;
+    /**
+     * Primary acceptance control label
+     */
+    accept_status_action_label: string;
+    /**
+     * Main contract name
+     */
+    main_contract_name: string;
+    /**
+     * Main contract ID
+     */
+    main_contract_id: string;
+    /**
+     * Recruitment period start date
+     */
+    recruitment_period_start: string;
+    /**
+     * Recruitment period end date
+     */
+    recruitment_period_end: string;
+    /**
+     * Usage period start date
+     */
+    usage_period_start: string;
+    /**
+     * Usage period end date
+     */
+    usage_period_end: string;
+    /**
+     * Campaign application period start date
+     */
+    application_period_start: string;
+    /**
+     * Campaign application period end date
+     */
+    application_period_end: string;
+    /**
+     * CampaignApplicationStartMonthType
+     *
+     * Campaign application start month type
+     */
+    application_start_month_type: 'first_month' | 'next_month' | 'custom_month';
+    /**
+     * Custom application start month offset
+     */
+    application_custom_month: number | null;
+    /**
+     * Campaign application duration in months
+     */
+    application_duration_months: number;
+    /**
+     * CampaignDetailDiscount
+     *
+     * Discount settings shown in the basic information tab
+     */
+    discount: {
+        /**
+         * Discount title
+         */
+        title: string;
+        /**
+         * Discount description
+         */
+        description: string;
+        /**
+         * Display text for the discount value
+         */
+        value_text: string;
+        /**
+         * Whether first month discount is enabled
+         */
+        first_month_enabled: boolean;
+        /**
+         * Whether second month discount is enabled
+         */
+        second_month_enabled: boolean;
+        /**
+         * Fixed discount amount in JPY
+         */
+        amount: number | null;
+        /**
+         * Discount rate percentage
+         */
+        rate: number | null;
+    };
+    /**
+     * Periods displayed in the detail tab
+     */
+    periods: Array<{
+        /**
+         * CampaignPeriodType
+         *
+         * Period grouping key
+         */
+        period_type: 'recruitment' | 'usage' | 'application';
+        /**
+         * Period label
+         */
+        label: string;
+        /**
+         * Start date
+         */
+        start_date: string;
+        /**
+         * End date
+         */
+        end_date: string;
+    }>;
+    /**
+     * CampaignDetailAutoGrant
+     *
+     * Auto-grant settings shown in the basic information tab
+     */
+    auto_grant: {
+        /**
+         * Whether auto-grant is enabled
+         */
+        enabled: boolean;
+        /**
+         * Auto-grant title
+         */
+        title: string;
+        /**
+         * Timing description
+         */
+        timing_text: string;
+        /**
+         * Target contract description
+         */
+        target_text: string;
+        /**
+         * Additional description
+         */
+        description: string;
+        /**
+         * CampaignAutoGrantTarget
+         *
+         * Auto-grant target type
+         */
+        target_type: 'all' | 'conditional';
+        /**
+         * Gender conditions for auto-grant
+         */
+        gender_conditions: Array<'male' | 'female' | 'other'>;
+        /**
+         * Auto-granted option IDs
+         */
+        option_ids: Array<string>;
+        /**
+         * Auto-granted option names
+         */
+        option_names: Array<string>;
+    };
+    /**
+     * CampaignDetailStats
+     *
+     * Campaign summary metrics shown on the detail page
+     */
+    stats: {
+        /**
+         * Number of applied members
+         */
+        applied_member_count: number;
+        /**
+         * Number of applications
+         */
+        application_count: number;
+        /**
+         * New applications this month
+         */
+        monthly_new_application_count: number;
+    };
+    /**
+     * CampaignDetailMetadata
+     *
+     * Campaign detail audit metadata
+     */
+    metadata: {
+        /**
+         * Created at
+         */
+        created_at: string;
+        /**
+         * Created by
+         */
+        created_by: string;
+        /**
+         * Updated at
+         */
+        updated_at: string;
+        /**
+         * Updated by
+         */
+        updated_by: string;
+    };
+    /**
+     * Read-only promo-code preview rows for campaign detail tab 2
+     */
+    promo_code_previews: Array<{
+        /**
+         * Promo code
+         */
+        code: string;
+        /**
+         * Promo code description
+         */
+        description: string | null;
+        /**
+         * Validity start date
+         */
+        valid_from: string;
+        /**
+         * Validity end date
+         */
+        valid_to: string;
+        /**
+         * CampaignPromoCodePreviewStatus
+         *
+         * Promo code preview status
+         */
+        status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+    }>;
+};
+
+/**
+ * GetCampaignsQuery
+ *
+ * Campaign master list query
+ */
+export type GetCampaignsQuery = {
+    page?: number;
+    limit?: number;
+    /**
+     * Search by campaign name, ID, or code
+     */
+    search?: string;
+    /**
+     * StoreListBrand
+     *
+     * Store brand
+     */
+    brand?: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * CampaignAcceptStatus
+     *
+     * Campaign acceptance availability
+     */
+    accept_status?: 'active' | 'inactive';
+    /**
+     * Recruitment period start date (YYYY-MM-DD)
+     */
+    recruitment_period_start?: string;
+    /**
+     * Recruitment period end date (YYYY-MM-DD)
+     */
+    recruitment_period_end?: string;
+    sort_by?: 'id' | 'name' | 'code' | 'brand' | 'recruitment_period_start' | 'recruitment_period_end' | 'accept_status' | 'main_contract_name';
+    sort_order?: 'asc' | 'desc';
+};
+
+/**
+ * GetCampaignsResponse
+ *
+ * Campaign master list response
+ */
+export type GetCampaignsResponse = {
+    campaigns: Array<{
+        /**
+         * Campaign ID
+         */
+        id: string;
+        /**
+         * Campaign name
+         */
+        name: string;
+        /**
+         * Campaign code
+         */
+        code: string;
+        /**
+         * StoreListBrand
+         *
+         * Brand
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * Recruitment period start date
+         */
+        recruitment_period_start: string;
+        /**
+         * Recruitment period end date
+         */
+        recruitment_period_end: string;
+        /**
+         * CampaignAcceptStatus
+         *
+         * Acceptance status
+         */
+        accept_status: 'active' | 'inactive';
+        /**
+         * Linked main contract name
+         */
+        main_contract_name: string;
+    }>;
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        total_pages: number;
+    };
+};
+
+/**
+ * GetCampaignDetailResponse
+ *
+ * Single campaign master detail response
+ */
+export type GetCampaignDetailResponse = {
+    /**
+     * CampaignDetail
+     *
+     * Campaign master detail payload for tab 1
+     */
+    campaign: {
+        /**
+         * Campaign ID
+         */
+        id: string;
+        /**
+         * Campaign name
+         */
+        name: string;
+        /**
+         * Campaign code
+         */
+        code: string;
+        /**
+         * StoreListBrand
+         *
+         * Brand
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * Campaign note
+         */
+        note: string | null;
+        /**
+         * CampaignAcceptStatus
+         *
+         * Acceptance status
+         */
+        accept_status: 'active' | 'inactive';
+        /**
+         * CampaignStatus
+         *
+         * Campaign status
+         */
+        status: 'active' | 'inactive';
+        /**
+         * Acceptance status helper text
+         */
+        accept_status_message: string;
+        /**
+         * Primary acceptance control label
+         */
+        accept_status_action_label: string;
+        /**
+         * Main contract name
+         */
+        main_contract_name: string;
+        /**
+         * Main contract ID
+         */
+        main_contract_id: string;
+        /**
+         * Recruitment period start date
+         */
+        recruitment_period_start: string;
+        /**
+         * Recruitment period end date
+         */
+        recruitment_period_end: string;
+        /**
+         * Usage period start date
+         */
+        usage_period_start: string;
+        /**
+         * Usage period end date
+         */
+        usage_period_end: string;
+        /**
+         * Campaign application period start date
+         */
+        application_period_start: string;
+        /**
+         * Campaign application period end date
+         */
+        application_period_end: string;
+        /**
+         * CampaignApplicationStartMonthType
+         *
+         * Campaign application start month type
+         */
+        application_start_month_type: 'first_month' | 'next_month' | 'custom_month';
+        /**
+         * Custom application start month offset
+         */
+        application_custom_month: number | null;
+        /**
+         * Campaign application duration in months
+         */
+        application_duration_months: number;
+        /**
+         * CampaignDetailDiscount
+         *
+         * Discount settings shown in the basic information tab
+         */
+        discount: {
+            /**
+             * Discount title
+             */
+            title: string;
+            /**
+             * Discount description
+             */
+            description: string;
+            /**
+             * Display text for the discount value
+             */
+            value_text: string;
+            /**
+             * Whether first month discount is enabled
+             */
+            first_month_enabled: boolean;
+            /**
+             * Whether second month discount is enabled
+             */
+            second_month_enabled: boolean;
+            /**
+             * Fixed discount amount in JPY
+             */
+            amount: number | null;
+            /**
+             * Discount rate percentage
+             */
+            rate: number | null;
+        };
+        /**
+         * Periods displayed in the detail tab
+         */
+        periods: Array<{
+            /**
+             * CampaignPeriodType
+             *
+             * Period grouping key
+             */
+            period_type: 'recruitment' | 'usage' | 'application';
+            /**
+             * Period label
+             */
+            label: string;
+            /**
+             * Start date
+             */
+            start_date: string;
+            /**
+             * End date
+             */
+            end_date: string;
+        }>;
+        /**
+         * CampaignDetailAutoGrant
+         *
+         * Auto-grant settings shown in the basic information tab
+         */
+        auto_grant: {
+            /**
+             * Whether auto-grant is enabled
+             */
+            enabled: boolean;
+            /**
+             * Auto-grant title
+             */
+            title: string;
+            /**
+             * Timing description
+             */
+            timing_text: string;
+            /**
+             * Target contract description
+             */
+            target_text: string;
+            /**
+             * Additional description
+             */
+            description: string;
+            /**
+             * CampaignAutoGrantTarget
+             *
+             * Auto-grant target type
+             */
+            target_type: 'all' | 'conditional';
+            /**
+             * Gender conditions for auto-grant
+             */
+            gender_conditions: Array<'male' | 'female' | 'other'>;
+            /**
+             * Auto-granted option IDs
+             */
+            option_ids: Array<string>;
+            /**
+             * Auto-granted option names
+             */
+            option_names: Array<string>;
+        };
+        /**
+         * CampaignDetailStats
+         *
+         * Campaign summary metrics shown on the detail page
+         */
+        stats: {
+            /**
+             * Number of applied members
+             */
+            applied_member_count: number;
+            /**
+             * Number of applications
+             */
+            application_count: number;
+            /**
+             * New applications this month
+             */
+            monthly_new_application_count: number;
+        };
+        /**
+         * CampaignDetailMetadata
+         *
+         * Campaign detail audit metadata
+         */
+        metadata: {
+            /**
+             * Created at
+             */
+            created_at: string;
+            /**
+             * Created by
+             */
+            created_by: string;
+            /**
+             * Updated at
+             */
+            updated_at: string;
+            /**
+             * Updated by
+             */
+            updated_by: string;
+        };
+        /**
+         * Read-only promo-code preview rows for campaign detail tab 2
+         */
+        promo_code_previews: Array<{
+            /**
+             * Promo code
+             */
+            code: string;
+            /**
+             * Promo code description
+             */
+            description: string | null;
+            /**
+             * Validity start date
+             */
+            valid_from: string;
+            /**
+             * Validity end date
+             */
+            valid_to: string;
+            /**
+             * CampaignPromoCodePreviewStatus
+             *
+             * Promo code preview status
+             */
+            status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+        }>;
+    };
+};
+
+/**
+ * PromoCodeStatus
+ *
+ * Promo code status
+ */
+export const PromoCodeStatus = {
+    ACTIVE: 'active',
+    EXPIRED: 'expired',
+    LIMIT_REACHED: 'limit_reached',
+    INACTIVE: 'inactive'
+} as const;
+
+/**
+ * PromoCodeStatus
+ *
+ * Promo code status
+ */
+export type PromoCodeStatus = typeof PromoCodeStatus[keyof typeof PromoCodeStatus];
+
+/**
+ * PromoCodeUsageCapMode
+ *
+ * Promo code usage-cap mode
+ */
+export const PromoCodeUsageCapMode = { UNLIMITED: 'unlimited', LIMITED: 'limited' } as const;
+
+/**
+ * PromoCodeUsageCapMode
+ *
+ * Promo code usage-cap mode
+ */
+export type PromoCodeUsageCapMode = typeof PromoCodeUsageCapMode[keyof typeof PromoCodeUsageCapMode];
+
+/**
+ * PromoCodeStoreScope
+ *
+ * Promo code store scope
+ */
+export const PromoCodeStoreScope = { ALL: 'all', BRANCH: 'branch' } as const;
+
+/**
+ * PromoCodeStoreScope
+ *
+ * Promo code store scope
+ */
+export type PromoCodeStoreScope = typeof PromoCodeStoreScope[keyof typeof PromoCodeStoreScope];
+
+/**
+ * GetPromoCodesQuery
+ *
+ * Query for fetching promo codes by campaign
+ */
+export type GetPromoCodesQuery = {
+    campaign_id: string;
+};
+
+/**
+ * PromoCodeUpsertBody
+ *
+ * Promo code create/update payload
+ */
+export type PromoCodeUpsertBody = {
+    campaignId: string;
+    campaignName: string;
+    code: string;
+    description?: string | null;
+    validFrom: string;
+    validTo: string;
+    usageCount?: number;
+    usageCap: number | null;
+    /**
+     * PromoCodeUsageCapMode
+     *
+     * Promo code usage-cap mode
+     */
+    usageCapMode: 'unlimited' | 'limited';
+    /**
+     * PromoCodeStoreScope
+     *
+     * Promo code store scope
+     */
+    storeScope: 'all' | 'branch';
+    issuedByLabel: string;
+    /**
+     * PromoCodeStatus
+     *
+     * Promo code status
+     */
+    status?: 'active' | 'expired' | 'limit_reached' | 'inactive';
+};
+
+/**
+ * UpdatePromoCodeStatusBody
+ *
+ * Promo code status update payload
+ */
+export type UpdatePromoCodeStatusBody = {
+    /**
+     * PromoCodeStatus
+     *
+     * Promo code status
+     */
+    status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+    reason?: string | null;
+};
+
+/**
+ * PromoCodeRecord
+ *
+ * Persistent promo code record stored in the mock API
+ */
+export type PromoCodeRecord = {
+    /**
+     * Promo code record ID
+     */
+    id: string;
+    /**
+     * Campaign ID
+     */
+    campaign_id: string;
+    /**
+     * Campaign name
+     */
+    campaign_name: string;
+    /**
+     * Promo code
+     */
+    code: string;
+    /**
+     * Promo code description
+     */
+    description: string | null;
+    /**
+     * Validity start date
+     */
+    valid_from: string;
+    /**
+     * Validity end date
+     */
+    valid_to: string;
+    /**
+     * Usage count
+     */
+    usage_count: number;
+    /**
+     * Usage cap
+     */
+    usage_cap: number | null;
+    /**
+     * Usage cap label
+     */
+    usage_cap_label: string;
+    /**
+     * Store scope label
+     */
+    store_scope_label: string;
+    /**
+     * Issued by label
+     */
+    issued_by_label: string;
+    /**
+     * Discount total label
+     */
+    discount_total_label: string;
+    /**
+     * PromoCodeStatus
+     *
+     * Promo code status
+     */
+    status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+    /**
+     * Disable reason
+     */
+    disabled_reason: string | null;
+    /**
+     * Created at
+     */
+    created_at: string;
+    /**
+     * Updated at
+     */
+    updated_at: string;
+};
+
+/**
+ * GetPromoCodesResponse
+ *
+ * Promo code list response
+ */
+export type GetPromoCodesResponse = {
+    promo_codes: Array<{
+        /**
+         * Promo code record ID
+         */
+        id: string;
+        /**
+         * Campaign ID
+         */
+        campaign_id: string;
+        /**
+         * Campaign name
+         */
+        campaign_name: string;
+        /**
+         * Promo code
+         */
+        code: string;
+        /**
+         * Promo code description
+         */
+        description: string | null;
+        /**
+         * Validity start date
+         */
+        valid_from: string;
+        /**
+         * Validity end date
+         */
+        valid_to: string;
+        /**
+         * Usage count
+         */
+        usage_count: number;
+        /**
+         * Usage cap
+         */
+        usage_cap: number | null;
+        /**
+         * Usage cap label
+         */
+        usage_cap_label: string;
+        /**
+         * Store scope label
+         */
+        store_scope_label: string;
+        /**
+         * Issued by label
+         */
+        issued_by_label: string;
+        /**
+         * Discount total label
+         */
+        discount_total_label: string;
+        /**
+         * PromoCodeStatus
+         *
+         * Promo code status
+         */
+        status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+        /**
+         * Disable reason
+         */
+        disabled_reason: string | null;
+        /**
+         * Created at
+         */
+        created_at: string;
+        /**
+         * Updated at
+         */
+        updated_at: string;
+    }>;
+};
+
+/**
+ * CreatePromoCodeResponse
+ *
+ * Created promo code response
+ */
+export type CreatePromoCodeResponse = {
+    /**
+     * PromoCodeRecord
+     *
+     * Persistent promo code record stored in the mock API
+     */
+    promo_code: {
+        /**
+         * Promo code record ID
+         */
+        id: string;
+        /**
+         * Campaign ID
+         */
+        campaign_id: string;
+        /**
+         * Campaign name
+         */
+        campaign_name: string;
+        /**
+         * Promo code
+         */
+        code: string;
+        /**
+         * Promo code description
+         */
+        description: string | null;
+        /**
+         * Validity start date
+         */
+        valid_from: string;
+        /**
+         * Validity end date
+         */
+        valid_to: string;
+        /**
+         * Usage count
+         */
+        usage_count: number;
+        /**
+         * Usage cap
+         */
+        usage_cap: number | null;
+        /**
+         * Usage cap label
+         */
+        usage_cap_label: string;
+        /**
+         * Store scope label
+         */
+        store_scope_label: string;
+        /**
+         * Issued by label
+         */
+        issued_by_label: string;
+        /**
+         * Discount total label
+         */
+        discount_total_label: string;
+        /**
+         * PromoCodeStatus
+         *
+         * Promo code status
+         */
+        status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+        /**
+         * Disable reason
+         */
+        disabled_reason: string | null;
+        /**
+         * Created at
+         */
+        created_at: string;
+        /**
+         * Updated at
+         */
+        updated_at: string;
+    };
+};
+
+/**
+ * UpdatePromoCodeResponse
+ *
+ * Updated promo code response
+ */
+export type UpdatePromoCodeResponse = {
+    /**
+     * PromoCodeRecord
+     *
+     * Persistent promo code record stored in the mock API
+     */
+    promo_code: {
+        /**
+         * Promo code record ID
+         */
+        id: string;
+        /**
+         * Campaign ID
+         */
+        campaign_id: string;
+        /**
+         * Campaign name
+         */
+        campaign_name: string;
+        /**
+         * Promo code
+         */
+        code: string;
+        /**
+         * Promo code description
+         */
+        description: string | null;
+        /**
+         * Validity start date
+         */
+        valid_from: string;
+        /**
+         * Validity end date
+         */
+        valid_to: string;
+        /**
+         * Usage count
+         */
+        usage_count: number;
+        /**
+         * Usage cap
+         */
+        usage_cap: number | null;
+        /**
+         * Usage cap label
+         */
+        usage_cap_label: string;
+        /**
+         * Store scope label
+         */
+        store_scope_label: string;
+        /**
+         * Issued by label
+         */
+        issued_by_label: string;
+        /**
+         * Discount total label
+         */
+        discount_total_label: string;
+        /**
+         * PromoCodeStatus
+         *
+         * Promo code status
+         */
+        status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+        /**
+         * Disable reason
+         */
+        disabled_reason: string | null;
+        /**
+         * Created at
+         */
+        created_at: string;
+        /**
+         * Updated at
+         */
+        updated_at: string;
+    };
+};
+
+/**
+ * PromoCodeErrorResponse
+ *
+ * Promo-code-specific error response
+ */
+export type PromoCodeErrorResponse = {
+    error: string;
+};
+
+/**
  * MemberListItem
  *
  * Member information for list view
@@ -11110,6 +12412,1330 @@ export type GetCrmBrandsResponses = {
 };
 
 export type GetCrmBrandsResponse = GetCrmBrandsResponses[keyof GetCrmBrandsResponses];
+
+export type GetCrmCampaignsByIdChangeHistoryData = {
+    body?: never;
+    path: {
+        /**
+         * Campaign ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/campaigns/{id}/change-history';
+};
+
+export type GetCrmCampaignsByIdChangeHistoryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmCampaignsByIdChangeHistoryError = GetCrmCampaignsByIdChangeHistoryErrors[keyof GetCrmCampaignsByIdChangeHistoryErrors];
+
+export type GetCrmCampaignsByIdChangeHistoryResponses = {
+    /**
+     * GetCampaignChangeHistoryResponse
+     *
+     * Campaign change-history response
+     */
+    200: {
+        history: Array<{
+            /**
+             * Updated timestamp
+             */
+            date: string;
+            /**
+             * Operator name
+             */
+            user: string;
+            /**
+             * Changed field name
+             */
+            field: string | null;
+            /**
+             * Previous value
+             */
+            from: string | null;
+            /**
+             * New value
+             */
+            to: string;
+        }>;
+    };
+};
+
+export type GetCrmCampaignsByIdChangeHistoryResponse = GetCrmCampaignsByIdChangeHistoryResponses[keyof GetCrmCampaignsByIdChangeHistoryResponses];
+
+export type GetCrmCampaignsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Campaign ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/campaigns/{id}';
+};
+
+export type GetCrmCampaignsByIdErrors = {
+    /**
+     * CampaignErrorResponse
+     *
+     * Campaign-specific error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+        /**
+         * Campaign-specific error code
+         */
+        code?: string;
+    };
+    /**
+     * CampaignErrorResponse
+     *
+     * Campaign-specific error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+        /**
+         * Campaign-specific error code
+         */
+        code?: string;
+    };
+};
+
+export type GetCrmCampaignsByIdError = GetCrmCampaignsByIdErrors[keyof GetCrmCampaignsByIdErrors];
+
+export type GetCrmCampaignsByIdResponses = {
+    /**
+     * GetCampaignDetailResponse
+     *
+     * Single campaign master detail response
+     */
+    200: {
+        /**
+         * CampaignDetail
+         *
+         * Campaign master detail payload for tab 1
+         */
+        campaign: {
+            /**
+             * Campaign ID
+             */
+            id: string;
+            /**
+             * Campaign name
+             */
+            name: string;
+            /**
+             * Campaign code
+             */
+            code: string;
+            /**
+             * StoreListBrand
+             *
+             * Brand
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * Campaign note
+             */
+            note: string | null;
+            /**
+             * CampaignAcceptStatus
+             *
+             * Acceptance status
+             */
+            accept_status: 'active' | 'inactive';
+            /**
+             * CampaignStatus
+             *
+             * Campaign status
+             */
+            status: 'active' | 'inactive';
+            /**
+             * Acceptance status helper text
+             */
+            accept_status_message: string;
+            /**
+             * Primary acceptance control label
+             */
+            accept_status_action_label: string;
+            /**
+             * Main contract name
+             */
+            main_contract_name: string;
+            /**
+             * Main contract ID
+             */
+            main_contract_id: string;
+            /**
+             * Recruitment period start date
+             */
+            recruitment_period_start: string;
+            /**
+             * Recruitment period end date
+             */
+            recruitment_period_end: string;
+            /**
+             * Usage period start date
+             */
+            usage_period_start: string;
+            /**
+             * Usage period end date
+             */
+            usage_period_end: string;
+            /**
+             * Campaign application period start date
+             */
+            application_period_start: string;
+            /**
+             * Campaign application period end date
+             */
+            application_period_end: string;
+            /**
+             * CampaignApplicationStartMonthType
+             *
+             * Campaign application start month type
+             */
+            application_start_month_type: 'first_month' | 'next_month' | 'custom_month';
+            /**
+             * Custom application start month offset
+             */
+            application_custom_month: number | null;
+            /**
+             * Campaign application duration in months
+             */
+            application_duration_months: number;
+            /**
+             * CampaignDetailDiscount
+             *
+             * Discount settings shown in the basic information tab
+             */
+            discount: {
+                /**
+                 * Discount title
+                 */
+                title: string;
+                /**
+                 * Discount description
+                 */
+                description: string;
+                /**
+                 * Display text for the discount value
+                 */
+                value_text: string;
+                /**
+                 * Whether first month discount is enabled
+                 */
+                first_month_enabled: boolean;
+                /**
+                 * Whether second month discount is enabled
+                 */
+                second_month_enabled: boolean;
+                /**
+                 * Fixed discount amount in JPY
+                 */
+                amount: number | null;
+                /**
+                 * Discount rate percentage
+                 */
+                rate: number | null;
+            };
+            /**
+             * Periods displayed in the detail tab
+             */
+            periods: Array<{
+                /**
+                 * CampaignPeriodType
+                 *
+                 * Period grouping key
+                 */
+                period_type: 'recruitment' | 'usage' | 'application';
+                /**
+                 * Period label
+                 */
+                label: string;
+                /**
+                 * Start date
+                 */
+                start_date: string;
+                /**
+                 * End date
+                 */
+                end_date: string;
+            }>;
+            /**
+             * CampaignDetailAutoGrant
+             *
+             * Auto-grant settings shown in the basic information tab
+             */
+            auto_grant: {
+                /**
+                 * Whether auto-grant is enabled
+                 */
+                enabled: boolean;
+                /**
+                 * Auto-grant title
+                 */
+                title: string;
+                /**
+                 * Timing description
+                 */
+                timing_text: string;
+                /**
+                 * Target contract description
+                 */
+                target_text: string;
+                /**
+                 * Additional description
+                 */
+                description: string;
+                /**
+                 * CampaignAutoGrantTarget
+                 *
+                 * Auto-grant target type
+                 */
+                target_type: 'all' | 'conditional';
+                /**
+                 * Gender conditions for auto-grant
+                 */
+                gender_conditions: Array<'male' | 'female' | 'other'>;
+                /**
+                 * Auto-granted option IDs
+                 */
+                option_ids: Array<string>;
+                /**
+                 * Auto-granted option names
+                 */
+                option_names: Array<string>;
+            };
+            /**
+             * CampaignDetailStats
+             *
+             * Campaign summary metrics shown on the detail page
+             */
+            stats: {
+                /**
+                 * Number of applied members
+                 */
+                applied_member_count: number;
+                /**
+                 * Number of applications
+                 */
+                application_count: number;
+                /**
+                 * New applications this month
+                 */
+                monthly_new_application_count: number;
+            };
+            /**
+             * CampaignDetailMetadata
+             *
+             * Campaign detail audit metadata
+             */
+            metadata: {
+                /**
+                 * Created at
+                 */
+                created_at: string;
+                /**
+                 * Created by
+                 */
+                created_by: string;
+                /**
+                 * Updated at
+                 */
+                updated_at: string;
+                /**
+                 * Updated by
+                 */
+                updated_by: string;
+            };
+            /**
+             * Read-only promo-code preview rows for campaign detail tab 2
+             */
+            promo_code_previews: Array<{
+                /**
+                 * Promo code
+                 */
+                code: string;
+                /**
+                 * Promo code description
+                 */
+                description: string | null;
+                /**
+                 * Validity start date
+                 */
+                valid_from: string;
+                /**
+                 * Validity end date
+                 */
+                valid_to: string;
+                /**
+                 * CampaignPromoCodePreviewStatus
+                 *
+                 * Promo code preview status
+                 */
+                status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+            }>;
+        };
+    };
+};
+
+export type GetCrmCampaignsByIdResponse = GetCrmCampaignsByIdResponses[keyof GetCrmCampaignsByIdResponses];
+
+export type PatchCrmCampaignsByIdData = {
+    /**
+     * UpsertCampaignBody
+     *
+     * Campaign create/update request payload
+     */
+    body?: {
+        name: string;
+        code: string;
+        /**
+         * StoreListBrand
+         *
+         * Store brand
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        note?: string | null;
+        /**
+         * CampaignAcceptStatus
+         *
+         * Campaign acceptance availability
+         */
+        accept_status?: 'active' | 'inactive';
+        /**
+         * CampaignStatus
+         *
+         * Campaign record status
+         */
+        status?: 'active' | 'inactive';
+        recruitment_period_start: string;
+        recruitment_period_end: string;
+        usage_period_start: string;
+        usage_period_end: string;
+        /**
+         * CampaignApplicationStartMonthType
+         *
+         * Start month type for campaign application period
+         */
+        application_start_month_type: 'first_month' | 'next_month' | 'custom_month';
+        application_custom_month?: number | null;
+        application_duration_months: number;
+        main_contract_id: string;
+        /**
+         * CampaignUpsertDiscount
+         *
+         * Campaign discount settings for create/update
+         */
+        discount: {
+            first_month_enabled?: boolean;
+            second_month_enabled?: boolean;
+            amount?: number | null;
+            rate?: number | null;
+        };
+        /**
+         * CampaignUpsertAutoGrant
+         *
+         * Campaign auto-grant settings for create/update
+         */
+        auto_grant: {
+            enabled?: boolean;
+            /**
+             * CampaignAutoGrantTarget
+             *
+             * Auto-grant target scope
+             */
+            target_type?: 'all' | 'conditional';
+            gender_conditions?: Array<'male' | 'female' | 'other'>;
+            option_ids?: Array<string>;
+        };
+    };
+    path: {
+        /**
+         * Campaign ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/campaigns/{id}';
+};
+
+export type PatchCrmCampaignsByIdErrors = {
+    /**
+     * CampaignErrorResponse
+     *
+     * Campaign-specific error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+        /**
+         * Campaign-specific error code
+         */
+        code?: string;
+    };
+    /**
+     * CampaignErrorResponse
+     *
+     * Campaign-specific error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+        /**
+         * Campaign-specific error code
+         */
+        code?: string;
+    };
+    /**
+     * CampaignErrorResponse
+     *
+     * Campaign-specific error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+        /**
+         * Campaign-specific error code
+         */
+        code?: string;
+    };
+};
+
+export type PatchCrmCampaignsByIdError = PatchCrmCampaignsByIdErrors[keyof PatchCrmCampaignsByIdErrors];
+
+export type PatchCrmCampaignsByIdResponses = {
+    /**
+     * UpdateCampaignResponse
+     *
+     * Update campaign response
+     */
+    200: {
+        message: string;
+        /**
+         * CampaignDetail
+         *
+         * Campaign master detail payload for tab 1
+         */
+        campaign: {
+            /**
+             * Campaign ID
+             */
+            id: string;
+            /**
+             * Campaign name
+             */
+            name: string;
+            /**
+             * Campaign code
+             */
+            code: string;
+            /**
+             * StoreListBrand
+             *
+             * Brand
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * Campaign note
+             */
+            note: string | null;
+            /**
+             * CampaignAcceptStatus
+             *
+             * Acceptance status
+             */
+            accept_status: 'active' | 'inactive';
+            /**
+             * CampaignStatus
+             *
+             * Campaign status
+             */
+            status: 'active' | 'inactive';
+            /**
+             * Acceptance status helper text
+             */
+            accept_status_message: string;
+            /**
+             * Primary acceptance control label
+             */
+            accept_status_action_label: string;
+            /**
+             * Main contract name
+             */
+            main_contract_name: string;
+            /**
+             * Main contract ID
+             */
+            main_contract_id: string;
+            /**
+             * Recruitment period start date
+             */
+            recruitment_period_start: string;
+            /**
+             * Recruitment period end date
+             */
+            recruitment_period_end: string;
+            /**
+             * Usage period start date
+             */
+            usage_period_start: string;
+            /**
+             * Usage period end date
+             */
+            usage_period_end: string;
+            /**
+             * Campaign application period start date
+             */
+            application_period_start: string;
+            /**
+             * Campaign application period end date
+             */
+            application_period_end: string;
+            /**
+             * CampaignApplicationStartMonthType
+             *
+             * Campaign application start month type
+             */
+            application_start_month_type: 'first_month' | 'next_month' | 'custom_month';
+            /**
+             * Custom application start month offset
+             */
+            application_custom_month: number | null;
+            /**
+             * Campaign application duration in months
+             */
+            application_duration_months: number;
+            /**
+             * CampaignDetailDiscount
+             *
+             * Discount settings shown in the basic information tab
+             */
+            discount: {
+                /**
+                 * Discount title
+                 */
+                title: string;
+                /**
+                 * Discount description
+                 */
+                description: string;
+                /**
+                 * Display text for the discount value
+                 */
+                value_text: string;
+                /**
+                 * Whether first month discount is enabled
+                 */
+                first_month_enabled: boolean;
+                /**
+                 * Whether second month discount is enabled
+                 */
+                second_month_enabled: boolean;
+                /**
+                 * Fixed discount amount in JPY
+                 */
+                amount: number | null;
+                /**
+                 * Discount rate percentage
+                 */
+                rate: number | null;
+            };
+            /**
+             * Periods displayed in the detail tab
+             */
+            periods: Array<{
+                /**
+                 * CampaignPeriodType
+                 *
+                 * Period grouping key
+                 */
+                period_type: 'recruitment' | 'usage' | 'application';
+                /**
+                 * Period label
+                 */
+                label: string;
+                /**
+                 * Start date
+                 */
+                start_date: string;
+                /**
+                 * End date
+                 */
+                end_date: string;
+            }>;
+            /**
+             * CampaignDetailAutoGrant
+             *
+             * Auto-grant settings shown in the basic information tab
+             */
+            auto_grant: {
+                /**
+                 * Whether auto-grant is enabled
+                 */
+                enabled: boolean;
+                /**
+                 * Auto-grant title
+                 */
+                title: string;
+                /**
+                 * Timing description
+                 */
+                timing_text: string;
+                /**
+                 * Target contract description
+                 */
+                target_text: string;
+                /**
+                 * Additional description
+                 */
+                description: string;
+                /**
+                 * CampaignAutoGrantTarget
+                 *
+                 * Auto-grant target type
+                 */
+                target_type: 'all' | 'conditional';
+                /**
+                 * Gender conditions for auto-grant
+                 */
+                gender_conditions: Array<'male' | 'female' | 'other'>;
+                /**
+                 * Auto-granted option IDs
+                 */
+                option_ids: Array<string>;
+                /**
+                 * Auto-granted option names
+                 */
+                option_names: Array<string>;
+            };
+            /**
+             * CampaignDetailStats
+             *
+             * Campaign summary metrics shown on the detail page
+             */
+            stats: {
+                /**
+                 * Number of applied members
+                 */
+                applied_member_count: number;
+                /**
+                 * Number of applications
+                 */
+                application_count: number;
+                /**
+                 * New applications this month
+                 */
+                monthly_new_application_count: number;
+            };
+            /**
+             * CampaignDetailMetadata
+             *
+             * Campaign detail audit metadata
+             */
+            metadata: {
+                /**
+                 * Created at
+                 */
+                created_at: string;
+                /**
+                 * Created by
+                 */
+                created_by: string;
+                /**
+                 * Updated at
+                 */
+                updated_at: string;
+                /**
+                 * Updated by
+                 */
+                updated_by: string;
+            };
+            /**
+             * Read-only promo-code preview rows for campaign detail tab 2
+             */
+            promo_code_previews: Array<{
+                /**
+                 * Promo code
+                 */
+                code: string;
+                /**
+                 * Promo code description
+                 */
+                description: string | null;
+                /**
+                 * Validity start date
+                 */
+                valid_from: string;
+                /**
+                 * Validity end date
+                 */
+                valid_to: string;
+                /**
+                 * CampaignPromoCodePreviewStatus
+                 *
+                 * Promo code preview status
+                 */
+                status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+            }>;
+        };
+    };
+};
+
+export type PatchCrmCampaignsByIdResponse = PatchCrmCampaignsByIdResponses[keyof PatchCrmCampaignsByIdResponses];
+
+export type GetCrmCampaignsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        limit?: number;
+        /**
+         * Search by campaign name, ID, or code
+         */
+        search?: string;
+        /**
+         * StoreListBrand
+         *
+         * Store brand
+         */
+        brand?: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * CampaignAcceptStatus
+         *
+         * Campaign acceptance availability
+         */
+        accept_status?: 'active' | 'inactive';
+        /**
+         * Recruitment period start date (YYYY-MM-DD)
+         */
+        recruitment_period_start?: string;
+        /**
+         * Recruitment period end date (YYYY-MM-DD)
+         */
+        recruitment_period_end?: string;
+        sort_by?: 'id' | 'name' | 'code' | 'brand' | 'recruitment_period_start' | 'recruitment_period_end' | 'accept_status' | 'main_contract_name';
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/campaigns';
+};
+
+export type GetCrmCampaignsErrors = {
+    /**
+     * CampaignErrorResponse
+     *
+     * Campaign-specific error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+        /**
+         * Campaign-specific error code
+         */
+        code?: string;
+    };
+    /**
+     * CampaignErrorResponse
+     *
+     * Campaign-specific error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+        /**
+         * Campaign-specific error code
+         */
+        code?: string;
+    };
+};
+
+export type GetCrmCampaignsError = GetCrmCampaignsErrors[keyof GetCrmCampaignsErrors];
+
+export type GetCrmCampaignsResponses = {
+    /**
+     * GetCampaignsResponse
+     *
+     * Campaign master list response
+     */
+    200: {
+        campaigns: Array<{
+            /**
+             * Campaign ID
+             */
+            id: string;
+            /**
+             * Campaign name
+             */
+            name: string;
+            /**
+             * Campaign code
+             */
+            code: string;
+            /**
+             * StoreListBrand
+             *
+             * Brand
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * Recruitment period start date
+             */
+            recruitment_period_start: string;
+            /**
+             * Recruitment period end date
+             */
+            recruitment_period_end: string;
+            /**
+             * CampaignAcceptStatus
+             *
+             * Acceptance status
+             */
+            accept_status: 'active' | 'inactive';
+            /**
+             * Linked main contract name
+             */
+            main_contract_name: string;
+        }>;
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmCampaignsResponse = GetCrmCampaignsResponses[keyof GetCrmCampaignsResponses];
+
+export type PostCrmCampaignsData = {
+    /**
+     * UpsertCampaignBody
+     *
+     * Campaign create/update request payload
+     */
+    body?: {
+        name: string;
+        code: string;
+        /**
+         * StoreListBrand
+         *
+         * Store brand
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        note?: string | null;
+        /**
+         * CampaignAcceptStatus
+         *
+         * Campaign acceptance availability
+         */
+        accept_status?: 'active' | 'inactive';
+        /**
+         * CampaignStatus
+         *
+         * Campaign record status
+         */
+        status?: 'active' | 'inactive';
+        recruitment_period_start: string;
+        recruitment_period_end: string;
+        usage_period_start: string;
+        usage_period_end: string;
+        /**
+         * CampaignApplicationStartMonthType
+         *
+         * Start month type for campaign application period
+         */
+        application_start_month_type: 'first_month' | 'next_month' | 'custom_month';
+        application_custom_month?: number | null;
+        application_duration_months: number;
+        main_contract_id: string;
+        /**
+         * CampaignUpsertDiscount
+         *
+         * Campaign discount settings for create/update
+         */
+        discount: {
+            first_month_enabled?: boolean;
+            second_month_enabled?: boolean;
+            amount?: number | null;
+            rate?: number | null;
+        };
+        /**
+         * CampaignUpsertAutoGrant
+         *
+         * Campaign auto-grant settings for create/update
+         */
+        auto_grant: {
+            enabled?: boolean;
+            /**
+             * CampaignAutoGrantTarget
+             *
+             * Auto-grant target scope
+             */
+            target_type?: 'all' | 'conditional';
+            gender_conditions?: Array<'male' | 'female' | 'other'>;
+            option_ids?: Array<string>;
+        };
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/campaigns';
+};
+
+export type PostCrmCampaignsErrors = {
+    /**
+     * CampaignErrorResponse
+     *
+     * Campaign-specific error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+        /**
+         * Campaign-specific error code
+         */
+        code?: string;
+    };
+    /**
+     * CampaignErrorResponse
+     *
+     * Campaign-specific error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+        /**
+         * Campaign-specific error code
+         */
+        code?: string;
+    };
+};
+
+export type PostCrmCampaignsError = PostCrmCampaignsErrors[keyof PostCrmCampaignsErrors];
+
+export type PostCrmCampaignsResponses = {
+    /**
+     * CreateCampaignResponse
+     *
+     * Create campaign response
+     */
+    201: {
+        message: string;
+        /**
+         * CampaignDetail
+         *
+         * Campaign master detail payload for tab 1
+         */
+        campaign: {
+            /**
+             * Campaign ID
+             */
+            id: string;
+            /**
+             * Campaign name
+             */
+            name: string;
+            /**
+             * Campaign code
+             */
+            code: string;
+            /**
+             * StoreListBrand
+             *
+             * Brand
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * Campaign note
+             */
+            note: string | null;
+            /**
+             * CampaignAcceptStatus
+             *
+             * Acceptance status
+             */
+            accept_status: 'active' | 'inactive';
+            /**
+             * CampaignStatus
+             *
+             * Campaign status
+             */
+            status: 'active' | 'inactive';
+            /**
+             * Acceptance status helper text
+             */
+            accept_status_message: string;
+            /**
+             * Primary acceptance control label
+             */
+            accept_status_action_label: string;
+            /**
+             * Main contract name
+             */
+            main_contract_name: string;
+            /**
+             * Main contract ID
+             */
+            main_contract_id: string;
+            /**
+             * Recruitment period start date
+             */
+            recruitment_period_start: string;
+            /**
+             * Recruitment period end date
+             */
+            recruitment_period_end: string;
+            /**
+             * Usage period start date
+             */
+            usage_period_start: string;
+            /**
+             * Usage period end date
+             */
+            usage_period_end: string;
+            /**
+             * Campaign application period start date
+             */
+            application_period_start: string;
+            /**
+             * Campaign application period end date
+             */
+            application_period_end: string;
+            /**
+             * CampaignApplicationStartMonthType
+             *
+             * Campaign application start month type
+             */
+            application_start_month_type: 'first_month' | 'next_month' | 'custom_month';
+            /**
+             * Custom application start month offset
+             */
+            application_custom_month: number | null;
+            /**
+             * Campaign application duration in months
+             */
+            application_duration_months: number;
+            /**
+             * CampaignDetailDiscount
+             *
+             * Discount settings shown in the basic information tab
+             */
+            discount: {
+                /**
+                 * Discount title
+                 */
+                title: string;
+                /**
+                 * Discount description
+                 */
+                description: string;
+                /**
+                 * Display text for the discount value
+                 */
+                value_text: string;
+                /**
+                 * Whether first month discount is enabled
+                 */
+                first_month_enabled: boolean;
+                /**
+                 * Whether second month discount is enabled
+                 */
+                second_month_enabled: boolean;
+                /**
+                 * Fixed discount amount in JPY
+                 */
+                amount: number | null;
+                /**
+                 * Discount rate percentage
+                 */
+                rate: number | null;
+            };
+            /**
+             * Periods displayed in the detail tab
+             */
+            periods: Array<{
+                /**
+                 * CampaignPeriodType
+                 *
+                 * Period grouping key
+                 */
+                period_type: 'recruitment' | 'usage' | 'application';
+                /**
+                 * Period label
+                 */
+                label: string;
+                /**
+                 * Start date
+                 */
+                start_date: string;
+                /**
+                 * End date
+                 */
+                end_date: string;
+            }>;
+            /**
+             * CampaignDetailAutoGrant
+             *
+             * Auto-grant settings shown in the basic information tab
+             */
+            auto_grant: {
+                /**
+                 * Whether auto-grant is enabled
+                 */
+                enabled: boolean;
+                /**
+                 * Auto-grant title
+                 */
+                title: string;
+                /**
+                 * Timing description
+                 */
+                timing_text: string;
+                /**
+                 * Target contract description
+                 */
+                target_text: string;
+                /**
+                 * Additional description
+                 */
+                description: string;
+                /**
+                 * CampaignAutoGrantTarget
+                 *
+                 * Auto-grant target type
+                 */
+                target_type: 'all' | 'conditional';
+                /**
+                 * Gender conditions for auto-grant
+                 */
+                gender_conditions: Array<'male' | 'female' | 'other'>;
+                /**
+                 * Auto-granted option IDs
+                 */
+                option_ids: Array<string>;
+                /**
+                 * Auto-granted option names
+                 */
+                option_names: Array<string>;
+            };
+            /**
+             * CampaignDetailStats
+             *
+             * Campaign summary metrics shown on the detail page
+             */
+            stats: {
+                /**
+                 * Number of applied members
+                 */
+                applied_member_count: number;
+                /**
+                 * Number of applications
+                 */
+                application_count: number;
+                /**
+                 * New applications this month
+                 */
+                monthly_new_application_count: number;
+            };
+            /**
+             * CampaignDetailMetadata
+             *
+             * Campaign detail audit metadata
+             */
+            metadata: {
+                /**
+                 * Created at
+                 */
+                created_at: string;
+                /**
+                 * Created by
+                 */
+                created_by: string;
+                /**
+                 * Updated at
+                 */
+                updated_at: string;
+                /**
+                 * Updated by
+                 */
+                updated_by: string;
+            };
+            /**
+             * Read-only promo-code preview rows for campaign detail tab 2
+             */
+            promo_code_previews: Array<{
+                /**
+                 * Promo code
+                 */
+                code: string;
+                /**
+                 * Promo code description
+                 */
+                description: string | null;
+                /**
+                 * Validity start date
+                 */
+                valid_from: string;
+                /**
+                 * Validity end date
+                 */
+                valid_to: string;
+                /**
+                 * CampaignPromoCodePreviewStatus
+                 *
+                 * Promo code preview status
+                 */
+                status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+            }>;
+        };
+    };
+};
+
+export type PostCrmCampaignsResponse = PostCrmCampaignsResponses[keyof PostCrmCampaignsResponses];
 
 export type PostCrmFamilyRegistrationsByIdApproveData = {
     /**
@@ -22592,6 +25218,421 @@ export type GetCrmPositionsResponses = {
 };
 
 export type GetCrmPositionsResponse = GetCrmPositionsResponses[keyof GetCrmPositionsResponses];
+
+export type PatchCrmPromoCodesByCodeData = {
+    /**
+     * UpdatePromoCodeStatusBody
+     *
+     * Promo code status update payload
+     */
+    body?: {
+        /**
+         * PromoCodeStatus
+         *
+         * Promo code status
+         */
+        status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+        reason?: string | null;
+    };
+    path: {
+        /**
+         * Promo code
+         */
+        code: string;
+    };
+    query?: never;
+    url: '/crm/promo-codes/{code}';
+};
+
+export type PatchCrmPromoCodesByCodeErrors = {
+    /**
+     * PromoCodeErrorResponse
+     *
+     * Promo-code-specific error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * PromoCodeErrorResponse
+     *
+     * Promo-code-specific error response
+     */
+    404: {
+        error: string;
+    };
+    /**
+     * PromoCodeErrorResponse
+     *
+     * Promo-code-specific error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type PatchCrmPromoCodesByCodeError = PatchCrmPromoCodesByCodeErrors[keyof PatchCrmPromoCodesByCodeErrors];
+
+export type PatchCrmPromoCodesByCodeResponses = {
+    /**
+     * UpdatePromoCodeResponse
+     *
+     * Updated promo code response
+     */
+    200: {
+        /**
+         * PromoCodeRecord
+         *
+         * Persistent promo code record stored in the mock API
+         */
+        promo_code: {
+            /**
+             * Promo code record ID
+             */
+            id: string;
+            /**
+             * Campaign ID
+             */
+            campaign_id: string;
+            /**
+             * Campaign name
+             */
+            campaign_name: string;
+            /**
+             * Promo code
+             */
+            code: string;
+            /**
+             * Promo code description
+             */
+            description: string | null;
+            /**
+             * Validity start date
+             */
+            valid_from: string;
+            /**
+             * Validity end date
+             */
+            valid_to: string;
+            /**
+             * Usage count
+             */
+            usage_count: number;
+            /**
+             * Usage cap
+             */
+            usage_cap: number | null;
+            /**
+             * Usage cap label
+             */
+            usage_cap_label: string;
+            /**
+             * Store scope label
+             */
+            store_scope_label: string;
+            /**
+             * Issued by label
+             */
+            issued_by_label: string;
+            /**
+             * Discount total label
+             */
+            discount_total_label: string;
+            /**
+             * PromoCodeStatus
+             *
+             * Promo code status
+             */
+            status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+            /**
+             * Disable reason
+             */
+            disabled_reason: string | null;
+            /**
+             * Created at
+             */
+            created_at: string;
+            /**
+             * Updated at
+             */
+            updated_at: string;
+        };
+    };
+};
+
+export type PatchCrmPromoCodesByCodeResponse = PatchCrmPromoCodesByCodeResponses[keyof PatchCrmPromoCodesByCodeResponses];
+
+export type GetCrmPromoCodesData = {
+    body?: never;
+    path?: never;
+    query: {
+        campaign_id: string;
+    };
+    url: '/crm/promo-codes';
+};
+
+export type GetCrmPromoCodesErrors = {
+    /**
+     * PromoCodeErrorResponse
+     *
+     * Promo-code-specific error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * PromoCodeErrorResponse
+     *
+     * Promo-code-specific error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type GetCrmPromoCodesError = GetCrmPromoCodesErrors[keyof GetCrmPromoCodesErrors];
+
+export type GetCrmPromoCodesResponses = {
+    /**
+     * GetPromoCodesResponse
+     *
+     * Promo code list response
+     */
+    200: {
+        promo_codes: Array<{
+            /**
+             * Promo code record ID
+             */
+            id: string;
+            /**
+             * Campaign ID
+             */
+            campaign_id: string;
+            /**
+             * Campaign name
+             */
+            campaign_name: string;
+            /**
+             * Promo code
+             */
+            code: string;
+            /**
+             * Promo code description
+             */
+            description: string | null;
+            /**
+             * Validity start date
+             */
+            valid_from: string;
+            /**
+             * Validity end date
+             */
+            valid_to: string;
+            /**
+             * Usage count
+             */
+            usage_count: number;
+            /**
+             * Usage cap
+             */
+            usage_cap: number | null;
+            /**
+             * Usage cap label
+             */
+            usage_cap_label: string;
+            /**
+             * Store scope label
+             */
+            store_scope_label: string;
+            /**
+             * Issued by label
+             */
+            issued_by_label: string;
+            /**
+             * Discount total label
+             */
+            discount_total_label: string;
+            /**
+             * PromoCodeStatus
+             *
+             * Promo code status
+             */
+            status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+            /**
+             * Disable reason
+             */
+            disabled_reason: string | null;
+            /**
+             * Created at
+             */
+            created_at: string;
+            /**
+             * Updated at
+             */
+            updated_at: string;
+        }>;
+    };
+};
+
+export type GetCrmPromoCodesResponse = GetCrmPromoCodesResponses[keyof GetCrmPromoCodesResponses];
+
+export type PostCrmPromoCodesData = {
+    /**
+     * PromoCodeUpsertBody
+     *
+     * Promo code create/update payload
+     */
+    body?: {
+        campaignId: string;
+        campaignName: string;
+        code: string;
+        description?: string | null;
+        validFrom: string;
+        validTo: string;
+        usageCount?: number;
+        usageCap: number | null;
+        /**
+         * PromoCodeUsageCapMode
+         *
+         * Promo code usage-cap mode
+         */
+        usageCapMode: 'unlimited' | 'limited';
+        /**
+         * PromoCodeStoreScope
+         *
+         * Promo code store scope
+         */
+        storeScope: 'all' | 'branch';
+        issuedByLabel: string;
+        /**
+         * PromoCodeStatus
+         *
+         * Promo code status
+         */
+        status?: 'active' | 'expired' | 'limit_reached' | 'inactive';
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/promo-codes';
+};
+
+export type PostCrmPromoCodesErrors = {
+    /**
+     * PromoCodeErrorResponse
+     *
+     * Promo-code-specific error response
+     */
+    400: {
+        error: string;
+    };
+    /**
+     * PromoCodeErrorResponse
+     *
+     * Promo-code-specific error response
+     */
+    409: {
+        error: string;
+    };
+    /**
+     * PromoCodeErrorResponse
+     *
+     * Promo-code-specific error response
+     */
+    500: {
+        error: string;
+    };
+};
+
+export type PostCrmPromoCodesError = PostCrmPromoCodesErrors[keyof PostCrmPromoCodesErrors];
+
+export type PostCrmPromoCodesResponses = {
+    /**
+     * CreatePromoCodeResponse
+     *
+     * Created promo code response
+     */
+    201: {
+        /**
+         * PromoCodeRecord
+         *
+         * Persistent promo code record stored in the mock API
+         */
+        promo_code: {
+            /**
+             * Promo code record ID
+             */
+            id: string;
+            /**
+             * Campaign ID
+             */
+            campaign_id: string;
+            /**
+             * Campaign name
+             */
+            campaign_name: string;
+            /**
+             * Promo code
+             */
+            code: string;
+            /**
+             * Promo code description
+             */
+            description: string | null;
+            /**
+             * Validity start date
+             */
+            valid_from: string;
+            /**
+             * Validity end date
+             */
+            valid_to: string;
+            /**
+             * Usage count
+             */
+            usage_count: number;
+            /**
+             * Usage cap
+             */
+            usage_cap: number | null;
+            /**
+             * Usage cap label
+             */
+            usage_cap_label: string;
+            /**
+             * Store scope label
+             */
+            store_scope_label: string;
+            /**
+             * Issued by label
+             */
+            issued_by_label: string;
+            /**
+             * Discount total label
+             */
+            discount_total_label: string;
+            /**
+             * PromoCodeStatus
+             *
+             * Promo code status
+             */
+            status: 'active' | 'expired' | 'limit_reached' | 'inactive';
+            /**
+             * Disable reason
+             */
+            disabled_reason: string | null;
+            /**
+             * Created at
+             */
+            created_at: string;
+            /**
+             * Updated at
+             */
+            updated_at: string;
+        };
+    };
+};
+
+export type PostCrmPromoCodesResponse = PostCrmPromoCodesResponses[keyof PostCrmPromoCodesResponses];
 
 export type DeleteCrmStaffsByIdData = {
     /**

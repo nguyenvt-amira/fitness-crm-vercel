@@ -15,6 +15,9 @@ import '@/app/api/crm/blacklist/[id]/route';
 import '@/app/api/crm/blacklist/route';
 // Brand master (Y-07) — OpenAPI tag: Brands
 import '@/app/api/crm/brands/route';
+import '@/app/api/crm/campaigns/[id]/change-history/route';
+import '@/app/api/crm/campaigns/[id]/route';
+import '@/app/api/crm/campaigns/route';
 import '@/app/api/crm/family-registrations/[id]/approve/route';
 import '@/app/api/crm/family-registrations/[id]/complete/route';
 import '@/app/api/crm/family-registrations/[id]/reject/route';
@@ -101,6 +104,8 @@ import '@/app/api/crm/options/[id]/route';
 import '@/app/api/crm/options/route';
 // Import staffs routes
 import '@/app/api/crm/positions/route';
+import '@/app/api/crm/promo-codes/[code]/route';
+import '@/app/api/crm/promo-codes/route';
 import '@/app/api/crm/staffs/[id]/route';
 import '@/app/api/crm/staffs/invite/route';
 import '@/app/api/crm/staffs/route';

@@ -100,6 +100,17 @@ export enum Permission {
   ContractsCreate = 'contracts.create',
 
   // -------------------------------------------------------------------------
+  // Campaigns
+  // -------------------------------------------------------------------------
+  CampaignsView = 'campaigns.view',
+  CampaignsCreate = 'campaigns.create',
+  CampaignsEdit = 'campaigns.edit',
+  CampaignsPromoCodeEdit = 'campaigns-promo-code.edit',
+  CampaignsPromoCodeCreate = 'campaigns-promo-code.create',
+  CampaignsPromoCodeDelete = 'campaigns-promo-code.delete',
+  CampaignsPromoCodeExport = 'campaigns-promo-code.export',
+
+  // -------------------------------------------------------------------------
   // Options
   // -------------------------------------------------------------------------
   OptionsView = 'options.view',
