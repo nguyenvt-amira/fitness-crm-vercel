@@ -4,6 +4,9 @@ Auto-generated from feature plan: `001-staff-list`. Last updated: 2026-04-08
 
 ## Active Technologies
 
+- TypeScript 5.x (strict, `no-explicit-any`); Node.js ≥ 24.0.0 + Next.js 16 (App Router), React, TanStack React Query, nuqs, (007-lesson-content-list)
+- Phase 1 in-memory mock DB (`src/app/api/_mock-db.ts`); Phase 2 = REST API via generated client (007-lesson-content-list)
+
 - **Runtime**: Node.js ≥ 24.0.0
 - **Framework**: Next.js 16 (App Router only — no Pages Router)
 - **Language**: TypeScript 5.x (strict mode; `no-explicit-any` enforced)
