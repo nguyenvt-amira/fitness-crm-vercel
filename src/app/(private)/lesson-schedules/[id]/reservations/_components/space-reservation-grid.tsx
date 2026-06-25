@@ -1,8 +1,12 @@
 'use client';
 
+import { useAuthUser } from '@/contexts/auth-user.context';
+
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 import type { StudioSpaceGridResponse } from '@/lib/api/types.gen';
+
+import { Permission } from '@/types/permission.type';
 
 import { GridLegend } from './grid-legend';
 import { SpaceCellPopover } from './space-cell-popover';
@@ -19,6 +23,8 @@ export function SpaceReservationGrid({
   onCancelReservation,
 }: SpaceReservationGridProps) {
   const { spaces, grid_cols, grid_rows } = data;
+  const { hasPermission } = useAuthUser();
+  const canManageReservation = hasPermission(Permission.LessonsReservationManage);
   const reservedCount = spaces.filter((s) => s.type === 'reserved').length;
   const totalSeats = spaces.filter((s) => s.type === 'available' || s.type === 'reserved').length;
 
@@ -44,9 +50,11 @@ export function SpaceReservationGrid({
           } else if (isReserved) {
             cls +=
               'bg-chart-2/20 text-chart-2 border-chart-2/30 cursor-pointer hover:bg-chart-2/30';
-          } else {
+          } else if (canManageReservation) {
             cls +=
               'bg-success/10 text-success border-success/20 cursor-pointer hover:bg-success/20';
+          } else {
+            cls += 'bg-success/10 text-success border-success/20';
           }
 
           if (isEquip) {
@@ -66,6 +74,13 @@ export function SpaceReservationGrid({
           }
 
           if (isAvailable) {
+            if (!canManageReservation) {
+              return (
+                <div key={space.id} className={cls}>
+                  {space.space_number}
+                </div>
+              );
+            }
             return (
               <TooltipProvider key={space.id}>
                 <Tooltip>
@@ -90,6 +105,7 @@ export function SpaceReservationGrid({
               key={space.id}
               space={space}
               cellClass={cls}
+              canCancel={canManageReservation}
               onCancelReservation={(s) =>
                 onCancelReservation(s.reservation_id ?? '', s.member_name ?? '')
               }

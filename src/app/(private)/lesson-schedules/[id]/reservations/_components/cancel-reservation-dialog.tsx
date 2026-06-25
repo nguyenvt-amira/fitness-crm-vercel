@@ -47,7 +47,6 @@ export function CancelReservationDialog({
       queryClient.invalidateQueries({
         queryKey: getCrmLessonSchedulesByScheduleIdReservationsQueryKey({
           path: { scheduleId },
-          query: { page: 1, pageSize: 7 },
         }),
       });
       onOpenChange(false);

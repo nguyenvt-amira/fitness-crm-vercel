@@ -145,6 +145,16 @@ export enum Permission {
   LockersContractsCreate = 'lockers-contracts.create',
   LockersContractsEdit = 'lockers-contracts.edit',
   LockersContractsExport = 'lockers-contracts.export',
+
+  // -------------------------------------------------------------------------
+  // Lessons / Reservations (D-01)
+  // -------------------------------------------------------------------------
+  LessonsView = 'lessons.view',
+  LessonsScheduleManage = 'lessons.schedule-manage',
+  LessonsReservationManage = 'lessons.reservation-manage',
+  LessonsAttendanceManage = 'lessons.attendance-manage',
+  LessonsMemoManage = 'lessons.memo-manage',
+  LessonsPenaltyRelease = 'lessons.penalty-release',
 }
 
 /** Authenticated user stored in context */

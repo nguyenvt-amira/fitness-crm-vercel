@@ -12,6 +12,8 @@ import type { StudioSpace } from '@/lib/api/types.gen';
 interface SpaceCellPopoverProps {
   space: StudioSpace;
   cellClass: string;
+  /** FR-008 — whether the current role may cancel this reservation */
+  canCancel: boolean;
   onCancelReservation: (space: StudioSpace) => void;
   onNavigateToMember?: (memberId: string) => void;
 }
@@ -19,6 +21,7 @@ interface SpaceCellPopoverProps {
 export function SpaceCellPopover({
   space,
   cellClass,
+  canCancel,
   onCancelReservation,
   onNavigateToMember,
 }: SpaceCellPopoverProps) {
@@ -99,19 +102,21 @@ export function SpaceCellPopover({
               <Users className="mr-1 size-3" />
               会員詳細
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-destructive border-destructive/30 hover:bg-destructive/10 h-7 flex-1 text-xs"
-              onClick={() => {
-                onCancelReservation(space);
-                setPinned(false);
-                setOpen(false);
-              }}
-            >
-              <X className="mr-1 size-3" />
-              予約取消
-            </Button>
+            {canCancel && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-destructive border-destructive/30 hover:bg-destructive/10 h-7 flex-1 text-xs"
+                onClick={() => {
+                  onCancelReservation(space);
+                  setPinned(false);
+                  setOpen(false);
+                }}
+              >
+                <X className="mr-1 size-3" />
+                予約取消
+              </Button>
+            )}
           </div>
         </div>
       </PopoverContent>

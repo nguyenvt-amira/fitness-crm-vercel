@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -73,15 +75,11 @@ export function MemberLimitedProfilePopover({
             <span className="text-muted-foreground">予約ステータス</span>
             <ReservationStatusBadge status={reservation.status} />
           </div>
-
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-7 w-full text-xs"
-            onClick={() => navigate('/members/[id]', reservation.member_id)}
-          >
-            会員詳細を見る →
-          </Button>
+          <Link href={navigate('/members/[id]', reservation.member_id)}>
+            <Button variant="outline" size="sm" className="h-7 w-full text-xs">
+              会員詳細を見る →
+            </Button>
+          </Link>
         </div>
       </PopoverContent>
     </Popover>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 
+import { useAuthUser } from '@/contexts/auth-user.context';
 import { Ban, Check, ChevronDown, Clock, MapPin, Pencil, Users } from 'lucide-react';
 
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -14,6 +15,8 @@ import {
 
 import type { LessonScheduleListItem } from '@/lib/api/types.gen';
 import { cn } from '@/lib/utils';
+
+import { Permission } from '@/types/permission.type';
 
 import { CancelLessonWizard } from './cancel-lesson-wizard';
 import { ChangeInstructorDialog } from './change-instructor-dialog';
@@ -37,6 +40,15 @@ export function ReservationPageActions({
   const [changeTimeOpen, setChangeTimeOpen] = useState(false);
   const [changeStudioOpen, setChangeStudioOpen] = useState(false);
   const [cancelLessonOpen, setCancelLessonOpen] = useState(false);
+
+  const { hasPermission } = useAuthUser();
+
+  // Changing instructor/time/studio and cancelling the lesson are schedule-edit
+  // operations (D-01 FR-003). Roles without schedule-manage (e.g. Observer)
+  // see no action affordances.
+  if (!hasPermission(Permission.LessonsScheduleManage)) {
+    return null;
+  }
 
   return (
     <>
