@@ -2,12 +2,12 @@
 
 import { Ban, Check, Copy, MoreHorizontal, Pencil } from 'lucide-react';
 
+import { RoleGatedMenuItem } from '@/components/common/role-gated-menu-item';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
@@ -19,6 +19,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+
+import { Permission } from '@/types/permission.type';
 
 import { PROMO_CODE_STATUS_LABELS } from '../_constants/promo-code.constants';
 
@@ -97,6 +99,8 @@ export function PromoCodeTable({
         ) : (
           rows.map((row) => {
             const statusClass = STATUS_CLASS_NAMES[row.status];
+            const remaining =
+              row.usageCap === null ? '—' : Math.max(0, row.usageCap - (row.usageCount ?? 0));
             const shouldDim =
               row.status === 'inactive' ||
               row.status === 'expired' ||
@@ -135,7 +139,7 @@ export function PromoCodeTable({
                   <span className="font-medium">{formatCount(row.usageCount)}</span>
                   <span className="text-muted-foreground"> / {row.usageCapLabel}</span>
                 </TableCell>
-                <TableCell className="text-xs font-medium">{formatCount(row.usageCap)}</TableCell>
+                <TableCell className="text-xs font-medium">{remaining}</TableCell>
                 <TableCell>
                   <Badge variant="outline" className="text-[10px]">
                     {row.storeScopeLabel}
@@ -155,19 +159,23 @@ export function PromoCodeTable({
                       <MoreHorizontal className="size-4" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem disabled>
+                      <RoleGatedMenuItem
+                        requiredPermission={Permission.CampaignsPromoCodeEdit}
+                        disabled
+                      >
                         <Pencil className="size-4" />
                         編集
-                      </DropdownMenuItem>
+                      </RoleGatedMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem
+                      <RoleGatedMenuItem
+                        requiredPermission={Permission.CampaignsPromoCodeDelete}
                         className="text-destructive"
                         disabled={row.status === 'inactive'}
                         onClick={() => onRequestDisable(row)}
                       >
                         <Ban className="size-4" />
                         無効化
-                      </DropdownMenuItem>
+                      </RoleGatedMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
