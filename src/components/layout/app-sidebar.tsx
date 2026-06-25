@@ -92,6 +92,7 @@ const menuItems: MenuItem[] = [
     subItems: [
       { label: 'スタッフ管理', href: '/staffs' },
       { label: '店舗管理', href: '/stores' },
+      { label: 'ブランド管理', href: '/brands' },
     ],
   },
 ];

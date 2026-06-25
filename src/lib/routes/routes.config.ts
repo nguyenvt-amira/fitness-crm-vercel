@@ -14,6 +14,18 @@ export const routes = {
     pattern: '/403',
     private: true,
   },
+  '/brands': {
+    router: '/brands',
+    filePath: '(private)/brands',
+    pattern: '/brands',
+    private: true,
+  },
+  '/brands/[id]': {
+    router: (id: string | number) => `/brands/${id}`,
+    filePath: '(private)/brands/[id]',
+    pattern: '/brands/:id',
+    private: true,
+  },
   '/campaigns': {
     router: '/campaigns',
     filePath: '(private)/campaigns',
@@ -266,6 +278,8 @@ export const routes = {
 export const routeKeys = [
   '/',
   '/403',
+  '/brands',
+  '/brands/[id]',
   '/campaigns',
   '/campaigns/[id]',
   '/campaigns/[id]/edit',
@@ -313,6 +327,8 @@ export const routeKeys = [
 export const routePatterns = [
   '/',
   '/403',
+  '/brands',
+  '/brands/:id',
   '/campaigns',
   '/campaigns/:id',
   '/campaigns/:id/edit',

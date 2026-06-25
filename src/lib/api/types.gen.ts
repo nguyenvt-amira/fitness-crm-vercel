@@ -7900,32 +7900,69 @@ export type StaffBrand = typeof StaffBrand[keyof typeof StaffBrand];
 /**
  * ManagedBrandCode
  *
- * 管理対象ブランドコード
+ * システム内部で利用するブランドコード
  */
-export const ManagedBrandCode = {
-    ALL: 'all',
-    JOYFIT: 'joyfit',
-    FIT365: 'fit365',
-    JOYFIT24: 'joyfit24',
-    JOYFIT_YOGA: 'joyfit_yoga',
-    JOYFIT_PLUS: 'joyfit_plus'
-} as const;
+export type ManagedBrandCode = string;
 
 /**
- * ManagedBrandCode
+ * BrandIdInput
  *
- * 管理対象ブランドコード
+ * ブランドID入力値
  */
-export type ManagedBrandCode = typeof ManagedBrandCode[keyof typeof ManagedBrandCode];
+export type BrandIdInput = string;
 
 /**
- * BrandItem
+ * BrandPagination
  *
- * Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）
+ * ブランド一覧のページネーション情報
  */
-export type BrandItem = {
+export type BrandPagination = {
     /**
-     * Canonical id（店舗.brand_id 等と整合）
+     * 現在のページ
+     */
+    page: number;
+    /**
+     * 1ページあたりの表示件数
+     */
+    limit: number;
+    /**
+     * 検索条件適用後の総件数
+     */
+    total: number;
+    /**
+     * 総ページ数
+     */
+    total_pages: number;
+    /**
+     * 検索条件適用前の総件数
+     */
+    all_total: number;
+};
+
+/**
+ * BrandStatus
+ *
+ * ブランドまたはサブブランドの有効状態
+ */
+export const BrandStatus = { ACTIVE: 'active', INACTIVE: 'inactive' } as const;
+
+/**
+ * BrandStatus
+ *
+ * ブランドまたはサブブランドの有効状態
+ */
+export type BrandStatus = typeof BrandStatus[keyof typeof BrandStatus];
+
+/**
+ * BrandListItem
+ *
+ * Y-07 ブランド一覧行
+ */
+export type BrandListItem = {
+    /**
+     * ManagedBrandCode
+     *
+     * ブランドID
      */
     brand_id: string;
     /**
@@ -7933,47 +7970,300 @@ export type BrandItem = {
      *
      * ブランドコード
      */
-    code: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    code: string;
     /**
-     * 表示名
+     * ブランド名
      */
     display_name: string;
     /**
-     * 入会金デフォルト（円）
+     * BrandStatus
+     *
+     * ブランドまたはサブブランドの有効状態
      */
-    enrollment_fee_yen: number;
+    status: 'active' | 'inactive';
+};
+
+/**
+ * BrandDetail
+ *
+ * Y-07 ブランド基本情報詳細
+ */
+export type BrandDetail = {
     /**
-     * 手数料デフォルト（円）
+     * ManagedBrandCode
+     *
+     * ブランドID
      */
-    handling_fee_yen: number;
+    brand_id: string;
     /**
-     * 通貨
+     * ManagedBrandCode
+     *
+     * ブランドコード
      */
-    currency: 'JPY';
+    code: string;
     /**
-     * 一覧表示順
+     * ブランド名
      */
-    sort_order: number;
+    display_name: string;
+    /**
+     * BrandStatus
+     *
+     * ブランドまたはサブブランドの有効状態
+     */
+    status: 'active' | 'inactive';
+    /**
+     * 費用タブの件数
+     */
+    fee_group_count: number;
+    /**
+     * 変更履歴タブの件数
+     */
+    change_history_count: number;
+    /**
+     * 作成日時
+     */
     created_at: string;
+    /**
+     * 更新日時
+     */
     updated_at: string;
     /**
-     * 最終更新者（本部のみ編集）
+     * 作成者スタッフID
+     */
+    created_by?: string | null;
+    /**
+     * 最終更新者スタッフID
      */
     updated_by?: string | null;
 };
 
 /**
- * GetBrandsResponse
+ * BrandScheduledFeeChange
  *
- * ブランドマスタ一覧
+ * 予約中の費用改定
  */
-export type GetBrandsResponse = {
+export type BrandScheduledFeeChange = {
     /**
-     * 管理対象ブランド一覧
+     * 予約適用開始日
      */
-    brands: Array<{
+    effective_start_date: string;
+    /**
+     * 予約登録日
+     */
+    registered_at: string;
+    /**
+     * 登録者名
+     */
+    registered_by: string;
+    /**
+     * 予約後の定価（税込・円）
+     */
+    value_including_tax_yen: number;
+};
+
+/**
+ * BrandFeeItem
+ *
+ * サブブランドの費用項目
+ */
+export type BrandFeeItem = {
+    /**
+     * 費用項目コード
+     */
+    item_code: string;
+    /**
+     * 費用項目名
+     */
+    item_name: string;
+    /**
+     * 現在の定価（税込・円）
+     */
+    current_value_including_tax_yen: number;
+    /**
+     * 現行設定の有効開始日
+     */
+    effective_start_date: string;
+    /**
+     * 予約中の改定一覧
+     */
+    scheduled_changes: Array<{
         /**
-         * Canonical id（店舗.brand_id 等と整合）
+         * 予約適用開始日
+         */
+        effective_start_date: string;
+        /**
+         * 予約登録日
+         */
+        registered_at: string;
+        /**
+         * 登録者名
+         */
+        registered_by: string;
+        /**
+         * 予約後の定価（税込・円）
+         */
+        value_including_tax_yen: number;
+    }>;
+};
+
+/**
+ * UpdateBrandFeeItem
+ *
+ * 費用項目の更新入力
+ */
+export type UpdateBrandFeeItem = {
+    /**
+     * 費用項目コード
+     */
+    item_code: string;
+    /**
+     * 費用項目名
+     */
+    item_name: string;
+    /**
+     * 現在の定価（税込・円）
+     */
+    current_value_including_tax_yen: number;
+    /**
+     * 現行設定の有効開始日
+     */
+    effective_start_date: string;
+};
+
+/**
+ * BrandFeeGroup
+ *
+ * ブランド詳細の費用タブに表示するサブブランド単位の費用マスタ
+ */
+export type BrandFeeGroup = {
+    /**
+     * ManagedBrandCode
+     *
+     * 親ブランドコード
+     */
+    parent_brand_code: string;
+    /**
+     * 親ブランド名
+     */
+    parent_brand_name: string;
+    /**
+     * ManagedBrandCode
+     *
+     * サブブランドコード
+     */
+    sub_brand_code: string;
+    /**
+     * ManagedBrandCode
+     *
+     * サブブランドID
+     */
+    sub_brand_id: string;
+    /**
+     * サブブランド名
+     */
+    display_name: string;
+    /**
+     * BrandStatus
+     *
+     * ブランドまたはサブブランドの有効状態
+     */
+    status: 'active' | 'inactive';
+    /**
+     * 費用マスタID
+     */
+    fee_master_id: string;
+    /**
+     * サブブランド配下の費用項目
+     */
+    fee_items: Array<{
+        /**
+         * 費用項目コード
+         */
+        item_code: string;
+        /**
+         * 費用項目名
+         */
+        item_name: string;
+        /**
+         * 現在の定価（税込・円）
+         */
+        current_value_including_tax_yen: number;
+        /**
+         * 現行設定の有効開始日
+         */
+        effective_start_date: string;
+        /**
+         * 予約中の改定一覧
+         */
+        scheduled_changes: Array<{
+            /**
+             * 予約適用開始日
+             */
+            effective_start_date: string;
+            /**
+             * 予約登録日
+             */
+            registered_at: string;
+            /**
+             * 登録者名
+             */
+            registered_by: string;
+            /**
+             * 予約後の定価（税込・円）
+             */
+            value_including_tax_yen: number;
+        }>;
+    }>;
+};
+
+/**
+ * BrandChangeHistoryItem
+ *
+ * ブランド変更履歴の一覧行
+ */
+export type BrandChangeHistoryItem = {
+    /**
+     * 変更日時
+     */
+    changed_at: string;
+    /**
+     * 変更者
+     */
+    changed_by: string;
+    /**
+     * 対象
+     */
+    target_display_name: string;
+    /**
+     * 変更項目
+     */
+    changed_field: string;
+    /**
+     * 変更前
+     */
+    before_value: string;
+    /**
+     * 変更後
+     */
+    after_value: string;
+};
+
+/**
+ * GetBrandDetailResponse
+ *
+ * ブランド詳細の基本情報
+ */
+export type GetBrandDetailResponse = {
+    /**
+     * BrandDetail
+     *
+     * Y-07 ブランド基本情報詳細
+     */
+    brand: {
+        /**
+         * ManagedBrandCode
+         *
+         * ブランドID
          */
         brand_id: string;
         /**
@@ -7981,50 +8271,590 @@ export type GetBrandsResponse = {
          *
          * ブランドコード
          */
-        code: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        code: string;
         /**
-         * 表示名
+         * ブランド名
          */
         display_name: string;
         /**
-         * 入会金デフォルト（円）
+         * BrandStatus
+         *
+         * ブランドまたはサブブランドの有効状態
          */
-        enrollment_fee_yen: number;
+        status: 'active' | 'inactive';
         /**
-         * 手数料デフォルト（円）
+         * 費用タブの件数
          */
-        handling_fee_yen: number;
+        fee_group_count: number;
         /**
-         * 通貨
+         * 変更履歴タブの件数
          */
-        currency: 'JPY';
+        change_history_count: number;
         /**
-         * 一覧表示順
+         * 作成日時
          */
-        sort_order: number;
         created_at: string;
+        /**
+         * 更新日時
+         */
         updated_at: string;
         /**
-         * 最終更新者（本部のみ編集）
+         * 作成者スタッフID
+         */
+        created_by?: string | null;
+        /**
+         * 最終更新者スタッフID
          */
         updated_by?: string | null;
+    };
+};
+
+/**
+ * GetBrandFeesResponse
+ *
+ * ブランド詳細の費用タブデータ
+ */
+export type GetBrandFeesResponse = {
+    /**
+     * 費用タブ表示用のサブブランド一覧
+     */
+    fee_groups: Array<{
+        /**
+         * ManagedBrandCode
+         *
+         * 親ブランドコード
+         */
+        parent_brand_code: string;
+        /**
+         * 親ブランド名
+         */
+        parent_brand_name: string;
+        /**
+         * ManagedBrandCode
+         *
+         * サブブランドコード
+         */
+        sub_brand_code: string;
+        /**
+         * ManagedBrandCode
+         *
+         * サブブランドID
+         */
+        sub_brand_id: string;
+        /**
+         * サブブランド名
+         */
+        display_name: string;
+        /**
+         * BrandStatus
+         *
+         * ブランドまたはサブブランドの有効状態
+         */
+        status: 'active' | 'inactive';
+        /**
+         * 費用マスタID
+         */
+        fee_master_id: string;
+        /**
+         * サブブランド配下の費用項目
+         */
+        fee_items: Array<{
+            /**
+             * 費用項目コード
+             */
+            item_code: string;
+            /**
+             * 費用項目名
+             */
+            item_name: string;
+            /**
+             * 現在の定価（税込・円）
+             */
+            current_value_including_tax_yen: number;
+            /**
+             * 現行設定の有効開始日
+             */
+            effective_start_date: string;
+            /**
+             * 予約中の改定一覧
+             */
+            scheduled_changes: Array<{
+                /**
+                 * 予約適用開始日
+                 */
+                effective_start_date: string;
+                /**
+                 * 予約登録日
+                 */
+                registered_at: string;
+                /**
+                 * 登録者名
+                 */
+                registered_by: string;
+                /**
+                 * 予約後の定価（税込・円）
+                 */
+                value_including_tax_yen: number;
+            }>;
+        }>;
     }>;
+};
+
+/**
+ * GetBrandChangeHistoryResponse
+ *
+ * ブランド詳細の変更履歴データ
+ */
+export type GetBrandChangeHistoryResponse = {
+    /**
+     * 変更履歴一覧
+     */
+    histories: Array<{
+        /**
+         * 変更日時
+         */
+        changed_at: string;
+        /**
+         * 変更者
+         */
+        changed_by: string;
+        /**
+         * 対象
+         */
+        target_display_name: string;
+        /**
+         * 変更項目
+         */
+        changed_field: string;
+        /**
+         * 変更前
+         */
+        before_value: string;
+        /**
+         * 変更後
+         */
+        after_value: string;
+    }>;
+};
+
+/**
+ * UpdateBrandFeeGroupRequest
+ *
+ * ブランド費用グループの更新
+ */
+export type UpdateBrandFeeGroupRequest = {
+    /**
+     * 更新後の費用項目一覧
+     */
+    fee_items: Array<{
+        /**
+         * 費用項目コード
+         */
+        item_code: string;
+        /**
+         * 費用項目名
+         */
+        item_name: string;
+        /**
+         * 現在の定価（税込・円）
+         */
+        current_value_including_tax_yen: number;
+        /**
+         * 現行設定の有効開始日
+         */
+        effective_start_date: string;
+    }>;
+    /**
+     * 更新者スタッフIDまたは表示名（モック用）
+     */
+    updated_by?: string;
+};
+
+/**
+ * UpdateBrandFeeGroupResponse
+ *
+ * 更新後の費用グループ
+ */
+export type UpdateBrandFeeGroupResponse = {
+    message: string;
+    /**
+     * BrandFeeGroup
+     *
+     * ブランド詳細の費用タブに表示するサブブランド単位の費用マスタ
+     */
+    fee_group: {
+        /**
+         * ManagedBrandCode
+         *
+         * 親ブランドコード
+         */
+        parent_brand_code: string;
+        /**
+         * 親ブランド名
+         */
+        parent_brand_name: string;
+        /**
+         * ManagedBrandCode
+         *
+         * サブブランドコード
+         */
+        sub_brand_code: string;
+        /**
+         * ManagedBrandCode
+         *
+         * サブブランドID
+         */
+        sub_brand_id: string;
+        /**
+         * サブブランド名
+         */
+        display_name: string;
+        /**
+         * BrandStatus
+         *
+         * ブランドまたはサブブランドの有効状態
+         */
+        status: 'active' | 'inactive';
+        /**
+         * 費用マスタID
+         */
+        fee_master_id: string;
+        /**
+         * サブブランド配下の費用項目
+         */
+        fee_items: Array<{
+            /**
+             * 費用項目コード
+             */
+            item_code: string;
+            /**
+             * 費用項目名
+             */
+            item_name: string;
+            /**
+             * 現在の定価（税込・円）
+             */
+            current_value_including_tax_yen: number;
+            /**
+             * 現行設定の有効開始日
+             */
+            effective_start_date: string;
+            /**
+             * 予約中の改定一覧
+             */
+            scheduled_changes: Array<{
+                /**
+                 * 予約適用開始日
+                 */
+                effective_start_date: string;
+                /**
+                 * 予約登録日
+                 */
+                registered_at: string;
+                /**
+                 * 登録者名
+                 */
+                registered_by: string;
+                /**
+                 * 予約後の定価（税込・円）
+                 */
+                value_including_tax_yen: number;
+            }>;
+        }>;
+    };
+};
+
+/**
+ * DisableBrandFeeGroupResponse
+ *
+ * 無効化後の費用グループ
+ */
+export type DisableBrandFeeGroupResponse = {
+    message: string;
+    /**
+     * BrandFeeGroup
+     *
+     * ブランド詳細の費用タブに表示するサブブランド単位の費用マスタ
+     */
+    fee_group: {
+        /**
+         * ManagedBrandCode
+         *
+         * 親ブランドコード
+         */
+        parent_brand_code: string;
+        /**
+         * 親ブランド名
+         */
+        parent_brand_name: string;
+        /**
+         * ManagedBrandCode
+         *
+         * サブブランドコード
+         */
+        sub_brand_code: string;
+        /**
+         * ManagedBrandCode
+         *
+         * サブブランドID
+         */
+        sub_brand_id: string;
+        /**
+         * サブブランド名
+         */
+        display_name: string;
+        /**
+         * BrandStatus
+         *
+         * ブランドまたはサブブランドの有効状態
+         */
+        status: 'active' | 'inactive';
+        /**
+         * 費用マスタID
+         */
+        fee_master_id: string;
+        /**
+         * サブブランド配下の費用項目
+         */
+        fee_items: Array<{
+            /**
+             * 費用項目コード
+             */
+            item_code: string;
+            /**
+             * 費用項目名
+             */
+            item_name: string;
+            /**
+             * 現在の定価（税込・円）
+             */
+            current_value_including_tax_yen: number;
+            /**
+             * 現行設定の有効開始日
+             */
+            effective_start_date: string;
+            /**
+             * 予約中の改定一覧
+             */
+            scheduled_changes: Array<{
+                /**
+                 * 予約適用開始日
+                 */
+                effective_start_date: string;
+                /**
+                 * 予約登録日
+                 */
+                registered_at: string;
+                /**
+                 * 登録者名
+                 */
+                registered_by: string;
+                /**
+                 * 予約後の定価（税込・円）
+                 */
+                value_including_tax_yen: number;
+            }>;
+        }>;
+    };
+};
+
+/**
+ * DeleteBrandFeeGroupResponse
+ *
+ * 費用グループ削除レスポンス
+ */
+export type DeleteBrandFeeGroupResponse = {
+    message: string;
+    /**
+     * ManagedBrandCode
+     *
+     * 削除したサブブランドコード
+     */
+    deleted_sub_brand_code: string;
+};
+
+/**
+ * GetBrandsQuery
+ *
+ * ブランド一覧検索条件
+ */
+export type GetBrandsQuery = {
+    /**
+     * ページ番号
+     */
+    page?: number;
+    /**
+     * 1ページあたりの表示件数
+     */
+    limit?: number;
+    /**
+     * ブランドID・ブランド名で検索
+     */
+    search?: string;
+};
+
+/**
+ * GetBrandsResponse
+ *
+ * ブランド一覧
+ */
+export type GetBrandsResponse = {
+    /**
+     * 管理対象ブランド一覧
+     */
+    brands: Array<{
+        /**
+         * ManagedBrandCode
+         *
+         * ブランドID
+         */
+        brand_id: string;
+        /**
+         * ManagedBrandCode
+         *
+         * ブランドコード
+         */
+        code: string;
+        /**
+         * ブランド名
+         */
+        display_name: string;
+        /**
+         * BrandStatus
+         *
+         * ブランドまたはサブブランドの有効状態
+         */
+        status: 'active' | 'inactive';
+    }>;
+    /**
+     * BrandPagination
+     *
+     * ブランド一覧のページネーション情報
+     */
+    pagination: {
+        /**
+         * 現在のページ
+         */
+        page: number;
+        /**
+         * 1ページあたりの表示件数
+         */
+        limit: number;
+        /**
+         * 検索条件適用後の総件数
+         */
+        total: number;
+        /**
+         * 総ページ数
+         */
+        total_pages: number;
+        /**
+         * 検索条件適用前の総件数
+         */
+        all_total: number;
+    };
+};
+
+/**
+ * CreateBrandRequest
+ *
+ * Y-07 ブランド新規登録
+ */
+export type CreateBrandRequest = {
+    /**
+     * ブランド名
+     */
+    display_name: string;
+    /**
+     * BrandIdInput
+     *
+     * ブランドID
+     */
+    brand_id: string;
+    /**
+     * 作成者スタッフID（モック用）
+     */
+    created_by?: string;
+};
+
+/**
+ * CreateBrandResponse
+ *
+ * 作成後のブランド詳細
+ */
+export type CreateBrandResponse = {
+    message: string;
+    /**
+     * BrandDetail
+     *
+     * Y-07 ブランド基本情報詳細
+     */
+    brand: {
+        /**
+         * ManagedBrandCode
+         *
+         * ブランドID
+         */
+        brand_id: string;
+        /**
+         * ManagedBrandCode
+         *
+         * ブランドコード
+         */
+        code: string;
+        /**
+         * ブランド名
+         */
+        display_name: string;
+        /**
+         * BrandStatus
+         *
+         * ブランドまたはサブブランドの有効状態
+         */
+        status: 'active' | 'inactive';
+        /**
+         * 費用タブの件数
+         */
+        fee_group_count: number;
+        /**
+         * 変更履歴タブの件数
+         */
+        change_history_count: number;
+        /**
+         * 作成日時
+         */
+        created_at: string;
+        /**
+         * 更新日時
+         */
+        updated_at: string;
+        /**
+         * 作成者スタッフID
+         */
+        created_by?: string | null;
+        /**
+         * 最終更新者スタッフID
+         */
+        updated_by?: string | null;
+    };
 };
 
 /**
  * UpdateBrandRequest
  *
- * Y-07 ブランド設定の部分更新（本部のみ）
+ * Y-07 ブランド基本情報の部分更新
  */
 export type UpdateBrandRequest = {
     /**
-     * 入会金（円）
+     * ブランド名
      */
-    enrollment_fee_yen?: number;
+    display_name?: string;
     /**
-     * 手数料（円）
+     * BrandIdInput
+     *
+     * ブランドID
      */
-    handling_fee_yen?: number;
+    brand_id?: string;
     /**
      * 更新者スタッフID（モック用）
      */
@@ -8034,18 +8864,20 @@ export type UpdateBrandRequest = {
 /**
  * UpdateBrandResponse
  *
- * 更新後のブランド行
+ * 更新後のブランド詳細
  */
 export type UpdateBrandResponse = {
     message: string;
     /**
-     * BrandItem
+     * BrandDetail
      *
-     * Y-07 ブランド基本設定。本部のみ編集、Manager/Staff は参照のみ（権限マトリクス）
+     * Y-07 ブランド基本情報詳細
      */
     brand: {
         /**
-         * Canonical id（店舗.brand_id 等と整合）
+         * ManagedBrandCode
+         *
+         * ブランドID
          */
         brand_id: string;
         /**
@@ -8053,31 +8885,39 @@ export type UpdateBrandResponse = {
          *
          * ブランドコード
          */
-        code: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        code: string;
         /**
-         * 表示名
+         * ブランド名
          */
         display_name: string;
         /**
-         * 入会金デフォルト（円）
+         * BrandStatus
+         *
+         * ブランドまたはサブブランドの有効状態
          */
-        enrollment_fee_yen: number;
+        status: 'active' | 'inactive';
         /**
-         * 手数料デフォルト（円）
+         * 費用タブの件数
          */
-        handling_fee_yen: number;
+        fee_group_count: number;
         /**
-         * 通貨
+         * 変更履歴タブの件数
          */
-        currency: 'JPY';
+        change_history_count: number;
         /**
-         * 一覧表示順
+         * 作成日時
          */
-        sort_order: number;
         created_at: string;
+        /**
+         * 更新日時
+         */
         updated_at: string;
         /**
-         * 最終更新者（本部のみ編集）
+         * 作成者スタッフID
+         */
+        created_by?: string | null;
+        /**
+         * 最終更新者スタッフID
          */
         updated_by?: string | null;
     };
@@ -12337,14 +13177,878 @@ export type PostCrmBlacklistResponses = {
 
 export type PostCrmBlacklistResponse = PostCrmBlacklistResponses[keyof PostCrmBlacklistResponses];
 
+export type GetCrmBrandsByIdChangeHistoryData = {
+    body?: never;
+    path: {
+        /**
+         * id parameter
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/brands/{id}/change-history';
+};
+
+export type GetCrmBrandsByIdChangeHistoryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmBrandsByIdChangeHistoryError = GetCrmBrandsByIdChangeHistoryErrors[keyof GetCrmBrandsByIdChangeHistoryErrors];
+
+export type GetCrmBrandsByIdChangeHistoryResponses = {
+    /**
+     * GetBrandChangeHistoryResponse
+     *
+     * ブランド詳細の変更履歴データ
+     */
+    200: {
+        /**
+         * 変更履歴一覧
+         */
+        histories: Array<{
+            /**
+             * 変更日時
+             */
+            changed_at: string;
+            /**
+             * 変更者
+             */
+            changed_by: string;
+            /**
+             * 対象
+             */
+            target_display_name: string;
+            /**
+             * 変更項目
+             */
+            changed_field: string;
+            /**
+             * 変更前
+             */
+            before_value: string;
+            /**
+             * 変更後
+             */
+            after_value: string;
+        }>;
+    };
+};
+
+export type GetCrmBrandsByIdChangeHistoryResponse = GetCrmBrandsByIdChangeHistoryResponses[keyof GetCrmBrandsByIdChangeHistoryResponses];
+
+export type PatchCrmBrandsByIdFeesBySubBrandCodeDisableData = {
+    body?: never;
+    path: {
+        /**
+         * id parameter
+         */
+        id: string;
+        /**
+         * subBrandCode parameter
+         */
+        subBrandCode: string;
+    };
+    query?: never;
+    url: '/crm/brands/{id}/fees/{subBrandCode}/disable';
+};
+
+export type PatchCrmBrandsByIdFeesBySubBrandCodeDisableErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PatchCrmBrandsByIdFeesBySubBrandCodeDisableError = PatchCrmBrandsByIdFeesBySubBrandCodeDisableErrors[keyof PatchCrmBrandsByIdFeesBySubBrandCodeDisableErrors];
+
+export type PatchCrmBrandsByIdFeesBySubBrandCodeDisableResponses = {
+    /**
+     * DisableBrandFeeGroupResponse
+     *
+     * 無効化後の費用グループ
+     */
+    200: {
+        message: string;
+        /**
+         * BrandFeeGroup
+         *
+         * ブランド詳細の費用タブに表示するサブブランド単位の費用マスタ
+         */
+        fee_group: {
+            /**
+             * ManagedBrandCode
+             *
+             * 親ブランドコード
+             */
+            parent_brand_code: string;
+            /**
+             * 親ブランド名
+             */
+            parent_brand_name: string;
+            /**
+             * ManagedBrandCode
+             *
+             * サブブランドコード
+             */
+            sub_brand_code: string;
+            /**
+             * ManagedBrandCode
+             *
+             * サブブランドID
+             */
+            sub_brand_id: string;
+            /**
+             * サブブランド名
+             */
+            display_name: string;
+            /**
+             * BrandStatus
+             *
+             * ブランドまたはサブブランドの有効状態
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 費用マスタID
+             */
+            fee_master_id: string;
+            /**
+             * サブブランド配下の費用項目
+             */
+            fee_items: Array<{
+                /**
+                 * 費用項目コード
+                 */
+                item_code: string;
+                /**
+                 * 費用項目名
+                 */
+                item_name: string;
+                /**
+                 * 現在の定価（税込・円）
+                 */
+                current_value_including_tax_yen: number;
+                /**
+                 * 現行設定の有効開始日
+                 */
+                effective_start_date: string;
+                /**
+                 * 予約中の改定一覧
+                 */
+                scheduled_changes: Array<{
+                    /**
+                     * 予約適用開始日
+                     */
+                    effective_start_date: string;
+                    /**
+                     * 予約登録日
+                     */
+                    registered_at: string;
+                    /**
+                     * 登録者名
+                     */
+                    registered_by: string;
+                    /**
+                     * 予約後の定価（税込・円）
+                     */
+                    value_including_tax_yen: number;
+                }>;
+            }>;
+        };
+    };
+};
+
+export type PatchCrmBrandsByIdFeesBySubBrandCodeDisableResponse = PatchCrmBrandsByIdFeesBySubBrandCodeDisableResponses[keyof PatchCrmBrandsByIdFeesBySubBrandCodeDisableResponses];
+
+export type DeleteCrmBrandsByIdFeesBySubBrandCodeData = {
+    body?: never;
+    path: {
+        /**
+         * id parameter
+         */
+        id: string;
+        /**
+         * subBrandCode parameter
+         */
+        subBrandCode: string;
+    };
+    query?: never;
+    url: '/crm/brands/{id}/fees/{subBrandCode}';
+};
+
+export type DeleteCrmBrandsByIdFeesBySubBrandCodeErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type DeleteCrmBrandsByIdFeesBySubBrandCodeError = DeleteCrmBrandsByIdFeesBySubBrandCodeErrors[keyof DeleteCrmBrandsByIdFeesBySubBrandCodeErrors];
+
+export type DeleteCrmBrandsByIdFeesBySubBrandCodeResponses = {
+    /**
+     * DeleteBrandFeeGroupResponse
+     *
+     * 費用グループ削除レスポンス
+     */
+    200: {
+        message: string;
+        /**
+         * ManagedBrandCode
+         *
+         * 削除したサブブランドコード
+         */
+        deleted_sub_brand_code: string;
+    };
+};
+
+export type DeleteCrmBrandsByIdFeesBySubBrandCodeResponse = DeleteCrmBrandsByIdFeesBySubBrandCodeResponses[keyof DeleteCrmBrandsByIdFeesBySubBrandCodeResponses];
+
+export type PatchCrmBrandsByIdFeesBySubBrandCodeData = {
+    /**
+     * UpdateBrandFeeGroupRequest
+     *
+     * ブランド費用グループの更新
+     */
+    body?: {
+        /**
+         * 更新後の費用項目一覧
+         */
+        fee_items: Array<{
+            /**
+             * 費用項目コード
+             */
+            item_code: string;
+            /**
+             * 費用項目名
+             */
+            item_name: string;
+            /**
+             * 現在の定価（税込・円）
+             */
+            current_value_including_tax_yen: number;
+            /**
+             * 現行設定の有効開始日
+             */
+            effective_start_date: string;
+        }>;
+        /**
+         * 更新者スタッフIDまたは表示名（モック用）
+         */
+        updated_by?: string;
+    };
+    path: {
+        /**
+         * id parameter
+         */
+        id: string;
+        /**
+         * subBrandCode parameter
+         */
+        subBrandCode: string;
+    };
+    query?: never;
+    url: '/crm/brands/{id}/fees/{subBrandCode}';
+};
+
+export type PatchCrmBrandsByIdFeesBySubBrandCodeErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PatchCrmBrandsByIdFeesBySubBrandCodeError = PatchCrmBrandsByIdFeesBySubBrandCodeErrors[keyof PatchCrmBrandsByIdFeesBySubBrandCodeErrors];
+
+export type PatchCrmBrandsByIdFeesBySubBrandCodeResponses = {
+    /**
+     * UpdateBrandFeeGroupResponse
+     *
+     * 更新後の費用グループ
+     */
+    200: {
+        message: string;
+        /**
+         * BrandFeeGroup
+         *
+         * ブランド詳細の費用タブに表示するサブブランド単位の費用マスタ
+         */
+        fee_group: {
+            /**
+             * ManagedBrandCode
+             *
+             * 親ブランドコード
+             */
+            parent_brand_code: string;
+            /**
+             * 親ブランド名
+             */
+            parent_brand_name: string;
+            /**
+             * ManagedBrandCode
+             *
+             * サブブランドコード
+             */
+            sub_brand_code: string;
+            /**
+             * ManagedBrandCode
+             *
+             * サブブランドID
+             */
+            sub_brand_id: string;
+            /**
+             * サブブランド名
+             */
+            display_name: string;
+            /**
+             * BrandStatus
+             *
+             * ブランドまたはサブブランドの有効状態
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 費用マスタID
+             */
+            fee_master_id: string;
+            /**
+             * サブブランド配下の費用項目
+             */
+            fee_items: Array<{
+                /**
+                 * 費用項目コード
+                 */
+                item_code: string;
+                /**
+                 * 費用項目名
+                 */
+                item_name: string;
+                /**
+                 * 現在の定価（税込・円）
+                 */
+                current_value_including_tax_yen: number;
+                /**
+                 * 現行設定の有効開始日
+                 */
+                effective_start_date: string;
+                /**
+                 * 予約中の改定一覧
+                 */
+                scheduled_changes: Array<{
+                    /**
+                     * 予約適用開始日
+                     */
+                    effective_start_date: string;
+                    /**
+                     * 予約登録日
+                     */
+                    registered_at: string;
+                    /**
+                     * 登録者名
+                     */
+                    registered_by: string;
+                    /**
+                     * 予約後の定価（税込・円）
+                     */
+                    value_including_tax_yen: number;
+                }>;
+            }>;
+        };
+    };
+};
+
+export type PatchCrmBrandsByIdFeesBySubBrandCodeResponse = PatchCrmBrandsByIdFeesBySubBrandCodeResponses[keyof PatchCrmBrandsByIdFeesBySubBrandCodeResponses];
+
+export type GetCrmBrandsByIdFeesData = {
+    body?: never;
+    path: {
+        /**
+         * id parameter
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/brands/{id}/fees';
+};
+
+export type GetCrmBrandsByIdFeesErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmBrandsByIdFeesError = GetCrmBrandsByIdFeesErrors[keyof GetCrmBrandsByIdFeesErrors];
+
+export type GetCrmBrandsByIdFeesResponses = {
+    /**
+     * GetBrandFeesResponse
+     *
+     * ブランド詳細の費用タブデータ
+     */
+    200: {
+        /**
+         * 費用タブ表示用のサブブランド一覧
+         */
+        fee_groups: Array<{
+            /**
+             * ManagedBrandCode
+             *
+             * 親ブランドコード
+             */
+            parent_brand_code: string;
+            /**
+             * 親ブランド名
+             */
+            parent_brand_name: string;
+            /**
+             * ManagedBrandCode
+             *
+             * サブブランドコード
+             */
+            sub_brand_code: string;
+            /**
+             * ManagedBrandCode
+             *
+             * サブブランドID
+             */
+            sub_brand_id: string;
+            /**
+             * サブブランド名
+             */
+            display_name: string;
+            /**
+             * BrandStatus
+             *
+             * ブランドまたはサブブランドの有効状態
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 費用マスタID
+             */
+            fee_master_id: string;
+            /**
+             * サブブランド配下の費用項目
+             */
+            fee_items: Array<{
+                /**
+                 * 費用項目コード
+                 */
+                item_code: string;
+                /**
+                 * 費用項目名
+                 */
+                item_name: string;
+                /**
+                 * 現在の定価（税込・円）
+                 */
+                current_value_including_tax_yen: number;
+                /**
+                 * 現行設定の有効開始日
+                 */
+                effective_start_date: string;
+                /**
+                 * 予約中の改定一覧
+                 */
+                scheduled_changes: Array<{
+                    /**
+                     * 予約適用開始日
+                     */
+                    effective_start_date: string;
+                    /**
+                     * 予約登録日
+                     */
+                    registered_at: string;
+                    /**
+                     * 登録者名
+                     */
+                    registered_by: string;
+                    /**
+                     * 予約後の定価（税込・円）
+                     */
+                    value_including_tax_yen: number;
+                }>;
+            }>;
+        }>;
+    };
+};
+
+export type GetCrmBrandsByIdFeesResponse = GetCrmBrandsByIdFeesResponses[keyof GetCrmBrandsByIdFeesResponses];
+
+export type GetCrmBrandsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * id parameter
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/brands/{id}';
+};
+
+export type GetCrmBrandsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmBrandsByIdError = GetCrmBrandsByIdErrors[keyof GetCrmBrandsByIdErrors];
+
+export type GetCrmBrandsByIdResponses = {
+    /**
+     * GetBrandDetailResponse
+     *
+     * ブランド詳細の基本情報
+     */
+    200: {
+        /**
+         * BrandDetail
+         *
+         * Y-07 ブランド基本情報詳細
+         */
+        brand: {
+            /**
+             * ManagedBrandCode
+             *
+             * ブランドID
+             */
+            brand_id: string;
+            /**
+             * ManagedBrandCode
+             *
+             * ブランドコード
+             */
+            code: string;
+            /**
+             * ブランド名
+             */
+            display_name: string;
+            /**
+             * BrandStatus
+             *
+             * ブランドまたはサブブランドの有効状態
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 費用タブの件数
+             */
+            fee_group_count: number;
+            /**
+             * 変更履歴タブの件数
+             */
+            change_history_count: number;
+            /**
+             * 作成日時
+             */
+            created_at: string;
+            /**
+             * 更新日時
+             */
+            updated_at: string;
+            /**
+             * 作成者スタッフID
+             */
+            created_by?: string | null;
+            /**
+             * 最終更新者スタッフID
+             */
+            updated_by?: string | null;
+        };
+    };
+};
+
+export type GetCrmBrandsByIdResponse = GetCrmBrandsByIdResponses[keyof GetCrmBrandsByIdResponses];
+
+export type PatchCrmBrandsByIdData = {
+    /**
+     * UpdateBrandRequest
+     *
+     * Y-07 ブランド基本情報の部分更新
+     */
+    body?: {
+        /**
+         * ブランド名
+         */
+        display_name?: string;
+        /**
+         * BrandIdInput
+         *
+         * ブランドID
+         */
+        brand_id?: string;
+        /**
+         * 更新者スタッフID（モック用）
+         */
+        updated_by?: string;
+    };
+    path: {
+        /**
+         * id parameter
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/brands/{id}';
+};
+
+export type PatchCrmBrandsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PatchCrmBrandsByIdError = PatchCrmBrandsByIdErrors[keyof PatchCrmBrandsByIdErrors];
+
+export type PatchCrmBrandsByIdResponses = {
+    /**
+     * UpdateBrandResponse
+     *
+     * 更新後のブランド詳細
+     */
+    200: {
+        message: string;
+        /**
+         * BrandDetail
+         *
+         * Y-07 ブランド基本情報詳細
+         */
+        brand: {
+            /**
+             * ManagedBrandCode
+             *
+             * ブランドID
+             */
+            brand_id: string;
+            /**
+             * ManagedBrandCode
+             *
+             * ブランドコード
+             */
+            code: string;
+            /**
+             * ブランド名
+             */
+            display_name: string;
+            /**
+             * BrandStatus
+             *
+             * ブランドまたはサブブランドの有効状態
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 費用タブの件数
+             */
+            fee_group_count: number;
+            /**
+             * 変更履歴タブの件数
+             */
+            change_history_count: number;
+            /**
+             * 作成日時
+             */
+            created_at: string;
+            /**
+             * 更新日時
+             */
+            updated_at: string;
+            /**
+             * 作成者スタッフID
+             */
+            created_by?: string | null;
+            /**
+             * 最終更新者スタッフID
+             */
+            updated_by?: string | null;
+        };
+    };
+};
+
+export type PatchCrmBrandsByIdResponse = PatchCrmBrandsByIdResponses[keyof PatchCrmBrandsByIdResponses];
+
 export type GetCrmBrandsData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * ページ番号
+         */
+        page?: number;
+        /**
+         * 1ページあたりの表示件数
+         */
+        limit?: number;
+        /**
+         * ブランドID・ブランド名で検索
+         */
+        search?: string;
+    };
     url: '/crm/brands';
 };
 
 export type GetCrmBrandsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
     /**
      * ErrorResponse
      *
@@ -12364,7 +14068,7 @@ export type GetCrmBrandsResponses = {
     /**
      * GetBrandsResponse
      *
-     * ブランドマスタ一覧
+     * ブランド一覧
      */
     200: {
         /**
@@ -12372,7 +14076,9 @@ export type GetCrmBrandsResponses = {
          */
         brands: Array<{
             /**
-             * Canonical id（店舗.brand_id 等と整合）
+             * ManagedBrandCode
+             *
+             * ブランドID
              */
             brand_id: string;
             /**
@@ -12380,38 +14086,169 @@ export type GetCrmBrandsResponses = {
              *
              * ブランドコード
              */
-            code: 'all' | 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            code: string;
             /**
-             * 表示名
+             * ブランド名
              */
             display_name: string;
             /**
-             * 入会金デフォルト（円）
+             * BrandStatus
+             *
+             * ブランドまたはサブブランドの有効状態
              */
-            enrollment_fee_yen: number;
-            /**
-             * 手数料デフォルト（円）
-             */
-            handling_fee_yen: number;
-            /**
-             * 通貨
-             */
-            currency: 'JPY';
-            /**
-             * 一覧表示順
-             */
-            sort_order: number;
-            created_at: string;
-            updated_at: string;
-            /**
-             * 最終更新者（本部のみ編集）
-             */
-            updated_by?: string | null;
+            status: 'active' | 'inactive';
         }>;
+        /**
+         * BrandPagination
+         *
+         * ブランド一覧のページネーション情報
+         */
+        pagination: {
+            /**
+             * 現在のページ
+             */
+            page: number;
+            /**
+             * 1ページあたりの表示件数
+             */
+            limit: number;
+            /**
+             * 検索条件適用後の総件数
+             */
+            total: number;
+            /**
+             * 総ページ数
+             */
+            total_pages: number;
+            /**
+             * 検索条件適用前の総件数
+             */
+            all_total: number;
+        };
     };
 };
 
 export type GetCrmBrandsResponse = GetCrmBrandsResponses[keyof GetCrmBrandsResponses];
+
+export type PostCrmBrandsData = {
+    /**
+     * CreateBrandRequest
+     *
+     * Y-07 ブランド新規登録
+     */
+    body?: {
+        /**
+         * ブランド名
+         */
+        display_name: string;
+        /**
+         * BrandIdInput
+         *
+         * ブランドID
+         */
+        brand_id: string;
+        /**
+         * 作成者スタッフID（モック用）
+         */
+        created_by?: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/brands';
+};
+
+export type PostCrmBrandsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmBrandsError = PostCrmBrandsErrors[keyof PostCrmBrandsErrors];
+
+export type PostCrmBrandsResponses = {
+    /**
+     * CreateBrandResponse
+     *
+     * 作成後のブランド詳細
+     */
+    201: {
+        message: string;
+        /**
+         * BrandDetail
+         *
+         * Y-07 ブランド基本情報詳細
+         */
+        brand: {
+            /**
+             * ManagedBrandCode
+             *
+             * ブランドID
+             */
+            brand_id: string;
+            /**
+             * ManagedBrandCode
+             *
+             * ブランドコード
+             */
+            code: string;
+            /**
+             * ブランド名
+             */
+            display_name: string;
+            /**
+             * BrandStatus
+             *
+             * ブランドまたはサブブランドの有効状態
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 費用タブの件数
+             */
+            fee_group_count: number;
+            /**
+             * 変更履歴タブの件数
+             */
+            change_history_count: number;
+            /**
+             * 作成日時
+             */
+            created_at: string;
+            /**
+             * 更新日時
+             */
+            updated_at: string;
+            /**
+             * 作成者スタッフID
+             */
+            created_by?: string | null;
+            /**
+             * 最終更新者スタッフID
+             */
+            updated_by?: string | null;
+        };
+    };
+};
+
+export type PostCrmBrandsResponse = PostCrmBrandsResponses[keyof PostCrmBrandsResponses];
 
 export type GetCrmCampaignsByIdChangeHistoryData = {
     body?: never;

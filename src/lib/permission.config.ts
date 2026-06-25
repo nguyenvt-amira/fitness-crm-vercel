@@ -73,6 +73,10 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
   '/option-discount/:id': Permission.OptionDiscountsView,
   '/option-discount/create': Permission.OptionDiscountsCreate,
   '/option-discount/:id/edit': Permission.OptionDiscountsEdit,
+
+  // Brands
+  '/brands': Permission.BrandsView,
+  '/brands/:id': Permission.BrandsView,
 };
 
 // ---------------------------------------------------------------------------
@@ -142,6 +146,9 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.OptionDiscountsCreate,
     Permission.OptionDiscountsEdit,
     Permission.OptionDiscountsDelete,
+    Permission.BrandsView,
+    Permission.BrandsCreate,
+    Permission.BrandsEdit,
   ],
 
   [UserRole.Manager]: [
@@ -168,6 +175,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.CampaignsPromoCodeDelete,
     Permission.CampaignsPromoCodeExport,
     Permission.OptionsView,
+    Permission.BrandsView,
   ],
 
   [UserRole.Staff]: [
@@ -198,6 +206,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.CampaignsPromoCodeDelete,
     Permission.CampaignsPromoCodeExport,
     Permission.OptionsView,
+    Permission.BrandsView,
   ],
 
   [UserRole.Trainer]: [Permission.MembersView],

@@ -4,7 +4,7 @@ import { type DefaultError, type InfiniteData, infiniteQueryOptions, queryOption
 
 import { client } from '../client.gen';
 import { Authentication, AutoApproval, Blacklist, Brands, Campaigns, FamilyMembers, FamilyRegistrations, Leaves, MainContracts, Members, MembershipApplications, type Options, Options2, PromoCodes, Staffs, Stores, Transfers, Uploads, Users } from '../sdk.gen';
-import type { DeleteCrmMainContractsByIdData, DeleteCrmMainContractsByIdError, DeleteCrmMainContractsByIdResponse, DeleteCrmMembersByIdGateStopData, DeleteCrmMembersByIdGateStopError, DeleteCrmMembersByIdGateStopResponse, DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdError, DeleteCrmMembersByIdMemosByMemoIdResponse, DeleteCrmMembersByIdPersonalDataData, DeleteCrmMembersByIdPersonalDataError, DeleteCrmMembersByIdPersonalDataResponse, DeleteCrmMembershipApplicationsByIdMemosByMemoIdData, DeleteCrmMembershipApplicationsByIdMemosByMemoIdError, DeleteCrmMembershipApplicationsByIdMemosByMemoIdResponse, DeleteCrmOptionDiscountsByIdData, DeleteCrmOptionDiscountsByIdError, DeleteCrmOptionDiscountsByIdResponse, DeleteCrmOptionsByIdData, DeleteCrmOptionsByIdError, DeleteCrmOptionsByIdResponse, DeleteCrmStaffsByIdData, DeleteCrmStaffsByIdError, DeleteCrmStaffsByIdResponse, DeleteCrmStoresByIdMainContractsByContractIdData, DeleteCrmStoresByIdMainContractsByContractIdError, DeleteCrmStoresByIdMainContractsByContractIdResponse, DeleteCrmStoresByIdOptionsByOptionIdData, DeleteCrmStoresByIdOptionsByOptionIdError, DeleteCrmStoresByIdOptionsByOptionIdResponse, GetAuthMeData, GetAuthMeError, GetAuthMeResponse, GetCrmAutoApprovalDashboardData, GetCrmAutoApprovalDashboardError, GetCrmAutoApprovalDashboardResponse, GetCrmAutoApprovalSettingsData, GetCrmAutoApprovalSettingsError, GetCrmAutoApprovalSettingsResponse, GetCrmBlacklistByIdData, GetCrmBlacklistByIdError, GetCrmBlacklistByIdResponse, GetCrmBlacklistData, GetCrmBlacklistError, GetCrmBlacklistResponse, GetCrmBrandsData, GetCrmBrandsError, GetCrmBrandsResponse, GetCrmCampaignsByIdChangeHistoryData, GetCrmCampaignsByIdChangeHistoryError, GetCrmCampaignsByIdChangeHistoryResponse, GetCrmCampaignsByIdData, GetCrmCampaignsByIdError, GetCrmCampaignsByIdResponse, GetCrmCampaignsData, GetCrmCampaignsError, GetCrmCampaignsResponse, GetCrmFamilyRegistrationsByIdData, GetCrmFamilyRegistrationsByIdError, GetCrmFamilyRegistrationsByIdResponse, GetCrmFamilyRegistrationsDashboardData, GetCrmFamilyRegistrationsDashboardError, GetCrmFamilyRegistrationsDashboardResponse, GetCrmFamilyRegistrationsData, GetCrmFamilyRegistrationsError, GetCrmFamilyRegistrationsResponse, GetCrmFamilyRegistrationsSummaryData, GetCrmFamilyRegistrationsSummaryError, GetCrmFamilyRegistrationsSummaryResponse, GetCrmLeavesByIdData, GetCrmLeavesByIdError, GetCrmLeavesByIdResponse, GetCrmLeavesData, GetCrmLeavesError, GetCrmLeavesResponse, GetCrmMainContractsByIdChangeHistoryData, GetCrmMainContractsByIdChangeHistoryError, GetCrmMainContractsByIdChangeHistoryResponse, GetCrmMainContractsByIdData, GetCrmMainContractsByIdError, GetCrmMainContractsByIdResponse, GetCrmMainContractsData, GetCrmMainContractsError, GetCrmMainContractsResponse, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoError, GetCrmMembersByIdBasicInfoResponse, GetCrmMembersByIdBillingData, GetCrmMembersByIdBillingError, GetCrmMembersByIdBillingResponse, GetCrmMembersByIdBodyDataData, GetCrmMembersByIdBodyDataError, GetCrmMembersByIdBodyDataResponse, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryError, GetCrmMembersByIdChangeHistoryResponse, GetCrmMembersByIdContractsCampaignsData, GetCrmMembersByIdContractsCampaignsError, GetCrmMembersByIdContractsCampaignsResponse, GetCrmMembersByIdContractsDayPassHistoryData, GetCrmMembersByIdContractsDayPassHistoryError, GetCrmMembersByIdContractsDayPassHistoryResponse, GetCrmMembersByIdContractsMainContractData, GetCrmMembersByIdContractsMainContractError, GetCrmMembersByIdContractsMainContractResponse, GetCrmMembersByIdContractsOptionContractsData, GetCrmMembersByIdContractsOptionContractsError, GetCrmMembersByIdContractsOptionContractsResponse, GetCrmMembersByIdContractsPaymentHistoryData, GetCrmMembersByIdContractsPaymentHistoryError, GetCrmMembersByIdContractsPaymentHistoryResponse, GetCrmMembersByIdContractsSummaryData, GetCrmMembersByIdContractsSummaryError, GetCrmMembersByIdContractsSummaryResponse, GetCrmMembersByIdData, GetCrmMembersByIdError, GetCrmMembersByIdMemosData, GetCrmMembersByIdMemosError, GetCrmMembersByIdMemosResponse, GetCrmMembersByIdPaymentHistoryData, GetCrmMembersByIdPaymentHistoryError, GetCrmMembersByIdPaymentHistoryResponse, GetCrmMembersByIdPaymentSummaryData, GetCrmMembersByIdPaymentSummaryError, GetCrmMembersByIdPaymentSummaryResponse, GetCrmMembersByIdPointsData, GetCrmMembersByIdPointsError, GetCrmMembersByIdPointsResponse, GetCrmMembersByIdResponse, GetCrmMembersByIdStoresData, GetCrmMembersByIdStoresError, GetCrmMembersByIdStoresResponse, GetCrmMembersByIdSuspensionLeaveData, GetCrmMembersByIdSuspensionLeaveError, GetCrmMembersByIdSuspensionLeaveResponse, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsError, GetCrmMembersByIdTrainingRecordsResponse, GetCrmMembersByIdUsageHistoryAccessSettingsData, GetCrmMembersByIdUsageHistoryAccessSettingsError, GetCrmMembersByIdUsageHistoryAccessSettingsResponse, GetCrmMembersByIdUsageHistoryEntriesData, GetCrmMembersByIdUsageHistoryEntriesError, GetCrmMembersByIdUsageHistoryEntriesResponse, GetCrmMembersByIdUsageHistoryLessonsData, GetCrmMembersByIdUsageHistoryLessonsError, GetCrmMembersByIdUsageHistoryLessonsResponse, GetCrmMembersByIdUsageStatusData, GetCrmMembersByIdUsageStatusError, GetCrmMembersByIdUsageStatusResponse, GetCrmMembersByMemberIdFamilyMembersData, GetCrmMembersByMemberIdFamilyMembersError, GetCrmMembersByMemberIdFamilyMembersResponse, GetCrmMembersData, GetCrmMembersError, GetCrmMembershipApplicationsByIdData, GetCrmMembershipApplicationsByIdError, GetCrmMembershipApplicationsByIdResponse, GetCrmMembershipApplicationsCorporateMastersData, GetCrmMembershipApplicationsCorporateMastersResponse, GetCrmMembershipApplicationsData, GetCrmMembershipApplicationsEnrollmentFeeMastersData, GetCrmMembershipApplicationsEnrollmentFeeMastersError, GetCrmMembershipApplicationsEnrollmentFeeMastersResponse, GetCrmMembershipApplicationsError, GetCrmMembershipApplicationsResponse, GetCrmMembersMetaMainContractLabelsData, GetCrmMembersMetaMainContractLabelsError, GetCrmMembersMetaMainContractLabelsResponse, GetCrmMembersResponse, GetCrmMembersSummaryData, GetCrmMembersSummaryError, GetCrmMembersSummaryResponse, GetCrmOptionDiscountsByIdChangeHistoryData, GetCrmOptionDiscountsByIdChangeHistoryError, GetCrmOptionDiscountsByIdChangeHistoryResponse, GetCrmOptionDiscountsByIdData, GetCrmOptionDiscountsByIdError, GetCrmOptionDiscountsByIdResponse, GetCrmOptionDiscountsData, GetCrmOptionDiscountsError, GetCrmOptionDiscountsResponse, GetCrmOptionsByIdChangeHistoryData, GetCrmOptionsByIdChangeHistoryError, GetCrmOptionsByIdChangeHistoryResponse, GetCrmOptionsByIdData, GetCrmOptionsByIdError, GetCrmOptionsByIdResponse, GetCrmOptionsData, GetCrmOptionsError, GetCrmOptionsResponse, GetCrmPositionsData, GetCrmPositionsError, GetCrmPositionsResponse, GetCrmPromoCodesData, GetCrmPromoCodesError, GetCrmPromoCodesResponse, GetCrmStaffsByIdData, GetCrmStaffsByIdError, GetCrmStaffsByIdResponse, GetCrmStaffsData, GetCrmStaffsError, GetCrmStaffsResponse, GetCrmStoresByIdAccessSettingsData, GetCrmStoresByIdAccessSettingsError, GetCrmStoresByIdAccessSettingsResponse, GetCrmStoresByIdBusinessHoursData, GetCrmStoresByIdBusinessHoursError, GetCrmStoresByIdBusinessHoursResponse, GetCrmStoresByIdData, GetCrmStoresByIdError, GetCrmStoresByIdMainContractsData, GetCrmStoresByIdMainContractsError, GetCrmStoresByIdMainContractsResponse, GetCrmStoresByIdOptionsData, GetCrmStoresByIdOptionsError, GetCrmStoresByIdOptionsResponse, GetCrmStoresByIdResponse, GetCrmStoresData, GetCrmStoresError, GetCrmStoresResponse, GetCrmTransfersByIdData, GetCrmTransfersByIdError, GetCrmTransfersByIdResponse, GetCrmTransfersData, GetCrmTransfersError, GetCrmTransfersResponse, GetCrmUsersData, GetCrmUsersError, GetCrmUsersResponse, PatchCrmCampaignsByIdData, PatchCrmCampaignsByIdError, PatchCrmCampaignsByIdResponse, PatchCrmMainContractsByIdData, PatchCrmMainContractsByIdError, PatchCrmMainContractsByIdResponse, PatchCrmMembersByIdContractsMainContractChangeData, PatchCrmMembersByIdContractsMainContractChangeError, PatchCrmMembersByIdContractsMainContractChangeResponse, PatchCrmMembersByIdContractsOptionContractsCancelData, PatchCrmMembersByIdContractsOptionContractsCancelError, PatchCrmMembersByIdContractsOptionContractsCancelResponse, PatchCrmMembersByIdContractsOptionContractsChangeData, PatchCrmMembersByIdContractsOptionContractsChangeError, PatchCrmMembersByIdContractsOptionContractsChangeResponse, PatchCrmMembersByIdData, PatchCrmMembersByIdError, PatchCrmMembersByIdResponse, PatchCrmOptionDiscountsByIdData, PatchCrmOptionDiscountsByIdError, PatchCrmOptionDiscountsByIdResponse, PatchCrmOptionsByIdData, PatchCrmOptionsByIdError, PatchCrmOptionsByIdResponse, PatchCrmPromoCodesByCodeData, PatchCrmPromoCodesByCodeError, PatchCrmPromoCodesByCodeResponse, PatchCrmStaffsByIdData, PatchCrmStaffsByIdError, PatchCrmStaffsByIdResponse, PatchCrmStoresByIdBusinessHoursData, PatchCrmStoresByIdBusinessHoursError, PatchCrmStoresByIdBusinessHoursResponse, PatchCrmStoresByIdData, PatchCrmStoresByIdError, PatchCrmStoresByIdResponse, PatchCrmTransfersByIdApproveData, PatchCrmTransfersByIdApproveError, PatchCrmTransfersByIdApproveResponse, PatchCrmTransfersByIdRejectData, PatchCrmTransfersByIdRejectError, PatchCrmTransfersByIdRejectResponse, PostAuthLoginData, PostAuthLoginError, PostAuthLoginResponse, PostAuthRefreshData, PostAuthRefreshError, PostAuthRefreshResponse, PostAuthSwitchUserData, PostAuthSwitchUserError, PostAuthSwitchUserResponse, PostCrmBlacklistData, PostCrmBlacklistError, PostCrmBlacklistResponse, PostCrmCampaignsData, PostCrmCampaignsError, PostCrmCampaignsResponse, PostCrmFamilyRegistrationsBulkApproveData, PostCrmFamilyRegistrationsBulkApproveError, PostCrmFamilyRegistrationsBulkApproveResponse, PostCrmFamilyRegistrationsBulkRejectData, PostCrmFamilyRegistrationsBulkRejectError, PostCrmFamilyRegistrationsBulkRejectResponse, PostCrmFamilyRegistrationsByIdApproveData, PostCrmFamilyRegistrationsByIdApproveError, PostCrmFamilyRegistrationsByIdApproveResponse, PostCrmFamilyRegistrationsByIdCompleteData, PostCrmFamilyRegistrationsByIdCompleteError, PostCrmFamilyRegistrationsByIdCompleteResponse, PostCrmFamilyRegistrationsByIdRejectData, PostCrmFamilyRegistrationsByIdRejectError, PostCrmFamilyRegistrationsByIdRejectResponse, PostCrmFamilyRegistrationsCheckPrimaryMemberData, PostCrmFamilyRegistrationsCheckPrimaryMemberError, PostCrmFamilyRegistrationsCheckPrimaryMemberResponse, PostCrmFamilyRegistrationsData, PostCrmFamilyRegistrationsError, PostCrmFamilyRegistrationsResponse, PostCrmFamilyRegistrationsRiskEvaluationData, PostCrmFamilyRegistrationsRiskEvaluationError, PostCrmFamilyRegistrationsRiskEvaluationResponse, PostCrmLeavesByIdApproveData, PostCrmLeavesByIdApproveError, PostCrmLeavesByIdApproveResponse, PostCrmLeavesByIdCancelWithdrawalData, PostCrmLeavesByIdCancelWithdrawalError, PostCrmLeavesByIdCancelWithdrawalResponse, PostCrmLeavesByIdExecuteWithdrawalData, PostCrmLeavesByIdExecuteWithdrawalError, PostCrmLeavesByIdExecuteWithdrawalResponse, PostCrmLeavesByIdRejectData, PostCrmLeavesByIdRejectError, PostCrmLeavesByIdRejectResponse, PostCrmMainContractsData, PostCrmMainContractsError, PostCrmMainContractsResponse, PostCrmMembersByIdContractsOptionContractsData, PostCrmMembersByIdContractsOptionContractsError, PostCrmMembersByIdContractsOptionContractsResponse, PostCrmMembersByIdForceWithdrawData, PostCrmMembersByIdForceWithdrawError, PostCrmMembersByIdForceWithdrawResponse, PostCrmMembersByIdGateStopData, PostCrmMembersByIdGateStopError, PostCrmMembersByIdGateStopResponse, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosError, PostCrmMembersByIdMemosResponse, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsAdjustError, PostCrmMembersByIdPointsAdjustResponse, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsError, PostCrmMembersByIdPointsResponse, PostCrmMembersByIdReEnrollData, PostCrmMembersByIdReEnrollError, PostCrmMembersByIdReEnrollResponse, PostCrmMembersByIdSuspendData, PostCrmMembersByIdSuspendError, PostCrmMembersByIdSuspendReleaseData, PostCrmMembersByIdSuspendReleaseError, PostCrmMembersByIdSuspendReleaseResponse, PostCrmMembersByIdSuspendResponse, PostCrmMembersByIdTransferData, PostCrmMembersByIdTransferError, PostCrmMembersByIdTransferResponse, PostCrmMembersByIdWithdrawCancelData, PostCrmMembersByIdWithdrawCancelError, PostCrmMembersByIdWithdrawCancelResponse, PostCrmMembersByIdWithdrawData, PostCrmMembersByIdWithdrawError, PostCrmMembersByIdWithdrawResponse, PostCrmMembersData, PostCrmMembersError, PostCrmMembersExportData, PostCrmMembersExportError, PostCrmMembersExportResponse, PostCrmMembershipApplicationsBlacklistCheckData, PostCrmMembershipApplicationsBlacklistCheckError, PostCrmMembershipApplicationsBlacklistCheckResponse, PostCrmMembershipApplicationsByIdApproveData, PostCrmMembershipApplicationsByIdApproveError, PostCrmMembershipApplicationsByIdApproveResponse, PostCrmMembershipApplicationsByIdCancelData, PostCrmMembershipApplicationsByIdCancelError, PostCrmMembershipApplicationsByIdCancelResponse, PostCrmMembershipApplicationsByIdMemosData, PostCrmMembershipApplicationsByIdMemosError, PostCrmMembershipApplicationsByIdMemosResponse, PostCrmMembershipApplicationsByIdRejectData, PostCrmMembershipApplicationsByIdRejectError, PostCrmMembershipApplicationsByIdRejectResponse, PostCrmMembershipApplicationsDirectData, PostCrmMembershipApplicationsDirectError, PostCrmMembershipApplicationsDirectResponse, PostCrmMembersResponse, PostCrmOptionDiscountsData, PostCrmOptionDiscountsError, PostCrmOptionDiscountsResponse, PostCrmOptionsData, PostCrmOptionsError, PostCrmOptionsResponse, PostCrmPromoCodesData, PostCrmPromoCodesError, PostCrmPromoCodesResponse, PostCrmStaffsInviteData, PostCrmStaffsInviteError, PostCrmStaffsInviteResponse, PostCrmStoresByIdMainContractsData, PostCrmStoresByIdMainContractsError, PostCrmStoresByIdMainContractsResponse, PostCrmStoresByIdOptionsData, PostCrmStoresByIdOptionsError, PostCrmStoresByIdOptionsResponse, PostCrmStoresData, PostCrmStoresError, PostCrmStoresResponse, PostCrmUploadsData, PostCrmUploadsError, PostCrmUploadsPresignData, PostCrmUploadsPresignError, PostCrmUploadsPresignResponse, PostCrmUploadsResponse, PutCrmAutoApprovalSettingsData, PutCrmAutoApprovalSettingsError, PutCrmAutoApprovalSettingsResponse, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdBasicInfoError, PutCrmMembersByIdBasicInfoResponse, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoError, PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentError, PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdError, PutCrmMembersByIdMemosByMemoIdResponse, PutCrmStoresByIdAccessSettingsData, PutCrmStoresByIdAccessSettingsError, PutCrmStoresByIdAccessSettingsResponse } from '../types.gen';
+import type { DeleteCrmBrandsByIdFeesBySubBrandCodeData, DeleteCrmBrandsByIdFeesBySubBrandCodeError, DeleteCrmBrandsByIdFeesBySubBrandCodeResponse, DeleteCrmMainContractsByIdData, DeleteCrmMainContractsByIdError, DeleteCrmMainContractsByIdResponse, DeleteCrmMembersByIdGateStopData, DeleteCrmMembersByIdGateStopError, DeleteCrmMembersByIdGateStopResponse, DeleteCrmMembersByIdMemosByMemoIdData, DeleteCrmMembersByIdMemosByMemoIdError, DeleteCrmMembersByIdMemosByMemoIdResponse, DeleteCrmMembersByIdPersonalDataData, DeleteCrmMembersByIdPersonalDataError, DeleteCrmMembersByIdPersonalDataResponse, DeleteCrmMembershipApplicationsByIdMemosByMemoIdData, DeleteCrmMembershipApplicationsByIdMemosByMemoIdError, DeleteCrmMembershipApplicationsByIdMemosByMemoIdResponse, DeleteCrmOptionDiscountsByIdData, DeleteCrmOptionDiscountsByIdError, DeleteCrmOptionDiscountsByIdResponse, DeleteCrmOptionsByIdData, DeleteCrmOptionsByIdError, DeleteCrmOptionsByIdResponse, DeleteCrmStaffsByIdData, DeleteCrmStaffsByIdError, DeleteCrmStaffsByIdResponse, DeleteCrmStoresByIdMainContractsByContractIdData, DeleteCrmStoresByIdMainContractsByContractIdError, DeleteCrmStoresByIdMainContractsByContractIdResponse, DeleteCrmStoresByIdOptionsByOptionIdData, DeleteCrmStoresByIdOptionsByOptionIdError, DeleteCrmStoresByIdOptionsByOptionIdResponse, GetAuthMeData, GetAuthMeError, GetAuthMeResponse, GetCrmAutoApprovalDashboardData, GetCrmAutoApprovalDashboardError, GetCrmAutoApprovalDashboardResponse, GetCrmAutoApprovalSettingsData, GetCrmAutoApprovalSettingsError, GetCrmAutoApprovalSettingsResponse, GetCrmBlacklistByIdData, GetCrmBlacklistByIdError, GetCrmBlacklistByIdResponse, GetCrmBlacklistData, GetCrmBlacklistError, GetCrmBlacklistResponse, GetCrmBrandsByIdChangeHistoryData, GetCrmBrandsByIdChangeHistoryError, GetCrmBrandsByIdChangeHistoryResponse, GetCrmBrandsByIdData, GetCrmBrandsByIdError, GetCrmBrandsByIdFeesData, GetCrmBrandsByIdFeesError, GetCrmBrandsByIdFeesResponse, GetCrmBrandsByIdResponse, GetCrmBrandsData, GetCrmBrandsError, GetCrmBrandsResponse, GetCrmCampaignsByIdChangeHistoryData, GetCrmCampaignsByIdChangeHistoryError, GetCrmCampaignsByIdChangeHistoryResponse, GetCrmCampaignsByIdData, GetCrmCampaignsByIdError, GetCrmCampaignsByIdResponse, GetCrmCampaignsData, GetCrmCampaignsError, GetCrmCampaignsResponse, GetCrmFamilyRegistrationsByIdData, GetCrmFamilyRegistrationsByIdError, GetCrmFamilyRegistrationsByIdResponse, GetCrmFamilyRegistrationsDashboardData, GetCrmFamilyRegistrationsDashboardError, GetCrmFamilyRegistrationsDashboardResponse, GetCrmFamilyRegistrationsData, GetCrmFamilyRegistrationsError, GetCrmFamilyRegistrationsResponse, GetCrmFamilyRegistrationsSummaryData, GetCrmFamilyRegistrationsSummaryError, GetCrmFamilyRegistrationsSummaryResponse, GetCrmLeavesByIdData, GetCrmLeavesByIdError, GetCrmLeavesByIdResponse, GetCrmLeavesData, GetCrmLeavesError, GetCrmLeavesResponse, GetCrmMainContractsByIdChangeHistoryData, GetCrmMainContractsByIdChangeHistoryError, GetCrmMainContractsByIdChangeHistoryResponse, GetCrmMainContractsByIdData, GetCrmMainContractsByIdError, GetCrmMainContractsByIdResponse, GetCrmMainContractsData, GetCrmMainContractsError, GetCrmMainContractsResponse, GetCrmMembersByIdBasicInfoData, GetCrmMembersByIdBasicInfoError, GetCrmMembersByIdBasicInfoResponse, GetCrmMembersByIdBillingData, GetCrmMembersByIdBillingError, GetCrmMembersByIdBillingResponse, GetCrmMembersByIdBodyDataData, GetCrmMembersByIdBodyDataError, GetCrmMembersByIdBodyDataResponse, GetCrmMembersByIdChangeHistoryData, GetCrmMembersByIdChangeHistoryError, GetCrmMembersByIdChangeHistoryResponse, GetCrmMembersByIdContractsCampaignsData, GetCrmMembersByIdContractsCampaignsError, GetCrmMembersByIdContractsCampaignsResponse, GetCrmMembersByIdContractsDayPassHistoryData, GetCrmMembersByIdContractsDayPassHistoryError, GetCrmMembersByIdContractsDayPassHistoryResponse, GetCrmMembersByIdContractsMainContractData, GetCrmMembersByIdContractsMainContractError, GetCrmMembersByIdContractsMainContractResponse, GetCrmMembersByIdContractsOptionContractsData, GetCrmMembersByIdContractsOptionContractsError, GetCrmMembersByIdContractsOptionContractsResponse, GetCrmMembersByIdContractsPaymentHistoryData, GetCrmMembersByIdContractsPaymentHistoryError, GetCrmMembersByIdContractsPaymentHistoryResponse, GetCrmMembersByIdContractsSummaryData, GetCrmMembersByIdContractsSummaryError, GetCrmMembersByIdContractsSummaryResponse, GetCrmMembersByIdData, GetCrmMembersByIdError, GetCrmMembersByIdMemosData, GetCrmMembersByIdMemosError, GetCrmMembersByIdMemosResponse, GetCrmMembersByIdPaymentHistoryData, GetCrmMembersByIdPaymentHistoryError, GetCrmMembersByIdPaymentHistoryResponse, GetCrmMembersByIdPaymentSummaryData, GetCrmMembersByIdPaymentSummaryError, GetCrmMembersByIdPaymentSummaryResponse, GetCrmMembersByIdPointsData, GetCrmMembersByIdPointsError, GetCrmMembersByIdPointsResponse, GetCrmMembersByIdResponse, GetCrmMembersByIdStoresData, GetCrmMembersByIdStoresError, GetCrmMembersByIdStoresResponse, GetCrmMembersByIdSuspensionLeaveData, GetCrmMembersByIdSuspensionLeaveError, GetCrmMembersByIdSuspensionLeaveResponse, GetCrmMembersByIdTrainingRecordsData, GetCrmMembersByIdTrainingRecordsError, GetCrmMembersByIdTrainingRecordsResponse, GetCrmMembersByIdUsageHistoryAccessSettingsData, GetCrmMembersByIdUsageHistoryAccessSettingsError, GetCrmMembersByIdUsageHistoryAccessSettingsResponse, GetCrmMembersByIdUsageHistoryEntriesData, GetCrmMembersByIdUsageHistoryEntriesError, GetCrmMembersByIdUsageHistoryEntriesResponse, GetCrmMembersByIdUsageHistoryLessonsData, GetCrmMembersByIdUsageHistoryLessonsError, GetCrmMembersByIdUsageHistoryLessonsResponse, GetCrmMembersByIdUsageStatusData, GetCrmMembersByIdUsageStatusError, GetCrmMembersByIdUsageStatusResponse, GetCrmMembersByMemberIdFamilyMembersData, GetCrmMembersByMemberIdFamilyMembersError, GetCrmMembersByMemberIdFamilyMembersResponse, GetCrmMembersData, GetCrmMembersError, GetCrmMembershipApplicationsByIdData, GetCrmMembershipApplicationsByIdError, GetCrmMembershipApplicationsByIdResponse, GetCrmMembershipApplicationsCorporateMastersData, GetCrmMembershipApplicationsCorporateMastersResponse, GetCrmMembershipApplicationsData, GetCrmMembershipApplicationsEnrollmentFeeMastersData, GetCrmMembershipApplicationsEnrollmentFeeMastersError, GetCrmMembershipApplicationsEnrollmentFeeMastersResponse, GetCrmMembershipApplicationsError, GetCrmMembershipApplicationsResponse, GetCrmMembersMetaMainContractLabelsData, GetCrmMembersMetaMainContractLabelsError, GetCrmMembersMetaMainContractLabelsResponse, GetCrmMembersResponse, GetCrmMembersSummaryData, GetCrmMembersSummaryError, GetCrmMembersSummaryResponse, GetCrmOptionDiscountsByIdChangeHistoryData, GetCrmOptionDiscountsByIdChangeHistoryError, GetCrmOptionDiscountsByIdChangeHistoryResponse, GetCrmOptionDiscountsByIdData, GetCrmOptionDiscountsByIdError, GetCrmOptionDiscountsByIdResponse, GetCrmOptionDiscountsData, GetCrmOptionDiscountsError, GetCrmOptionDiscountsResponse, GetCrmOptionsByIdChangeHistoryData, GetCrmOptionsByIdChangeHistoryError, GetCrmOptionsByIdChangeHistoryResponse, GetCrmOptionsByIdData, GetCrmOptionsByIdError, GetCrmOptionsByIdResponse, GetCrmOptionsData, GetCrmOptionsError, GetCrmOptionsResponse, GetCrmPositionsData, GetCrmPositionsError, GetCrmPositionsResponse, GetCrmPromoCodesData, GetCrmPromoCodesError, GetCrmPromoCodesResponse, GetCrmStaffsByIdData, GetCrmStaffsByIdError, GetCrmStaffsByIdResponse, GetCrmStaffsData, GetCrmStaffsError, GetCrmStaffsResponse, GetCrmStoresByIdAccessSettingsData, GetCrmStoresByIdAccessSettingsError, GetCrmStoresByIdAccessSettingsResponse, GetCrmStoresByIdBusinessHoursData, GetCrmStoresByIdBusinessHoursError, GetCrmStoresByIdBusinessHoursResponse, GetCrmStoresByIdData, GetCrmStoresByIdError, GetCrmStoresByIdMainContractsData, GetCrmStoresByIdMainContractsError, GetCrmStoresByIdMainContractsResponse, GetCrmStoresByIdOptionsData, GetCrmStoresByIdOptionsError, GetCrmStoresByIdOptionsResponse, GetCrmStoresByIdResponse, GetCrmStoresData, GetCrmStoresError, GetCrmStoresResponse, GetCrmTransfersByIdData, GetCrmTransfersByIdError, GetCrmTransfersByIdResponse, GetCrmTransfersData, GetCrmTransfersError, GetCrmTransfersResponse, GetCrmUsersData, GetCrmUsersError, GetCrmUsersResponse, PatchCrmBrandsByIdData, PatchCrmBrandsByIdError, PatchCrmBrandsByIdFeesBySubBrandCodeData, PatchCrmBrandsByIdFeesBySubBrandCodeDisableData, PatchCrmBrandsByIdFeesBySubBrandCodeDisableError, PatchCrmBrandsByIdFeesBySubBrandCodeDisableResponse, PatchCrmBrandsByIdFeesBySubBrandCodeError, PatchCrmBrandsByIdFeesBySubBrandCodeResponse, PatchCrmBrandsByIdResponse, PatchCrmCampaignsByIdData, PatchCrmCampaignsByIdError, PatchCrmCampaignsByIdResponse, PatchCrmMainContractsByIdData, PatchCrmMainContractsByIdError, PatchCrmMainContractsByIdResponse, PatchCrmMembersByIdContractsMainContractChangeData, PatchCrmMembersByIdContractsMainContractChangeError, PatchCrmMembersByIdContractsMainContractChangeResponse, PatchCrmMembersByIdContractsOptionContractsCancelData, PatchCrmMembersByIdContractsOptionContractsCancelError, PatchCrmMembersByIdContractsOptionContractsCancelResponse, PatchCrmMembersByIdContractsOptionContractsChangeData, PatchCrmMembersByIdContractsOptionContractsChangeError, PatchCrmMembersByIdContractsOptionContractsChangeResponse, PatchCrmMembersByIdData, PatchCrmMembersByIdError, PatchCrmMembersByIdResponse, PatchCrmOptionDiscountsByIdData, PatchCrmOptionDiscountsByIdError, PatchCrmOptionDiscountsByIdResponse, PatchCrmOptionsByIdData, PatchCrmOptionsByIdError, PatchCrmOptionsByIdResponse, PatchCrmPromoCodesByCodeData, PatchCrmPromoCodesByCodeError, PatchCrmPromoCodesByCodeResponse, PatchCrmStaffsByIdData, PatchCrmStaffsByIdError, PatchCrmStaffsByIdResponse, PatchCrmStoresByIdBusinessHoursData, PatchCrmStoresByIdBusinessHoursError, PatchCrmStoresByIdBusinessHoursResponse, PatchCrmStoresByIdData, PatchCrmStoresByIdError, PatchCrmStoresByIdResponse, PatchCrmTransfersByIdApproveData, PatchCrmTransfersByIdApproveError, PatchCrmTransfersByIdApproveResponse, PatchCrmTransfersByIdRejectData, PatchCrmTransfersByIdRejectError, PatchCrmTransfersByIdRejectResponse, PostAuthLoginData, PostAuthLoginError, PostAuthLoginResponse, PostAuthRefreshData, PostAuthRefreshError, PostAuthRefreshResponse, PostAuthSwitchUserData, PostAuthSwitchUserError, PostAuthSwitchUserResponse, PostCrmBlacklistData, PostCrmBlacklistError, PostCrmBlacklistResponse, PostCrmBrandsData, PostCrmBrandsError, PostCrmBrandsResponse, PostCrmCampaignsData, PostCrmCampaignsError, PostCrmCampaignsResponse, PostCrmFamilyRegistrationsBulkApproveData, PostCrmFamilyRegistrationsBulkApproveError, PostCrmFamilyRegistrationsBulkApproveResponse, PostCrmFamilyRegistrationsBulkRejectData, PostCrmFamilyRegistrationsBulkRejectError, PostCrmFamilyRegistrationsBulkRejectResponse, PostCrmFamilyRegistrationsByIdApproveData, PostCrmFamilyRegistrationsByIdApproveError, PostCrmFamilyRegistrationsByIdApproveResponse, PostCrmFamilyRegistrationsByIdCompleteData, PostCrmFamilyRegistrationsByIdCompleteError, PostCrmFamilyRegistrationsByIdCompleteResponse, PostCrmFamilyRegistrationsByIdRejectData, PostCrmFamilyRegistrationsByIdRejectError, PostCrmFamilyRegistrationsByIdRejectResponse, PostCrmFamilyRegistrationsCheckPrimaryMemberData, PostCrmFamilyRegistrationsCheckPrimaryMemberError, PostCrmFamilyRegistrationsCheckPrimaryMemberResponse, PostCrmFamilyRegistrationsData, PostCrmFamilyRegistrationsError, PostCrmFamilyRegistrationsResponse, PostCrmFamilyRegistrationsRiskEvaluationData, PostCrmFamilyRegistrationsRiskEvaluationError, PostCrmFamilyRegistrationsRiskEvaluationResponse, PostCrmLeavesByIdApproveData, PostCrmLeavesByIdApproveError, PostCrmLeavesByIdApproveResponse, PostCrmLeavesByIdCancelWithdrawalData, PostCrmLeavesByIdCancelWithdrawalError, PostCrmLeavesByIdCancelWithdrawalResponse, PostCrmLeavesByIdExecuteWithdrawalData, PostCrmLeavesByIdExecuteWithdrawalError, PostCrmLeavesByIdExecuteWithdrawalResponse, PostCrmLeavesByIdRejectData, PostCrmLeavesByIdRejectError, PostCrmLeavesByIdRejectResponse, PostCrmMainContractsData, PostCrmMainContractsError, PostCrmMainContractsResponse, PostCrmMembersByIdContractsOptionContractsData, PostCrmMembersByIdContractsOptionContractsError, PostCrmMembersByIdContractsOptionContractsResponse, PostCrmMembersByIdForceWithdrawData, PostCrmMembersByIdForceWithdrawError, PostCrmMembersByIdForceWithdrawResponse, PostCrmMembersByIdGateStopData, PostCrmMembersByIdGateStopError, PostCrmMembersByIdGateStopResponse, PostCrmMembersByIdMemosData, PostCrmMembersByIdMemosError, PostCrmMembersByIdMemosResponse, PostCrmMembersByIdPointsAdjustData, PostCrmMembersByIdPointsAdjustError, PostCrmMembersByIdPointsAdjustResponse, PostCrmMembersByIdPointsData, PostCrmMembersByIdPointsError, PostCrmMembersByIdPointsResponse, PostCrmMembersByIdReEnrollData, PostCrmMembersByIdReEnrollError, PostCrmMembersByIdReEnrollResponse, PostCrmMembersByIdSuspendData, PostCrmMembersByIdSuspendError, PostCrmMembersByIdSuspendReleaseData, PostCrmMembersByIdSuspendReleaseError, PostCrmMembersByIdSuspendReleaseResponse, PostCrmMembersByIdSuspendResponse, PostCrmMembersByIdTransferData, PostCrmMembersByIdTransferError, PostCrmMembersByIdTransferResponse, PostCrmMembersByIdWithdrawCancelData, PostCrmMembersByIdWithdrawCancelError, PostCrmMembersByIdWithdrawCancelResponse, PostCrmMembersByIdWithdrawData, PostCrmMembersByIdWithdrawError, PostCrmMembersByIdWithdrawResponse, PostCrmMembersData, PostCrmMembersError, PostCrmMembersExportData, PostCrmMembersExportError, PostCrmMembersExportResponse, PostCrmMembershipApplicationsBlacklistCheckData, PostCrmMembershipApplicationsBlacklistCheckError, PostCrmMembershipApplicationsBlacklistCheckResponse, PostCrmMembershipApplicationsByIdApproveData, PostCrmMembershipApplicationsByIdApproveError, PostCrmMembershipApplicationsByIdApproveResponse, PostCrmMembershipApplicationsByIdCancelData, PostCrmMembershipApplicationsByIdCancelError, PostCrmMembershipApplicationsByIdCancelResponse, PostCrmMembershipApplicationsByIdMemosData, PostCrmMembershipApplicationsByIdMemosError, PostCrmMembershipApplicationsByIdMemosResponse, PostCrmMembershipApplicationsByIdRejectData, PostCrmMembershipApplicationsByIdRejectError, PostCrmMembershipApplicationsByIdRejectResponse, PostCrmMembershipApplicationsDirectData, PostCrmMembershipApplicationsDirectError, PostCrmMembershipApplicationsDirectResponse, PostCrmMembersResponse, PostCrmOptionDiscountsData, PostCrmOptionDiscountsError, PostCrmOptionDiscountsResponse, PostCrmOptionsData, PostCrmOptionsError, PostCrmOptionsResponse, PostCrmPromoCodesData, PostCrmPromoCodesError, PostCrmPromoCodesResponse, PostCrmStaffsInviteData, PostCrmStaffsInviteError, PostCrmStaffsInviteResponse, PostCrmStoresByIdMainContractsData, PostCrmStoresByIdMainContractsError, PostCrmStoresByIdMainContractsResponse, PostCrmStoresByIdOptionsData, PostCrmStoresByIdOptionsError, PostCrmStoresByIdOptionsResponse, PostCrmStoresData, PostCrmStoresError, PostCrmStoresResponse, PostCrmUploadsData, PostCrmUploadsError, PostCrmUploadsPresignData, PostCrmUploadsPresignError, PostCrmUploadsPresignResponse, PostCrmUploadsResponse, PutCrmAutoApprovalSettingsData, PutCrmAutoApprovalSettingsError, PutCrmAutoApprovalSettingsResponse, PutCrmMembersByIdBasicInfoData, PutCrmMembersByIdBasicInfoError, PutCrmMembersByIdBasicInfoResponse, PutCrmMembersByIdHealthInfoData, PutCrmMembersByIdHealthInfoError, PutCrmMembersByIdHealthInfoResponse, PutCrmMembersByIdMarketingConsentData, PutCrmMembersByIdMarketingConsentError, PutCrmMembersByIdMarketingConsentResponse, PutCrmMembersByIdMemosByMemoIdData, PutCrmMembersByIdMemosByMemoIdError, PutCrmMembersByIdMemosByMemoIdResponse, PutCrmStoresByIdAccessSettingsData, PutCrmStoresByIdAccessSettingsError, PutCrmStoresByIdAccessSettingsResponse } from '../types.gen';
 
 /**
  * User login
@@ -292,6 +292,142 @@ export const postCrmBlacklistMutation = (options?: Partial<Options<PostCrmBlackl
     return mutationOptions;
 };
 
+export const getCrmBrandsByIdChangeHistoryQueryKey = (options: Options<GetCrmBrandsByIdChangeHistoryData>) => createQueryKey('getCrmBrandsByIdChangeHistory', options);
+
+/**
+ * Get Y-07 brand change history
+ *
+ * ブランド詳細画面の変更履歴タブで表示する履歴一覧。
+ */
+export const getCrmBrandsByIdChangeHistoryOptions = (options: Options<GetCrmBrandsByIdChangeHistoryData>) => queryOptions<GetCrmBrandsByIdChangeHistoryResponse, GetCrmBrandsByIdChangeHistoryError, GetCrmBrandsByIdChangeHistoryResponse, ReturnType<typeof getCrmBrandsByIdChangeHistoryQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Brands.getCrmBrandsByIdChangeHistory({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmBrandsByIdChangeHistoryQueryKey(options)
+});
+
+/**
+ * Disable Y-07 brand fee group
+ *
+ * ブランド詳細画面の費用タブでサブブランド単位の費用マスタを無効化する。
+ */
+export const patchCrmBrandsByIdFeesBySubBrandCodeDisableMutation = (options?: Partial<Options<PatchCrmBrandsByIdFeesBySubBrandCodeDisableData>>): UseMutationOptions<PatchCrmBrandsByIdFeesBySubBrandCodeDisableResponse, PatchCrmBrandsByIdFeesBySubBrandCodeDisableError, Options<PatchCrmBrandsByIdFeesBySubBrandCodeDisableData>> => {
+    const mutationOptions: UseMutationOptions<PatchCrmBrandsByIdFeesBySubBrandCodeDisableResponse, PatchCrmBrandsByIdFeesBySubBrandCodeDisableError, Options<PatchCrmBrandsByIdFeesBySubBrandCodeDisableData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Brands.patchCrmBrandsByIdFeesBySubBrandCodeDisable({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Delete Y-07 brand fee group
+ *
+ * ブランド詳細画面の費用タブでサブブランド単位の費用マスタを削除する。
+ */
+export const deleteCrmBrandsByIdFeesBySubBrandCodeMutation = (options?: Partial<Options<DeleteCrmBrandsByIdFeesBySubBrandCodeData>>): UseMutationOptions<DeleteCrmBrandsByIdFeesBySubBrandCodeResponse, DeleteCrmBrandsByIdFeesBySubBrandCodeError, Options<DeleteCrmBrandsByIdFeesBySubBrandCodeData>> => {
+    const mutationOptions: UseMutationOptions<DeleteCrmBrandsByIdFeesBySubBrandCodeResponse, DeleteCrmBrandsByIdFeesBySubBrandCodeError, Options<DeleteCrmBrandsByIdFeesBySubBrandCodeData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Brands.deleteCrmBrandsByIdFeesBySubBrandCode({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Update Y-07 brand fee group
+ *
+ * ブランド詳細画面の費用タブでサブブランド単位の費用設定を更新する。
+ */
+export const patchCrmBrandsByIdFeesBySubBrandCodeMutation = (options?: Partial<Options<PatchCrmBrandsByIdFeesBySubBrandCodeData>>): UseMutationOptions<PatchCrmBrandsByIdFeesBySubBrandCodeResponse, PatchCrmBrandsByIdFeesBySubBrandCodeError, Options<PatchCrmBrandsByIdFeesBySubBrandCodeData>> => {
+    const mutationOptions: UseMutationOptions<PatchCrmBrandsByIdFeesBySubBrandCodeResponse, PatchCrmBrandsByIdFeesBySubBrandCodeError, Options<PatchCrmBrandsByIdFeesBySubBrandCodeData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Brands.patchCrmBrandsByIdFeesBySubBrandCode({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmBrandsByIdFeesQueryKey = (options: Options<GetCrmBrandsByIdFeesData>) => createQueryKey('getCrmBrandsByIdFees', options);
+
+/**
+ * Get Y-07 brand fee groups
+ *
+ * ブランド詳細画面の費用タブで表示するサブブランド単位の費用マスタ一覧。
+ */
+export const getCrmBrandsByIdFeesOptions = (options: Options<GetCrmBrandsByIdFeesData>) => queryOptions<GetCrmBrandsByIdFeesResponse, GetCrmBrandsByIdFeesError, GetCrmBrandsByIdFeesResponse, ReturnType<typeof getCrmBrandsByIdFeesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Brands.getCrmBrandsByIdFees({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmBrandsByIdFeesQueryKey(options)
+});
+
+export const getCrmBrandsByIdQueryKey = (options: Options<GetCrmBrandsByIdData>) => createQueryKey('getCrmBrandsById', options);
+
+/**
+ * Get Y-07 brand detail
+ *
+ * ブランド詳細画面の基本情報タブで表示するトップレベルブランド詳細。
+ */
+export const getCrmBrandsByIdOptions = (options: Options<GetCrmBrandsByIdData>) => queryOptions<GetCrmBrandsByIdResponse, GetCrmBrandsByIdError, GetCrmBrandsByIdResponse, ReturnType<typeof getCrmBrandsByIdQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Brands.getCrmBrandsById({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmBrandsByIdQueryKey(options)
+});
+
+/**
+ * Update Y-07 brand basic info
+ *
+ * ブランド基本情報の更新。本部のみ編集可能。
+ */
+export const patchCrmBrandsByIdMutation = (options?: Partial<Options<PatchCrmBrandsByIdData>>): UseMutationOptions<PatchCrmBrandsByIdResponse, PatchCrmBrandsByIdError, Options<PatchCrmBrandsByIdData>> => {
+    const mutationOptions: UseMutationOptions<PatchCrmBrandsByIdResponse, PatchCrmBrandsByIdError, Options<PatchCrmBrandsByIdData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Brands.patchCrmBrandsById({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
 export const getCrmBrandsQueryKey = (options?: Options<GetCrmBrandsData>) => createQueryKey('getCrmBrands', options);
 
 /**
@@ -311,6 +447,54 @@ export const getCrmBrandsOptions = (options?: Options<GetCrmBrandsData>) => quer
     },
     queryKey: getCrmBrandsQueryKey(options)
 });
+
+export const getCrmBrandsInfiniteQueryKey = (options?: Options<GetCrmBrandsData>): QueryKey<Options<GetCrmBrandsData>> => createQueryKey('getCrmBrands', options, true);
+
+/**
+ * List Y-07 brand master
+ *
+ * JOYFIT / FIT365 のブランド基本設定（入会金・手数料デフォルト）。G-01 主契約の参照元。
+ */
+export const getCrmBrandsInfiniteOptions = (options?: Options<GetCrmBrandsData>) => infiniteQueryOptions<GetCrmBrandsResponse, GetCrmBrandsError, InfiniteData<GetCrmBrandsResponse>, QueryKey<Options<GetCrmBrandsData>>, number | Pick<QueryKey<Options<GetCrmBrandsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetCrmBrandsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await Brands.getCrmBrands({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmBrandsInfiniteQueryKey(options)
+});
+
+/**
+ * Create Y-07 brand master row
+ *
+ * ブランド基本設定の新規作成。本部のみ編集可能。
+ */
+export const postCrmBrandsMutation = (options?: Partial<Options<PostCrmBrandsData>>): UseMutationOptions<PostCrmBrandsResponse, PostCrmBrandsError, Options<PostCrmBrandsData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmBrandsResponse, PostCrmBrandsError, Options<PostCrmBrandsData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Brands.postCrmBrands({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
 
 export const getCrmCampaignsByIdChangeHistoryQueryKey = (options: Options<GetCrmCampaignsByIdChangeHistoryData>) => createQueryKey('getCrmCampaignsByIdChangeHistory', options);
 
