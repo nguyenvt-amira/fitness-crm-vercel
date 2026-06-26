@@ -1,10 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
+import { useAuthUser } from '@/contexts/auth-user.context';
 import { useQueries, useQuery } from '@tanstack/react-query';
-import { Check, ChevronsUpDown, UserRound, X } from 'lucide-react';
+import { Check, ChevronsUpDown, Info, Lock, UserRound, X } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -28,6 +29,8 @@ import {
   getCrmStudiosOptions,
 } from '@/lib/api/@tanstack/react-query.gen';
 import { cn } from '@/lib/utils';
+
+import { UserRole } from '@/types/permission.type';
 
 import type { LessonScheduleFormValues } from '../_schemas/lesson-schedule-form.schema';
 import { InstructorConflictWarning } from './instructor-conflict-warning';
@@ -64,6 +67,12 @@ export function LessonScheduleFormInstructors() {
     ],
   });
   const selectedInstructorIds = selectedInstructorIdsRaw ?? [];
+
+  // D-01 権限マトリクス: Trainer は自分担当のみ。本人を固定し read-only にする（FR-003-014a）。
+  // 認証ユーザーの id と instructor_id が一致する指導者を「本人」とみなす。
+  const { user } = useAuthUser();
+  const isTrainer = user?.role === UserRole.Trainer;
+  const selfInstructorId = user?.id ?? '';
 
   const [open, setOpen] = useState(false);
 
@@ -129,6 +138,20 @@ export function LessonScheduleFormInstructors() {
     (selectedInstructorIds as string[]).includes(inst.instructor_id),
   );
 
+  // Trainer ログイン時は本人を自動セットして固定する（追加・削除不可）。
+  useEffect(() => {
+    if (!isTrainer || !selfInstructorId) return;
+    const current = selectedInstructorIds as string[];
+    if (current.length === 1 && current[0] === selfInstructorId) return;
+    form.setValue('instructor_ids', [selfInstructorId], {
+      shouldDirty: false,
+      shouldValidate: true,
+    });
+  }, [isTrainer, selfInstructorId, selectedInstructorIds, form]);
+
+  const selfInstructor = instructorList.find((inst) => inst.instructor_id === selfInstructorId);
+  const selfInstructorName = selfInstructor?.instructor_name ?? user?.name ?? '';
+
   function handleAdd(instructorId: string) {
     if (!instructorId || (selectedInstructorIds as string[]).includes(instructorId)) return;
     form.setValue('instructor_ids', [...(selectedInstructorIds as string[]), instructorId], {
@@ -161,105 +184,141 @@ export function LessonScheduleFormInstructors() {
                 <FormLabel>
                   インストラクター <span className="text-destructive">*</span>
                 </FormLabel>
-                <div className="space-y-2">
-                  <Popover open={open} onOpenChange={setOpen}>
-                    <PopoverTrigger
-                      render={
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          aria-expanded={open}
-                          className="h-8 w-full justify-between text-sm font-normal"
-                        />
-                      }
-                    >
-                      <span className="text-muted-foreground">
-                        {(selectedInstructorIds as string[]).length === 0
-                          ? '選択してください'
-                          : '追加する...'}
-                      </span>
-                      <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
-                      <Command>
-                        <CommandInput placeholder={`${expectedRole}を検索...`} className="h-8" />
-                        <CommandList>
-                          <CommandEmpty>該当なし</CommandEmpty>
-                          <CommandGroup
-                            heading={`${expectedRole}（${availableInstructors.length}名）`}
-                          >
-                            {availableInstructors.map((inst) => (
-                              <CommandItem
-                                key={inst.instructor_id}
-                                value={inst.instructor_name}
-                                onSelect={() => {
-                                  handleAdd(inst.instructor_id);
-                                  setOpen(false);
-                                }}
-                                className="flex items-center gap-2"
-                              >
-                                {inst.photo_url ? (
-                                  <img
-                                    src={inst.photo_url}
-                                    alt={inst.instructor_name}
-                                    className="size-6 shrink-0 rounded-full object-cover"
-                                  />
-                                ) : (
-                                  <div className="bg-muted flex size-6 shrink-0 items-center justify-center rounded-full">
-                                    <UserRound className="text-muted-foreground size-3" />
-                                  </div>
-                                )}
-                                <span>{inst.instructor_name}</span>
-                                <Check
-                                  className={cn(
-                                    'ml-auto size-4',
-                                    (selectedInstructorIds as string[]).includes(inst.instructor_id)
-                                      ? 'opacity-100'
-                                      : 'opacity-0',
-                                  )}
-                                />
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-
-                  {/* 選択済みチップ */}
-                  {selectedInstructors.length > 0 && (
+                {isTrainer ? (
+                  // FR-003-014a: Trainer は本人固定（read-only）。追加コンボボックス・削除ボタンなし。
+                  <div className="space-y-2">
                     <div className="flex flex-wrap gap-2">
-                      {selectedInstructors.map((inst) => (
-                        <Badge
-                          key={inst.instructor_id}
-                          variant="secondary"
-                          className="flex h-7 items-center gap-2 pr-1 pl-1 text-xs font-normal"
-                        >
-                          {inst.photo_url ? (
-                            <img
-                              src={inst.photo_url}
-                              alt={inst.instructor_name}
-                              className="size-5 shrink-0 rounded-full object-cover"
-                            />
-                          ) : (
-                            <div className="bg-muted flex size-5 shrink-0 items-center justify-center rounded-full">
-                              <UserRound className="text-muted-foreground size-3" />
-                            </div>
-                          )}
-                          {inst.instructor_name}
-                          <button
-                            type="button"
-                            onClick={() => handleRemove(inst.instructor_id)}
-                            className="hover:bg-muted-foreground/20 ml-0.5 rounded-full p-0.5"
-                            aria-label={`${inst.instructor_name}を削除`}
-                          >
-                            <X className="size-3" />
-                          </button>
-                        </Badge>
-                      ))}
+                      <Badge
+                        variant="secondary"
+                        className="flex h-7 items-center gap-2 pr-2 pl-1 text-xs font-normal"
+                      >
+                        {selfInstructor?.photo_url ? (
+                          <img
+                            src={selfInstructor.photo_url}
+                            alt={selfInstructorName}
+                            className="size-5 shrink-0 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="bg-muted flex size-5 shrink-0 items-center justify-center rounded-full">
+                            <UserRound className="text-muted-foreground size-3" />
+                          </div>
+                        )}
+                        {selfInstructorName}
+                        <span className="text-muted-foreground text-[10px]">（あなた）</span>
+                        <Lock className="text-muted-foreground ml-0.5 size-3" />
+                      </Badge>
                     </div>
-                  )}
-                </div>
+                    <p className="text-muted-foreground flex items-center gap-1 text-xs">
+                      <Info className="size-3" />
+                      ご自身が担当するスケジュールのみ登録できます。担当インストラクターはご自身に固定されます。
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Popover open={open} onOpenChange={setOpen}>
+                      <PopoverTrigger
+                        render={
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={open}
+                            className="h-8 w-full justify-between text-sm font-normal"
+                          />
+                        }
+                      >
+                        <span className="text-muted-foreground">
+                          {(selectedInstructorIds as string[]).length === 0
+                            ? '選択してください'
+                            : '追加する...'}
+                        </span>
+                        <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="w-[--radix-popover-trigger-width] p-0"
+                        align="start"
+                      >
+                        <Command>
+                          <CommandInput placeholder={`${expectedRole}を検索...`} className="h-8" />
+                          <CommandList>
+                            <CommandEmpty>該当なし</CommandEmpty>
+                            <CommandGroup
+                              heading={`${expectedRole}（${availableInstructors.length}名）`}
+                            >
+                              {availableInstructors.map((inst) => (
+                                <CommandItem
+                                  key={inst.instructor_id}
+                                  value={inst.instructor_name}
+                                  onSelect={() => {
+                                    handleAdd(inst.instructor_id);
+                                    setOpen(false);
+                                  }}
+                                  className="flex items-center gap-2"
+                                >
+                                  {inst.photo_url ? (
+                                    <img
+                                      src={inst.photo_url}
+                                      alt={inst.instructor_name}
+                                      className="size-6 shrink-0 rounded-full object-cover"
+                                    />
+                                  ) : (
+                                    <div className="bg-muted flex size-6 shrink-0 items-center justify-center rounded-full">
+                                      <UserRound className="text-muted-foreground size-3" />
+                                    </div>
+                                  )}
+                                  <span>{inst.instructor_name}</span>
+                                  <Check
+                                    className={cn(
+                                      'ml-auto size-4',
+                                      (selectedInstructorIds as string[]).includes(
+                                        inst.instructor_id,
+                                      )
+                                        ? 'opacity-100'
+                                        : 'opacity-0',
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+
+                    {/* 選択済みチップ */}
+                    {selectedInstructors.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {selectedInstructors.map((inst) => (
+                          <Badge
+                            key={inst.instructor_id}
+                            variant="secondary"
+                            className="flex h-7 items-center gap-2 pr-1 pl-1 text-xs font-normal"
+                          >
+                            {inst.photo_url ? (
+                              <img
+                                src={inst.photo_url}
+                                alt={inst.instructor_name}
+                                className="size-5 shrink-0 rounded-full object-cover"
+                              />
+                            ) : (
+                              <div className="bg-muted flex size-5 shrink-0 items-center justify-center rounded-full">
+                                <UserRound className="text-muted-foreground size-3" />
+                              </div>
+                            )}
+                            {inst.instructor_name}
+                            <button
+                              type="button"
+                              onClick={() => handleRemove(inst.instructor_id)}
+                              className="hover:bg-muted-foreground/20 ml-0.5 rounded-full p-0.5"
+                              aria-label={`${inst.instructor_name}を削除`}
+                            >
+                              <X className="size-3" />
+                            </button>
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
                 <FormMessage />
 
                 {allConflicts.length > 0 && <InstructorConflictWarning conflicts={allConflicts} />}
