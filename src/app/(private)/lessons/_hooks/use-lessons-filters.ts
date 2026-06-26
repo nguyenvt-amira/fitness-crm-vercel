@@ -22,7 +22,7 @@ const BRAND_VALUES: LessonBrand[] = ['joyfit', 'fit365'];
 const STATUS_VALUES: Array<'active' | 'inactive'> = ['active', 'inactive'];
 
 const DEFAULT_SORT_BY = 'id';
-const DEFAULT_SORT_ORDER = 'asc';
+const DEFAULT_SORT_ORDER: 'asc' | 'desc' = 'asc';
 
 type LessonContentsQuery = NonNullable<GetCrmLessonContentsData['query']>;
 type PersonalPlansQuery = NonNullable<GetCrmPersonalPlansData['query']>;
