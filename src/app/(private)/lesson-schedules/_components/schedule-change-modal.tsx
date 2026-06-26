@@ -63,14 +63,12 @@ interface ScheduleChangeModalContentProps {
 export function ScheduleChangeModal({ open, schedule, onOpenChange }: ScheduleChangeModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      {schedule && open ? (
+      {schedule && open && (
         <ScheduleChangeModalContent
           key={schedule.id}
           schedule={schedule}
           onOpenChange={onOpenChange}
         />
-      ) : (
-        <DialogContent className="hidden" />
       )}
     </Dialog>
   );
@@ -144,7 +142,7 @@ function ScheduleChangeModalContent({ schedule, onOpenChange }: ScheduleChangeMo
       </DialogHeader>
 
       <div className="flex-1 overflow-y-auto px-6 py-4">
-        <div className="bg-primary/[0.05] mb-5 rounded-lg p-4">
+        <div className="bg-primary/5 mb-5 rounded-lg p-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-bold">{schedule.lesson_name}</p>
@@ -181,9 +179,7 @@ function ScheduleChangeModalContent({ schedule, onOpenChange }: ScheduleChangeMo
           >
             <label
               className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 ${
-                changeScope === 'this-only'
-                  ? 'border-primary bg-primary/[0.05]'
-                  : 'hover:bg-muted/50'
+                changeScope === 'this-only' ? 'border-primary bg-primary/5' : 'hover:bg-muted/50'
               }`}
             >
               <RadioGroupItem value="this-only" className="shrink-0" />
@@ -194,9 +190,7 @@ function ScheduleChangeModalContent({ schedule, onOpenChange }: ScheduleChangeMo
             </label>
             <label
               className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 ${
-                changeScope === 'all-after'
-                  ? 'border-primary bg-primary/[0.05]'
-                  : 'hover:bg-muted/50'
+                changeScope === 'all-after' ? 'border-primary bg-primary/5' : 'hover:bg-muted/50'
               }`}
             >
               <RadioGroupItem value="all-after" className="shrink-0" />
