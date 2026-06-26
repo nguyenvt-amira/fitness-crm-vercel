@@ -866,74 +866,6 @@ export const getCrmFamilyRegistrationsSummaryOptions = (options?: Options<GetCrm
     queryKey: getCrmFamilyRegistrationsSummaryQueryKey(options)
 });
 
-export const getCrmFranchiseCompaniesQueryKey = (options?: Options<GetCrmFranchiseCompaniesData>) => createQueryKey('getCrmFranchiseCompanies', options);
-
-/**
- * Get franchise companies
- *
- * Get paginated list of FC companies for Y-03 FR-001
- */
-export const getCrmFranchiseCompaniesOptions = (options?: Options<GetCrmFranchiseCompaniesData>) => queryOptions<GetCrmFranchiseCompaniesResponse, GetCrmFranchiseCompaniesError, GetCrmFranchiseCompaniesResponse, ReturnType<typeof getCrmFranchiseCompaniesQueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await FranchiseCompanies.getCrmFranchiseCompanies({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmFranchiseCompaniesQueryKey(options)
-});
-
-export const getCrmFranchiseCompaniesInfiniteQueryKey = (options?: Options<GetCrmFranchiseCompaniesData>): QueryKey<Options<GetCrmFranchiseCompaniesData>> => createQueryKey('getCrmFranchiseCompanies', options, true);
-
-/**
- * Get franchise companies
- *
- * Get paginated list of FC companies for Y-03 FR-001
- */
-export const getCrmFranchiseCompaniesInfiniteOptions = (options?: Options<GetCrmFranchiseCompaniesData>) => infiniteQueryOptions<GetCrmFranchiseCompaniesResponse, GetCrmFranchiseCompaniesError, InfiniteData<GetCrmFranchiseCompaniesResponse>, QueryKey<Options<GetCrmFranchiseCompaniesData>>, number | Pick<QueryKey<Options<GetCrmFranchiseCompaniesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
-// @ts-ignore
-{
-    queryFn: async ({ pageParam, queryKey, signal }) => {
-        // @ts-ignore
-        const page: Pick<QueryKey<Options<GetCrmFranchiseCompaniesData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
-            query: {
-                page: pageParam
-            }
-        };
-        const params = createInfiniteParams(queryKey, page);
-        const { data } = await FranchiseCompanies.getCrmFranchiseCompanies({
-            ...options,
-            ...params,
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: getCrmFranchiseCompaniesInfiniteQueryKey(options)
-});
-
-/**
- * Create franchise company
- *
- * Create a new FC company for Y-03 FR-002
- */
-export const postCrmFranchiseCompaniesMutation = (options?: Partial<Options<PostCrmFranchiseCompaniesData>>): UseMutationOptions<PostCrmFranchiseCompaniesResponse, PostCrmFranchiseCompaniesError, Options<PostCrmFranchiseCompaniesData>> => {
-    const mutationOptions: UseMutationOptions<PostCrmFranchiseCompaniesResponse, PostCrmFranchiseCompaniesError, Options<PostCrmFranchiseCompaniesData>> = {
-        mutationFn: async (fnOptions) => {
-            const { data } = await FranchiseCompanies.postCrmFranchiseCompanies({
-                ...options,
-                ...fnOptions,
-                throwOnError: true
-            });
-            return data;
-        }
-    };
-    return mutationOptions;
-};
-
 export const getCrmFranchiseCompaniesByIdHistoryQueryKey = (options: Options<GetCrmFranchiseCompaniesByIdHistoryData>) => createQueryKey('getCrmFranchiseCompaniesByIdHistory', options);
 
 /**
@@ -1002,6 +934,74 @@ export const patchCrmFranchiseCompaniesByIdMutation = (options?: Partial<Options
     const mutationOptions: UseMutationOptions<PatchCrmFranchiseCompaniesByIdResponse, PatchCrmFranchiseCompaniesByIdError, Options<PatchCrmFranchiseCompaniesByIdData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await FranchiseCompanies.patchCrmFranchiseCompaniesById({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getCrmFranchiseCompaniesQueryKey = (options?: Options<GetCrmFranchiseCompaniesData>) => createQueryKey('getCrmFranchiseCompanies', options);
+
+/**
+ * Get franchise companies
+ *
+ * Get paginated list of FC companies for Y-03 FR-001
+ */
+export const getCrmFranchiseCompaniesOptions = (options?: Options<GetCrmFranchiseCompaniesData>) => queryOptions<GetCrmFranchiseCompaniesResponse, GetCrmFranchiseCompaniesError, GetCrmFranchiseCompaniesResponse, ReturnType<typeof getCrmFranchiseCompaniesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await FranchiseCompanies.getCrmFranchiseCompanies({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmFranchiseCompaniesQueryKey(options)
+});
+
+export const getCrmFranchiseCompaniesInfiniteQueryKey = (options?: Options<GetCrmFranchiseCompaniesData>): QueryKey<Options<GetCrmFranchiseCompaniesData>> => createQueryKey('getCrmFranchiseCompanies', options, true);
+
+/**
+ * Get franchise companies
+ *
+ * Get paginated list of FC companies for Y-03 FR-001
+ */
+export const getCrmFranchiseCompaniesInfiniteOptions = (options?: Options<GetCrmFranchiseCompaniesData>) => infiniteQueryOptions<GetCrmFranchiseCompaniesResponse, GetCrmFranchiseCompaniesError, InfiniteData<GetCrmFranchiseCompaniesResponse>, QueryKey<Options<GetCrmFranchiseCompaniesData>>, number | Pick<QueryKey<Options<GetCrmFranchiseCompaniesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+// @ts-ignore
+{
+    queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<QueryKey<Options<GetCrmFranchiseCompaniesData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            query: {
+                page: pageParam
+            }
+        };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await FranchiseCompanies.getCrmFranchiseCompanies({
+            ...options,
+            ...params,
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCrmFranchiseCompaniesInfiniteQueryKey(options)
+});
+
+/**
+ * Create franchise company
+ *
+ * Create a new FC company for Y-03 FR-002
+ */
+export const postCrmFranchiseCompaniesMutation = (options?: Partial<Options<PostCrmFranchiseCompaniesData>>): UseMutationOptions<PostCrmFranchiseCompaniesResponse, PostCrmFranchiseCompaniesError, Options<PostCrmFranchiseCompaniesData>> => {
+    const mutationOptions: UseMutationOptions<PostCrmFranchiseCompaniesResponse, PostCrmFranchiseCompaniesError, Options<PostCrmFranchiseCompaniesData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await FranchiseCompanies.postCrmFranchiseCompanies({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

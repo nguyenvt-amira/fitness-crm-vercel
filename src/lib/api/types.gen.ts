@@ -21558,347 +21558,6 @@ export type GetCrmFamilyRegistrationsSummaryResponses = {
 
 export type GetCrmFamilyRegistrationsSummaryResponse = GetCrmFamilyRegistrationsSummaryResponses[keyof GetCrmFamilyRegistrationsSummaryResponses];
 
-export type GetCrmFranchiseCompaniesData = {
-    body?: never;
-    path?: never;
-    query?: {
-        page?: number;
-        limit?: number;
-        /**
-         * 法人名で検索
-         */
-        search?: string;
-        /**
-         * FranchiseCompanyType
-         *
-         * 直営 / FC 区分
-         */
-        company_type?: 'direct' | 'fc';
-        /**
-         * FranchiseCompanyStatus
-         *
-         * FC企業ステータス
-         */
-        status?: 'active' | 'inactive';
-        sort_by?: 'id' | 'display_name';
-        sort_order?: 'asc' | 'desc';
-    };
-    url: '/crm/franchise-companies';
-};
-
-export type GetCrmFranchiseCompaniesErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    400: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    401: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    403: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type GetCrmFranchiseCompaniesError = GetCrmFranchiseCompaniesErrors[keyof GetCrmFranchiseCompaniesErrors];
-
-export type GetCrmFranchiseCompaniesResponses = {
-    /**
-     * GetFranchiseCompaniesResponse
-     *
-     * FC企業一覧レスポンス
-     */
-    200: {
-        franchise_companies: Array<{
-            /**
-             * FC企業ID
-             */
-            id: string;
-            /**
-             * 法人名（表示名）
-             */
-            display_name: string;
-            /**
-             * FranchiseCompanyType
-             *
-             * 直営 / FC 区分
-             */
-            type: 'direct' | 'fc';
-            /**
-             * 管轄店舗数
-             */
-            managed_store_count: number;
-            /**
-             * FranchiseCompanyStatus
-             *
-             * ステータス
-             */
-            status: 'active' | 'inactive';
-        }>;
-        pagination: {
-            page: number;
-            limit: number;
-            total: number;
-            total_pages: number;
-        };
-    };
-};
-
-export type GetCrmFranchiseCompaniesResponse = GetCrmFranchiseCompaniesResponses[keyof GetCrmFranchiseCompaniesResponses];
-
-export type PostCrmFranchiseCompaniesData = {
-    /**
-     * CreateFranchiseCompanyBody
-     *
-     * FC企業作成リクエスト
-     */
-    body?: {
-        formal_name: string;
-        display_name?: string;
-        /**
-         * FranchiseCompanyType
-         *
-         * 直営 / FC 区分
-         */
-        type: 'direct' | 'fc';
-        /**
-         * 直営店フラグ
-         */
-        direct_owned_flag?: boolean;
-        /**
-         * 法人番号
-         */
-        corporate_number?: string | null;
-        /**
-         * 代表者名
-         */
-        representative_name?: string | null;
-        /**
-         * 本社所在地
-         */
-        head_office_address?: string | null;
-        /**
-         * 電話番号
-         */
-        phone?: string | null;
-        /**
-         * 担当者名
-         */
-        contact_person?: string | null;
-        /**
-         * 担当者連絡先
-         */
-        contact_phone?: string | null;
-        /**
-         * FC契約開始日
-         */
-        fc_contract_start_date?: string | null;
-        /**
-         * FC契約更新日
-         */
-        fc_contract_renewal_date?: string | null;
-        /**
-         * ロイヤリティ率(%)
-         */
-        royalty_rate?: number | null;
-        /**
-         * 備考
-         */
-        note?: string | null;
-        /**
-         * FranchiseCompanyStatus
-         *
-         * ステータス
-         */
-        status?: 'active' | 'inactive';
-    };
-    path?: never;
-    query?: never;
-    url: '/crm/franchise-companies';
-};
-
-export type PostCrmFranchiseCompaniesErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    400: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    401: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    403: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type PostCrmFranchiseCompaniesError = PostCrmFranchiseCompaniesErrors[keyof PostCrmFranchiseCompaniesErrors];
-
-export type PostCrmFranchiseCompaniesResponses = {
-    /**
-     * CreateFranchiseCompanyResponse
-     *
-     * FC企業作成レスポンス
-     */
-    201: {
-        message: string;
-        /**
-         * FranchiseCompanyDetail
-         *
-         * FC企業詳細
-         */
-        franchise_company: {
-            /**
-             * FC企業ID
-             */
-            id: string;
-            /**
-             * 法人名（表示名）
-             */
-            display_name: string;
-            /**
-             * FranchiseCompanyType
-             *
-             * 直営 / FC 区分
-             */
-            type: 'direct' | 'fc';
-            /**
-             * 管轄店舗数
-             */
-            managed_store_count: number;
-            /**
-             * FranchiseCompanyStatus
-             *
-             * ステータス
-             */
-            status: 'active' | 'inactive';
-            /**
-             * 法人名（正式名称）
-             */
-            formal_name: string;
-            /**
-             * 直営店フラグ
-             */
-            direct_owned_flag: boolean;
-            /**
-             * 法人番号
-             */
-            corporate_number: string | null;
-            /**
-             * 代表者名
-             */
-            representative_name: string | null;
-            /**
-             * 本社所在地
-             */
-            head_office_address: string | null;
-            /**
-             * 電話番号
-             */
-            phone: string | null;
-            /**
-             * 担当者名
-             */
-            contact_person: string | null;
-            /**
-             * 担当者連絡先
-             */
-            contact_phone: string | null;
-            /**
-             * FC契約開始日
-             */
-            fc_contract_start_date: string | null;
-            /**
-             * FC契約更新日
-             */
-            fc_contract_renewal_date: string | null;
-            /**
-             * ロイヤリティ率(%)
-             */
-            royalty_rate: number | null;
-            /**
-             * 備考
-             */
-            note: string | null;
-            /**
-             * 作成日時
-             */
-            created_at: string;
-            /**
-             * 更新日時
-             */
-            updated_at: string;
-        };
-    };
-};
-
-export type PostCrmFranchiseCompaniesResponse = PostCrmFranchiseCompaniesResponses[keyof PostCrmFranchiseCompaniesResponses];
-
 export type GetCrmFranchiseCompaniesByIdHistoryData = {
     body?: never;
     path: {
@@ -22405,6 +22064,347 @@ export type PatchCrmFranchiseCompaniesByIdResponses = {
 };
 
 export type PatchCrmFranchiseCompaniesByIdResponse = PatchCrmFranchiseCompaniesByIdResponses[keyof PatchCrmFranchiseCompaniesByIdResponses];
+
+export type GetCrmFranchiseCompaniesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        limit?: number;
+        /**
+         * 法人名で検索
+         */
+        search?: string;
+        /**
+         * FranchiseCompanyType
+         *
+         * 直営 / FC 区分
+         */
+        company_type?: 'direct' | 'fc';
+        /**
+         * FranchiseCompanyStatus
+         *
+         * FC企業ステータス
+         */
+        status?: 'active' | 'inactive';
+        sort_by?: 'id' | 'display_name';
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/franchise-companies';
+};
+
+export type GetCrmFranchiseCompaniesErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    403: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmFranchiseCompaniesError = GetCrmFranchiseCompaniesErrors[keyof GetCrmFranchiseCompaniesErrors];
+
+export type GetCrmFranchiseCompaniesResponses = {
+    /**
+     * GetFranchiseCompaniesResponse
+     *
+     * FC企業一覧レスポンス
+     */
+    200: {
+        franchise_companies: Array<{
+            /**
+             * FC企業ID
+             */
+            id: string;
+            /**
+             * 法人名（表示名）
+             */
+            display_name: string;
+            /**
+             * FranchiseCompanyType
+             *
+             * 直営 / FC 区分
+             */
+            type: 'direct' | 'fc';
+            /**
+             * 管轄店舗数
+             */
+            managed_store_count: number;
+            /**
+             * FranchiseCompanyStatus
+             *
+             * ステータス
+             */
+            status: 'active' | 'inactive';
+        }>;
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmFranchiseCompaniesResponse = GetCrmFranchiseCompaniesResponses[keyof GetCrmFranchiseCompaniesResponses];
+
+export type PostCrmFranchiseCompaniesData = {
+    /**
+     * CreateFranchiseCompanyBody
+     *
+     * FC企業作成リクエスト
+     */
+    body?: {
+        formal_name: string;
+        display_name?: string;
+        /**
+         * FranchiseCompanyType
+         *
+         * 直営 / FC 区分
+         */
+        type: 'direct' | 'fc';
+        /**
+         * 直営店フラグ
+         */
+        direct_owned_flag?: boolean;
+        /**
+         * 法人番号
+         */
+        corporate_number?: string | null;
+        /**
+         * 代表者名
+         */
+        representative_name?: string | null;
+        /**
+         * 本社所在地
+         */
+        head_office_address?: string | null;
+        /**
+         * 電話番号
+         */
+        phone?: string | null;
+        /**
+         * 担当者名
+         */
+        contact_person?: string | null;
+        /**
+         * 担当者連絡先
+         */
+        contact_phone?: string | null;
+        /**
+         * FC契約開始日
+         */
+        fc_contract_start_date?: string | null;
+        /**
+         * FC契約更新日
+         */
+        fc_contract_renewal_date?: string | null;
+        /**
+         * ロイヤリティ率(%)
+         */
+        royalty_rate?: number | null;
+        /**
+         * 備考
+         */
+        note?: string | null;
+        /**
+         * FranchiseCompanyStatus
+         *
+         * ステータス
+         */
+        status?: 'active' | 'inactive';
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/franchise-companies';
+};
+
+export type PostCrmFranchiseCompaniesErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    403: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmFranchiseCompaniesError = PostCrmFranchiseCompaniesErrors[keyof PostCrmFranchiseCompaniesErrors];
+
+export type PostCrmFranchiseCompaniesResponses = {
+    /**
+     * CreateFranchiseCompanyResponse
+     *
+     * FC企業作成レスポンス
+     */
+    201: {
+        message: string;
+        /**
+         * FranchiseCompanyDetail
+         *
+         * FC企業詳細
+         */
+        franchise_company: {
+            /**
+             * FC企業ID
+             */
+            id: string;
+            /**
+             * 法人名（表示名）
+             */
+            display_name: string;
+            /**
+             * FranchiseCompanyType
+             *
+             * 直営 / FC 区分
+             */
+            type: 'direct' | 'fc';
+            /**
+             * 管轄店舗数
+             */
+            managed_store_count: number;
+            /**
+             * FranchiseCompanyStatus
+             *
+             * ステータス
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 法人名（正式名称）
+             */
+            formal_name: string;
+            /**
+             * 直営店フラグ
+             */
+            direct_owned_flag: boolean;
+            /**
+             * 法人番号
+             */
+            corporate_number: string | null;
+            /**
+             * 代表者名
+             */
+            representative_name: string | null;
+            /**
+             * 本社所在地
+             */
+            head_office_address: string | null;
+            /**
+             * 電話番号
+             */
+            phone: string | null;
+            /**
+             * 担当者名
+             */
+            contact_person: string | null;
+            /**
+             * 担当者連絡先
+             */
+            contact_phone: string | null;
+            /**
+             * FC契約開始日
+             */
+            fc_contract_start_date: string | null;
+            /**
+             * FC契約更新日
+             */
+            fc_contract_renewal_date: string | null;
+            /**
+             * ロイヤリティ率(%)
+             */
+            royalty_rate: number | null;
+            /**
+             * 備考
+             */
+            note: string | null;
+            /**
+             * 作成日時
+             */
+            created_at: string;
+            /**
+             * 更新日時
+             */
+            updated_at: string;
+        };
+    };
+};
+
+export type PostCrmFranchiseCompaniesResponse = PostCrmFranchiseCompaniesResponses[keyof PostCrmFranchiseCompaniesResponses];
 
 export type PostCrmLeavesByIdApproveData = {
     /**

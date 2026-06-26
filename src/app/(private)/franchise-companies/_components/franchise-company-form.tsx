@@ -323,7 +323,7 @@ export function FranchiseCompanyForm({
                     />
                   </FormControl>
                   <p className="text-muted-foreground text-xs">
-                    Phase 1では参考値として保持します。計算ロジックは対象外です。
+                    Phase 2 で計算ロジック提供予定。現時点は参考値のみ
                   </p>
                   <FormMessage />
                 </FormItem>

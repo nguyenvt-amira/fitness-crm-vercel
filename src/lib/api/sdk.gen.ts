@@ -464,31 +464,6 @@ export class FamilyRegistrations {
 
 export class FranchiseCompanies {
     /**
-     * Get franchise companies
-     *
-     * Get paginated list of FC companies for Y-03 FR-001
-     */
-    public static getCrmFranchiseCompanies<ThrowOnError extends boolean = false>(options?: Options<GetCrmFranchiseCompaniesData, ThrowOnError>) {
-        return (options?.client ?? client).get<GetCrmFranchiseCompaniesResponses, GetCrmFranchiseCompaniesErrors, ThrowOnError>({ url: '/crm/franchise-companies', ...options });
-    }
-    
-    /**
-     * Create franchise company
-     *
-     * Create a new FC company for Y-03 FR-002
-     */
-    public static postCrmFranchiseCompanies<ThrowOnError extends boolean = false>(options?: Options<PostCrmFranchiseCompaniesData, ThrowOnError>) {
-        return (options?.client ?? client).post<PostCrmFranchiseCompaniesResponses, PostCrmFranchiseCompaniesErrors, ThrowOnError>({
-            url: '/crm/franchise-companies',
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...options?.headers
-            }
-        });
-    }
-    
-    /**
      * Get franchise company history
      *
      * Get history records for a single FC company.
@@ -527,6 +502,31 @@ export class FranchiseCompanies {
             headers: {
                 'Content-Type': 'application/json',
                 ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Get franchise companies
+     *
+     * Get paginated list of FC companies for Y-03 FR-001
+     */
+    public static getCrmFranchiseCompanies<ThrowOnError extends boolean = false>(options?: Options<GetCrmFranchiseCompaniesData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmFranchiseCompaniesResponses, GetCrmFranchiseCompaniesErrors, ThrowOnError>({ url: '/crm/franchise-companies', ...options });
+    }
+    
+    /**
+     * Create franchise company
+     *
+     * Create a new FC company for Y-03 FR-002
+     */
+    public static postCrmFranchiseCompanies<ThrowOnError extends boolean = false>(options?: Options<PostCrmFranchiseCompaniesData, ThrowOnError>) {
+        return (options?.client ?? client).post<PostCrmFranchiseCompaniesResponses, PostCrmFranchiseCompaniesErrors, ThrowOnError>({
+            url: '/crm/franchise-companies',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options?.headers
             }
         });
     }
