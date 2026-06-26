@@ -188,7 +188,9 @@ export function AddReservationDialog({
             <Label className="mb-2 block text-xs font-medium">スペース番号</Label>
             <Select value={spaceNumber} onValueChange={(v) => setSpaceNumber(v ?? 'auto')}>
               <SelectTrigger className="h-9 w-[200px] text-sm">
-                <SelectValue />
+                <SelectValue>
+                  {(value) => (!value || value === 'auto' ? '自動割り当て' : `スペース ${value}`)}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="auto">自動割り当て</SelectItem>
