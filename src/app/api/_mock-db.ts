@@ -37,7 +37,6 @@ import type {
   ReservationStats,
   ReservationStatus,
   SessionMemo,
-  StudioSpace,
   StudioSpaceGridResponse,
 } from '@/app/api/_schemas/lesson-reservation.schema';
 import type {
@@ -14178,6 +14177,7 @@ function createDb() {
 
     // ─── D-03: Store Holidays ───────────────────────────────────────────────
     storeHolidays: {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       getHolidays(
         _storeId: string,
         _from: string,

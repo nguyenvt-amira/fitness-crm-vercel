@@ -53,7 +53,7 @@ export function ReservationListTable({
   onAddReservation,
   onCancelReservation,
 }: ReservationListTableProps) {
-  const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1));
+  const [, setPage] = useQueryState('page', parseAsInteger.withDefault(1));
   const [sorting, setSorting] = useState<SortingState>([]);
   const queryClient = useQueryClient();
   const { hasPermission } = useAuthUser();
@@ -92,6 +92,7 @@ export function ReservationListTable({
     canManageAttendance,
   });
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: data.reservations,
     columns,

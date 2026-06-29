@@ -54,7 +54,7 @@ export function ReservationPageLayout({
     setCancelReservationOpen(true);
   };
 
-  const handleCancelFromGrid = (reservationId: string, _memberName: string) => {
+  const handleCancelFromGrid = (reservationId: string) => {
     const reservation = reservationsData.reservations.find((r) => r.id === reservationId);
     if (reservation) handleOpenCancelReservation(reservation);
   };

@@ -66,7 +66,10 @@ export function LessonScheduleFormInstructors() {
       'start_time',
     ],
   });
-  const selectedInstructorIds = selectedInstructorIdsRaw ?? [];
+  const selectedInstructorIds = useMemo(
+    () => selectedInstructorIdsRaw ?? [],
+    [selectedInstructorIdsRaw],
+  );
 
   // D-01 権限マトリクス: Trainer は自分担当のみ。本人を固定し read-only にする（FR-003-014a）。
   // 認証ユーザーの id と instructor_id が一致する指導者を「本人」とみなす。
@@ -193,6 +196,7 @@ export function LessonScheduleFormInstructors() {
                         className="flex h-7 items-center gap-2 pr-2 pl-1 text-xs font-normal"
                       >
                         {selfInstructor?.photo_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
                           <img
                             src={selfInstructor.photo_url}
                             alt={selfInstructorName}
@@ -255,6 +259,7 @@ export function LessonScheduleFormInstructors() {
                                   className="flex items-center gap-2"
                                 >
                                   {inst.photo_url ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
                                     <img
                                       src={inst.photo_url}
                                       alt={inst.instructor_name}
@@ -294,6 +299,7 @@ export function LessonScheduleFormInstructors() {
                             className="flex h-7 items-center gap-2 pr-1 pl-1 text-xs font-normal"
                           >
                             {inst.photo_url ? (
+                              // eslint-disable-next-line @next/next/no-img-element
                               <img
                                 src={inst.photo_url}
                                 alt={inst.instructor_name}

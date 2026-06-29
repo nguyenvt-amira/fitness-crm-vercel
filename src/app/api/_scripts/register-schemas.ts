@@ -24,7 +24,6 @@ import * as promoCodeSchemas from '../_schemas/promo-code.schema';
 import * as staffSchemas from '../_schemas/staff.schema';
 import * as storeAccessSettingsSchemas from '../_schemas/store-access-settings.schema';
 import * as storeSchemas from '../_schemas/store.schema';
-import * as surveyReportingSchemas from '../_schemas/survey-reporting.schema';
 import * as surveySchemas from '../_schemas/survey.schema';
 import * as visitExperienceSchemas from '../_schemas/visit-experience.schema';
 import { registry } from './register-route';
@@ -1759,7 +1758,7 @@ export function registerAllSchemas() {
       surveySchemas.SurveyTemplateChangeHistoryItemSchema,
     ),
   );
-  
+
   // D-01: Lesson Schedules
 
   registeredSchemaMap.set(

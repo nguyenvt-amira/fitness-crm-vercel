@@ -32,7 +32,6 @@ import {
   patchCrmLessonSchedulesByScheduleIdStudioChangeMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
 import type { LessonScheduleListItem } from '@/lib/api/types.gen';
-import { cn } from '@/lib/utils';
 
 // Mock studio list (in a real app, this would come from an API)
 const AVAILABLE_STUDIOS = [

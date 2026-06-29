@@ -22,7 +22,7 @@ export function SpaceReservationGrid({
   onAddReservation,
   onCancelReservation,
 }: SpaceReservationGridProps) {
-  const { spaces, grid_cols, grid_rows } = data;
+  const { spaces, grid_cols } = data;
   const { hasPermission } = useAuthUser();
   const canManageReservation = hasPermission(Permission.LessonsReservationManage);
   const reservedCount = spaces.filter((s) => s.type === 'reserved').length;

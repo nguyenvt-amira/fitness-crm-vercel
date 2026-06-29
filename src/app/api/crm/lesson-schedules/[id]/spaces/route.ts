@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/app/api/_mock-db';
 import {
   ErrorResponseSchema,
-  type StudioSpaceGridResponse,
   StudioSpaceGridResponseSchema,
 } from '@/app/api/_schemas/lesson-reservation.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';

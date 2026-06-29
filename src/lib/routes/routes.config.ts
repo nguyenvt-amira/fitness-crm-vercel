@@ -114,6 +114,7 @@ export const routes = {
     router: '/franchise-companies/create',
     filePath: '(private)/franchise-companies/create',
     pattern: '/franchise-companies/create',
+    private: true,
   },
   '/lesson-schedules': {
     router: '/lesson-schedules',

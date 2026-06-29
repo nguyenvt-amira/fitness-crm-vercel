@@ -4,7 +4,6 @@ import { db } from '@/app/api/_mock-db';
 import {
   type ChangeResponse,
   ChangeResponseSchema,
-  type ChangeStudioRequest,
   ChangeStudioRequestSchema,
   ErrorResponseSchema,
 } from '@/app/api/_schemas/lesson-reservation.schema';

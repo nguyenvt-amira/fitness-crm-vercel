@@ -1,9 +1,5 @@
 'use client';
 
-import { Eye } from 'lucide-react';
-
-import { BreadcrumbNav } from '@/components/common/breadcrumb-nav';
-
 export function VisitExperienceHeader() {
   return (
     <div className="flex items-center gap-3">
