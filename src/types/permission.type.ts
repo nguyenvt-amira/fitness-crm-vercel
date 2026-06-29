@@ -132,6 +132,21 @@ export enum Permission {
   BrandsView = 'brands.view',
   BrandsEdit = 'brands.edit',
   BrandsCreate = 'brands.create',
+
+  // -------------------------------------------------------------------------
+  // Lockers
+  // -------------------------------------------------------------------------
+  LockersView = 'lockers.view',
+  LockersEdit = 'lockers.edit',
+  LockersCreate = 'lockers.create',
+  LockersDelete = 'lockers.delete',
+  LockersExport = 'lockers.export',
+  LockersPendingView = 'lockers-pending.view',
+  LockersPendingExport = 'lockers-pending.export',
+  LockersContractsView = 'lockers-contracts.view',
+  LockersContractsCreate = 'lockers-contracts.create',
+  LockersContractsEdit = 'lockers-contracts.edit',
+  LockersContractsExport = 'lockers-contracts.export',
 }
 
 /** Authenticated user stored in context */

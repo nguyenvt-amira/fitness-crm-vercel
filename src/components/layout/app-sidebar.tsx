@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 
 import { useAuthUser } from '@/contexts/auth-user.context';
-import { Home, type LucideIcon, Package, Settings, UserPlus, Users } from 'lucide-react';
+import { Building, Home, type LucideIcon, Package, Settings, UserPlus, Users } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import {
@@ -74,6 +74,12 @@ const menuItems: MenuItem[] = [
     icon: UserPlus,
     href: getRoutePattern('/family-registrations'),
     subItems: [{ label: 'ダッシュボード', href: '/family-registrations/dashboard' }],
+  },
+  {
+    label: '施設設備管理',
+    icon: Building,
+    href: '/lockers',
+    subItems: [{ label: 'ロッカー管理', href: '/lockers' }],
   },
   {
     label: '商材・施策設定',

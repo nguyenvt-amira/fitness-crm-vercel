@@ -6,7 +6,7 @@ type DateInput = string | number | Date | null | undefined;
 /**
  * Convert input to Date object, return null if invalid
  */
-function parseDate(value: DateInput): Date | null {
+export function parseDate(value: DateInput): Date | null {
   if (!value) return null;
   const d = value instanceof Date ? value : new Date(value);
   return Number.isNaN(d.getTime()) ? null : d;

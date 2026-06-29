@@ -59,8 +59,18 @@ export async function GET(request: NextRequest) {
     }
 
     const query: GetOptionMastersQuery = validationResult.data;
-    const { page, limit, search, brand, option_type, status, store_id, sort_by, sort_order } =
-      query;
+    const {
+      page,
+      limit,
+      search,
+      brand,
+      option_type,
+      status,
+      category,
+      store_id,
+      sort_by,
+      sort_order,
+    } = query;
 
     let filtered: OptionMasterListItem[] = [...db.optionMasters.getList()];
 
@@ -81,6 +91,9 @@ export async function GET(request: NextRequest) {
     }
     if (status) {
       filtered = filtered.filter((item) => item.status === status);
+    }
+    if (category) {
+      filtered = filtered.filter((item) => item.category === category);
     }
     if (store_id) {
       filtered = filtered.filter((item) => item.store_id === store_id || item.store_id === null);
