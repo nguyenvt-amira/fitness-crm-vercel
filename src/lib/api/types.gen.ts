@@ -15509,6 +15509,141 @@ export type DeleteOptionMasterResponse = {
     message: string;
 };
 
+export const VisitExperienceStatus = {
+    APPLICATION_RECEIVED: 'application_received',
+    INFO_MISSING: 'info_missing',
+    BL_CHECKING: 'bl_checking',
+    VISITING: 'visiting',
+    VISIT_COMPLETED: 'visit_completed',
+    MEMBERSHIP_APPLIED: 'membership_applied',
+    CANCELLED: 'cancelled'
+} as const;
+
+export type VisitExperienceStatus = typeof VisitExperienceStatus[keyof typeof VisitExperienceStatus];
+
+export type VisitExperience = {
+    id: string;
+    customer_name: string;
+    status: 'application_received' | 'info_missing' | 'bl_checking' | 'visiting' | 'visit_completed' | 'membership_applied' | 'cancelled';
+    bl_match: boolean;
+    brand_name: string;
+    store_name: string;
+    reserved_at: string;
+    visit_start_at: string | null;
+    visit_end_scheduled_at: string;
+    visit_end_actual_at: string | null;
+};
+
+export type GetVisitExperiencesQuery = {
+    search?: string;
+    status?: 'application_received' | 'info_missing' | 'bl_checking' | 'visiting' | 'visit_completed' | 'membership_applied' | 'cancelled';
+    brand_name?: string;
+    store_name?: string;
+    date_range?: 'today' | 'last_3_days' | 'last_7_days';
+    page?: number;
+    limit?: number;
+};
+
+export type GetVisitExperiencesResponse = {
+    items: Array<{
+        id: string;
+        customer_name: string;
+        status: 'application_received' | 'info_missing' | 'bl_checking' | 'visiting' | 'visit_completed' | 'membership_applied' | 'cancelled';
+        bl_match: boolean;
+        brand_name: string;
+        store_name: string;
+        reserved_at: string;
+        visit_start_at: string | null;
+        visit_end_scheduled_at: string;
+        visit_end_actual_at: string | null;
+    }>;
+    total: number;
+    page: number;
+    limit: number;
+    total_pages: number;
+};
+
+export type GetVisitExperiencesSummaryResponse = {
+    today_applications: number;
+    visiting_count: number;
+    today_membership_count: number;
+    today_cancelled_count: number;
+};
+
+export type VisitTimelineEntry = {
+    timestamp: string;
+    operator: string;
+    content: string;
+};
+
+export type VisitExperienceDetail = {
+    id: string;
+    customer_name: string;
+    status: 'application_received' | 'info_missing' | 'bl_checking' | 'visiting' | 'visit_completed' | 'membership_applied' | 'cancelled';
+    bl_match: boolean;
+    brand_name: string;
+    store_name: string;
+    reserved_at: string;
+    visit_start_at: string | null;
+    visit_end_scheduled_at: string;
+    visit_end_actual_at: string | null;
+    customer_name_kana: string;
+    birth_date: string;
+    phone: string | null;
+    email: string | null;
+    address: string | null;
+    id_document_type: string | null;
+    id_document_verified: boolean;
+    bl_match_reason: string | null;
+    permit_issued_at: string | null;
+    b01_auth_method: string | null;
+    b01_gate: string | null;
+    b01_entry_at: string | null;
+    b01_exit_at: string | null;
+    timeline: Array<{
+        timestamp: string;
+        operator: string;
+        content: string;
+    }>;
+};
+
+export type PermitVisitExperienceResponse = {
+    record: {
+        id: string;
+        customer_name: string;
+        status: 'application_received' | 'info_missing' | 'bl_checking' | 'visiting' | 'visit_completed' | 'membership_applied' | 'cancelled';
+        bl_match: boolean;
+        brand_name: string;
+        store_name: string;
+        reserved_at: string;
+        visit_start_at: string | null;
+        visit_end_scheduled_at: string;
+        visit_end_actual_at: string | null;
+        customer_name_kana: string;
+        birth_date: string;
+        phone: string | null;
+        email: string | null;
+        address: string | null;
+        id_document_type: string | null;
+        id_document_verified: boolean;
+        bl_match_reason: string | null;
+        permit_issued_at: string | null;
+        b01_auth_method: string | null;
+        b01_gate: string | null;
+        b01_entry_at: string | null;
+        b01_exit_at: string | null;
+        timeline: Array<{
+            timestamp: string;
+            operator: string;
+            content: string;
+        }>;
+    };
+};
+
+export type PermitVisitExperienceError = {
+    reason: string;
+};
+
 export type PostAuthLoginData = {
     /**
      * LoginRequest
@@ -38911,6 +39046,234 @@ export type GetCrmTransfersResponses = {
 };
 
 export type GetCrmTransfersResponse = GetCrmTransfersResponses[keyof GetCrmTransfersResponses];
+
+export type PostCrmVisitExperiencesByIdPermitData = {
+    body?: never;
+    path: {
+        /**
+         * Visit experience id
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/visit-experiences/{id}/permit';
+};
+
+export type PostCrmVisitExperiencesByIdPermitErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * Cannot issue permit
+     */
+    422: {
+        reason: string;
+    };
+};
+
+export type PostCrmVisitExperiencesByIdPermitError = PostCrmVisitExperiencesByIdPermitErrors[keyof PostCrmVisitExperiencesByIdPermitErrors];
+
+export type PostCrmVisitExperiencesByIdPermitResponses = {
+    /**
+     * Permit issued successfully
+     */
+    200: {
+        record: {
+            id: string;
+            customer_name: string;
+            status: 'application_received' | 'info_missing' | 'bl_checking' | 'visiting' | 'visit_completed' | 'membership_applied' | 'cancelled';
+            bl_match: boolean;
+            brand_name: string;
+            store_name: string;
+            reserved_at: string;
+            visit_start_at: string | null;
+            visit_end_scheduled_at: string;
+            visit_end_actual_at: string | null;
+            customer_name_kana: string;
+            birth_date: string;
+            phone: string | null;
+            email: string | null;
+            address: string | null;
+            id_document_type: string | null;
+            id_document_verified: boolean;
+            bl_match_reason: string | null;
+            permit_issued_at: string | null;
+            b01_auth_method: string | null;
+            b01_gate: string | null;
+            b01_entry_at: string | null;
+            b01_exit_at: string | null;
+            timeline: Array<{
+                timestamp: string;
+                operator: string;
+                content: string;
+            }>;
+        };
+    };
+};
+
+export type PostCrmVisitExperiencesByIdPermitResponse = PostCrmVisitExperiencesByIdPermitResponses[keyof PostCrmVisitExperiencesByIdPermitResponses];
+
+export type GetCrmVisitExperiencesByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Visit experience id
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/visit-experiences/{id}';
+};
+
+export type GetCrmVisitExperiencesByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmVisitExperiencesByIdError = GetCrmVisitExperiencesByIdErrors[keyof GetCrmVisitExperiencesByIdErrors];
+
+export type GetCrmVisitExperiencesByIdResponses = {
+    /**
+     * Visit experience detail
+     */
+    200: {
+        id: string;
+        customer_name: string;
+        status: 'application_received' | 'info_missing' | 'bl_checking' | 'visiting' | 'visit_completed' | 'membership_applied' | 'cancelled';
+        bl_match: boolean;
+        brand_name: string;
+        store_name: string;
+        reserved_at: string;
+        visit_start_at: string | null;
+        visit_end_scheduled_at: string;
+        visit_end_actual_at: string | null;
+        customer_name_kana: string;
+        birth_date: string;
+        phone: string | null;
+        email: string | null;
+        address: string | null;
+        id_document_type: string | null;
+        id_document_verified: boolean;
+        bl_match_reason: string | null;
+        permit_issued_at: string | null;
+        b01_auth_method: string | null;
+        b01_gate: string | null;
+        b01_entry_at: string | null;
+        b01_exit_at: string | null;
+        timeline: Array<{
+            timestamp: string;
+            operator: string;
+            content: string;
+        }>;
+    };
+};
+
+export type GetCrmVisitExperiencesByIdResponse = GetCrmVisitExperiencesByIdResponses[keyof GetCrmVisitExperiencesByIdResponses];
+
+export type GetCrmVisitExperiencesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        search?: string;
+        status?: 'application_received' | 'info_missing' | 'bl_checking' | 'visiting' | 'visit_completed' | 'membership_applied' | 'cancelled';
+        brand_name?: string;
+        store_name?: string;
+        date_range?: 'today' | 'last_3_days' | 'last_7_days';
+        page?: number;
+        limit?: number;
+    };
+    url: '/crm/visit-experiences';
+};
+
+export type GetCrmVisitExperiencesErrors = {
+    /**
+     * Bad request - invalid query parameters
+     */
+    400: {
+        items: Array<{
+            id: string;
+            customer_name: string;
+            status: 'application_received' | 'info_missing' | 'bl_checking' | 'visiting' | 'visit_completed' | 'membership_applied' | 'cancelled';
+            bl_match: boolean;
+            brand_name: string;
+            store_name: string;
+            reserved_at: string;
+            visit_start_at: string | null;
+            visit_end_scheduled_at: string;
+            visit_end_actual_at: string | null;
+        }>;
+        total: number;
+        page: number;
+        limit: number;
+        total_pages: number;
+    };
+};
+
+export type GetCrmVisitExperiencesError = GetCrmVisitExperiencesErrors[keyof GetCrmVisitExperiencesErrors];
+
+export type GetCrmVisitExperiencesResponses = {
+    /**
+     * List of visit experiences
+     */
+    200: {
+        items: Array<{
+            id: string;
+            customer_name: string;
+            status: 'application_received' | 'info_missing' | 'bl_checking' | 'visiting' | 'visit_completed' | 'membership_applied' | 'cancelled';
+            bl_match: boolean;
+            brand_name: string;
+            store_name: string;
+            reserved_at: string;
+            visit_start_at: string | null;
+            visit_end_scheduled_at: string;
+            visit_end_actual_at: string | null;
+        }>;
+        total: number;
+        page: number;
+        limit: number;
+        total_pages: number;
+    };
+};
+
+export type GetCrmVisitExperiencesResponse = GetCrmVisitExperiencesResponses[keyof GetCrmVisitExperiencesResponses];
+
+export type GetCrmVisitExperiencesSummaryData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/visit-experiences/summary';
+};
+
+export type GetCrmVisitExperiencesSummaryResponses = {
+    /**
+     * KPI summary counts
+     */
+    200: {
+        today_applications: number;
+        visiting_count: number;
+        today_membership_count: number;
+        today_cancelled_count: number;
+    };
+};
+
+export type GetCrmVisitExperiencesSummaryResponse = GetCrmVisitExperiencesSummaryResponses[keyof GetCrmVisitExperiencesSummaryResponses];
 
 export type PostCrmUploadsPresignData = {
     /**

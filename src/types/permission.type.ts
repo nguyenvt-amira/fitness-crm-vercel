@@ -85,6 +85,11 @@ export enum Permission {
   MembershipApplicationsApprove = 'membership-applications.approve',
 
   // -------------------------------------------------------------------------
+  // Visit / experience management
+  // -------------------------------------------------------------------------
+  VisitExperiencesView = 'visit-experiences.view',
+
+  // -------------------------------------------------------------------------
   // Family registrations
   // -------------------------------------------------------------------------
   FamilyRegistrationsView = 'family-registrations.view',
