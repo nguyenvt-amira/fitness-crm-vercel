@@ -45,6 +45,10 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
   '/membership-applications/:id': Permission.MembershipApplicationsView,
   '/membership-applications/create': Permission.MembershipApplicationsCreate,
 
+  // Visit / experience management
+  '/visit-experiences': Permission.VisitExperiencesView,
+  '/visit-experiences/:id': Permission.VisitExperiencesView,
+
   // Family registrations
   '/family-registrations': Permission.FamilyRegistrationsView,
   '/family-registrations/:id': Permission.FamilyRegistrationsView,
@@ -135,6 +139,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.MembershipApplicationsView,
     Permission.MembershipApplicationsCreate,
     Permission.MembershipApplicationsApprove,
+    Permission.VisitExperiencesView,
     Permission.FamilyRegistrationsView,
     Permission.FamilyRegistrationsDashboardView,
     Permission.FamilyRegistrationsApprove,
@@ -186,6 +191,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.MembersTransfersView,
     Permission.MembershipApplicationsView,
     Permission.MembershipApplicationsCreate,
+    Permission.VisitExperiencesView,
     Permission.FamilyRegistrationsView,
     Permission.FamilyRegistrationsDashboardView,
     Permission.ContractsView,
@@ -226,6 +232,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.MembersTransfersView,
     Permission.MembershipApplicationsView,
     Permission.MembershipApplicationsCreate,
+    Permission.VisitExperiencesView,
     Permission.FamilyRegistrationsView,
     Permission.FamilyRegistrationsDashboardView,
     Permission.ContractsView,
@@ -254,6 +261,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.MembersLeavesView,
     Permission.MembersTransfersView,
     Permission.MembershipApplicationsView,
+    Permission.VisitExperiencesView,
     Permission.FamilyRegistrationsView,
     Permission.FamilyRegistrationsDashboardView,
     Permission.LockersView,

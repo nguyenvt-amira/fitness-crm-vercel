@@ -110,7 +110,7 @@ As a shift lead, I can view at-a-glance summary counts for daily visit operation
 
 ### Functional Requirements
 
-- **FR-001**: System MUST provide a dedicated "見学・体験管理" list page accessible to operational staff roles.
+- **FR-001**: System MUST provide a dedicated "見学・体験管理" list page. Per the C-01 権限マトリクス (申請一覧/詳細参照), page access MUST be restricted to the System, Headquarter, Manager, Staff, and Observer roles; the Trainer role MUST NOT be able to access this page (page-level permission `visit-experiences.view`).
 - **FR-002**: System MUST display a tabular reservation queue with, at minimum, the following columns per row: 予約番号, 氏名, ステータス, BL照合, ブランド, 店舗, 予約日時, 見学開始, and 見学終了（予定/実績）.
 - **FR-003**: System MUST support reservation lookup by reservation ID and customer name from a single quick-search input field.
 - **FR-004**: System MUST support detailed filtering by status, brand, store, and date range, with each filter independently combinable.

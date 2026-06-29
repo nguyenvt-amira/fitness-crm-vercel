@@ -82,7 +82,6 @@ import type {
 } from '@/app/api/_schemas/store-sales-settings.schema';
 import type { Store, StoreBusinessHours } from '@/app/api/_schemas/store.schema';
 import type { ApprovalHistoryItem, TransferDetail } from '@/app/api/_schemas/transfer.schema';
-import type { VisitExperience } from '@/app/api/_schemas/visit-experience.schema';
 import type { VisitExperienceDetail } from '@/app/api/_schemas/visit-experience.schema';
 import {
   type LockerSlotLockSettingsMeta,
