@@ -94,11 +94,14 @@ export function LockerContractAssignmentSection({
 
   useEffect(() => {
     if (!lockerId || !slotNumber) return;
+    // Wait until the locker detail for the selected locker has finished loading.
+    // Otherwise the slot list is still empty and we would wrongly clear a valid slot_number.
+    if (locker?.id !== lockerId) return;
     const exists = slots.some((slot) => slot.slot_number === slotNumber);
     if (!exists) {
       form.setValue('slot_number', '', { shouldDirty: true });
     }
-  }, [form, lockerId, slotNumber, slots]);
+  }, [form, locker?.id, lockerId, slotNumber, slots]);
 
   const handleLockerChange = (nextLockerId: string | null) => {
     if (!nextLockerId) return;
