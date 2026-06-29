@@ -94,6 +94,13 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
   // schedule requires the schedule-manage permission (denies Observer).
   '/lesson-schedules': Permission.LessonsView,
   '/lesson-schedules/create': Permission.LessonsScheduleManage,
+
+  // Lesson Content Management (D-02)
+  // Viewing the list + detail is open to every authenticated role; creating a
+  // master (incl. duplicate) is restricted to Headquarter/System.
+  '/lessons': Permission.LessonContentsView,
+  '/lessons/:id': Permission.LessonContentsView,
+  '/lessons/create': Permission.LessonContentsCreate,
 };
 
 // ---------------------------------------------------------------------------
@@ -181,6 +188,11 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LessonsAttendanceManage,
     Permission.LessonsMemoManage,
     Permission.LessonsPenaltyRelease,
+    Permission.LessonContentsView,
+    Permission.LessonContentsCreate,
+    Permission.LessonContentsEdit,
+    Permission.LessonContentsDelete,
+    Permission.LessonContentsHistoryView,
   ],
 
   [UserRole.Manager]: [
@@ -223,6 +235,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LessonsAttendanceManage,
     Permission.LessonsMemoManage,
     Permission.LessonsPenaltyRelease,
+    Permission.LessonContentsView,
   ],
 
   [UserRole.Staff]: [
@@ -269,6 +282,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LessonsAttendanceManage,
     Permission.LessonsMemoManage,
     Permission.LessonsPenaltyRelease,
+    Permission.LessonContentsView,
   ],
 
   // Trainer: own-session scope. Can manage their schedules/reservations/
@@ -280,6 +294,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LessonsReservationManage,
     Permission.LessonsAttendanceManage,
     Permission.LessonsMemoManage,
+    Permission.LessonContentsView,
   ],
 
   // Observer: read-only. May view schedules but performs no mutations.
@@ -294,6 +309,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LockersPendingView,
     Permission.LockersPendingExport,
     Permission.LessonsView,
+    Permission.LessonContentsView,
   ],
 };
 

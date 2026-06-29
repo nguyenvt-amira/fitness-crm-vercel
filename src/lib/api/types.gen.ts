@@ -22891,6 +22891,467 @@ export type GetCrmLeavesResponses = {
 
 export type GetCrmLeavesResponse = GetCrmLeavesResponses[keyof GetCrmLeavesResponses];
 
+export type GetCrmLessonContentsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * LessonKind
+         *
+         * Which lesson set (Studio vs Body care tab)
+         */
+        kind?: 'studio' | 'bodycare';
+        page?: number;
+        /**
+         * Items per page (max 50)
+         */
+        limit?: number;
+        /**
+         * Partial match on name or id
+         */
+        search?: string;
+        /**
+         * Filter by lesson category
+         */
+        lesson_category?: Array<string> | null;
+        /**
+         * Filter by category
+         */
+        category?: Array<string> | null;
+        /**
+         * Filter by brand
+         */
+        brand?: Array<'joyfit' | 'fit365'> | null;
+        /**
+         * Filter by status
+         */
+        status?: Array<'active' | 'inactive'> | null;
+        /**
+         * Include inactive / deleted rows
+         */
+        include_deleted?: boolean | null;
+        store_id?: string;
+        sort_by?: 'id' | 'name' | 'duration' | 'status' | 'brand';
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/lesson-contents';
+};
+
+export type GetCrmLessonContentsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmLessonContentsError = GetCrmLessonContentsErrors[keyof GetCrmLessonContentsErrors];
+
+export type GetCrmLessonContentsResponses = {
+    /**
+     * GetLessonContentsResponse
+     *
+     * Response for lesson contents list
+     */
+    200: {
+        /**
+         * Lesson content rows
+         */
+        data: Array<{
+            /**
+             * Lesson master ID
+             */
+            id: string;
+            /**
+             * Lesson name
+             */
+            name: string;
+            /**
+             * LessonKind
+             *
+             * Which lesson set (Studio vs Body care tab)
+             */
+            kind: 'studio' | 'bodycare';
+            /**
+             * LessonBrand
+             *
+             * Lesson content brand
+             */
+            brand: 'joyfit' | 'fit365';
+            /**
+             * Duration in minutes
+             */
+            duration: number;
+            /**
+             * LessonPricingType
+             *
+             * Studio/body-care pricing type
+             */
+            pricing_type: 'included' | 'paid';
+            /**
+             * LessonContentStatus
+             *
+             * Lesson content status
+             */
+            status: 'active' | 'inactive';
+            /**
+             * LessonGenderRestriction
+             *
+             * Gender restriction
+             */
+            gender_restriction: 'none' | 'male' | 'female';
+            lesson_category: string;
+            category: string;
+            store_id: string;
+            is_deleted: boolean;
+            reservation_count?: number;
+            max_reservation_count?: number;
+        }>;
+        /**
+         * LessonPagination
+         *
+         * Pagination information
+         */
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmLessonContentsResponse = GetCrmLessonContentsResponses[keyof GetCrmLessonContentsResponses];
+
+export type GetCrmLessonContentsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Master ID (LSN-* / BDC-* / PLN-*)
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/lesson-contents/{id}';
+};
+
+export type GetCrmLessonContentsByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmLessonContentsByIdError = GetCrmLessonContentsByIdErrors[keyof GetCrmLessonContentsByIdErrors];
+
+export type GetCrmLessonContentsByIdResponses = {
+    /**
+     * GetLessonContentDetailResponse
+     *
+     * Lesson content detail response
+     */
+    200: {
+        /**
+         * LessonContentDetail
+         *
+         * Unified lesson content master detail
+         */
+        data: {
+            /**
+             * Master ID (LSN-* / PLN-* / BDC-*)
+             */
+            id: string;
+            /**
+             * Lesson name
+             */
+            name: string;
+            /**
+             * LessonDetailType
+             *
+             * Lesson content type (drives type badge + time-row label)
+             */
+            lesson_type: 'studio' | 'personal' | 'bodycare';
+            /**
+             * LessonBrand
+             *
+             * Lesson content brand
+             */
+            brand: 'joyfit' | 'fit365';
+            /**
+             * LessonContentStatus
+             *
+             * Lesson content status
+             */
+            status: 'active' | 'inactive';
+            /**
+             * Minutes (実施/セッション時間)
+             */
+            duration: number;
+            /**
+             * LessonPricingType
+             *
+             * Studio/body-care pricing type
+             */
+            pricing_type: 'included' | 'paid';
+            /**
+             * Yen; non-null only for pricing_type === paid
+             */
+            per_use_fee?: number | null;
+            /**
+             * Gallery images
+             */
+            images: Array<{
+                /**
+                 * Image source
+                 */
+                url: string;
+                caption?: string | null;
+                /**
+                 * First/main image marker
+                 */
+                is_main: boolean;
+            }>;
+            description?: string | null;
+            internal_memo?: string | null;
+            /**
+             * RestrictionSet
+             *
+             * Reservation restriction + per-use fee
+             */
+            restriction: {
+                /**
+                 * Empty → 制限なし
+                 */
+                restricted_main_contracts: Array<string>;
+                /**
+                 * Empty → 制限なし
+                 */
+                restricted_option_contracts: Array<string>;
+                /**
+                 * Non-null only when pricing_type === paid
+                 */
+                per_use_fee?: number | null;
+            };
+            /**
+             * Schedules using this master (gates delete)
+             */
+            usage_count: number;
+            /**
+             * Total schedule count
+             */
+            schedule_total: number;
+            store_id: string;
+            created_at?: string | null;
+            updated_at?: string | null;
+        };
+    };
+};
+
+export type GetCrmLessonContentsByIdResponse = GetCrmLessonContentsByIdResponses[keyof GetCrmLessonContentsByIdResponses];
+
+export type GetCrmLessonContentsByIdHistoryData = {
+    body?: never;
+    path: {
+        /**
+         * Master ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/lesson-contents/{id}/history';
+};
+
+export type GetCrmLessonContentsByIdHistoryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmLessonContentsByIdHistoryError = GetCrmLessonContentsByIdHistoryErrors[keyof GetCrmLessonContentsByIdHistoryErrors];
+
+export type GetCrmLessonContentsByIdHistoryResponses = {
+    /**
+     * GetLessonContentHistoryResponse
+     *
+     * Lesson content change history response
+     */
+    200: {
+        /**
+         * ChangeHistory
+         *
+         * Change-log list + total
+         */
+        data: {
+            entries: Array<{
+                id: string;
+                /**
+                 * 日時
+                 */
+                timestamp: string;
+                /**
+                 * 操作者
+                 */
+                operator: string;
+                /**
+                 * 操作
+                 */
+                action: string;
+                /**
+                 * 変更内容
+                 */
+                detail?: string | null;
+            }>;
+            total: number;
+        };
+    };
+};
+
+export type GetCrmLessonContentsByIdHistoryResponse = GetCrmLessonContentsByIdHistoryResponses[keyof GetCrmLessonContentsByIdHistoryResponses];
+
+export type GetCrmLessonContentsByIdSchedulesData = {
+    body?: never;
+    path: {
+        /**
+         * Master ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/lesson-contents/{id}/schedules';
+};
+
+export type GetCrmLessonContentsByIdSchedulesErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmLessonContentsByIdSchedulesError = GetCrmLessonContentsByIdSchedulesErrors[keyof GetCrmLessonContentsByIdSchedulesErrors];
+
+export type GetCrmLessonContentsByIdSchedulesResponses = {
+    /**
+     * GetLessonContentSchedulesResponse
+     *
+     * Lesson content schedules response
+     */
+    200: {
+        /**
+         * ScheduleSummary
+         *
+         * Recurring patterns + sessions + total
+         */
+        data: {
+            recurring_patterns: Array<{
+                id: string;
+                days: Array<string>;
+                time: string;
+                studio: string;
+                period?: string | null;
+                /**
+                 * Multi-instructor (n名), each links to D-04
+                 */
+                instructors: Array<{
+                    /**
+                     * D-04 master link target
+                     */
+                    instructor_id: string;
+                    name: string;
+                }>;
+            }>;
+            sessions: Array<{
+                /**
+                 * Row → reservation screen
+                 */
+                id: string;
+                date: string;
+                time: string;
+                studio: string;
+                booked: number;
+                capacity: number;
+            }>;
+            /**
+             * Total session count
+             */
+            total: number;
+        };
+    };
+};
+
+export type GetCrmLessonContentsByIdSchedulesResponse = GetCrmLessonContentsByIdSchedulesResponses[keyof GetCrmLessonContentsByIdSchedulesResponses];
+
 export type PostCrmLessonSchedulesByScheduleIdCancelData = {
     /**
      * CancelLessonRequest
@@ -25293,280 +25754,6 @@ export type GetCrmLessonsResponses = {
 };
 
 export type GetCrmLessonsResponse = GetCrmLessonsResponses[keyof GetCrmLessonsResponses];
-
-export type GetCrmLessonContentsData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * LessonKind
-         *
-         * Which lesson set (Studio vs Body care tab)
-         */
-        kind?: 'studio' | 'bodycare';
-        page?: number;
-        /**
-         * Items per page (max 50)
-         */
-        limit?: number;
-        /**
-         * Partial match on name or id
-         */
-        search?: string;
-        /**
-         * Filter by lesson category
-         */
-        lesson_category?: Array<string> | null;
-        /**
-         * Filter by category
-         */
-        category?: Array<string> | null;
-        /**
-         * Filter by brand
-         */
-        brand?: Array<'joyfit' | 'fit365'> | null;
-        /**
-         * Filter by status
-         */
-        status?: Array<'active' | 'inactive'> | null;
-        /**
-         * Include inactive / deleted rows
-         */
-        include_deleted?: boolean | null;
-        store_id?: string;
-        sort_by?: 'id' | 'name' | 'duration' | 'status' | 'brand';
-        sort_order?: 'asc' | 'desc';
-    };
-    url: '/crm/lesson-contents';
-};
-
-export type GetCrmLessonContentsErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    400: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type GetCrmLessonContentsError = GetCrmLessonContentsErrors[keyof GetCrmLessonContentsErrors];
-
-export type GetCrmLessonContentsResponses = {
-    /**
-     * GetLessonContentsResponse
-     *
-     * Response for lesson contents list
-     */
-    200: {
-        /**
-         * Lesson content rows
-         */
-        data: Array<{
-            /**
-             * Lesson master ID
-             */
-            id: string;
-            /**
-             * Lesson name
-             */
-            name: string;
-            /**
-             * LessonKind
-             *
-             * Which lesson set (Studio vs Body care tab)
-             */
-            kind: 'studio' | 'bodycare';
-            /**
-             * LessonBrand
-             *
-             * Lesson content brand
-             */
-            brand: 'joyfit' | 'fit365';
-            /**
-             * Duration in minutes
-             */
-            duration: number;
-            /**
-             * LessonPricingType
-             *
-             * Studio/body-care pricing type
-             */
-            pricing_type: 'included' | 'paid';
-            /**
-             * LessonContentStatus
-             *
-             * Lesson content status
-             */
-            status: 'active' | 'inactive';
-            /**
-             * LessonGenderRestriction
-             *
-             * Gender restriction
-             */
-            gender_restriction: 'none' | 'male' | 'female';
-            lesson_category: string;
-            category: string;
-            store_id: string;
-            is_deleted: boolean;
-            reservation_count?: number;
-            max_reservation_count?: number;
-        }>;
-        /**
-         * LessonPagination
-         *
-         * Pagination information
-         */
-        pagination: {
-            page: number;
-            limit: number;
-            total: number;
-            total_pages: number;
-        };
-    };
-};
-
-export type GetCrmLessonContentsResponse = GetCrmLessonContentsResponses[keyof GetCrmLessonContentsResponses];
-
-export type GetCrmPersonalPlansData = {
-    body?: never;
-    path?: never;
-    query?: {
-        page?: number;
-        /**
-         * Items per page (max 50)
-         */
-        limit?: number;
-        /**
-         * Partial match on name or id
-         */
-        search?: string;
-        /**
-         * Filter by plan category
-         */
-        category?: Array<string> | null;
-        /**
-         * Filter by brand
-         */
-        brand?: Array<'joyfit' | 'fit365'> | null;
-        /**
-         * Filter by status
-         */
-        status?: Array<'active' | 'inactive'> | null;
-        /**
-         * Include inactive / deleted rows
-         */
-        include_deleted?: boolean | null;
-        store_id?: string;
-        sort_by?: 'id' | 'name' | 'category' | 'duration' | 'price';
-        sort_order?: 'asc' | 'desc';
-    };
-    url: '/crm/personal-plans';
-};
-
-export type GetCrmPersonalPlansErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    400: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type GetCrmPersonalPlansError = GetCrmPersonalPlansErrors[keyof GetCrmPersonalPlansErrors];
-
-export type GetCrmPersonalPlansResponses = {
-    /**
-     * GetPersonalPlansResponse
-     *
-     * Response for personal plans list
-     */
-    200: {
-        /**
-         * Personal plan rows
-         */
-        data: Array<{
-            /**
-             * Plan ID
-             */
-            id: string;
-            /**
-             * Plan name
-             */
-            name: string;
-            description?: string;
-            category: string;
-            /**
-             * Duration in minutes
-             */
-            duration: number;
-            /**
-             * Price in yen
-             */
-            price: number;
-            reservations: number;
-            max_reservations: number;
-            /**
-             * LessonBrand
-             *
-             * Lesson content brand
-             */
-            brand: 'joyfit' | 'fit365';
-            /**
-             * LessonContentStatus
-             *
-             * Lesson content status
-             */
-            status: 'active' | 'inactive';
-            store_id: string;
-            is_deleted: boolean;
-        }>;
-        /**
-         * LessonPagination
-         *
-         * Pagination information
-         */
-        pagination: {
-            page: number;
-            limit: number;
-            total: number;
-            total_pages: number;
-        };
-    };
-};
-
-export type GetCrmPersonalPlansResponse = GetCrmPersonalPlansResponses[keyof GetCrmPersonalPlansResponses];
 
 export type GetCrmLockersByIdHistoryData = {
     body?: never;
@@ -39607,6 +39794,131 @@ export type PostCrmOptionsResponses = {
 };
 
 export type PostCrmOptionsResponse = PostCrmOptionsResponses[keyof PostCrmOptionsResponses];
+
+export type GetCrmPersonalPlansData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        /**
+         * Items per page (max 50)
+         */
+        limit?: number;
+        /**
+         * Partial match on name or id
+         */
+        search?: string;
+        /**
+         * Filter by plan category
+         */
+        category?: Array<string> | null;
+        /**
+         * Filter by brand
+         */
+        brand?: Array<'joyfit' | 'fit365'> | null;
+        /**
+         * Filter by status
+         */
+        status?: Array<'active' | 'inactive'> | null;
+        /**
+         * Include inactive / deleted rows
+         */
+        include_deleted?: boolean | null;
+        store_id?: string;
+        sort_by?: 'id' | 'name' | 'category' | 'duration' | 'price';
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/personal-plans';
+};
+
+export type GetCrmPersonalPlansErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmPersonalPlansError = GetCrmPersonalPlansErrors[keyof GetCrmPersonalPlansErrors];
+
+export type GetCrmPersonalPlansResponses = {
+    /**
+     * GetPersonalPlansResponse
+     *
+     * Response for personal plans list
+     */
+    200: {
+        /**
+         * Personal plan rows
+         */
+        data: Array<{
+            /**
+             * Plan ID
+             */
+            id: string;
+            /**
+             * Plan name
+             */
+            name: string;
+            description?: string;
+            category: string;
+            /**
+             * Duration in minutes
+             */
+            duration: number;
+            /**
+             * Price in yen
+             */
+            price: number;
+            reservations: number;
+            max_reservations: number;
+            /**
+             * LessonBrand
+             *
+             * Lesson content brand
+             */
+            brand: 'joyfit' | 'fit365';
+            /**
+             * LessonContentStatus
+             *
+             * Lesson content status
+             */
+            status: 'active' | 'inactive';
+            store_id: string;
+            is_deleted: boolean;
+        }>;
+        /**
+         * LessonPagination
+         *
+         * Pagination information
+         */
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmPersonalPlansResponse = GetCrmPersonalPlansResponses[keyof GetCrmPersonalPlansResponses];
 
 export type GetCrmPositionsData = {
     body?: never;

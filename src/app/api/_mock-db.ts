@@ -23,6 +23,11 @@ import type {
   FamilyRelationship,
 } from '@/app/api/_schemas/family-registration.schema';
 import type { LeaveDetail, LeaveListItem } from '@/app/api/_schemas/leave.schema';
+import type {
+  ChangeHistory,
+  LessonContentDetail,
+  ScheduleSummary,
+} from '@/app/api/_schemas/lesson-content-detail.schema';
 import type { LessonContentItem, PersonalPlanItem } from '@/app/api/_schemas/lesson-content.schema';
 import type {
   AttendanceStatus,
@@ -3243,6 +3248,384 @@ const SEED_PERSONAL_PLANS: PersonalPlanItem[] = [
   },
 ];
 
+// ─── D-02 FR-003: Lesson Content Master DETAIL layer ─────────────────────────
+// A detail layer over the existing list collections (studio/bodycare + personal).
+// Exercises every UI state: studio/personal/bodycare, active/inactive (soft-deleted),
+// pay-per-use, in-use vs unused, with/without restrictions, single-image gallery,
+// multi-instructor schedules, and change history.
+
+/** Deterministic gallery pools so every master renders a real `next/image` gallery. */
+const LESSON_IMAGE_POOL = [
+  'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&h=533&fit=crop',
+  'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=533&fit=crop',
+  'https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=800&h=533&fit=crop',
+  'https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=800&h=533&fit=crop',
+  'https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=800&h=533&fit=crop',
+  'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&h=533&fit=crop',
+];
+
+const PERSONAL_IMAGE_POOL = [
+  'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=533&fit=crop',
+  'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&h=533&fit=crop',
+  'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=800&h=533&fit=crop',
+  'https://images.unsplash.com/photo-1549060279-7e168fcee0c2?w=800&h=533&fit=crop',
+];
+
+/** Per-master detail overrides; ids not listed fall back to synthesized defaults. */
+type LessonDetailOverride = {
+  imageCount?: number;
+  description?: string;
+  internal_memo?: string;
+  restricted_main_contracts?: string[];
+  restricted_option_contracts?: string[];
+  per_use_fee?: number;
+  usage_count?: number;
+};
+
+const LESSON_DETAIL_OVERRIDES: Record<string, LessonDetailOverride> = {
+  'LSN-0001': {
+    imageCount: 4,
+    description:
+      '初心者向けのベーシックヨガです。呼吸法と基本ポーズを中心に、心身のリラックスと柔軟性向上を目指します。',
+    internal_memo: 'マットは各自持参を案内。開始5分前に入室締切。',
+    restricted_main_contracts: ['プレミアム会員'],
+    usage_count: 3,
+  },
+  // Unused active record (deletable) with no restriction → 制限なし
+  'LSN-0002': {
+    imageCount: 3,
+    description: '全身を使う有酸素エアロビクスです。脂肪燃焼と体力づくりに最適です。',
+    internal_memo: '特記事項なし',
+    usage_count: 0,
+  },
+  // Pay-per-use, female-only studio lesson
+  'LSN-0003': {
+    imageCount: 5,
+    description: '高温多湿のスタジオで行うホットヨガです。大量の発汗でリフレッシュできます。',
+    internal_memo: '水分補給を必ず案内。タオル貸出あり。',
+    restricted_main_contracts: ['プレミアム会員', 'レディース会員'],
+    restricted_option_contracts: ['ホットスタジオオプション'],
+    per_use_fee: 550,
+    usage_count: 6,
+  },
+  // Inactive / soft-deleted, unused → re-activation flow + deletable
+  'LSN-0004': {
+    imageCount: 1,
+    description: '格闘技の動きを取り入れた高強度プログラムです。',
+    internal_memo: '現在休止中。再開時は要レイアウト確認。',
+    usage_count: 0,
+  },
+  'BDC-0001': {
+    imageCount: 2,
+    description: 'アロマオイルを使った全身リラクゼーションです。',
+    internal_memo: '施術者は資格保有スタッフのみ。',
+    per_use_fee: 3300,
+    usage_count: 2,
+  },
+  'PLN-0001': {
+    imageCount: 3,
+    description:
+      'お客様一人ひとりの目標に合わせたオーダーメイドのダイエットプログラムです。食事指導も含みます。',
+    internal_memo:
+      '初回はカウンセリング（30分）を含みます。体組成測定の結果に基づきメニューを作成。',
+    restricted_main_contracts: ['FIT365プレミアム会員'],
+    restricted_option_contracts: ['パーソナルトレーニングオプション'],
+    per_use_fee: 5500,
+    usage_count: 5,
+  },
+};
+
+function buildLessonImages(pool: string[], count: number) {
+  const safeCount = Math.max(1, Math.min(count, pool.length));
+  return pool.slice(0, safeCount).map((url, index) => ({
+    url,
+    caption: index === 0 ? 'レッスンの様子' : null,
+    is_main: index === 0,
+  }));
+}
+
+function lessonContentRowToDetail(row: LessonContentItem): LessonContentDetail {
+  const override = LESSON_DETAIL_OVERRIDES[row.id] ?? {};
+  const isPaid = row.pricing_type === 'paid';
+  const perUseFee = isPaid ? (override.per_use_fee ?? 550) : null;
+  const usageCount =
+    override.usage_count ?? (row.reservation_count && row.reservation_count > 0 ? 2 : 0);
+  const schedule = LESSON_CONTENT_SCHEDULES[row.id];
+  return {
+    id: row.id,
+    name: row.name,
+    lesson_type: row.kind,
+    brand: row.brand,
+    status: row.status,
+    duration: row.duration,
+    pricing_type: row.pricing_type,
+    per_use_fee: perUseFee,
+    images: buildLessonImages(LESSON_IMAGE_POOL, override.imageCount ?? 3),
+    description: override.description ?? `${row.name}の詳細説明です。`,
+    internal_memo: override.internal_memo ?? '特記事項なし',
+    restriction: {
+      restricted_main_contracts: override.restricted_main_contracts ?? [],
+      restricted_option_contracts: override.restricted_option_contracts ?? [],
+      per_use_fee: perUseFee,
+    },
+    usage_count: usageCount,
+    schedule_total: schedule?.total ?? 0,
+    store_id: row.store_id,
+    created_at: '2026-01-10T00:00:00.000Z',
+    updated_at: '2026-05-02T00:00:00.000Z',
+  };
+}
+
+function personalPlanRowToDetail(row: PersonalPlanItem): LessonContentDetail {
+  const override = LESSON_DETAIL_OVERRIDES[row.id] ?? {};
+  const usageCount = override.usage_count ?? (row.reservations > 0 ? 2 : 0);
+  const schedule = LESSON_CONTENT_SCHEDULES[row.id];
+  return {
+    id: row.id,
+    name: row.name,
+    lesson_type: 'personal',
+    brand: row.brand,
+    status: row.status,
+    duration: row.duration,
+    // Personal plans are billed per session → pay-per-use.
+    pricing_type: 'paid',
+    per_use_fee: override.per_use_fee ?? row.price,
+    images: buildLessonImages(PERSONAL_IMAGE_POOL, override.imageCount ?? 3),
+    description: override.description ?? row.description ?? `${row.name}の詳細説明です。`,
+    internal_memo: override.internal_memo ?? '特記事項なし',
+    restriction: {
+      restricted_main_contracts: override.restricted_main_contracts ?? [],
+      restricted_option_contracts: override.restricted_option_contracts ?? [],
+      per_use_fee: override.per_use_fee ?? row.price,
+    },
+    usage_count: usageCount,
+    schedule_total: schedule?.total ?? 0,
+    store_id: row.store_id,
+    created_at: '2026-01-10T00:00:00.000Z',
+    updated_at: '2026-05-02T00:00:00.000Z',
+  };
+}
+
+/** Per-master schedules (recurring patterns + sessions). Keyed by master id. */
+const LESSON_CONTENT_SCHEDULES: Record<string, ScheduleSummary> = {
+  'LSN-0001': {
+    recurring_patterns: [
+      {
+        id: 'RPT-0001',
+        days: ['月', '水', '金'],
+        time: '10:00–11:00',
+        studio: 'スタジオA',
+        period: '2026/04–2026/09',
+        instructors: [
+          { instructor_id: 'INS-001', name: '山田 花子' },
+          { instructor_id: 'INS-002', name: '佐藤 太郎' },
+        ],
+      },
+      {
+        id: 'RPT-0002',
+        days: ['土'],
+        time: '14:00–15:00',
+        studio: 'メインスタジオ',
+        period: '2026/04–2026/09',
+        instructors: [{ instructor_id: 'INS-001', name: '山田 花子' }],
+      },
+    ],
+    sessions: [
+      {
+        id: 'SCH-1001',
+        date: '2026-06-28',
+        time: '10:00–11:00',
+        studio: 'スタジオA',
+        booked: 16,
+        capacity: 16,
+      },
+      {
+        id: 'SCH-1002',
+        date: '2026-06-30',
+        time: '10:00–11:00',
+        studio: 'スタジオA',
+        booked: 14,
+        capacity: 16,
+      },
+      {
+        id: 'SCH-1003',
+        date: '2026-07-02',
+        time: '10:00–11:00',
+        studio: 'スタジオA',
+        booked: 9,
+        capacity: 16,
+      },
+      {
+        id: 'SCH-1004',
+        date: '2026-07-04',
+        time: '14:00–15:00',
+        studio: 'メインスタジオ',
+        booked: 0,
+        capacity: 20,
+      },
+      {
+        id: 'SCH-1005',
+        date: '2026-07-05',
+        time: '10:00–11:00',
+        studio: 'スタジオA',
+        booked: 3,
+        capacity: 16,
+      },
+    ],
+    total: 12,
+  },
+  'LSN-0003': {
+    recurring_patterns: [
+      {
+        id: 'RPT-0003',
+        days: ['火', '木'],
+        time: '19:00–20:00',
+        studio: 'ホットスタジオ',
+        period: '2026/04–2026/12',
+        instructors: [{ instructor_id: 'INS-003', name: '高橋 咲' }],
+      },
+    ],
+    sessions: [
+      {
+        id: 'SCH-2001',
+        date: '2026-06-27',
+        time: '19:00–20:00',
+        studio: 'ホットスタジオ',
+        booked: 12,
+        capacity: 12,
+      },
+      {
+        id: 'SCH-2002',
+        date: '2026-06-29',
+        time: '19:00–20:00',
+        studio: 'ホットスタジオ',
+        booked: 8,
+        capacity: 12,
+      },
+      {
+        id: 'SCH-2003',
+        date: '2026-07-01',
+        time: '19:00–20:00',
+        studio: 'ホットスタジオ',
+        booked: 2,
+        capacity: 12,
+      },
+    ],
+    total: 8,
+  },
+  'PLN-0001': {
+    recurring_patterns: [
+      {
+        id: 'RPT-0004',
+        days: ['月', '木'],
+        time: '18:00–19:00',
+        studio: 'パーソナルルーム1',
+        period: '2026/04–2026/09',
+        instructors: [
+          { instructor_id: 'INS-004', name: '中村 健' },
+          { instructor_id: 'INS-005', name: '小林 美咲' },
+        ],
+      },
+    ],
+    sessions: [
+      {
+        id: 'SCH-3001',
+        date: '2026-06-28',
+        time: '18:00–19:00',
+        studio: 'パーソナルルーム1',
+        booked: 1,
+        capacity: 1,
+      },
+      {
+        id: 'SCH-3002',
+        date: '2026-07-01',
+        time: '18:00–19:00',
+        studio: 'パーソナルルーム1',
+        booked: 1,
+        capacity: 1,
+      },
+      {
+        id: 'SCH-3003',
+        date: '2026-07-04',
+        time: '18:00–19:00',
+        studio: 'パーソナルルーム1',
+        booked: 0,
+        capacity: 1,
+      },
+    ],
+    total: 6,
+  },
+  // LSN-0004 (inactive) intentionally has no schedules → empty-state coverage.
+};
+
+/** Per-master change history (newest-first). Keyed by master id. */
+const LESSON_CONTENT_HISTORY: Record<string, ChangeHistory> = {
+  'LSN-0001': {
+    entries: [
+      {
+        id: 'HIS-1003',
+        timestamp: '2026-05-02T09:30:00.000Z',
+        operator: '本部 山田 花子',
+        action: '編集',
+        detail: '実施時間: 45分 → 60分',
+      },
+      {
+        id: 'HIS-1002',
+        timestamp: '2026-02-10T16:42:00.000Z',
+        operator: '本部 鈴木 健',
+        action: '有効化',
+        detail: '春季キャンペーンに合わせて再開',
+      },
+      {
+        id: 'HIS-1001',
+        timestamp: '2026-01-10T00:00:00.000Z',
+        operator: '本部 田中 太郎',
+        action: '作成',
+        detail: null,
+      },
+    ],
+    total: 3,
+  },
+  'LSN-0004': {
+    entries: [
+      {
+        id: 'HIS-2002',
+        timestamp: '2026-04-01T11:08:00.000Z',
+        operator: '本部 鈴木 健',
+        action: '無効化',
+        detail: '提供休止のため無効化',
+      },
+      {
+        id: 'HIS-2001',
+        timestamp: '2025-12-20T00:00:00.000Z',
+        operator: '本部 田中 太郎',
+        action: '作成',
+        detail: null,
+      },
+    ],
+    total: 2,
+  },
+  'PLN-0001': {
+    entries: [
+      {
+        id: 'HIS-3002',
+        timestamp: '2026-05-15T10:00:00.000Z',
+        operator: '本部 山田 花子',
+        action: '編集',
+        detail: '都度利用料金: ¥5,000 → ¥5,500',
+      },
+      {
+        id: 'HIS-3001',
+        timestamp: '2026-01-10T00:00:00.000Z',
+        operator: '本部 田中 太郎',
+        action: '作成',
+        detail: null,
+      },
+    ],
+    total: 2,
+  },
+};
+
 // ─── D-03: Studio Seed Data ────────────────────────────────────────────
 
 const SEED_STUDIOS: Array<{
@@ -4278,12 +4661,24 @@ type DbType = {
     _seeded: boolean;
     _seed(): void;
     getList(): LessonContentItem[];
+    getDetail(id: string): LessonContentDetail | undefined;
   };
   personalPlans: {
     _rows: PersonalPlanItem[];
     _seeded: boolean;
     _seed(): void;
     getList(): PersonalPlanItem[];
+    getDetail(id: string): LessonContentDetail | undefined;
+  };
+  lessonContentDetails: {
+    getDetail(id: string): LessonContentDetail | undefined;
+    exists(id: string): boolean;
+  };
+  lessonContentSchedules: {
+    getByMasterId(id: string): ScheduleSummary;
+  };
+  lessonContentHistory: {
+    getByMasterId(id: string): ChangeHistory;
   };
   instructors: {
     _rows: Array<{
@@ -13429,6 +13824,11 @@ function createDb() {
         this._seed();
         return [...this._rows];
       },
+      getDetail(id: string): LessonContentDetail | undefined {
+        this._seed();
+        const row = this._rows.find((r) => r.id === id);
+        return row ? lessonContentRowToDetail(row) : undefined;
+      },
     },
 
     // ─── D-02: Personal training plans ───────────────────────────────────────
@@ -13443,6 +13843,33 @@ function createDb() {
       getList(): PersonalPlanItem[] {
         this._seed();
         return [...this._rows];
+      },
+      getDetail(id: string): LessonContentDetail | undefined {
+        this._seed();
+        const row = this._rows.find((r) => r.id === id);
+        return row ? personalPlanRowToDetail(row) : undefined;
+      },
+    },
+
+    // ─── D-02 FR-003: Lesson Content detail layer (schedules + history) ───────
+    lessonContentDetails: {
+      getDetail(id: string): LessonContentDetail | undefined {
+        return db.lessonContents.getDetail(id) ?? db.personalPlans.getDetail(id);
+      },
+      exists(id: string): boolean {
+        return Boolean(db.lessonContents.getDetail(id) ?? db.personalPlans.getDetail(id));
+      },
+    },
+
+    lessonContentSchedules: {
+      getByMasterId(id: string): ScheduleSummary {
+        return LESSON_CONTENT_SCHEDULES[id] ?? { recurring_patterns: [], sessions: [], total: 0 };
+      },
+    },
+
+    lessonContentHistory: {
+      getByMasterId(id: string): ChangeHistory {
+        return LESSON_CONTENT_HISTORY[id] ?? { entries: [], total: 0 };
       },
     },
 

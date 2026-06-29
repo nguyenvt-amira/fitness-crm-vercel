@@ -155,6 +155,16 @@ export enum Permission {
   LessonsAttendanceManage = 'lessons.attendance-manage',
   LessonsMemoManage = 'lessons.memo-manage',
   LessonsPenaltyRelease = 'lessons.penalty-release',
+
+  // -------------------------------------------------------------------------
+  // Lesson Content Management (D-02)
+  // Distinct from the D-01 Lessons* (schedule/reservation) permissions above.
+  // -------------------------------------------------------------------------
+  LessonContentsView = 'lesson-contents.view',
+  LessonContentsCreate = 'lesson-contents.create',
+  LessonContentsEdit = 'lesson-contents.edit',
+  LessonContentsDelete = 'lesson-contents.delete',
+  LessonContentsHistoryView = 'lesson-contents.history-view',
 }
 
 /** Authenticated user stored in context */

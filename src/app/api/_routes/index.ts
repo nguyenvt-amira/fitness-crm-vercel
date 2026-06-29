@@ -44,6 +44,10 @@ import '@/app/api/crm/leaves/[id]/execute-withdrawal/route';
 import '@/app/api/crm/leaves/[id]/reject/route';
 import '@/app/api/crm/leaves/[id]/route';
 import '@/app/api/crm/leaves/route';
+import '@/app/api/crm/lesson-contents/[id]/history/route';
+// D-02 FR-003: Lesson Content Master (detail / schedules / history)
+import '@/app/api/crm/lesson-contents/[id]/route';
+import '@/app/api/crm/lesson-contents/[id]/schedules/route';
 // D-02: Lesson Content Master (list/search)
 import '@/app/api/crm/lesson-contents/route';
 import '@/app/api/crm/lesson-schedules/[id]/cancel/route';
