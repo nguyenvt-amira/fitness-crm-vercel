@@ -2,12 +2,12 @@
 
 import { useRouter } from 'next/navigation';
 
-import { ArrowLeft } from 'lucide-react';
-
+import { BackLink } from '@/components/common/back-link';
 import { PageHeader } from '@/components/common/page-header';
-import { Button } from '@/components/ui/button';
 
 import { navigate } from '@/lib/routes/routes.util';
+
+import { LessonForm } from '../_components/lesson-form/lesson-form';
 
 export default function LessonCreatePage() {
   const router = useRouter();
@@ -15,17 +15,15 @@ export default function LessonCreatePage() {
   return (
     <div className="flex flex-col">
       <PageHeader
-        title="新規レッスン作成"
-        actions={
-          <Button variant="outline" onClick={() => router.push(navigate('/lessons'))}>
-            <ArrowLeft className="size-4" />
-            一覧へ戻る
-          </Button>
+        breadcrumb={
+          <BackLink
+            label="レッスン内容管理に戻る"
+            onClick={() => router.push(navigate('/lessons'))}
+          />
         }
+        title="新規レッスン作成"
       />
-      <div className="text-muted-foreground px-6 py-12 text-center text-sm">
-        この画面は準備中です。
-      </div>
+      <LessonForm mode="create" />
     </div>
   );
 }

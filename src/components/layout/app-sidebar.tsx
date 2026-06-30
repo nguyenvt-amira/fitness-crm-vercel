@@ -93,14 +93,14 @@ const menuItems: MenuItem[] = [
         label: 'レッスン内容',
         href: getRoutePattern('/lessons'),
       },
-      {
-        label: 'スタジオ',
-        href: '/',
-      },
-      {
-        label: '指導者',
-        href: '/',
-      },
+      // {
+      //   label: 'スタジオ',
+      //   href: '/',
+      // },
+      // {
+      //   label: '指導者',
+      //   href: '/',
+      // },
     ],
   },
   {

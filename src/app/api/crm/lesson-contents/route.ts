@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { db } from '@/app/api/_mock-db';
 import {
+  CreateLessonContentResponseSchema,
+  CreateLessonContentSchema,
+} from '@/app/api/_schemas/lesson-content-form.schema';
+import {
   type GetLessonContentsQuery,
   GetLessonContentsQuerySchema,
   type GetLessonContentsResponse,
@@ -28,6 +32,35 @@ registerRoute({
       status: 400,
       schema: ErrorResponseSchema,
       description: 'Bad request - invalid query parameters',
+    },
+    {
+      status: 500,
+      schema: ErrorResponseSchema,
+      description: 'Internal server error',
+    },
+  ],
+});
+
+registerRoute({
+  method: 'post',
+  path: '/crm/lesson-contents',
+  summary: 'Create lesson content master',
+  description: 'Create a new lesson content master (studio / bodycare / personal)',
+  tags: ['LessonContents'],
+  requestBody: {
+    schema: CreateLessonContentSchema,
+    description: 'Lesson content create payload',
+  },
+  responses: [
+    {
+      status: 200,
+      schema: CreateLessonContentResponseSchema,
+      description: 'Lesson content created',
+    },
+    {
+      status: 400,
+      schema: ErrorResponseSchema,
+      description: 'Bad request - validation error',
     },
     {
       status: 500,
@@ -149,5 +182,35 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Error fetching lesson contents:', error);
     return NextResponse.json({ error: 'Failed to fetch lesson contents' }, { status: 500 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const validationResult = CreateLessonContentSchema.safeParse(body);
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((issue) => issue.message).join(', ');
+      return NextResponse.json({ error: errors }, { status: 400 });
+    }
+    const data = validationResult.data;
+    let detail:
+      | import('@/app/api/_schemas/lesson-content-detail.schema').LessonContentDetail
+      | undefined;
+    if (data.lesson_type === 'personal') {
+      detail = db.personalPlans.create({
+        ...data,
+        lesson_type: 'personal',
+        store_id: 'store-001',
+      });
+    } else {
+      detail = db.lessonContents.create(data as Parameters<typeof db.lessonContents.create>[0]);
+    }
+    const response: import('@/app/api/_schemas/lesson-content-form.schema').CreateLessonContentResponse =
+      { message: 'レッスンを登録しました', data: detail };
+    return NextResponse.json(response);
+  } catch (error) {
+    console.error('Error creating lesson content:', error);
+    return NextResponse.json({ error: 'Failed to create lesson content' }, { status: 500 });
   }
 }

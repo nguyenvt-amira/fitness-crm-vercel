@@ -1,14 +1,13 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 
-import { useMutation } from '@tanstack/react-query';
 import { ImagePlus, Loader2, X } from 'lucide-react';
-import { toast } from 'sonner';
+
+import { useImageUpload } from '@/hooks/use-image-upload.hook';
 
 import { Input } from '@/components/ui/input';
 
-import { postCrmUploadsPresignMutation } from '@/lib/api/@tanstack/react-query.gen';
 import { cn } from '@/lib/utils';
 
 interface ImageUploadProps {
@@ -33,50 +32,14 @@ export function ImageUpload({
   category = 'avatar',
 }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [isPending, setIsPending] = useState(false);
-
-  const { mutateAsync: getPresignUrl } = useMutation(postCrmUploadsPresignMutation());
+  const { uploadFile, isUploading: isPending } = useImageUpload({ category });
 
   async function handleFileChange(file: File) {
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error('ファイルサイズは5MB以下にしてください');
-      return;
-    }
-
-    const contentType = file.type as 'image/jpeg' | 'image/png';
-
-    setIsPending(true);
     onUploadingChange?.(true);
-
     try {
-      // 1. Get presigned URL from backend
-      const presign = await getPresignUrl({
-        body: { category, content_type: contentType },
-      });
-
-      const presignUrl = presign?.presign_url;
-      if (!presignUrl) {
-        toast.error('アップロードに失敗しました');
-        return;
-      }
-
-      // 2. Upload file directly to S3 via PUT
-      const res = await fetch(presignUrl, {
-        method: 'PUT',
-        body: file,
-        headers: { 'Content-Type': file.type },
-      });
-
-      if (!res.ok) {
-        toast.error('アップロードに失敗しました');
-        return;
-      }
-
-      onChange(presign.public_url);
-    } catch {
-      toast.error('アップロードに失敗しました');
+      const url = await uploadFile(file);
+      if (url) onChange(url);
     } finally {
-      setIsPending(false);
       onUploadingChange?.(false);
     }
   }

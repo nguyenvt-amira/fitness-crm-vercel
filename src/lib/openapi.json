@@ -33959,6 +33959,909 @@
         }
       }
     },
+    "/crm/lesson-contents/{id}/history": {
+      "get": {
+        "summary": "Get lesson content change history",
+        "description": "Get the change-log entries for a lesson content master (newest-first)",
+        "tags": ["LessonContents"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Master ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lesson content change history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "entries": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "HIS-001"
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "example": "2026-05-02T09:30:00.000Z",
+                                "description": "日時"
+                              },
+                              "operator": {
+                                "type": "string",
+                                "example": "本部 管理者",
+                                "description": "操作者"
+                              },
+                              "action": {
+                                "type": "string",
+                                "example": "編集",
+                                "description": "操作"
+                              },
+                              "detail": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "実施時間: 45分 → 60分",
+                                "description": "変更内容"
+                              }
+                            },
+                            "required": ["id", "timestamp", "operator", "action"],
+                            "title": "ChangeHistoryEntry",
+                            "description": "Change-log entry"
+                          }
+                        },
+                        "total": {
+                          "type": "integer",
+                          "example": 2
+                        }
+                      },
+                      "required": ["entries", "total"],
+                      "title": "ChangeHistory",
+                      "description": "Change-log list + total"
+                    }
+                  },
+                  "required": ["data"],
+                  "title": "GetLessonContentHistoryResponse",
+                  "description": "Lesson content change history response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Lesson content not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/lesson-contents/{id}": {
+      "get": {
+        "summary": "Get lesson content detail",
+        "description": "Get the full read-only detail for a single lesson content master (studio / body care / personal)",
+        "tags": ["LessonContents"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Master ID (LSN-* / BDC-* / PLN-*)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lesson content detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "LSN-0001",
+                          "description": "Master ID (LSN-* / PLN-* / BDC-*)"
+                        },
+                        "name": {
+                          "type": "string",
+                          "maxLength": 255,
+                          "example": "ヨガベーシック",
+                          "description": "Lesson name"
+                        },
+                        "lesson_type": {
+                          "type": "string",
+                          "enum": ["studio", "personal", "bodycare"],
+                          "title": "LessonDetailType",
+                          "description": "Lesson content type (drives type badge + time-row label)",
+                          "example": "studio"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "enum": ["joyfit", "fit365"],
+                          "title": "LessonBrand",
+                          "description": "Lesson content brand",
+                          "example": "joyfit"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "LessonContentStatus",
+                          "description": "Lesson content status",
+                          "example": "active"
+                        },
+                        "duration": {
+                          "type": "integer",
+                          "example": 60,
+                          "description": "Minutes (実施/セッション時間)"
+                        },
+                        "pricing_type": {
+                          "type": "string",
+                          "enum": ["included", "paid"],
+                          "title": "LessonPricingType",
+                          "description": "Studio/body-care pricing type",
+                          "example": "included"
+                        },
+                        "per_use_fee": {
+                          "type": "number",
+                          "nullable": true,
+                          "example": null,
+                          "description": "Yen; non-null only for pricing_type === paid"
+                        },
+                        "images": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "order": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "exclusiveMinimum": true,
+                                "example": 1,
+                                "description": "Display order; 1 = main image"
+                              },
+                              "url": {
+                                "type": "string",
+                                "example": "/mock/lessons/yoga-1.jpg",
+                                "description": "Image source"
+                              }
+                            },
+                            "required": ["order", "url"],
+                            "title": "LessonImage",
+                            "description": "Lesson gallery image"
+                          },
+                          "description": "Gallery images"
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 1000,
+                          "example": "初心者向け…"
+                        },
+                        "internal_memo": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 1000,
+                          "example": "マットは各自持参"
+                        },
+                        "restriction": {
+                          "type": "object",
+                          "properties": {
+                            "restricted_main_contracts": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "example": ["プレミアム会員"],
+                              "description": "Empty → 制限なし"
+                            },
+                            "restricted_option_contracts": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "example": [],
+                              "description": "Empty → 制限なし"
+                            },
+                            "per_use_fee": {
+                              "type": "number",
+                              "nullable": true,
+                              "example": null,
+                              "description": "Non-null only when pricing_type === paid"
+                            }
+                          },
+                          "required": ["restricted_main_contracts", "restricted_option_contracts"],
+                          "title": "RestrictionSet",
+                          "description": "Reservation restriction + per-use fee"
+                        },
+                        "usage_count": {
+                          "type": "integer",
+                          "example": 3,
+                          "description": "Schedules using this master (gates delete)"
+                        },
+                        "schedule_total": {
+                          "type": "integer",
+                          "example": 12,
+                          "description": "Total schedule count"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "example": "store-001"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "2026-01-10T00:00:00.000Z"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "2026-05-02T00:00:00.000Z"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "lesson_type",
+                        "brand",
+                        "status",
+                        "duration",
+                        "pricing_type",
+                        "images",
+                        "restriction",
+                        "usage_count",
+                        "schedule_total",
+                        "store_id"
+                      ],
+                      "title": "LessonContentDetail",
+                      "description": "Unified lesson content master detail"
+                    }
+                  },
+                  "required": ["data"],
+                  "title": "GetLessonContentDetailResponse",
+                  "description": "Lesson content detail response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Lesson content not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update lesson content master",
+        "description": "Partially update a lesson content master (studio / bodycare / personal)",
+        "tags": ["LessonContents"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Master ID (LSN-* / BDC-* / PLN-*)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Lesson content update payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "ヨガベーシック"
+                  },
+                  "lesson_type": {
+                    "type": "string",
+                    "enum": ["studio", "personal", "bodycare"],
+                    "title": "LessonKindForm",
+                    "description": "Lesson type for form submission",
+                    "example": "studio"
+                  },
+                  "brand": {
+                    "type": "string",
+                    "enum": ["joyfit", "fit365"],
+                    "title": "LessonBrand",
+                    "description": "Lesson content brand",
+                    "example": "joyfit"
+                  },
+                  "duration": {
+                    "type": "integer",
+                    "example": 60
+                  },
+                  "pricing_type": {
+                    "type": "string",
+                    "enum": ["included", "paid"],
+                    "title": "LessonPricingType",
+                    "description": "Studio/body-care pricing type",
+                    "example": "included"
+                  },
+                  "per_use_fee": {
+                    "type": "number",
+                    "nullable": true,
+                    "example": null
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "order": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "exclusiveMinimum": true,
+                          "example": 1,
+                          "description": "Display order; 1 = main image"
+                        },
+                        "url": {
+                          "type": "string",
+                          "example": "/mock/lessons/yoga-1.jpg",
+                          "description": "Image source"
+                        }
+                      },
+                      "required": ["order", "url"],
+                      "title": "LessonImage",
+                      "description": "Lesson gallery image"
+                    },
+                    "default": [],
+                    "description": "Gallery images (ordered; order 1 = main image)"
+                  },
+                  "restricted_main_contracts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "default": []
+                  },
+                  "restricted_option_contracts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "default": []
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 10000,
+                    "default": ""
+                  },
+                  "internal_memo": {
+                    "type": "string",
+                    "maxLength": 1000,
+                    "default": ""
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["active", "inactive"],
+                    "title": "LessonContentStatus",
+                    "description": "Lesson content status",
+                    "example": "active"
+                  }
+                },
+                "title": "UpdateLessonContentRequest",
+                "description": "Update lesson content master payload (partial)"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Lesson content updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "レッスンの変更を保存しました"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "LSN-0001",
+                          "description": "Master ID (LSN-* / PLN-* / BDC-*)"
+                        },
+                        "name": {
+                          "type": "string",
+                          "maxLength": 255,
+                          "example": "ヨガベーシック",
+                          "description": "Lesson name"
+                        },
+                        "lesson_type": {
+                          "type": "string",
+                          "enum": ["studio", "personal", "bodycare"],
+                          "title": "LessonDetailType",
+                          "description": "Lesson content type (drives type badge + time-row label)",
+                          "example": "studio"
+                        },
+                        "brand": {
+                          "type": "string",
+                          "enum": ["joyfit", "fit365"],
+                          "title": "LessonBrand",
+                          "description": "Lesson content brand",
+                          "example": "joyfit"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "title": "LessonContentStatus",
+                          "description": "Lesson content status",
+                          "example": "active"
+                        },
+                        "duration": {
+                          "type": "integer",
+                          "example": 60,
+                          "description": "Minutes (実施/セッション時間)"
+                        },
+                        "pricing_type": {
+                          "type": "string",
+                          "enum": ["included", "paid"],
+                          "title": "LessonPricingType",
+                          "description": "Studio/body-care pricing type",
+                          "example": "included"
+                        },
+                        "per_use_fee": {
+                          "type": "number",
+                          "nullable": true,
+                          "example": null,
+                          "description": "Yen; non-null only for pricing_type === paid"
+                        },
+                        "images": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "order": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "exclusiveMinimum": true,
+                                "example": 1,
+                                "description": "Display order; 1 = main image"
+                              },
+                              "url": {
+                                "type": "string",
+                                "example": "/mock/lessons/yoga-1.jpg",
+                                "description": "Image source"
+                              }
+                            },
+                            "required": ["order", "url"],
+                            "title": "LessonImage",
+                            "description": "Lesson gallery image"
+                          },
+                          "description": "Gallery images"
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 1000,
+                          "example": "初心者向け…"
+                        },
+                        "internal_memo": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 1000,
+                          "example": "マットは各自持参"
+                        },
+                        "restriction": {
+                          "type": "object",
+                          "properties": {
+                            "restricted_main_contracts": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "example": ["プレミアム会員"],
+                              "description": "Empty → 制限なし"
+                            },
+                            "restricted_option_contracts": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "example": [],
+                              "description": "Empty → 制限なし"
+                            },
+                            "per_use_fee": {
+                              "type": "number",
+                              "nullable": true,
+                              "example": null,
+                              "description": "Non-null only when pricing_type === paid"
+                            }
+                          },
+                          "required": ["restricted_main_contracts", "restricted_option_contracts"],
+                          "title": "RestrictionSet",
+                          "description": "Reservation restriction + per-use fee"
+                        },
+                        "usage_count": {
+                          "type": "integer",
+                          "example": 3,
+                          "description": "Schedules using this master (gates delete)"
+                        },
+                        "schedule_total": {
+                          "type": "integer",
+                          "example": 12,
+                          "description": "Total schedule count"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "example": "store-001"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "2026-01-10T00:00:00.000Z"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "2026-05-02T00:00:00.000Z"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "lesson_type",
+                        "brand",
+                        "status",
+                        "duration",
+                        "pricing_type",
+                        "images",
+                        "restriction",
+                        "usage_count",
+                        "schedule_total",
+                        "store_id"
+                      ],
+                      "title": "LessonContentDetail",
+                      "description": "Unified lesson content master detail"
+                    }
+                  },
+                  "required": ["message", "data"],
+                  "title": "UpdateLessonContentResponse",
+                  "description": "Update lesson content response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Lesson content not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/lesson-contents/{id}/schedules": {
+      "get": {
+        "summary": "Get lesson content schedules",
+        "description": "Get the recurring-pattern summary and per-session list for a lesson content master",
+        "tags": ["LessonContents"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Master ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lesson content schedules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "recurring_patterns": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "RPT-001"
+                              },
+                              "days": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "example": ["月", "水", "金"]
+                              },
+                              "time": {
+                                "type": "string",
+                                "example": "10:00–11:00"
+                              },
+                              "studio": {
+                                "type": "string",
+                                "example": "スタジオA"
+                              },
+                              "period": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "2026/04–2026/09"
+                              },
+                              "instructors": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "instructor_id": {
+                                      "type": "string",
+                                      "example": "INS-001",
+                                      "description": "D-04 master link target"
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "example": "山田 花子"
+                                    }
+                                  },
+                                  "required": ["instructor_id", "name"],
+                                  "title": "InstructorRef",
+                                  "description": "Schedule instructor reference"
+                                },
+                                "description": "Multi-instructor (n名), each links to D-04"
+                              }
+                            },
+                            "required": ["id", "days", "time", "studio", "instructors"],
+                            "title": "RecurringPattern",
+                            "description": "Recurring schedule pattern"
+                          }
+                        },
+                        "sessions": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "SCH-1001",
+                                "description": "Row → reservation screen"
+                              },
+                              "date": {
+                                "type": "string",
+                                "example": "2026-06-28"
+                              },
+                              "time": {
+                                "type": "string",
+                                "example": "10:00–11:00"
+                              },
+                              "studio": {
+                                "type": "string",
+                                "example": "スタジオA"
+                              },
+                              "booked": {
+                                "type": "integer",
+                                "example": 18
+                              },
+                              "capacity": {
+                                "type": "integer",
+                                "example": 20
+                              }
+                            },
+                            "required": ["id", "date", "time", "studio", "booked", "capacity"],
+                            "title": "ScheduleSession",
+                            "description": "Per-session schedule row"
+                          }
+                        },
+                        "total": {
+                          "type": "integer",
+                          "example": 12,
+                          "description": "Total session count"
+                        }
+                      },
+                      "required": ["recurring_patterns", "sessions", "total"],
+                      "title": "ScheduleSummary",
+                      "description": "Recurring patterns + sessions + total"
+                    }
+                  },
+                  "required": ["data"],
+                  "title": "GetLessonContentSchedulesResponse",
+                  "description": "Lesson content schedules response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Lesson content not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/lesson-contents": {
       "get": {
         "summary": "Get lesson contents list",
@@ -34299,32 +35202,130 @@
             }
           }
         }
-      }
-    },
-    "/crm/lesson-contents/{id}": {
-      "get": {
-        "summary": "Get lesson content detail",
-        "description": "Get the full read-only detail for a single lesson content master (studio / body care / personal)",
+      },
+      "post": {
+        "summary": "Create lesson content master",
+        "description": "Create a new lesson content master (studio / bodycare / personal)",
         "tags": ["LessonContents"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "Master ID (LSN-* / BDC-* / PLN-*)",
-            "schema": {
-              "type": "string"
+        "requestBody": {
+          "description": "Lesson content create payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "ヨガベーシック"
+                  },
+                  "lesson_type": {
+                    "type": "string",
+                    "enum": ["studio", "personal", "bodycare"],
+                    "title": "LessonKindForm",
+                    "description": "Lesson type for form submission",
+                    "example": "studio"
+                  },
+                  "brand": {
+                    "type": "string",
+                    "enum": ["joyfit", "fit365"],
+                    "title": "LessonBrand",
+                    "description": "Lesson content brand",
+                    "example": "joyfit"
+                  },
+                  "duration": {
+                    "type": "integer",
+                    "example": 60
+                  },
+                  "pricing_type": {
+                    "type": "string",
+                    "enum": ["included", "paid"],
+                    "title": "LessonPricingType",
+                    "description": "Studio/body-care pricing type",
+                    "example": "included"
+                  },
+                  "per_use_fee": {
+                    "type": "number",
+                    "nullable": true,
+                    "example": null
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "order": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "exclusiveMinimum": true,
+                          "example": 1,
+                          "description": "Display order; 1 = main image"
+                        },
+                        "url": {
+                          "type": "string",
+                          "example": "/mock/lessons/yoga-1.jpg",
+                          "description": "Image source"
+                        }
+                      },
+                      "required": ["order", "url"],
+                      "title": "LessonImage",
+                      "description": "Lesson gallery image"
+                    },
+                    "default": [],
+                    "description": "Gallery images (ordered; order 1 = main image)"
+                  },
+                  "restricted_main_contracts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "default": []
+                  },
+                  "restricted_option_contracts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "default": []
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 10000,
+                    "default": ""
+                  },
+                  "internal_memo": {
+                    "type": "string",
+                    "maxLength": 1000,
+                    "default": ""
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["active", "inactive"],
+                    "title": "LessonContentStatus",
+                    "description": "Lesson content status",
+                    "example": "active"
+                  }
+                },
+                "required": ["name", "lesson_type", "brand", "duration", "pricing_type", "status"],
+                "title": "CreateLessonContentRequest",
+                "description": "Create lesson content master payload"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
-            "description": "Lesson content detail",
+            "description": "Lesson content created",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "レッスンを登録しました"
+                    },
                     "data": {
                       "type": "object",
                       "properties": {
@@ -34383,23 +35384,20 @@
                           "items": {
                             "type": "object",
                             "properties": {
+                              "order": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "exclusiveMinimum": true,
+                                "example": 1,
+                                "description": "Display order; 1 = main image"
+                              },
                               "url": {
                                 "type": "string",
                                 "example": "/mock/lessons/yoga-1.jpg",
                                 "description": "Image source"
-                              },
-                              "caption": {
-                                "type": "string",
-                                "nullable": true,
-                                "example": "スタジオA"
-                              },
-                              "is_main": {
-                                "type": "boolean",
-                                "example": true,
-                                "description": "First/main image marker"
                               }
                             },
-                            "required": ["url", "is_main"],
+                            "required": ["order", "url"],
                             "title": "LessonImage",
                             "description": "Lesson gallery image"
                           },
@@ -34490,318 +35488,15 @@
                       "description": "Unified lesson content master detail"
                     }
                   },
-                  "required": ["data"],
-                  "title": "GetLessonContentDetailResponse",
-                  "description": "Lesson content detail response"
+                  "required": ["message", "data"],
+                  "title": "CreateLessonContentResponse",
+                  "description": "Create lesson content response"
                 }
               }
             }
           },
-          "404": {
-            "description": "Lesson content not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/crm/lesson-contents/{id}/history": {
-      "get": {
-        "summary": "Get lesson content change history",
-        "description": "Get the change-log entries for a lesson content master (newest-first)",
-        "tags": ["LessonContents"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "Master ID",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lesson content change history",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "entries": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string",
-                                "example": "HIS-001"
-                              },
-                              "timestamp": {
-                                "type": "string",
-                                "example": "2026-05-02T09:30:00.000Z",
-                                "description": "日時"
-                              },
-                              "operator": {
-                                "type": "string",
-                                "example": "本部 管理者",
-                                "description": "操作者"
-                              },
-                              "action": {
-                                "type": "string",
-                                "example": "編集",
-                                "description": "操作"
-                              },
-                              "detail": {
-                                "type": "string",
-                                "nullable": true,
-                                "example": "実施時間: 45分 → 60分",
-                                "description": "変更内容"
-                              }
-                            },
-                            "required": ["id", "timestamp", "operator", "action"],
-                            "title": "ChangeHistoryEntry",
-                            "description": "Change-log entry"
-                          }
-                        },
-                        "total": {
-                          "type": "integer",
-                          "example": 2
-                        }
-                      },
-                      "required": ["entries", "total"],
-                      "title": "ChangeHistory",
-                      "description": "Change-log list + total"
-                    }
-                  },
-                  "required": ["data"],
-                  "title": "GetLessonContentHistoryResponse",
-                  "description": "Lesson content change history response"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Lesson content not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Failed to process request",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/crm/lesson-contents/{id}/schedules": {
-      "get": {
-        "summary": "Get lesson content schedules",
-        "description": "Get the recurring-pattern summary and per-session list for a lesson content master",
-        "tags": ["LessonContents"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "Master ID",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lesson content schedules",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "recurring_patterns": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string",
-                                "example": "RPT-001"
-                              },
-                              "days": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                },
-                                "example": ["月", "水", "金"]
-                              },
-                              "time": {
-                                "type": "string",
-                                "example": "10:00–11:00"
-                              },
-                              "studio": {
-                                "type": "string",
-                                "example": "スタジオA"
-                              },
-                              "period": {
-                                "type": "string",
-                                "nullable": true,
-                                "example": "2026/04–2026/09"
-                              },
-                              "instructors": {
-                                "type": "array",
-                                "items": {
-                                  "type": "object",
-                                  "properties": {
-                                    "instructor_id": {
-                                      "type": "string",
-                                      "example": "INS-001",
-                                      "description": "D-04 master link target"
-                                    },
-                                    "name": {
-                                      "type": "string",
-                                      "example": "山田 花子"
-                                    }
-                                  },
-                                  "required": ["instructor_id", "name"],
-                                  "title": "InstructorRef",
-                                  "description": "Schedule instructor reference"
-                                },
-                                "description": "Multi-instructor (n名), each links to D-04"
-                              }
-                            },
-                            "required": ["id", "days", "time", "studio", "instructors"],
-                            "title": "RecurringPattern",
-                            "description": "Recurring schedule pattern"
-                          }
-                        },
-                        "sessions": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string",
-                                "example": "SCH-1001",
-                                "description": "Row → reservation screen"
-                              },
-                              "date": {
-                                "type": "string",
-                                "example": "2026-06-28"
-                              },
-                              "time": {
-                                "type": "string",
-                                "example": "10:00–11:00"
-                              },
-                              "studio": {
-                                "type": "string",
-                                "example": "スタジオA"
-                              },
-                              "booked": {
-                                "type": "integer",
-                                "example": 18
-                              },
-                              "capacity": {
-                                "type": "integer",
-                                "example": 20
-                              }
-                            },
-                            "required": ["id", "date", "time", "studio", "booked", "capacity"],
-                            "title": "ScheduleSession",
-                            "description": "Per-session schedule row"
-                          }
-                        },
-                        "total": {
-                          "type": "integer",
-                          "example": 12,
-                          "description": "Total session count"
-                        }
-                      },
-                      "required": ["recurring_patterns", "sessions", "total"],
-                      "title": "ScheduleSummary",
-                      "description": "Recurring patterns + sessions + total"
-                    }
-                  },
-                  "required": ["data"],
-                  "title": "GetLessonContentSchedulesResponse",
-                  "description": "Lesson content schedules response"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Lesson content not found",
+          "400": {
+            "description": "Bad request - validation error",
             "content": {
               "application/json": {
                 "schema": {

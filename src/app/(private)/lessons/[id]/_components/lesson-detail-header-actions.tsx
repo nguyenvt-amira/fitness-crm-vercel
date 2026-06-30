@@ -18,29 +18,15 @@ interface LessonDetailHeaderActionsProps {
   onDelete: () => void;
 }
 
-/**
- * Role-gated header actions: Delete / Duplicate / Edit (FR-003-P1-11/12/17).
- * Edit/Duplicate destination forms are FR-004/FR-006 (out of scope here) — these
- * are navigation entry points only.
- */
 export function LessonDetailHeaderActions({ detail, onDelete }: LessonDetailHeaderActionsProps) {
   const router = useRouter();
 
   const handleDuplicate = () => {
-    router.push(
-      navigate('/lessons/create', {
-        copyFrom: detail.id,
-        name: `${detail.name}（コピー）`,
-      }),
-    );
+    router.push(navigate('/lessons/[id]/duplicate', detail.id));
   };
 
   const handleEdit = () => {
-    // Edit form variant differs by lesson type (FR-004). The edit route is not
-    // registered yet (destination page out of scope); build it from the typed
-    // detail route so the navigation entry point still works.
-    const editPath = `${navigate('/lessons/[id]', detail.id)}/edit`;
-    router.push(detail.lesson_type === 'personal' ? `${editPath}?type=personal` : editPath);
+    router.push(navigate('/lessons/[id]/edit', detail.id));
   };
 
   return (

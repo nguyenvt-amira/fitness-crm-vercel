@@ -32,9 +32,12 @@ export const LessonDetailTypeSchema = z.enum(['studio', 'personal', 'bodycare'])
 
 export const LessonImageSchema = z
   .object({
+    order: z
+      .number()
+      .int()
+      .positive()
+      .openapi({ example: 1, description: 'Display order; 1 = main image' }),
     url: z.string().openapi({ example: '/mock/lessons/yoga-1.jpg', description: 'Image source' }),
-    caption: z.string().nullable().optional().openapi({ example: 'スタジオA' }),
-    is_main: z.boolean().openapi({ example: true, description: 'First/main image marker' }),
   })
   .openapi({ title: 'LessonImage', description: 'Lesson gallery image' });
 

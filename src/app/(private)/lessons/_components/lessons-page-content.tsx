@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Plus } from 'lucide-react';
 
 import { PageHeader } from '@/components/common/page-header';
+import { RoleGatedButton } from '@/components/common/role-gated-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -15,6 +16,8 @@ import {
   getCrmPersonalPlansOptions,
 } from '@/lib/api/@tanstack/react-query.gen';
 import { navigate } from '@/lib/routes/routes.util';
+
+import { Permission } from '@/types/permission.type';
 
 import { LESSON_TABS, type LessonTab } from '../_constants/constants';
 import { useLessonsFilters } from '../_hooks/use-lessons-filters';
@@ -73,10 +76,15 @@ export function LessonsPageContent() {
           </Badge>
         }
         actions={
-          <Button onClick={() => router.push(navigate('/lessons/create'))}>
-            <Plus className="size-4" />
+          <RoleGatedButton
+            requiredPermission={Permission.LessonContentsCreate}
+            type="button"
+            className="h-8 gap-1 rounded-[10px] px-3 text-sm font-semibold"
+            onClick={() => router.push(navigate('/lessons/create'))}
+          >
+            <Plus className="size-3.5" />
             新規レッスン作成
-          </Button>
+          </RoleGatedButton>
         }
       />
 

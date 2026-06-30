@@ -100,6 +100,8 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
   // master (incl. duplicate) is restricted to Headquarter/System.
   '/lessons': Permission.LessonContentsView,
   '/lessons/:id': Permission.LessonContentsView,
+  '/lessons/:id/edit': Permission.LessonContentsEdit,
+  '/lessons/:id/duplicate': Permission.LessonContentsCreate,
   '/lessons/create': Permission.LessonContentsCreate,
 };
 

@@ -28,6 +28,7 @@ import type {
   LessonContentDetail,
   ScheduleSummary,
 } from '@/app/api/_schemas/lesson-content-detail.schema';
+import type { CreateLessonContentRequest } from '@/app/api/_schemas/lesson-content-form.schema';
 import type { LessonContentItem, PersonalPlanItem } from '@/app/api/_schemas/lesson-content.schema';
 import type {
   AttendanceStatus,
@@ -3274,6 +3275,7 @@ const PERSONAL_IMAGE_POOL = [
 /** Per-master detail overrides; ids not listed fall back to synthesized defaults. */
 type LessonDetailOverride = {
   imageCount?: number;
+  images?: { order: number; url: string }[];
   description?: string;
   internal_memo?: string;
   restricted_main_contracts?: string[];
@@ -3338,10 +3340,16 @@ const LESSON_DETAIL_OVERRIDES: Record<string, LessonDetailOverride> = {
 function buildLessonImages(pool: string[], count: number) {
   const safeCount = Math.max(1, Math.min(count, pool.length));
   return pool.slice(0, safeCount).map((url, index) => ({
+    order: index + 1,
     url,
-    caption: index === 0 ? 'レッスンの様子' : null,
-    is_main: index === 0,
   }));
+}
+
+/** Sort incoming images by order and re-number sequentially (1-based; 1 = main). */
+function normalizeLessonImages(images: { order: number; url: string }[]) {
+  return [...images]
+    .sort((a, b) => a.order - b.order)
+    .map((image, index) => ({ order: index + 1, url: image.url }));
 }
 
 function lessonContentRowToDetail(row: LessonContentItem): LessonContentDetail {
@@ -3360,7 +3368,7 @@ function lessonContentRowToDetail(row: LessonContentItem): LessonContentDetail {
     duration: row.duration,
     pricing_type: row.pricing_type,
     per_use_fee: perUseFee,
-    images: buildLessonImages(LESSON_IMAGE_POOL, override.imageCount ?? 3),
+    images: override.images ?? buildLessonImages(LESSON_IMAGE_POOL, override.imageCount ?? 3),
     description: override.description ?? `${row.name}の詳細説明です。`,
     internal_memo: override.internal_memo ?? '特記事項なし',
     restriction: {
@@ -3390,7 +3398,7 @@ function personalPlanRowToDetail(row: PersonalPlanItem): LessonContentDetail {
     // Personal plans are billed per session → pay-per-use.
     pricing_type: 'paid',
     per_use_fee: override.per_use_fee ?? row.price,
-    images: buildLessonImages(PERSONAL_IMAGE_POOL, override.imageCount ?? 3),
+    images: override.images ?? buildLessonImages(PERSONAL_IMAGE_POOL, override.imageCount ?? 3),
     description: override.description ?? row.description ?? `${row.name}の詳細説明です。`,
     internal_memo: override.internal_memo ?? '特記事項なし',
     restriction: {
@@ -4661,18 +4669,64 @@ type DbType = {
     _seeded: boolean;
     _seed(): void;
     getList(): LessonContentItem[];
+    getRowById(id: string): LessonContentItem | undefined;
     getDetail(id: string): LessonContentDetail | undefined;
+    create(
+      data: import('./_schemas/lesson-content-form.schema').CreateLessonContentRequest & {
+        lesson_type: 'studio' | 'bodycare';
+      },
+    ): LessonContentDetail;
+    update(
+      id: string,
+      data: Partial<import('./_schemas/lesson-content-form.schema').CreateLessonContentRequest>,
+    ): LessonContentDetail | undefined;
   };
   personalPlans: {
     _rows: PersonalPlanItem[];
     _seeded: boolean;
     _seed(): void;
     getList(): PersonalPlanItem[];
+    getRowById(id: string): PersonalPlanItem | undefined;
     getDetail(id: string): LessonContentDetail | undefined;
+    create(data: {
+      name: string;
+      lesson_type: 'personal';
+      brand: 'joyfit' | 'fit365';
+      duration: number;
+      pricing_type: string;
+      per_use_fee?: number | null;
+      images?: { order: number; url: string }[];
+      description?: string;
+      internal_memo?: string;
+      status: 'active' | 'inactive';
+      restricted_main_contracts?: string[];
+      restricted_option_contracts?: string[];
+      store_id?: string;
+    }): LessonContentDetail;
+    update(
+      id: string,
+      data: Partial<{
+        name: string;
+        brand: 'joyfit' | 'fit365';
+        duration: number;
+        pricing_type: string;
+        per_use_fee?: number | null;
+        images?: { order: number; url: string }[];
+        description?: string;
+        internal_memo?: string;
+        status: 'active' | 'inactive';
+        restricted_main_contracts?: string[];
+        restricted_option_contracts?: string[];
+      }>,
+    ): LessonContentDetail | undefined;
   };
   lessonContentDetails: {
     getDetail(id: string): LessonContentDetail | undefined;
     exists(id: string): boolean;
+    update(
+      id: string,
+      data: Partial<import('./_schemas/lesson-content-form.schema').CreateLessonContentRequest>,
+    ): LessonContentDetail | undefined;
   };
   lessonContentSchedules: {
     getByMasterId(id: string): ScheduleSummary;
@@ -13824,10 +13878,88 @@ function createDb() {
         this._seed();
         return [...this._rows];
       },
+      getRowById(id: string): LessonContentItem | undefined {
+        this._seed();
+        return this._rows.find((r) => r.id === id);
+      },
       getDetail(id: string): LessonContentDetail | undefined {
         this._seed();
         const row = this._rows.find((r) => r.id === id);
         return row ? lessonContentRowToDetail(row) : undefined;
+      },
+      create(
+        data: Omit<CreateLessonContentRequest, 'lesson_type'> & {
+          lesson_type: 'studio' | 'bodycare';
+        },
+      ): LessonContentDetail {
+        this._seed();
+        const maxNumericId = this._rows.reduce((max, row) => {
+          const num = parseInt(row.id.replace(/^(LSN|BDC)-/, ''), 10);
+          return isNaN(num) ? max : Math.max(max, num);
+        }, 0);
+        const prefix = data.lesson_type === 'bodycare' ? 'BDC' : 'LSN';
+        const id = `${prefix}-${String(maxNumericId + 1).padStart(4, '0')}`;
+        const now = new Date().toISOString();
+        const kind = data.lesson_type;
+        const item: LessonContentItem = {
+          id,
+          name: data.name,
+          kind,
+          brand: data.brand,
+          duration: data.duration,
+          pricing_type: data.pricing_type,
+          status: data.status,
+          gender_restriction: 'none',
+          lesson_category: kind === 'bodycare' ? 'ボディケア' : 'スタジオレッスン',
+          category: kind === 'bodycare' ? 'ボディケア' : 'スタジオレッスン',
+          store_id: 'store-001',
+          is_deleted: false,
+          reservation_count: 0,
+          max_reservation_count: 20,
+        };
+        this._rows.unshift(item);
+        LESSON_DETAIL_OVERRIDES[id] = {
+          imageCount: data.description ? 3 : undefined,
+          images: data.images?.length ? normalizeLessonImages(data.images) : [],
+          description: data.description || undefined,
+          internal_memo: data.internal_memo || undefined,
+          restricted_main_contracts: data.restricted_main_contracts ?? [],
+          restricted_option_contracts: data.restricted_option_contracts ?? [],
+          per_use_fee: data.pricing_type === 'paid' ? (data.per_use_fee ?? 550) : undefined,
+          usage_count: 0,
+        };
+        return lessonContentRowToDetail(item);
+      },
+      update(
+        id: string,
+        data: Partial<CreateLessonContentRequest>,
+      ): LessonContentDetail | undefined {
+        this._seed();
+        const index = this._rows.findIndex((r) => r.id === id);
+        if (index === -1) return undefined;
+        const existing = this._rows[index];
+        const updated = { ...existing };
+        if (data.name !== undefined) updated.name = data.name;
+        if (data.brand !== undefined) updated.brand = data.brand;
+        if (data.duration !== undefined) updated.duration = data.duration;
+        if (data.pricing_type !== undefined) updated.pricing_type = data.pricing_type;
+        if (data.status !== undefined) updated.status = data.status;
+        this._rows[index] = updated;
+        const override = LESSON_DETAIL_OVERRIDES[id] ?? {};
+        if (data.images !== undefined) override.images = normalizeLessonImages(data.images);
+        if (data.description !== undefined) override.description = data.description;
+        if (data.internal_memo !== undefined) override.internal_memo = data.internal_memo;
+        if (data.restricted_main_contracts !== undefined)
+          override.restricted_main_contracts = data.restricted_main_contracts;
+        if (data.restricted_option_contracts !== undefined)
+          override.restricted_option_contracts = data.restricted_option_contracts;
+        if (data.per_use_fee != null) override.per_use_fee = data.per_use_fee ?? undefined;
+        if (data.pricing_type !== undefined) {
+          override.per_use_fee =
+            data.pricing_type === 'paid' ? (data.per_use_fee ?? 550) : undefined;
+        }
+        LESSON_DETAIL_OVERRIDES[id] = override;
+        return lessonContentRowToDetail(this._rows[index]);
       },
     },
 
@@ -13844,10 +13976,103 @@ function createDb() {
         this._seed();
         return [...this._rows];
       },
+      getRowById(id: string): PersonalPlanItem | undefined {
+        this._seed();
+        return this._rows.find((r) => r.id === id);
+      },
       getDetail(id: string): LessonContentDetail | undefined {
         this._seed();
         const row = this._rows.find((r) => r.id === id);
         return row ? personalPlanRowToDetail(row) : undefined;
+      },
+      create(data: {
+        name: string;
+        lesson_type: 'personal';
+        brand: 'joyfit' | 'fit365';
+        duration: number;
+        pricing_type: string;
+        per_use_fee?: number | null;
+        images?: { order: number; url: string }[];
+        description?: string;
+        internal_memo?: string;
+        status: 'active' | 'inactive';
+        restricted_main_contracts?: string[];
+        restricted_option_contracts?: string[];
+        store_id?: string;
+      }): LessonContentDetail {
+        this._seed();
+        const maxNumericId = this._rows.reduce((max, row) => {
+          const num = parseInt(row.id.replace('PLN-', ''), 10);
+          return isNaN(num) ? max : Math.max(max, num);
+        }, 0);
+        const id = `PLN-${String(maxNumericId + 1).padStart(4, '0')}`;
+        const now = new Date().toISOString();
+        const price = data.per_use_fee ?? 5500;
+        const item: PersonalPlanItem = {
+          id,
+          name: data.name,
+          description: data.description,
+          category: 'パーソナルトレーニング',
+          duration: data.duration,
+          price,
+          reservations: 0,
+          max_reservations: 10,
+          brand: data.brand,
+          status: data.status,
+          store_id: data.store_id ?? 'store-001',
+          is_deleted: false,
+        };
+        this._rows.unshift(item);
+        LESSON_DETAIL_OVERRIDES[id] = {
+          imageCount: data.description ? 3 : undefined,
+          images: data.images?.length ? normalizeLessonImages(data.images) : [],
+          description: data.description || undefined,
+          internal_memo: data.internal_memo || undefined,
+          restricted_main_contracts: data.restricted_main_contracts ?? [],
+          restricted_option_contracts: data.restricted_option_contracts ?? [],
+          per_use_fee: price,
+          usage_count: 0,
+        };
+        return personalPlanRowToDetail(item);
+      },
+      update(
+        id: string,
+        data: Partial<{
+          name: string;
+          brand: 'joyfit' | 'fit365';
+          duration: number;
+          pricing_type: string;
+          per_use_fee?: number | null;
+          images?: { order: number; url: string }[];
+          description?: string;
+          internal_memo?: string;
+          status: 'active' | 'inactive';
+          restricted_main_contracts?: string[];
+          restricted_option_contracts?: string[];
+        }>,
+      ): LessonContentDetail | undefined {
+        this._seed();
+        const index = this._rows.findIndex((r) => r.id === id);
+        if (index === -1) return undefined;
+        const existing = this._rows[index];
+        const updated = { ...existing };
+        if (data.name !== undefined) updated.name = data.name;
+        if (data.brand !== undefined) updated.brand = data.brand;
+        if (data.duration !== undefined) updated.duration = data.duration;
+        if (data.status !== undefined) updated.status = data.status;
+        if (data.per_use_fee !== undefined) updated.price = data.per_use_fee ?? 5500;
+        this._rows[index] = updated;
+        const override = LESSON_DETAIL_OVERRIDES[id] ?? {};
+        if (data.images !== undefined) override.images = normalizeLessonImages(data.images);
+        if (data.description !== undefined) override.description = data.description;
+        if (data.internal_memo !== undefined) override.internal_memo = data.internal_memo;
+        if (data.restricted_main_contracts !== undefined)
+          override.restricted_main_contracts = data.restricted_main_contracts;
+        if (data.restricted_option_contracts !== undefined)
+          override.restricted_option_contracts = data.restricted_option_contracts;
+        if (data.per_use_fee !== undefined) override.per_use_fee = data.per_use_fee ?? undefined;
+        LESSON_DETAIL_OVERRIDES[id] = override;
+        return personalPlanRowToDetail(this._rows[index]);
       },
     },
 
@@ -13858,6 +14083,12 @@ function createDb() {
       },
       exists(id: string): boolean {
         return Boolean(db.lessonContents.getDetail(id) ?? db.personalPlans.getDetail(id));
+      },
+      update(
+        id: string,
+        data: Partial<CreateLessonContentRequest>,
+      ): LessonContentDetail | undefined {
+        return db.lessonContents.update(id, data) ?? db.personalPlans.update(id, data);
       },
     },
 

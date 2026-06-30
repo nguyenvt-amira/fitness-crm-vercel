@@ -45,7 +45,7 @@ export function LessonImageGallery({ images, lessonName }: LessonImageGalleryPro
 
   const hasMultiple = images.length > 1;
   const current = images[mainIndex];
-  const caption = current.caption?.trim() ? current.caption : `画像 ${mainIndex + 1}`;
+  const caption = `画像 ${mainIndex + 1}`;
 
   const goPrev = () => setMainIndex((i) => (i > 0 ? i - 1 : images.length - 1));
   const goNext = () => setMainIndex((i) => (i < images.length - 1 ? i + 1 : 0));
@@ -127,7 +127,7 @@ export function LessonImageGallery({ images, lessonName }: LessonImageGalleryPro
                 sizes="80px"
                 className="object-cover"
               />
-              {img.is_main && (
+              {img.order === 1 && (
                 <span className="bg-primary text-primary-foreground absolute inset-x-0 bottom-0 py-0.5 text-center text-[9px] font-medium">
                   メイン
                 </span>
