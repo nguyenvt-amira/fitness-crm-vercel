@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { db } from '@/app/api/_mock-db';
 import {
-  type ChangeInstructorRequest,
   ChangeInstructorRequestSchema,
   type ChangeResponse,
   ChangeResponseSchema,

@@ -22,6 +22,8 @@ A store staff member or instructor creates a one-time studio lesson schedule by 
 1. **Given** the user is on the schedule registration form in create mode, **When** they select "スタジオレッスン" as the lesson class, select a store, studio, date, start time, lesson content, at least one instructor, set capacity, and set publication to ON, **Then** the form submits successfully and a success toast "スケジュールを登録しました" is shown, navigating back to the schedule list.
 2. **Given** the user has not filled required fields (date, time, instructors), **When** they click "スケジュールを登録する", **Then** inline validation errors appear below each missing field, the first invalid field scrolls into view, and a summary error "未入力の項目があります" appears in the footer.
 3. **Given** the user selects a date that is a store holiday, **When** the date is confirmed, **Then** a yellow warning banner is displayed: "{storeName}は{date}が休業日です。それでも登録しますか？".
+4. **Given** a user with the Trainer role opens the form, **When** the instructor selection step is shown, **Then** the インストラクター field is pre-filled with the logged-in trainer themselves, shown as a locked (read-only) chip with a "（あなた）" label and lock icon, and no combobox to add/remove instructors is available.
+5. **Given** a user with a non-Trainer role (System / Headquarter / Manager / Staff) opens the form, **When** the instructor selection step is shown, **Then** the multi-select combobox is available and they can select any one or more instructors.
 
 ---
 
@@ -113,6 +115,7 @@ The system warns the user when a selected instructor already has an overlapping 
 - What happens when the user tries to leave with unsaved changes? → Confirmation dialog "変更を破棄しますか？" appears.
 - What happens when a template is loaded then the user has unsaved edits? → The form tracks dirty state via `useUnsavedChanges` hook.
 - What happens when the user deletes a schedule with existing reservations? → Confirmation dialog showing affected reservation count, notification summary, and refund status.
+- What happens when a Trainer opens the form? → The インストラクター field is pre-filled with themselves and locked (read-only); they cannot select other instructors (D-01 permission matrix: Trainer = 自分担当のみ).
 
 ## Requirements
 
@@ -131,7 +134,12 @@ The system warns the user when a selected instructor already has an overlapping 
 - **FR-003-011 (Recurring Preview)**: In recurring mode, a preview of generated dates MUST be displayed showing date, day-of-week, and time for each occurrence. A summary bar shows the date range and total count. A "さらに表示" button loads more items (20 at a time) when the list exceeds the visible count.
 - **FR-003-012 (Recurring Holiday Conflict)**: When recurring dates overlap with store holidays, a warning MUST be shown with the count of affected dates.
 - **FR-003-013 (Step 2 - Lesson Content)**: Users MUST be able to select a lesson from a combobox populated dynamically based on the lesson class (studio lessons or personal training lessons). In edit mode, the lesson ID and duration are displayed as reference.
-- **FR-003-014 (Step 3 - Instructor Selection)**: Users MUST be able to select one or more instructors via a multi-select combobox (chip-based input). The available instructor list is filtered by role — "インストラクター" for studio lessons, "トレーナー" for personal training. Each instructor is shown with a photo, name, and role label.
+- **FR-003-014 (Step 3 - Instructor Selection)**: Users MUST be able to select one or more instructors via a multi-select combobox (chip-based input). The available instructor list is filtered by role — "インストラクター" for studio lessons, "トレーナー" for personal training. Each instructor is shown with a photo, name, and role label. **Instructor selection is role-controlled per the D-01 permission matrix (Trainer = 自分担当のみ / own assignments only) — see FR-003-014a.**
+- **FR-003-014a (Instructor Selection — Role-Based Control)**: Instructor assignment MUST be controlled by the logged-in user's role, following the D-01 permission matrix:
+  - **Trainer (指導者)**: The インストラクター field MUST be pre-filled with the logged-in trainer themselves and locked (read-only). The trainer CANNOT add or remove instructors. The self chip is shown with a "（あなた）" label and a lock indicator, plus helper text: "ご自身が担当するスケジュールのみ登録できます。担当インストラクターはご自身に固定されます。". This applies to both the registration (create) and edit forms.
+  - **All other roles (System / Headquarter / Manager / Staff)**: The multi-select combobox MUST remain unchanged — they can freely select any one or more instructors (subject to the role/lesson-class filter above).
+  - The trainer is resolved from the authenticated user (the instructor whose `instructor_id` equals the current `user.id`).
+  - Note: The original prototype lacked this control (any role could multi-select); the customer confirmed (2026-06-25) this was a defect, not an intentional design — the trainer self-lock is the correct behavior.
 - **FR-003-015 (Instructor Conflict Check)**: When a selected instructor is already assigned to another schedule at the same day-of-week and start time, the system MUST display a conflict warning listing the instructor name and conflicting lesson name.
 - **FR-003-016 (Capacity Setting)**: For studio lessons, users MUST be able to enter a capacity as a numeric value, with the studio's physical capacity as the upper limit. If the entered value exceeds the physical capacity, an error message MUST be shown.
 - **FR-003-017 (Publication Toggle)**: Users MUST be able to toggle publication ON/OFF via a Switch. ON = "公開（モードA）" — members can book via the app. OFF = "非公開（モードB）" — CRM-only management for manual reservation entry.
@@ -192,6 +200,10 @@ The following items required clarification because of discrepancies or ambiguiti
 
 **Status**: Resolved → Use detailed message format that names conflicting instructor and lesson (matching prototype — better UX).
 
+### Q4: Multi-Instructor Selection for Trainer Role — Intentional or Defect?
+
+**Status**: Resolved (2026-06-25, 山内さん) → Defect, not intentional. The form lacked role-based control. For the Trainer role the インストラクター field MUST pre-fill the trainer themselves and lock it (read-only); other roles (店舗スタッフ / 本部 etc.) keep selecting any instructor as before. The prototype has been updated to reflect this. See FR-003-014a.
+
 ## Clarifications
 
 ### Session 2026-06-24
@@ -199,3 +211,8 @@ The following items required clarification because of discrepancies or ambiguiti
 - Q: Should the schedule change/delete confirmation dialog be implemented in Phase 1? → A: Yes, implement in Phase 1.
 - Q: Should trial slot settings remain inside the 公開設定 card or be extracted into a dedicated card? → A: Keep inside 公開設定 card (matching prototype).
 - Q: Should the instructor conflict warning use the generic spec wording or the detailed implementation format? → A: Use detailed format naming the instructor and conflicting lesson (matching prototype — better UX).
+
+### Session 2026-06-25
+
+- Q: Is the multi-instructor selection UI an intentional design for the Trainer role? → A: No. It was a defect — the registration/edit form lacked role-based control. The spec's permission matrix (Trainer = 自分担当のみ) is correct.
+- Q: For the Trainer role, should the インストラクター field auto-fill the trainer themselves and be locked (read-only)? → A: Yes — pre-fill self + lock. Other roles (店舗スタッフ / 本部) keep selecting any instructor as before.

@@ -11,7 +11,6 @@ import type { LessonScheduleListItem } from '@/lib/api/types.gen';
 import {
   formatBookingLabel,
   formatTimeRange,
-  getLessonTypeLabel,
   getOccupancyColor,
   getScheduleStatusLabel,
   getScheduleStatusVariant,

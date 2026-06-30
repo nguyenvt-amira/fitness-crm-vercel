@@ -22,6 +22,12 @@ import type {
   FamilyRegistrationStatus,
   FamilyRelationship,
 } from '@/app/api/_schemas/family-registration.schema';
+import type {
+  CreateFranchiseCompanyBody,
+  FranchiseCompanyDetail,
+  FranchiseCompanyHistoryItem,
+  UpdateFranchiseCompanyBody,
+} from '@/app/api/_schemas/franchise-company.schema';
 import type { LeaveDetail, LeaveListItem } from '@/app/api/_schemas/leave.schema';
 import type {
   ChangeHistory,
@@ -105,8 +111,16 @@ import type {
   StoreLinkedOption,
 } from '@/app/api/_schemas/store-sales-settings.schema';
 import type { Store, StoreBusinessHours } from '@/app/api/_schemas/store.schema';
+import type { SurveyResponseDetail } from '@/app/api/_schemas/survey-reporting.schema';
+import type {
+  SurveyQuestion,
+  SurveyTemplateChangeHistoryItem,
+  SurveyTemplateDetail,
+  SurveyTemplateListItem,
+  SurveyTemplateStatus,
+  SurveyTemplateUpsertBody,
+} from '@/app/api/_schemas/survey.schema';
 import type { ApprovalHistoryItem, TransferDetail } from '@/app/api/_schemas/transfer.schema';
-import type { VisitExperience } from '@/app/api/_schemas/visit-experience.schema';
 import type { VisitExperienceDetail } from '@/app/api/_schemas/visit-experience.schema';
 import {
   type LockerSlotLockSettingsMeta,
@@ -359,6 +373,65 @@ function normalizeLockerDate(value: string | null | undefined): string | null {
 function resolveLockerContractTypeFromCode(code: string): LockerOptionType {
   if (code.includes('PRM')) return 'premium';
   return 'standard';
+}
+
+function toSurveyTemplateListItem(survey: SurveyTemplateDetail): SurveyTemplateListItem {
+  return {
+    id: survey.id,
+    name: survey.name,
+    type: survey.type,
+    trigger: survey.trigger,
+    brand: survey.brand,
+    question_count: survey.question_count,
+    response_count: survey.response_count,
+    response_rate: survey.response_rate,
+    last_response_date: survey.last_response_date,
+    status: survey.status,
+  };
+}
+
+function buildSurveyTemplateDetail(
+  survey: SurveyTemplateListItem,
+  overrides: Partial<Omit<SurveyTemplateDetail, keyof SurveyTemplateListItem>> = {},
+): SurveyTemplateDetail {
+  const questions =
+    overrides.questions?.map((question) => ({
+      ...question,
+      choices: question.choices.map((choice) => ({ ...choice })),
+    })) ?? [];
+  const questionCount = overrides.questions?.length ?? survey.question_count;
+
+  return {
+    ...survey,
+    question_count: questionCount,
+    created_at: overrides.created_at ?? '2024/04/01',
+    updated_at: overrides.updated_at ?? '2026/03/10',
+    questions,
+  };
+}
+
+function buildSurveyTemplateChangeHistory(
+  survey: SurveyTemplateDetail,
+): SurveyTemplateChangeHistoryItem[] {
+  const currentStatus = survey.status === 'active' ? '有効' : '無効';
+  const previousStatus = survey.status === 'active' ? '無効' : '有効';
+
+  return [
+    {
+      date: `${survey.updated_at} 10:00`,
+      user: '管理者A',
+      field: 'ステータス',
+      from: previousStatus,
+      to: currentStatus,
+    },
+    {
+      date: `${survey.created_at} 09:00`,
+      user: '管理者A',
+      field: null,
+      from: null,
+      to: '新規作成',
+    },
+  ];
 }
 
 export type MembershipApplicationContractDetails = {
@@ -1133,6 +1206,28 @@ export interface UserRow {
   position: string;
   staff_id?: string; // link to staff if applicable
   role: 'System' | 'Headquarter' | 'Manager' | 'Staff' | 'Trainer' | 'Observer';
+}
+
+interface FranchiseCompanyRow {
+  id: string;
+  formal_name: string;
+  display_name: string;
+  type: 'direct' | 'fc';
+  direct_owned_flag: boolean;
+  corporate_number: string | null;
+  representative_name: string | null;
+  head_office_address: string | null;
+  phone: string | null;
+  contact_person: string | null;
+  contact_phone: string | null;
+  fc_contract_start_date: string | null;
+  fc_contract_renewal_date: string | null;
+  royalty_rate: number | null;
+  note: string | null;
+  managed_store_count: number;
+  status: 'active' | 'inactive';
+  created_at: string;
+  updated_at: string;
 }
 
 const SEED_USERS: UserRow[] = [
@@ -2053,6 +2148,196 @@ const SEED_VISIT_EXPERIENCES: VisitExperienceDetail[] = [
     ],
   },
 ];
+const SEED_FRANCHISE_COMPANIES: FranchiseCompanyRow[] = [
+  {
+    id: 'fc-001',
+    formal_name: 'サンプルFC株式会社',
+    display_name: 'サンプルFC株式会社',
+    type: 'fc',
+    direct_owned_flag: false,
+    corporate_number: null,
+    representative_name: null,
+    head_office_address: null,
+    phone: null,
+    contact_person: null,
+    contact_phone: null,
+    fc_contract_start_date: null,
+    fc_contract_renewal_date: null,
+    royalty_rate: null,
+    note: null,
+    managed_store_count: 1,
+    status: 'active',
+    created_at: '2024-04-01T10:00:00+09:00',
+    updated_at: '2024-04-01T10:00:00+09:00',
+  },
+  {
+    id: 'fc-002',
+    formal_name: '株式会社フィットネスパートナーズ',
+    display_name: '株式会社フィットネスパートナーズ',
+    type: 'fc',
+    direct_owned_flag: false,
+    corporate_number: null,
+    representative_name: null,
+    head_office_address: null,
+    phone: null,
+    contact_person: null,
+    contact_phone: null,
+    fc_contract_start_date: null,
+    fc_contract_renewal_date: null,
+    royalty_rate: null,
+    note: null,
+    managed_store_count: 3,
+    status: 'active',
+    created_at: '2024-04-01T10:00:00+09:00',
+    updated_at: '2024-04-01T10:00:00+09:00',
+  },
+  {
+    id: 'fc-003',
+    formal_name: '株式会社フィットイースト',
+    display_name: '株式会社フィットイースト',
+    type: 'fc',
+    direct_owned_flag: false,
+    corporate_number: null,
+    representative_name: null,
+    head_office_address: null,
+    phone: null,
+    contact_person: null,
+    contact_phone: null,
+    fc_contract_start_date: null,
+    fc_contract_renewal_date: null,
+    royalty_rate: null,
+    note: null,
+    managed_store_count: 1,
+    status: 'active',
+    created_at: '2024-04-01T10:00:00+09:00',
+    updated_at: '2024-04-01T10:00:00+09:00',
+  },
+  {
+    id: 'fc-004',
+    formal_name: '株式会社ノースフィットネス',
+    display_name: '株式会社ノースフィットネス',
+    type: 'fc',
+    direct_owned_flag: false,
+    corporate_number: null,
+    representative_name: null,
+    head_office_address: null,
+    phone: null,
+    contact_person: null,
+    contact_phone: null,
+    fc_contract_start_date: null,
+    fc_contract_renewal_date: null,
+    royalty_rate: null,
+    note: null,
+    managed_store_count: 1,
+    status: 'active',
+    created_at: '2024-04-01T10:00:00+09:00',
+    updated_at: '2024-04-01T10:00:00+09:00',
+  },
+  {
+    id: 'dc-001',
+    formal_name: '株式会社ウェルネスフロンティア',
+    display_name: '株式会社ウェルネスフロンティア',
+    type: 'direct',
+    direct_owned_flag: true,
+    corporate_number: null,
+    representative_name: null,
+    head_office_address: null,
+    phone: null,
+    contact_person: null,
+    contact_phone: null,
+    fc_contract_start_date: null,
+    fc_contract_renewal_date: null,
+    royalty_rate: null,
+    note: null,
+    managed_store_count: 42,
+    status: 'active',
+    created_at: '2024-04-01T10:00:00+09:00',
+    updated_at: '2024-04-01T10:00:00+09:00',
+  },
+  {
+    id: 'fc-005',
+    formal_name: '株式会社関西フィット',
+    display_name: '株式会社関西フィット',
+    type: 'fc',
+    direct_owned_flag: false,
+    corporate_number: null,
+    representative_name: null,
+    head_office_address: null,
+    phone: null,
+    contact_person: null,
+    contact_phone: null,
+    fc_contract_start_date: null,
+    fc_contract_renewal_date: null,
+    royalty_rate: null,
+    note: null,
+    managed_store_count: 0,
+    status: 'inactive',
+    created_at: '2024-04-01T10:00:00+09:00',
+    updated_at: '2024-04-01T10:00:00+09:00',
+  },
+];
+
+function buildFranchiseCompanyDetail(row: FranchiseCompanyRow): FranchiseCompanyDetail {
+  return {
+    id: row.id,
+    formal_name: row.formal_name,
+    display_name: row.display_name,
+    type: row.type,
+    direct_owned_flag: row.direct_owned_flag,
+    corporate_number: row.corporate_number,
+    representative_name: row.representative_name,
+    head_office_address: row.head_office_address,
+    phone: row.phone,
+    contact_person: row.contact_person,
+    contact_phone: row.contact_phone,
+    fc_contract_start_date: row.fc_contract_start_date,
+    fc_contract_renewal_date: row.fc_contract_renewal_date,
+    royalty_rate: row.royalty_rate,
+    note: row.note,
+    managed_store_count: row.managed_store_count,
+    status: row.status,
+    created_at: row.created_at,
+    updated_at: row.updated_at,
+  };
+}
+
+function buildFranchiseCompanyHistory(row: FranchiseCompanyRow): FranchiseCompanyHistoryItem[] {
+  const createdAt = row.created_at;
+  const updatedAt = row.updated_at;
+  const currentTypeLabel = row.type === 'fc' ? 'FC' : '直営';
+  const currentStatusLabel = row.status === 'active' ? '有効' : '無効';
+
+  return [
+    {
+      updated_at: createdAt,
+      operator: 'システム',
+      changed_item: '新規作成',
+      before: null,
+      after: row.formal_name,
+    },
+    {
+      updated_at: updatedAt,
+      operator: 'システム',
+      changed_item: '法人名（表示名）',
+      before: row.formal_name,
+      after: row.display_name,
+    },
+    {
+      updated_at: updatedAt,
+      operator: 'システム',
+      changed_item: '直営 / FC',
+      before: currentTypeLabel,
+      after: currentTypeLabel,
+    },
+    {
+      updated_at: updatedAt,
+      operator: 'システム',
+      changed_item: 'ステータス',
+      before: currentStatusLabel,
+      after: currentStatusLabel,
+    },
+  ];
+}
 
 interface CorporateMasterRow {
   id: string;
@@ -4308,6 +4593,30 @@ type DbType = {
     add(data: UpsertOptionMasterBody): OptionMasterDetail;
     update(id: string, data: UpsertOptionMasterBody): OptionMasterDetail | undefined;
   };
+  surveys: {
+    _rows: SurveyTemplateDetail[];
+    _changeHistory: Record<string, SurveyTemplateChangeHistoryItem[]>;
+    _seeded: boolean;
+    _seed(): void;
+    getList(): SurveyTemplateListItem[];
+    getById(id: string): SurveyTemplateDetail | undefined;
+    getChangeHistory(id: string): SurveyTemplateChangeHistoryItem[];
+    delete(id: string): boolean;
+    add(data: SurveyTemplateUpsertBody): SurveyTemplateDetail;
+    update(id: string, data: SurveyTemplateUpsertBody): SurveyTemplateDetail | undefined;
+    updateStatus(
+      id: string,
+      status: SurveyTemplateStatus,
+      reason?: string | null,
+    ): SurveyTemplateDetail | undefined;
+  };
+  surveyReporting: {
+    _rows: SurveyResponseDetail[];
+    _seeded: boolean;
+    _seed(): void;
+    getAll(): SurveyResponseDetail[];
+    getById(id: string): SurveyResponseDetail | undefined;
+  };
   optionDiscount: {
     _rows: GetOptionDiscountsResponse['option_discounts'];
     _changeHistory: Record<string, OptionDiscountChangeHistoryItem[]>;
@@ -4505,6 +4814,18 @@ type DbType = {
     ): BrandFeeGroup | undefined;
     disableFeeGroup(code: string, subBrandCode: string): BrandFeeGroup | undefined;
     deleteFeeGroup(code: string, subBrandCode: string): boolean;
+  };
+  franchiseCompanies: {
+    _rows: FranchiseCompanyRow[];
+    _historyById: Record<string, FranchiseCompanyHistoryItem[]>;
+    _seeded: boolean;
+    _seed(): void;
+    getList(): FranchiseCompanyRow[];
+    getById(id: string): FranchiseCompanyRow | undefined;
+    getHistory(id: string): FranchiseCompanyHistoryItem[];
+    create(input: CreateFranchiseCompanyBody): FranchiseCompanyDetail;
+    update(id: string, input: UpdateFranchiseCompanyBody): FranchiseCompanyDetail | undefined;
+    delete(id: string): boolean;
   };
   staffs: {
     _staffs: StaffListItem[];
@@ -10095,6 +10416,500 @@ function createDb() {
         return true;
       },
     },
+    surveys: {
+      _rows: [] as SurveyTemplateDetail[],
+      _changeHistory: {} as Record<string, SurveyTemplateChangeHistoryItem[]>,
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+
+        const surveyQuestions: Record<string, SurveyQuestion[]> = {
+          'S-001': [
+            {
+              no: 1,
+              content: '入会のきっかけを教えてください',
+              format: 'multiple_choice',
+              required: true,
+              has_responses: true,
+              choices: [
+                { order: 1, text: '友人の紹介' },
+                { order: 2, text: 'Web広告' },
+                { order: 3, text: 'チラシ' },
+                { order: 4, text: '通りがかり' },
+                { order: 5, text: 'その他' },
+              ],
+            },
+            {
+              no: 2,
+              content: '主に利用したい時間帯はいつですか？',
+              format: 'single_choice',
+              required: true,
+              has_responses: true,
+              choices: [
+                { order: 1, text: '平日午前' },
+                { order: 2, text: '平日午後' },
+                { order: 3, text: '平日夜間' },
+                { order: 4, text: '土日祝' },
+              ],
+            },
+            {
+              no: 3,
+              content: '運動経験を教えてください',
+              format: 'single_choice',
+              required: true,
+              has_responses: true,
+              choices: [
+                { order: 1, text: '初心者' },
+                { order: 2, text: '1年未満' },
+                { order: 3, text: '1〜3年' },
+                { order: 4, text: '3年以上' },
+              ],
+            },
+            {
+              no: 4,
+              content: '当ジムに期待することを教えてください',
+              format: 'free_text',
+              required: false,
+              has_responses: false,
+              choices: [],
+            },
+            {
+              no: 5,
+              content: 'ご意見・ご要望（自由記入）',
+              format: 'free_text',
+              required: false,
+              has_responses: false,
+              choices: [],
+            },
+          ],
+          'S-002': [
+            {
+              no: 1,
+              content: '退会を検討した主な理由を教えてください',
+              format: 'single_choice',
+              required: true,
+              has_responses: true,
+              choices: [
+                { order: 1, text: '料金' },
+                { order: 2, text: '通いにくさ' },
+                { order: 3, text: 'サービス内容' },
+                { order: 4, text: '転居' },
+                { order: 5, text: 'その他' },
+              ],
+            },
+            {
+              no: 2,
+              content: '改善してほしい点があれば教えてください',
+              format: 'free_text',
+              required: false,
+              has_responses: false,
+              choices: [],
+            },
+          ],
+          'S-003': [
+            {
+              no: 1,
+              content: '施設の清潔さに満足していますか？',
+              format: 'single_choice',
+              required: true,
+              has_responses: true,
+              choices: [
+                { order: 1, text: '非常に満足' },
+                { order: 2, text: '満足' },
+                { order: 3, text: '普通' },
+                { order: 4, text: '不満' },
+              ],
+            },
+            {
+              no: 2,
+              content: '自由記述でご意見をお聞かせください',
+              format: 'free_text',
+              required: false,
+              has_responses: false,
+              choices: [],
+            },
+          ],
+          'S-004': [
+            {
+              no: 1,
+              content: 'トレーナーの説明は分かりやすかったですか？',
+              format: 'single_choice',
+              required: true,
+              has_responses: true,
+              choices: [
+                { order: 1, text: '非常に分かりやすい' },
+                { order: 2, text: '分かりやすい' },
+                { order: 3, text: '普通' },
+                { order: 4, text: '分かりにくい' },
+              ],
+            },
+          ],
+        };
+
+        const seedRows: SurveyTemplateListItem[] = [
+          {
+            id: 'S-001',
+            name: '入会時アンケート',
+            type: 'lifecycle',
+            trigger: 'join',
+            brand: 'joyfit',
+            question_count: 5,
+            response_count: 1840,
+            response_rate: 78.4,
+            last_response_date: '2026/03/10',
+            status: 'active',
+          },
+          {
+            id: 'S-002',
+            name: '退会理由アンケート',
+            type: 'lifecycle',
+            trigger: 'leave',
+            brand: 'fit365',
+            question_count: 8,
+            response_count: 420,
+            response_rate: 92.1,
+            last_response_date: '2026/03/08',
+            status: 'active',
+          },
+          {
+            id: 'S-003',
+            name: '施設満足度調査',
+            type: 'operational',
+            trigger: 'manual_delivery',
+            brand: 'joyfit',
+            question_count: 10,
+            response_count: 1560,
+            response_rate: 65.3,
+            last_response_date: '2026/03/05',
+            status: 'active',
+          },
+          {
+            id: 'S-004',
+            name: 'トレーナー評価',
+            type: 'operational',
+            trigger: 'conditional_trigger',
+            brand: 'fit365',
+            question_count: 6,
+            response_count: 410,
+            response_rate: 55.8,
+            last_response_date: '2026/02/28',
+            status: 'inactive',
+          },
+        ];
+
+        const detailOverrides: Record<
+          string,
+          Partial<Omit<SurveyTemplateDetail, keyof SurveyTemplateListItem>>
+        > = {
+          'S-001': {
+            created_at: '2024/04/01',
+            updated_at: '2026/03/10',
+            questions: surveyQuestions['S-001'],
+          },
+          'S-002': {
+            created_at: '2024/08/01',
+            updated_at: '2026/03/08',
+            questions: surveyQuestions['S-002'],
+          },
+          'S-003': {
+            created_at: '2025/01/15',
+            updated_at: '2026/03/05',
+            questions: surveyQuestions['S-003'],
+          },
+          'S-004': {
+            created_at: '2025/03/01',
+            updated_at: '2026/02/28',
+            questions: surveyQuestions['S-004'],
+          },
+        };
+
+        this._rows.push(
+          ...seedRows.map((row) => buildSurveyTemplateDetail(row, detailOverrides[row.id])),
+        );
+        this._changeHistory = Object.fromEntries(
+          this._rows.map((row) => [row.id, buildSurveyTemplateChangeHistory(row)]),
+        );
+      },
+      getList(): SurveyTemplateListItem[] {
+        this._seed();
+        return this._rows.map(toSurveyTemplateListItem);
+      },
+      getById(id: string): SurveyTemplateDetail | undefined {
+        this._seed();
+        return this._rows.find((row) => row.id === id);
+      },
+      getChangeHistory(id: string): SurveyTemplateChangeHistoryItem[] {
+        this._seed();
+        return this._changeHistory[id] ?? [];
+      },
+      delete(id: string): boolean {
+        this._seed();
+        const index = this._rows.findIndex((row) => row.id === id);
+        if (index === -1) {
+          return false;
+        }
+
+        this._rows.splice(index, 1);
+        delete this._changeHistory[id];
+        return true;
+      },
+      add(data: SurveyTemplateUpsertBody): SurveyTemplateDetail {
+        this._seed();
+
+        const nextNumber = this._rows.reduce((max, row) => {
+          const numeric = Number.parseInt(row.id.replace(/^S-/, ''), 10);
+          return Number.isFinite(numeric) && numeric > max ? numeric : max;
+        }, 0);
+        const id = `S-${String(nextNumber + 1).padStart(3, '0')}`;
+        const now = new Date().toLocaleDateString('ja-JP').replaceAll('-', '/');
+        const created = buildSurveyTemplateDetail(
+          {
+            id,
+            name: data.name,
+            type: data.type,
+            trigger: data.trigger,
+            brand: data.brand,
+            question_count: data.questions.length,
+            response_count: 0,
+            response_rate: 0,
+            last_response_date: null,
+            status: data.status,
+          },
+          {
+            created_at: now,
+            updated_at: now,
+            questions: data.questions.map((question) => ({
+              ...question,
+              has_responses: question.has_responses ?? false,
+              choices: question.choices.map((choice) => ({ ...choice })),
+            })) as SurveyQuestion[],
+          },
+        );
+
+        this._rows.push(created);
+        this._changeHistory[id] = [
+          {
+            date: `${now} 10:00`,
+            user: '管理者A',
+            field: null,
+            from: null,
+            to: '新規作成',
+          },
+        ];
+
+        return created;
+      },
+      update(id: string, data: SurveyTemplateUpsertBody): SurveyTemplateDetail | undefined {
+        this._seed();
+        const index = this._rows.findIndex((row) => row.id === id);
+        if (index === -1) return undefined;
+
+        const existing = this._rows[index]!;
+        const now = new Date().toLocaleDateString('ja-JP').replaceAll('-', '/');
+        const updated: SurveyTemplateDetail = {
+          ...existing,
+          name: data.name,
+          type: data.type,
+          trigger: data.trigger,
+          brand: data.brand,
+          status: data.status,
+          question_count: data.questions.length,
+          updated_at: now,
+          questions: data.questions.map((question) => ({
+            ...question,
+            has_responses: question.has_responses ?? false,
+            choices: question.choices.map((choice) => ({ ...choice })),
+          })) as SurveyQuestion[],
+        };
+
+        this._rows[index] = updated;
+        this._changeHistory[id] = [
+          {
+            date: `${now} 10:00`,
+            user: '管理者A',
+            field: 'フォーム',
+            from: existing.name,
+            to: data.name,
+          },
+          ...(this._changeHistory[id] ?? []),
+        ];
+
+        return updated;
+      },
+      updateStatus(
+        id: string,
+        status: SurveyTemplateStatus,
+        reason?: string | null,
+      ): SurveyTemplateDetail | undefined {
+        this._seed();
+
+        const index = this._rows.findIndex((row) => row.id === id);
+        if (index === -1) {
+          return undefined;
+        }
+
+        const existing = this._rows[index]!;
+        const nextUpdatedAt =
+          status === 'inactive'
+            ? '2026/06/11'
+            : new Date().toLocaleDateString('ja-JP').replaceAll('-', '/');
+        const updated = {
+          ...existing,
+          status,
+          updated_at: nextUpdatedAt,
+        };
+
+        this._rows[index] = updated;
+        this._changeHistory[id] = [
+          {
+            date: `${nextUpdatedAt} 10:00`,
+            user: '管理者A',
+            field: reason ? 'ステータス / 理由' : 'ステータス',
+            from: existing.status === 'active' ? '有効' : '無効',
+            to: reason
+              ? `${status === 'active' ? '有効' : '無効'} (${reason})`
+              : status === 'active'
+                ? '有効'
+                : '無効',
+          },
+          ...(this._changeHistory[id] ?? []),
+        ];
+
+        return updated;
+      },
+    },
+    surveyReporting: {
+      _rows: [
+        {
+          id: 'R-001',
+          response_date: '2026/03/10 14:32',
+          member_id: 'M-00001',
+          member_number: 'M-00001',
+          member_name: '田中 太郎',
+          survey_id: 'S-001',
+          survey_name: '入会時アンケート',
+          template_type: 'lifecycle',
+          brand: 'fit365',
+          store_id: 'store-001',
+          store_name: 'FIT365八潮店',
+          member_type: 'regular',
+          answered_count: 5,
+          total_count: 5,
+          status: 'completed',
+          answers: [
+            {
+              question_no: 1,
+              question: '入会のきっかけを教えてください',
+              format: 'multiple_choice',
+              answer: ['友人の紹介', 'Web広告'],
+            },
+            {
+              question_no: 2,
+              question: '主に利用したい時間帯はいつですか？',
+              format: 'single_choice',
+              answer: ['平日夜間'],
+            },
+            {
+              question_no: 3,
+              question: '運動経験を教えてください',
+              format: 'single_choice',
+              answer: ['1〜3年'],
+            },
+            {
+              question_no: 4,
+              question: '当ジムに期待することを教えてください',
+              format: 'free_text',
+              answer: ['清潔さと通いやすさ'],
+            },
+            {
+              question_no: 5,
+              question: 'ご意見・ご要望（自由記入）',
+              format: 'free_text',
+              answer: ['夜の混雑が少し気になります'],
+            },
+          ],
+        },
+        {
+          id: 'R-002',
+          response_date: '2026/03/08 09:10',
+          member_id: 'M-00002',
+          member_number: 'M-00002',
+          member_name: '佐藤 花子',
+          survey_id: 'S-001',
+          survey_name: '入会時アンケート',
+          template_type: 'lifecycle',
+          brand: 'fit365',
+          store_id: 'store-001',
+          store_name: 'FIT365八潮店',
+          member_type: 'family',
+          answered_count: 3,
+          total_count: 5,
+          status: 'partial',
+          answers: [
+            {
+              question_no: 1,
+              question: '入会のきっかけを教えてください',
+              format: 'multiple_choice',
+              answer: ['チラシ'],
+            },
+            {
+              question_no: 2,
+              question: '主に利用したい時間帯はいつですか？',
+              format: 'single_choice',
+              answer: ['平日午前'],
+            },
+            {
+              question_no: 4,
+              question: '当ジムに期待することを教えてください',
+              format: 'free_text',
+              answer: ['子どもと一緒に通いやすい環境'],
+            },
+          ],
+        },
+        {
+          id: 'R-003',
+          response_date: '2026/03/05 17:55',
+          member_id: 'M-00003',
+          member_number: 'M-00003',
+          member_name: '鈴木 一郎',
+          survey_id: 'S-002',
+          survey_name: '退会時アンケート',
+          template_type: 'lifecycle',
+          brand: 'joyfit',
+          store_id: 'store-002',
+          store_name: 'JOYFIT大宮店',
+          member_type: 'regular',
+          answered_count: 2,
+          total_count: 2,
+          status: 'completed',
+          answers: [
+            {
+              question_no: 1,
+              question: '退会を検討した主な理由を教えてください',
+              format: 'single_choice',
+              answer: ['通いにくさ'],
+            },
+            {
+              question_no: 2,
+              question: '改善してほしい点があれば教えてください',
+              format: 'free_text',
+              answer: ['朝の時間帯の混雑緩和'],
+            },
+          ],
+        },
+      ] as SurveyResponseDetail[],
+      _seeded: true,
+      _seed(): void {
+        return;
+      },
+      getAll(): SurveyResponseDetail[] {
+        return this._rows;
+      },
+      getById(id: string): SurveyResponseDetail | undefined {
+        return this._rows.find((row) => row.id === id);
+      },
+    },
     optionDiscount: {
       _rows: [] as GetOptionDiscountsResponse['option_discounts'],
       _changeHistory: {} as Record<string, OptionDiscountChangeHistoryItem[]>,
@@ -10470,6 +11285,7 @@ function createDb() {
             mutualType: 'within_brand',
             area: 'kanto',
             operating_company_name: '株式会社ウェルネスフロンティア',
+            fc: 'fc-002',
             status: 'operating',
           },
           {
@@ -10481,6 +11297,7 @@ function createDb() {
             mutualType: 'none',
             area: 'kansai',
             operating_company_name: '株式会社ウェルネスフロンティア',
+            fc: 'fc-002',
             status: 'operating',
           },
           {
@@ -10491,6 +11308,7 @@ function createDb() {
             mutualOn: false,
             mutualType: 'none',
             contract: 'suspended',
+            fc: 'fc-002',
             area: 'chubu',
             operating_company_name: '株式会社JOYFITプラス',
             status: 'closed_temp',
@@ -10503,6 +11321,7 @@ function createDb() {
             mutualOn: true,
             mutualType: 'cross_brand',
             contract: 'draft',
+            fc: 'fc-002',
             area: 'kansai',
             operating_company_name: '株式会社フィット365',
             status: 'preparing',
@@ -10515,6 +11334,7 @@ function createDb() {
             mutualOn: false,
             mutualType: 'none',
             contract: 'terminated',
+            fc: 'fc-002',
             closing: '2025-12-31',
             area: 'other',
             operating_company_name: '株式会社ジェイフィット',
@@ -12507,6 +13327,174 @@ function createDb() {
         return true;
       },
     },
+    franchiseCompanies: {
+      _rows: [] as FranchiseCompanyRow[],
+      _historyById: {} as Record<string, FranchiseCompanyHistoryItem[]>,
+      _seeded: false,
+      _seed(): void {
+        if (this._seeded) return;
+        this._seeded = true;
+        this._rows = SEED_FRANCHISE_COMPANIES.map((row) => ({ ...row }));
+        this._historyById = Object.fromEntries(
+          this._rows.map((row) => [row.id, buildFranchiseCompanyHistory(row)]),
+        );
+      },
+      getList(): FranchiseCompanyRow[] {
+        this._seed();
+        return [...this._rows];
+      },
+      getById(id: string): FranchiseCompanyRow | undefined {
+        this._seed();
+        return this._rows.find((row) => row.id === id);
+      },
+      getHistory(id: string): FranchiseCompanyHistoryItem[] {
+        this._seed();
+        return [...(this._historyById[id] ?? [])];
+      },
+      create(input: CreateFranchiseCompanyBody): FranchiseCompanyDetail {
+        this._seed();
+
+        const maxNumericId = this._rows.reduce((max, row) => {
+          const match = row.id.match(/(\d+)$/);
+          const numericId = match ? Number.parseInt(match[1], 10) : Number.NaN;
+          return Number.isNaN(numericId) ? max : Math.max(max, numericId);
+        }, 0);
+
+        const now = new Date().toISOString();
+        const row: FranchiseCompanyRow = {
+          id: `FC-${String(maxNumericId + 1).padStart(3, '0')}`,
+          formal_name: input.formal_name,
+          display_name: input.display_name,
+          type: input.type,
+          direct_owned_flag: input.direct_owned_flag,
+          corporate_number: input.corporate_number ?? null,
+          representative_name: input.representative_name ?? null,
+          head_office_address: input.head_office_address ?? null,
+          phone: input.phone ?? null,
+          contact_person: input.contact_person ?? null,
+          contact_phone: input.contact_phone ?? null,
+          fc_contract_start_date: input.fc_contract_start_date ?? null,
+          fc_contract_renewal_date: input.fc_contract_renewal_date ?? null,
+          royalty_rate: input.royalty_rate ?? null,
+          note: input.note ?? null,
+          managed_store_count: 0,
+          status: input.status,
+          created_at: now,
+          updated_at: now,
+        };
+
+        this._rows.unshift(row);
+        this._historyById[row.id] = buildFranchiseCompanyHistory(row);
+        return buildFranchiseCompanyDetail(row);
+      },
+      update(id: string, input: UpdateFranchiseCompanyBody): FranchiseCompanyDetail | undefined {
+        this._seed();
+        const current = this._rows.find((row) => row.id === id);
+        if (!current) return undefined;
+
+        const next: FranchiseCompanyRow = {
+          ...current,
+          formal_name:
+            input.formal_name !== undefined ? input.formal_name.trim() : current.formal_name,
+          display_name:
+            input.display_name !== undefined ? input.display_name.trim() : current.display_name,
+          type: input.type ?? current.type,
+          direct_owned_flag: input.direct_owned_flag ?? current.direct_owned_flag,
+          corporate_number:
+            input.corporate_number !== undefined
+              ? input.corporate_number
+              : current.corporate_number,
+          representative_name:
+            input.representative_name !== undefined
+              ? input.representative_name
+              : current.representative_name,
+          head_office_address:
+            input.head_office_address !== undefined
+              ? input.head_office_address
+              : current.head_office_address,
+          phone: input.phone !== undefined ? input.phone : current.phone,
+          contact_person:
+            input.contact_person !== undefined ? input.contact_person : current.contact_person,
+          contact_phone:
+            input.contact_phone !== undefined ? input.contact_phone : current.contact_phone,
+          fc_contract_start_date:
+            input.fc_contract_start_date !== undefined
+              ? input.fc_contract_start_date
+              : current.fc_contract_start_date,
+          fc_contract_renewal_date:
+            input.fc_contract_renewal_date !== undefined
+              ? input.fc_contract_renewal_date
+              : current.fc_contract_renewal_date,
+          royalty_rate:
+            input.royalty_rate !== undefined ? input.royalty_rate : current.royalty_rate,
+          note: input.note !== undefined ? input.note : current.note,
+          status: input.status ?? current.status,
+          updated_at: new Date().toISOString(),
+        };
+
+        const nextIndex = this._rows.findIndex((row) => row.id === id);
+        this._rows[nextIndex] = next;
+
+        const changes: FranchiseCompanyHistoryItem[] = [];
+        const now = next.updated_at;
+        const pushChange = (changed_item: string, before: string | null, after: string | null) => {
+          if (before === after) return;
+          changes.unshift({
+            updated_at: now,
+            operator: 'システム',
+            changed_item,
+            before,
+            after,
+          });
+        };
+
+        pushChange('法人名（正式名称）', current.formal_name, next.formal_name);
+        pushChange('法人名（表示名）', current.display_name, next.display_name);
+        pushChange(
+          '直営 / FC',
+          current.type === 'fc' ? 'FC' : '直営',
+          next.type === 'fc' ? 'FC' : '直営',
+        );
+        pushChange(
+          '直営店フラグ',
+          current.direct_owned_flag ? '有効' : '無効',
+          next.direct_owned_flag ? '有効' : '無効',
+        );
+        pushChange(
+          'ステータス',
+          current.status === 'active' ? '有効' : '無効',
+          next.status === 'active' ? '有効' : '無効',
+        );
+        if (input.note !== undefined) {
+          pushChange('備考', current.note, next.note);
+        }
+
+        if (changes.length > 0) {
+          this._historyById[id] = [...changes, ...(this._historyById[id] ?? [])];
+        }
+
+        return buildFranchiseCompanyDetail(next);
+      },
+      delete(id: string): boolean {
+        this._seed();
+        const currentIndex = this._rows.findIndex((row) => row.id === id);
+        if (currentIndex === -1) return false;
+
+        const current = this._rows[currentIndex]!;
+        this._historyById[id] = [
+          {
+            updated_at: new Date().toISOString(),
+            operator: 'システム',
+            changed_item: '削除',
+            before: current.display_name,
+            after: null,
+          },
+          ...(this._historyById[id] ?? []),
+        ];
+        this._rows.splice(currentIndex, 1);
+        return true;
+      },
+    },
     staffs: {
       _staffs: [] as StaffListItem[],
       _details: {} as Record<string, StaffDetail>,
@@ -14369,6 +15357,7 @@ function createDb() {
   db.corporateMasters._seed();
   db.partnerCompanies._seed();
   db.visitExperiences._seed();
+  db.franchiseCompanies._seed();
   db.users._seed();
   db.lessonSchedules._seed();
   db.reservations._seed();

@@ -109,6 +109,14 @@ export enum Permission {
   CampaignsPromoCodeExport = 'campaigns-promo-code.export',
 
   // -------------------------------------------------------------------------
+  // Franchise companies
+  // -------------------------------------------------------------------------
+  FCCompaniesView = 'fc-companies.view',
+  FCCompaniesCreate = 'fc-companies.create',
+  FCCompaniesEdit = 'fc-companies.edit',
+  FCCompaniesDelete = 'fc-companies.delete',
+
+  // -------------------------------------------------------------------------
   // Options
   // -------------------------------------------------------------------------
   OptionsView = 'options.view',
@@ -147,6 +155,13 @@ export enum Permission {
   LockersContractsExport = 'lockers-contracts.export',
 
   // -------------------------------------------------------------------------
+  // Surveys
+  // -------------------------------------------------------------------------
+  SurveysView = 'surveys.view',
+  SurveysEdit = 'surveys.edit',
+  SurveysCreate = 'surveys.create',
+  SurveysDelete = 'surveys.delete',
+
   // Lessons / Reservations (D-01)
   // -------------------------------------------------------------------------
   LessonsView = 'lessons.view',

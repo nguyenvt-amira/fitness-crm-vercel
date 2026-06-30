@@ -9,6 +9,7 @@ import * as blacklistSchemas from '../_schemas/blacklist.schema';
 import * as brandSchemas from '../_schemas/brand.schema';
 import * as campaignSchemas from '../_schemas/campaign.schema';
 import * as familyRegistrationSchemas from '../_schemas/family-registration.schema';
+import * as franchiseCompanySchemas from '../_schemas/franchise-company.schema';
 import * as leaveSchemas from '../_schemas/leave.schema';
 import * as lessonContentSchemas from '../_schemas/lesson-content.schema';
 import * as lessonReservationSchemas from '../_schemas/lesson-reservation.schema';
@@ -24,6 +25,7 @@ import * as promoCodeSchemas from '../_schemas/promo-code.schema';
 import * as staffSchemas from '../_schemas/staff.schema';
 import * as storeAccessSettingsSchemas from '../_schemas/store-access-settings.schema';
 import * as storeSchemas from '../_schemas/store.schema';
+import * as surveySchemas from '../_schemas/survey.schema';
 import * as visitExperienceSchemas from '../_schemas/visit-experience.schema';
 import { registry } from './register-route';
 
@@ -155,6 +157,87 @@ export function registerAllSchemas() {
   registeredSchemaMap.set(
     'CampaignDetail',
     registry.register('CampaignDetail', campaignSchemas.CampaignDetailSchema),
+  );
+  registeredSchemaMap.set(
+    'FranchiseCompanyType',
+    registry.register('FranchiseCompanyType', franchiseCompanySchemas.FranchiseCompanyTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'FranchiseCompanyStatus',
+    registry.register(
+      'FranchiseCompanyStatus',
+      franchiseCompanySchemas.FranchiseCompanyStatusSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'FranchiseCompanyListItem',
+    registry.register(
+      'FranchiseCompanyListItem',
+      franchiseCompanySchemas.FranchiseCompanyListItemSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'FranchiseCompanyLinkedStore',
+    registry.register(
+      'FranchiseCompanyLinkedStore',
+      franchiseCompanySchemas.FranchiseCompanyLinkedStoreSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'FranchiseCompanyHistoryItem',
+    registry.register(
+      'FranchiseCompanyHistoryItem',
+      franchiseCompanySchemas.FranchiseCompanyHistoryItemSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetFranchiseCompaniesQuery',
+    registry.register(
+      'GetFranchiseCompaniesQuery',
+      franchiseCompanySchemas.GetFranchiseCompaniesQuerySchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetFranchiseCompaniesResponse',
+    registry.register(
+      'GetFranchiseCompaniesResponse',
+      franchiseCompanySchemas.GetFranchiseCompaniesResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetFranchiseCompanyDetailResponse',
+    registry.register(
+      'GetFranchiseCompanyDetailResponse',
+      franchiseCompanySchemas.GetFranchiseCompanyDetailResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateFranchiseCompanyBody',
+    registry.register(
+      'UpdateFranchiseCompanyBody',
+      franchiseCompanySchemas.UpdateFranchiseCompanyBodySchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateFranchiseCompanyResponse',
+    registry.register(
+      'UpdateFranchiseCompanyResponse',
+      franchiseCompanySchemas.UpdateFranchiseCompanyResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'DeleteFranchiseCompanyResponse',
+    registry.register(
+      'DeleteFranchiseCompanyResponse',
+      franchiseCompanySchemas.DeleteFranchiseCompanyResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetFranchiseCompanyHistoryResponse',
+    registry.register(
+      'GetFranchiseCompanyHistoryResponse',
+      franchiseCompanySchemas.GetFranchiseCompanyHistoryResponseSchema,
+    ),
   );
   registeredSchemaMap.set(
     'GetCampaignsQuery',
@@ -1582,6 +1665,104 @@ export function registerAllSchemas() {
     ),
   );
   // D-01: Lesson Schedules
+
+  // Register survey schemas
+  registeredSchemaMap.set(
+    'SurveyTemplateType',
+    registry.register('SurveyTemplateType', surveySchemas.SurveyTemplateTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'SurveyTemplateTrigger',
+    registry.register('SurveyTemplateTrigger', surveySchemas.SurveyTemplateTriggerSchema),
+  );
+  registeredSchemaMap.set(
+    'SurveyTemplateStatus',
+    registry.register('SurveyTemplateStatus', surveySchemas.SurveyTemplateStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'SurveyQuestionFormat',
+    registry.register('SurveyQuestionFormat', surveySchemas.SurveyQuestionFormatSchema),
+  );
+  registeredSchemaMap.set(
+    'SurveyQuestionChoice',
+    registry.register('SurveyQuestionChoice', surveySchemas.SurveyQuestionChoiceSchema),
+  );
+  registeredSchemaMap.set(
+    'SurveyQuestion',
+    registry.register('SurveyQuestion', surveySchemas.SurveyQuestionSchema),
+  );
+  registeredSchemaMap.set(
+    'SurveyTemplateListItem',
+    registry.register('SurveyTemplateListItem', surveySchemas.SurveyTemplateListItemSchema),
+  );
+  registeredSchemaMap.set(
+    'GetSurveyTemplatesQuery',
+    registry.register('GetSurveyTemplatesQuery', surveySchemas.GetSurveyTemplatesQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'GetSurveyTemplatesResponse',
+    registry.register('GetSurveyTemplatesResponse', surveySchemas.GetSurveyTemplatesResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'SurveyTemplateDetail',
+    registry.register('SurveyTemplateDetail', surveySchemas.SurveyTemplateDetailSchema),
+  );
+  registeredSchemaMap.set(
+    'SurveyTemplateUpsertQuestion',
+    registry.register(
+      'SurveyTemplateUpsertQuestion',
+      surveySchemas.SurveyTemplateUpsertQuestionSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'SurveyTemplateUpsertBody',
+    registry.register('SurveyTemplateUpsertBody', surveySchemas.SurveyTemplateUpsertBodySchema),
+  );
+  registeredSchemaMap.set(
+    'SurveyTemplateUpsertResponse',
+    registry.register(
+      'SurveyTemplateUpsertResponse',
+      surveySchemas.SurveyTemplateUpsertResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetSurveyTemplateDetailResponse',
+    registry.register(
+      'GetSurveyTemplateDetailResponse',
+      surveySchemas.GetSurveyTemplateDetailResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateSurveyTemplateStatusBody',
+    registry.register(
+      'UpdateSurveyTemplateStatusBody',
+      surveySchemas.UpdateSurveyTemplateStatusBodySchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateSurveyTemplateStatusResponse',
+    registry.register(
+      'UpdateSurveyTemplateStatusResponse',
+      surveySchemas.UpdateSurveyTemplateStatusResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'DeleteSurveyTemplateResponse',
+    registry.register(
+      'DeleteSurveyTemplateResponse',
+      surveySchemas.DeleteSurveyTemplateResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'SurveyTemplateChangeHistoryItem',
+    registry.register(
+      'SurveyTemplateChangeHistoryItem',
+      surveySchemas.SurveyTemplateChangeHistoryItemSchema,
+    ),
+  );
+
+  // D-01: Lesson Schedules
+
   registeredSchemaMap.set(
     'LessonType',
     registry.register('LessonType', lessonScheduleSchemas.LessonTypeSchema),

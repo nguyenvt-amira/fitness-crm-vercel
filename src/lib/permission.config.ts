@@ -62,11 +62,26 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
   '/campaigns/create': Permission.CampaignsCreate,
   '/campaigns/:id/edit': Permission.CampaignsEdit,
 
+  // Franchise companies
+  '/franchise-companies': Permission.FCCompaniesView,
+  '/franchise-companies/:id': Permission.FCCompaniesView,
+  '/franchise-companies/create': Permission.FCCompaniesCreate,
+  '/franchise-companies/:id/edit': Permission.FCCompaniesEdit,
+
   // Options
   '/options': Permission.OptionsView,
   '/options/:id': Permission.OptionsView,
   '/options/create': Permission.OptionsCreate,
   '/options/:id/edit': Permission.OptionsEdit,
+
+  // Surveys
+  '/surveys': Permission.SurveysView,
+  '/surveys/:id': Permission.SurveysView,
+  '/surveys/create': Permission.SurveysCreate,
+  '/surveys/:id/edit': Permission.SurveysEdit,
+  '/surveys/responses': Permission.SurveysView,
+  '/surveys/responses/:responseId': Permission.SurveysView,
+  '/surveys/analytics': Permission.SurveysView,
 
   // Option discounts
   '/option-discount': Permission.OptionDiscountsView,
@@ -159,6 +174,10 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.CampaignsEdit,
     Permission.CampaignsPromoCodeCreate,
     Permission.CampaignsPromoCodeExport,
+    Permission.FCCompaniesView,
+    Permission.FCCompaniesCreate,
+    Permission.FCCompaniesEdit,
+    Permission.FCCompaniesDelete,
     Permission.ContractsEdit,
     Permission.ContractsDelete,
     Permission.ContractsCreate,
@@ -166,6 +185,10 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.OptionsCreate,
     Permission.OptionsEdit,
     Permission.OptionsDelete,
+    Permission.SurveysView,
+    Permission.SurveysCreate,
+    Permission.SurveysEdit,
+    Permission.SurveysDelete,
     Permission.OptionDiscountsView,
     Permission.OptionDiscountsCreate,
     Permission.OptionDiscountsEdit,
@@ -218,6 +241,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.CampaignsView,
     Permission.CampaignsPromoCodeCreate,
     Permission.CampaignsPromoCodeExport,
+    Permission.FCCompaniesView,
     Permission.OptionsView,
     Permission.BrandsView,
     Permission.LockersView,
@@ -231,6 +255,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LockersContractsCreate,
     Permission.LockersContractsEdit,
     Permission.LockersContractsExport,
+    Permission.SurveysView,
     Permission.LessonsView,
     Permission.LessonsScheduleManage,
     Permission.LessonsReservationManage,
@@ -278,6 +303,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LockersContractsCreate,
     Permission.LockersContractsEdit,
     Permission.LockersContractsExport,
+    Permission.SurveysView,
     Permission.LessonsView,
     Permission.LessonsScheduleManage,
     Permission.LessonsReservationManage,

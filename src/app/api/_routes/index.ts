@@ -35,6 +35,9 @@ import '@/app/api/crm/family-registrations/risk-evaluation/route';
 // Import family registrations routes
 import '@/app/api/crm/family-registrations/route';
 import '@/app/api/crm/family-registrations/summary/route';
+import '@/app/api/crm/franchise-companies/[id]/history/route';
+import '@/app/api/crm/franchise-companies/[id]/route';
+import '@/app/api/crm/franchise-companies/route';
 // D-01: Lesson Schedules
 import '@/app/api/crm/instructors/route';
 // Import leaves routes
@@ -173,6 +176,13 @@ import '@/app/api/crm/stores/[id]/options/route';
 import '@/app/api/crm/stores/[id]/route';
 import '@/app/api/crm/stores/route';
 import '@/app/api/crm/studios/route';
+import '@/app/api/crm/surveys/[id]/route';
+import '@/app/api/crm/surveys/analytics/export/route';
+import '@/app/api/crm/surveys/analytics/route';
+import '@/app/api/crm/surveys/responses/[responseId]/route';
+import '@/app/api/crm/surveys/responses/export/route';
+import '@/app/api/crm/surveys/responses/route';
+import '@/app/api/crm/surveys/route';
 import '@/app/api/crm/transfers/[id]/approve/route';
 import '@/app/api/crm/transfers/[id]/reject/route';
 import '@/app/api/crm/transfers/[id]/route';

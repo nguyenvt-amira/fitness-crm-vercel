@@ -1497,6 +1497,513 @@ export type CampaignDetail = {
 };
 
 /**
+ * FranchiseCompanyType
+ *
+ * 直営 / FC 区分
+ */
+export const FranchiseCompanyType = { DIRECT: 'direct', FC: 'fc' } as const;
+
+/**
+ * FranchiseCompanyType
+ *
+ * 直営 / FC 区分
+ */
+export type FranchiseCompanyType = typeof FranchiseCompanyType[keyof typeof FranchiseCompanyType];
+
+/**
+ * FranchiseCompanyStatus
+ *
+ * FC企業ステータス
+ */
+export const FranchiseCompanyStatus = { ACTIVE: 'active', INACTIVE: 'inactive' } as const;
+
+/**
+ * FranchiseCompanyStatus
+ *
+ * FC企業ステータス
+ */
+export type FranchiseCompanyStatus = typeof FranchiseCompanyStatus[keyof typeof FranchiseCompanyStatus];
+
+/**
+ * FranchiseCompanyListItem
+ *
+ * FC企業一覧アイテム
+ */
+export type FranchiseCompanyListItem = {
+    /**
+     * FC企業ID
+     */
+    id: string;
+    /**
+     * 法人名（表示名）
+     */
+    display_name: string;
+    /**
+     * FranchiseCompanyType
+     *
+     * 直営 / FC 区分
+     */
+    type: 'direct' | 'fc';
+    /**
+     * 管轄店舗数
+     */
+    managed_store_count: number;
+    /**
+     * FranchiseCompanyStatus
+     *
+     * ステータス
+     */
+    status: 'active' | 'inactive';
+};
+
+/**
+ * FranchiseCompanyLinkedStore
+ *
+ * FC企業詳細の管轄店舗行
+ */
+export type FranchiseCompanyLinkedStore = {
+    /**
+     * 内部ID
+     */
+    id: string;
+    /**
+     * 店舗ID (表示)
+     */
+    store_id: string;
+    /**
+     * 店舗名
+     */
+    name: string;
+    /**
+     * StoreListBrand
+     *
+     * ブランド
+     */
+    brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * 都道府県
+     */
+    prefecture: string | null;
+    /**
+     * StoreListStatus
+     *
+     * ステータス
+     */
+    status: 'operating' | 'preparing' | 'closed_temp' | 'closed_perm';
+};
+
+/**
+ * FranchiseCompanyHistoryItem
+ *
+ * FC企業変更履歴行
+ */
+export type FranchiseCompanyHistoryItem = {
+    /**
+     * 更新日時
+     */
+    updated_at: string;
+    /**
+     * 操作者
+     */
+    operator: string;
+    /**
+     * 変更項目
+     */
+    changed_item: string;
+    /**
+     * 変更前
+     */
+    before: string | null;
+    /**
+     * 変更後
+     */
+    after: string | null;
+};
+
+/**
+ * GetFranchiseCompaniesQuery
+ *
+ * FC企業一覧取得クエリ
+ */
+export type GetFranchiseCompaniesQuery = {
+    page?: number;
+    limit?: number;
+    /**
+     * 法人名で検索
+     */
+    search?: string;
+    /**
+     * FranchiseCompanyType
+     *
+     * 直営 / FC 区分
+     */
+    company_type?: 'direct' | 'fc';
+    /**
+     * FranchiseCompanyStatus
+     *
+     * FC企業ステータス
+     */
+    status?: 'active' | 'inactive';
+    sort_by?: 'id' | 'display_name';
+    sort_order?: 'asc' | 'desc';
+};
+
+/**
+ * GetFranchiseCompaniesResponse
+ *
+ * FC企業一覧レスポンス
+ */
+export type GetFranchiseCompaniesResponse = {
+    franchise_companies: Array<{
+        /**
+         * FC企業ID
+         */
+        id: string;
+        /**
+         * 法人名（表示名）
+         */
+        display_name: string;
+        /**
+         * FranchiseCompanyType
+         *
+         * 直営 / FC 区分
+         */
+        type: 'direct' | 'fc';
+        /**
+         * 管轄店舗数
+         */
+        managed_store_count: number;
+        /**
+         * FranchiseCompanyStatus
+         *
+         * ステータス
+         */
+        status: 'active' | 'inactive';
+    }>;
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        total_pages: number;
+    };
+};
+
+/**
+ * GetFranchiseCompanyDetailResponse
+ *
+ * FC企業詳細レスポンス
+ */
+export type GetFranchiseCompanyDetailResponse = {
+    /**
+     * FranchiseCompanyDetail
+     *
+     * FC企業詳細
+     */
+    franchise_company: {
+        /**
+         * FC企業ID
+         */
+        id: string;
+        /**
+         * 法人名（表示名）
+         */
+        display_name: string;
+        /**
+         * FranchiseCompanyType
+         *
+         * 直営 / FC 区分
+         */
+        type: 'direct' | 'fc';
+        /**
+         * 管轄店舗数
+         */
+        managed_store_count: number;
+        /**
+         * FranchiseCompanyStatus
+         *
+         * ステータス
+         */
+        status: 'active' | 'inactive';
+        /**
+         * 法人名（正式名称）
+         */
+        formal_name: string;
+        /**
+         * 直営店フラグ
+         */
+        direct_owned_flag: boolean;
+        /**
+         * 法人番号
+         */
+        corporate_number: string | null;
+        /**
+         * 代表者名
+         */
+        representative_name: string | null;
+        /**
+         * 本社所在地
+         */
+        head_office_address: string | null;
+        /**
+         * 電話番号
+         */
+        phone: string | null;
+        /**
+         * 担当者名
+         */
+        contact_person: string | null;
+        /**
+         * 担当者連絡先
+         */
+        contact_phone: string | null;
+        /**
+         * FC契約開始日
+         */
+        fc_contract_start_date: string | null;
+        /**
+         * FC契約更新日
+         */
+        fc_contract_renewal_date: string | null;
+        /**
+         * ロイヤリティ率(%)
+         */
+        royalty_rate: number | null;
+        /**
+         * 備考
+         */
+        note: string | null;
+        /**
+         * 作成日時
+         */
+        created_at: string;
+        /**
+         * 更新日時
+         */
+        updated_at: string;
+    };
+    linked_stores: Array<{
+        /**
+         * 内部ID
+         */
+        id: string;
+        /**
+         * 店舗ID (表示)
+         */
+        store_id: string;
+        /**
+         * 店舗名
+         */
+        name: string;
+        /**
+         * StoreListBrand
+         *
+         * ブランド
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * 都道府県
+         */
+        prefecture: string | null;
+        /**
+         * StoreListStatus
+         *
+         * ステータス
+         */
+        status: 'operating' | 'preparing' | 'closed_temp' | 'closed_perm';
+    }>;
+    history: Array<{
+        /**
+         * 更新日時
+         */
+        updated_at: string;
+        /**
+         * 操作者
+         */
+        operator: string;
+        /**
+         * 変更項目
+         */
+        changed_item: string;
+        /**
+         * 変更前
+         */
+        before: string | null;
+        /**
+         * 変更後
+         */
+        after: string | null;
+    }>;
+};
+
+/**
+ * UpdateFranchiseCompanyBody
+ *
+ * FC企業更新リクエスト
+ */
+export type UpdateFranchiseCompanyBody = {
+    formal_name?: string;
+    display_name?: string;
+    /**
+     * FranchiseCompanyType
+     *
+     * 直営 / FC 区分
+     */
+    type?: 'direct' | 'fc';
+    direct_owned_flag?: boolean;
+    corporate_number?: string | null;
+    representative_name?: string | null;
+    head_office_address?: string | null;
+    phone?: string | null;
+    contact_person?: string | null;
+    contact_phone?: string | null;
+    fc_contract_start_date?: string | null;
+    fc_contract_renewal_date?: string | null;
+    royalty_rate?: number | null;
+    note?: string | null;
+    /**
+     * FranchiseCompanyStatus
+     *
+     * FC企業ステータス
+     */
+    status?: 'active' | 'inactive';
+};
+
+/**
+ * UpdateFranchiseCompanyResponse
+ *
+ * FC企業更新レスポンス
+ */
+export type UpdateFranchiseCompanyResponse = {
+    message: string;
+    /**
+     * FranchiseCompanyDetail
+     *
+     * FC企業詳細
+     */
+    franchise_company: {
+        /**
+         * FC企業ID
+         */
+        id: string;
+        /**
+         * 法人名（表示名）
+         */
+        display_name: string;
+        /**
+         * FranchiseCompanyType
+         *
+         * 直営 / FC 区分
+         */
+        type: 'direct' | 'fc';
+        /**
+         * 管轄店舗数
+         */
+        managed_store_count: number;
+        /**
+         * FranchiseCompanyStatus
+         *
+         * ステータス
+         */
+        status: 'active' | 'inactive';
+        /**
+         * 法人名（正式名称）
+         */
+        formal_name: string;
+        /**
+         * 直営店フラグ
+         */
+        direct_owned_flag: boolean;
+        /**
+         * 法人番号
+         */
+        corporate_number: string | null;
+        /**
+         * 代表者名
+         */
+        representative_name: string | null;
+        /**
+         * 本社所在地
+         */
+        head_office_address: string | null;
+        /**
+         * 電話番号
+         */
+        phone: string | null;
+        /**
+         * 担当者名
+         */
+        contact_person: string | null;
+        /**
+         * 担当者連絡先
+         */
+        contact_phone: string | null;
+        /**
+         * FC契約開始日
+         */
+        fc_contract_start_date: string | null;
+        /**
+         * FC契約更新日
+         */
+        fc_contract_renewal_date: string | null;
+        /**
+         * ロイヤリティ率(%)
+         */
+        royalty_rate: number | null;
+        /**
+         * 備考
+         */
+        note: string | null;
+        /**
+         * 作成日時
+         */
+        created_at: string;
+        /**
+         * 更新日時
+         */
+        updated_at: string;
+    };
+};
+
+/**
+ * DeleteFranchiseCompanyResponse
+ *
+ * FC企業削除レスポンス
+ */
+export type DeleteFranchiseCompanyResponse = {
+    message: string;
+};
+
+/**
+ * GetFranchiseCompanyHistoryResponse
+ *
+ * FC企業変更履歴レスポンス
+ */
+export type GetFranchiseCompanyHistoryResponse = {
+    history: Array<{
+        /**
+         * 更新日時
+         */
+        updated_at: string;
+        /**
+         * 操作者
+         */
+        operator: string;
+        /**
+         * 変更項目
+         */
+        changed_item: string;
+        /**
+         * 変更前
+         */
+        before: string | null;
+        /**
+         * 変更後
+         */
+        after: string | null;
+    }>;
+};
+
+/**
  * GetCampaignsQuery
  *
  * Campaign master list query
@@ -15645,6 +16152,898 @@ export type PermitVisitExperienceError = {
 };
 
 /**
+ * SurveyTemplateType
+ *
+ * アンケート種別
+ */
+export const SurveyTemplateType = { LIFECYCLE: 'lifecycle', OPERATIONAL: 'operational' } as const;
+
+/**
+ * SurveyTemplateType
+ *
+ * アンケート種別
+ */
+export type SurveyTemplateType = typeof SurveyTemplateType[keyof typeof SurveyTemplateType];
+
+/**
+ * SurveyTemplateTrigger
+ *
+ * 発動トリガー
+ */
+export const SurveyTemplateTrigger = {
+    JOIN: 'join',
+    LEAVE: 'leave',
+    SUSPENSION_REQUEST: 'suspension_request',
+    TRANSFER: 'transfer',
+    RENEWAL: 'renewal',
+    MANUAL_DELIVERY: 'manual_delivery',
+    CONDITIONAL_TRIGGER: 'conditional_trigger'
+} as const;
+
+/**
+ * SurveyTemplateTrigger
+ *
+ * 発動トリガー
+ */
+export type SurveyTemplateTrigger = typeof SurveyTemplateTrigger[keyof typeof SurveyTemplateTrigger];
+
+/**
+ * SurveyTemplateStatus
+ *
+ * アンケートステータス
+ */
+export const SurveyTemplateStatus = { ACTIVE: 'active', INACTIVE: 'inactive' } as const;
+
+/**
+ * SurveyTemplateStatus
+ *
+ * アンケートステータス
+ */
+export type SurveyTemplateStatus = typeof SurveyTemplateStatus[keyof typeof SurveyTemplateStatus];
+
+/**
+ * SurveyQuestionFormat
+ *
+ * 回答形式
+ */
+export const SurveyQuestionFormat = {
+    SINGLE_CHOICE: 'single_choice',
+    MULTIPLE_CHOICE: 'multiple_choice',
+    FREE_TEXT: 'free_text'
+} as const;
+
+/**
+ * SurveyQuestionFormat
+ *
+ * 回答形式
+ */
+export type SurveyQuestionFormat = typeof SurveyQuestionFormat[keyof typeof SurveyQuestionFormat];
+
+/**
+ * SurveyQuestionChoice
+ *
+ * アンケート設問選択肢
+ */
+export type SurveyQuestionChoice = {
+    /**
+     * 表示順
+     */
+    order: number;
+    /**
+     * 選択肢テキスト
+     */
+    text: string;
+};
+
+/**
+ * SurveyQuestion
+ *
+ * アンケート設問
+ */
+export type SurveyQuestion = {
+    /**
+     * 設問番号
+     */
+    no: number;
+    /**
+     * 設問内容
+     */
+    content: string;
+    /**
+     * SurveyQuestionFormat
+     *
+     * 回答形式
+     */
+    format: 'single_choice' | 'multiple_choice' | 'free_text';
+    /**
+     * 必答かどうか
+     */
+    required: boolean;
+    /**
+     * 回答データの有無
+     */
+    has_responses?: boolean;
+    /**
+     * 選択肢一覧
+     */
+    choices: Array<{
+        /**
+         * 表示順
+         */
+        order: number;
+        /**
+         * 選択肢テキスト
+         */
+        text: string;
+    }>;
+};
+
+/**
+ * SurveyTemplateListItem
+ *
+ * アンケートテンプレート一覧アイテム
+ */
+export type SurveyTemplateListItem = {
+    /**
+     * アンケートID
+     */
+    id: string;
+    /**
+     * アンケート名
+     */
+    name: string;
+    /**
+     * SurveyTemplateType
+     *
+     * 種別
+     */
+    type: 'lifecycle' | 'operational';
+    /**
+     * SurveyTemplateTrigger
+     *
+     * 発動トリガー
+     */
+    trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
+    /**
+     * StoreListBrand
+     *
+     * ブランド
+     */
+    brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * 設問数
+     */
+    question_count: number;
+    /**
+     * 回答件数
+     */
+    response_count: number;
+    /**
+     * 回答率(%)
+     */
+    response_rate: number;
+    /**
+     * 最終回答日
+     */
+    last_response_date: string | null;
+    /**
+     * SurveyTemplateStatus
+     *
+     * 状態
+     */
+    status: 'active' | 'inactive';
+};
+
+/**
+ * GetSurveyTemplatesQuery
+ *
+ * アンケートテンプレート一覧取得クエリ
+ */
+export type GetSurveyTemplatesQuery = {
+    page?: number;
+    limit?: number;
+    /**
+     * アンケート名で検索
+     */
+    search?: string;
+    /**
+     * SurveyTemplateType
+     *
+     * アンケート種別
+     */
+    type?: 'lifecycle' | 'operational';
+    /**
+     * StoreListBrand
+     *
+     * Store brand
+     */
+    brand?: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * SurveyTemplateStatus
+     *
+     * アンケートステータス
+     */
+    status?: 'active' | 'inactive';
+    sort_by?: 'id' | 'name' | 'type' | 'trigger' | 'brand' | 'question_count' | 'response_count' | 'response_rate' | 'last_response_date' | 'status';
+    sort_order?: 'asc' | 'desc';
+};
+
+/**
+ * GetSurveyTemplatesResponse
+ *
+ * アンケートテンプレート一覧レスポンス
+ */
+export type GetSurveyTemplatesResponse = {
+    surveys: Array<{
+        /**
+         * アンケートID
+         */
+        id: string;
+        /**
+         * アンケート名
+         */
+        name: string;
+        /**
+         * SurveyTemplateType
+         *
+         * 種別
+         */
+        type: 'lifecycle' | 'operational';
+        /**
+         * SurveyTemplateTrigger
+         *
+         * 発動トリガー
+         */
+        trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
+        /**
+         * StoreListBrand
+         *
+         * ブランド
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * 設問数
+         */
+        question_count: number;
+        /**
+         * 回答件数
+         */
+        response_count: number;
+        /**
+         * 回答率(%)
+         */
+        response_rate: number;
+        /**
+         * 最終回答日
+         */
+        last_response_date: string | null;
+        /**
+         * SurveyTemplateStatus
+         *
+         * 状態
+         */
+        status: 'active' | 'inactive';
+    }>;
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        total_pages: number;
+    };
+};
+
+/**
+ * SurveyTemplateDetail
+ *
+ * アンケートテンプレート詳細
+ */
+export type SurveyTemplateDetail = {
+    /**
+     * アンケートID
+     */
+    id: string;
+    /**
+     * アンケート名
+     */
+    name: string;
+    /**
+     * SurveyTemplateType
+     *
+     * 種別
+     */
+    type: 'lifecycle' | 'operational';
+    /**
+     * SurveyTemplateTrigger
+     *
+     * 発動トリガー
+     */
+    trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
+    /**
+     * StoreListBrand
+     *
+     * ブランド
+     */
+    brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * 設問数
+     */
+    question_count: number;
+    /**
+     * 回答件数
+     */
+    response_count: number;
+    /**
+     * 回答率(%)
+     */
+    response_rate: number;
+    /**
+     * 最終回答日
+     */
+    last_response_date: string | null;
+    /**
+     * SurveyTemplateStatus
+     *
+     * 状態
+     */
+    status: 'active' | 'inactive';
+    /**
+     * 作成日
+     */
+    created_at: string;
+    /**
+     * 最終更新日
+     */
+    updated_at: string;
+    /**
+     * 設問一覧
+     */
+    questions: Array<{
+        /**
+         * 設問番号
+         */
+        no: number;
+        /**
+         * 設問内容
+         */
+        content: string;
+        /**
+         * SurveyQuestionFormat
+         *
+         * 回答形式
+         */
+        format: 'single_choice' | 'multiple_choice' | 'free_text';
+        /**
+         * 必答かどうか
+         */
+        required: boolean;
+        /**
+         * 回答データの有無
+         */
+        has_responses?: boolean;
+        /**
+         * 選択肢一覧
+         */
+        choices: Array<{
+            /**
+             * 表示順
+             */
+            order: number;
+            /**
+             * 選択肢テキスト
+             */
+            text: string;
+        }>;
+    }>;
+};
+
+/**
+ * SurveyTemplateUpsertQuestion
+ *
+ * アンケート設問更新用アイテム
+ */
+export type SurveyTemplateUpsertQuestion = {
+    /**
+     * 設問番号
+     */
+    no: number;
+    content: string;
+    /**
+     * SurveyQuestionFormat
+     *
+     * 回答形式
+     */
+    format: 'single_choice' | 'multiple_choice' | 'free_text';
+    /**
+     * 必答かどうか
+     */
+    required: boolean;
+    /**
+     * 回答データの有無
+     */
+    has_responses?: boolean;
+    /**
+     * 選択肢一覧
+     */
+    choices: Array<{
+        /**
+         * 表示順
+         */
+        order: number;
+        /**
+         * 選択肢テキスト
+         */
+        text: string;
+    }>;
+};
+
+/**
+ * SurveyTemplateUpsertBody
+ *
+ * アンケートテンプレート作成・更新リクエスト
+ */
+export type SurveyTemplateUpsertBody = {
+    /**
+     * アンケート名
+     */
+    name: string;
+    /**
+     * SurveyTemplateType
+     *
+     * 種別
+     */
+    type: 'lifecycle' | 'operational';
+    /**
+     * SurveyTemplateTrigger
+     *
+     * 発動トリガー
+     */
+    trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
+    /**
+     * StoreListBrand
+     *
+     * ブランド
+     */
+    brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+    /**
+     * SurveyTemplateStatus
+     *
+     * 状態
+     */
+    status: 'active' | 'inactive';
+    /**
+     * 設問一覧
+     */
+    questions: Array<{
+        /**
+         * 設問番号
+         */
+        no: number;
+        content: string;
+        /**
+         * SurveyQuestionFormat
+         *
+         * 回答形式
+         */
+        format: 'single_choice' | 'multiple_choice' | 'free_text';
+        /**
+         * 必答かどうか
+         */
+        required: boolean;
+        /**
+         * 回答データの有無
+         */
+        has_responses?: boolean;
+        /**
+         * 選択肢一覧
+         */
+        choices: Array<{
+            /**
+             * 表示順
+             */
+            order: number;
+            /**
+             * 選択肢テキスト
+             */
+            text: string;
+        }>;
+    }>;
+    /**
+     * 同一トリガーの既存アンケートID
+     */
+    replace_existing_survey_id?: string | null;
+};
+
+/**
+ * SurveyTemplateUpsertResponse
+ *
+ * アンケートテンプレート作成・更新レスポンス
+ */
+export type SurveyTemplateUpsertResponse = {
+    message: string;
+    /**
+     * SurveyTemplateDetail
+     *
+     * アンケートテンプレート詳細
+     */
+    survey: {
+        /**
+         * アンケートID
+         */
+        id: string;
+        /**
+         * アンケート名
+         */
+        name: string;
+        /**
+         * SurveyTemplateType
+         *
+         * 種別
+         */
+        type: 'lifecycle' | 'operational';
+        /**
+         * SurveyTemplateTrigger
+         *
+         * 発動トリガー
+         */
+        trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
+        /**
+         * StoreListBrand
+         *
+         * ブランド
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * 設問数
+         */
+        question_count: number;
+        /**
+         * 回答件数
+         */
+        response_count: number;
+        /**
+         * 回答率(%)
+         */
+        response_rate: number;
+        /**
+         * 最終回答日
+         */
+        last_response_date: string | null;
+        /**
+         * SurveyTemplateStatus
+         *
+         * 状態
+         */
+        status: 'active' | 'inactive';
+        /**
+         * 作成日
+         */
+        created_at: string;
+        /**
+         * 最終更新日
+         */
+        updated_at: string;
+        /**
+         * 設問一覧
+         */
+        questions: Array<{
+            /**
+             * 設問番号
+             */
+            no: number;
+            /**
+             * 設問内容
+             */
+            content: string;
+            /**
+             * SurveyQuestionFormat
+             *
+             * 回答形式
+             */
+            format: 'single_choice' | 'multiple_choice' | 'free_text';
+            /**
+             * 必答かどうか
+             */
+            required: boolean;
+            /**
+             * 回答データの有無
+             */
+            has_responses?: boolean;
+            /**
+             * 選択肢一覧
+             */
+            choices: Array<{
+                /**
+                 * 表示順
+                 */
+                order: number;
+                /**
+                 * 選択肢テキスト
+                 */
+                text: string;
+            }>;
+        }>;
+    };
+};
+
+/**
+ * GetSurveyTemplateDetailResponse
+ *
+ * アンケートテンプレート詳細レスポンス
+ */
+export type GetSurveyTemplateDetailResponse = {
+    /**
+     * SurveyTemplateDetail
+     *
+     * アンケートテンプレート詳細
+     */
+    survey: {
+        /**
+         * アンケートID
+         */
+        id: string;
+        /**
+         * アンケート名
+         */
+        name: string;
+        /**
+         * SurveyTemplateType
+         *
+         * 種別
+         */
+        type: 'lifecycle' | 'operational';
+        /**
+         * SurveyTemplateTrigger
+         *
+         * 発動トリガー
+         */
+        trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
+        /**
+         * StoreListBrand
+         *
+         * ブランド
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * 設問数
+         */
+        question_count: number;
+        /**
+         * 回答件数
+         */
+        response_count: number;
+        /**
+         * 回答率(%)
+         */
+        response_rate: number;
+        /**
+         * 最終回答日
+         */
+        last_response_date: string | null;
+        /**
+         * SurveyTemplateStatus
+         *
+         * 状態
+         */
+        status: 'active' | 'inactive';
+        /**
+         * 作成日
+         */
+        created_at: string;
+        /**
+         * 最終更新日
+         */
+        updated_at: string;
+        /**
+         * 設問一覧
+         */
+        questions: Array<{
+            /**
+             * 設問番号
+             */
+            no: number;
+            /**
+             * 設問内容
+             */
+            content: string;
+            /**
+             * SurveyQuestionFormat
+             *
+             * 回答形式
+             */
+            format: 'single_choice' | 'multiple_choice' | 'free_text';
+            /**
+             * 必答かどうか
+             */
+            required: boolean;
+            /**
+             * 回答データの有無
+             */
+            has_responses?: boolean;
+            /**
+             * 選択肢一覧
+             */
+            choices: Array<{
+                /**
+                 * 表示順
+                 */
+                order: number;
+                /**
+                 * 選択肢テキスト
+                 */
+                text: string;
+            }>;
+        }>;
+    };
+};
+
+/**
+ * UpdateSurveyTemplateStatusBody
+ *
+ * アンケートステータス更新リクエスト
+ */
+export type UpdateSurveyTemplateStatusBody = {
+    /**
+     * SurveyTemplateStatus
+     *
+     * 更新後ステータス
+     */
+    status: 'active' | 'inactive';
+    /**
+     * 変更理由
+     */
+    reason?: string | null;
+};
+
+/**
+ * UpdateSurveyTemplateStatusResponse
+ *
+ * アンケートステータス更新レスポンス
+ */
+export type UpdateSurveyTemplateStatusResponse = {
+    message: string;
+    /**
+     * SurveyTemplateDetail
+     *
+     * アンケートテンプレート詳細
+     */
+    survey: {
+        /**
+         * アンケートID
+         */
+        id: string;
+        /**
+         * アンケート名
+         */
+        name: string;
+        /**
+         * SurveyTemplateType
+         *
+         * 種別
+         */
+        type: 'lifecycle' | 'operational';
+        /**
+         * SurveyTemplateTrigger
+         *
+         * 発動トリガー
+         */
+        trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
+        /**
+         * StoreListBrand
+         *
+         * ブランド
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * 設問数
+         */
+        question_count: number;
+        /**
+         * 回答件数
+         */
+        response_count: number;
+        /**
+         * 回答率(%)
+         */
+        response_rate: number;
+        /**
+         * 最終回答日
+         */
+        last_response_date: string | null;
+        /**
+         * SurveyTemplateStatus
+         *
+         * 状態
+         */
+        status: 'active' | 'inactive';
+        /**
+         * 作成日
+         */
+        created_at: string;
+        /**
+         * 最終更新日
+         */
+        updated_at: string;
+        /**
+         * 設問一覧
+         */
+        questions: Array<{
+            /**
+             * 設問番号
+             */
+            no: number;
+            /**
+             * 設問内容
+             */
+            content: string;
+            /**
+             * SurveyQuestionFormat
+             *
+             * 回答形式
+             */
+            format: 'single_choice' | 'multiple_choice' | 'free_text';
+            /**
+             * 必答かどうか
+             */
+            required: boolean;
+            /**
+             * 回答データの有無
+             */
+            has_responses?: boolean;
+            /**
+             * 選択肢一覧
+             */
+            choices: Array<{
+                /**
+                 * 表示順
+                 */
+                order: number;
+                /**
+                 * 選択肢テキスト
+                 */
+                text: string;
+            }>;
+        }>;
+    };
+};
+
+/**
+ * DeleteSurveyTemplateResponse
+ *
+ * アンケート削除レスポンス
+ */
+export type DeleteSurveyTemplateResponse = {
+    message: string;
+};
+
+/**
+ * SurveyTemplateChangeHistoryItem
+ *
+ * アンケート変更履歴アイテム
+ */
+export type SurveyTemplateChangeHistoryItem = {
+    /**
+     * 変更日時
+     */
+    date: string;
+    /**
+     * 変更者
+     */
+    user: string;
+    /**
+     * 変更項目
+     */
+    field: string | null;
+    /**
+     * 変更前
+     */
+    from: string | null;
+    /**
+     * 変更後
+     */
+    to: string | null;
+};
+
+/**
  * LessonType
  *
  * レッスン種別（スタジオ/パーソナル）
@@ -21942,6 +23341,854 @@ export type GetCrmFamilyRegistrationsSummaryResponses = {
 };
 
 export type GetCrmFamilyRegistrationsSummaryResponse = GetCrmFamilyRegistrationsSummaryResponses[keyof GetCrmFamilyRegistrationsSummaryResponses];
+
+export type GetCrmFranchiseCompaniesByIdHistoryData = {
+    body?: never;
+    path: {
+        /**
+         * FC company ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/franchise-companies/{id}/history';
+};
+
+export type GetCrmFranchiseCompaniesByIdHistoryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmFranchiseCompaniesByIdHistoryError = GetCrmFranchiseCompaniesByIdHistoryErrors[keyof GetCrmFranchiseCompaniesByIdHistoryErrors];
+
+export type GetCrmFranchiseCompaniesByIdHistoryResponses = {
+    /**
+     * GetFranchiseCompanyHistoryResponse
+     *
+     * FC企業変更履歴レスポンス
+     */
+    200: {
+        history: Array<{
+            /**
+             * 更新日時
+             */
+            updated_at: string;
+            /**
+             * 操作者
+             */
+            operator: string;
+            /**
+             * 変更項目
+             */
+            changed_item: string;
+            /**
+             * 変更前
+             */
+            before: string | null;
+            /**
+             * 変更後
+             */
+            after: string | null;
+        }>;
+    };
+};
+
+export type GetCrmFranchiseCompaniesByIdHistoryResponse = GetCrmFranchiseCompaniesByIdHistoryResponses[keyof GetCrmFranchiseCompaniesByIdHistoryResponses];
+
+export type DeleteCrmFranchiseCompaniesByIdData = {
+    body?: never;
+    path: {
+        /**
+         * FC company ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/franchise-companies/{id}';
+};
+
+export type DeleteCrmFranchiseCompaniesByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type DeleteCrmFranchiseCompaniesByIdError = DeleteCrmFranchiseCompaniesByIdErrors[keyof DeleteCrmFranchiseCompaniesByIdErrors];
+
+export type DeleteCrmFranchiseCompaniesByIdResponses = {
+    /**
+     * DeleteFranchiseCompanyResponse
+     *
+     * FC企業削除レスポンス
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type DeleteCrmFranchiseCompaniesByIdResponse = DeleteCrmFranchiseCompaniesByIdResponses[keyof DeleteCrmFranchiseCompaniesByIdResponses];
+
+export type GetCrmFranchiseCompaniesByIdData = {
+    body?: never;
+    path: {
+        /**
+         * FC company ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/franchise-companies/{id}';
+};
+
+export type GetCrmFranchiseCompaniesByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmFranchiseCompaniesByIdError = GetCrmFranchiseCompaniesByIdErrors[keyof GetCrmFranchiseCompaniesByIdErrors];
+
+export type GetCrmFranchiseCompaniesByIdResponses = {
+    /**
+     * GetFranchiseCompanyDetailResponse
+     *
+     * FC企業詳細レスポンス
+     */
+    200: {
+        /**
+         * FranchiseCompanyDetail
+         *
+         * FC企業詳細
+         */
+        franchise_company: {
+            /**
+             * FC企業ID
+             */
+            id: string;
+            /**
+             * 法人名（表示名）
+             */
+            display_name: string;
+            /**
+             * FranchiseCompanyType
+             *
+             * 直営 / FC 区分
+             */
+            type: 'direct' | 'fc';
+            /**
+             * 管轄店舗数
+             */
+            managed_store_count: number;
+            /**
+             * FranchiseCompanyStatus
+             *
+             * ステータス
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 法人名（正式名称）
+             */
+            formal_name: string;
+            /**
+             * 直営店フラグ
+             */
+            direct_owned_flag: boolean;
+            /**
+             * 法人番号
+             */
+            corporate_number: string | null;
+            /**
+             * 代表者名
+             */
+            representative_name: string | null;
+            /**
+             * 本社所在地
+             */
+            head_office_address: string | null;
+            /**
+             * 電話番号
+             */
+            phone: string | null;
+            /**
+             * 担当者名
+             */
+            contact_person: string | null;
+            /**
+             * 担当者連絡先
+             */
+            contact_phone: string | null;
+            /**
+             * FC契約開始日
+             */
+            fc_contract_start_date: string | null;
+            /**
+             * FC契約更新日
+             */
+            fc_contract_renewal_date: string | null;
+            /**
+             * ロイヤリティ率(%)
+             */
+            royalty_rate: number | null;
+            /**
+             * 備考
+             */
+            note: string | null;
+            /**
+             * 作成日時
+             */
+            created_at: string;
+            /**
+             * 更新日時
+             */
+            updated_at: string;
+        };
+        linked_stores: Array<{
+            /**
+             * 内部ID
+             */
+            id: string;
+            /**
+             * 店舗ID (表示)
+             */
+            store_id: string;
+            /**
+             * 店舗名
+             */
+            name: string;
+            /**
+             * StoreListBrand
+             *
+             * ブランド
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * 都道府県
+             */
+            prefecture: string | null;
+            /**
+             * StoreListStatus
+             *
+             * ステータス
+             */
+            status: 'operating' | 'preparing' | 'closed_temp' | 'closed_perm';
+        }>;
+        history: Array<{
+            /**
+             * 更新日時
+             */
+            updated_at: string;
+            /**
+             * 操作者
+             */
+            operator: string;
+            /**
+             * 変更項目
+             */
+            changed_item: string;
+            /**
+             * 変更前
+             */
+            before: string | null;
+            /**
+             * 変更後
+             */
+            after: string | null;
+        }>;
+    };
+};
+
+export type GetCrmFranchiseCompaniesByIdResponse = GetCrmFranchiseCompaniesByIdResponses[keyof GetCrmFranchiseCompaniesByIdResponses];
+
+export type PatchCrmFranchiseCompaniesByIdData = {
+    /**
+     * UpdateFranchiseCompanyBody
+     *
+     * FC企業更新リクエスト
+     */
+    body?: {
+        formal_name?: string;
+        display_name?: string;
+        /**
+         * FranchiseCompanyType
+         *
+         * 直営 / FC 区分
+         */
+        type?: 'direct' | 'fc';
+        direct_owned_flag?: boolean;
+        corporate_number?: string | null;
+        representative_name?: string | null;
+        head_office_address?: string | null;
+        phone?: string | null;
+        contact_person?: string | null;
+        contact_phone?: string | null;
+        fc_contract_start_date?: string | null;
+        fc_contract_renewal_date?: string | null;
+        royalty_rate?: number | null;
+        note?: string | null;
+        /**
+         * FranchiseCompanyStatus
+         *
+         * FC企業ステータス
+         */
+        status?: 'active' | 'inactive';
+    };
+    path: {
+        /**
+         * FC company ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/franchise-companies/{id}';
+};
+
+export type PatchCrmFranchiseCompaniesByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PatchCrmFranchiseCompaniesByIdError = PatchCrmFranchiseCompaniesByIdErrors[keyof PatchCrmFranchiseCompaniesByIdErrors];
+
+export type PatchCrmFranchiseCompaniesByIdResponses = {
+    /**
+     * UpdateFranchiseCompanyResponse
+     *
+     * FC企業更新レスポンス
+     */
+    200: {
+        message: string;
+        /**
+         * FranchiseCompanyDetail
+         *
+         * FC企業詳細
+         */
+        franchise_company: {
+            /**
+             * FC企業ID
+             */
+            id: string;
+            /**
+             * 法人名（表示名）
+             */
+            display_name: string;
+            /**
+             * FranchiseCompanyType
+             *
+             * 直営 / FC 区分
+             */
+            type: 'direct' | 'fc';
+            /**
+             * 管轄店舗数
+             */
+            managed_store_count: number;
+            /**
+             * FranchiseCompanyStatus
+             *
+             * ステータス
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 法人名（正式名称）
+             */
+            formal_name: string;
+            /**
+             * 直営店フラグ
+             */
+            direct_owned_flag: boolean;
+            /**
+             * 法人番号
+             */
+            corporate_number: string | null;
+            /**
+             * 代表者名
+             */
+            representative_name: string | null;
+            /**
+             * 本社所在地
+             */
+            head_office_address: string | null;
+            /**
+             * 電話番号
+             */
+            phone: string | null;
+            /**
+             * 担当者名
+             */
+            contact_person: string | null;
+            /**
+             * 担当者連絡先
+             */
+            contact_phone: string | null;
+            /**
+             * FC契約開始日
+             */
+            fc_contract_start_date: string | null;
+            /**
+             * FC契約更新日
+             */
+            fc_contract_renewal_date: string | null;
+            /**
+             * ロイヤリティ率(%)
+             */
+            royalty_rate: number | null;
+            /**
+             * 備考
+             */
+            note: string | null;
+            /**
+             * 作成日時
+             */
+            created_at: string;
+            /**
+             * 更新日時
+             */
+            updated_at: string;
+        };
+    };
+};
+
+export type PatchCrmFranchiseCompaniesByIdResponse = PatchCrmFranchiseCompaniesByIdResponses[keyof PatchCrmFranchiseCompaniesByIdResponses];
+
+export type GetCrmFranchiseCompaniesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        limit?: number;
+        /**
+         * 法人名で検索
+         */
+        search?: string;
+        /**
+         * FranchiseCompanyType
+         *
+         * 直営 / FC 区分
+         */
+        company_type?: 'direct' | 'fc';
+        /**
+         * FranchiseCompanyStatus
+         *
+         * FC企業ステータス
+         */
+        status?: 'active' | 'inactive';
+        sort_by?: 'id' | 'display_name';
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/franchise-companies';
+};
+
+export type GetCrmFranchiseCompaniesErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    403: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmFranchiseCompaniesError = GetCrmFranchiseCompaniesErrors[keyof GetCrmFranchiseCompaniesErrors];
+
+export type GetCrmFranchiseCompaniesResponses = {
+    /**
+     * GetFranchiseCompaniesResponse
+     *
+     * FC企業一覧レスポンス
+     */
+    200: {
+        franchise_companies: Array<{
+            /**
+             * FC企業ID
+             */
+            id: string;
+            /**
+             * 法人名（表示名）
+             */
+            display_name: string;
+            /**
+             * FranchiseCompanyType
+             *
+             * 直営 / FC 区分
+             */
+            type: 'direct' | 'fc';
+            /**
+             * 管轄店舗数
+             */
+            managed_store_count: number;
+            /**
+             * FranchiseCompanyStatus
+             *
+             * ステータス
+             */
+            status: 'active' | 'inactive';
+        }>;
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmFranchiseCompaniesResponse = GetCrmFranchiseCompaniesResponses[keyof GetCrmFranchiseCompaniesResponses];
+
+export type PostCrmFranchiseCompaniesData = {
+    /**
+     * CreateFranchiseCompanyBody
+     *
+     * FC企業作成リクエスト
+     */
+    body?: {
+        formal_name: string;
+        display_name?: string;
+        /**
+         * FranchiseCompanyType
+         *
+         * 直営 / FC 区分
+         */
+        type: 'direct' | 'fc';
+        /**
+         * 直営店フラグ
+         */
+        direct_owned_flag?: boolean;
+        /**
+         * 法人番号
+         */
+        corporate_number?: string | null;
+        /**
+         * 代表者名
+         */
+        representative_name?: string | null;
+        /**
+         * 本社所在地
+         */
+        head_office_address?: string | null;
+        /**
+         * 電話番号
+         */
+        phone?: string | null;
+        /**
+         * 担当者名
+         */
+        contact_person?: string | null;
+        /**
+         * 担当者連絡先
+         */
+        contact_phone?: string | null;
+        /**
+         * FC契約開始日
+         */
+        fc_contract_start_date?: string | null;
+        /**
+         * FC契約更新日
+         */
+        fc_contract_renewal_date?: string | null;
+        /**
+         * ロイヤリティ率(%)
+         */
+        royalty_rate?: number | null;
+        /**
+         * 備考
+         */
+        note?: string | null;
+        /**
+         * FranchiseCompanyStatus
+         *
+         * ステータス
+         */
+        status?: 'active' | 'inactive';
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/franchise-companies';
+};
+
+export type PostCrmFranchiseCompaniesErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    403: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmFranchiseCompaniesError = PostCrmFranchiseCompaniesErrors[keyof PostCrmFranchiseCompaniesErrors];
+
+export type PostCrmFranchiseCompaniesResponses = {
+    /**
+     * CreateFranchiseCompanyResponse
+     *
+     * FC企業作成レスポンス
+     */
+    201: {
+        message: string;
+        /**
+         * FranchiseCompanyDetail
+         *
+         * FC企業詳細
+         */
+        franchise_company: {
+            /**
+             * FC企業ID
+             */
+            id: string;
+            /**
+             * 法人名（表示名）
+             */
+            display_name: string;
+            /**
+             * FranchiseCompanyType
+             *
+             * 直営 / FC 区分
+             */
+            type: 'direct' | 'fc';
+            /**
+             * 管轄店舗数
+             */
+            managed_store_count: number;
+            /**
+             * FranchiseCompanyStatus
+             *
+             * ステータス
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 法人名（正式名称）
+             */
+            formal_name: string;
+            /**
+             * 直営店フラグ
+             */
+            direct_owned_flag: boolean;
+            /**
+             * 法人番号
+             */
+            corporate_number: string | null;
+            /**
+             * 代表者名
+             */
+            representative_name: string | null;
+            /**
+             * 本社所在地
+             */
+            head_office_address: string | null;
+            /**
+             * 電話番号
+             */
+            phone: string | null;
+            /**
+             * 担当者名
+             */
+            contact_person: string | null;
+            /**
+             * 担当者連絡先
+             */
+            contact_phone: string | null;
+            /**
+             * FC契約開始日
+             */
+            fc_contract_start_date: string | null;
+            /**
+             * FC契約更新日
+             */
+            fc_contract_renewal_date: string | null;
+            /**
+             * ロイヤリティ率(%)
+             */
+            royalty_rate: number | null;
+            /**
+             * 備考
+             */
+            note: string | null;
+            /**
+             * 作成日時
+             */
+            created_at: string;
+            /**
+             * 更新日時
+             */
+            updated_at: string;
+        };
+    };
+};
+
+export type PostCrmFranchiseCompaniesResponse = PostCrmFranchiseCompaniesResponses[keyof PostCrmFranchiseCompaniesResponses];
 
 export type GetCrmInstructorsData = {
     body?: never;
@@ -43736,6 +45983,1702 @@ export type PostCrmStoresResponses = {
 };
 
 export type PostCrmStoresResponse = PostCrmStoresResponses[keyof PostCrmStoresResponses];
+
+export type DeleteCrmSurveysByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Survey template ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/surveys/{id}';
+};
+
+export type DeleteCrmSurveysByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type DeleteCrmSurveysByIdError = DeleteCrmSurveysByIdErrors[keyof DeleteCrmSurveysByIdErrors];
+
+export type DeleteCrmSurveysByIdResponses = {
+    /**
+     * DeleteSurveyTemplateResponse
+     *
+     * アンケート削除レスポンス
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type DeleteCrmSurveysByIdResponse = DeleteCrmSurveysByIdResponses[keyof DeleteCrmSurveysByIdResponses];
+
+export type GetCrmSurveysByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Survey template ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/surveys/{id}';
+};
+
+export type GetCrmSurveysByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmSurveysByIdError = GetCrmSurveysByIdErrors[keyof GetCrmSurveysByIdErrors];
+
+export type GetCrmSurveysByIdResponses = {
+    /**
+     * GetSurveyTemplateDetailResponse
+     *
+     * アンケートテンプレート詳細レスポンス
+     */
+    200: {
+        /**
+         * SurveyTemplateDetail
+         *
+         * アンケートテンプレート詳細
+         */
+        survey: {
+            /**
+             * アンケートID
+             */
+            id: string;
+            /**
+             * アンケート名
+             */
+            name: string;
+            /**
+             * SurveyTemplateType
+             *
+             * 種別
+             */
+            type: 'lifecycle' | 'operational';
+            /**
+             * SurveyTemplateTrigger
+             *
+             * 発動トリガー
+             */
+            trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
+            /**
+             * StoreListBrand
+             *
+             * ブランド
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * 設問数
+             */
+            question_count: number;
+            /**
+             * 回答件数
+             */
+            response_count: number;
+            /**
+             * 回答率(%)
+             */
+            response_rate: number;
+            /**
+             * 最終回答日
+             */
+            last_response_date: string | null;
+            /**
+             * SurveyTemplateStatus
+             *
+             * 状態
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 作成日
+             */
+            created_at: string;
+            /**
+             * 最終更新日
+             */
+            updated_at: string;
+            /**
+             * 設問一覧
+             */
+            questions: Array<{
+                /**
+                 * 設問番号
+                 */
+                no: number;
+                /**
+                 * 設問内容
+                 */
+                content: string;
+                /**
+                 * SurveyQuestionFormat
+                 *
+                 * 回答形式
+                 */
+                format: 'single_choice' | 'multiple_choice' | 'free_text';
+                /**
+                 * 必答かどうか
+                 */
+                required: boolean;
+                /**
+                 * 回答データの有無
+                 */
+                has_responses?: boolean;
+                /**
+                 * 選択肢一覧
+                 */
+                choices: Array<{
+                    /**
+                     * 表示順
+                     */
+                    order: number;
+                    /**
+                     * 選択肢テキスト
+                     */
+                    text: string;
+                }>;
+            }>;
+        };
+    };
+};
+
+export type GetCrmSurveysByIdResponse = GetCrmSurveysByIdResponses[keyof GetCrmSurveysByIdResponses];
+
+export type PatchCrmSurveysByIdData = {
+    /**
+     * UpdateSurveyTemplateStatusBody
+     *
+     * アンケートステータス更新リクエスト
+     */
+    body?: {
+        /**
+         * SurveyTemplateStatus
+         *
+         * 更新後ステータス
+         */
+        status: 'active' | 'inactive';
+        /**
+         * 変更理由
+         */
+        reason?: string | null;
+    };
+    path: {
+        /**
+         * Survey template ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/surveys/{id}';
+};
+
+export type PatchCrmSurveysByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PatchCrmSurveysByIdError = PatchCrmSurveysByIdErrors[keyof PatchCrmSurveysByIdErrors];
+
+export type PatchCrmSurveysByIdResponses = {
+    /**
+     * UpdateSurveyTemplateStatusResponse
+     *
+     * アンケートステータス更新レスポンス
+     */
+    200: {
+        message: string;
+        /**
+         * SurveyTemplateDetail
+         *
+         * アンケートテンプレート詳細
+         */
+        survey: {
+            /**
+             * アンケートID
+             */
+            id: string;
+            /**
+             * アンケート名
+             */
+            name: string;
+            /**
+             * SurveyTemplateType
+             *
+             * 種別
+             */
+            type: 'lifecycle' | 'operational';
+            /**
+             * SurveyTemplateTrigger
+             *
+             * 発動トリガー
+             */
+            trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
+            /**
+             * StoreListBrand
+             *
+             * ブランド
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * 設問数
+             */
+            question_count: number;
+            /**
+             * 回答件数
+             */
+            response_count: number;
+            /**
+             * 回答率(%)
+             */
+            response_rate: number;
+            /**
+             * 最終回答日
+             */
+            last_response_date: string | null;
+            /**
+             * SurveyTemplateStatus
+             *
+             * 状態
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 作成日
+             */
+            created_at: string;
+            /**
+             * 最終更新日
+             */
+            updated_at: string;
+            /**
+             * 設問一覧
+             */
+            questions: Array<{
+                /**
+                 * 設問番号
+                 */
+                no: number;
+                /**
+                 * 設問内容
+                 */
+                content: string;
+                /**
+                 * SurveyQuestionFormat
+                 *
+                 * 回答形式
+                 */
+                format: 'single_choice' | 'multiple_choice' | 'free_text';
+                /**
+                 * 必答かどうか
+                 */
+                required: boolean;
+                /**
+                 * 回答データの有無
+                 */
+                has_responses?: boolean;
+                /**
+                 * 選択肢一覧
+                 */
+                choices: Array<{
+                    /**
+                     * 表示順
+                     */
+                    order: number;
+                    /**
+                     * 選択肢テキスト
+                     */
+                    text: string;
+                }>;
+            }>;
+        };
+    };
+};
+
+export type PatchCrmSurveysByIdResponse = PatchCrmSurveysByIdResponses[keyof PatchCrmSurveysByIdResponses];
+
+export type PutCrmSurveysByIdData = {
+    /**
+     * SurveyTemplateUpsertBody
+     *
+     * アンケートテンプレート作成・更新リクエスト
+     */
+    body?: {
+        /**
+         * アンケート名
+         */
+        name: string;
+        /**
+         * SurveyTemplateType
+         *
+         * 種別
+         */
+        type: 'lifecycle' | 'operational';
+        /**
+         * SurveyTemplateTrigger
+         *
+         * 発動トリガー
+         */
+        trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
+        /**
+         * StoreListBrand
+         *
+         * ブランド
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * SurveyTemplateStatus
+         *
+         * 状態
+         */
+        status: 'active' | 'inactive';
+        /**
+         * 設問一覧
+         */
+        questions: Array<{
+            /**
+             * 設問番号
+             */
+            no: number;
+            content: string;
+            /**
+             * SurveyQuestionFormat
+             *
+             * 回答形式
+             */
+            format: 'single_choice' | 'multiple_choice' | 'free_text';
+            /**
+             * 必答かどうか
+             */
+            required: boolean;
+            /**
+             * 回答データの有無
+             */
+            has_responses?: boolean;
+            /**
+             * 選択肢一覧
+             */
+            choices: Array<{
+                /**
+                 * 表示順
+                 */
+                order: number;
+                /**
+                 * 選択肢テキスト
+                 */
+                text: string;
+            }>;
+        }>;
+        /**
+         * 同一トリガーの既存アンケートID
+         */
+        replace_existing_survey_id?: string | null;
+    };
+    path: {
+        /**
+         * Survey template ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/surveys/{id}';
+};
+
+export type PutCrmSurveysByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PutCrmSurveysByIdError = PutCrmSurveysByIdErrors[keyof PutCrmSurveysByIdErrors];
+
+export type PutCrmSurveysByIdResponses = {
+    /**
+     * SurveyTemplateUpsertResponse
+     *
+     * アンケートテンプレート作成・更新レスポンス
+     */
+    200: {
+        message: string;
+        /**
+         * SurveyTemplateDetail
+         *
+         * アンケートテンプレート詳細
+         */
+        survey: {
+            /**
+             * アンケートID
+             */
+            id: string;
+            /**
+             * アンケート名
+             */
+            name: string;
+            /**
+             * SurveyTemplateType
+             *
+             * 種別
+             */
+            type: 'lifecycle' | 'operational';
+            /**
+             * SurveyTemplateTrigger
+             *
+             * 発動トリガー
+             */
+            trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
+            /**
+             * StoreListBrand
+             *
+             * ブランド
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * 設問数
+             */
+            question_count: number;
+            /**
+             * 回答件数
+             */
+            response_count: number;
+            /**
+             * 回答率(%)
+             */
+            response_rate: number;
+            /**
+             * 最終回答日
+             */
+            last_response_date: string | null;
+            /**
+             * SurveyTemplateStatus
+             *
+             * 状態
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 作成日
+             */
+            created_at: string;
+            /**
+             * 最終更新日
+             */
+            updated_at: string;
+            /**
+             * 設問一覧
+             */
+            questions: Array<{
+                /**
+                 * 設問番号
+                 */
+                no: number;
+                /**
+                 * 設問内容
+                 */
+                content: string;
+                /**
+                 * SurveyQuestionFormat
+                 *
+                 * 回答形式
+                 */
+                format: 'single_choice' | 'multiple_choice' | 'free_text';
+                /**
+                 * 必答かどうか
+                 */
+                required: boolean;
+                /**
+                 * 回答データの有無
+                 */
+                has_responses?: boolean;
+                /**
+                 * 選択肢一覧
+                 */
+                choices: Array<{
+                    /**
+                     * 表示順
+                     */
+                    order: number;
+                    /**
+                     * 選択肢テキスト
+                     */
+                    text: string;
+                }>;
+            }>;
+        };
+    };
+};
+
+export type PutCrmSurveysByIdResponse = PutCrmSurveysByIdResponses[keyof PutCrmSurveysByIdResponses];
+
+export type PostCrmSurveysAnalyticsExportData = {
+    /**
+     * GetSurveyAnalyticsQuery
+     *
+     * アンケート集計クエリ
+     */
+    body?: {
+        /**
+         * アンケート名で検索
+         */
+        search?: string;
+        /**
+         * 選択中のアンケートID
+         */
+        survey_id?: string;
+        /**
+         * 開始日
+         */
+        period_from?: string;
+        /**
+         * 終了日
+         */
+        period_to?: string;
+        /**
+         * StoreListBrand
+         *
+         * Store brand
+         */
+        brand?: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        store_id?: string;
+        /**
+         * SurveyTemplateType
+         *
+         * アンケート種別
+         */
+        template_type?: 'lifecycle' | 'operational';
+        member_type?: 'regular' | 'family' | 'corporate' | 'one_day_member';
+        page?: number;
+        limit?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/surveys/analytics/export';
+};
+
+export type PostCrmSurveysAnalyticsExportErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmSurveysAnalyticsExportError = PostCrmSurveysAnalyticsExportErrors[keyof PostCrmSurveysAnalyticsExportErrors];
+
+export type PostCrmSurveysAnalyticsExportResponses = {
+    /**
+     * SurveyCsvExportResponse
+     *
+     * CSV出力レスポンス
+     */
+    200: {
+        message: string;
+        filename: string;
+        /**
+         * CSV本文
+         */
+        csv: string;
+        /**
+         * 出力件数
+         */
+        row_count: number;
+    };
+};
+
+export type PostCrmSurveysAnalyticsExportResponse = PostCrmSurveysAnalyticsExportResponses[keyof PostCrmSurveysAnalyticsExportResponses];
+
+export type GetCrmSurveysAnalyticsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * アンケート名で検索
+         */
+        search?: string;
+        /**
+         * 選択中のアンケートID
+         */
+        survey_id?: string;
+        /**
+         * 開始日
+         */
+        period_from?: string;
+        /**
+         * 終了日
+         */
+        period_to?: string;
+        /**
+         * StoreListBrand
+         *
+         * Store brand
+         */
+        brand?: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        store_id?: string;
+        /**
+         * SurveyTemplateType
+         *
+         * アンケート種別
+         */
+        template_type?: 'lifecycle' | 'operational';
+        member_type?: 'regular' | 'family' | 'corporate' | 'one_day_member';
+    };
+    url: '/crm/surveys/analytics';
+};
+
+export type GetCrmSurveysAnalyticsErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmSurveysAnalyticsError = GetCrmSurveysAnalyticsErrors[keyof GetCrmSurveysAnalyticsErrors];
+
+export type GetCrmSurveysAnalyticsResponses = {
+    /**
+     * GetSurveyAnalyticsResponse
+     *
+     * アンケート集計レスポンス
+     */
+    200: {
+        /**
+         * SurveyAnalyticsContext
+         *
+         * 集計対象コンテキスト
+         */
+        context: {
+            /**
+             * アンケートID
+             */
+            survey_id: string;
+            /**
+             * アンケート名
+             */
+            survey_name: string;
+            /**
+             * SurveyTemplateType
+             *
+             * テンプレート種別
+             */
+            template_type: 'lifecycle' | 'operational';
+            /**
+             * StoreListBrand
+             *
+             * ブランド
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * 店舗ID
+             */
+            store_id: string;
+            /**
+             * 店舗名
+             */
+            store_name: string;
+            /**
+             * 集計対象回答数
+             */
+            total_responses: number;
+        };
+        /**
+         * SurveyAnalyticsKpi
+         *
+         * 集計サマリー
+         */
+        kpis: {
+            /**
+             * 総回答数
+             */
+            total_responses: number;
+            /**
+             * 完了回答数
+             */
+            completed_responses: number;
+            /**
+             * 回答率(%)
+             */
+            response_rate: number;
+        };
+        /**
+         * SurveyAnalyticsQuestion
+         *
+         * 設問別集計結果
+         */
+        questions: Array<{
+            /**
+             * 選択式設問
+             */
+            kind: 'select';
+            /**
+             * 設問番号
+             */
+            no: number;
+            /**
+             * 設問内容
+             */
+            content: string;
+            /**
+             * 回答形式
+             */
+            format: 'single_choice' | 'multiple_choice';
+            /**
+             * 選択肢統計
+             */
+            choices: Array<{
+                /**
+                 * 選択肢ラベル
+                 */
+                label: string;
+                /**
+                 * 回答件数
+                 */
+                count: number;
+                /**
+                 * 割合(%)
+                 */
+                percentage: number;
+            }>;
+        } | {
+            /**
+             * 自由記述設問
+             */
+            kind: 'free_text';
+            /**
+             * 設問番号
+             */
+            no: number;
+            /**
+             * 設問内容
+             */
+            content: string;
+            /**
+             * 回答形式
+             */
+            format: 'free_text';
+            /**
+             * 回答サンプル
+             */
+            samples: Array<{
+                /**
+                 * 自由記述回答
+                 */
+                text: string;
+                /**
+                 * 回答日時
+                 */
+                answered_at: string;
+            }>;
+        }>;
+    };
+};
+
+export type GetCrmSurveysAnalyticsResponse = GetCrmSurveysAnalyticsResponses[keyof GetCrmSurveysAnalyticsResponses];
+
+export type GetCrmSurveysResponsesByResponseIdData = {
+    body?: never;
+    path: {
+        /**
+         * Survey response ID
+         */
+        responseId: string;
+    };
+    query?: never;
+    url: '/crm/surveys/responses/{responseId}';
+};
+
+export type GetCrmSurveysResponsesByResponseIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmSurveysResponsesByResponseIdError = GetCrmSurveysResponsesByResponseIdErrors[keyof GetCrmSurveysResponsesByResponseIdErrors];
+
+export type GetCrmSurveysResponsesByResponseIdResponses = {
+    /**
+     * GetSurveyResponseDetailResponse
+     *
+     * アンケート回答詳細レスポンス
+     */
+    200: {
+        /**
+         * SurveyResponseDetail
+         *
+         * アンケート回答詳細
+         */
+        response: {
+            /**
+             * 回答ID
+             */
+            id: string;
+            /**
+             * 回答日時
+             */
+            response_date: string;
+            /**
+             * 会員ID
+             */
+            member_id: string;
+            /**
+             * 会員番号
+             */
+            member_number: string;
+            /**
+             * 会員名
+             */
+            member_name: string;
+            /**
+             * アンケートID
+             */
+            survey_id: string;
+            /**
+             * アンケート名
+             */
+            survey_name: string;
+            /**
+             * SurveyTemplateType
+             *
+             * テンプレート種別
+             */
+            template_type: 'lifecycle' | 'operational';
+            /**
+             * StoreListBrand
+             *
+             * ブランド
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * 店舗ID
+             */
+            store_id: string;
+            /**
+             * 店舗名
+             */
+            store_name: string;
+            /**
+             * 区分
+             */
+            member_type: 'regular' | 'family' | 'corporate' | 'one_day_member';
+            /**
+             * 回答済設問数
+             */
+            answered_count: number;
+            /**
+             * 設問総数
+             */
+            total_count: number;
+            /**
+             * SurveyResponseStatus
+             *
+             * 回答ステータス
+             */
+            status: 'completed' | 'partial';
+            /**
+             * 回答内容
+             */
+            answers: Array<{
+                /**
+                 * 設問番号
+                 */
+                question_no: number;
+                /**
+                 * 設問内容
+                 */
+                question: string;
+                /**
+                 * SurveyQuestionFormat
+                 *
+                 * 回答形式
+                 */
+                format: 'single_choice' | 'multiple_choice' | 'free_text';
+                /**
+                 * 回答値 (複数可)
+                 */
+                answer: Array<string>;
+            }>;
+        };
+    };
+};
+
+export type GetCrmSurveysResponsesByResponseIdResponse = GetCrmSurveysResponsesByResponseIdResponses[keyof GetCrmSurveysResponsesByResponseIdResponses];
+
+export type PostCrmSurveysResponsesExportData = {
+    /**
+     * Survey response export filters
+     */
+    body?: {
+        /**
+         * アンケート名で検索
+         */
+        search?: string;
+        /**
+         * 選択中のアンケートID
+         */
+        survey_id?: string;
+        /**
+         * 開始日
+         */
+        period_from?: string;
+        /**
+         * 終了日
+         */
+        period_to?: string;
+        /**
+         * StoreListBrand
+         *
+         * Store brand
+         */
+        brand?: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        store_id?: string;
+        /**
+         * SurveyTemplateType
+         *
+         * アンケート種別
+         */
+        template_type?: 'lifecycle' | 'operational';
+        member_type?: 'regular' | 'family' | 'corporate' | 'one_day_member';
+        page?: number;
+        limit?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/surveys/responses/export';
+};
+
+export type PostCrmSurveysResponsesExportErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmSurveysResponsesExportError = PostCrmSurveysResponsesExportErrors[keyof PostCrmSurveysResponsesExportErrors];
+
+export type PostCrmSurveysResponsesExportResponses = {
+    /**
+     * SurveyCsvExportResponse
+     *
+     * CSV出力レスポンス
+     */
+    200: {
+        message: string;
+        filename: string;
+        /**
+         * CSV本文
+         */
+        csv: string;
+        /**
+         * 出力件数
+         */
+        row_count: number;
+    };
+};
+
+export type PostCrmSurveysResponsesExportResponse = PostCrmSurveysResponsesExportResponses[keyof PostCrmSurveysResponsesExportResponses];
+
+export type GetCrmSurveysResponsesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        limit?: number;
+        /**
+         * アンケート名で検索
+         */
+        search?: string;
+        /**
+         * 選択中のアンケートID
+         */
+        survey_id?: string;
+        /**
+         * 開始日
+         */
+        period_from?: string;
+        /**
+         * 終了日
+         */
+        period_to?: string;
+        /**
+         * StoreListBrand
+         *
+         * Store brand
+         */
+        brand?: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        store_id?: string;
+        /**
+         * SurveyTemplateType
+         *
+         * アンケート種別
+         */
+        template_type?: 'lifecycle' | 'operational';
+        member_type?: 'regular' | 'family' | 'corporate' | 'one_day_member';
+    };
+    url: '/crm/surveys/responses';
+};
+
+export type GetCrmSurveysResponsesErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmSurveysResponsesError = GetCrmSurveysResponsesErrors[keyof GetCrmSurveysResponsesErrors];
+
+export type GetCrmSurveysResponsesResponses = {
+    /**
+     * GetSurveyResponsesResponse
+     *
+     * アンケート回答一覧レスポンス
+     */
+    200: {
+        responses: Array<{
+            /**
+             * 回答ID
+             */
+            id: string;
+            /**
+             * 回答日時
+             */
+            response_date: string;
+            /**
+             * 会員ID
+             */
+            member_id: string;
+            /**
+             * 会員番号
+             */
+            member_number: string;
+            /**
+             * 会員名
+             */
+            member_name: string;
+            /**
+             * アンケートID
+             */
+            survey_id: string;
+            /**
+             * アンケート名
+             */
+            survey_name: string;
+            /**
+             * SurveyTemplateType
+             *
+             * テンプレート種別
+             */
+            template_type: 'lifecycle' | 'operational';
+            /**
+             * StoreListBrand
+             *
+             * ブランド
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * 店舗ID
+             */
+            store_id: string;
+            /**
+             * 店舗名
+             */
+            store_name: string;
+            /**
+             * 区分
+             */
+            member_type: 'regular' | 'family' | 'corporate' | 'one_day_member';
+            /**
+             * 回答済設問数
+             */
+            answered_count: number;
+            /**
+             * 設問総数
+             */
+            total_count: number;
+            /**
+             * SurveyResponseStatus
+             *
+             * 回答ステータス
+             */
+            status: 'completed' | 'partial';
+        }>;
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmSurveysResponsesResponse = GetCrmSurveysResponsesResponses[keyof GetCrmSurveysResponsesResponses];
+
+export type GetCrmSurveysData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        limit?: number;
+        /**
+         * アンケート名で検索
+         */
+        search?: string;
+        /**
+         * SurveyTemplateType
+         *
+         * アンケート種別
+         */
+        type?: 'lifecycle' | 'operational';
+        /**
+         * StoreListBrand
+         *
+         * Store brand
+         */
+        brand?: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * SurveyTemplateStatus
+         *
+         * アンケートステータス
+         */
+        status?: 'active' | 'inactive';
+        sort_by?: 'id' | 'name' | 'type' | 'trigger' | 'brand' | 'question_count' | 'response_count' | 'response_rate' | 'last_response_date' | 'status';
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/surveys';
+};
+
+export type GetCrmSurveysErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmSurveysError = GetCrmSurveysErrors[keyof GetCrmSurveysErrors];
+
+export type GetCrmSurveysResponses = {
+    /**
+     * GetSurveyTemplatesResponse
+     *
+     * アンケートテンプレート一覧レスポンス
+     */
+    200: {
+        surveys: Array<{
+            /**
+             * アンケートID
+             */
+            id: string;
+            /**
+             * アンケート名
+             */
+            name: string;
+            /**
+             * SurveyTemplateType
+             *
+             * 種別
+             */
+            type: 'lifecycle' | 'operational';
+            /**
+             * SurveyTemplateTrigger
+             *
+             * 発動トリガー
+             */
+            trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
+            /**
+             * StoreListBrand
+             *
+             * ブランド
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * 設問数
+             */
+            question_count: number;
+            /**
+             * 回答件数
+             */
+            response_count: number;
+            /**
+             * 回答率(%)
+             */
+            response_rate: number;
+            /**
+             * 最終回答日
+             */
+            last_response_date: string | null;
+            /**
+             * SurveyTemplateStatus
+             *
+             * 状態
+             */
+            status: 'active' | 'inactive';
+        }>;
+        pagination: {
+            page: number;
+            limit: number;
+            total: number;
+            total_pages: number;
+        };
+    };
+};
+
+export type GetCrmSurveysResponse = GetCrmSurveysResponses[keyof GetCrmSurveysResponses];
+
+export type PostCrmSurveysData = {
+    /**
+     * SurveyTemplateUpsertBody
+     *
+     * アンケートテンプレート作成・更新リクエスト
+     */
+    body?: {
+        /**
+         * アンケート名
+         */
+        name: string;
+        /**
+         * SurveyTemplateType
+         *
+         * 種別
+         */
+        type: 'lifecycle' | 'operational';
+        /**
+         * SurveyTemplateTrigger
+         *
+         * 発動トリガー
+         */
+        trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
+        /**
+         * StoreListBrand
+         *
+         * ブランド
+         */
+        brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+        /**
+         * SurveyTemplateStatus
+         *
+         * 状態
+         */
+        status: 'active' | 'inactive';
+        /**
+         * 設問一覧
+         */
+        questions: Array<{
+            /**
+             * 設問番号
+             */
+            no: number;
+            content: string;
+            /**
+             * SurveyQuestionFormat
+             *
+             * 回答形式
+             */
+            format: 'single_choice' | 'multiple_choice' | 'free_text';
+            /**
+             * 必答かどうか
+             */
+            required: boolean;
+            /**
+             * 回答データの有無
+             */
+            has_responses?: boolean;
+            /**
+             * 選択肢一覧
+             */
+            choices: Array<{
+                /**
+                 * 表示順
+                 */
+                order: number;
+                /**
+                 * 選択肢テキスト
+                 */
+                text: string;
+            }>;
+        }>;
+        /**
+         * 同一トリガーの既存アンケートID
+         */
+        replace_existing_survey_id?: string | null;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/surveys';
+};
+
+export type PostCrmSurveysErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmSurveysError = PostCrmSurveysErrors[keyof PostCrmSurveysErrors];
+
+export type PostCrmSurveysResponses = {
+    /**
+     * SurveyTemplateUpsertResponse
+     *
+     * アンケートテンプレート作成・更新レスポンス
+     */
+    201: {
+        message: string;
+        /**
+         * SurveyTemplateDetail
+         *
+         * アンケートテンプレート詳細
+         */
+        survey: {
+            /**
+             * アンケートID
+             */
+            id: string;
+            /**
+             * アンケート名
+             */
+            name: string;
+            /**
+             * SurveyTemplateType
+             *
+             * 種別
+             */
+            type: 'lifecycle' | 'operational';
+            /**
+             * SurveyTemplateTrigger
+             *
+             * 発動トリガー
+             */
+            trigger: 'join' | 'leave' | 'suspension_request' | 'transfer' | 'renewal' | 'manual_delivery' | 'conditional_trigger';
+            /**
+             * StoreListBrand
+             *
+             * ブランド
+             */
+            brand: 'joyfit' | 'fit365' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus';
+            /**
+             * 設問数
+             */
+            question_count: number;
+            /**
+             * 回答件数
+             */
+            response_count: number;
+            /**
+             * 回答率(%)
+             */
+            response_rate: number;
+            /**
+             * 最終回答日
+             */
+            last_response_date: string | null;
+            /**
+             * SurveyTemplateStatus
+             *
+             * 状態
+             */
+            status: 'active' | 'inactive';
+            /**
+             * 作成日
+             */
+            created_at: string;
+            /**
+             * 最終更新日
+             */
+            updated_at: string;
+            /**
+             * 設問一覧
+             */
+            questions: Array<{
+                /**
+                 * 設問番号
+                 */
+                no: number;
+                /**
+                 * 設問内容
+                 */
+                content: string;
+                /**
+                 * SurveyQuestionFormat
+                 *
+                 * 回答形式
+                 */
+                format: 'single_choice' | 'multiple_choice' | 'free_text';
+                /**
+                 * 必答かどうか
+                 */
+                required: boolean;
+                /**
+                 * 回答データの有無
+                 */
+                has_responses?: boolean;
+                /**
+                 * 選択肢一覧
+                 */
+                choices: Array<{
+                    /**
+                     * 表示順
+                     */
+                    order: number;
+                    /**
+                     * 選択肢テキスト
+                     */
+                    text: string;
+                }>;
+            }>;
+        };
+    };
+};
+
+export type PostCrmSurveysResponse = PostCrmSurveysResponses[keyof PostCrmSurveysResponses];
 
 export type GetCrmStudiosData = {
     body?: never;

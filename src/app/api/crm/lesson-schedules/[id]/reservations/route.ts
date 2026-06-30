@@ -2,12 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { db } from '@/app/api/_mock-db';
 import {
-  type AddReservationRequest,
   AddReservationRequestSchema,
   ErrorResponseSchema,
-  type ReservationListResponse,
   ReservationListResponseSchema,
-  type ReservationsQuery,
   ReservationsQuerySchema,
 } from '@/app/api/_schemas/lesson-reservation.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';

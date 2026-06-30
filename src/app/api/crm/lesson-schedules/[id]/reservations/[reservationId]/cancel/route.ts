@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { db } from '@/app/api/_mock-db';
 import {
-  type CancelReservationRequest,
   CancelReservationRequestSchema,
   type CancelReservationResponse,
   CancelReservationResponseSchema,
@@ -52,7 +51,7 @@ export async function POST(
       return NextResponse.json({ error: errors }, { status: 400 });
     }
 
-    const updated = db.reservations.update(reservationId, {
+    db.reservations.update(reservationId, {
       status: 'cancelled',
       cancel_type: parsed.data.cancel_type,
       sent_notification: parsed.data.send_notification,

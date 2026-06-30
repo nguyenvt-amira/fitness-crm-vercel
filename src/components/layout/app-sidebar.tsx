@@ -123,6 +123,7 @@ const menuItems: MenuItem[] = [
       { label: '主契約管理', href: '/contracts' },
       { label: 'オプション管理', href: '/options' },
       { label: 'キャンペーン管理', href: '/campaigns' },
+      { label: 'アンケート管理', href: '/surveys' },
     ],
   },
   {
@@ -133,6 +134,7 @@ const menuItems: MenuItem[] = [
       { label: 'スタッフ管理', href: '/staffs' },
       { label: '店舗管理', href: '/stores' },
       { label: 'ブランド管理', href: '/brands' },
+      { label: 'FC企業管理', href: '/franchise-companies' },
     ],
   },
 ];

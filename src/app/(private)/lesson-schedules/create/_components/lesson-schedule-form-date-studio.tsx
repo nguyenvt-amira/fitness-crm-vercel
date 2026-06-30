@@ -179,7 +179,7 @@ export function LessonScheduleFormDateStudio() {
       query: { page: 1, limit: 100, sort_by: 'name', sort_order: 'asc' },
     }),
   });
-  const stores = storesRes?.stores ?? [];
+  const stores = useMemo(() => storesRes?.stores ?? [], [storesRes?.stores]);
 
   const storeSelectItems = useMemo(
     () =>
@@ -197,7 +197,7 @@ export function LessonScheduleFormDateStudio() {
     enabled: lessonType === 'studio' && !!storeId,
   });
 
-  const filteredStudios = studiosData?.studios ?? [];
+  const filteredStudios = useMemo(() => studiosData?.studios ?? [], [studiosData?.studios]);
   const selectedStudio = filteredStudios.find((s) => s.id === selectedStudioId);
 
   const studioSelectItems = useMemo(

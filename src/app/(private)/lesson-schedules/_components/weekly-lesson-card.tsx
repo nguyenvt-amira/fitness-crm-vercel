@@ -11,7 +11,6 @@ import type { LessonScheduleListItem } from '@/lib/api/types.gen';
 import {
   formatBookingLabel,
   formatTimeRange,
-  getLessonTypeLabel,
   getOccupancyColor,
 } from './lesson-schedule-display.util';
 
@@ -45,7 +44,6 @@ export function WeeklyLessonCard({
   })();
 
   const resColor = getOccupancyColor(item.booked_count, item.capacity);
-  const isPublic = item.payment_status !== 'unpaid'; // treat unpaid as internal/non-public indicator
   const isInternalOnly = false; // no is_public field in API yet
 
   const handleEditClick = (e: React.MouseEvent) => {
