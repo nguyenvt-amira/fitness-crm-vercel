@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from 'react';
 
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 
 import { useAuthUser } from '@/contexts/auth-user.context';
 import { useQuery } from '@tanstack/react-query';
@@ -39,7 +39,6 @@ const STATUS_BADGE_CLASSES: Record<'active' | 'inactive', string> = {
 
 function LessonDetailPageContent() {
   const params = useParams<{ id: string }>();
-  const router = useRouter();
   const { hasPermission } = useAuthUser();
 
   const lessonId = params.id;
@@ -75,9 +74,7 @@ function LessonDetailPageContent() {
         breadcrumb={
           <BackLink
             label={isFromSchedule ? '予約管理に戻る' : 'レッスン内容に戻る'}
-            onClick={() =>
-              router.push(isFromSchedule ? navigate('/lesson-schedules') : navigate('/lessons'))
-            }
+            href={isFromSchedule ? navigate('/lesson-schedules') : navigate('/lessons')}
           />
         }
         title={detail.name}

@@ -166,7 +166,7 @@ function FranchiseCompanyEditPageContent() {
         breadcrumb={
           <BackLink
             label="FC企業詳細に戻る"
-            onClick={() => router.push(navigate('/franchise-companies/[id]', companyId))}
+            href={navigate('/franchise-companies/[id]', companyId)}
           />
         }
         title="FC企業編集"

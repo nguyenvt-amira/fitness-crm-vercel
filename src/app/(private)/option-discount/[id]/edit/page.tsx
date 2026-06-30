@@ -132,7 +132,6 @@ function OptionDiscountEditForm({
 
 export default function OptionDiscountEditPage() {
   const params = useParams<{ id: string }>();
-  const router = useRouter();
   const id = params?.id;
 
   const { data, isLoading, isError, refetch } = useQuery({
@@ -187,10 +186,7 @@ export default function OptionDiscountEditPage() {
       >
         <PageHeader
           breadcrumb={
-            <BackLink
-              label="セット割詳細に戻る"
-              onClick={() => router.push(navigate('/option-discount/[id]', id))}
-            />
+            <BackLink label="セット割詳細に戻る" href={navigate('/option-discount/[id]', id)} />
           }
           title="セット割 編集"
         />

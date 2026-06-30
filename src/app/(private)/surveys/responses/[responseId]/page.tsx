@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 
 import { useQuery } from '@tanstack/react-query';
 
@@ -25,7 +25,6 @@ type SurveyResponseDetail = NonNullable<GetCrmSurveysResponsesByResponseIdRespon
 
 export default function SurveyResponseDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const responseId = params.responseId as string;
 
   const { data, isLoading, isError, refetch } = useQuery({
@@ -57,12 +56,7 @@ export default function SurveyResponseDetailPage() {
   return (
     <div className="flex h-full flex-col overflow-hidden">
       <PageHeader
-        breadcrumb={
-          <BackLink
-            label="回答データに戻る"
-            onClick={() => router.push(navigate('/surveys/responses'))}
-          />
-        }
+        breadcrumb={<BackLink label="回答データに戻る" href={navigate('/surveys/responses')} />}
         title={`${response.member_name} の回答`}
         badge={
           <Badge variant="outline" className={cn('text-xs', statusBadgeClass)}>

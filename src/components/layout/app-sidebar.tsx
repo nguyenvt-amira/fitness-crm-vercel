@@ -2,7 +2,9 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 
+import Logo from '@/assets/logo.svg';
 import { useAuthUser } from '@/contexts/auth-user.context';
+import { canRoleAccessPage, isPageHqOnly } from '@/utils/permission.util';
 import {
   Building,
   Calendar,
@@ -31,7 +33,6 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-import { canRoleAccessPage, isPageHqOnly } from '@/lib/permission.config';
 import type { RoutePattern } from '@/lib/routes/routes.type';
 import { getRoutePattern } from '@/lib/routes/routes.util';
 
@@ -192,8 +193,7 @@ export function AppSidebar() {
   return (
     <Sidebar className="border-sidebar-border border-r">
       <SidebarHeader className="border-sidebar-border h-14 flex-row items-center border-b px-6 py-0">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo.svg" alt="Logo" className="h-7 w-auto" />
+        <Logo role="img" aria-label="Logo" className="h-7 w-auto" />
       </SidebarHeader>
 
       <SidebarContent>

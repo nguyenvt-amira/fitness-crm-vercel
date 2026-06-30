@@ -82,9 +82,7 @@ export default function ContractCreatePage() {
   return (
     <>
       <PageHeader
-        breadcrumb={
-          <BackLink label="主契約管理に戻る" onClick={() => router.push(navigate('/contracts'))} />
-        }
+        breadcrumb={<BackLink label="主契約管理に戻る" href={navigate('/contracts')} />}
         title="主契約 新規登録"
       />
       <div className="mx-auto max-w-240 p-4">

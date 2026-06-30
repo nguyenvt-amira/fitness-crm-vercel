@@ -82,7 +82,6 @@ function ContractEditForm({ id, defaultValues }: Readonly<ContractEditFormProps>
 }
 
 export default function ContractEditPage() {
-  const router = useRouter();
   const params = useParams<{ id: string }>();
   const id = params?.id;
 
@@ -143,12 +142,7 @@ export default function ContractEditPage() {
     <>
       <DataStateBoundary isLoading={isLoading} isError={isError} isEmpty={false} onRetry={refetch}>
         <PageHeader
-          breadcrumb={
-            <BackLink
-              label="主契約管理に戻る"
-              onClick={() => router.push(navigate('/contracts'))}
-            />
-          }
+          breadcrumb={<BackLink label="主契約管理に戻る" href={navigate('/contracts')} />}
           title="主契約 編集"
         />
         <div className="mx-auto max-w-240 p-4">

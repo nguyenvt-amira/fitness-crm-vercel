@@ -75,12 +75,7 @@ export default function CampaignCreatePage() {
   return (
     <>
       <PageHeader
-        breadcrumb={
-          <BackLink
-            label="キャンペーン管理に戻る"
-            onClick={() => router.push(navigate('/campaigns'))}
-          />
-        }
+        breadcrumb={<BackLink label="キャンペーン管理に戻る" href={navigate('/campaigns')} />}
         title="キャンペーン 新規登録"
       />
       <div className="px-6 py-4">

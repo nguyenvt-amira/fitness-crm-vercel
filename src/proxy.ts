@@ -1,17 +1,23 @@
-import { NextRequest, NextResponse, URLPattern } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-import { canRoleAccessPage } from './lib/permission.config';
 import { routes } from './lib/routes/routes.config';
 import { RouteConfig } from './lib/routes/routes.type';
 import { navigate } from './lib/routes/routes.util';
 import { CookieNames } from './types/global.enum';
 import { UserRole } from './types/permission.type';
 import { decodeJWT } from './utils/auth.util';
+import { canRoleAccessPage } from './utils/permission.util';
+
+// Convert a route pattern (e.g. `/members/:id`) into a RegExp.
+function patternToRegExp(pattern: string): RegExp {
+  const source = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\/:[^/]+/g, '/[^/]+');
+  return new RegExp(`^${source}/?$`);
+}
 
 const routerPatterns = Object.values(routes)
   .map((router: RouteConfig) => ({
     private: router.private,
-    pattern: new URLPattern({ pathname: router.pattern }),
+    pattern: patternToRegExp(router.pattern),
     routePattern: router.pattern,
   }))
   // Sort so that static segments (no `:param`) are matched before parameterised ones.
@@ -37,10 +43,10 @@ function getRoleFromSession(session: string): UserRole | null {
   return null;
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const router = routerPatterns.find((r) => r.pattern.test({ pathname }));
+  const router = routerPatterns.find((r) => r.pattern.test(pathname));
   if (!router) return NextResponse.next();
 
   const session = request.cookies.get(CookieNames.Session)?.value;

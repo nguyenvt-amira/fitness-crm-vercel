@@ -2,7 +2,7 @@
 
 import { Suspense, useMemo, useState } from 'react';
 
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Pencil } from 'lucide-react';
@@ -43,7 +43,6 @@ function buildInitialValues(
 
 function BrandDetailPageContent() {
   const params = useParams();
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   const brandId = params.id as string;
@@ -118,9 +117,7 @@ function BrandDetailPageContent() {
       {brand && (
         <div className="bg-background flex min-h-0 flex-1 flex-col">
           <PageHeader
-            breadcrumb={
-              <BackLink label="ブランド管理に戻る" onClick={() => router.push('/brands')} />
-            }
+            breadcrumb={<BackLink label="ブランド管理に戻る" href="/brands" />}
             title={brand.display_name}
             className="[&_h1]:text-[18px] [&_h1]:leading-7"
             badge={<BrandStatusBadge status={brand.status} />}

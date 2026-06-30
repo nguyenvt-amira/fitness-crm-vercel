@@ -108,7 +108,6 @@ function CampaignEditForm({ id, defaultValues }: Readonly<CampaignEditFormProps>
 
 export default function CampaignEditPage() {
   const params = useParams<{ id: string }>();
-  const router = useRouter();
   const id = params?.id;
 
   const { data, isLoading, isError, refetch } = useQuery({
@@ -133,10 +132,7 @@ export default function CampaignEditPage() {
       >
         <PageHeader
           breadcrumb={
-            <BackLink
-              label="キャンペーン詳細に戻る"
-              onClick={() => router.push(navigate('/campaigns/[id]', id))}
-            />
+            <BackLink label="キャンペーン詳細に戻る" href={navigate('/campaigns/[id]', id)} />
           }
           title="キャンペーン 編集"
         />

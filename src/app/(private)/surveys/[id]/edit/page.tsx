@@ -98,7 +98,6 @@ function SurveyEditForm({
 
 export default function SurveyEditPage() {
   const params = useParams<{ id: string }>();
-  const router = useRouter();
   const id = params?.id;
 
   const { data: surveyListData } = useQuery({
@@ -121,10 +120,7 @@ export default function SurveyEditPage() {
     <DataStateBoundary isLoading={isLoading} isError={isError} isEmpty={!survey} onRetry={refetch}>
       <PageHeader
         breadcrumb={
-          <BackLink
-            label="アンケート詳細に戻る"
-            onClick={() => router.push(navigate('/surveys/[id]', id ?? ''))}
-          />
+          <BackLink label="アンケート詳細に戻る" href={navigate('/surveys/[id]', id ?? '')} />
         }
         title="アンケート編集"
       />

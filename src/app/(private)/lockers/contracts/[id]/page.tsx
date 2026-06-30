@@ -73,12 +73,7 @@ export default function LockerContractDetailPage() {
   return (
     <div className="flex h-full flex-col overflow-hidden">
       <PageHeader
-        breadcrumb={
-          <BackLink
-            label="ロッカー管理に戻る"
-            onClick={() => router.push(navigate('/lockers/contracts'))}
-          />
-        }
+        breadcrumb={<BackLink label="ロッカー管理に戻る" href={navigate('/lockers/contracts')} />}
         title={`ロッカー契約 ${contract.contract_id}`}
         subtitle={`${contract.member_name}（${contract.member_id}）— ロッカー ${contract.locker_number}`}
         badge={

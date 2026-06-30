@@ -2,6 +2,8 @@
 
 import { useRef } from 'react';
 
+import Image from 'next/image';
+
 import { ImagePlus, Loader2, X } from 'lucide-react';
 
 import { useImageUpload } from '@/hooks/use-image-upload.hook';
@@ -65,8 +67,7 @@ export function ImageUpload({
     if (value) {
       return (
         <>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={value} alt="uploaded preview" className="h-full w-full object-cover" />
+          <Image src={value} alt="uploaded preview" fill unoptimized className="object-cover" />
           <button
             type="button"
             className="bg-background/80 hover:bg-background absolute top-1 right-1 rounded-full p-0.5"

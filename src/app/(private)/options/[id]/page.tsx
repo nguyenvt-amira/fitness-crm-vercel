@@ -73,12 +73,7 @@ export default function OptionDetailPage() {
   return (
     <div className="flex h-full flex-col overflow-hidden">
       <PageHeader
-        breadcrumb={
-          <BackLink
-            label="オプション管理に戻る"
-            onClick={() => router.push(navigate('/options'))}
-          />
-        }
+        breadcrumb={<BackLink label="オプション管理に戻る" href={navigate('/options')} />}
         title={option.name}
         badge={
           <Badge

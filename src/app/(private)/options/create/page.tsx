@@ -85,12 +85,7 @@ export default function OptionCreatePage() {
   return (
     <>
       <PageHeader
-        breadcrumb={
-          <BackLink
-            label="オプション管理に戻る"
-            onClick={() => router.push(navigate('/options'))}
-          />
-        }
+        breadcrumb={<BackLink label="オプション管理に戻る" href={navigate('/options')} />}
         title="オプション 新規登録"
       />
       <div className="mx-auto max-w-240 p-4">

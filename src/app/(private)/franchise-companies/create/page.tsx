@@ -96,12 +96,7 @@ export default function FranchiseCompanyCreatePage() {
   return (
     <>
       <PageHeader
-        breadcrumb={
-          <BackLink
-            label="FC企業管理に戻る"
-            onClick={() => router.push(navigate('/franchise-companies'))}
-          />
-        }
+        breadcrumb={<BackLink label="FC企業管理に戻る" href={navigate('/franchise-companies')} />}
         title="FC企業新規登録"
       />
       <div className="mx-auto max-w-240 p-4">

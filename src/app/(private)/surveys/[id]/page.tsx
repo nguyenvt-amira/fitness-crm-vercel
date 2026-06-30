@@ -126,12 +126,7 @@ export default function SurveyDetailPage() {
   return (
     <div className="flex h-full flex-col overflow-hidden">
       <PageHeader
-        breadcrumb={
-          <BackLink
-            label="アンケート管理に戻る"
-            onClick={() => router.push(navigate('/surveys'))}
-          />
-        }
+        breadcrumb={<BackLink label="アンケート管理に戻る" href={navigate('/surveys')} />}
         title={survey.name}
         actions={
           <SurveyDetailHeaderActions

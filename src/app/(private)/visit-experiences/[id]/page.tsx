@@ -2,8 +2,6 @@
 
 import { use } from 'react';
 
-import { useRouter } from 'next/navigation';
-
 import { useQuery } from '@tanstack/react-query';
 
 import { BackLink } from '@/components/common/back-link';
@@ -37,7 +35,6 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
 
 export default function VisitExperienceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const router = useRouter();
 
   const {
     data: record,
@@ -51,12 +48,7 @@ export default function VisitExperienceDetailPage({ params }: { params: Promise<
   return (
     <>
       <PageHeader
-        breadcrumb={
-          <BackLink
-            label="見学・体験管理に戻る"
-            onClick={() => router.push(navigate('/visit-experiences'))}
-          />
-        }
+        breadcrumb={<BackLink label="見学・体験管理に戻る" href={navigate('/visit-experiences')} />}
         title={record?.customer_name ?? '見学・体験 詳細'}
         subtitle={record ? `ID: ${record.id}` : undefined}
         badge={

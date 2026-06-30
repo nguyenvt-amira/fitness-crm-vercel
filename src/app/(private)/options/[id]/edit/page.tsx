@@ -94,7 +94,6 @@ function OptionEditForm({ id, defaultValues }: Readonly<OptionEditFormProps>) {
 
 export default function OptionEditPage() {
   const params = useParams<{ id: string }>();
-  const router = useRouter();
   const id = params?.id;
 
   const { data, isLoading, isError, refetch } = useQuery({
@@ -140,10 +139,7 @@ export default function OptionEditPage() {
       >
         <PageHeader
           breadcrumb={
-            <BackLink
-              label="オプション詳細に戻る"
-              onClick={() => router.push(navigate('/options/[id]', id))}
-            />
+            <BackLink label="オプション詳細に戻る" href={navigate('/options/[id]', id)} />
           }
           title="オプション 編集"
         />

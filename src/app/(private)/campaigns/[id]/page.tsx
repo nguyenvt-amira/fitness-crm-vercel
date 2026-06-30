@@ -55,12 +55,7 @@ export default function CampaignDetailPage() {
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden">
       <PageHeader
-        breadcrumb={
-          <BackLink
-            label="キャンペーン管理に戻る"
-            onClick={() => router.push(navigate('/campaigns'))}
-          />
-        }
+        breadcrumb={<BackLink label="キャンペーン管理に戻る" href={navigate('/campaigns')} />}
         title={campaign.name}
         actions={
           <div className="flex items-center gap-2">

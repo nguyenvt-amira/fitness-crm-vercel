@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 
 import { useQuery } from '@tanstack/react-query';
 
@@ -47,7 +47,6 @@ function detailToFormValues(detail: LessonDetail): Partial<LessonFormValues> {
 
 export default function LessonDuplicatePage() {
   const params = useParams<{ id: string }>();
-  const router = useRouter();
   const lessonId = params.id;
 
   const { data, isLoading, isError, refetch } = useQuery({
@@ -59,12 +58,7 @@ export default function LessonDuplicatePage() {
     return (
       <div className="flex flex-col">
         <PageHeader
-          breadcrumb={
-            <BackLink
-              label="レッスン内容管理に戻る"
-              onClick={() => router.push(navigate('/lessons'))}
-            />
-          }
+          breadcrumb={<BackLink label="レッスン内容管理に戻る" href={navigate('/lessons')} />}
           title="新規レッスン作成"
         />
         <LessonFormSkeleton />
@@ -76,12 +70,7 @@ export default function LessonDuplicatePage() {
     return (
       <div className="flex flex-col">
         <PageHeader
-          breadcrumb={
-            <BackLink
-              label="レッスン内容管理に戻る"
-              onClick={() => router.push(navigate('/lessons'))}
-            />
-          }
+          breadcrumb={<BackLink label="レッスン内容管理に戻る" href={navigate('/lessons')} />}
           title="エラー"
         />
         <DataStateBoundary
@@ -102,12 +91,7 @@ export default function LessonDuplicatePage() {
   return (
     <div className="flex flex-col">
       <PageHeader
-        breadcrumb={
-          <BackLink
-            label="レッスン内容管理に戻る"
-            onClick={() => router.push(navigate('/lessons'))}
-          />
-        }
+        breadcrumb={<BackLink label="レッスン内容管理に戻る" href={navigate('/lessons')} />}
         title="新規レッスン作成"
       />
       <LessonForm mode="duplicate" defaultValues={defaultValues} />

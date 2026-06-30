@@ -2,8 +2,6 @@
 
 import { Suspense, useState } from 'react';
 
-import { useRouter } from 'next/navigation';
-
 import { downloadCsv } from '@/utils/csv.util';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { ChevronRight, FileDown } from 'lucide-react';
@@ -32,7 +30,6 @@ function SurveyAnalyticsPageContent() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const filtersHook = useSurveyAnalyticsFilters();
   const { queryParams } = filtersHook;
-  const router = useRouter();
 
   const { data, isLoading, isError, refetch } = useQuery({
     ...getCrmSurveysAnalyticsOptions({ query: queryParams }),
@@ -53,7 +50,7 @@ function SurveyAnalyticsPageContent() {
       <PageHeader
         breadcrumb={
           <div className="flex items-center gap-1">
-            <BackLink label="アンケート管理" onClick={() => router.push(navigate('/surveys'))} />
+            <BackLink label="アンケート管理" href={navigate('/surveys')} />
             <ChevronRight className="text-muted-foreground size-3" />
             <span className="text-muted-foreground text-xs">集計分析</span>
           </div>

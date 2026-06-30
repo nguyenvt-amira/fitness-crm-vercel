@@ -14,13 +14,10 @@ export default function ReactQueryProvider({ children }: ReactQueryProviderProps
     () =>
       new QueryClient({
         defaultOptions: {
-          mutations: {
-            retry: false,
-          },
           queries: {
             retry: false,
             refetchOnWindowFocus: false,
-            refetchOnMount: false,
+            staleTime: 2 * 60 * 1000,
           },
         },
         mutationCache: new MutationCache({

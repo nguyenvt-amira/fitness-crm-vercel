@@ -301,6 +301,94 @@ const userUrl = navigate('/users/[id]', '123'); // '/users/123'
 
 > **注意**：ルートは開発サーバー起動時または `npm run generate-routes` 実行時に自動再生成されます。手動での設定は不要です。
 
+## 6. 権限管理（認可）
+
+ユーザーが「何を見られるか・何を操作できるか」を制御する仕組みです。2つの概念で構成されます。
+
+- **ロール（`UserRole`）**：ユーザーの種別。`System` / `Headquarter` / `Manager` / `Staff` / `Trainer` / `Observer`
+- **権限（`Permission`）**：`<リソース>.<アクション>` 形式の細かい操作単位（例：`staffs.invite`、`members.edit`）
+
+各ロールがどの権限を持つかは **`ROLE_PERMISSIONS`** で一元管理しています。ここが唯一の信頼できる定義元（single source of truth）です。
+
+### 関連ファイル
+
+| ファイル                                | 役割                                                                                             |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `src/types/permission.type.ts`          | `UserRole` と `Permission` の enum 定義                                                          |
+| `src/constants/permission.constants.ts` | ロール→権限のマッピング（`ROLE_PERMISSIONS`）、ページ→必要権限のマッピング（`PAGE_PERMISSIONS`） |
+| `src/utils/permission.util.ts`          | ヘルパー関数（`canRoleAccessPage` / `hasPermissions` / `isPageHqOnly`）                          |
+| `src/contexts/auth-user.context.tsx`    | `useAuthUser()` フック（`hasRole` / `hasPermission`）を提供                                      |
+| `src/proxy.ts`                          | ページ単位のアクセス制御（URL 直接アクセスもブロック）                                           |
+
+### 認可の3つのレイヤー
+
+1. **ページアクセス**：`PAGE_PERMISSIONS` に定義し、`proxy.ts` がリクエスト時にチェック。権限がなければ `/403` へリダイレクト。
+2. **サイドバー表示**：`app-sidebar.tsx` がメニュー項目の表示/非表示を制御。
+3. **UI 部品**：ボタンやメニュー項目を `RoleGatedButton` / `RoleGatedMenuItem` でラップして制御。
+
+### UI 部品での権限チェック
+
+操作ボタンやドロップダウン項目には、専用コンポーネントを使います。権限がない場合、要素は自動的に**無効化**され、理由が表示されます（ボタンはツールチップ、メニュー項目はバッジ）。
+
+どちらも `allowedRoles` と `requiredPermission` の2通りの指定方法があります。
+
+```tsx
+// 権限ベース（推奨）
+<RoleGatedButton requiredPermission={Permission.StaffsInvite} onClick={handleInvite}>
+  招待
+</RoleGatedButton>
+
+// ロールベース
+<RoleGatedMenuItem allowedRoles={[UserRole.System, UserRole.Headquarter]} onClick={handleEdit}>
+  <Pencil className="size-4" /> 編集
+</RoleGatedMenuItem>
+```
+
+判定ロジック：
+
+- `requiredPermission` のみ → その権限を持っていれば許可
+- `allowedRoles` のみ → 現在のロールがリストに含まれていれば許可
+- 両方指定 → **AND**（ロールと権限の両方を満たす必要あり）
+- どちらも未指定 → 常に許可
+
+### `allowedRoles` と `requiredPermission` の使い分け
+
+> **原則：まず `requiredPermission` を使う。`allowedRoles` は例外的なケースのみ。**
+
+|                | `requiredPermission` ✅ 推奨                       | `allowedRoles`                                                                        |
+| -------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| 判定基準       | 「その操作」が可能かどうか                         | 「そのロール」かどうか                                                                |
+| 定義元         | `ROLE_PERMISSIONS`（1ファイルに集約）              | コンポーネント内に直書き                                                              |
+| 仕様変更時     | `ROLE_PERMISSIONS` を1ヶ所直すだけで全画面に反映   | 使用箇所を全て探して修正が必要                                                        |
+| 向いている場面 | 通常の操作制御（作成・編集・削除・承認・招待など） | 該当する `Permission` が存在しない場合や、単純に「本部/システムのみ」表示にしたい場合 |
+
+**`requiredPermission` を使うべき理由：** 権限の割り当てが `ROLE_PERMISSIONS` に集約されるため、「あるロールにこの操作を許可する／しない」という変更が1ファイルの修正だけで全画面に反映されます。意味も「○○の操作ができる人」と明確です。新しい操作には、まず `Permission` enum に項目を追加し、`ROLE_PERMISSIONS` で各ロールに割り当ててから `requiredPermission` で参照してください。
+
+**`allowedRoles` を使ってよいケース：** 操作に対応する `Permission` がまだ無い、もしくは権限とは無関係に「特定ロール専用」であることが本質的な場合（例：本部・システムだけに見せる管理用ボタン）。ロール名をコンポーネントに直書きするため、ロール構成が変わると修正漏れが起きやすい点に注意してください。
+
+### コンポーネント外での権限チェック
+
+ボタン以外の場所（条件分岐や表示制御）では `useAuthUser()` を直接使います。
+
+```tsx
+const { hasRole, hasPermission, user } = useAuthUser();
+
+if (hasPermission(Permission.MembersDelete)) {
+  // 削除可能な処理
+}
+
+if (hasRole([UserRole.System, UserRole.Headquarter])) {
+  // 本部/システム向けの表示
+}
+```
+
+### 新しい操作に権限を追加する手順
+
+1. `src/types/permission.type.ts` の `Permission` enum に項目を追加する。
+2. `src/constants/permission.constants.ts` の `ROLE_PERMISSIONS` で、許可するロールに割り当てる。
+3. （ページ全体を制限する場合）同ファイルの `PAGE_PERMISSIONS` にルートと必要権限を追加する。
+4. UI 側で `requiredPermission={Permission.XxxYyy}` として参照する。
+
 # Git フロー
 
 ```mermaid

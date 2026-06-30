@@ -3,6 +3,8 @@
 import { useMemo, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
+import Image from 'next/image';
+
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { Camera, ChevronsUpDown } from 'lucide-react';
@@ -103,13 +105,14 @@ export function MembersForm() {
           <div className="space-y-2">
             <FormLabel>会員写真</FormLabel>
             <div className="flex items-center gap-4">
-              <label className="bg-muted/50 hover:bg-muted border-border flex size-20 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-dashed transition-colors">
+              <label className="bg-muted/50 hover:bg-muted border-border relative flex size-20 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-dashed transition-colors">
                 {memberPhotoUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <Image
                     src={memberPhotoUrl}
                     alt="会員写真プレビュー"
-                    className="size-full object-cover"
+                    fill
+                    unoptimized
+                    className="object-cover"
                   />
                 ) : (
                   <Camera className="text-muted-foreground size-6" />

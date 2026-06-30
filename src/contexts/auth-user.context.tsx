@@ -2,9 +2,9 @@
 
 import { type ReactNode, createContext, useCallback, useContext, useMemo } from 'react';
 
-import { useCurrentUser } from '@/hooks/use-current-user';
+import { ROLE_PERMISSIONS } from '@/constants/permission.constants';
 
-import { ROLE_PERMISSIONS } from '@/lib/permission.config';
+import { useCurrentUser } from '@/hooks/use-current-user';
 
 import { AuthUser, Permission, UserRole } from '@/types/permission.type';
 

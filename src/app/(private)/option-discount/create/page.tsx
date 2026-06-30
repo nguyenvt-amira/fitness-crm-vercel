@@ -92,12 +92,7 @@ export default function OptionDiscountCreatePage() {
   return (
     <>
       <PageHeader
-        breadcrumb={
-          <BackLink
-            label="セット割設定に戻る"
-            onClick={() => router.push(navigate('/option-discount'))}
-          />
-        }
+        breadcrumb={<BackLink label="セット割設定に戻る" href={navigate('/option-discount')} />}
         title="セット割 新規登録"
       />
       <div className="mx-auto max-w-240 p-4">

@@ -68,12 +68,7 @@ export default function SurveyCreatePage() {
   return (
     <>
       <PageHeader
-        breadcrumb={
-          <BackLink
-            label="アンケート管理に戻る"
-            onClick={() => router.push(navigate('/surveys'))}
-          />
-        }
+        breadcrumb={<BackLink label="アンケート管理に戻る" href={navigate('/surveys')} />}
         title="アンケート新規登録"
       />
       <div className="mx-auto max-w-[960px] p-4">

@@ -82,12 +82,7 @@ function FranchiseCompanyDetailPageContent() {
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden">
       <PageHeader
-        breadcrumb={
-          <BackLink
-            label="FC企業管理に戻る"
-            onClick={() => router.push(navigate('/franchise-companies'))}
-          />
-        }
+        breadcrumb={<BackLink label="FC企業管理に戻る" href={navigate('/franchise-companies')} />}
         title={detail.display_name}
         badge={
           <Badge

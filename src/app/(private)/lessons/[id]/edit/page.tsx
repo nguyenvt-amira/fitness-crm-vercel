@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 
 import { useQuery } from '@tanstack/react-query';
 
@@ -43,7 +43,6 @@ function detailToFormValues(detail: LessonDetail): Partial<LessonFormValues> {
 
 export default function LessonEditPage() {
   const params = useParams<{ id: string }>();
-  const router = useRouter();
   const lessonId = params.id;
 
   const { data, isLoading, isError, refetch } = useQuery({
@@ -56,10 +55,7 @@ export default function LessonEditPage() {
       <div className="flex flex-col">
         <PageHeader
           breadcrumb={
-            <BackLink
-              label="レッスン内容に戻る"
-              onClick={() => router.push(navigate('/lessons/[id]', lessonId))}
-            />
+            <BackLink label="レッスン内容に戻る" href={navigate('/lessons/[id]', lessonId)} />
           }
           title="読み込み中..."
         />
@@ -72,12 +68,7 @@ export default function LessonEditPage() {
     return (
       <div className="flex flex-col">
         <PageHeader
-          breadcrumb={
-            <BackLink
-              label="レッスン内容に戻る"
-              onClick={() => router.push(navigate('/lessons'))}
-            />
-          }
+          breadcrumb={<BackLink label="レッスン内容に戻る" href={navigate('/lessons')} />}
           title="エラー"
         />
         <DataStateBoundary
@@ -101,10 +92,7 @@ export default function LessonEditPage() {
     <div className="flex flex-col">
       <PageHeader
         breadcrumb={
-          <BackLink
-            label="レッスン内容に戻る"
-            onClick={() => router.push(navigate('/lessons/[id]', lessonId))}
-          />
+          <BackLink label="レッスン内容に戻る" href={navigate('/lessons/[id]', lessonId)} />
         }
         title={pageTitle}
       />

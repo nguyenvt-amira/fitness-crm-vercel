@@ -64,12 +64,7 @@ function SurveyResponsesPageContent() {
   return (
     <>
       <PageHeader
-        breadcrumb={
-          <BackLink
-            label="アンケート管理に戻る"
-            onClick={() => router.push(navigate('/surveys'))}
-          />
-        }
+        breadcrumb={<BackLink label="アンケート管理に戻る" href={navigate('/surveys')} />}
         title="回答データ一覧"
         badge={<Badge variant="secondary">{totalResponses}件</Badge>}
         subtitle={

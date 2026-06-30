@@ -75,7 +75,9 @@ export default function LessonScheduleCreatePage() {
   return (
     <>
       <PageHeader
-        breadcrumb={<BackLink label="スケジュール管理に戻る" onClick={handleCancel} />}
+        breadcrumb={
+          <BackLink label="スケジュール管理に戻る" href={navigate('/lesson-schedules')} />
+        }
         title="スケジュール 新規登録"
       />
       <div className="px-6 py-4">
