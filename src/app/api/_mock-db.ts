@@ -44,7 +44,6 @@ import type {
   ReservationStats,
   ReservationStatus,
   SessionMemo,
-  StudioSpace,
   StudioSpaceGridResponse,
 } from '@/app/api/_schemas/lesson-reservation.schema';
 import type {
@@ -14887,7 +14886,7 @@ function createDb() {
         }, 0);
         const prefix = data.lesson_type === 'bodycare' ? 'BDC' : 'LSN';
         const id = `${prefix}-${String(maxNumericId + 1).padStart(4, '0')}`;
-        const now = new Date().toISOString();
+        // const now = new Date().toISOString();
         const kind = data.lesson_type;
         const item: LessonContentItem = {
           id,
@@ -14994,7 +14993,7 @@ function createDb() {
           return isNaN(num) ? max : Math.max(max, num);
         }, 0);
         const id = `PLN-${String(maxNumericId + 1).padStart(4, '0')}`;
-        const now = new Date().toISOString();
+        // const now = new Date().toISOString();
         const price = data.per_use_fee ?? 5500;
         const item: PersonalPlanItem = {
           id,
@@ -15164,8 +15163,11 @@ function createDb() {
     // ─── D-03: Store Holidays ───────────────────────────────────────────────
     storeHolidays: {
       getHolidays(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         _storeId: string,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         _from: string,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         _to: string,
       ): import('./_schemas/lesson-schedule.schema').StoreHolidaysResponse {
         return { holidays: [] };

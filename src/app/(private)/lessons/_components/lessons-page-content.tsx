@@ -8,7 +8,6 @@ import { Plus } from 'lucide-react';
 import { PageHeader } from '@/components/common/page-header';
 import { RoleGatedButton } from '@/components/common/role-gated-button';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import {

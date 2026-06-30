@@ -116,11 +116,11 @@ export function LessonForm({ mode, defaultValues, lessonId }: LessonFormProps) {
   const errors = form.formState.errors;
   const hasErrors = Object.keys(errors).length > 0;
 
-  const pageTitle = isEdit
-    ? defaultValues?.lessonType === 'personal'
-      ? 'パーソナルトレーニング編集'
-      : 'スタジオレッスン編集'
-    : '新規レッスン作成';
+  // const pageTitle = isEdit
+  //   ? defaultValues?.lessonType === 'personal'
+  //     ? 'パーソナルトレーニング編集'
+  //     : 'スタジオレッスン編集'
+  //   : '新規レッスン作成';
 
   const submitLabel = isEdit ? '変更を保存する' : '入力内容を確認する';
 
