@@ -33,7 +33,7 @@
 
 - **All clarifications resolved (Session 2026-06-25).** The 7 questions (Q1–Q7) were answered by the user and folded into the spec; the Q&A section now records resolutions only. No open `[NEED CLARIFICATION]` markers remain.
 - Resolutions applied:
-  - Q1 — Required validation follows the prototype set (5 fields); 認証方式 / 接続先接点制御装置 not submit-blocking.
+  - Q1 — Required validation follows the prototype set (5 fields); 認証方式 / 接続先接点制御装置 are submit-blocking required (Update 2026-06-30; originally "not submit-blocking").
   - Q2 — 接続先ポート番号 is an official Phase 1 field and required.
   - Q3 — ≥1 usage-control judgment is NOT mandatory (FR-008 異常系 not enforced in Phase 1).
   - Q4 — A judgment Select is required only while its checkbox is checked; unchecking discards the value.

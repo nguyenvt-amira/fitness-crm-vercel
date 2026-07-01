@@ -24,18 +24,22 @@ export function EquipmentFormConnection() {
         <CardTitle className="text-base font-semibold">接続情報</CardTitle>
       </CardHeader>
       <CardContent className="px-6">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
           <FormField
             control={form.control}
             name="controller_id"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel>
                   接続先接点制御装置
                   <RequiredMark />
                 </FormLabel>
                 <FormControl>
-                  <ControllerPicker value={field.value ?? null} onChange={field.onChange} />
+                  <ControllerPicker
+                    value={field.value ?? null}
+                    onChange={field.onChange}
+                    hasError={Boolean(fieldState.error)}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

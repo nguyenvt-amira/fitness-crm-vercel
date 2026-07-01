@@ -14,9 +14,10 @@ import { EQUIPMENT_STATUS_LABELS } from '../_constants/constants';
 type ControllerPickerProps = {
   value: string | null;
   onChange: (controllerId: string | null) => void;
+  hasError?: boolean;
 };
 
-export function ControllerPicker({ value, onChange }: ControllerPickerProps) {
+export function ControllerPicker({ value, onChange, hasError = false }: ControllerPickerProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const { data, isFetching } = useQuery(getCrmControllersOptions({ query: { limit: 50 } }));
@@ -43,6 +44,7 @@ export function ControllerPicker({ value, onChange }: ControllerPickerProps) {
         [controller.name, controller.controller_id, controller.ip_address].filter(Boolean).join(' ')
       }
       clearLabel="選択をクリア"
+      hasError={hasError}
       renderOption={(controller) => (
         <div className="flex min-w-0 flex-1 flex-col">
           <span className="truncate text-sm">{controller.name ?? controller.controller_id}</span>

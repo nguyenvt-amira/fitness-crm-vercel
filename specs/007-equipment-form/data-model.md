@@ -37,21 +37,21 @@ Structured FR-008 rule captured by the form. All judgments optional (Q3); a type
 
 ## 3. UpsertEquipmentRequest (new — create & update body)
 
-| Field                   | Type                                    | Required (submit-blocking)  | Source / Notes                                                                       |
-| ----------------------- | --------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------ |
-| `name`                  | `string` (1..255)                       | ✓                           | 機器名 — FR-003                                                                      |
-| `equipment_type`        | `EquipmentType`                         | ✓                           | 機器タイプ — FR-003                                                                  |
-| `serial_number`         | `string` (1..255)                       | ✓                           | シリアルナンバー — FR-003                                                            |
-| `install_location`      | `string` (1..255)                       | ✓                           | 設置場所 — FR-003                                                                    |
-| `installed_on`          | `string` (ISO `YYYY-MM-DD`)             | ✓                           | 設置日 — FR-003 (DatePicker)                                                         |
-| `controller_number`     | `number \| string`                      | ✓                           | 接続先ポート番号 (form) = 接点制御先番号 (list/detail) — single field, required (Q2) |
-| `status`                | `EquipmentStatus`                       | ✓ (default `normal`)        | 状態 — all 4 selectable on create (Q5)                                               |
-| `authentication_method` | `EquipmentAuthenticationMethod \| null` | ✗ (not submit-blocking, Q1) | 認証方式 — FR-009                                                                    |
-| `controller_id`         | `string \| null`                        | ✗ (not submit-blocking, Q1) | 接続先接点制御装置 — picker value (Q7)                                               |
-| `ip_address`            | `string \| null`                        | ✗ (optional)                | IPアドレス — FR-003                                                                  |
-| `mac_address`           | `string \| null`                        | ✗ (optional)                | MACアドレス — FR-003                                                                 |
-| `usage_control_rule`    | `EquipmentUsageControlRuleInput`        | ✗ (optional, Q3)            | FR-008 — may be empty (no judgment)                                                  |
-| `remarks`               | `string \| null` (max 1000)             | ✗ (optional)                | 備考 — FR-003                                                                        |
+| Field                   | Type                                    | Required (submit-blocking) | Source / Notes                                                                        |
+| ----------------------- | --------------------------------------- | -------------------------- | ------------------------------------------------------------------------------------- |
+| `name`                  | `string` (1..255)                       | ✓                          | 機器名 — FR-003                                                                       |
+| `equipment_type`        | `EquipmentType`                         | ✓                          | 機器タイプ — FR-003                                                                   |
+| `serial_number`         | `string` (1..255)                       | ✓                          | シリアルナンバー — FR-003                                                             |
+| `install_location`      | `string` (1..255)                       | ✓                          | 設置場所 — FR-003                                                                     |
+| `installed_on`          | `string` (ISO `YYYY-MM-DD`)             | ✓                          | 設置日 — FR-003 (DatePicker)                                                          |
+| `controller_number`     | `number \| string`                      | ✓                          | 接続先ポート番号 (form) = 接点制御先番号 (list/detail) — single field, required (Q2)  |
+| `status`                | `EquipmentStatus`                       | ✓ (default `normal`)       | 状態 — all 4 selectable on create (Q5)                                                |
+| `authentication_method` | `EquipmentAuthenticationMethod \| null` | ✓ (Update 2026-06-30)      | 認証方式 — FR-009; field-level required (must select one of the radio options)        |
+| `controller_id`         | `string \| null`                        | ✓ (Update 2026-06-30)      | 接続先接点制御装置 — picker value (Q7); field-level required (must pick a controller) |
+| `ip_address`            | `string \| null`                        | ✗ (optional)               | IPアドレス — FR-003                                                                   |
+| `mac_address`           | `string \| null`                        | ✗ (optional)               | MACアドレス — FR-003                                                                  |
+| `usage_control_rule`    | `EquipmentUsageControlRuleInput`        | ✗ (optional, Q3)           | FR-008 — may be empty (no judgment)                                                   |
+| `remarks`               | `string \| null` (max 1000)             | ✗ (optional)               | 備考 — FR-003                                                                         |
 
 **Not in payload**: `id` (system-assigned, read-only), gate-stop conditions (display-only, Q6), QRコードID (not a form field).
 
@@ -112,7 +112,7 @@ Response: `{ controllers: Controller[] }`. Optional query `store_id` (best-effor
 | POST create      | `UpsertEquipmentRequestSchema` valid; submit-blocking fields present; conditional rule selects present |
 | PATCH update     | Same body schema; `{id}` must exist (else 404)                                                         |
 | Usage-control    | `*_enabled=true` ⇒ matching type required; unchecked judgments cleared before persistence              |
-| Controller field | Optional at submit (Q1); when set, must be a valid `controller_id` from the controllers list           |
+| Controller field | Required at submit (Update 2026-06-30); must be a valid `controller_id` from the controllers list      |
 | GET controllers  | Optional `store_id` filter; returns all when unmapped                                                  |
 
 ---

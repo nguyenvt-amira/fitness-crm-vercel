@@ -55,7 +55,7 @@ _GATE: must pass before Phase 0 and re-checked after design._
 
 **Deviations from prototype (per clarified spec)**:
 
-- 接続先ポート番号 is **required** (validated); 認証方式 & 接続先接点制御装置 keep required mark but are **not** submit-blocking (Q1, Q2).
+- 接続先ポート番号, 認証方式 & 接続先接点制御装置 are all **required** (validated, submit-blocking) — 認証方式 / 接続先接点制御装置 updated 2026-06-30 from the original Q1 "not submit-blocking" decision.
 - 接続先接点制御装置 is a **picker bound to FR-007 controller records** (Q7) via `GET /crm/controllers`, not free text.
 - Usage-control rule is **optional** (no "≥1 rule" enforcement); a checked judgment's Select is required, unchecking discards the value (Q3, Q4).
 - All four statuses selectable on create (Q5); gate-stop note is display-only (Q6).
@@ -89,19 +89,19 @@ _GATE: must pass before Phase 0 and re-checked after design._
 
 ## Plan Decisions
 
-| Topic                          | Decision                                                                                                                                |
-| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Routes                         | `/equipment/create` (create) + `/equipment/[id]/edit` (edit), mirroring `lockers/create` + `lockers/[id]/edit`                          |
-| Form library                   | react-hook-form + `zodResolver`, single `equipmentFormSchema` reused for create & edit (per constitution III)                           |
-| Persisting new fields          | `controller_number` stored on the row; `controller_id`, `remarks`, structured `usage_control_rule` kept in `_metaById` (see data-model) |
-| Usage-control rule persistence | Store the structured rule on the row; `buildEquipmentDetail` prefers stored rule, falls back to label-parsing for legacy seeds          |
-| Controller picker (Q7)         | `GET /crm/controllers` (own `db.controllers` entity, array seed `SEED_CONTROLLERS`); form stores `controller_id` + `controller_number`  |
-| Validation (Q1/Q2/Q4)          | Zod `superRefine`: required = name/type/serial/location/installed_on/controller_number + each checked judgment's Select                 |
-| Not submit-blocking (Q1)       | 認証方式, 接続先接点制御装置 optional in schema; visual required mark kept in UI only                                                   |
-| Status on create (Q5)          | All four `EquipmentStatus` values selectable; default `normal`                                                                          |
-| Gate-stop note (Q6)            | Read-only info box shown when `equipment_type === 'entry_gate'`; not part of submitted payload                                          |
-| Unsaved-changes guard          | Reuse `isDirty` + cancel/back confirmation pattern; add small `AlertDialog` discard confirm (research R3)                               |
-| Status history on create/edit  | **Not written** in Phase 1 (consistent with 006 — history is seed-only)                                                                 |
+| Topic                          | Decision                                                                                                                                                                       |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Routes                         | `/equipment/create` (create) + `/equipment/[id]/edit` (edit), mirroring `lockers/create` + `lockers/[id]/edit`                                                                 |
+| Form library                   | react-hook-form + `zodResolver`, single `equipmentFormSchema` reused for create & edit (per constitution III)                                                                  |
+| Persisting new fields          | `controller_number` stored on the row; `controller_id`, `remarks`, structured `usage_control_rule` kept in `_metaById` (see data-model)                                        |
+| Usage-control rule persistence | Store the structured rule on the row; `buildEquipmentDetail` prefers stored rule, falls back to label-parsing for legacy seeds                                                 |
+| Controller picker (Q7)         | `GET /crm/controllers` (own `db.controllers` entity, array seed `SEED_CONTROLLERS`); form stores `controller_id` + `controller_number`                                         |
+| Validation (Q1/Q2/Q4)          | Field-level Zod required = name/type/serial/location/installed_on/controller_number/authentication_method/controller_id; `superRefine` only for each checked judgment's Select |
+| Required (Update 2026-06-30)   | 認証方式, 接続先接点制御装置 are submit-blocking required; validated at the field level on 保存 (no longer optional)                                                           |
+| Status on create (Q5)          | All four `EquipmentStatus` values selectable; default `normal`                                                                                                                 |
+| Gate-stop note (Q6)            | Read-only info box shown when `equipment_type === 'entry_gate'`; not part of submitted payload                                                                                 |
+| Unsaved-changes guard          | Reuse `isDirty` + cancel/back confirmation pattern; add small `AlertDialog` discard confirm (research R3)                                                                      |
+| Status history on create/edit  | **Not written** in Phase 1 (consistent with 006 — history is seed-only)                                                                                                        |
 
 ---
 
@@ -272,9 +272,9 @@ Reused: `getCrmEquipmentByIdOptions` (edit prefill), `getCrmEquipmentQueryKey` /
 
 **Validation** (`equipmentFormSchema` + `superRefine`):
 
-- Required: `name`, `equipment_type`, `serial_number`, `install_location`, `installed_on`, `controller_number` (接続先ポート番号).
+- Required: `name`, `equipment_type`, `serial_number`, `install_location`, `installed_on`, `controller_number` (接続先ポート番号), `authentication_method`, `controller_id` (Update 2026-06-30).
 - Conditional: when `rule.main_enabled` → `rule.main_contract_type` required; same for option/per_use (Q4).
-- Optional: `authentication_method`, `controller_id`, `ip_address`, `mac_address`, `remarks` (Q1).
+- Optional: `ip_address`, `mac_address`, `remarks`.
 - On submit error → `useScrollToFirstError` focuses first invalid field; footer shows error hint.
 
 **Form → body util**: drop hidden (unchecked) judgment values before submit (Q4); map labels/enums to request shape.

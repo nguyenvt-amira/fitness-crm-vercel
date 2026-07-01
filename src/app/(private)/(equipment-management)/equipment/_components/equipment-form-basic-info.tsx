@@ -44,7 +44,7 @@ export function EquipmentFormBasicInfo({ equipmentId }: { equipmentId?: string }
         <CardTitle className="text-base font-semibold">基本情報</CardTitle>
       </CardHeader>
       <CardContent className="px-6">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
           <FormItem>
             <FormLabel>接続機器ID</FormLabel>
             <FormControl>
@@ -190,7 +190,7 @@ export function EquipmentFormBasicInfo({ equipmentId }: { equipmentId?: string }
           <FormField
             control={form.control}
             name="authentication_method"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem className="md:col-span-2">
                 <FormLabel>
                   認証方式
@@ -204,7 +204,13 @@ export function EquipmentFormBasicInfo({ equipmentId }: { equipmentId?: string }
                   >
                     {EQUIPMENT_AUTH_VALUES.map((method) => (
                       <div key={method} className="flex items-center gap-2">
-                        <RadioGroupItem value={method} id={`auth-${method}`} />
+                        <RadioGroupItem
+                          value={method}
+                          id={`auth-${method}`}
+                          className={
+                            fieldState.error ? 'border-destructive text-destructive' : undefined
+                          }
+                        />
                         <Label
                           htmlFor={`auth-${method}`}
                           className="cursor-pointer text-sm font-normal"

@@ -43,7 +43,7 @@ export function ControllerForm({ mode = 'create', controllerId }: ControllerForm
           <CardTitle className="text-base font-semibold">基本情報</CardTitle>
         </CardHeader>
         <CardContent className="px-6">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-3">
             <FormItem>
               <FormLabel>接点制御装置ID</FormLabel>
               <FormControl>
@@ -123,7 +123,7 @@ export function ControllerForm({ mode = 'create', controllerId }: ControllerForm
             </AlertDescription>
           </Alert>
 
-          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="mt-4 grid grid-cols-1 items-start gap-4 md:grid-cols-3">
             <FormField
               control={form.control}
               name="ip_address"
@@ -230,7 +230,7 @@ export function ControllerForm({ mode = 'create', controllerId }: ControllerForm
           <CardTitle className="text-base font-semibold">ステータス</CardTitle>
         </CardHeader>
         <CardContent className="px-6">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-3">
             <FormField
               control={form.control}
               name="status"

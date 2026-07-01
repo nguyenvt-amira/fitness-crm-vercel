@@ -63,7 +63,7 @@ npm run dev
 
 - [ ] Title 接続機器 新規登録; submit button 登録; 接続機器ID shows （自動採番）.
 - [ ] Submitting empty form blocks with errors on 機器名/機器タイプ/シリアルナンバー/設置場所/設置日 **and 接続先ポート番号**; view scrolls to first invalid (US1-2, Q2).
-- [ ] 認証方式 and 接続先接点制御装置 left empty does **not** block submit (Q1).
+- [ ] 認証方式 and 接続先接点制御装置 left empty **block submit** and show a red border + error message (Update 2026-06-30).
 - [ ] All four 状態 options selectable (Q5).
 - [ ] Filling required fields → toast 接続機器を登録しました → redirect to list; new `EQ-####` appears.
 - [ ] Submitting with no usage-control judgment selected is allowed (Q3).

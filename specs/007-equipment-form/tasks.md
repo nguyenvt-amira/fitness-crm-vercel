@@ -116,7 +116,7 @@
 
 ### Implementation for User Story 4
 
-- [x] T028 [US4] Map 認証方式 labels ↔ enum (`member_qr_scan`/`device_qr_scan`/`none`) in `src/app/(private)/equipment/_utils/equipment-form.util.ts`; keep optional at submit (Q1) while preserving the visual required mark in `equipment-form-basic-info.tsx`
+- [x] T028 [US4] Map 認証方式 labels ↔ enum (`member_qr_scan`/`device_qr_scan`/`none`) in `src/app/(private)/equipment/_utils/equipment-form.util.ts`; submit-blocking required (Update 2026-06-30) — field-level validation in `equipment-form.schema.ts`, red border on the radio group in `equipment-form-basic-info.tsx`
 - [x] T029 [US4] Verify auth-method create→detail round-trip (curl-verified: PATCH/GET round-trips `authentication_method`) auth-method create→detail round-trip and edit prefill (manual check per `quickstart.md`); adjust mapping if mismatched
 
 **Checkpoint**: FR-009 satisfied end-to-end

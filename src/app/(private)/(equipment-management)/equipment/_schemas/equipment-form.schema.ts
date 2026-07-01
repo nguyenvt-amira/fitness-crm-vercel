@@ -31,9 +31,14 @@ export const equipmentFormSchema = z
     install_location: z.string().min(1, '設置場所を入力してください'),
     installed_on: z.string().min(1, '設置日を入力してください'),
     status: z.enum(EQUIPMENT_STATUS_VALUES),
-    // 認証方式 / 接続先接点制御装置 keep a visual required mark but are NOT submit-blocking
-    authentication_method: z.enum(EQUIPMENT_AUTH_VALUES).nullable(),
-    controller_id: z.string().nullable(),
+    authentication_method: z
+      .enum(EQUIPMENT_AUTH_VALUES)
+      .nullable()
+      .refine((value) => value !== null, { message: '認証方式を選択してください' }),
+    controller_id: z
+      .string()
+      .nullable()
+      .refine((value) => Boolean(value), { message: '接続先接点制御装置を選択してください' }),
     controller_number: z.string().min(1, '接続先ポート番号を入力してください'),
     ip_address: z.string(),
     mac_address: z.string(),

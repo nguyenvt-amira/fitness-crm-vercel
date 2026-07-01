@@ -58,6 +58,8 @@ All clarifications (Q1–Q7) were resolved in the spec (Session 2026-06-25). Thi
 
 **Decision**: Use Zod `superRefine` on `equipmentFormSchema`: when a judgment checkbox boolean is `true`, its corresponding type field must be non-null/non-empty; otherwise it is optional. The form→body util strips values of unchecked judgments before submit.
 
+> **Update 2026-06-30**: `authentication_method` and `controller_id` are now submit-blocking required. They use **field-level** `.nullable().refine(...)` (not `superRefine`) so the requirement attaches directly to each field — keeping the input type nullable (so `null` defaults still type-check) while blocking submit on 保存. `superRefine` is reserved for the genuinely cross-field conditional judgment-Select rules.
+
 **Rationale**: Q4 requires Selects to be required only while their checkbox is checked, and hidden values discarded on save. `superRefine` expresses cross-field conditional requirements while keeping a single schema for both client and mock-route validation (constitution III).
 
 **Alternatives considered**:

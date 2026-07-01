@@ -43,6 +43,7 @@ interface SearchableSelectProps<TItem> {
   triggerClassName?: string;
   contentClassName?: string;
   listClassName?: string;
+  hasError?: boolean;
 }
 
 export function SearchableSelect<TItem>({
@@ -69,6 +70,7 @@ export function SearchableSelect<TItem>({
   triggerClassName,
   contentClassName,
   listClassName,
+  hasError = false,
 }: SearchableSelectProps<TItem>) {
   const [internalOpen, setInternalOpen] = useState(false);
   const [searchInput, setSearchInput] = useState('');
@@ -134,6 +136,7 @@ export function SearchableSelect<TItem>({
             className={cn(
               'h-8 w-64 min-w-0 justify-between rounded-lg px-3 text-xs font-normal',
               triggerClassName,
+              hasError && 'border-destructive focus-visible:ring-destructive/20',
             )}
           >
             <TextWithTooltip

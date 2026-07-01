@@ -37,7 +37,7 @@ All routes registered via `registerRoute(...)` and auth-guarded with `getAuthUse
 }
 ```
 
-**Validation**: `name`, `equipment_type`, `serial_number`, `install_location`, `installed_on`, `controller_number` required; each `*_enabled: true` requires its type value. `authentication_method`, `controller_id`, `ip_address`, `mac_address`, `remarks` optional.
+**Validation**: `name`, `equipment_type`, `serial_number`, `install_location`, `installed_on`, `controller_number`, `authentication_method`, `controller_id` required (the last two updated 2026-06-30 — form-level field validation on 保存); each `*_enabled: true` requires its type value. `ip_address`, `mac_address`, `remarks` optional.
 
 > `controller_number` is the single field behind both `接続先ポート番号` (form) and `接点制御先番号` (list/detail). There is no separate `controller_port`.
 
