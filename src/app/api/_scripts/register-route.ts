@@ -66,7 +66,7 @@ export function registerRoute(config: {
   query?: ZodSchema;
   responses: {
     status: number;
-    schema: ZodSchema;
+    schema?: ZodSchema;
     description?: string;
   }[];
   security?: Array<Record<string, string[]>>;
@@ -100,15 +100,21 @@ export function registerRoute(config: {
   // Build responses
   const responses: Record<string, any> = {};
   config.responses.forEach((response) => {
-    // Use registered schema to ensure $ref is used
-    const schema = getRegisteredSchema(response.schema);
+    if (response.schema) {
+      const schema = getRegisteredSchema(response.schema);
+      responses[String(response.status)] = {
+        description: response.description || `Response ${response.status}`,
+        content: {
+          'application/json': {
+            schema,
+          },
+        },
+      };
+      return;
+    }
+
     responses[String(response.status)] = {
       description: response.description || `Response ${response.status}`,
-      content: {
-        'application/json': {
-          schema,
-        },
-      },
     };
   });
 

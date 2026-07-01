@@ -5,6 +5,7 @@ export const GROUPS_ROUTER_CONFIG: GroupConfig = {
   '(public)': false,
   '(private)': true,
   '(shared)': undefined,
+  '(equipment-management)': true,
 };
 
 export const SKIP_PATTERNS = [

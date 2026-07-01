@@ -55,6 +55,7 @@ interface DataTableProps<TData, TValue> {
   containerClassName?: string;
   tableSize?: 'default' | 'md';
   getRowClassName?: (row: TData) => string | undefined;
+  emptyContent?: React.ReactNode;
 }
 
 export function DataTable<TData, TValue>({
@@ -77,6 +78,7 @@ export function DataTable<TData, TValue>({
   containerClassName,
   tableSize = 'default',
   getRowClassName,
+  emptyContent,
 }: Readonly<DataTableProps<TData, TValue>>) {
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
@@ -104,6 +106,14 @@ export function DataTable<TData, TValue>({
     }
   }, [table, onTableReady]);
 
+  const renderEmptyState = () => (
+    <TableRow className="hover:bg-transparent">
+      <TableCell colSpan={columns.length} className={cn(emptyContent ? 'p-0' : 'h-24 text-center')}>
+        {emptyContent ?? 'データがありません'}
+      </TableCell>
+    </TableRow>
+  );
+
   // Simple table mode (no pagination)
   if (variant === 'simple') {
     return (
@@ -126,47 +136,41 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {isLoading ? (
-              Array.from({ length: 20 }).map((_, i) => (
-                <TableRow key={`skeleton-${i}`}>
-                  {columns.map((_, j) => (
-                    <TableCell key={j}>
-                      <Skeleton className="h-4 w-full" />
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                  onClick={() => onRowClick?.(row.original)}
-                  className={cn(
-                    onRowClick ? 'cursor-pointer' : '',
-                    getRowClassName?.(row.original) ?? '',
-                  )}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={
-                        (cell.column.columnDef.meta as Record<string, unknown> | undefined)
-                          ?.className as string
-                      }
+            {isLoading
+              ? Array.from({ length: 20 }).map((_, i) => (
+                  <TableRow key={`skeleton-${i}`}>
+                    {columns.map((_, j) => (
+                      <TableCell key={j}>
+                        <Skeleton className="h-4 w-full" />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              : table.getRowModel().rows?.length
+                ? table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && 'selected'}
+                      onClick={() => onRowClick?.(row.original)}
+                      className={cn(
+                        onRowClick ? 'cursor-pointer' : '',
+                        getRowClassName?.(row.original) ?? '',
+                      )}
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  データがありません
-                </TableCell>
-              </TableRow>
-            )}
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          className={
+                            (cell.column.columnDef.meta as Record<string, unknown> | undefined)
+                              ?.className as string
+                          }
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                : renderEmptyState()}
           </TableBody>
         </Table>
       </div>
@@ -219,37 +223,31 @@ export function DataTable<TData, TValue>({
             ))
           ) : (
             <>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && 'selected'}
-                    onClick={() => onRowClick?.(row.original)}
-                    className={cn(
-                      onRowClick ? 'cursor-pointer' : '',
-                      getRowClassName?.(row.original) ?? '',
-                    )}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className={cn(
-                          (cell.column.columnDef.meta as Record<string, unknown> | undefined)
-                            ?.className as string,
-                        )}
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
-                    データがありません
-                  </TableCell>
-                </TableRow>
-              )}
+              {table.getRowModel().rows?.length
+                ? table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && 'selected'}
+                      onClick={() => onRowClick?.(row.original)}
+                      className={cn(
+                        onRowClick ? 'cursor-pointer' : '',
+                        getRowClassName?.(row.original) ?? '',
+                      )}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          className={cn(
+                            (cell.column.columnDef.meta as Record<string, unknown> | undefined)
+                              ?.className as string,
+                          )}
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                : renderEmptyState()}
               <TableRow className="hover:bg-transparent data-[state=selected]:bg-transparent">
                 <TableCell colSpan={columns.length} className="py-3 text-center">
                   {isFetching ? (

@@ -8,6 +8,8 @@ import * as autoApprovalSchemas from '../_schemas/auto-approval.schema';
 import * as blacklistSchemas from '../_schemas/blacklist.schema';
 import * as brandSchemas from '../_schemas/brand.schema';
 import * as campaignSchemas from '../_schemas/campaign.schema';
+import * as controllerSchemas from '../_schemas/controller.schema';
+import * as equipmentSchemas from '../_schemas/equipment.schema';
 import * as familyRegistrationSchemas from '../_schemas/family-registration.schema';
 import * as franchiseCompanySchemas from '../_schemas/franchise-company.schema';
 import * as leaveSchemas from '../_schemas/leave.schema';
@@ -2041,6 +2043,200 @@ export function registerAllSchemas() {
     registry.register(
       'GetPersonalPlansResponse',
       lessonContentSchemas.GetPersonalPlansResponseSchema,
+    ),
+  );
+
+  // Register equipment schemas
+  registeredSchemaMap.set(
+    'EquipmentStatus',
+    registry.register('EquipmentStatus', equipmentSchemas.EquipmentStatusSchema),
+  );
+  registeredSchemaMap.set(
+    'EquipmentType',
+    registry.register('EquipmentType', equipmentSchemas.EquipmentTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'EquipmentAuthenticationMethod',
+    registry.register(
+      'EquipmentAuthenticationMethod',
+      equipmentSchemas.EquipmentAuthenticationMethodSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'ConnectedEquipmentListItem',
+    registry.register(
+      'ConnectedEquipmentListItem',
+      equipmentSchemas.ConnectedEquipmentListItemSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetEquipmentQuery',
+    registry.register('GetEquipmentQuery', equipmentSchemas.GetEquipmentQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'GetEquipmentResponse',
+    registry.register('GetEquipmentResponse', equipmentSchemas.GetEquipmentResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'GetEquipmentSummaryResponse',
+    registry.register(
+      'GetEquipmentSummaryResponse',
+      equipmentSchemas.GetEquipmentSummaryResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'ExportEquipmentRequest',
+    registry.register('ExportEquipmentRequest', equipmentSchemas.ExportEquipmentRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'BulkUpdateEquipmentStatusRequest',
+    registry.register(
+      'BulkUpdateEquipmentStatusRequest',
+      equipmentSchemas.BulkUpdateEquipmentStatusRequestSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'BulkUpdateEquipmentStatusResult',
+    registry.register(
+      'BulkUpdateEquipmentStatusResult',
+      equipmentSchemas.BulkUpdateEquipmentStatusResultSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'BulkUpdateEquipmentStatusResponse',
+    registry.register(
+      'BulkUpdateEquipmentStatusResponse',
+      equipmentSchemas.BulkUpdateEquipmentStatusResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UsageControlRuleDisplay',
+    registry.register('UsageControlRuleDisplay', equipmentSchemas.UsageControlRuleDisplaySchema),
+  );
+  registeredSchemaMap.set(
+    'ControllerSummary',
+    registry.register('ControllerSummary', equipmentSchemas.ControllerSummarySchema),
+  );
+  registeredSchemaMap.set(
+    'ConnectedEquipmentDetail',
+    registry.register('ConnectedEquipmentDetail', equipmentSchemas.ConnectedEquipmentDetailSchema),
+  );
+  registeredSchemaMap.set(
+    'EquipmentStatusHistoryItem',
+    registry.register(
+      'EquipmentStatusHistoryItem',
+      equipmentSchemas.EquipmentStatusHistoryItemSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetEquipmentDetailResponse',
+    registry.register(
+      'GetEquipmentDetailResponse',
+      equipmentSchemas.GetEquipmentDetailResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetEquipmentHistoryResponse',
+    registry.register(
+      'GetEquipmentHistoryResponse',
+      equipmentSchemas.GetEquipmentHistoryResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'EquipmentUsageControlRuleInput',
+    registry.register(
+      'EquipmentUsageControlRuleInput',
+      equipmentSchemas.EquipmentUsageControlRuleInputSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpsertEquipmentRequest',
+    registry.register('UpsertEquipmentRequest', equipmentSchemas.UpsertEquipmentRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'PatchEquipmentRequest',
+    registry.register('PatchEquipmentRequest', equipmentSchemas.PatchEquipmentRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'CreateEquipmentResponse',
+    registry.register('CreateEquipmentResponse', equipmentSchemas.CreateEquipmentResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'UpdateEquipmentResponse',
+    registry.register('UpdateEquipmentResponse', equipmentSchemas.UpdateEquipmentResponseSchema),
+  );
+
+  // Register controller schemas
+  registeredSchemaMap.set(
+    'Controller',
+    registry.register('Controller', controllerSchemas.ControllerSchema),
+  );
+  registeredSchemaMap.set(
+    'ControllerListItem',
+    registry.register('ControllerListItem', controllerSchemas.ControllerListItemSchema),
+  );
+  registeredSchemaMap.set(
+    'ControllerDeviceSummary',
+    registry.register('ControllerDeviceSummary', controllerSchemas.ControllerDeviceSummarySchema),
+  );
+  registeredSchemaMap.set(
+    'ControllerDetail',
+    registry.register('ControllerDetail', controllerSchemas.ControllerDetailSchema),
+  );
+  registeredSchemaMap.set(
+    'ControllerConnectedDevice',
+    registry.register(
+      'ControllerConnectedDevice',
+      controllerSchemas.ControllerConnectedDeviceSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'ControllerHistoryItem',
+    registry.register('ControllerHistoryItem', controllerSchemas.ControllerHistoryItemSchema),
+  );
+  registeredSchemaMap.set(
+    'GetControllersResponse',
+    registry.register('GetControllersResponse', controllerSchemas.GetControllersResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'ExportControllersRequest',
+    registry.register('ExportControllersRequest', controllerSchemas.ExportControllersRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'GetControllerDevicesResponse',
+    registry.register(
+      'GetControllerDevicesResponse',
+      controllerSchemas.GetControllerDevicesResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetControllerHistoryResponse',
+    registry.register(
+      'GetControllerHistoryResponse',
+      controllerSchemas.GetControllerHistoryResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpsertControllerRequest',
+    registry.register('UpsertControllerRequest', controllerSchemas.UpsertControllerRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'PatchControllerRequest',
+    registry.register('PatchControllerRequest', controllerSchemas.PatchControllerRequestSchema),
+  );
+  registeredSchemaMap.set(
+    'CreateControllerResponse',
+    registry.register('CreateControllerResponse', controllerSchemas.CreateControllerResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'UpdateControllerResponse',
+    registry.register('UpdateControllerResponse', controllerSchemas.UpdateControllerResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'GetControllerDetailResponse',
+    registry.register(
+      'GetControllerDetailResponse',
+      controllerSchemas.GetControllerDetailResponseSchema,
     ),
   );
 }

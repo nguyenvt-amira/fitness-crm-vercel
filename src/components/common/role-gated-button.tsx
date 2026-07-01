@@ -50,6 +50,8 @@ interface RoleGatedButtonProps extends ComponentProps<typeof Button> {
   denyTooltip?: string;
   /** Optional tooltip shown even when the user is allowed (e.g. to explain why the button might be disabled) */
   tooltip?: string;
+  /** Stretch the trigger wrapper and button to full container width */
+  fullWidth?: boolean;
   children: ReactNode;
 }
 
@@ -61,6 +63,7 @@ export function RoleGatedButton({
   className,
   disabled: externalDisabled,
   tooltip: externalTooltip,
+  fullWidth = false,
   onClick,
   ...props
 }: RoleGatedButtonProps) {
@@ -69,13 +72,20 @@ export function RoleGatedButton({
   const roleAllowed = allowedRoles ? hasRole(allowedRoles) : true;
   const permissionAllowed = requiredPermission ? hasPermission(requiredPermission) : true;
   const allowed = roleAllowed && permissionAllowed;
+  const triggerClassName = cn('inline-flex', fullWidth && 'w-full');
+  const buttonClassName = cn(fullWidth && 'w-full', className);
 
   if (allowed) {
     return (
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger render={<span className="inline-flex" />}>
-            <Button className={className} onClick={onClick} disabled={externalDisabled} {...props}>
+          <TooltipTrigger render={<span className={triggerClassName} />}>
+            <Button
+              className={buttonClassName}
+              onClick={onClick}
+              disabled={externalDisabled}
+              {...props}
+            >
               {children}
             </Button>
           </TooltipTrigger>
@@ -93,12 +103,12 @@ export function RoleGatedButton({
     <TooltipProvider>
       <Tooltip>
         {/* span wrapper is required because a disabled button swallows pointer events */}
-        <TooltipTrigger render={<span className="inline-flex cursor-not-allowed" />}>
+        <TooltipTrigger render={<span className={cn(triggerClassName, 'cursor-not-allowed')} />}>
           <Button
             {...props}
             disabled
             aria-disabled="true"
-            className={cn('pointer-events-none opacity-50', className)}
+            className={cn('pointer-events-none opacity-50', buttonClassName)}
           >
             {children}
           </Button>

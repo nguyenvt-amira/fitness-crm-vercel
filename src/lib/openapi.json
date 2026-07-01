@@ -26760,6 +26760,2356 @@
         "required": ["data", "pagination"],
         "title": "GetPersonalPlansResponse",
         "description": "Response for personal plans list"
+      },
+      "EquipmentStatus": {
+        "type": "string",
+        "enum": ["normal", "error", "maintenance", "discarded"]
+      },
+      "EquipmentType": {
+        "type": "string",
+        "enum": [
+          "entry_gate",
+          "hydrogen_water_server",
+          "body_composition_monitor",
+          "tanning_machine",
+          "protein_server",
+          "other"
+        ]
+      },
+      "EquipmentAuthenticationMethod": {
+        "type": "string",
+        "enum": ["member_qr_scan", "device_qr_scan", "none"]
+      },
+      "ConnectedEquipmentListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "store_id": {
+            "type": "string"
+          },
+          "store_name": {
+            "type": "string"
+          },
+          "controller_number": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "qr_code_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "equipment_type": {
+            "type": "string",
+            "enum": [
+              "entry_gate",
+              "hydrogen_water_server",
+              "body_composition_monitor",
+              "tanning_machine",
+              "protein_server",
+              "other"
+            ]
+          },
+          "serial_number": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string",
+            "nullable": true
+          },
+          "mac_address": {
+            "type": "string",
+            "nullable": true
+          },
+          "install_location": {
+            "type": "string"
+          },
+          "installed_on": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["normal", "error", "maintenance", "discarded"]
+          },
+          "authentication_method": {
+            "type": "string",
+            "enum": ["member_qr_scan", "device_qr_scan", "none"]
+          },
+          "linked_contract_labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "store_id",
+          "store_name",
+          "controller_number",
+          "qr_code_id",
+          "equipment_type",
+          "serial_number",
+          "ip_address",
+          "mac_address",
+          "install_location",
+          "installed_on",
+          "status",
+          "authentication_method",
+          "linked_contract_labels",
+          "updated_at"
+        ]
+      },
+      "GetEquipmentQuery": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string"
+          },
+          "store_id": {
+            "type": "string"
+          },
+          "equipment_type": {
+            "type": "string",
+            "enum": [
+              "entry_gate",
+              "hydrogen_water_server",
+              "body_composition_monitor",
+              "tanning_machine",
+              "protein_server",
+              "other"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["normal", "error", "maintenance", "discarded"]
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": [
+              "id",
+              "name",
+              "controller_number",
+              "qr_code_id",
+              "equipment_type",
+              "status",
+              "updated_at"
+            ],
+            "default": "id"
+          },
+          "sort_order": {
+            "type": "string",
+            "enum": ["asc", "desc"],
+            "default": "asc"
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "limit": {
+            "type": "integer",
+            "default": 50
+          }
+        }
+      },
+      "GetEquipmentResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "store_id": {
+                  "type": "string"
+                },
+                "store_name": {
+                  "type": "string"
+                },
+                "controller_number": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "qr_code_id": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "equipment_type": {
+                  "type": "string",
+                  "enum": [
+                    "entry_gate",
+                    "hydrogen_water_server",
+                    "body_composition_monitor",
+                    "tanning_machine",
+                    "protein_server",
+                    "other"
+                  ]
+                },
+                "serial_number": {
+                  "type": "string"
+                },
+                "ip_address": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "mac_address": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "install_location": {
+                  "type": "string"
+                },
+                "installed_on": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["normal", "error", "maintenance", "discarded"]
+                },
+                "authentication_method": {
+                  "type": "string",
+                  "enum": ["member_qr_scan", "device_qr_scan", "none"]
+                },
+                "linked_contract_labels": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "updated_at": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "store_id",
+                "store_name",
+                "controller_number",
+                "qr_code_id",
+                "equipment_type",
+                "serial_number",
+                "ip_address",
+                "mac_address",
+                "install_location",
+                "installed_on",
+                "status",
+                "authentication_method",
+                "linked_contract_labels",
+                "updated_at"
+              ]
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "total_pages": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": ["items", "total", "page", "limit", "total_pages"]
+      },
+      "GetEquipmentSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "equipment_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "controllers_count": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": ["equipment_count", "controllers_count"]
+      },
+      "ExportEquipmentRequest": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string"
+          },
+          "store_id": {
+            "type": "string"
+          },
+          "equipment_type": {
+            "type": "string",
+            "enum": [
+              "entry_gate",
+              "hydrogen_water_server",
+              "body_composition_monitor",
+              "tanning_machine",
+              "protein_server",
+              "other"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["normal", "error", "maintenance", "discarded"]
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": [
+              "id",
+              "name",
+              "controller_number",
+              "qr_code_id",
+              "equipment_type",
+              "status",
+              "updated_at"
+            ],
+            "default": "id"
+          },
+          "sort_order": {
+            "type": "string",
+            "enum": ["asc", "desc"],
+            "default": "asc"
+          }
+        }
+      },
+      "BulkUpdateEquipmentStatusRequest": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": ["normal", "error", "maintenance", "discarded"]
+          },
+          "change_reason": {
+            "type": "string"
+          }
+        },
+        "required": ["ids", "status"]
+      },
+      "BulkUpdateEquipmentStatusResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["normal", "error", "maintenance", "discarded"]
+          },
+          "error": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "success"]
+      },
+      "BulkUpdateEquipmentStatusResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "updated_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "success": {
+                  "type": "boolean"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["normal", "error", "maintenance", "discarded"]
+                },
+                "error": {
+                  "type": "string"
+                }
+              },
+              "required": ["id", "success"]
+            }
+          }
+        },
+        "required": ["success", "updated_count", "results"]
+      },
+      "UsageControlRuleDisplay": {
+        "type": "object",
+        "properties": {
+          "contract_link_types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["main", "option", "per_use"]
+            }
+          },
+          "option_type_label": {
+            "type": "string",
+            "nullable": true
+          },
+          "main_contract_type_label": {
+            "type": "string",
+            "nullable": true
+          },
+          "per_use_option_type_label": {
+            "type": "string",
+            "nullable": true
+          },
+          "show_gate_stop_info": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "contract_link_types",
+          "option_type_label",
+          "main_contract_type_label",
+          "per_use_option_type_label",
+          "show_gate_stop_info"
+        ]
+      },
+      "ControllerSummary": {
+        "type": "object",
+        "properties": {
+          "controller_id": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string"
+          },
+          "port": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "status": {
+            "type": "string",
+            "enum": ["normal", "error", "maintenance", "discarded"]
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": ["controller_id", "ip_address", "port", "status", "name"]
+      },
+      "ConnectedEquipmentDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "store_id": {
+            "type": "string"
+          },
+          "store_name": {
+            "type": "string"
+          },
+          "controller_number": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "qr_code_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "equipment_type": {
+            "type": "string",
+            "enum": [
+              "entry_gate",
+              "hydrogen_water_server",
+              "body_composition_monitor",
+              "tanning_machine",
+              "protein_server",
+              "other"
+            ]
+          },
+          "serial_number": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string",
+            "nullable": true
+          },
+          "mac_address": {
+            "type": "string",
+            "nullable": true
+          },
+          "install_location": {
+            "type": "string"
+          },
+          "installed_on": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["normal", "error", "maintenance", "discarded"]
+          },
+          "authentication_method": {
+            "type": "string",
+            "enum": ["member_qr_scan", "device_qr_scan", "none"]
+          },
+          "linked_contract_labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "usage_control_rule": {
+            "type": "object",
+            "properties": {
+              "contract_link_types": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": ["main", "option", "per_use"]
+                }
+              },
+              "option_type_label": {
+                "type": "string",
+                "nullable": true
+              },
+              "main_contract_type_label": {
+                "type": "string",
+                "nullable": true
+              },
+              "per_use_option_type_label": {
+                "type": "string",
+                "nullable": true
+              },
+              "show_gate_stop_info": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "contract_link_types",
+              "option_type_label",
+              "main_contract_type_label",
+              "per_use_option_type_label",
+              "show_gate_stop_info"
+            ]
+          },
+          "controller_summary": {
+            "type": "object",
+            "properties": {
+              "controller_id": {
+                "type": "string"
+              },
+              "ip_address": {
+                "type": "string"
+              },
+              "port": {
+                "type": "integer",
+                "minimum": 0,
+                "exclusiveMinimum": true
+              },
+              "status": {
+                "type": "string",
+                "enum": ["normal", "error", "maintenance", "discarded"]
+              },
+              "name": {
+                "type": "string",
+                "nullable": true
+              }
+            },
+            "required": ["controller_id", "ip_address", "port", "status", "name"]
+          },
+          "controller_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "last_status_confirmed_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "store_id",
+          "store_name",
+          "controller_number",
+          "qr_code_id",
+          "equipment_type",
+          "serial_number",
+          "ip_address",
+          "mac_address",
+          "install_location",
+          "installed_on",
+          "status",
+          "authentication_method",
+          "linked_contract_labels",
+          "updated_at",
+          "usage_control_rule",
+          "controller_summary",
+          "controller_id",
+          "remarks",
+          "created_at",
+          "last_status_confirmed_at"
+        ]
+      },
+      "EquipmentStatusHistoryItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "occurred_at": {
+            "type": "string"
+          },
+          "operator_name": {
+            "type": "string"
+          },
+          "event_type": {
+            "type": "string",
+            "enum": ["created", "status_change"]
+          },
+          "from_status": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["normal", "error", "maintenance", "discarded", null]
+          },
+          "to_status": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["normal", "error", "maintenance", "discarded", null]
+          },
+          "change_reason": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "occurred_at",
+          "operator_name",
+          "event_type",
+          "from_status",
+          "to_status",
+          "change_reason"
+        ]
+      },
+      "GetEquipmentDetailResponse": {
+        "type": "object",
+        "properties": {
+          "equipment": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "store_id": {
+                "type": "string"
+              },
+              "store_name": {
+                "type": "string"
+              },
+              "controller_number": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "qr_code_id": {
+                "type": "string",
+                "nullable": true
+              },
+              "equipment_type": {
+                "type": "string",
+                "enum": [
+                  "entry_gate",
+                  "hydrogen_water_server",
+                  "body_composition_monitor",
+                  "tanning_machine",
+                  "protein_server",
+                  "other"
+                ]
+              },
+              "serial_number": {
+                "type": "string"
+              },
+              "ip_address": {
+                "type": "string",
+                "nullable": true
+              },
+              "mac_address": {
+                "type": "string",
+                "nullable": true
+              },
+              "install_location": {
+                "type": "string"
+              },
+              "installed_on": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["normal", "error", "maintenance", "discarded"]
+              },
+              "authentication_method": {
+                "type": "string",
+                "enum": ["member_qr_scan", "device_qr_scan", "none"]
+              },
+              "linked_contract_labels": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "updated_at": {
+                "type": "string"
+              },
+              "usage_control_rule": {
+                "type": "object",
+                "properties": {
+                  "contract_link_types": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": ["main", "option", "per_use"]
+                    }
+                  },
+                  "option_type_label": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "main_contract_type_label": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "per_use_option_type_label": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "show_gate_stop_info": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "contract_link_types",
+                  "option_type_label",
+                  "main_contract_type_label",
+                  "per_use_option_type_label",
+                  "show_gate_stop_info"
+                ]
+              },
+              "controller_summary": {
+                "type": "object",
+                "properties": {
+                  "controller_id": {
+                    "type": "string"
+                  },
+                  "ip_address": {
+                    "type": "string"
+                  },
+                  "port": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "exclusiveMinimum": true
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["normal", "error", "maintenance", "discarded"]
+                  },
+                  "name": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                },
+                "required": ["controller_id", "ip_address", "port", "status", "name"]
+              },
+              "controller_id": {
+                "type": "string",
+                "nullable": true
+              },
+              "remarks": {
+                "type": "string",
+                "nullable": true
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "last_status_confirmed_at": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "store_id",
+              "store_name",
+              "controller_number",
+              "qr_code_id",
+              "equipment_type",
+              "serial_number",
+              "ip_address",
+              "mac_address",
+              "install_location",
+              "installed_on",
+              "status",
+              "authentication_method",
+              "linked_contract_labels",
+              "updated_at",
+              "usage_control_rule",
+              "controller_summary",
+              "controller_id",
+              "remarks",
+              "created_at",
+              "last_status_confirmed_at"
+            ]
+          }
+        },
+        "required": ["equipment"]
+      },
+      "GetEquipmentHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "history": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "occurred_at": {
+                  "type": "string"
+                },
+                "operator_name": {
+                  "type": "string"
+                },
+                "event_type": {
+                  "type": "string",
+                  "enum": ["created", "status_change"]
+                },
+                "from_status": {
+                  "type": "string",
+                  "nullable": true,
+                  "enum": ["normal", "error", "maintenance", "discarded", null]
+                },
+                "to_status": {
+                  "type": "string",
+                  "nullable": true,
+                  "enum": ["normal", "error", "maintenance", "discarded", null]
+                },
+                "change_reason": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "required": [
+                "id",
+                "occurred_at",
+                "operator_name",
+                "event_type",
+                "from_status",
+                "to_status",
+                "change_reason"
+              ]
+            }
+          }
+        },
+        "required": ["history"]
+      },
+      "EquipmentUsageControlRuleInput": {
+        "type": "object",
+        "properties": {
+          "main_enabled": {
+            "type": "boolean",
+            "default": false
+          },
+          "main_contract_type": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+          },
+          "option_enabled": {
+            "type": "boolean",
+            "default": false
+          },
+          "option_type": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+          },
+          "per_use_enabled": {
+            "type": "boolean",
+            "default": false
+          },
+          "per_use_option_type": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+          }
+        }
+      },
+      "UpsertEquipmentRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "equipment_type": {
+            "type": "string",
+            "enum": [
+              "entry_gate",
+              "hydrogen_water_server",
+              "body_composition_monitor",
+              "tanning_machine",
+              "protein_server",
+              "other"
+            ]
+          },
+          "serial_number": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "install_location": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "installed_on": {
+            "type": "string",
+            "minLength": 1
+          },
+          "controller_number": {
+            "type": "integer",
+            "nullable": true,
+            "minimum": 0
+          },
+          "status": {
+            "type": "string",
+            "enum": ["normal", "error", "maintenance", "discarded"],
+            "default": "normal"
+          },
+          "authentication_method": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["member_qr_scan", "device_qr_scan", "none", null],
+            "default": null
+          },
+          "controller_id": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+          },
+          "ip_address": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+          },
+          "mac_address": {
+            "type": "string",
+            "nullable": true,
+            "default": null
+          },
+          "usage_control_rule": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "main_enabled": {
+                "type": "boolean",
+                "default": false
+              },
+              "main_contract_type": {
+                "type": "string",
+                "nullable": true,
+                "default": null
+              },
+              "option_enabled": {
+                "type": "boolean",
+                "default": false
+              },
+              "option_type": {
+                "type": "string",
+                "nullable": true,
+                "default": null
+              },
+              "per_use_enabled": {
+                "type": "boolean",
+                "default": false
+              },
+              "per_use_option_type": {
+                "type": "string",
+                "nullable": true,
+                "default": null
+              }
+            },
+            "default": null
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 1000,
+            "default": null
+          }
+        },
+        "required": [
+          "name",
+          "equipment_type",
+          "serial_number",
+          "install_location",
+          "installed_on",
+          "controller_number"
+        ]
+      },
+      "PatchEquipmentRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "equipment_type": {
+            "type": "string",
+            "enum": [
+              "entry_gate",
+              "hydrogen_water_server",
+              "body_composition_monitor",
+              "tanning_machine",
+              "protein_server",
+              "other"
+            ]
+          },
+          "serial_number": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "install_location": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "installed_on": {
+            "type": "string",
+            "minLength": 1
+          },
+          "controller_number": {
+            "type": "integer",
+            "nullable": true,
+            "minimum": 0
+          },
+          "status": {
+            "type": "string",
+            "enum": ["normal", "error", "maintenance", "discarded"]
+          },
+          "authentication_method": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["member_qr_scan", "device_qr_scan", "none", null]
+          },
+          "controller_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "ip_address": {
+            "type": "string",
+            "nullable": true
+          },
+          "mac_address": {
+            "type": "string",
+            "nullable": true
+          },
+          "usage_control_rule": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "main_enabled": {
+                "type": "boolean",
+                "default": false
+              },
+              "main_contract_type": {
+                "type": "string",
+                "nullable": true,
+                "default": null
+              },
+              "option_enabled": {
+                "type": "boolean",
+                "default": false
+              },
+              "option_type": {
+                "type": "string",
+                "nullable": true,
+                "default": null
+              },
+              "per_use_enabled": {
+                "type": "boolean",
+                "default": false
+              },
+              "per_use_option_type": {
+                "type": "string",
+                "nullable": true,
+                "default": null
+              }
+            }
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 1000
+          }
+        }
+      },
+      "CreateEquipmentResponse": {
+        "type": "object",
+        "properties": {
+          "equipment": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "store_id": {
+                "type": "string"
+              },
+              "store_name": {
+                "type": "string"
+              },
+              "controller_number": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "qr_code_id": {
+                "type": "string",
+                "nullable": true
+              },
+              "equipment_type": {
+                "type": "string",
+                "enum": [
+                  "entry_gate",
+                  "hydrogen_water_server",
+                  "body_composition_monitor",
+                  "tanning_machine",
+                  "protein_server",
+                  "other"
+                ]
+              },
+              "serial_number": {
+                "type": "string"
+              },
+              "ip_address": {
+                "type": "string",
+                "nullable": true
+              },
+              "mac_address": {
+                "type": "string",
+                "nullable": true
+              },
+              "install_location": {
+                "type": "string"
+              },
+              "installed_on": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["normal", "error", "maintenance", "discarded"]
+              },
+              "authentication_method": {
+                "type": "string",
+                "enum": ["member_qr_scan", "device_qr_scan", "none"]
+              },
+              "linked_contract_labels": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "updated_at": {
+                "type": "string"
+              },
+              "usage_control_rule": {
+                "type": "object",
+                "properties": {
+                  "contract_link_types": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": ["main", "option", "per_use"]
+                    }
+                  },
+                  "option_type_label": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "main_contract_type_label": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "per_use_option_type_label": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "show_gate_stop_info": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "contract_link_types",
+                  "option_type_label",
+                  "main_contract_type_label",
+                  "per_use_option_type_label",
+                  "show_gate_stop_info"
+                ]
+              },
+              "controller_summary": {
+                "type": "object",
+                "properties": {
+                  "controller_id": {
+                    "type": "string"
+                  },
+                  "ip_address": {
+                    "type": "string"
+                  },
+                  "port": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "exclusiveMinimum": true
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["normal", "error", "maintenance", "discarded"]
+                  },
+                  "name": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                },
+                "required": ["controller_id", "ip_address", "port", "status", "name"]
+              },
+              "controller_id": {
+                "type": "string",
+                "nullable": true
+              },
+              "remarks": {
+                "type": "string",
+                "nullable": true
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "last_status_confirmed_at": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "store_id",
+              "store_name",
+              "controller_number",
+              "qr_code_id",
+              "equipment_type",
+              "serial_number",
+              "ip_address",
+              "mac_address",
+              "install_location",
+              "installed_on",
+              "status",
+              "authentication_method",
+              "linked_contract_labels",
+              "updated_at",
+              "usage_control_rule",
+              "controller_summary",
+              "controller_id",
+              "remarks",
+              "created_at",
+              "last_status_confirmed_at"
+            ]
+          }
+        },
+        "required": ["equipment"]
+      },
+      "UpdateEquipmentResponse": {
+        "type": "object",
+        "properties": {
+          "equipment": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "store_id": {
+                "type": "string"
+              },
+              "store_name": {
+                "type": "string"
+              },
+              "controller_number": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "qr_code_id": {
+                "type": "string",
+                "nullable": true
+              },
+              "equipment_type": {
+                "type": "string",
+                "enum": [
+                  "entry_gate",
+                  "hydrogen_water_server",
+                  "body_composition_monitor",
+                  "tanning_machine",
+                  "protein_server",
+                  "other"
+                ]
+              },
+              "serial_number": {
+                "type": "string"
+              },
+              "ip_address": {
+                "type": "string",
+                "nullable": true
+              },
+              "mac_address": {
+                "type": "string",
+                "nullable": true
+              },
+              "install_location": {
+                "type": "string"
+              },
+              "installed_on": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["normal", "error", "maintenance", "discarded"]
+              },
+              "authentication_method": {
+                "type": "string",
+                "enum": ["member_qr_scan", "device_qr_scan", "none"]
+              },
+              "linked_contract_labels": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "updated_at": {
+                "type": "string"
+              },
+              "usage_control_rule": {
+                "type": "object",
+                "properties": {
+                  "contract_link_types": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": ["main", "option", "per_use"]
+                    }
+                  },
+                  "option_type_label": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "main_contract_type_label": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "per_use_option_type_label": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "show_gate_stop_info": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "contract_link_types",
+                  "option_type_label",
+                  "main_contract_type_label",
+                  "per_use_option_type_label",
+                  "show_gate_stop_info"
+                ]
+              },
+              "controller_summary": {
+                "type": "object",
+                "properties": {
+                  "controller_id": {
+                    "type": "string"
+                  },
+                  "ip_address": {
+                    "type": "string"
+                  },
+                  "port": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "exclusiveMinimum": true
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["normal", "error", "maintenance", "discarded"]
+                  },
+                  "name": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                },
+                "required": ["controller_id", "ip_address", "port", "status", "name"]
+              },
+              "controller_id": {
+                "type": "string",
+                "nullable": true
+              },
+              "remarks": {
+                "type": "string",
+                "nullable": true
+              },
+              "created_at": {
+                "type": "string"
+              },
+              "last_status_confirmed_at": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "store_id",
+              "store_name",
+              "controller_number",
+              "qr_code_id",
+              "equipment_type",
+              "serial_number",
+              "ip_address",
+              "mac_address",
+              "install_location",
+              "installed_on",
+              "status",
+              "authentication_method",
+              "linked_contract_labels",
+              "updated_at",
+              "usage_control_rule",
+              "controller_summary",
+              "controller_id",
+              "remarks",
+              "created_at",
+              "last_status_confirmed_at"
+            ]
+          }
+        },
+        "required": ["equipment"]
+      },
+      "Controller": {
+        "type": "object",
+        "properties": {
+          "controller_id": {
+            "type": "string"
+          },
+          "controller_number": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "store_code": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string"
+          },
+          "port": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "firmware_version": {
+            "type": "string",
+            "nullable": true
+          },
+          "control_port_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 64
+          },
+          "status": {
+            "type": "string",
+            "enum": ["normal", "error", "maintenance", "discarded"]
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "controller_id",
+          "controller_number",
+          "name",
+          "store_code",
+          "location",
+          "ip_address",
+          "port",
+          "firmware_version",
+          "control_port_count",
+          "status",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "ControllerListItem": {
+        "type": "object",
+        "properties": {
+          "controller_id": {
+            "type": "string"
+          },
+          "controller_number": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "store_code": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string"
+          },
+          "port": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "firmware_version": {
+            "type": "string",
+            "nullable": true
+          },
+          "control_port_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 64
+          },
+          "status": {
+            "type": "string",
+            "enum": ["normal", "error", "maintenance", "discarded"]
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "device_count": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "controller_id",
+          "controller_number",
+          "name",
+          "store_code",
+          "location",
+          "ip_address",
+          "port",
+          "firmware_version",
+          "control_port_count",
+          "status",
+          "created_at",
+          "updated_at",
+          "device_count"
+        ]
+      },
+      "ControllerDeviceSummary": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "normal": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "error": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": ["total", "normal", "error"]
+      },
+      "ControllerDetail": {
+        "type": "object",
+        "properties": {
+          "controller_id": {
+            "type": "string"
+          },
+          "controller_number": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "store_code": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string"
+          },
+          "port": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "firmware_version": {
+            "type": "string",
+            "nullable": true
+          },
+          "control_port_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 64
+          },
+          "status": {
+            "type": "string",
+            "enum": ["normal", "error", "maintenance", "discarded"]
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "device_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "device_summary": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "normal": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "error": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": ["total", "normal", "error"]
+          }
+        },
+        "required": [
+          "controller_id",
+          "controller_number",
+          "name",
+          "store_code",
+          "location",
+          "ip_address",
+          "port",
+          "firmware_version",
+          "control_port_count",
+          "status",
+          "created_at",
+          "updated_at",
+          "device_count",
+          "device_summary"
+        ]
+      },
+      "ControllerConnectedDevice": {
+        "type": "object",
+        "properties": {
+          "equipment_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "controller_number": {
+            "type": "integer"
+          },
+          "gate_type": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "enum": ["normal", "error", "maintenance", "discarded"]
+          }
+        },
+        "required": ["equipment_id", "name", "controller_number", "gate_type", "status"]
+      },
+      "ControllerHistoryItem": {
+        "type": "object",
+        "properties": {
+          "occurred_at": {
+            "type": "string"
+          },
+          "operator": {
+            "type": "string"
+          },
+          "change_type": {
+            "type": "string",
+            "enum": ["status_change", "fault_report", "inspection", "created"]
+          },
+          "from_status": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["normal", "error", "maintenance", "discarded", null]
+          },
+          "to_status": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["normal", "error", "maintenance", "discarded", null]
+          },
+          "memo": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": ["occurred_at", "operator", "change_type", "from_status", "to_status", "memo"]
+      },
+      "GetControllersResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "controller_id": {
+                  "type": "string"
+                },
+                "controller_number": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "name": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "store_code": {
+                  "type": "string"
+                },
+                "location": {
+                  "type": "string"
+                },
+                "ip_address": {
+                  "type": "string"
+                },
+                "port": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "firmware_version": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "control_port_count": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 64
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["normal", "error", "maintenance", "discarded"]
+                },
+                "created_at": {
+                  "type": "string"
+                },
+                "updated_at": {
+                  "type": "string"
+                },
+                "device_count": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "controller_id",
+                "controller_number",
+                "name",
+                "store_code",
+                "location",
+                "ip_address",
+                "port",
+                "firmware_version",
+                "control_port_count",
+                "status",
+                "created_at",
+                "updated_at",
+                "device_count"
+              ]
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "total_pages": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": ["items", "total", "page", "limit", "total_pages"]
+      },
+      "ExportControllersRequest": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["normal", "error", "maintenance", "discarded"]
+          },
+          "store_id": {
+            "type": "string"
+          },
+          "sort_by": {
+            "type": "string",
+            "enum": [
+              "controller_id",
+              "name",
+              "store_code",
+              "location",
+              "ip_address",
+              "firmware_version",
+              "control_port_count",
+              "device_count",
+              "status"
+            ],
+            "default": "controller_id"
+          },
+          "sort_order": {
+            "type": "string",
+            "enum": ["asc", "desc"],
+            "default": "asc"
+          }
+        }
+      },
+      "GetControllerDevicesResponse": {
+        "type": "object",
+        "properties": {
+          "devices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "equipment_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "controller_number": {
+                  "type": "integer"
+                },
+                "gate_type": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["normal", "error", "maintenance", "discarded"]
+                }
+              },
+              "required": ["equipment_id", "name", "controller_number", "gate_type", "status"]
+            }
+          },
+          "summary": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "normal": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "error": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": ["total", "normal", "error"]
+          }
+        },
+        "required": ["devices", "summary"]
+      },
+      "GetControllerHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "occurred_at": {
+                  "type": "string"
+                },
+                "operator": {
+                  "type": "string"
+                },
+                "change_type": {
+                  "type": "string",
+                  "enum": ["status_change", "fault_report", "inspection", "created"]
+                },
+                "from_status": {
+                  "type": "string",
+                  "nullable": true,
+                  "enum": ["normal", "error", "maintenance", "discarded", null]
+                },
+                "to_status": {
+                  "type": "string",
+                  "nullable": true,
+                  "enum": ["normal", "error", "maintenance", "discarded", null]
+                },
+                "memo": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "required": [
+                "occurred_at",
+                "operator",
+                "change_type",
+                "from_status",
+                "to_status",
+                "memo"
+              ]
+            }
+          }
+        },
+        "required": ["items"]
+      },
+      "UpsertControllerRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "store_code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "location": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "ip_address": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$"
+          },
+          "port": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65535
+          },
+          "firmware_version": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "control_port_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 64
+          },
+          "status": {
+            "type": "string",
+            "enum": ["normal", "error", "maintenance", "discarded"],
+            "default": "normal"
+          }
+        },
+        "required": ["name", "store_code", "location", "ip_address", "port", "control_port_count"]
+      },
+      "PatchControllerRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "store_code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "location": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "ip_address": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$"
+          },
+          "port": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65535
+          },
+          "firmware_version": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 255
+          },
+          "control_port_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 64
+          },
+          "status": {
+            "type": "string",
+            "enum": ["normal", "error", "maintenance", "discarded"],
+            "default": "normal"
+          }
+        }
+      },
+      "CreateControllerResponse": {
+        "type": "object",
+        "properties": {
+          "controller_id": {
+            "type": "string"
+          },
+          "controller_number": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "store_code": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string"
+          },
+          "port": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "firmware_version": {
+            "type": "string",
+            "nullable": true
+          },
+          "control_port_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 64
+          },
+          "status": {
+            "type": "string",
+            "enum": ["normal", "error", "maintenance", "discarded"]
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "device_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "device_summary": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "normal": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "error": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": ["total", "normal", "error"]
+          }
+        },
+        "required": [
+          "controller_id",
+          "controller_number",
+          "name",
+          "store_code",
+          "location",
+          "ip_address",
+          "port",
+          "firmware_version",
+          "control_port_count",
+          "status",
+          "created_at",
+          "updated_at",
+          "device_count",
+          "device_summary"
+        ]
+      },
+      "UpdateControllerResponse": {
+        "type": "object",
+        "properties": {
+          "controller_id": {
+            "type": "string"
+          },
+          "controller_number": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "store_code": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string"
+          },
+          "port": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "firmware_version": {
+            "type": "string",
+            "nullable": true
+          },
+          "control_port_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 64
+          },
+          "status": {
+            "type": "string",
+            "enum": ["normal", "error", "maintenance", "discarded"]
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "device_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "device_summary": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "normal": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "error": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": ["total", "normal", "error"]
+          }
+        },
+        "required": [
+          "controller_id",
+          "controller_number",
+          "name",
+          "store_code",
+          "location",
+          "ip_address",
+          "port",
+          "firmware_version",
+          "control_port_count",
+          "status",
+          "created_at",
+          "updated_at",
+          "device_count",
+          "device_summary"
+        ]
+      },
+      "GetControllerDetailResponse": {
+        "type": "object",
+        "properties": {
+          "controller_id": {
+            "type": "string"
+          },
+          "controller_number": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "store_code": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "ip_address": {
+            "type": "string"
+          },
+          "port": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "firmware_version": {
+            "type": "string",
+            "nullable": true
+          },
+          "control_port_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 64
+          },
+          "status": {
+            "type": "string",
+            "enum": ["normal", "error", "maintenance", "discarded"]
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "device_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "device_summary": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "normal": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "error": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": ["total", "normal", "error"]
+          }
+        },
+        "required": [
+          "controller_id",
+          "controller_number",
+          "name",
+          "store_code",
+          "location",
+          "ip_address",
+          "port",
+          "firmware_version",
+          "control_port_count",
+          "status",
+          "created_at",
+          "updated_at",
+          "device_count",
+          "device_summary"
+        ]
       }
     },
     "parameters": {}
@@ -32383,6 +34733,3061 @@
                   "required": ["error"],
                   "title": "CampaignErrorResponse",
                   "description": "Campaign-specific error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/controllers/{id}/devices": {
+      "get": {
+        "summary": "Get connected equipment for a controller",
+        "description": "Get the list of connected equipment linked to a contact-control device (FR-007-D)",
+        "tags": ["Controllers"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Contact-control device ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Connected equipment list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "devices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "equipment_id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "controller_number": {
+                            "type": "integer"
+                          },
+                          "gate_type": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["normal", "error", "maintenance", "discarded"]
+                          }
+                        },
+                        "required": [
+                          "equipment_id",
+                          "name",
+                          "controller_number",
+                          "gate_type",
+                          "status"
+                        ]
+                      }
+                    },
+                    "summary": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "normal": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "error": {
+                          "type": "integer",
+                          "minimum": 0
+                        }
+                      },
+                      "required": ["total", "normal", "error"]
+                    }
+                  },
+                  "required": ["devices", "summary"]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Controller not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/controllers/{id}/history": {
+      "get": {
+        "summary": "Get contact-control device change history",
+        "description": "Get the read-only change history for a contact-control device (FR-007-G, seed only)",
+        "tags": ["Controllers"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Contact-control device ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Change history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "occurred_at": {
+                            "type": "string"
+                          },
+                          "operator": {
+                            "type": "string"
+                          },
+                          "change_type": {
+                            "type": "string",
+                            "enum": ["status_change", "fault_report", "inspection", "created"]
+                          },
+                          "from_status": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": ["normal", "error", "maintenance", "discarded", null]
+                          },
+                          "to_status": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": ["normal", "error", "maintenance", "discarded", null]
+                          },
+                          "memo": {
+                            "type": "string",
+                            "nullable": true
+                          }
+                        },
+                        "required": [
+                          "occurred_at",
+                          "operator",
+                          "change_type",
+                          "from_status",
+                          "to_status",
+                          "memo"
+                        ]
+                      }
+                    }
+                  },
+                  "required": ["items"]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Controller not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/controllers/{id}": {
+      "get": {
+        "summary": "Get contact-control device detail",
+        "description": "Get detailed information for a specific contact-control device",
+        "tags": ["Controllers"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Contact-control device ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact-control device detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "controller_id": {
+                      "type": "string"
+                    },
+                    "controller_number": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "name": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "store_code": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string"
+                    },
+                    "ip_address": {
+                      "type": "string"
+                    },
+                    "port": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": true
+                    },
+                    "firmware_version": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "control_port_count": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 64
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": ["normal", "error", "maintenance", "discarded"]
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "type": "string"
+                    },
+                    "device_count": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "device_summary": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "normal": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "error": {
+                          "type": "integer",
+                          "minimum": 0
+                        }
+                      },
+                      "required": ["total", "normal", "error"]
+                    }
+                  },
+                  "required": [
+                    "controller_id",
+                    "controller_number",
+                    "name",
+                    "store_code",
+                    "location",
+                    "ip_address",
+                    "port",
+                    "firmware_version",
+                    "control_port_count",
+                    "status",
+                    "created_at",
+                    "updated_at",
+                    "device_count",
+                    "device_summary"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Controller not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update contact-control device",
+        "description": "Update an existing contact-control device (FR-007). Also used for status-only changes.",
+        "tags": ["Controllers"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Contact-control device ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Contact-control device update payload (partial — only changed fields)",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  },
+                  "store_code": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "location": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  },
+                  "ip_address": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$"
+                  },
+                  "port": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65535
+                  },
+                  "firmware_version": {
+                    "type": "string",
+                    "nullable": true,
+                    "maxLength": 255
+                  },
+                  "control_port_count": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 64
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["normal", "error", "maintenance", "discarded"],
+                    "default": "normal"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact-control device updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "controller_id": {
+                      "type": "string"
+                    },
+                    "controller_number": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "name": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "store_code": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string"
+                    },
+                    "ip_address": {
+                      "type": "string"
+                    },
+                    "port": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": true
+                    },
+                    "firmware_version": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "control_port_count": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 64
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": ["normal", "error", "maintenance", "discarded"]
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "type": "string"
+                    },
+                    "device_count": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "device_summary": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "normal": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "error": {
+                          "type": "integer",
+                          "minimum": 0
+                        }
+                      },
+                      "required": ["total", "normal", "error"]
+                    }
+                  },
+                  "required": [
+                    "controller_id",
+                    "controller_number",
+                    "name",
+                    "store_code",
+                    "location",
+                    "ip_address",
+                    "port",
+                    "firmware_version",
+                    "control_port_count",
+                    "status",
+                    "created_at",
+                    "updated_at",
+                    "device_count",
+                    "device_summary"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Controller not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete contact-control device",
+        "description": "Delete a contact-control device. Blocked (409) while connected equipment remain (delete guard).",
+        "tags": ["Controllers"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Contact-control device ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Controller not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Has connected equipment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/controllers/export": {
+      "post": {
+        "summary": "Export contact-control device list as CSV",
+        "description": "Export the contact-control device list (接点制御装置) as a CSV file (UTF-8 with BOM) using the same filters and sort as the list screen without pagination",
+        "tags": ["Controllers"],
+        "requestBody": {
+          "description": "Export filters and sort",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "search": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["normal", "error", "maintenance", "discarded"]
+                  },
+                  "store_id": {
+                    "type": "string"
+                  },
+                  "sort_by": {
+                    "type": "string",
+                    "enum": [
+                      "controller_id",
+                      "name",
+                      "store_code",
+                      "location",
+                      "ip_address",
+                      "firmware_version",
+                      "control_port_count",
+                      "device_count",
+                      "status"
+                    ],
+                    "default": "controller_id"
+                  },
+                  "sort_order": {
+                    "type": "string",
+                    "enum": ["asc", "desc"],
+                    "default": "asc"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "CSV file (UTF-8 with BOM)"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/controllers": {
+      "get": {
+        "summary": "Get contact-control devices",
+        "description": "Get paginated list of contact-control devices (接点制御装置) with search, status/store filtering and sorting",
+        "tags": ["Controllers"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["normal", "error", "maintenance", "discarded"]
+            },
+            "required": false,
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "store_id",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "controller_id",
+                "name",
+                "store_code",
+                "location",
+                "ip_address",
+                "firmware_version",
+                "control_port_count",
+                "device_count",
+                "status"
+              ],
+              "default": "controller_id"
+            },
+            "required": false,
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            },
+            "required": false,
+            "name": "sort_order",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 50
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of contact-control devices",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "controller_id": {
+                            "type": "string"
+                          },
+                          "controller_number": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "name": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "store_code": {
+                            "type": "string"
+                          },
+                          "location": {
+                            "type": "string"
+                          },
+                          "ip_address": {
+                            "type": "string"
+                          },
+                          "port": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "exclusiveMinimum": true
+                          },
+                          "firmware_version": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "control_port_count": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 64
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["normal", "error", "maintenance", "discarded"]
+                          },
+                          "created_at": {
+                            "type": "string"
+                          },
+                          "updated_at": {
+                            "type": "string"
+                          },
+                          "device_count": {
+                            "type": "integer",
+                            "minimum": 0
+                          }
+                        },
+                        "required": [
+                          "controller_id",
+                          "controller_number",
+                          "name",
+                          "store_code",
+                          "location",
+                          "ip_address",
+                          "port",
+                          "firmware_version",
+                          "control_port_count",
+                          "status",
+                          "created_at",
+                          "updated_at",
+                          "device_count"
+                        ]
+                      }
+                    },
+                    "total": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "page": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "limit": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": true
+                    },
+                    "total_pages": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": ["items", "total", "page", "limit", "total_pages"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create contact-control device",
+        "description": "Register a new contact-control device (接点制御装置) (FR-007)",
+        "tags": ["Controllers"],
+        "requestBody": {
+          "description": "Contact-control device create payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  },
+                  "store_code": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "location": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  },
+                  "ip_address": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$"
+                  },
+                  "port": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65535
+                  },
+                  "firmware_version": {
+                    "type": "string",
+                    "nullable": true,
+                    "maxLength": 255
+                  },
+                  "control_port_count": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 64
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["normal", "error", "maintenance", "discarded"],
+                    "default": "normal"
+                  }
+                },
+                "required": [
+                  "name",
+                  "store_code",
+                  "location",
+                  "ip_address",
+                  "port",
+                  "control_port_count"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact-control device created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "controller_id": {
+                      "type": "string"
+                    },
+                    "controller_number": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "name": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "store_code": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string"
+                    },
+                    "ip_address": {
+                      "type": "string"
+                    },
+                    "port": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": true
+                    },
+                    "firmware_version": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "control_port_count": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 64
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": ["normal", "error", "maintenance", "discarded"]
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "type": "string"
+                    },
+                    "device_count": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "device_summary": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "normal": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "error": {
+                          "type": "integer",
+                          "minimum": 0
+                        }
+                      },
+                      "required": ["total", "normal", "error"]
+                    }
+                  },
+                  "required": [
+                    "controller_id",
+                    "controller_number",
+                    "name",
+                    "store_code",
+                    "location",
+                    "ip_address",
+                    "port",
+                    "firmware_version",
+                    "control_port_count",
+                    "status",
+                    "created_at",
+                    "updated_at",
+                    "device_count",
+                    "device_summary"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/equipment/{id}/history": {
+      "get": {
+        "summary": "Get equipment status change history",
+        "description": "Get read-only seed status change history for a connected equipment record",
+        "tags": ["Equipment"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Connected equipment ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Equipment status change history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "history": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "occurred_at": {
+                            "type": "string"
+                          },
+                          "operator_name": {
+                            "type": "string"
+                          },
+                          "event_type": {
+                            "type": "string",
+                            "enum": ["created", "status_change"]
+                          },
+                          "from_status": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": ["normal", "error", "maintenance", "discarded", null]
+                          },
+                          "to_status": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": ["normal", "error", "maintenance", "discarded", null]
+                          },
+                          "change_reason": {
+                            "type": "string",
+                            "nullable": true
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "occurred_at",
+                          "operator_name",
+                          "event_type",
+                          "from_status",
+                          "to_status",
+                          "change_reason"
+                        ]
+                      }
+                    }
+                  },
+                  "required": ["history"]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Equipment not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/equipment/{id}": {
+      "get": {
+        "summary": "Get connected equipment detail",
+        "description": "Get detailed information for a specific connected equipment record",
+        "tags": ["Equipment"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Connected equipment ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Connected equipment detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "equipment": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "store_id": {
+                          "type": "string"
+                        },
+                        "store_name": {
+                          "type": "string"
+                        },
+                        "controller_number": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "qr_code_id": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "equipment_type": {
+                          "type": "string",
+                          "enum": [
+                            "entry_gate",
+                            "hydrogen_water_server",
+                            "body_composition_monitor",
+                            "tanning_machine",
+                            "protein_server",
+                            "other"
+                          ]
+                        },
+                        "serial_number": {
+                          "type": "string"
+                        },
+                        "ip_address": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "mac_address": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "install_location": {
+                          "type": "string"
+                        },
+                        "installed_on": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["normal", "error", "maintenance", "discarded"]
+                        },
+                        "authentication_method": {
+                          "type": "string",
+                          "enum": ["member_qr_scan", "device_qr_scan", "none"]
+                        },
+                        "linked_contract_labels": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "updated_at": {
+                          "type": "string"
+                        },
+                        "usage_control_rule": {
+                          "type": "object",
+                          "properties": {
+                            "contract_link_types": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["main", "option", "per_use"]
+                              }
+                            },
+                            "option_type_label": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "main_contract_type_label": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "per_use_option_type_label": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "show_gate_stop_info": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "contract_link_types",
+                            "option_type_label",
+                            "main_contract_type_label",
+                            "per_use_option_type_label",
+                            "show_gate_stop_info"
+                          ]
+                        },
+                        "controller_summary": {
+                          "type": "object",
+                          "properties": {
+                            "controller_id": {
+                              "type": "string"
+                            },
+                            "ip_address": {
+                              "type": "string"
+                            },
+                            "port": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "exclusiveMinimum": true
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": ["normal", "error", "maintenance", "discarded"]
+                            },
+                            "name": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": ["controller_id", "ip_address", "port", "status", "name"]
+                        },
+                        "controller_id": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "remarks": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "created_at": {
+                          "type": "string"
+                        },
+                        "last_status_confirmed_at": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "store_id",
+                        "store_name",
+                        "controller_number",
+                        "qr_code_id",
+                        "equipment_type",
+                        "serial_number",
+                        "ip_address",
+                        "mac_address",
+                        "install_location",
+                        "installed_on",
+                        "status",
+                        "authentication_method",
+                        "linked_contract_labels",
+                        "updated_at",
+                        "usage_control_rule",
+                        "controller_summary",
+                        "controller_id",
+                        "remarks",
+                        "created_at",
+                        "last_status_confirmed_at"
+                      ]
+                    }
+                  },
+                  "required": ["equipment"]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Equipment not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update connected equipment",
+        "description": "Update an existing connected equipment record (FR-005)",
+        "tags": ["Equipment"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Connected equipment ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Connected equipment update payload (partial — only changed fields)",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  },
+                  "equipment_type": {
+                    "type": "string",
+                    "enum": [
+                      "entry_gate",
+                      "hydrogen_water_server",
+                      "body_composition_monitor",
+                      "tanning_machine",
+                      "protein_server",
+                      "other"
+                    ]
+                  },
+                  "serial_number": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  },
+                  "install_location": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  },
+                  "installed_on": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "controller_number": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": 0
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["normal", "error", "maintenance", "discarded"]
+                  },
+                  "authentication_method": {
+                    "type": "string",
+                    "nullable": true,
+                    "enum": ["member_qr_scan", "device_qr_scan", "none", null]
+                  },
+                  "controller_id": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "ip_address": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "mac_address": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "usage_control_rule": {
+                    "type": "object",
+                    "nullable": true,
+                    "properties": {
+                      "main_enabled": {
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "main_contract_type": {
+                        "type": "string",
+                        "nullable": true,
+                        "default": null
+                      },
+                      "option_enabled": {
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "option_type": {
+                        "type": "string",
+                        "nullable": true,
+                        "default": null
+                      },
+                      "per_use_enabled": {
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "per_use_option_type": {
+                        "type": "string",
+                        "nullable": true,
+                        "default": null
+                      }
+                    }
+                  },
+                  "remarks": {
+                    "type": "string",
+                    "nullable": true,
+                    "maxLength": 1000
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connected equipment updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "equipment": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "store_id": {
+                          "type": "string"
+                        },
+                        "store_name": {
+                          "type": "string"
+                        },
+                        "controller_number": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "qr_code_id": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "equipment_type": {
+                          "type": "string",
+                          "enum": [
+                            "entry_gate",
+                            "hydrogen_water_server",
+                            "body_composition_monitor",
+                            "tanning_machine",
+                            "protein_server",
+                            "other"
+                          ]
+                        },
+                        "serial_number": {
+                          "type": "string"
+                        },
+                        "ip_address": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "mac_address": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "install_location": {
+                          "type": "string"
+                        },
+                        "installed_on": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["normal", "error", "maintenance", "discarded"]
+                        },
+                        "authentication_method": {
+                          "type": "string",
+                          "enum": ["member_qr_scan", "device_qr_scan", "none"]
+                        },
+                        "linked_contract_labels": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "updated_at": {
+                          "type": "string"
+                        },
+                        "usage_control_rule": {
+                          "type": "object",
+                          "properties": {
+                            "contract_link_types": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["main", "option", "per_use"]
+                              }
+                            },
+                            "option_type_label": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "main_contract_type_label": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "per_use_option_type_label": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "show_gate_stop_info": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "contract_link_types",
+                            "option_type_label",
+                            "main_contract_type_label",
+                            "per_use_option_type_label",
+                            "show_gate_stop_info"
+                          ]
+                        },
+                        "controller_summary": {
+                          "type": "object",
+                          "properties": {
+                            "controller_id": {
+                              "type": "string"
+                            },
+                            "ip_address": {
+                              "type": "string"
+                            },
+                            "port": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "exclusiveMinimum": true
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": ["normal", "error", "maintenance", "discarded"]
+                            },
+                            "name": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": ["controller_id", "ip_address", "port", "status", "name"]
+                        },
+                        "controller_id": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "remarks": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "created_at": {
+                          "type": "string"
+                        },
+                        "last_status_confirmed_at": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "store_id",
+                        "store_name",
+                        "controller_number",
+                        "qr_code_id",
+                        "equipment_type",
+                        "serial_number",
+                        "ip_address",
+                        "mac_address",
+                        "install_location",
+                        "installed_on",
+                        "status",
+                        "authentication_method",
+                        "linked_contract_labels",
+                        "updated_at",
+                        "usage_control_rule",
+                        "controller_summary",
+                        "controller_id",
+                        "remarks",
+                        "created_at",
+                        "last_status_confirmed_at"
+                      ]
+                    }
+                  },
+                  "required": ["equipment"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Equipment not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete connected equipment",
+        "description": "Delete a connected equipment record",
+        "tags": ["Equipment"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Connected equipment ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted successfully"
+          },
+          "404": {
+            "description": "Equipment not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/equipment/bulk-status": {
+      "post": {
+        "summary": "Bulk update equipment status",
+        "description": "Update the operational status of multiple connected equipment records",
+        "tags": ["Equipment"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["normal", "error", "maintenance", "discarded"]
+                  },
+                  "change_reason": {
+                    "type": "string"
+                  }
+                },
+                "required": ["ids", "status"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bulk status update result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "updated_count": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "success": {
+                            "type": "boolean"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["normal", "error", "maintenance", "discarded"]
+                          },
+                          "error": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["id", "success"]
+                      }
+                    }
+                  },
+                  "required": ["success", "updated_count", "results"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/equipment/export": {
+      "post": {
+        "summary": "Export equipment list as CSV",
+        "description": "Export the connected equipment list as a CSV file (UTF-8 with BOM) using the same filters and sort as the list screen without pagination",
+        "tags": ["Equipment"],
+        "requestBody": {
+          "description": "Export filters and sort",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "search": {
+                    "type": "string"
+                  },
+                  "store_id": {
+                    "type": "string"
+                  },
+                  "equipment_type": {
+                    "type": "string",
+                    "enum": [
+                      "entry_gate",
+                      "hydrogen_water_server",
+                      "body_composition_monitor",
+                      "tanning_machine",
+                      "protein_server",
+                      "other"
+                    ]
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["normal", "error", "maintenance", "discarded"]
+                  },
+                  "sort_by": {
+                    "type": "string",
+                    "enum": [
+                      "id",
+                      "name",
+                      "controller_number",
+                      "qr_code_id",
+                      "equipment_type",
+                      "status",
+                      "updated_at"
+                    ],
+                    "default": "id"
+                  },
+                  "sort_order": {
+                    "type": "string",
+                    "enum": ["asc", "desc"],
+                    "default": "asc"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "CSV file (UTF-8 with BOM)"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/equipment": {
+      "get": {
+        "summary": "Get equipment list",
+        "description": "Get paginated list of connected equipment with filtering and sorting",
+        "tags": ["Equipment"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "name": "store_id",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "entry_gate",
+                "hydrogen_water_server",
+                "body_composition_monitor",
+                "tanning_machine",
+                "protein_server",
+                "other"
+              ]
+            },
+            "required": false,
+            "name": "equipment_type",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["normal", "error", "maintenance", "discarded"]
+            },
+            "required": false,
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "id",
+                "name",
+                "controller_number",
+                "qr_code_id",
+                "equipment_type",
+                "status",
+                "updated_at"
+              ],
+              "default": "id"
+            },
+            "required": false,
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            },
+            "required": false,
+            "name": "sort_order",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "default": 50
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of connected equipment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "store_id": {
+                            "type": "string"
+                          },
+                          "store_name": {
+                            "type": "string"
+                          },
+                          "controller_number": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "qr_code_id": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "equipment_type": {
+                            "type": "string",
+                            "enum": [
+                              "entry_gate",
+                              "hydrogen_water_server",
+                              "body_composition_monitor",
+                              "tanning_machine",
+                              "protein_server",
+                              "other"
+                            ]
+                          },
+                          "serial_number": {
+                            "type": "string"
+                          },
+                          "ip_address": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "mac_address": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "install_location": {
+                            "type": "string"
+                          },
+                          "installed_on": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["normal", "error", "maintenance", "discarded"]
+                          },
+                          "authentication_method": {
+                            "type": "string",
+                            "enum": ["member_qr_scan", "device_qr_scan", "none"]
+                          },
+                          "linked_contract_labels": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "updated_at": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "store_id",
+                          "store_name",
+                          "controller_number",
+                          "qr_code_id",
+                          "equipment_type",
+                          "serial_number",
+                          "ip_address",
+                          "mac_address",
+                          "install_location",
+                          "installed_on",
+                          "status",
+                          "authentication_method",
+                          "linked_contract_labels",
+                          "updated_at"
+                        ]
+                      }
+                    },
+                    "total": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "page": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "limit": {
+                      "type": "integer"
+                    },
+                    "total_pages": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": ["items", "total", "page", "limit", "total_pages"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create connected equipment",
+        "description": "Register a new connected equipment record (FR-003)",
+        "tags": ["Equipment"],
+        "requestBody": {
+          "description": "Connected equipment create payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  },
+                  "equipment_type": {
+                    "type": "string",
+                    "enum": [
+                      "entry_gate",
+                      "hydrogen_water_server",
+                      "body_composition_monitor",
+                      "tanning_machine",
+                      "protein_server",
+                      "other"
+                    ]
+                  },
+                  "serial_number": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  },
+                  "install_location": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                  },
+                  "installed_on": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "controller_number": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": 0
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["normal", "error", "maintenance", "discarded"],
+                    "default": "normal"
+                  },
+                  "authentication_method": {
+                    "type": "string",
+                    "nullable": true,
+                    "enum": ["member_qr_scan", "device_qr_scan", "none", null],
+                    "default": null
+                  },
+                  "controller_id": {
+                    "type": "string",
+                    "nullable": true,
+                    "default": null
+                  },
+                  "ip_address": {
+                    "type": "string",
+                    "nullable": true,
+                    "default": null
+                  },
+                  "mac_address": {
+                    "type": "string",
+                    "nullable": true,
+                    "default": null
+                  },
+                  "usage_control_rule": {
+                    "type": "object",
+                    "nullable": true,
+                    "properties": {
+                      "main_enabled": {
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "main_contract_type": {
+                        "type": "string",
+                        "nullable": true,
+                        "default": null
+                      },
+                      "option_enabled": {
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "option_type": {
+                        "type": "string",
+                        "nullable": true,
+                        "default": null
+                      },
+                      "per_use_enabled": {
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "per_use_option_type": {
+                        "type": "string",
+                        "nullable": true,
+                        "default": null
+                      }
+                    },
+                    "default": null
+                  },
+                  "remarks": {
+                    "type": "string",
+                    "nullable": true,
+                    "maxLength": 1000,
+                    "default": null
+                  }
+                },
+                "required": [
+                  "name",
+                  "equipment_type",
+                  "serial_number",
+                  "install_location",
+                  "installed_on",
+                  "controller_number"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Connected equipment created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "equipment": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "store_id": {
+                          "type": "string"
+                        },
+                        "store_name": {
+                          "type": "string"
+                        },
+                        "controller_number": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "qr_code_id": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "equipment_type": {
+                          "type": "string",
+                          "enum": [
+                            "entry_gate",
+                            "hydrogen_water_server",
+                            "body_composition_monitor",
+                            "tanning_machine",
+                            "protein_server",
+                            "other"
+                          ]
+                        },
+                        "serial_number": {
+                          "type": "string"
+                        },
+                        "ip_address": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "mac_address": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "install_location": {
+                          "type": "string"
+                        },
+                        "installed_on": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["normal", "error", "maintenance", "discarded"]
+                        },
+                        "authentication_method": {
+                          "type": "string",
+                          "enum": ["member_qr_scan", "device_qr_scan", "none"]
+                        },
+                        "linked_contract_labels": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "updated_at": {
+                          "type": "string"
+                        },
+                        "usage_control_rule": {
+                          "type": "object",
+                          "properties": {
+                            "contract_link_types": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["main", "option", "per_use"]
+                              }
+                            },
+                            "option_type_label": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "main_contract_type_label": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "per_use_option_type_label": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "show_gate_stop_info": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "contract_link_types",
+                            "option_type_label",
+                            "main_contract_type_label",
+                            "per_use_option_type_label",
+                            "show_gate_stop_info"
+                          ]
+                        },
+                        "controller_summary": {
+                          "type": "object",
+                          "properties": {
+                            "controller_id": {
+                              "type": "string"
+                            },
+                            "ip_address": {
+                              "type": "string"
+                            },
+                            "port": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "exclusiveMinimum": true
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": ["normal", "error", "maintenance", "discarded"]
+                            },
+                            "name": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": ["controller_id", "ip_address", "port", "status", "name"]
+                        },
+                        "controller_id": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "remarks": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "created_at": {
+                          "type": "string"
+                        },
+                        "last_status_confirmed_at": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "store_id",
+                        "store_name",
+                        "controller_number",
+                        "qr_code_id",
+                        "equipment_type",
+                        "serial_number",
+                        "ip_address",
+                        "mac_address",
+                        "install_location",
+                        "installed_on",
+                        "status",
+                        "authentication_method",
+                        "linked_contract_labels",
+                        "updated_at",
+                        "usage_control_rule",
+                        "controller_summary",
+                        "controller_id",
+                        "remarks",
+                        "created_at",
+                        "last_status_confirmed_at"
+                      ]
+                    }
+                  },
+                  "required": ["equipment"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crm/equipment/summary": {
+      "get": {
+        "summary": "Get store equipment summary",
+        "description": "Aggregate counts for the 店舗機器管理 tabs (connected equipment and controllers)",
+        "tags": ["Equipment"],
+        "responses": {
+          "200": {
+            "description": "Store equipment summary counts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "equipment_count": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "controllers_count": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": ["equipment_count", "controllers_count"]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
                 }
               }
             }
@@ -71678,6 +77083,90 @@
         }
       }
     },
+    "/crm/studios": {
+      "get": {
+        "summary": "List studios",
+        "description": "Get studio list, optionally filtered by store",
+        "tags": ["LessonSchedules"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "店舗IDでフィルタ"
+            },
+            "required": false,
+            "description": "店舗IDでフィルタ",
+            "name": "store_id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Studio list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "studios": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "スタジオID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "スタジオ名"
+                          },
+                          "physical_capacity": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "description": "物理定員"
+                          },
+                          "store_id": {
+                            "type": "string",
+                            "description": "店舗ID"
+                          }
+                        },
+                        "required": ["id", "name", "physical_capacity", "store_id"],
+                        "title": "StudioListItem",
+                        "description": "スタジオ一覧アイテム"
+                      }
+                    }
+                  },
+                  "required": ["studios"],
+                  "title": "GetStudiosResponse",
+                  "description": "スタジオ一覧レスポンス"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Invalid email or password",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/surveys/{id}": {
       "put": {
         "summary": "Update survey template",
@@ -74417,90 +79906,6 @@
                   "required": ["error"],
                   "title": "ErrorResponse",
                   "description": "Error response"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Invalid email or password",
-                      "description": "Error message"
-                    }
-                  },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/crm/studios": {
-      "get": {
-        "summary": "List studios",
-        "description": "Get studio list, optionally filtered by store",
-        "tags": ["LessonSchedules"],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "description": "店舗IDでフィルタ"
-            },
-            "required": false,
-            "description": "店舗IDでフィルタ",
-            "name": "store_id",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Studio list",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "studios": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "description": "スタジオID"
-                          },
-                          "name": {
-                            "type": "string",
-                            "description": "スタジオ名"
-                          },
-                          "physical_capacity": {
-                            "type": "integer",
-                            "minimum": 0,
-                            "description": "物理定員"
-                          },
-                          "store_id": {
-                            "type": "string",
-                            "description": "店舗ID"
-                          }
-                        },
-                        "required": ["id", "name", "physical_capacity", "store_id"],
-                        "title": "StudioListItem",
-                        "description": "スタジオ一覧アイテム"
-                      }
-                    }
-                  },
-                  "required": ["studios"],
-                  "title": "GetStudiosResponse",
-                  "description": "スタジオ一覧レスポンス"
                 }
               }
             }

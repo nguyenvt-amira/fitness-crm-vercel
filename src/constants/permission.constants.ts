@@ -122,6 +122,18 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
   '/lessons/:id/edit': Permission.LessonContentsEdit,
   '/lessons/:id/duplicate': Permission.LessonContentsCreate,
   '/lessons/create': Permission.LessonContentsCreate,
+
+  // Equipment
+  '/equipment': Permission.EquipmentView,
+  '/equipment/:id': Permission.EquipmentView,
+  '/equipment/create': Permission.EquipmentEdit,
+  '/equipment/:id/edit': Permission.EquipmentEdit,
+
+  // Controllers
+  '/controllers': Permission.ControllerView,
+  '/controllers/:id': Permission.ControllerView,
+  '/controllers/create': Permission.ControllerEdit,
+  '/controllers/:id/edit': Permission.ControllerEdit,
 };
 
 // ---------------------------------------------------------------------------
@@ -225,6 +237,12 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LessonContentsEdit,
     Permission.LessonContentsDelete,
     Permission.LessonContentsHistoryView,
+    Permission.EquipmentView,
+    Permission.EquipmentEdit,
+    Permission.EquipmentDelete,
+    Permission.ControllerView,
+    Permission.ControllerEdit,
+    Permission.ControllerDelete,
   ],
 
   [UserRole.Manager]: [
@@ -273,6 +291,12 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LessonsMemoManage,
     Permission.LessonsPenaltyRelease,
     Permission.LessonContentsView,
+    Permission.EquipmentView,
+    Permission.EquipmentEdit,
+    Permission.EquipmentDelete,
+    Permission.ControllerView,
+    Permission.ControllerEdit,
+    Permission.ControllerDelete,
   ],
 
   [UserRole.Staff]: [
@@ -324,6 +348,12 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LessonsMemoManage,
     Permission.LessonsPenaltyRelease,
     Permission.LessonContentsView,
+    Permission.EquipmentView,
+    Permission.EquipmentEdit,
+    Permission.EquipmentDelete,
+    Permission.ControllerView,
+    Permission.ControllerEdit,
+    Permission.ControllerDelete,
   ],
 
   // Trainer: own-session scope. Can manage their schedules/reservations/
@@ -352,5 +382,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LockersPendingExport,
     Permission.LessonsView,
     Permission.LessonContentsView,
+    Permission.EquipmentView,
+    Permission.ControllerView,
   ],
 };

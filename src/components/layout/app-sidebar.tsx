@@ -45,12 +45,16 @@ import { UserRole } from '@/types/permission.type';
 type SubItem = {
   label: string;
   href: RoutePattern;
+  /** Additional paths that mark this sub-item active (e.g. sibling tabs sharing the same screen). */
+  matchHrefs?: RoutePattern[];
 };
 
 type MenuItem = {
   label: string;
   icon: LucideIcon;
   href: RoutePattern;
+  /** Additional paths that mark this menu item active. */
+  matchHrefs?: RoutePattern[];
   subItems?: SubItem[];
 };
 
@@ -114,7 +118,10 @@ const menuItems: MenuItem[] = [
     label: '施設設備管理',
     icon: Building,
     href: '/lockers',
-    subItems: [{ label: 'ロッカー管理', href: '/lockers' }],
+    subItems: [
+      { label: 'ロッカー管理', href: '/lockers' },
+      { label: '店舗機器管理', href: '/equipment', matchHrefs: ['/controllers'] },
+    ],
   },
   {
     label: '商材・施策設定',
@@ -145,17 +152,33 @@ const menuItems: MenuItem[] = [
 // ---------------------------------------------------------------------------
 
 /**
+ * Returns true if the current pathname matches the given href via segment-aware
+ * prefix matching (e.g. /membership-applications must not match /members), or
+ * matches any of the provided extra paths.
+ */
+function matchesHref(pathname: string, href: RoutePattern, matchHrefs?: RoutePattern[]): boolean {
+  if (pathname === href || pathname.startsWith(href + '/')) return true;
+  return (
+    matchHrefs?.some((extra) => pathname === extra || pathname.startsWith(extra + '/')) ?? false
+  );
+}
+
+/**
+ * Returns true if a sub-item is active for the current pathname (own href or matchHrefs).
+ */
+function checkSubActive(pathname: string, sub: SubItem): boolean {
+  return matchesHref(pathname, sub.href, sub.matchHrefs);
+}
+
+/**
  * Returns true if the current pathname is under a menu item or any of its sub-items.
  * Uses segment-aware prefix matching to avoid false positives
  * (e.g. /membership-applications must not match /members).
  */
 function checkItemActive(pathname: string, item: MenuItem): boolean {
   if (item.href === '/') return pathname === '/';
-  if (pathname === item.href || pathname.startsWith(item.href + '/')) return true;
-  return (
-    item.subItems?.some((sub) => pathname === sub.href || pathname.startsWith(sub.href + '/')) ??
-    false
-  );
+  if (matchesHref(pathname, item.href, item.matchHrefs)) return true;
+  return item.subItems?.some((sub) => checkSubActive(pathname, sub)) ?? false;
 }
 
 /**
@@ -163,10 +186,7 @@ function checkItemActive(pathname: string, item: MenuItem): boolean {
  * Used to decide whether the parent button should receive the active highlight.
  */
 function checkAnySubActive(pathname: string, item: MenuItem): boolean {
-  return (
-    item.subItems?.some((sub) => pathname === sub.href || pathname.startsWith(sub.href + '/')) ??
-    false
-  );
+  return item.subItems?.some((sub) => checkSubActive(pathname, sub)) ?? false;
 }
 
 /**
@@ -270,8 +290,7 @@ export function AppSidebar() {
                         {active && (
                           <SidebarMenuSub>
                             {item.subItems!.map((sub) => {
-                              const subActive =
-                                pathname === sub.href || pathname.startsWith(sub.href + '/');
+                              const subActive = checkSubActive(pathname, sub);
                               const subAllowed = canAccess(sub.href, role, isLoading);
                               const subHqOnly = isPageHqOnly(sub.href);
                               const subDenyReason = subHqOnly

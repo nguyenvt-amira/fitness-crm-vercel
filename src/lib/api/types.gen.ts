@@ -18827,6 +18827,590 @@ export type GetPersonalPlansResponse = {
     };
 };
 
+export const EquipmentStatus = {
+    NORMAL: 'normal',
+    ERROR: 'error',
+    MAINTENANCE: 'maintenance',
+    DISCARDED: 'discarded'
+} as const;
+
+export type EquipmentStatus = typeof EquipmentStatus[keyof typeof EquipmentStatus];
+
+export const EquipmentType = {
+    ENTRY_GATE: 'entry_gate',
+    HYDROGEN_WATER_SERVER: 'hydrogen_water_server',
+    BODY_COMPOSITION_MONITOR: 'body_composition_monitor',
+    TANNING_MACHINE: 'tanning_machine',
+    PROTEIN_SERVER: 'protein_server',
+    OTHER: 'other'
+} as const;
+
+export type EquipmentType = typeof EquipmentType[keyof typeof EquipmentType];
+
+export const EquipmentAuthenticationMethod = {
+    MEMBER_QR_SCAN: 'member_qr_scan',
+    DEVICE_QR_SCAN: 'device_qr_scan',
+    NONE: 'none'
+} as const;
+
+export type EquipmentAuthenticationMethod = typeof EquipmentAuthenticationMethod[keyof typeof EquipmentAuthenticationMethod];
+
+export type ConnectedEquipmentListItem = {
+    id: string;
+    name: string;
+    store_id: string;
+    store_name: string;
+    controller_number: number;
+    qr_code_id: string | null;
+    equipment_type: 'entry_gate' | 'hydrogen_water_server' | 'body_composition_monitor' | 'tanning_machine' | 'protein_server' | 'other';
+    serial_number: string;
+    ip_address: string | null;
+    mac_address: string | null;
+    install_location: string;
+    installed_on: string;
+    status: 'normal' | 'error' | 'maintenance' | 'discarded';
+    authentication_method: 'member_qr_scan' | 'device_qr_scan' | 'none';
+    linked_contract_labels: Array<string>;
+    updated_at: string;
+};
+
+export type GetEquipmentQuery = {
+    search?: string;
+    store_id?: string;
+    equipment_type?: 'entry_gate' | 'hydrogen_water_server' | 'body_composition_monitor' | 'tanning_machine' | 'protein_server' | 'other';
+    status?: 'normal' | 'error' | 'maintenance' | 'discarded';
+    sort_by?: 'id' | 'name' | 'controller_number' | 'qr_code_id' | 'equipment_type' | 'status' | 'updated_at';
+    sort_order?: 'asc' | 'desc';
+    page?: number;
+    limit?: number;
+};
+
+export type GetEquipmentResponse = {
+    items: Array<{
+        id: string;
+        name: string;
+        store_id: string;
+        store_name: string;
+        controller_number: number;
+        qr_code_id: string | null;
+        equipment_type: 'entry_gate' | 'hydrogen_water_server' | 'body_composition_monitor' | 'tanning_machine' | 'protein_server' | 'other';
+        serial_number: string;
+        ip_address: string | null;
+        mac_address: string | null;
+        install_location: string;
+        installed_on: string;
+        status: 'normal' | 'error' | 'maintenance' | 'discarded';
+        authentication_method: 'member_qr_scan' | 'device_qr_scan' | 'none';
+        linked_contract_labels: Array<string>;
+        updated_at: string;
+    }>;
+    total: number;
+    page: number;
+    limit: number;
+    total_pages: number;
+};
+
+export type GetEquipmentSummaryResponse = {
+    equipment_count: number;
+    controllers_count: number;
+};
+
+export type ExportEquipmentRequest = {
+    search?: string;
+    store_id?: string;
+    equipment_type?: 'entry_gate' | 'hydrogen_water_server' | 'body_composition_monitor' | 'tanning_machine' | 'protein_server' | 'other';
+    status?: 'normal' | 'error' | 'maintenance' | 'discarded';
+    sort_by?: 'id' | 'name' | 'controller_number' | 'qr_code_id' | 'equipment_type' | 'status' | 'updated_at';
+    sort_order?: 'asc' | 'desc';
+};
+
+export type BulkUpdateEquipmentStatusRequest = {
+    ids: Array<string>;
+    status: 'normal' | 'error' | 'maintenance' | 'discarded';
+    change_reason?: string;
+};
+
+export type BulkUpdateEquipmentStatusResult = {
+    id: string;
+    success: boolean;
+    status?: 'normal' | 'error' | 'maintenance' | 'discarded';
+    error?: string;
+};
+
+export type BulkUpdateEquipmentStatusResponse = {
+    success: boolean;
+    updated_count: number;
+    results: Array<{
+        id: string;
+        success: boolean;
+        status?: 'normal' | 'error' | 'maintenance' | 'discarded';
+        error?: string;
+    }>;
+};
+
+export type UsageControlRuleDisplay = {
+    contract_link_types: Array<'main' | 'option' | 'per_use'>;
+    option_type_label: string | null;
+    main_contract_type_label: string | null;
+    per_use_option_type_label: string | null;
+    show_gate_stop_info: boolean;
+};
+
+export type ControllerSummary = {
+    controller_id: string;
+    ip_address: string;
+    port: number;
+    status: 'normal' | 'error' | 'maintenance' | 'discarded';
+    name: string | null;
+};
+
+export type ConnectedEquipmentDetail = {
+    id: string;
+    name: string;
+    store_id: string;
+    store_name: string;
+    controller_number: number;
+    qr_code_id: string | null;
+    equipment_type: 'entry_gate' | 'hydrogen_water_server' | 'body_composition_monitor' | 'tanning_machine' | 'protein_server' | 'other';
+    serial_number: string;
+    ip_address: string | null;
+    mac_address: string | null;
+    install_location: string;
+    installed_on: string;
+    status: 'normal' | 'error' | 'maintenance' | 'discarded';
+    authentication_method: 'member_qr_scan' | 'device_qr_scan' | 'none';
+    linked_contract_labels: Array<string>;
+    updated_at: string;
+    usage_control_rule: {
+        contract_link_types: Array<'main' | 'option' | 'per_use'>;
+        option_type_label: string | null;
+        main_contract_type_label: string | null;
+        per_use_option_type_label: string | null;
+        show_gate_stop_info: boolean;
+    };
+    controller_summary: {
+        controller_id: string;
+        ip_address: string;
+        port: number;
+        status: 'normal' | 'error' | 'maintenance' | 'discarded';
+        name: string | null;
+    };
+    controller_id: string | null;
+    remarks: string | null;
+    created_at: string;
+    last_status_confirmed_at: string;
+};
+
+export type EquipmentStatusHistoryItem = {
+    id: string;
+    occurred_at: string;
+    operator_name: string;
+    event_type: 'created' | 'status_change';
+    from_status: 'normal' | 'error' | 'maintenance' | 'discarded' | null;
+    to_status: 'normal' | 'error' | 'maintenance' | 'discarded' | null;
+    change_reason: string | null;
+};
+
+export type GetEquipmentDetailResponse = {
+    equipment: {
+        id: string;
+        name: string;
+        store_id: string;
+        store_name: string;
+        controller_number: number;
+        qr_code_id: string | null;
+        equipment_type: 'entry_gate' | 'hydrogen_water_server' | 'body_composition_monitor' | 'tanning_machine' | 'protein_server' | 'other';
+        serial_number: string;
+        ip_address: string | null;
+        mac_address: string | null;
+        install_location: string;
+        installed_on: string;
+        status: 'normal' | 'error' | 'maintenance' | 'discarded';
+        authentication_method: 'member_qr_scan' | 'device_qr_scan' | 'none';
+        linked_contract_labels: Array<string>;
+        updated_at: string;
+        usage_control_rule: {
+            contract_link_types: Array<'main' | 'option' | 'per_use'>;
+            option_type_label: string | null;
+            main_contract_type_label: string | null;
+            per_use_option_type_label: string | null;
+            show_gate_stop_info: boolean;
+        };
+        controller_summary: {
+            controller_id: string;
+            ip_address: string;
+            port: number;
+            status: 'normal' | 'error' | 'maintenance' | 'discarded';
+            name: string | null;
+        };
+        controller_id: string | null;
+        remarks: string | null;
+        created_at: string;
+        last_status_confirmed_at: string;
+    };
+};
+
+export type GetEquipmentHistoryResponse = {
+    history: Array<{
+        id: string;
+        occurred_at: string;
+        operator_name: string;
+        event_type: 'created' | 'status_change';
+        from_status: 'normal' | 'error' | 'maintenance' | 'discarded' | null;
+        to_status: 'normal' | 'error' | 'maintenance' | 'discarded' | null;
+        change_reason: string | null;
+    }>;
+};
+
+export type EquipmentUsageControlRuleInput = {
+    main_enabled?: boolean;
+    main_contract_type?: string | null;
+    option_enabled?: boolean;
+    option_type?: string | null;
+    per_use_enabled?: boolean;
+    per_use_option_type?: string | null;
+};
+
+export type UpsertEquipmentRequest = {
+    name: string;
+    equipment_type: 'entry_gate' | 'hydrogen_water_server' | 'body_composition_monitor' | 'tanning_machine' | 'protein_server' | 'other';
+    serial_number: string;
+    install_location: string;
+    installed_on: string;
+    controller_number: number | null;
+    status?: 'normal' | 'error' | 'maintenance' | 'discarded';
+    authentication_method?: 'member_qr_scan' | 'device_qr_scan' | 'none' | null;
+    controller_id?: string | null;
+    ip_address?: string | null;
+    mac_address?: string | null;
+    usage_control_rule?: {
+        main_enabled?: boolean;
+        main_contract_type?: string | null;
+        option_enabled?: boolean;
+        option_type?: string | null;
+        per_use_enabled?: boolean;
+        per_use_option_type?: string | null;
+    } | null;
+    remarks?: string | null;
+};
+
+export type PatchEquipmentRequest = {
+    name?: string;
+    equipment_type?: 'entry_gate' | 'hydrogen_water_server' | 'body_composition_monitor' | 'tanning_machine' | 'protein_server' | 'other';
+    serial_number?: string;
+    install_location?: string;
+    installed_on?: string;
+    controller_number?: number | null;
+    status?: 'normal' | 'error' | 'maintenance' | 'discarded';
+    authentication_method?: 'member_qr_scan' | 'device_qr_scan' | 'none' | null;
+    controller_id?: string | null;
+    ip_address?: string | null;
+    mac_address?: string | null;
+    usage_control_rule?: {
+        main_enabled?: boolean;
+        main_contract_type?: string | null;
+        option_enabled?: boolean;
+        option_type?: string | null;
+        per_use_enabled?: boolean;
+        per_use_option_type?: string | null;
+    } | null;
+    remarks?: string | null;
+};
+
+export type CreateEquipmentResponse = {
+    equipment: {
+        id: string;
+        name: string;
+        store_id: string;
+        store_name: string;
+        controller_number: number;
+        qr_code_id: string | null;
+        equipment_type: 'entry_gate' | 'hydrogen_water_server' | 'body_composition_monitor' | 'tanning_machine' | 'protein_server' | 'other';
+        serial_number: string;
+        ip_address: string | null;
+        mac_address: string | null;
+        install_location: string;
+        installed_on: string;
+        status: 'normal' | 'error' | 'maintenance' | 'discarded';
+        authentication_method: 'member_qr_scan' | 'device_qr_scan' | 'none';
+        linked_contract_labels: Array<string>;
+        updated_at: string;
+        usage_control_rule: {
+            contract_link_types: Array<'main' | 'option' | 'per_use'>;
+            option_type_label: string | null;
+            main_contract_type_label: string | null;
+            per_use_option_type_label: string | null;
+            show_gate_stop_info: boolean;
+        };
+        controller_summary: {
+            controller_id: string;
+            ip_address: string;
+            port: number;
+            status: 'normal' | 'error' | 'maintenance' | 'discarded';
+            name: string | null;
+        };
+        controller_id: string | null;
+        remarks: string | null;
+        created_at: string;
+        last_status_confirmed_at: string;
+    };
+};
+
+export type UpdateEquipmentResponse = {
+    equipment: {
+        id: string;
+        name: string;
+        store_id: string;
+        store_name: string;
+        controller_number: number;
+        qr_code_id: string | null;
+        equipment_type: 'entry_gate' | 'hydrogen_water_server' | 'body_composition_monitor' | 'tanning_machine' | 'protein_server' | 'other';
+        serial_number: string;
+        ip_address: string | null;
+        mac_address: string | null;
+        install_location: string;
+        installed_on: string;
+        status: 'normal' | 'error' | 'maintenance' | 'discarded';
+        authentication_method: 'member_qr_scan' | 'device_qr_scan' | 'none';
+        linked_contract_labels: Array<string>;
+        updated_at: string;
+        usage_control_rule: {
+            contract_link_types: Array<'main' | 'option' | 'per_use'>;
+            option_type_label: string | null;
+            main_contract_type_label: string | null;
+            per_use_option_type_label: string | null;
+            show_gate_stop_info: boolean;
+        };
+        controller_summary: {
+            controller_id: string;
+            ip_address: string;
+            port: number;
+            status: 'normal' | 'error' | 'maintenance' | 'discarded';
+            name: string | null;
+        };
+        controller_id: string | null;
+        remarks: string | null;
+        created_at: string;
+        last_status_confirmed_at: string;
+    };
+};
+
+export type Controller = {
+    controller_id: string;
+    controller_number: number;
+    name: string | null;
+    store_code: string;
+    location: string;
+    ip_address: string;
+    port: number;
+    firmware_version: string | null;
+    control_port_count: number;
+    status: 'normal' | 'error' | 'maintenance' | 'discarded';
+    created_at: string;
+    updated_at: string;
+};
+
+export type ControllerListItem = {
+    controller_id: string;
+    controller_number: number;
+    name: string | null;
+    store_code: string;
+    location: string;
+    ip_address: string;
+    port: number;
+    firmware_version: string | null;
+    control_port_count: number;
+    status: 'normal' | 'error' | 'maintenance' | 'discarded';
+    created_at: string;
+    updated_at: string;
+    device_count: number;
+};
+
+export type ControllerDeviceSummary = {
+    total: number;
+    normal: number;
+    error: number;
+};
+
+export type ControllerDetail = {
+    controller_id: string;
+    controller_number: number;
+    name: string | null;
+    store_code: string;
+    location: string;
+    ip_address: string;
+    port: number;
+    firmware_version: string | null;
+    control_port_count: number;
+    status: 'normal' | 'error' | 'maintenance' | 'discarded';
+    created_at: string;
+    updated_at: string;
+    device_count: number;
+    device_summary: {
+        total: number;
+        normal: number;
+        error: number;
+    };
+};
+
+export type ControllerConnectedDevice = {
+    equipment_id: string;
+    name: string;
+    controller_number: number;
+    gate_type: string | null;
+    status: 'normal' | 'error' | 'maintenance' | 'discarded';
+};
+
+export type ControllerHistoryItem = {
+    occurred_at: string;
+    operator: string;
+    change_type: 'status_change' | 'fault_report' | 'inspection' | 'created';
+    from_status: 'normal' | 'error' | 'maintenance' | 'discarded' | null;
+    to_status: 'normal' | 'error' | 'maintenance' | 'discarded' | null;
+    memo: string | null;
+};
+
+export type GetControllersResponse = {
+    items: Array<{
+        controller_id: string;
+        controller_number: number;
+        name: string | null;
+        store_code: string;
+        location: string;
+        ip_address: string;
+        port: number;
+        firmware_version: string | null;
+        control_port_count: number;
+        status: 'normal' | 'error' | 'maintenance' | 'discarded';
+        created_at: string;
+        updated_at: string;
+        device_count: number;
+    }>;
+    total: number;
+    page: number;
+    limit: number;
+    total_pages: number;
+};
+
+export type ExportControllersRequest = {
+    search?: string;
+    status?: 'normal' | 'error' | 'maintenance' | 'discarded';
+    store_id?: string;
+    sort_by?: 'controller_id' | 'name' | 'store_code' | 'location' | 'ip_address' | 'firmware_version' | 'control_port_count' | 'device_count' | 'status';
+    sort_order?: 'asc' | 'desc';
+};
+
+export type GetControllerDevicesResponse = {
+    devices: Array<{
+        equipment_id: string;
+        name: string;
+        controller_number: number;
+        gate_type: string | null;
+        status: 'normal' | 'error' | 'maintenance' | 'discarded';
+    }>;
+    summary: {
+        total: number;
+        normal: number;
+        error: number;
+    };
+};
+
+export type GetControllerHistoryResponse = {
+    items: Array<{
+        occurred_at: string;
+        operator: string;
+        change_type: 'status_change' | 'fault_report' | 'inspection' | 'created';
+        from_status: 'normal' | 'error' | 'maintenance' | 'discarded' | null;
+        to_status: 'normal' | 'error' | 'maintenance' | 'discarded' | null;
+        memo: string | null;
+    }>;
+};
+
+export type UpsertControllerRequest = {
+    name: string;
+    store_code: string;
+    location: string;
+    ip_address: string;
+    port: number;
+    firmware_version?: string | null;
+    control_port_count: number;
+    status?: 'normal' | 'error' | 'maintenance' | 'discarded';
+};
+
+export type PatchControllerRequest = {
+    name?: string;
+    store_code?: string;
+    location?: string;
+    ip_address?: string;
+    port?: number;
+    firmware_version?: string | null;
+    control_port_count?: number;
+    status?: 'normal' | 'error' | 'maintenance' | 'discarded';
+};
+
+export type CreateControllerResponse = {
+    controller_id: string;
+    controller_number: number;
+    name: string | null;
+    store_code: string;
+    location: string;
+    ip_address: string;
+    port: number;
+    firmware_version: string | null;
+    control_port_count: number;
+    status: 'normal' | 'error' | 'maintenance' | 'discarded';
+    created_at: string;
+    updated_at: string;
+    device_count: number;
+    device_summary: {
+        total: number;
+        normal: number;
+        error: number;
+    };
+};
+
+export type UpdateControllerResponse = {
+    controller_id: string;
+    controller_number: number;
+    name: string | null;
+    store_code: string;
+    location: string;
+    ip_address: string;
+    port: number;
+    firmware_version: string | null;
+    control_port_count: number;
+    status: 'normal' | 'error' | 'maintenance' | 'discarded';
+    created_at: string;
+    updated_at: string;
+    device_count: number;
+    device_summary: {
+        total: number;
+        normal: number;
+        error: number;
+    };
+};
+
+export type GetControllerDetailResponse = {
+    controller_id: string;
+    controller_number: number;
+    name: string | null;
+    store_code: string;
+    location: string;
+    ip_address: string;
+    port: number;
+    firmware_version: string | null;
+    control_port_count: number;
+    status: 'normal' | 'error' | 'maintenance' | 'discarded';
+    created_at: string;
+    updated_at: string;
+    device_count: number;
+    device_summary: {
+        total: number;
+        normal: number;
+        error: number;
+    };
+};
+
 export type PostAuthLoginData = {
     /**
      * LoginRequest
@@ -22353,6 +22937,1261 @@ export type PostCrmCampaignsResponses = {
 };
 
 export type PostCrmCampaignsResponse = PostCrmCampaignsResponses[keyof PostCrmCampaignsResponses];
+
+export type GetCrmControllersByIdDevicesData = {
+    body?: never;
+    path: {
+        /**
+         * Contact-control device ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/controllers/{id}/devices';
+};
+
+export type GetCrmControllersByIdDevicesErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmControllersByIdDevicesError = GetCrmControllersByIdDevicesErrors[keyof GetCrmControllersByIdDevicesErrors];
+
+export type GetCrmControllersByIdDevicesResponses = {
+    /**
+     * Connected equipment list
+     */
+    200: {
+        devices: Array<{
+            equipment_id: string;
+            name: string;
+            controller_number: number;
+            gate_type: string | null;
+            status: 'normal' | 'error' | 'maintenance' | 'discarded';
+        }>;
+        summary: {
+            total: number;
+            normal: number;
+            error: number;
+        };
+    };
+};
+
+export type GetCrmControllersByIdDevicesResponse = GetCrmControllersByIdDevicesResponses[keyof GetCrmControllersByIdDevicesResponses];
+
+export type GetCrmControllersByIdHistoryData = {
+    body?: never;
+    path: {
+        /**
+         * Contact-control device ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/controllers/{id}/history';
+};
+
+export type GetCrmControllersByIdHistoryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmControllersByIdHistoryError = GetCrmControllersByIdHistoryErrors[keyof GetCrmControllersByIdHistoryErrors];
+
+export type GetCrmControllersByIdHistoryResponses = {
+    /**
+     * Change history
+     */
+    200: {
+        items: Array<{
+            occurred_at: string;
+            operator: string;
+            change_type: 'status_change' | 'fault_report' | 'inspection' | 'created';
+            from_status: 'normal' | 'error' | 'maintenance' | 'discarded' | null;
+            to_status: 'normal' | 'error' | 'maintenance' | 'discarded' | null;
+            memo: string | null;
+        }>;
+    };
+};
+
+export type GetCrmControllersByIdHistoryResponse = GetCrmControllersByIdHistoryResponses[keyof GetCrmControllersByIdHistoryResponses];
+
+export type DeleteCrmControllersByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Contact-control device ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/controllers/{id}';
+};
+
+export type DeleteCrmControllersByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    409: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type DeleteCrmControllersByIdError = DeleteCrmControllersByIdErrors[keyof DeleteCrmControllersByIdErrors];
+
+export type DeleteCrmControllersByIdResponses = {
+    /**
+     * Deleted successfully
+     */
+    204: void;
+};
+
+export type DeleteCrmControllersByIdResponse = DeleteCrmControllersByIdResponses[keyof DeleteCrmControllersByIdResponses];
+
+export type GetCrmControllersByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Contact-control device ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/controllers/{id}';
+};
+
+export type GetCrmControllersByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmControllersByIdError = GetCrmControllersByIdErrors[keyof GetCrmControllersByIdErrors];
+
+export type GetCrmControllersByIdResponses = {
+    /**
+     * Contact-control device detail
+     */
+    200: {
+        controller_id: string;
+        controller_number: number;
+        name: string | null;
+        store_code: string;
+        location: string;
+        ip_address: string;
+        port: number;
+        firmware_version: string | null;
+        control_port_count: number;
+        status: 'normal' | 'error' | 'maintenance' | 'discarded';
+        created_at: string;
+        updated_at: string;
+        device_count: number;
+        device_summary: {
+            total: number;
+            normal: number;
+            error: number;
+        };
+    };
+};
+
+export type GetCrmControllersByIdResponse = GetCrmControllersByIdResponses[keyof GetCrmControllersByIdResponses];
+
+export type PatchCrmControllersByIdData = {
+    /**
+     * Contact-control device update payload (partial — only changed fields)
+     */
+    body?: {
+        name?: string;
+        store_code?: string;
+        location?: string;
+        ip_address?: string;
+        port?: number;
+        firmware_version?: string | null;
+        control_port_count?: number;
+        status?: 'normal' | 'error' | 'maintenance' | 'discarded';
+    };
+    path: {
+        /**
+         * Contact-control device ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/controllers/{id}';
+};
+
+export type PatchCrmControllersByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PatchCrmControllersByIdError = PatchCrmControllersByIdErrors[keyof PatchCrmControllersByIdErrors];
+
+export type PatchCrmControllersByIdResponses = {
+    /**
+     * Contact-control device updated
+     */
+    200: {
+        controller_id: string;
+        controller_number: number;
+        name: string | null;
+        store_code: string;
+        location: string;
+        ip_address: string;
+        port: number;
+        firmware_version: string | null;
+        control_port_count: number;
+        status: 'normal' | 'error' | 'maintenance' | 'discarded';
+        created_at: string;
+        updated_at: string;
+        device_count: number;
+        device_summary: {
+            total: number;
+            normal: number;
+            error: number;
+        };
+    };
+};
+
+export type PatchCrmControllersByIdResponse = PatchCrmControllersByIdResponses[keyof PatchCrmControllersByIdResponses];
+
+export type PostCrmControllersExportData = {
+    /**
+     * Export filters and sort
+     */
+    body?: {
+        search?: string;
+        status?: 'normal' | 'error' | 'maintenance' | 'discarded';
+        store_id?: string;
+        sort_by?: 'controller_id' | 'name' | 'store_code' | 'location' | 'ip_address' | 'firmware_version' | 'control_port_count' | 'device_count' | 'status';
+        sort_order?: 'asc' | 'desc';
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/controllers/export';
+};
+
+export type PostCrmControllersExportErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmControllersExportError = PostCrmControllersExportErrors[keyof PostCrmControllersExportErrors];
+
+export type PostCrmControllersExportResponses = {
+    /**
+     * CSV file (UTF-8 with BOM)
+     */
+    200: unknown;
+};
+
+export type GetCrmControllersData = {
+    body?: never;
+    path?: never;
+    query?: {
+        search?: string;
+        status?: 'normal' | 'error' | 'maintenance' | 'discarded';
+        store_id?: string;
+        sort_by?: 'controller_id' | 'name' | 'store_code' | 'location' | 'ip_address' | 'firmware_version' | 'control_port_count' | 'device_count' | 'status';
+        sort_order?: 'asc' | 'desc';
+        page?: number;
+        limit?: number;
+    };
+    url: '/crm/controllers';
+};
+
+export type GetCrmControllersErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmControllersError = GetCrmControllersErrors[keyof GetCrmControllersErrors];
+
+export type GetCrmControllersResponses = {
+    /**
+     * List of contact-control devices
+     */
+    200: {
+        items: Array<{
+            controller_id: string;
+            controller_number: number;
+            name: string | null;
+            store_code: string;
+            location: string;
+            ip_address: string;
+            port: number;
+            firmware_version: string | null;
+            control_port_count: number;
+            status: 'normal' | 'error' | 'maintenance' | 'discarded';
+            created_at: string;
+            updated_at: string;
+            device_count: number;
+        }>;
+        total: number;
+        page: number;
+        limit: number;
+        total_pages: number;
+    };
+};
+
+export type GetCrmControllersResponse = GetCrmControllersResponses[keyof GetCrmControllersResponses];
+
+export type PostCrmControllersData = {
+    /**
+     * Contact-control device create payload
+     */
+    body?: {
+        name: string;
+        store_code: string;
+        location: string;
+        ip_address: string;
+        port: number;
+        firmware_version?: string | null;
+        control_port_count: number;
+        status?: 'normal' | 'error' | 'maintenance' | 'discarded';
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/controllers';
+};
+
+export type PostCrmControllersErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmControllersError = PostCrmControllersErrors[keyof PostCrmControllersErrors];
+
+export type PostCrmControllersResponses = {
+    /**
+     * Contact-control device created
+     */
+    201: {
+        controller_id: string;
+        controller_number: number;
+        name: string | null;
+        store_code: string;
+        location: string;
+        ip_address: string;
+        port: number;
+        firmware_version: string | null;
+        control_port_count: number;
+        status: 'normal' | 'error' | 'maintenance' | 'discarded';
+        created_at: string;
+        updated_at: string;
+        device_count: number;
+        device_summary: {
+            total: number;
+            normal: number;
+            error: number;
+        };
+    };
+};
+
+export type PostCrmControllersResponse = PostCrmControllersResponses[keyof PostCrmControllersResponses];
+
+export type GetCrmEquipmentByIdHistoryData = {
+    body?: never;
+    path: {
+        /**
+         * Connected equipment ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/equipment/{id}/history';
+};
+
+export type GetCrmEquipmentByIdHistoryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmEquipmentByIdHistoryError = GetCrmEquipmentByIdHistoryErrors[keyof GetCrmEquipmentByIdHistoryErrors];
+
+export type GetCrmEquipmentByIdHistoryResponses = {
+    /**
+     * Equipment status change history
+     */
+    200: {
+        history: Array<{
+            id: string;
+            occurred_at: string;
+            operator_name: string;
+            event_type: 'created' | 'status_change';
+            from_status: 'normal' | 'error' | 'maintenance' | 'discarded' | null;
+            to_status: 'normal' | 'error' | 'maintenance' | 'discarded' | null;
+            change_reason: string | null;
+        }>;
+    };
+};
+
+export type GetCrmEquipmentByIdHistoryResponse = GetCrmEquipmentByIdHistoryResponses[keyof GetCrmEquipmentByIdHistoryResponses];
+
+export type DeleteCrmEquipmentByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Connected equipment ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/equipment/{id}';
+};
+
+export type DeleteCrmEquipmentByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type DeleteCrmEquipmentByIdError = DeleteCrmEquipmentByIdErrors[keyof DeleteCrmEquipmentByIdErrors];
+
+export type DeleteCrmEquipmentByIdResponses = {
+    /**
+     * Deleted successfully
+     */
+    204: void;
+};
+
+export type DeleteCrmEquipmentByIdResponse = DeleteCrmEquipmentByIdResponses[keyof DeleteCrmEquipmentByIdResponses];
+
+export type GetCrmEquipmentByIdData = {
+    body?: never;
+    path: {
+        /**
+         * Connected equipment ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/equipment/{id}';
+};
+
+export type GetCrmEquipmentByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmEquipmentByIdError = GetCrmEquipmentByIdErrors[keyof GetCrmEquipmentByIdErrors];
+
+export type GetCrmEquipmentByIdResponses = {
+    /**
+     * Connected equipment detail
+     */
+    200: {
+        equipment: {
+            id: string;
+            name: string;
+            store_id: string;
+            store_name: string;
+            controller_number: number;
+            qr_code_id: string | null;
+            equipment_type: 'entry_gate' | 'hydrogen_water_server' | 'body_composition_monitor' | 'tanning_machine' | 'protein_server' | 'other';
+            serial_number: string;
+            ip_address: string | null;
+            mac_address: string | null;
+            install_location: string;
+            installed_on: string;
+            status: 'normal' | 'error' | 'maintenance' | 'discarded';
+            authentication_method: 'member_qr_scan' | 'device_qr_scan' | 'none';
+            linked_contract_labels: Array<string>;
+            updated_at: string;
+            usage_control_rule: {
+                contract_link_types: Array<'main' | 'option' | 'per_use'>;
+                option_type_label: string | null;
+                main_contract_type_label: string | null;
+                per_use_option_type_label: string | null;
+                show_gate_stop_info: boolean;
+            };
+            controller_summary: {
+                controller_id: string;
+                ip_address: string;
+                port: number;
+                status: 'normal' | 'error' | 'maintenance' | 'discarded';
+                name: string | null;
+            };
+            controller_id: string | null;
+            remarks: string | null;
+            created_at: string;
+            last_status_confirmed_at: string;
+        };
+    };
+};
+
+export type GetCrmEquipmentByIdResponse = GetCrmEquipmentByIdResponses[keyof GetCrmEquipmentByIdResponses];
+
+export type PatchCrmEquipmentByIdData = {
+    /**
+     * Connected equipment update payload (partial — only changed fields)
+     */
+    body?: {
+        name?: string;
+        equipment_type?: 'entry_gate' | 'hydrogen_water_server' | 'body_composition_monitor' | 'tanning_machine' | 'protein_server' | 'other';
+        serial_number?: string;
+        install_location?: string;
+        installed_on?: string;
+        controller_number?: number | null;
+        status?: 'normal' | 'error' | 'maintenance' | 'discarded';
+        authentication_method?: 'member_qr_scan' | 'device_qr_scan' | 'none' | null;
+        controller_id?: string | null;
+        ip_address?: string | null;
+        mac_address?: string | null;
+        usage_control_rule?: {
+            main_enabled?: boolean;
+            main_contract_type?: string | null;
+            option_enabled?: boolean;
+            option_type?: string | null;
+            per_use_enabled?: boolean;
+            per_use_option_type?: string | null;
+        } | null;
+        remarks?: string | null;
+    };
+    path: {
+        /**
+         * Connected equipment ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/equipment/{id}';
+};
+
+export type PatchCrmEquipmentByIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PatchCrmEquipmentByIdError = PatchCrmEquipmentByIdErrors[keyof PatchCrmEquipmentByIdErrors];
+
+export type PatchCrmEquipmentByIdResponses = {
+    /**
+     * Connected equipment updated
+     */
+    200: {
+        equipment: {
+            id: string;
+            name: string;
+            store_id: string;
+            store_name: string;
+            controller_number: number;
+            qr_code_id: string | null;
+            equipment_type: 'entry_gate' | 'hydrogen_water_server' | 'body_composition_monitor' | 'tanning_machine' | 'protein_server' | 'other';
+            serial_number: string;
+            ip_address: string | null;
+            mac_address: string | null;
+            install_location: string;
+            installed_on: string;
+            status: 'normal' | 'error' | 'maintenance' | 'discarded';
+            authentication_method: 'member_qr_scan' | 'device_qr_scan' | 'none';
+            linked_contract_labels: Array<string>;
+            updated_at: string;
+            usage_control_rule: {
+                contract_link_types: Array<'main' | 'option' | 'per_use'>;
+                option_type_label: string | null;
+                main_contract_type_label: string | null;
+                per_use_option_type_label: string | null;
+                show_gate_stop_info: boolean;
+            };
+            controller_summary: {
+                controller_id: string;
+                ip_address: string;
+                port: number;
+                status: 'normal' | 'error' | 'maintenance' | 'discarded';
+                name: string | null;
+            };
+            controller_id: string | null;
+            remarks: string | null;
+            created_at: string;
+            last_status_confirmed_at: string;
+        };
+    };
+};
+
+export type PatchCrmEquipmentByIdResponse = PatchCrmEquipmentByIdResponses[keyof PatchCrmEquipmentByIdResponses];
+
+export type PostCrmEquipmentBulkStatusData = {
+    body?: {
+        ids: Array<string>;
+        status: 'normal' | 'error' | 'maintenance' | 'discarded';
+        change_reason?: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/equipment/bulk-status';
+};
+
+export type PostCrmEquipmentBulkStatusErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmEquipmentBulkStatusError = PostCrmEquipmentBulkStatusErrors[keyof PostCrmEquipmentBulkStatusErrors];
+
+export type PostCrmEquipmentBulkStatusResponses = {
+    /**
+     * Bulk status update result
+     */
+    200: {
+        success: boolean;
+        updated_count: number;
+        results: Array<{
+            id: string;
+            success: boolean;
+            status?: 'normal' | 'error' | 'maintenance' | 'discarded';
+            error?: string;
+        }>;
+    };
+};
+
+export type PostCrmEquipmentBulkStatusResponse = PostCrmEquipmentBulkStatusResponses[keyof PostCrmEquipmentBulkStatusResponses];
+
+export type PostCrmEquipmentExportData = {
+    /**
+     * Export filters and sort
+     */
+    body?: {
+        search?: string;
+        store_id?: string;
+        equipment_type?: 'entry_gate' | 'hydrogen_water_server' | 'body_composition_monitor' | 'tanning_machine' | 'protein_server' | 'other';
+        status?: 'normal' | 'error' | 'maintenance' | 'discarded';
+        sort_by?: 'id' | 'name' | 'controller_number' | 'qr_code_id' | 'equipment_type' | 'status' | 'updated_at';
+        sort_order?: 'asc' | 'desc';
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/equipment/export';
+};
+
+export type PostCrmEquipmentExportErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmEquipmentExportError = PostCrmEquipmentExportErrors[keyof PostCrmEquipmentExportErrors];
+
+export type PostCrmEquipmentExportResponses = {
+    /**
+     * CSV file (UTF-8 with BOM)
+     */
+    200: unknown;
+};
+
+export type GetCrmEquipmentData = {
+    body?: never;
+    path?: never;
+    query?: {
+        search?: string;
+        store_id?: string;
+        equipment_type?: 'entry_gate' | 'hydrogen_water_server' | 'body_composition_monitor' | 'tanning_machine' | 'protein_server' | 'other';
+        status?: 'normal' | 'error' | 'maintenance' | 'discarded';
+        sort_by?: 'id' | 'name' | 'controller_number' | 'qr_code_id' | 'equipment_type' | 'status' | 'updated_at';
+        sort_order?: 'asc' | 'desc';
+        page?: number;
+        limit?: number;
+    };
+    url: '/crm/equipment';
+};
+
+export type GetCrmEquipmentResponses = {
+    /**
+     * List of connected equipment
+     */
+    200: {
+        items: Array<{
+            id: string;
+            name: string;
+            store_id: string;
+            store_name: string;
+            controller_number: number;
+            qr_code_id: string | null;
+            equipment_type: 'entry_gate' | 'hydrogen_water_server' | 'body_composition_monitor' | 'tanning_machine' | 'protein_server' | 'other';
+            serial_number: string;
+            ip_address: string | null;
+            mac_address: string | null;
+            install_location: string;
+            installed_on: string;
+            status: 'normal' | 'error' | 'maintenance' | 'discarded';
+            authentication_method: 'member_qr_scan' | 'device_qr_scan' | 'none';
+            linked_contract_labels: Array<string>;
+            updated_at: string;
+        }>;
+        total: number;
+        page: number;
+        limit: number;
+        total_pages: number;
+    };
+};
+
+export type GetCrmEquipmentResponse = GetCrmEquipmentResponses[keyof GetCrmEquipmentResponses];
+
+export type PostCrmEquipmentData = {
+    /**
+     * Connected equipment create payload
+     */
+    body?: {
+        name: string;
+        equipment_type: 'entry_gate' | 'hydrogen_water_server' | 'body_composition_monitor' | 'tanning_machine' | 'protein_server' | 'other';
+        serial_number: string;
+        install_location: string;
+        installed_on: string;
+        controller_number: number | null;
+        status?: 'normal' | 'error' | 'maintenance' | 'discarded';
+        authentication_method?: 'member_qr_scan' | 'device_qr_scan' | 'none' | null;
+        controller_id?: string | null;
+        ip_address?: string | null;
+        mac_address?: string | null;
+        usage_control_rule?: {
+            main_enabled?: boolean;
+            main_contract_type?: string | null;
+            option_enabled?: boolean;
+            option_type?: string | null;
+            per_use_enabled?: boolean;
+            per_use_option_type?: string | null;
+        } | null;
+        remarks?: string | null;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/equipment';
+};
+
+export type PostCrmEquipmentErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmEquipmentError = PostCrmEquipmentErrors[keyof PostCrmEquipmentErrors];
+
+export type PostCrmEquipmentResponses = {
+    /**
+     * Connected equipment created
+     */
+    201: {
+        equipment: {
+            id: string;
+            name: string;
+            store_id: string;
+            store_name: string;
+            controller_number: number;
+            qr_code_id: string | null;
+            equipment_type: 'entry_gate' | 'hydrogen_water_server' | 'body_composition_monitor' | 'tanning_machine' | 'protein_server' | 'other';
+            serial_number: string;
+            ip_address: string | null;
+            mac_address: string | null;
+            install_location: string;
+            installed_on: string;
+            status: 'normal' | 'error' | 'maintenance' | 'discarded';
+            authentication_method: 'member_qr_scan' | 'device_qr_scan' | 'none';
+            linked_contract_labels: Array<string>;
+            updated_at: string;
+            usage_control_rule: {
+                contract_link_types: Array<'main' | 'option' | 'per_use'>;
+                option_type_label: string | null;
+                main_contract_type_label: string | null;
+                per_use_option_type_label: string | null;
+                show_gate_stop_info: boolean;
+            };
+            controller_summary: {
+                controller_id: string;
+                ip_address: string;
+                port: number;
+                status: 'normal' | 'error' | 'maintenance' | 'discarded';
+                name: string | null;
+            };
+            controller_id: string | null;
+            remarks: string | null;
+            created_at: string;
+            last_status_confirmed_at: string;
+        };
+    };
+};
+
+export type PostCrmEquipmentResponse = PostCrmEquipmentResponses[keyof PostCrmEquipmentResponses];
+
+export type GetCrmEquipmentSummaryData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/crm/equipment/summary';
+};
+
+export type GetCrmEquipmentSummaryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmEquipmentSummaryError = GetCrmEquipmentSummaryErrors[keyof GetCrmEquipmentSummaryErrors];
+
+export type GetCrmEquipmentSummaryResponses = {
+    /**
+     * Store equipment summary counts
+     */
+    200: {
+        equipment_count: number;
+        controllers_count: number;
+    };
+};
+
+export type GetCrmEquipmentSummaryResponse = GetCrmEquipmentSummaryResponses[keyof GetCrmEquipmentSummaryResponses];
 
 export type PostCrmFamilyRegistrationsByIdApproveData = {
     /**
@@ -45984,6 +47823,64 @@ export type PostCrmStoresResponses = {
 
 export type PostCrmStoresResponse = PostCrmStoresResponses[keyof PostCrmStoresResponses];
 
+export type GetCrmStudiosData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * 店舗IDでフィルタ
+         */
+        store_id?: string;
+    };
+    url: '/crm/studios';
+};
+
+export type GetCrmStudiosErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmStudiosError = GetCrmStudiosErrors[keyof GetCrmStudiosErrors];
+
+export type GetCrmStudiosResponses = {
+    /**
+     * GetStudiosResponse
+     *
+     * スタジオ一覧レスポンス
+     */
+    200: {
+        studios: Array<{
+            /**
+             * スタジオID
+             */
+            id: string;
+            /**
+             * スタジオ名
+             */
+            name: string;
+            /**
+             * 物理定員
+             */
+            physical_capacity: number;
+            /**
+             * 店舗ID
+             */
+            store_id: string;
+        }>;
+    };
+};
+
+export type GetCrmStudiosResponse = GetCrmStudiosResponses[keyof GetCrmStudiosResponses];
+
 export type DeleteCrmSurveysByIdData = {
     body?: never;
     path: {
@@ -47679,64 +49576,6 @@ export type PostCrmSurveysResponses = {
 };
 
 export type PostCrmSurveysResponse = PostCrmSurveysResponses[keyof PostCrmSurveysResponses];
-
-export type GetCrmStudiosData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * 店舗IDでフィルタ
-         */
-        store_id?: string;
-    };
-    url: '/crm/studios';
-};
-
-export type GetCrmStudiosErrors = {
-    /**
-     * ErrorResponse
-     *
-     * Error response
-     */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
-    };
-};
-
-export type GetCrmStudiosError = GetCrmStudiosErrors[keyof GetCrmStudiosErrors];
-
-export type GetCrmStudiosResponses = {
-    /**
-     * GetStudiosResponse
-     *
-     * スタジオ一覧レスポンス
-     */
-    200: {
-        studios: Array<{
-            /**
-             * スタジオID
-             */
-            id: string;
-            /**
-             * スタジオ名
-             */
-            name: string;
-            /**
-             * 物理定員
-             */
-            physical_capacity: number;
-            /**
-             * 店舗ID
-             */
-            store_id: string;
-        }>;
-    };
-};
-
-export type GetCrmStudiosResponse = GetCrmStudiosResponses[keyof GetCrmStudiosResponses];
 
 export type PatchCrmTransfersByIdApproveData = {
     /**
