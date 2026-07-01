@@ -122,7 +122,7 @@ SDD only works when three conditions hold:
 
 | Condition                           | Status                  | How it is met                                                                                                                                      |
 | ----------------------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Spec exists as source of truth**  | ✅                      | `docs/specs/<feature>/spec.md` generated and reviewed before any code is written. Status field: `draft → approved → implemented`.                  |
+| **Spec exists as source of truth**  | ✅                      | `specs/<feature>/spec.md` generated and reviewed before any code is written. Status field: `draft → approved → implemented`.                       |
 | **Context is controllable**         | ✅                      | Feature specs are self-contained files. SpecKit skills read only the relevant spec + constitution + steering — not the whole codebase.             |
 | **Spec and code do not contradict** | ✅ new code / ⚠️ legacy | New features: spec is updated in the same PR as the code (enforced by review protocol). Legacy code: incremental — each touched file gains a spec. |
 

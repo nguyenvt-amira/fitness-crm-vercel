@@ -70,12 +70,12 @@ sequenceDiagram
             FE->>PO: (Consult PO/BA if necessary)
             FE-->>SK: Answer
         end
-        SK->>GIT: Update docs/spec/<feature>/spec.md ( all [NEEDS CLARIFICATION] resolved)
+        SK->>GIT: Update specs/spec/<feature>/spec.md ( all [NEEDS CLARIFICATION] resolved)
         %% Note over FE,PO: Dev → PO/PM Escalation
         %% FE->>PO: Escalate unresolved items outside Dev authority
         %% PO-->>FE: Decision / spec update
         %% FE->>SK: Feed PO decisions → finalize spec.md
-        %% SK->>GIT: Update docs/spec/<feature>/spec.md (finalized — all [NEEDS CLARIFICATION] resolved)
+        %% SK->>GIT: Update specs/spec/<feature>/spec.md (finalized — all [NEEDS CLARIFICATION] resolved)
 
         Note over FE,PO: PO/PM Spec Review & Approval
         FE->>PO: Request Spec Review
@@ -86,7 +86,7 @@ sequenceDiagram
         %% alt Spec needs revision
         %%     PO-->>FE: Feedback / change requests
         %%     FE->>SK: Apply PO feedback → revise spec.md
-        %%     SK->>GIT: Update docs/spec/<feature>/spec.md (revised)
+        %%     SK->>GIT: Update specs/spec/<feature>/spec.md (revised)
         %%     FE->>PO: Re-submit revised spec.md
         %% end
         %% PO-->>FE: Approved — spec.md sign-off confirmed
@@ -94,15 +94,15 @@ sequenceDiagram
 
         Note right of FE: Skill: speckit.plan
         FE->>SK: [speckit.plan] Generate implementation plan from spec.md
-        SK->>GIT: Generate docs/spec/<feature>/plan.md + research.md + data-model.md + api-contracts/ <br/> ・Technical context, constitution check,  <br/> ・Project structure (docs + source tree), structure decision, complexity tracking.
+        SK->>GIT: Generate specs/spec/<feature>/plan.md + research.md + data-model.md + api-contracts/ <br/> ・Technical context, constitution check,  <br/> ・Project structure (docs + source tree), structure decision, complexity tracking.
 
         %% Note right of FE: Skill: speckit.plan
         %% FE->>SK: [speckit.plan] Generate implementation plan from spec.md
-        %% SK->>GIT: Generate docs/spec/<feature>/plan.md + research.md + data-model.md + api-contracts/
+        %% SK->>GIT: Generate specs/spec/<feature>/plan.md + research.md + data-model.md + api-contracts/
 
         Note right of FE: Skill: speckit.tasks
         FE->>SK: [speckit.tasks] Break down plan into task list
-        SK->>GIT: Generate docs/spec/<feature>/tasks.md (user stories + steps + priority order)  <br/> ・Path conventions, phase setup, phase foundational, phase each user story (tests + implementation), phase polish, <br/> ・Dependencies & execution order, parallel opportunities/example, implementation strategy, notes.
+        SK->>GIT: Generate specs/spec/<feature>/tasks.md (user stories + steps + priority order)  <br/> ・Path conventions, phase setup, phase foundational, phase each user story (tests + implementation), phase polish, <br/> ・Dependencies & execution order, parallel opportunities/example, implementation strategy, notes.
 
 
         Note right of FE: Skill: speckit.analyze
@@ -151,7 +151,7 @@ sequenceDiagram
 
         Note right of FE: Skill: speckit.plan
         FE->>SK: [speckit.plan] Feed openapi.json → generate integration plan
-        SK->>GIT: Generate docs/spec/<feature>/plan-integrate-api.md + tasks-integrate-api.md <br/> ・ Schemas to be updated, scope, and impact
+        SK->>GIT: Generate specs/spec/<feature>/plan-integrate-api.md + tasks-integrate-api.md <br/> ・ Schemas to be updated, scope, and impact
 
         Note right of FE: Skill: speckit.implement
         FE->>SK: [speckit.implement] Execute tasks-integrate-api.md
@@ -194,14 +194,14 @@ sequenceDiagram
         else Bug owned by FE
             Note right of FE: Skill: speckit.specify
             FE->>SK: [speckit.specify] Feed bug report → review & update spec.md
-            SK->>GIT: Update docs/spec/<feature>/spec.md (updated – bug scope identified)
+            SK->>GIT: Update specs/spec/<feature>/spec.md (updated – bug scope identified)
 
             FE->>PO: (Consult PO/PM if necessary)
 
 
             Note right of FE: Skill: speckit.tasks
             FE->>SK: [speckit.tasks] Generate tasks-bug.md from updated spec
-            SK->>GIT: Generate docs/spec/<feature>/tasks-bug.md <br/>・Phase setup, Phase impact  <br/> ・Dependencies & execution order, implementation strategy, notes.
+            SK->>GIT: Generate specs/spec/<feature>/tasks-bug.md <br/>・Phase setup, Phase impact  <br/> ・Dependencies & execution order, implementation strategy, notes.
 
             Note right of FE: Skill: speckit.implement
             FE->>SK: [speckit.implement] Execute tasks-bug.md with full context
