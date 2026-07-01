@@ -43,14 +43,14 @@
 
 **このプロジェクトで仕様・計画・タスクの正とするパスは次です。**
 
-| 種類                         | パス（機能名は例）                                          |
-| :--------------------------- | :---------------------------------------------------------- |
-| 機能仕様                     | `docs/specs/<feature>/spec.md`                              |
-| 実装計画                     | `docs/specs/<feature>/plan.md`                              |
-| タスク一覧                   | `docs/specs/<feature>/tasks.md`                             |
-| 調査・データモデル・契約など | `docs/specs/<feature>/research.md` など同一ディレクトリ配下 |
+| 種類                         | パス（機能名は例）                                     |
+| :--------------------------- | :----------------------------------------------------- |
+| 機能仕様                     | `specs/<feature>/spec.md`                              |
+| 実装計画                     | `specs/<feature>/plan.md`                              |
+| タスク一覧                   | `specs/<feature>/tasks.md`                             |
+| 調査・データモデル・契約など | `specs/<feature>/research.md` など同一ディレクトリ配下 |
 
-プロトタイプやフロー画面の素材も、同じ `docs/specs/<feature>/` 配下に置く運用です（詳細は [sdd-flow/sdd-dev-workflow.md](./docs/sdd-flow/sdd-dev-workflow.md)）。
+プロトタイプやフロー画面の素材も、同じ `specs/<feature>/` 配下に置く運用です（詳細は [sdd-flow/sdd-dev-workflow.md](./docs/sdd-flow/sdd-dev-workflow.md)）。
 
 ## フロー文書（手順の全体像）
 
