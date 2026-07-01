@@ -3,8 +3,8 @@
 > **SpecKit Step**: 4 — speckit.tasks
 > **Status**: Awaiting Approval
 > **Created**: 2026-05-06
-> **Plan reference**: `docs/specs/membership-applications/detail/plan.md`
-> **Spec reference**: `docs/specs/membership-applications/detail/spec.md`
+> **Plan reference**: `specs/membership-applications/detail/plan.md`
+> **Spec reference**: `specs/membership-applications/detail/spec.md`
 
 ---
 

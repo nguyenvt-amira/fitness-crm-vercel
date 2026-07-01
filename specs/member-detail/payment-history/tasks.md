@@ -1,7 +1,7 @@
 # Task Breakdown: 支払い履歴タブ（A-01-01-d）
 
 > **Pipeline Step**: 4 / 5 — `speckit.tasks`
-> **Plan Reference**: `docs/specs/member-detail/payment-history/plan.md`
+> **Plan Reference**: `specs/member-detail/payment-history/plan.md`
 > **Branch**: `feat/member-detail-payment-history`
 > **Date**: 2026-04-22
 > **Total Tasks**: 14 (organized into 3 phases)

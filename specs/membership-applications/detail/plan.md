@@ -3,7 +3,7 @@
 > **SpecKit Step**: 3 — speckit.plan
 > **Status**: Awaiting Approval
 > **Created**: 2026-05-06
-> **Spec reference**: `docs/specs/membership-applications/detail/spec.md`
+> **Spec reference**: `specs/membership-applications/detail/spec.md`
 > **UI Prototype**: `fitness-crm-ui/src/pages/enrollment-application-detail.tsx`
 
 ---

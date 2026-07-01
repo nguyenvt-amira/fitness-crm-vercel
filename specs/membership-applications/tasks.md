@@ -3,7 +3,7 @@
 > **SpecKit Step**: 4 — speckit.tasks
 > **ステータス**: 承認待ち
 > **作成日**: 2026-05-05
-> **参照計画書**: `docs/specs/membership-applications/plan.md`
+> **参照計画書**: `specs/membership-applications/plan.md`
 > **対象ブランチ**: `feat/update-agents`
 
 ---

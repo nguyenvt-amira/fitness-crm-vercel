@@ -1,6 +1,6 @@
 # Technical Plan: A-02 FR-001 — 移籍管理一覧
 
-**Spec**: `docs/specs/transfer-management/spec.md`
+**Spec**: `specs/transfer-management/spec.md`
 **Status**: Draft
 **Created**: 2026-04-24
 **Branch**: `feat/implement-prototype` (no new branch)

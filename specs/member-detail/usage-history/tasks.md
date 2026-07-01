@@ -1,7 +1,7 @@
 # Tasks: 利用履歴タブ（A-01-01-e）
 
 > **Pipeline Step**: 4 / 5 — `speckit.tasks`
-> **Plan**: `docs/specs/member-detail/usage-history/plan.md`
+> **Plan**: `specs/member-detail/usage-history/plan.md`
 > **Branch**: `feat/member-detail-usage-history`
 > **Date**: 2026-04-23
 

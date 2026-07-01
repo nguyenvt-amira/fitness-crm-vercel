@@ -1,6 +1,6 @@
 # Technical Plan: FR-M009 — CRM Direct Enrollment Form (管理画面入会)
 
-> **Spec**: `docs/specs/membership-applications/enrollment-form/spec.md`  
+> **Spec**: `specs/membership-applications/enrollment-form/spec.md`  
 > **Plan status**: approved  
 > **Created**: 2026-05-07  
 > **UI prototype**: `.cache/fitness-crm-ui/src/pages/enrollment-application-form.tsx`

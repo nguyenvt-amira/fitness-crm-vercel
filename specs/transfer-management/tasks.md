@@ -1,7 +1,7 @@
 # Task List: A-02 FR-001 — 移籍管理一覧
 
-**Spec**: `docs/specs/transfer-management/spec.md`  
-**Plan**: `docs/specs/transfer-management/plan.md`  
+**Spec**: `specs/transfer-management/spec.md`  
+**Plan**: `specs/transfer-management/plan.md`  
 **Status**: ✅ Implemented — 2026-04-24  
 **Created**: 2026-04-24
 

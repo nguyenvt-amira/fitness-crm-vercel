@@ -1,6 +1,6 @@
 # Blacklist Detail — Technical Plan
 
-> **Spec**: `docs/specs/blacklist-management/detail/spec.md`
+> **Spec**: `specs/blacklist-management/detail/spec.md`
 > **Branch**: `feature/blacklist-detail`
 > **Created**: 2026-05-08
 > **Depends on**: `feature/blacklist-list` (already merged — list page, schema, mock-db, and list route exist)

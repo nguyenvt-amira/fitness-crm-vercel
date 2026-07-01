@@ -6,7 +6,7 @@
 > **Created**: 2026-05-08
 > **Source requirement**: `public/requirements/A-01.md` § FR-015, § FR-016, § FR-018
 > **UI prototype**: `.cache/fitness-crm-ui/src/pages/blacklist-detail.tsx`
-> **Parent spec**: `docs/specs/blacklist-management/spec.md` (list screen)
+> **Parent spec**: `specs/blacklist-management/spec.md` (list screen)
 > **Scope**: Detail screen only — read-only view of a single blacklist entry
 
 ---

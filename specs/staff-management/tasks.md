@@ -1,6 +1,6 @@
 # Tasks: Staff List — Y-01 スタッフ・権限管理 (`001-staff-list`)
 
-**Input**: `docs/specs/staff-management/` — plan.md, spec.md, data-model.md, contracts/api-contracts.md, research.md, quickstart.md  
+**Input**: `specs/staff-management/` — plan.md, spec.md, data-model.md, contracts/api-contracts.md, research.md, quickstart.md  
 **Date**: 2026-04-08
 
 ## Format: `[ID] [P?] [Story] Description`

@@ -1,7 +1,7 @@
 # Implementation Plan: Staff List — Y-01 スタッフ・権限管理
 
 **Branch**: `001-staff-list` | **Date**: 2026-04-08 | **Spec**: [spec.md](./spec.md)  
-**Input**: `docs/specs/staff-management/spec.md`
+**Input**: `specs/staff-management/spec.md`
 
 ---
 
@@ -54,7 +54,7 @@ _GATE: All 5 principles evaluated below. All pass — no violations._
 ### Documentation (this feature)
 
 ```text
-docs/specs/staff-management/
+specs/staff-management/
 ├── spec.md              # Feature specification (fully clarified)
 ├── plan.md              # This file
 ├── research.md          # Phase 0 — research & decisions

@@ -1,7 +1,7 @@
 # Technical Implementation Plan: Transfer Detail & Approval/Rejection — A-02 FR-002
 
 **Feature Branch**: `feat/transfer-detail-approval`
-**Spec**: `docs/specs/transfer-management/detail/spec.md`
+**Spec**: `specs/transfer-management/detail/spec.md`
 **Plan Created**: 2026-05-04
 **Status**: Ready for task breakdown
 

@@ -1,6 +1,6 @@
 # Blacklist Management — Technical Plan
 
-> **Spec**: `docs/specs/blacklist-management/spec.md`
+> **Spec**: `specs/blacklist-management/spec.md`
 > **Branch**: `feature/blacklist-list`
 > **Created**: 2026-05-07
 

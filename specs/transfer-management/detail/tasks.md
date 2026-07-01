@@ -1,7 +1,7 @@
 # Task List: Transfer Detail & Approval/Rejection — A-02 FR-002
 
 **Feature Branch**: `feat/transfer-detail-approval`
-**Plan**: `docs/specs/transfer-management/detail/plan.md`
+**Plan**: `specs/transfer-management/detail/plan.md`
 **Generated**: 2026-05-04
 **Status**: Ready for implementation
 

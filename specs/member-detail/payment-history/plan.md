@@ -1,7 +1,7 @@
 # Technical Plan: 支払い履歴タブ（A-01-01-d）
 
 > **Pipeline Step**: 3 / 5 — `speckit.plan`
-> **Spec**: `docs/specs/member-detail/payment-history/spec.md`
+> **Spec**: `specs/member-detail/payment-history/spec.md`
 > **Branch**: `feat/member-detail-payment-history`
 > **Date**: 2026-04-22
 > **Author**: speckit.plan

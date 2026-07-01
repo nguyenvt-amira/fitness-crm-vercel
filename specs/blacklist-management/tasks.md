@@ -1,7 +1,7 @@
 # Blacklist Management — Task List
 
-> **Plan**: `docs/specs/blacklist-management/plan.md`
-> **Spec**: `docs/specs/blacklist-management/spec.md`
+> **Plan**: `specs/blacklist-management/plan.md`
+> **Spec**: `specs/blacklist-management/spec.md`
 > **Branch**: `feature/blacklist-list`
 > **Created**: 2026-05-07
 

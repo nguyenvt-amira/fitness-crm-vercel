@@ -1,7 +1,7 @@
 # Tasks: FR-M009 — CRM Direct Enrollment Form (管理画面入会)
 
-> **Spec**: `docs/specs/membership-applications/enrollment-form/spec.md`  
-> **Plan**: `docs/specs/membership-applications/enrollment-form/plan.md`  
+> **Spec**: `specs/membership-applications/enrollment-form/spec.md`  
+> **Plan**: `specs/membership-applications/enrollment-form/plan.md`  
 > **Tasks status**: ready  
 > **Created**: 2026-05-07
 

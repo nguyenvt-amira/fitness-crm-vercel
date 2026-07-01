@@ -1,7 +1,7 @@
 # Technical Plan: 利用履歴タブ（A-01-01-e）
 
 > **Pipeline Step**: 3 / 5 — `speckit.plan`
-> **Spec**: `docs/specs/member-detail/usage-history/spec.md`
+> **Spec**: `specs/member-detail/usage-history/spec.md`
 > **Branch**: `feat/member-detail-usage-history`
 > **Date**: 2026-04-23
 > **Author**: speckit.plan
