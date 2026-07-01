@@ -50,7 +50,7 @@
    非交渉原則 I〜V。全エージェント実行で遵守必須。
 2. **Layer 1 — Copilot Instructions** (`.github/copilot-instructions.md`)  
    現行スタックと構造。
-3. **Layer 2 — Feature Spec** (`docs/specs/<feature>/spec.md`)  
+3. **Layer 2 — Feature Spec** (`specs/<feature>/spec.md`)  
    機能単位の「なぜ + なにを」。
 4. **Layer 3 — 実装成果物** (`plan.md` / `tasks.md`)  
    `spec.md` から生成し、実装時に消費。
@@ -66,24 +66,31 @@ fitness-crm/
 ├── .specify/memory/
 │   └── constitution.md
 ├── .github/copilot-instructions.md
-├── sdd-flow/
-│   ├── sdd-overview.md
-│   ├── sdd-dev-workflow.md
-│   └── sdd-sequence-flow.md
-└── docs/specs/<feature>/
-    ├── spec.md
-    ├── plan.md
-    ├── tasks.md
-    ├── research.md
-    ├── data-model.md
-    └── contracts/api-contracts.md
+├── docs/
+│   ├── sdd-flow/
+│   │   ├── sdd-overview.md
+│   │   ├── sdd-dev-workflow.md
+│   │   └── sdd-sequence-flow.md
+│   └── steering/
+│       ├── _index.md
+│       ├── architecture.md
+│       ├── business-glossary.md
+│       └── ...
+└── specs/
+    └── <feature>/
+        ├── spec.md
+        ├── plan.md
+        ├── tasks.md
+        ├── research.md
+        ├── data-model.md
+        └── contracts/api-contracts.md
 ```
 
 ---
 
 ## 5. Feature Spec の基本形式
 
-各機能の仕様は `docs/specs/<feature>/spec.md` に置く。
+各機能の仕様は `specs/<feature>/spec.md` に置く。
 
 - Status: `draft | review | approved | implemented`
 - Branch: `###-<feature-name>`
@@ -123,12 +130,12 @@ fitness-crm/
 
 ## 7. AIツール別コンテキスト注入
 
-| ツール           | 常時読み込み（Stock）                                  | 機能ごと（Flow）                |
-| ---------------- | ------------------------------------------------------ | ------------------------------- |
-| GitHub Copilot   | `.github/copilot-instructions.md` + `.specify/memory/` | `docs/specs/<feature>/spec.md`  |
-| Cursor           | `.specify/memory/` + `.github/copilot-instructions.md` | `@docs/specs/<feature>/spec.md` |
-| Claude           | copilot instructions + constitution + steering 要約    | `spec.md` 本文                  |
-| 任意のチャットAI | stock文脈を貼り付け                                    | `spec.md` を貼り付け            |
+| ツール           | 常時読み込み（Stock）                                  | 機能ごと（Flow）           |
+| ---------------- | ------------------------------------------------------ | -------------------------- |
+| GitHub Copilot   | `.github/copilot-instructions.md` + `.specify/memory/` | `specs/<feature>/spec.md`  |
+| Cursor           | `.specify/memory/` + `.github/copilot-instructions.md` | `@specs/<feature>/spec.md` |
+| Claude           | copilot instructions + constitution + steering 要約    | `spec.md` 本文             |
+| 任意のチャットAI | stock文脈を貼り付け                                    | `spec.md` を貼り付け       |
 
 ---
 
@@ -159,7 +166,7 @@ fitness-crm/
 3. `docs/steering/_index.md` と `docs/steering/architecture.md` を読む（全体パターンと構造）
 4. `sdd-sequence-flow.md` を読む（全体フロー）
 5. `sdd-dev-workflow.md` を読む（フェーズ詳細）
-6. 完了済み機能例（`docs/specs/staff-management/`）を確認
+6. 完了済み機能例（`specs/staff-management/`）を確認
 7. 使用ツールでセクション7のコンテキスト注入を設定
 
 ---

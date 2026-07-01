@@ -23,28 +23,42 @@
 
 1. 本リポジトリへのアクセスと、組織方針に従った **GitHub Copilot** の有効化。
 2. 開発環境は通常どおり [インストール](#インストール)（`npm install` など）。
-3. 機能開発を始める際は、Copilot の **エージェント／チャット**から `speckit.specify` などの SpecKit 系エージェントを起動し、自然言語の機能説明を渡します（具体的な呼び出し方法は利用中の Copilot UI に依存します）。
+3. 外部リポジトリから要件・UI プロトタイプを読み込むエージェント（`speckit.load-external`）を使う場合は、**GitHub への `git` アクセス**（SSH キーまたは HTTPS 認証）を設定してください。エージェントは実行時に次のリポジトリを `.cache/` へ clone / fetch します（`.cache` は `.gitignore` 済み）。
+
+   | 用途             | リポジトリ                                                                | ローカルキャッシュ      | 主なパス                   |
+   | :--------------- | :------------------------------------------------------------------------ | :---------------------- | :------------------------- |
+   | 要件定義（spec） | [dx-fitness/fitness-spec](https://github.com/dx-fitness/fitness-spec)     | `.cache/fitness-spec`   | `crm/requirements/{ID}.md` |
+   | UI プロトタイプ  | [dx-fitness/fitness-crm-ui](https://github.com/dx-fitness/fitness-crm-ui) | `.cache/fitness-crm-ui` | `src/pages/*.tsx`          |
+
+   手動でキャッシュを用意する場合の例：
+
+   ```bash
+   git clone git@github.com:dx-fitness/fitness-spec.git .cache/fitness-spec
+   git clone git@github.com:dx-fitness/fitness-crm-ui.git .cache/fitness-crm-ui
+   ```
+
+4. 機能開発を始める際は、Copilot の **エージェント／チャット**から `speckit.specify` などの SpecKit 系エージェントを起動し、自然言語の機能説明を渡します（具体的な呼び出し方法は利用中の Copilot UI に依存します）。外部コンテキストが必要な場合は先に `speckit.load-external`（例：`/speckit.load-external A-02`）を実行してください。
 
 ## 生成物の保存場所（レビュー時の目安）
 
 **このプロジェクトで仕様・計画・タスクの正とするパスは次です。**
 
-| 種類                         | パス（機能名は例）                                          |
-| :--------------------------- | :---------------------------------------------------------- |
-| 機能仕様                     | `docs/specs/<feature>/spec.md`                              |
-| 実装計画                     | `docs/specs/<feature>/plan.md`                              |
-| タスク一覧                   | `docs/specs/<feature>/tasks.md`                             |
-| 調査・データモデル・契約など | `docs/specs/<feature>/research.md` など同一ディレクトリ配下 |
+| 種類                         | パス（機能名は例）                                     |
+| :--------------------------- | :----------------------------------------------------- |
+| 機能仕様                     | `specs/<feature>/spec.md`                              |
+| 実装計画                     | `specs/<feature>/plan.md`                              |
+| タスク一覧                   | `specs/<feature>/tasks.md`                             |
+| 調査・データモデル・契約など | `specs/<feature>/research.md` など同一ディレクトリ配下 |
 
-プロトタイプやフロー画面の素材も、同じ `docs/specs/<feature>/` 配下に置く運用です（詳細は [sdd-flow/sdd-dev-workflow.md](./sdd-flow/sdd-dev-workflow.md)）。
+プロトタイプやフロー画面の素材も、同じ `specs/<feature>/` 配下に置く運用です（詳細は [sdd-flow/sdd-dev-workflow.md](./docs/sdd-flow/sdd-dev-workflow.md)）。
 
 ## フロー文書（手順の全体像）
 
-| 文書                                                             | 内容                                                                                  |
-| :--------------------------------------------------------------- | :------------------------------------------------------------------------------------ |
-| [sdd-flow/sdd-overview.md](./sdd-flow/sdd-overview.md)           | SDD を採用する理由と前提                                                              |
-| [sdd-flow/sdd-dev-workflow.md](./sdd-flow/sdd-dev-workflow.md)   | フェーズごとの作業手順（kickoff → specify → plan → tasks → analyze → implement など） |
-| [sdd-flow/sdd-team-protocol.md](./sdd-flow/sdd-team-protocol.md) | レイヤー構成・コンテキスト注入・更新ルール（ツール非依存）                            |
+| 文書                                                                  | 内容                                                                                  |
+| :-------------------------------------------------------------------- | :------------------------------------------------------------------------------------ |
+| [sdd-flow/sdd-overview.md](./docs/sdd-flow/sdd-overview.md)           | SDD を採用する理由と前提                                                              |
+| [sdd-flow/sdd-dev-workflow.md](./docs/sdd-flow/sdd-dev-workflow.md)   | フェーズごとの作業手順（kickoff → specify → plan → tasks → analyze → implement など） |
+| [sdd-flow/sdd-team-protocol.md](./docs/sdd-flow/sdd-team-protocol.md) | レイヤー構成・コンテキスト注入・更新ルール（ツール非依存）                            |
 
 # はじめに
 

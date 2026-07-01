@@ -1,7 +1,7 @@
 {
   "ai": "copilot",
   "branch_numbering": "sequential",
-  "here": true,
+  "here": false,
   "integration": "copilot",
   "preset": null,
   "script": "sh",

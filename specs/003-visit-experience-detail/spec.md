@@ -140,7 +140,7 @@ As front-desk staff or a manager, I can scroll the timeline of a reservation to 
 
 ### Functional Requirements
 
-- **FR-001**: System MUST provide a dedicated visit/experience reservation detail page, accessible by clicking a row on the visit/experience list page.
+- **FR-001**: System MUST provide a dedicated visit/experience reservation detail page, accessible by clicking a row on the visit/experience list page. Per the C-01 権限マトリクス (申請一覧/詳細参照), page access MUST be restricted to the System, Headquarter, Manager, Staff, and Observer roles; the Trainer role MUST NOT be able to access this page (page-level permission `visit-experiences.view`).
 - **FR-002**: System MUST display the applicant's personal information in a dedicated 個人情報 card: face-photo placeholder with 登録済み/未登録 badge, 氏名, フリガナ, 生年月日, 電話番号, メールアドレス, and 住所; when phone, address, or face photo is missing (info-missing state), the card MUST display a warning `Alert` at the top and show each missing field as "未登録" in warning colour.
 - **FR-003**: ~~Separate 本人確認書類 card~~ — **Removed in v3**: Face photo registration status (登録済み/未登録 badge and icon inside the face-photo placeholder in FR-002) serves as the identity-check signal. A standalone eKYC card is deferred to Phase 2.
 - **FR-004**: System MUST display the BL screening result in a dedicated panel: when no match exists, show a cleared indicator; when a match exists, show the match reason and a link to the corresponding BL entry detail — with destructive-toned card styling for the match state.
@@ -191,7 +191,7 @@ As front-desk staff or a manager, I can scroll the timeline of a reservation to 
 
 ## Assumptions
 
-- The primary users are front-desk staff (Manager and Staff roles) with access to visit/experience management pages; Trainer and Observer roles have read-only access.
+- The primary users are front-desk staff (Manager and Staff roles) with access to visit/experience management pages. Per the C-01 権限マトリクス, the System, Headquarter, Manager, Staff, and Observer roles may view this page (Observer is read-only); the Trainer role has no access to the visit/experience pages and is blocked at the page level.
 - Phase 1 scope covers: information display, BL result visibility, permit issuance, in-progress monitoring, and membership application handoff. Manual visit cancellation from this page and inline editing of applicant data are out of scope.
 - The 30-minute visit permit integrates with B-01 entry/exit management. No remaining-time countdown is shown on the detail page (removed in v3); in-progress monitoring is handled by the B-01 在館者リスト page.
 - BL screening runs automatically upstream (same process as FR-M003); the detail page displays the result only — it does not trigger a new BL check.

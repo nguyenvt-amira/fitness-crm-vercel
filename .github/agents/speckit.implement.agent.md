@@ -202,6 +202,8 @@ Note: This command assumes a complete task breakdown exists in tasks.md. If task
         **Automatic Hook**: {extension}
         Executing: `/{command}`
         EXECUTE_COMMAND: {command}
+
+        You MUST now execute the hook command above before finishing. Read `.github/agents/{command}.agent.md` and follow its instructions completely. Do not report implementation as done until the hook has finished.
         ```
 
     - If no hooks are registered or `.specify/extensions.yml` does not exist, skip silently

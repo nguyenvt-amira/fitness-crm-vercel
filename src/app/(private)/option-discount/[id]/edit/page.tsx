@@ -142,18 +142,31 @@ export default function OptionDiscountEditPage() {
   const detail = data?.option_discount as OptionDiscountDetail | undefined;
   const scrollToFirstError = useScrollToFirstError();
 
-  const { data: mainContractsList } = useQuery({
+  const {
+    data: mainContractsList,
+    isLoading: isContractsLoading,
+    isError: isContractsError,
+    refetch: refetchContracts,
+  } = useQuery({
     ...getCrmMainContractsOptions({ query: { page: 1, limit: 200, status: 'active' } }),
   });
-  const { data: optionsList } = useQuery({
+  const {
+    data: optionsList,
+    isLoading: isOptionsLoading,
+    isError: isOptionsError,
+    refetch: refetchOptions,
+  } = useQuery({
     ...getCrmOptionsOptions({ query: { page: 1, limit: 200, status: 'active' } }),
   });
+
+  const isPageLoading = isLoading || isContractsLoading || isOptionsLoading;
+  const isPageError = isError || isContractsError || isOptionsError;
 
   const contracts = useMemo(() => mainContractsList?.main_contracts ?? [], [mainContractsList]);
   const options = useMemo(() => optionsList?.options ?? [], [optionsList]);
 
   const defaultValues = useMemo<OptionDiscountFormValues | null>(() => {
-    if (!detail) return null;
+    if (!detail || !mainContractsList || !optionsList) return null;
 
     const contractIds = detail.target_contracts
       .map((name) => contracts.find((c) => c.name === name)?.id)
@@ -174,15 +187,21 @@ export default function OptionDiscountEditPage() {
       conditions: detail.conditions as OptionDiscountCondition,
       status: detail.status as OptionDiscountStatus,
     };
-  }, [detail, contracts, options]);
+  }, [detail, mainContractsList, optionsList, contracts, options]);
+
+  const handleRetry = () => {
+    void refetch();
+    void refetchContracts();
+    void refetchOptions();
+  };
 
   return (
     <>
       <DataStateBoundary
-        isLoading={isLoading}
-        isError={isError}
+        isLoading={isPageLoading}
+        isError={isPageError}
         isEmpty={!detail}
-        onRetry={refetch}
+        onRetry={handleRetry}
       >
         <PageHeader
           breadcrumb={
