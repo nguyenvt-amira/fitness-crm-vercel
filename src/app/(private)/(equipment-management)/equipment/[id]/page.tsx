@@ -54,9 +54,7 @@ export default function EquipmentDetailPage() {
   return (
     <div className="flex h-full flex-col overflow-hidden">
       <PageHeader
-        breadcrumb={
-          <BackLink label="接続機器" onClick={() => router.push(navigate('/equipment'))} />
-        }
+        breadcrumb={<BackLink label="接続機器" href={navigate('/equipment')} />}
         title={equipment?.name ?? '接続機器詳細'}
         subtitle={
           equipment

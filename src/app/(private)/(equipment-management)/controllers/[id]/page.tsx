@@ -56,9 +56,7 @@ export default function ControllerDetailPage() {
   return (
     <div className="flex h-full flex-col overflow-hidden">
       <PageHeader
-        breadcrumb={
-          <BackLink label="接点制御装置" onClick={() => router.push(navigate('/controllers'))} />
-        }
+        breadcrumb={<BackLink label="接点制御装置" href={navigate('/controllers')} />}
         title={controller?.name ?? '接点制御装置詳細'}
         subtitle={
           controller
