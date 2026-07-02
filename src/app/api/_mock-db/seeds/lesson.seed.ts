@@ -724,11 +724,36 @@ export const SEED_LESSONS: Array<{
   { id: 'LSN-004', name: 'ズンバ', lesson_type: 'studio', duration: 45 },
   { id: 'LSN-005', name: 'エアロビクス', lesson_type: 'studio', duration: 60 },
   { id: 'LSN-006', name: 'バレトン', lesson_type: 'studio', duration: 60 },
-  { id: 'LSN-007', name: 'ボクサーサイズ', lesson_type: 'studio', duration: 45 },
-  { id: 'LSN-008', name: 'インターバルトレーニング', lesson_type: 'studio', duration: 30 },
-  { id: 'LSN-101', name: 'パーソナルトレーニング 30分', lesson_type: 'personal', duration: 30 },
-  { id: 'LSN-102', name: 'パーソナルトレーニング 60分', lesson_type: 'personal', duration: 60 },
-  { id: 'LSN-103', name: '体験パーソナル', lesson_type: 'personal', duration: 30 },
+  {
+    id: 'LSN-007',
+    name: 'ボクサーサイズ',
+    lesson_type: 'studio',
+    duration: 45,
+  },
+  {
+    id: 'LSN-008',
+    name: 'インターバルトレーニング',
+    lesson_type: 'studio',
+    duration: 30,
+  },
+  {
+    id: 'LSN-101',
+    name: 'パーソナルトレーニング 30分',
+    lesson_type: 'personal',
+    duration: 30,
+  },
+  {
+    id: 'LSN-102',
+    name: 'パーソナルトレーニング 60分',
+    lesson_type: 'personal',
+    duration: 60,
+  },
+  {
+    id: 'LSN-103',
+    name: '体験パーソナル',
+    lesson_type: 'personal',
+    duration: 30,
+  },
 ];
 
 export const SEED_LESSON_CONTENTS: LessonContentItem[] = [
@@ -1322,16 +1347,219 @@ export const SEED_STUDIOS: Array<{
   physical_capacity: number;
   store_id: string;
 }> = [
-  { id: 'STU-001', name: 'Zumbaスタジオ', physical_capacity: 16, store_id: 'ST001' },
-  { id: 'STU-002', name: 'ヨガスタジオ', physical_capacity: 20, store_id: 'ST001' },
-  { id: 'STU-003', name: 'ピラティスルーム', physical_capacity: 12, store_id: 'ST001' },
-  { id: 'STU-004', name: 'エアロスタジオ', physical_capacity: 25, store_id: 'ST002' },
-  { id: 'STU-005', name: 'ダンススタジオ', physical_capacity: 18, store_id: 'ST002' },
-  { id: 'STU-006', name: 'マルチスタジオ', physical_capacity: 30, store_id: 'ST003' },
-  { id: 'STU-007', name: 'バイクスタジオ', physical_capacity: 20, store_id: 'ST003' },
-  { id: 'STU-008', name: 'グループエクササイズルーム', physical_capacity: 20, store_id: 'ST004' },
-  { id: 'STU-009', name: 'スタジオA', physical_capacity: 15, store_id: 'ST005' },
-  { id: 'STU-010', name: 'スタジオB', physical_capacity: 10, store_id: 'ST006' },
+  {
+    id: 'STU-001',
+    name: 'Zumbaスタジオ',
+    physical_capacity: 16,
+    store_id: 'ST001',
+  },
+  {
+    id: 'STU-002',
+    name: 'ヨガスタジオ',
+    physical_capacity: 20,
+    store_id: 'ST001',
+  },
+  {
+    id: 'STU-003',
+    name: 'ピラティスルーム',
+    physical_capacity: 12,
+    store_id: 'ST001',
+  },
+  {
+    id: 'STU-004',
+    name: 'エアロスタジオ',
+    physical_capacity: 25,
+    store_id: 'ST002',
+  },
+  {
+    id: 'STU-005',
+    name: 'ダンススタジオ',
+    physical_capacity: 18,
+    store_id: 'ST002',
+  },
+  {
+    id: 'STU-006',
+    name: 'マルチスタジオ',
+    physical_capacity: 30,
+    store_id: 'ST003',
+  },
+  {
+    id: 'STU-007',
+    name: 'バイクスタジオ',
+    physical_capacity: 20,
+    store_id: 'ST003',
+  },
+  {
+    id: 'STU-008',
+    name: 'グループエクササイズルーム',
+    physical_capacity: 20,
+    store_id: 'ST004',
+  },
+  {
+    id: 'STU-009',
+    name: 'スタジオA',
+    physical_capacity: 15,
+    store_id: 'ST005',
+  },
+  {
+    id: 'STU-010',
+    name: 'スタジオB',
+    physical_capacity: 10,
+    store_id: 'ST006',
+  },
+];
+
+// ─── FR-001: Studio List seed data (full CRM data) ──────────────────────
+
+export interface StudioListSeed {
+  id: string;
+  name: string;
+  store_id: string;
+  store_name: string;
+  studio_type: 'studio-lesson' | 'pt' | 'body-care';
+  capacity: number;
+  available_hours: string;
+  brand: 'joyfit' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus' | 'fit365';
+  status: 'active' | 'inactive';
+}
+
+export const SEED_STUDIO_LIST: StudioListSeed[] = [
+  // store-001 (FIT365八潮店) — 3 studios
+  {
+    id: 'STU-101',
+    name: 'Zumbaスタジオ',
+    store_id: 'store-001',
+    store_name: 'FIT365八潮店',
+    studio_type: 'studio-lesson',
+    capacity: 16,
+    available_hours: '9:00-22:00',
+    brand: 'joyfit',
+    status: 'active',
+  },
+  {
+    id: 'STU-102',
+    name: 'ホットヨガスタジオ',
+    store_id: 'store-001',
+    store_name: 'FIT365八潮店',
+    studio_type: 'studio-lesson',
+    capacity: 35,
+    available_hours: '10:00-21:00',
+    brand: 'fit365',
+    status: 'active',
+  },
+  {
+    id: 'STU-103',
+    name: 'パーソナルトレーニングルーム',
+    store_id: 'store-001',
+    store_name: 'FIT365八潮店',
+    studio_type: 'pt',
+    capacity: 6,
+    available_hours: '8:00-22:00',
+    brand: 'fit365',
+    status: 'active',
+  },
+  // store-002 (FIT365新宿店) — 3 studios
+  {
+    id: 'STU-104',
+    name: 'メインスタジオ',
+    store_id: 'store-002',
+    store_name: 'FIT365新宿店',
+    studio_type: 'studio-lesson',
+    capacity: 30,
+    available_hours: '9:00-21:00',
+    brand: 'fit365',
+    status: 'active',
+  },
+  {
+    id: 'STU-105',
+    name: 'ボディケアルーム',
+    store_id: 'store-002',
+    store_name: 'FIT365新宿店',
+    studio_type: 'body-care',
+    capacity: 10,
+    available_hours: '10:00-20:00',
+    brand: 'fit365',
+    status: 'active',
+  },
+  {
+    id: 'STU-106',
+    name: 'リラックスヨガスタジオ',
+    store_id: 'store-002',
+    store_name: 'FIT365新宿店',
+    studio_type: 'studio-lesson',
+    capacity: 20,
+    available_hours: '9:00-20:00',
+    brand: 'fit365',
+    status: 'inactive',
+  },
+  // store-003 (FIT365渋谷店) — 3 studios
+  {
+    id: 'STU-107',
+    name: 'スタジオA',
+    store_id: 'store-003',
+    store_name: 'FIT365渋谷店',
+    studio_type: 'studio-lesson',
+    capacity: 25,
+    available_hours: '8:00-23:00',
+    brand: 'fit365',
+    status: 'active',
+  },
+  {
+    id: 'STU-108',
+    name: 'PT専用スタジオ',
+    store_id: 'store-003',
+    store_name: 'FIT365渋谷店',
+    studio_type: 'pt',
+    capacity: 8,
+    available_hours: '10:00-21:00',
+    brand: 'fit365',
+    status: 'active',
+  },
+  {
+    id: 'STU-109',
+    name: 'スタジオB',
+    store_id: 'store-003',
+    store_name: 'FIT365渋谷店',
+    studio_type: 'studio-lesson',
+    capacity: 15,
+    available_hours: '9:00-22:00',
+    brand: 'fit365',
+    status: 'inactive',
+  },
+  // store-004 (JOYFIT池袋店) — 3 studios (JOYFIT brand)
+  {
+    id: 'STU-110',
+    name: 'ヨガルーム',
+    store_id: 'store-004',
+    store_name: 'JOYFIT池袋店',
+    studio_type: 'studio-lesson',
+    capacity: 20,
+    available_hours: '9:00-21:00',
+    brand: 'joyfit',
+    status: 'active',
+  },
+  {
+    id: 'STU-111',
+    name: 'ピラティススタジオ',
+    store_id: 'store-004',
+    store_name: 'JOYFIT池袋店',
+    studio_type: 'body-care',
+    capacity: 12,
+    available_hours: '10:00-20:00',
+    brand: 'joyfit',
+    status: 'active',
+  },
+  {
+    id: 'STU-112',
+    name: 'グループエクササイズルーム',
+    store_id: 'store-004',
+    store_name: 'JOYFIT池袋店',
+    studio_type: 'studio-lesson',
+    capacity: 30,
+    available_hours: '8:00-22:00',
+    brand: 'joyfit24',
+    status: 'active',
+  },
 ];
 
 export const SEED_STUDIO_SPACES: Record<string, StudioSpaceGridResponse> = {

@@ -1,3 +1,8 @@
+import { StaffRole } from '@/lib/api';
+
+import { GetStudiosQuery } from '../../_schemas/lesson-schedule.schema';
+import { StudioListResponse } from '../../_schemas/studio.schema';
+
 export type StudiosType = {
   _rows: Array<{
     id: string;
@@ -19,4 +24,6 @@ export type StudiosType = {
     physical_capacity: number;
     store_id: string;
   }>;
+  /** FR-001: Full CRM studio list with search/filter/sort/pagination */
+  list(query: GetStudiosQuery, userRole: StaffRole, userStoreIds: string[]): StudioListResponse;
 };

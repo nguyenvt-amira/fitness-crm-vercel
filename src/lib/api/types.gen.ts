@@ -47827,25 +47827,65 @@ export type GetCrmStudiosData = {
     body?: never;
     path?: never;
     query?: {
+        page?: number;
+        limit?: number;
+        /**
+         * スタジオ名で検索（部分一致）
+         */
+        search?: string;
         /**
          * 店舗IDでフィルタ
          */
         store_id?: string;
+        /**
+         * スタジオ区分でフィルタ
+         */
+        studio_type?: 'studio-lesson' | 'pt' | 'body-care';
+        /**
+         * ブランドでフィルタ
+         */
+        brand?: 'joyfit' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus' | 'fit365';
+        /**
+         * ステータスでフィルタ
+         */
+        status?: 'active' | 'inactive';
+        /**
+         * ソート項目
+         */
+        sort_by?: 'id' | 'name' | 'store_name' | 'studio_type' | 'capacity';
+        /**
+         * ソート順
+         */
+        sort_order?: 'asc' | 'desc';
     };
     url: '/crm/studios';
 };
 
 export type GetCrmStudiosErrors = {
     /**
-     * ErrorResponse
+     * StudioListResponse
      *
-     * Error response
+     * スタジオ一覧レスポンス
      */
-    500: {
-        /**
-         * Error message
-         */
-        error: string;
+    400: {
+        items: Array<{
+            /**
+             * スタジオID
+             */
+            id: string;
+            name: string;
+            store_id: string;
+            store_name: string;
+            studio_type: 'studio-lesson' | 'pt' | 'body-care';
+            capacity: number;
+            available_hours: string;
+            brand: 'joyfit' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus' | 'fit365';
+            status: 'active' | 'inactive';
+        }>;
+        total: number;
+        page: number;
+        limit: number;
+        has_next: boolean;
     };
 };
 
@@ -47853,29 +47893,29 @@ export type GetCrmStudiosError = GetCrmStudiosErrors[keyof GetCrmStudiosErrors];
 
 export type GetCrmStudiosResponses = {
     /**
-     * GetStudiosResponse
+     * StudioListResponse
      *
      * スタジオ一覧レスポンス
      */
     200: {
-        studios: Array<{
+        items: Array<{
             /**
              * スタジオID
              */
             id: string;
-            /**
-             * スタジオ名
-             */
             name: string;
-            /**
-             * 物理定員
-             */
-            physical_capacity: number;
-            /**
-             * 店舗ID
-             */
             store_id: string;
+            store_name: string;
+            studio_type: 'studio-lesson' | 'pt' | 'body-care';
+            capacity: number;
+            available_hours: string;
+            brand: 'joyfit' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus' | 'fit365';
+            status: 'active' | 'inactive';
         }>;
+        total: number;
+        page: number;
+        limit: number;
+        has_next: boolean;
     };
 };
 

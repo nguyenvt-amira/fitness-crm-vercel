@@ -7,6 +7,7 @@ import { useAuthUser } from '@/contexts/auth-user.context';
 import { canRoleAccessPage, isPageHqOnly } from '@/utils/permission.util';
 import {
   Building,
+  Building2,
   Calendar,
   Home,
   type LucideIcon,
@@ -98,10 +99,10 @@ const menuItems: MenuItem[] = [
         label: 'レッスン内容',
         href: getRoutePattern('/lessons'),
       },
-      // {
-      //   label: 'スタジオ',
-      //   href: '/',
-      // },
+      {
+        label: 'スタジオ',
+        href: getRoutePattern('/studios'),
+      },
       // {
       //   label: '指導者',
       //   href: '/',
@@ -120,8 +121,17 @@ const menuItems: MenuItem[] = [
     href: '/lockers',
     subItems: [
       { label: 'ロッカー管理', href: '/lockers' },
-      { label: '店舗機器管理', href: '/equipment', matchHrefs: ['/controllers'] },
+      {
+        label: '店舗機器管理',
+        href: '/equipment',
+        matchHrefs: ['/controllers'],
+      },
     ],
+  },
+  {
+    label: 'スタジオ管理',
+    icon: Building2,
+    href: '/studios',
   },
   {
     label: '商材・施策設定',

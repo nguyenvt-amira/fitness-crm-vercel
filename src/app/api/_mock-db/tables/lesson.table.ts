@@ -20,6 +20,9 @@ import type {
   StoreScheduleSummary,
 } from '@/app/api/_schemas/lesson-schedule.schema';
 
+import { StaffRole } from '@/lib/api';
+
+import { GetStudiosQuery } from '../../_schemas/studio.schema';
 import type { DbType } from '../_db.types';
 import {
   LESSON_CONTENT_HISTORY,
@@ -34,7 +37,9 @@ import {
   SEED_RESERVATION_INSTRUCTORS,
   SEED_SESSION_MEMOS,
   SEED_STUDIOS,
+  SEED_STUDIO_LIST,
   SEED_STUDIO_SPACES,
+  StudioListSeed,
   lessonContentRowToDetail,
   normalizeLessonImages,
   personalPlanRowToDetail,
@@ -262,6 +267,63 @@ export function createLessonTables(getDb: () => DbType) {
       getByStoreId(storeId: string) {
         this._seed();
         return this._rows.filter((s) => s.store_id === storeId);
+      },
+      /** FR-001: Full CRM studio list with search/filter/sort/pagination & role scoping */
+      list(query: GetStudiosQuery, userRole: StaffRole, userStoreIds: string[]) {
+        // Apply role-based scoping
+        let filtered = SEED_STUDIO_LIST.filter((s) =>
+          userRole === 'system' || userRole === 'headquarter'
+            ? true
+            : userStoreIds.includes(s.store_id),
+        );
+
+        // Apply search (case-insensitive partial match on studio name)
+        if (query.search) {
+          const search = query.search.toLowerCase();
+          filtered = filtered.filter((s) => s.name.toLowerCase().includes(search));
+        }
+
+        // Apply filters
+        if (query.store_id) filtered = filtered.filter((s) => s.store_id === query.store_id);
+        if (query.studio_type)
+          filtered = filtered.filter((s) => s.studio_type === query.studio_type);
+        if (query.brand) filtered = filtered.filter((s) => s.brand === query.brand);
+        if (query.status) filtered = filtered.filter((s) => s.status === query.status);
+
+        // Apply sort
+        const sorted = [...filtered].sort((a, b) => {
+          const field = query.sort_by as keyof StudioListSeed;
+          const aVal = a[field];
+          const bVal = b[field];
+          if (aVal == null && bVal == null) return 0;
+          if (aVal == null) return 1;
+          if (bVal == null) return -1;
+          const cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+          return query.sort_order === 'asc' ? cmp : -cmp;
+        });
+
+        // Apply pagination
+        const total = sorted.length;
+        const start = (query.page - 1) * query.limit;
+        const items = sorted.slice(start, start + query.limit);
+
+        return {
+          items: items.map((s) => ({
+            id: s.id,
+            name: s.name,
+            store_id: s.store_id,
+            store_name: s.store_name,
+            studio_type: s.studio_type,
+            capacity: s.capacity,
+            available_hours: s.available_hours,
+            brand: s.brand,
+            status: s.status,
+          })),
+          total,
+          page: query.page,
+          limit: query.limit,
+          has_next: query.page * query.limit < total,
+        };
       },
     },
 
@@ -513,7 +575,13 @@ export function createLessonTables(getDb: () => DbType) {
 
     lessonContentSchedules: {
       getByMasterId(id: string): ScheduleSummary {
-        return LESSON_CONTENT_SCHEDULES[id] ?? { recurring_patterns: [], sessions: [], total: 0 };
+        return (
+          LESSON_CONTENT_SCHEDULES[id] ?? {
+            recurring_patterns: [],
+            sessions: [],
+            total: 0,
+          }
+        );
       },
     },
 
@@ -602,7 +670,12 @@ export function createLessonTables(getDb: () => DbType) {
       },
       getByScheduleId(
         scheduleId: string,
-        query?: { page?: number; pageSize?: number; sortBy?: string; sortOrder?: string },
+        query?: {
+          page?: number;
+          pageSize?: number;
+          sortBy?: string;
+          sortOrder?: string;
+        },
       ): ReservationListResponse {
         this._seed();
         let filtered = this._rows.filter((r) => r.schedule_id === scheduleId);

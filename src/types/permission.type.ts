@@ -205,6 +205,14 @@ export enum Permission {
   ControllerEdit = 'controller.edit',
   ControllerDelete = 'controller.delete',
   ControllerExport = 'controller.export',
+
+  // -------------------------------------------------------------------------
+  // Studios (D-03)
+  // -------------------------------------------------------------------------
+  StudiosView = 'studios.view',
+  StudiosCreate = 'studios.create',
+  StudiosEdit = 'studios.edit',
+  StudiosDelete = 'studios.delete',
 }
 
 /** Authenticated user stored in context */

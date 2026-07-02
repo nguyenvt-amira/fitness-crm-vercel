@@ -858,15 +858,6 @@ export class LessonSchedules {
     public static getCrmLessons<ThrowOnError extends boolean = false>(options?: Options<GetCrmLessonsData, ThrowOnError>) {
         return (options?.client ?? client).get<GetCrmLessonsResponses, GetCrmLessonsErrors, ThrowOnError>({ url: '/crm/lessons', ...options });
     }
-    
-    /**
-     * List studios
-     *
-     * Get studio list, optionally filtered by store
-     */
-    public static getCrmStudios<ThrowOnError extends boolean = false>(options?: Options<GetCrmStudiosData, ThrowOnError>) {
-        return (options?.client ?? client).get<GetCrmStudiosResponses, GetCrmStudiosErrors, ThrowOnError>({ url: '/crm/studios', ...options });
-    }
 }
 
 export class Leaves {
@@ -2777,6 +2768,17 @@ export class Stores {
                 ...options?.headers
             }
         });
+    }
+}
+
+export class Studios {
+    /**
+     * Get studio list
+     *
+     * Get paginated list of studios with search, filter, sort
+     */
+    public static getCrmStudios<ThrowOnError extends boolean = false>(options?: Options<GetCrmStudiosData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCrmStudiosResponses, GetCrmStudiosErrors, ThrowOnError>({ url: '/crm/studios', ...options });
     }
 }
 

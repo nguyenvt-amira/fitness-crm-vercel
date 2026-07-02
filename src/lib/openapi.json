@@ -77085,10 +77085,41 @@
     },
     "/crm/studios": {
       "get": {
-        "summary": "List studios",
-        "description": "Get studio list, optionally filtered by store",
-        "tags": ["LessonSchedules"],
+        "summary": "Get studio list",
+        "description": "Get paginated list of studios with search, filter, sort",
+        "tags": ["Studios"],
         "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "example": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "example": 50
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "スタジオ名で検索（部分一致）"
+            },
+            "required": false,
+            "description": "スタジオ名で検索（部分一致）",
+            "name": "search",
+            "in": "query"
+          },
           {
             "schema": {
               "type": "string",
@@ -77097,6 +77128,66 @@
             "required": false,
             "description": "店舗IDでフィルタ",
             "name": "store_id",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["studio-lesson", "pt", "body-care"],
+              "example": "studio-lesson",
+              "description": "スタジオ区分でフィルタ"
+            },
+            "required": false,
+            "description": "スタジオ区分でフィルタ",
+            "name": "studio_type",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["joyfit", "joyfit24", "joyfit_yoga", "joyfit_plus", "fit365"],
+              "example": "joyfit",
+              "description": "ブランドでフィルタ"
+            },
+            "required": false,
+            "description": "ブランドでフィルタ",
+            "name": "brand",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["active", "inactive"],
+              "example": "active",
+              "description": "ステータスでフィルタ"
+            },
+            "required": false,
+            "description": "ステータスでフィルタ",
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["id", "name", "store_name", "studio_type", "capacity"],
+              "default": "id",
+              "description": "ソート項目"
+            },
+            "required": false,
+            "description": "ソート項目",
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc",
+              "description": "ソート順"
+            },
+            "required": false,
+            "description": "ソート順",
+            "name": "sort_order",
             "in": "query"
           }
         ],
@@ -77108,58 +77199,183 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "studios": {
+                    "items": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "properties": {
                           "id": {
                             "type": "string",
+                            "example": "STU-001",
                             "description": "スタジオID"
                           },
                           "name": {
                             "type": "string",
-                            "description": "スタジオ名"
-                          },
-                          "physical_capacity": {
-                            "type": "integer",
-                            "minimum": 0,
-                            "description": "物理定員"
+                            "minLength": 1,
+                            "maxLength": 100,
+                            "example": "スタジオA"
                           },
                           "store_id": {
                             "type": "string",
-                            "description": "店舗ID"
+                            "example": "store-001"
+                          },
+                          "store_name": {
+                            "type": "string",
+                            "example": "渋谷店"
+                          },
+                          "studio_type": {
+                            "type": "string",
+                            "enum": ["studio-lesson", "pt", "body-care"],
+                            "example": "studio-lesson"
+                          },
+                          "capacity": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 1000,
+                            "example": 30
+                          },
+                          "available_hours": {
+                            "type": "string",
+                            "example": "10:00–21:00"
+                          },
+                          "brand": {
+                            "type": "string",
+                            "enum": ["joyfit", "joyfit24", "joyfit_yoga", "joyfit_plus", "fit365"],
+                            "example": "joyfit"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["active", "inactive"],
+                            "example": "active"
                           }
                         },
-                        "required": ["id", "name", "physical_capacity", "store_id"],
+                        "required": [
+                          "id",
+                          "name",
+                          "store_id",
+                          "store_name",
+                          "studio_type",
+                          "capacity",
+                          "available_hours",
+                          "brand",
+                          "status"
+                        ],
                         "title": "StudioListItem",
                         "description": "スタジオ一覧アイテム"
                       }
+                    },
+                    "total": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "page": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "limit": {
+                      "type": "integer"
+                    },
+                    "has_next": {
+                      "type": "boolean"
                     }
                   },
-                  "required": ["studios"],
-                  "title": "GetStudiosResponse",
+                  "required": ["items", "total", "page", "limit", "has_next"],
+                  "title": "StudioListResponse",
                   "description": "スタジオ一覧レスポンス"
                 }
               }
             }
           },
-          "500": {
-            "description": "Internal server error",
+          "400": {
+            "description": "Bad request",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": {
-                      "type": "string",
-                      "example": "Invalid email or password",
-                      "description": "Error message"
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "STU-001",
+                            "description": "スタジオID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 100,
+                            "example": "スタジオA"
+                          },
+                          "store_id": {
+                            "type": "string",
+                            "example": "store-001"
+                          },
+                          "store_name": {
+                            "type": "string",
+                            "example": "渋谷店"
+                          },
+                          "studio_type": {
+                            "type": "string",
+                            "enum": ["studio-lesson", "pt", "body-care"],
+                            "example": "studio-lesson"
+                          },
+                          "capacity": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 1000,
+                            "example": 30
+                          },
+                          "available_hours": {
+                            "type": "string",
+                            "example": "10:00–21:00"
+                          },
+                          "brand": {
+                            "type": "string",
+                            "enum": ["joyfit", "joyfit24", "joyfit_yoga", "joyfit_plus", "fit365"],
+                            "example": "joyfit"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["active", "inactive"],
+                            "example": "active"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "store_id",
+                          "store_name",
+                          "studio_type",
+                          "capacity",
+                          "available_hours",
+                          "brand",
+                          "status"
+                        ],
+                        "title": "StudioListItem",
+                        "description": "スタジオ一覧アイテム"
+                      }
+                    },
+                    "total": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "page": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "limit": {
+                      "type": "integer"
+                    },
+                    "has_next": {
+                      "type": "boolean"
                     }
                   },
-                  "required": ["error"],
-                  "title": "ErrorResponse",
-                  "description": "Error response"
+                  "required": ["items", "total", "page", "limit", "has_next"],
+                  "title": "StudioListResponse",
+                  "description": "スタジオ一覧レスポンス"
                 }
               }
             }
