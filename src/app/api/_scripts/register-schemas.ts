@@ -27,6 +27,8 @@ import * as promoCodeSchemas from '../_schemas/promo-code.schema';
 import * as staffSchemas from '../_schemas/staff.schema';
 import * as storeAccessSettingsSchemas from '../_schemas/store-access-settings.schema';
 import * as storeSchemas from '../_schemas/store.schema';
+import * as studioDetailSchemas from '../_schemas/studio-detail.schema';
+import * as studioSchemas from '../_schemas/studio.schema';
 import * as surveySchemas from '../_schemas/survey.schema';
 import * as visitExperienceSchemas from '../_schemas/visit-experience.schema';
 import { registry } from './register-route';
@@ -2238,5 +2240,52 @@ export function registerAllSchemas() {
       'GetControllerDetailResponse',
       controllerSchemas.GetControllerDetailResponseSchema,
     ),
+  );
+
+  // Register studio detail schemas
+  registeredSchemaMap.set(
+    'ReservationTier',
+    registry.register('ReservationTier', studioDetailSchemas.ReservationTierSchema),
+  );
+  registeredSchemaMap.set(
+    'LayoutState',
+    registry.register('LayoutState', studioDetailSchemas.LayoutStateSchema),
+  );
+  registeredSchemaMap.set(
+    'LayoutCellKind',
+    registry.register('LayoutCellKind', studioDetailSchemas.LayoutCellKindSchema),
+  );
+  registeredSchemaMap.set('Trend', registry.register('Trend', studioDetailSchemas.TrendSchema));
+  registeredSchemaMap.set(
+    'LinkedLessonSummary',
+    registry.register('LinkedLessonSummary', studioDetailSchemas.LinkedLessonSummarySchema),
+  );
+  registeredSchemaMap.set(
+    'StudioImage',
+    registry.register('StudioImage', studioDetailSchemas.StudioImageSchema),
+  );
+  registeredSchemaMap.set(
+    'LayoutCell',
+    registry.register('LayoutCell', studioDetailSchemas.LayoutCellSchema),
+  );
+  registeredSchemaMap.set(
+    'LayoutPreview',
+    registry.register('LayoutPreview', studioDetailSchemas.LayoutPreviewSchema),
+  );
+  registeredSchemaMap.set(
+    'UtilizationSummary',
+    registry.register('UtilizationSummary', studioDetailSchemas.UtilizationSummarySchema),
+  );
+  registeredSchemaMap.set(
+    'StudioDetail',
+    registry.register('StudioDetail', studioDetailSchemas.StudioDetailSchema),
+  );
+  registeredSchemaMap.set(
+    'GetStudioDetailResponse',
+    registry.register('GetStudioDetailResponse', studioDetailSchemas.GetStudioDetailResponseSchema),
+  );
+  registeredSchemaMap.set(
+    'GetStudioDetailQuery',
+    registry.register('GetStudioDetailQuery', studioDetailSchemas.GetStudioDetailQuerySchema),
   );
 }

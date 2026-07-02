@@ -197,14 +197,14 @@ export function LessonScheduleFormDateStudio() {
     enabled: lessonType === 'studio' && !!storeId,
   });
 
-  const filteredStudios = useMemo(() => studiosData?.studios ?? [], [studiosData?.studios]);
+  const filteredStudios = useMemo(() => studiosData?.items ?? [], [studiosData?.items]);
   const selectedStudio = filteredStudios.find((s) => s.id === selectedStudioId);
 
   const studioSelectItems = useMemo(
     () =>
       filteredStudios.map((studio) => ({
         value: studio.id,
-        label: `${studio.name}（物理定員 ${studio.physical_capacity}名）`,
+        label: `${studio.name}（物理定員 ${studio.capacity}名）`,
       })),
     [filteredStudios],
   );
@@ -505,7 +505,7 @@ export function LessonScheduleFormDateStudio() {
                     {selectedStudio && (
                       <p className="text-muted-foreground mt-1 flex items-center gap-1 text-xs">
                         <Info className="size-3" />
-                        物理定員: {selectedStudio.physical_capacity}名（このスタジオの最大収容人数）
+                        物理定員: {selectedStudio.capacity}名（このスタジオの最大収容人数）
                       </p>
                     )}
                     <FormMessage />

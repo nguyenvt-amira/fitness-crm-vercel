@@ -132,7 +132,7 @@ export function LessonScheduleFormInstructors() {
   }, [checkDate, conflictQueries, instructorsData?.instructors, selectedInstructorIds]);
 
   const instructorList = instructorsData?.instructors ?? [];
-  const selectedStudio = (studiosData?.studios ?? []).find((s) => s.id === studioId);
+  const selectedStudio = (studiosData?.items ?? []).find((s) => s.id === studioId);
 
   const availableInstructors = instructorList.filter(
     (inst) => !(selectedInstructorIds as string[]).includes(inst.instructor_id),
@@ -349,7 +349,7 @@ export function LessonScheduleFormInstructors() {
                         className="h-8 w-[120px] text-sm"
                         placeholder="例: 10"
                         min={1}
-                        max={selectedStudio?.physical_capacity}
+                        max={selectedStudio?.capacity}
                         value={String(field.value ?? '')}
                         onChange={(e) => {
                           const val = e.target.value;
@@ -362,7 +362,7 @@ export function LessonScheduleFormInstructors() {
                       <Label className="text-muted-foreground text-sm">名</Label>
                       {selectedStudio && (
                         <Label className="text-muted-foreground text-xs">
-                          （上限: {selectedStudio.physical_capacity}名 ／ {selectedStudio.name}
+                          （上限: {selectedStudio.capacity}名 ／ {selectedStudio.name}
                           物理定員）
                         </Label>
                       )}
@@ -375,17 +375,17 @@ export function LessonScheduleFormInstructors() {
                   ) : null}
                   {selectedStudio &&
                   capacity !== undefined &&
-                  Number(capacity) > selectedStudio.physical_capacity ? (
+                  Number(capacity) > selectedStudio.capacity ? (
                     <p className="text-destructive text-xs">
-                      物理定員（{selectedStudio.physical_capacity}名）を超えています
+                      物理定員（{selectedStudio.capacity}名）を超えています
                     </p>
                   ) : null}
                   {selectedStudio &&
                   capacity !== undefined &&
                   Number(capacity) > 0 &&
-                  Number(capacity) <= selectedStudio.physical_capacity ? (
+                  Number(capacity) <= selectedStudio.capacity ? (
                     <p className="text-muted-foreground text-xs">
-                      例: {selectedStudio.physical_capacity}名のスタジオで{Number(capacity)}
+                      例: {selectedStudio.capacity}名のスタジオで{Number(capacity)}
                       名限定開催
                     </p>
                   ) : null}

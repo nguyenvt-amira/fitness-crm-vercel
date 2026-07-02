@@ -19411,6 +19411,400 @@ export type GetControllerDetailResponse = {
     };
 };
 
+/**
+ * ReservationTier
+ *
+ * Color tier for reservation rate
+ */
+export const ReservationTier = {
+    SUCCESS: 'success',
+    WARNING: 'warning',
+    DEFAULT: 'default'
+} as const;
+
+/**
+ * ReservationTier
+ *
+ * Color tier for reservation rate
+ */
+export type ReservationTier = typeof ReservationTier[keyof typeof ReservationTier];
+
+/**
+ * LayoutState
+ *
+ * Layout preview state
+ */
+export const LayoutState = { CONFIGURED: 'configured', NOT_CONFIGURED: 'not_configured' } as const;
+
+/**
+ * LayoutState
+ *
+ * Layout preview state
+ */
+export type LayoutState = typeof LayoutState[keyof typeof LayoutState];
+
+/**
+ * LayoutCellKind
+ *
+ * Cell type in layout grid
+ */
+export const LayoutCellKind = {
+    NORMAL_SEAT: 'normal_seat',
+    EQUIPMENT_SEAT: 'equipment_seat',
+    FIXED_OBJECT: 'fixed_object'
+} as const;
+
+/**
+ * LayoutCellKind
+ *
+ * Cell type in layout grid
+ */
+export type LayoutCellKind = typeof LayoutCellKind[keyof typeof LayoutCellKind];
+
+/**
+ * Trend
+ *
+ * Utilization trend indicator
+ */
+export const Trend = {
+    UP: 'up',
+    DOWN: 'down',
+    FLAT: 'flat',
+    NULL: null
+} as const;
+
+/**
+ * Trend
+ *
+ * Utilization trend indicator
+ */
+export type Trend = typeof Trend[keyof typeof Trend];
+
+/**
+ * LinkedLessonSummary
+ *
+ * Linked lesson row in detail
+ */
+export type LinkedLessonSummary = {
+    /**
+     * Lesson reference
+     */
+    lesson_id: string;
+    lesson_name: string;
+    /**
+     * Lesson category badge
+     */
+    category: string;
+    schedule_text: string;
+    reservation_rate: number;
+    /**
+     * ReservationTier
+     *
+     * Color tier for reservation rate
+     */
+    reservation_tier: 'success' | 'warning' | 'default';
+};
+
+/**
+ * StudioImage
+ *
+ * Studio image asset metadata
+ */
+export type StudioImage = {
+    /**
+     * Image identifier
+     */
+    image_id: string;
+    url: string;
+    /**
+     * Accessibility text
+     */
+    alt: string;
+    /**
+     * Display order
+     */
+    sort_order: number;
+};
+
+/**
+ * LayoutCell
+ *
+ * Studio layout grid cell
+ */
+export type LayoutCell = {
+    /**
+     * Column index
+     */
+    x: number;
+    /**
+     * Row index
+     */
+    y: number;
+    /**
+     * LayoutCellKind
+     *
+     * Cell type in layout grid
+     */
+    kind: 'normal_seat' | 'equipment_seat' | 'fixed_object';
+};
+
+/**
+ * LayoutPreview
+ *
+ * Studio layout preview or not-configured state
+ */
+export type LayoutPreview = {
+    /**
+     * LayoutState
+     *
+     * Layout preview state
+     */
+    state: 'configured' | 'not_configured';
+    rows?: number | null;
+    columns?: number | null;
+    /**
+     * Grid cells
+     */
+    cells?: Array<{
+        /**
+         * Column index
+         */
+        x: number;
+        /**
+         * Row index
+         */
+        y: number;
+        /**
+         * LayoutCellKind
+         *
+         * Cell type in layout grid
+         */
+        kind: 'normal_seat' | 'equipment_seat' | 'fixed_object';
+    }> | null;
+    /**
+     * Navigation to edit
+     */
+    configure_path: string;
+};
+
+/**
+ * UtilizationSummary
+ *
+ * Read-only KPI snapshot
+ */
+export type UtilizationSummary = {
+    day_rate: number;
+    week_rate: number;
+    month_rate: number;
+    /**
+     * Trend
+     *
+     * Utilization trend indicator
+     */
+    trend?: 'up' | 'down' | 'flat' | null;
+};
+
+/**
+ * StudioDetail
+ *
+ * Studio detail main entity
+ */
+export type StudioDetail = {
+    /**
+     * Studio identifier
+     */
+    id: string;
+    name: string;
+    studio_type: 'studio-lesson' | 'pt' | 'body-care';
+    status: 'active' | 'inactive';
+    /**
+     * Physical capacity
+     */
+    capacity: number;
+    /**
+     * Buffer value
+     */
+    buffer_value: number;
+    usage_hours: string;
+    store_id: string;
+    store_name: string;
+    /**
+     * Optional equipment notes
+     */
+    equipment_notes?: string | null;
+    /**
+     * Optional internal notes
+     */
+    internal_notes?: string | null;
+    created_at: string;
+    updated_at: string;
+    /**
+     * Delete guard signal
+     */
+    assigned_lesson_count: number;
+    /**
+     * Fixed false in Phase 1
+     */
+    change_history_enabled: boolean;
+};
+
+/**
+ * GetStudioDetailResponse
+ *
+ * Complete studio detail response
+ */
+export type GetStudioDetailResponse = {
+    /**
+     * StudioDetail
+     *
+     * Studio detail main entity
+     */
+    data: {
+        /**
+         * Studio identifier
+         */
+        id: string;
+        name: string;
+        studio_type: 'studio-lesson' | 'pt' | 'body-care';
+        status: 'active' | 'inactive';
+        /**
+         * Physical capacity
+         */
+        capacity: number;
+        /**
+         * Buffer value
+         */
+        buffer_value: number;
+        usage_hours: string;
+        store_id: string;
+        store_name: string;
+        /**
+         * Optional equipment notes
+         */
+        equipment_notes?: string | null;
+        /**
+         * Optional internal notes
+         */
+        internal_notes?: string | null;
+        created_at: string;
+        updated_at: string;
+        /**
+         * Delete guard signal
+         */
+        assigned_lesson_count: number;
+        /**
+         * Fixed false in Phase 1
+         */
+        change_history_enabled: boolean;
+    };
+    /**
+     * Can be empty
+     */
+    linked_lessons: Array<{
+        /**
+         * Lesson reference
+         */
+        lesson_id: string;
+        lesson_name: string;
+        /**
+         * Lesson category badge
+         */
+        category: string;
+        schedule_text: string;
+        reservation_rate: number;
+        /**
+         * ReservationTier
+         *
+         * Color tier for reservation rate
+         */
+        reservation_tier: 'success' | 'warning' | 'default';
+    }>;
+    /**
+     * Studio images
+     */
+    images: Array<{
+        /**
+         * Image identifier
+         */
+        image_id: string;
+        url: string;
+        /**
+         * Accessibility text
+         */
+        alt: string;
+        /**
+         * Display order
+         */
+        sort_order: number;
+    }>;
+    /**
+     * LayoutPreview
+     *
+     * Studio layout preview or not-configured state
+     */
+    layout: {
+        /**
+         * LayoutState
+         *
+         * Layout preview state
+         */
+        state: 'configured' | 'not_configured';
+        rows?: number | null;
+        columns?: number | null;
+        /**
+         * Grid cells
+         */
+        cells?: Array<{
+            /**
+             * Column index
+             */
+            x: number;
+            /**
+             * Row index
+             */
+            y: number;
+            /**
+             * LayoutCellKind
+             *
+             * Cell type in layout grid
+             */
+            kind: 'normal_seat' | 'equipment_seat' | 'fixed_object';
+        }> | null;
+        /**
+         * Navigation to edit
+         */
+        configure_path: string;
+    };
+    /**
+     * UtilizationSummary
+     *
+     * Read-only KPI snapshot
+     */
+    utilization: {
+        day_rate: number;
+        week_rate: number;
+        month_rate: number;
+        /**
+         * Trend
+         *
+         * Utilization trend indicator
+         */
+        trend?: 'up' | 'down' | 'flat' | null;
+    };
+};
+
+/**
+ * GetStudioDetailQuery
+ *
+ * Studio detail request
+ */
+export type GetStudioDetailQuery = {
+    /**
+     * Studio ID from path
+     */
+    id: string;
+};
+
 export type PostAuthLoginData = {
     /**
      * LoginRequest

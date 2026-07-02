@@ -369,6 +369,8 @@ UI Code: .cache/fitness-crm-ui/src/pages/store-page-list.tsx
 ### Scope Restriction:
 **Phase 1 Only:** Focus exclusively on the features, user actions, and components allocated for Phase 1.
 If the source spec or UI code contains placeholders, comments, or components designated for later phases (e.g., Phase 2+, future enhancements, or disabled features marked for future scope), explicitly exclude them from the active specifications and note them as "Out of Scope for Phase 1".
+**Permissions: Carefully check permissions and disable actions according to the specification's authority matrix.(権限マトリクス
+)
 
 ### Expected Output Requirements:
 1. **Language:** The response and the generated spec.md must be written in English.
@@ -378,6 +380,7 @@ If the source spec or UI code contains placeholders, comments, or components des
    - User interaction scenarios (clicks, inputs, Toggles, etc.) and their expected behaviors.
    - UI states (Loading, Empty, Data-rendered, Error states if any in the code).
 4. **Traceability:** Map each UI element found in the code to its corresponding requirement in the source spec.
+
 
 ### Handling Discrepancies & Missing Info (Preparation for speckit.clarify):
 If there is any mismatch between the code and the requirement spec, or if the logic is ambiguous, do NOT guess.
@@ -402,6 +405,13 @@ speckit.clarify
 
 ### Phase 2, Step 2 — `speckit.clarify`
 
+**Quik Answer:**
+
+```/speckit.clarify use agent .github/agents/speckit.clarify.agent.md to clear Q&A / Clarification Needed in @specs/008-lesson-content-detail/spec.md for specs/008-lesson-content-detail
+My anwser:
+Q1: Deactivate ("無効化する") action be gated to Headquarter/System like the other management actions, Prioritize following the specs.:D-02.md
+```
+
 **AI output:** Appended 10 Q&A blocks to `spec.md`, all `[NEEDS CLARIFICATION]` resolved:
 
 | #   | Question                                      | Decision                                       |
@@ -423,7 +433,7 @@ Q3: Always show the MoreHorizontal dropdown regardless of status.
 **DEV → next step:**
 
 ```
-speckit.plan
+/speckit.plan use .github/agents/speckit.plan.agent.md Create a plan for the spec @008-lesson-content-detail
 ```
 
 ---
@@ -444,10 +454,7 @@ speckit.plan
 **DEV update request:**
 
 ```
-Update plan step 22: instead of a browser check, change it to a code-vs-code UI review —
-read the prototype file, compare it with the implementation, and auto-fix if there are differences.
-Then create `tasks.md`.
-
+speckit.tasks use .github/agents/speckit.tasks.agent.md to Break the plan   @008-lesson-content-detail into tasks
 speckit.tasks
 ```
 
@@ -463,9 +470,9 @@ speckit.tasks
 **DEV prompt:**
 
 ```
-Before implementation, update TASK-21 to a code-vs-code check (no browser).
-If anything differs from the prototype, auto-fix it. Then implement all tasks.
-
+/speckit.implement use agent @speckit.implement.agent.md to implement tasks for @007-lesson-content-list
+- UI must be like design( .cache/fitness-crm-ui/src/pages/lesson.tsx)
+- code must flow by codebase rule @constitution.md
 speckit.implement
 ```
 

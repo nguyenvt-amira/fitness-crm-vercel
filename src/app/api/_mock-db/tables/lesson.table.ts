@@ -37,6 +37,7 @@ import {
   SEED_RESERVATION_INSTRUCTORS,
   SEED_SESSION_MEMOS,
   SEED_STUDIOS,
+  SEED_STUDIO_DETAILS,
   SEED_STUDIO_LIST,
   SEED_STUDIO_SPACES,
   StudioListSeed,
@@ -323,6 +324,30 @@ export function createLessonTables(getDb: () => DbType) {
           page: query.page,
           limit: query.limit,
           has_next: query.page * query.limit < total,
+        };
+      },
+      getStudioDetailById(id: string, userRole: StaffRole, userStoreIds: string[]) {
+        const detail = SEED_STUDIO_DETAILS[id];
+        if (!detail) {
+          return undefined;
+        }
+
+        const isGlobalRole = userRole === 'system' || userRole === 'headquarter';
+        if (!isGlobalRole && !userStoreIds.includes(detail.data.store_id)) {
+          return undefined;
+        }
+
+        return {
+          data: { ...detail.data },
+          linked_lessons: detail.linked_lessons.map((lesson) => ({
+            ...lesson,
+          })),
+          images: detail.images.map((image) => ({ ...image })),
+          layout: {
+            ...detail.layout,
+            cells: detail.layout.cells?.map((cell) => ({ ...cell })) ?? null,
+          },
+          utilization: { ...detail.utilization },
         };
       },
     },
