@@ -1,0 +1,77 @@
+import type { DbType } from './_db.types';
+import { createBrandTables } from './tables/brand.table';
+import { createEquipmentTables } from './tables/equipment.table';
+import { createFranchiseTables } from './tables/franchise.table';
+import { createLessonTables } from './tables/lesson.table';
+import { createLockerTables } from './tables/locker.table';
+import { createMembersTables } from './tables/members.table';
+import { createOptionTables } from './tables/option.table';
+import { createStaffTables } from './tables/staff.table';
+import { createStoreTables } from './tables/store.table';
+import { createTransferTables } from './tables/transfer.table';
+
+export function createDb(): DbType {
+  const db = {} as DbType;
+
+  Object.assign(
+    db,
+    createMembersTables(() => db),
+  );
+  Object.assign(
+    db,
+    createBrandTables(() => db),
+  );
+  Object.assign(
+    db,
+    createOptionTables(() => db),
+  );
+  Object.assign(
+    db,
+    createStoreTables(() => db),
+  );
+  Object.assign(
+    db,
+    createLockerTables(() => db),
+  );
+  Object.assign(
+    db,
+    createStaffTables(() => db),
+  );
+  Object.assign(
+    db,
+    createFranchiseTables(() => db),
+  );
+  Object.assign(
+    db,
+    createTransferTables(() => db),
+  );
+  Object.assign(
+    db,
+    createEquipmentTables(() => db),
+  );
+  Object.assign(
+    db,
+    createLessonTables(() => db),
+  );
+
+  // Seed mock data immediately when the singleton is first created
+  db.mainContracts._seed();
+  db.campaigns._seed();
+  db.promoCodes._seed();
+  db.members._seed();
+  db.contracts._seed();
+  db.membershipApplications._seed();
+  db.family._seed();
+  db.staffs._seed();
+  db.enrollmentFeeMasters._seed();
+  db.corporateMasters._seed();
+  db.partnerCompanies._seed();
+  db.equipment._seed();
+  db.visitExperiences._seed();
+  db.franchiseCompanies._seed();
+  db.users._seed();
+  db.lessonSchedules._seed();
+  db.reservations._seed();
+
+  return db;
+}
