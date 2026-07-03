@@ -6,8 +6,6 @@ import type {
 import type { CreateLessonContentRequest } from '@/app/api/_schemas/lesson-content-form.schema';
 import type { LessonContentItem, PersonalPlanItem } from '@/app/api/_schemas/lesson-content.schema';
 import type {
-  AttendanceStatus,
-  CancelType,
   Reservation,
   ReservationListResponse,
   ReservationStats,

@@ -14,14 +14,12 @@ import type {
   UpdateFranchiseCompanyBody,
 } from '@/app/api/_schemas/franchise-company.schema';
 
-import type { DbType } from '../_db.types';
 import {
   SEED_BRAND_CHANGE_HISTORIES,
   SEED_BRAND_FEE_GROUPS,
   SEED_BRAND_ROWS,
   cloneBrandFeeGroup,
   normalizeBrandIdentifier,
-  staffBrandDisplayName,
   toBrandListItem,
 } from '../seeds/brand.seed';
 import type { CorporateMasterRow } from '../seeds/franchise.seed';
@@ -36,7 +34,7 @@ import type { EnrollmentFeeMasterRow, FranchiseCompanyRow } from '../seeds/user.
 import { SEED_USERS } from '../seeds/user.seed';
 import type { UserRow } from '../seeds/user.seed';
 
-export function createFranchiseTables(_getDb: () => DbType) {
+export function createFranchiseTables() {
   return {
     brands: {
       _rows: [] as BrandDetail[],

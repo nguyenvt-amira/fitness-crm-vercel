@@ -187,18 +187,24 @@ export enum Permission {
   LessonContentsEdit = 'lesson-contents.edit',
   LessonContentsDelete = 'lesson-contents.delete',
   LessonContentsHistoryView = 'lesson-contents.history-view',
+
+  // -------------------------------------------------------------------------
   // Equipment
   // -------------------------------------------------------------------------
   EquipmentView = 'equipment.view',
+  EquipmentCreate = 'equipment.create',
   EquipmentEdit = 'equipment.edit',
   EquipmentDelete = 'equipment.delete',
+  EquipmentExport = 'equipment.export',
 
   // -------------------------------------------------------------------------
   // Controllers
   // -------------------------------------------------------------------------
   ControllerView = 'controller.view',
+  ControllerCreate = 'controller.create',
   ControllerEdit = 'controller.edit',
   ControllerDelete = 'controller.delete',
+  ControllerExport = 'controller.export',
 }
 
 /** Authenticated user stored in context */

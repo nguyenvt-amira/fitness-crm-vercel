@@ -126,13 +126,13 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
   // Equipment
   '/equipment': Permission.EquipmentView,
   '/equipment/:id': Permission.EquipmentView,
-  '/equipment/create': Permission.EquipmentEdit,
+  '/equipment/create': Permission.EquipmentCreate,
   '/equipment/:id/edit': Permission.EquipmentEdit,
 
   // Controllers
   '/controllers': Permission.ControllerView,
   '/controllers/:id': Permission.ControllerView,
-  '/controllers/create': Permission.ControllerEdit,
+  '/controllers/create': Permission.ControllerCreate,
   '/controllers/:id/edit': Permission.ControllerEdit,
 };
 
@@ -238,11 +238,15 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LessonContentsDelete,
     Permission.LessonContentsHistoryView,
     Permission.EquipmentView,
+    Permission.EquipmentCreate,
     Permission.EquipmentEdit,
     Permission.EquipmentDelete,
+    Permission.EquipmentExport,
     Permission.ControllerView,
+    Permission.ControllerCreate,
     Permission.ControllerEdit,
     Permission.ControllerDelete,
+    Permission.ControllerExport,
   ],
 
   [UserRole.Manager]: [
@@ -292,11 +296,15 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LessonsPenaltyRelease,
     Permission.LessonContentsView,
     Permission.EquipmentView,
+    Permission.EquipmentCreate,
     Permission.EquipmentEdit,
     Permission.EquipmentDelete,
+    Permission.EquipmentExport,
     Permission.ControllerView,
+    Permission.ControllerCreate,
     Permission.ControllerEdit,
     Permission.ControllerDelete,
+    Permission.ControllerExport,
   ],
 
   [UserRole.Staff]: [
@@ -349,11 +357,15 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LessonsPenaltyRelease,
     Permission.LessonContentsView,
     Permission.EquipmentView,
+    Permission.EquipmentCreate,
     Permission.EquipmentEdit,
     Permission.EquipmentDelete,
+    Permission.EquipmentExport,
     Permission.ControllerView,
+    Permission.ControllerCreate,
     Permission.ControllerEdit,
     Permission.ControllerDelete,
+    Permission.ControllerExport,
   ],
 
   // Trainer: own-session scope. Can manage their schedules/reservations/
@@ -383,6 +395,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LessonsView,
     Permission.LessonContentsView,
     Permission.EquipmentView,
-    Permission.ControllerView,
+    Permission.EquipmentExport,
+    Permission.ControllerExport,
   ],
 };

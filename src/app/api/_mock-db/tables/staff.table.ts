@@ -1,4 +1,4 @@
-import type { Position, StaffPermissionRecord } from '@/app/api/_schemas/position.schema';
+import type { StaffPermissionRecord } from '@/app/api/_schemas/position.schema';
 import type { StaffDetail, StaffListItem } from '@/app/api/_schemas/staff.schema';
 
 import type { DbType } from '../_db.types';

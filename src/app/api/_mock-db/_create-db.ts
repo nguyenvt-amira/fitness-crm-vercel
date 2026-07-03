@@ -21,10 +21,7 @@ export function createDb(): DbType {
     db,
     createBrandTables(() => db),
   );
-  Object.assign(
-    db,
-    createOptionTables(() => db),
-  );
+  Object.assign(db, createOptionTables());
   Object.assign(
     db,
     createStoreTables(() => db),
@@ -37,10 +34,7 @@ export function createDb(): DbType {
     db,
     createStaffTables(() => db),
   );
-  Object.assign(
-    db,
-    createFranchiseTables(() => db),
-  );
+  Object.assign(db, createFranchiseTables());
   Object.assign(
     db,
     createTransferTables(() => db),

@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 
 import { usePathname, useRouter } from 'next/navigation';
 
+import { useAuthUser } from '@/contexts/auth-user.context';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronDown, Plus } from 'lucide-react';
 
@@ -14,7 +15,6 @@ import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -34,6 +34,11 @@ const EQUIPMENT_TAB_ROUTES: Record<EquipmentTab, RouteKey> = {
   controllers: '/controllers',
 };
 
+const TAB_VIEW_PERMISSIONS: Record<EquipmentTab, Permission> = {
+  equipment: Permission.EquipmentView,
+  controllers: Permission.ControllerView,
+};
+
 function getActiveTab(pathname: string): EquipmentTab | null {
   if (pathname === navigate('/controllers')) return 'controllers';
   if (pathname === navigate('/equipment')) return 'equipment';
@@ -43,6 +48,7 @@ function getActiveTab(pathname: string): EquipmentTab | null {
 export default function EquipmentManagementLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { hasPermission } = useAuthUser();
   const activeTab = getActiveTab(pathname);
 
   const { data: summary } = useQuery({
@@ -56,6 +62,13 @@ export default function EquipmentManagementLayout({ children }: { children: Reac
 
   const equipmentCount = summary?.equipment_count ?? 0;
   const controllerCount = summary?.controllers_count ?? 0;
+  const canCreateEquipment = hasPermission(Permission.EquipmentCreate);
+  const canCreateController = hasPermission(Permission.ControllerCreate);
+  const showCreateMenu = canCreateEquipment || canCreateController;
+
+  const visibleTabs = (Object.keys(EQUIPMENT_TAB_ROUTES) as EquipmentTab[]).filter((tab) =>
+    hasPermission(TAB_VIEW_PERMISSIONS[tab]),
+  );
 
   const handleTabChange = (tab: string) => {
     const routeKey = EQUIPMENT_TAB_ROUTES[tab as EquipmentTab];
@@ -75,30 +88,36 @@ export default function EquipmentManagementLayout({ children }: { children: Reac
         }
         actions={
           <div className="flex items-center gap-2">
-            <EquipmentCsvExportButton activeTab={activeTab} />
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                render={
-                  <Button className="gap-1">
-                    <Plus className="size-4" />
-                    新規登録
-                    <ChevronDown className="size-4" />
-                  </Button>
-                }
-              />
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => router.push(navigate('/equipment/create'))}>
-                  接続機器を登録
-                </DropdownMenuItem>
-                <RoleGatedMenuItem
-                  requiredPermission={Permission.ControllerEdit}
-                  denyBadge="権限なし"
-                  onClick={() => router.push(navigate('/controllers/create'))}
-                >
-                  接点制御装置を登録
-                </RoleGatedMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <EquipmentCsvExportButton />
+            {showCreateMenu ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  render={
+                    <Button className="gap-1">
+                      <Plus className="size-4" />
+                      新規登録
+                      <ChevronDown className="size-4" />
+                    </Button>
+                  }
+                />
+                <DropdownMenuContent align="end">
+                  <RoleGatedMenuItem
+                    requiredPermission={Permission.EquipmentCreate}
+                    denyBadge="権限なし"
+                    onClick={() => router.push(navigate('/equipment/create'))}
+                  >
+                    接続機器を登録
+                  </RoleGatedMenuItem>
+                  <RoleGatedMenuItem
+                    requiredPermission={Permission.ControllerCreate}
+                    denyBadge="権限なし"
+                    onClick={() => router.push(navigate('/controllers/create'))}
+                  >
+                    接点制御装置を登録
+                  </RoleGatedMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : null}
           </div>
         }
       />
@@ -106,24 +125,28 @@ export default function EquipmentManagementLayout({ children }: { children: Reac
       <div className="bg-background flex flex-1 flex-col gap-4 px-6 py-4">
         <Tabs value={activeTab} onValueChange={handleTabChange} className="gap-4">
           <TabsList variant="line">
-            <TabsTrigger value="equipment" className="text-sm">
-              接続機器一覧
-              <Badge
-                variant="outline"
-                className="bg-muted-foreground/15 text-muted-foreground ml-1 min-w-5 border-transparent px-1 font-medium tabular-nums"
-              >
-                {equipmentCount}
-              </Badge>
-            </TabsTrigger>
-            <TabsTrigger value="controllers" className="text-sm">
-              接点制御装置一覧
-              <Badge
-                variant="outline"
-                className="bg-muted-foreground/15 text-muted-foreground ml-1 min-w-5 border-transparent px-1 font-medium tabular-nums"
-              >
-                {controllerCount}
-              </Badge>
-            </TabsTrigger>
+            {visibleTabs.includes('equipment') ? (
+              <TabsTrigger value="equipment" className="text-sm">
+                接続機器一覧
+                <Badge
+                  variant="outline"
+                  className="bg-muted-foreground/15 text-muted-foreground ml-1 min-w-5 border-transparent px-1 font-medium tabular-nums"
+                >
+                  {equipmentCount}
+                </Badge>
+              </TabsTrigger>
+            ) : null}
+            {visibleTabs.includes('controllers') ? (
+              <TabsTrigger value="controllers" className="text-sm">
+                接点制御装置一覧
+                <Badge
+                  variant="outline"
+                  className="bg-muted-foreground/15 text-muted-foreground ml-1 min-w-5 border-transparent px-1 font-medium tabular-nums"
+                >
+                  {controllerCount}
+                </Badge>
+              </TabsTrigger>
+            ) : null}
           </TabsList>
         </Tabs>
 

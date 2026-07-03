@@ -1,15 +1,10 @@
 import type { EkycResult, FamilyRelationship } from '@/app/api/_schemas/family-registration.schema';
-import type {
-  ContractType,
-  GetMemberDetailResponse,
-  PaymentSummary,
-} from '@/app/api/_schemas/member.schema';
+import type { ContractType, GetMemberDetailResponse } from '@/app/api/_schemas/member.schema';
 
 import type { GetContractsResponse } from '@/lib/api/types.gen';
 import { Brand, MainBrand } from '@/lib/api/types.gen';
 
 export const DEFAULT_MEMBER_MAIN_CONTRACT: string = 'レギュラー会員';
-const DEFAULT_MEMBER_MAIN_CONTRACT_ID = 'MC001';
 
 export type MembershipApplicationContractDetails = {
   plan_id: string;

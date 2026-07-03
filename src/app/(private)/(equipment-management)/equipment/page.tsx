@@ -9,12 +9,15 @@ import type { RowSelectionState, SortingState } from '@tanstack/react-table';
 
 import { Loading } from '@/components/common/data-state-boundary/loading';
 import { DataTable } from '@/components/common/data-table';
+import { RoleGatedButton } from '@/components/common/role-gated-button';
 import { TablePaginationWithSize } from '@/components/common/table-pagination-with-size';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
 import { getCrmEquipmentOptions } from '@/lib/api/@tanstack/react-query.gen';
 import { navigate } from '@/lib/routes/routes.util';
+
+import { Permission } from '@/types/permission.type';
 
 import { EquipmentBulkStatusDialog } from './_components/equipment-bulk-status-dialog';
 import { EquipmentFilters } from './_components/equipment-filters';
@@ -107,9 +110,14 @@ function EquipmentPageContent() {
                 選択解除
               </Button>
               <div className="bg-primary/20 h-4 w-px" />
-              <Button size="sm" onClick={() => setBulkDialogOpen(true)}>
+              <RoleGatedButton
+                size="sm"
+                requiredPermission={Permission.EquipmentEdit}
+                denyTooltip="一括状態変更の権限がありません"
+                onClick={() => setBulkDialogOpen(true)}
+              >
                 一括状態変更
-              </Button>
+              </RoleGatedButton>
             </div>
           )}
         </div>

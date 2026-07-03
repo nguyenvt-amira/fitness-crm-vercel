@@ -20,7 +20,6 @@ import type {
   SurveyTemplateUpsertBody,
 } from '@/app/api/_schemas/survey.schema';
 
-import type { DbType } from '../_db.types';
 import { LOCKER_CONTRACT_TYPE_DESCRIPTIONS } from '../seeds/locker.seed';
 import {
   SEED_OPTION_DISCOUNT_CHANGE_HISTORY,
@@ -35,7 +34,7 @@ import {
   toSurveyTemplateListItem,
 } from '../seeds/survey.seed';
 
-export function createOptionTables(_getDb: () => DbType) {
+export function createOptionTables() {
   return {
     optionMasters: {
       _rows: [] as OptionMasterDetail[],
