@@ -1,11 +1,16 @@
-import { Suspense } from 'react';
+import { BackLink } from '@/components/common/back-link';
+import { PageHeader } from '@/components/common/page-header';
 
-import { Loading } from '@/components/common/data-state-boundary/loading';
+import { StudioForm } from '../_components/studio-form/studio-form';
 
 export default function StudioCreatePage() {
   return (
-    <Suspense fallback={<Loading />}>
-      <div>Studio Create (FR-002)</div>
-    </Suspense>
+    <div className="flex flex-col">
+      <PageHeader
+        breadcrumb={<BackLink label="スタジオ管理に戻る" href="/studios" />}
+        title="新規スタジオ登録"
+      />
+      <StudioForm mode="create" />
+    </div>
   );
 }

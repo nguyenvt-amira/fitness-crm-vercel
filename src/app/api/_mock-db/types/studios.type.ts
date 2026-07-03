@@ -2,7 +2,12 @@ import { StaffRole } from '@/lib/api';
 
 import { GetStudiosQuery } from '../../_schemas/lesson-schedule.schema';
 import { GetStudioDetailResponse } from '../../_schemas/studio-detail.schema';
+import type { CreateStudioPayload, UpdateStudioPayload } from '../../_schemas/studio.schema';
 import { StudioListResponse } from '../../_schemas/studio.schema';
+
+export type StudioCreateInput = CreateStudioPayload;
+
+export type StudioUpdateInput = UpdateStudioPayload & { id: string };
 
 export type StudiosType = {
   _rows: Array<{
@@ -11,6 +16,7 @@ export type StudiosType = {
     physical_capacity: number;
     store_id: string;
   }>;
+  _detailStore: Record<string, GetStudioDetailResponse>;
   _seeded: boolean;
   _seed(): void;
   getList(): Array<{
@@ -33,4 +39,8 @@ export type StudiosType = {
     userRole: StaffRole,
     userStoreIds: string[],
   ): GetStudioDetailResponse | undefined;
+
+  create(input: StudioCreateInput): { id: string };
+
+  update(input: StudioUpdateInput): { success: boolean };
 };

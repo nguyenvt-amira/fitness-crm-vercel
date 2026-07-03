@@ -115,7 +115,7 @@ export function LessonFormImages() {
                     : 'border-transparent'
                 } ${draggingIndex === index ? 'opacity-50' : ''}`}
               >
-                <div className="aspect-3/2">
+                <div className="relative aspect-3/2">
                   <Image
                     src={img.url}
                     alt={`レッスン画像 ${img.order}`}

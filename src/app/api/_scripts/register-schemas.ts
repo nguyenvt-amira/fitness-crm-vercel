@@ -31,7 +31,7 @@ import * as studioDetailSchemas from '../_schemas/studio-detail.schema';
 import * as studioSchemas from '../_schemas/studio.schema';
 import * as surveySchemas from '../_schemas/survey.schema';
 import * as visitExperienceSchemas from '../_schemas/visit-experience.schema';
-import { registry } from './register-route';
+import { registry } from './registry';
 
 /**
  * Map to store registered schemas by their name

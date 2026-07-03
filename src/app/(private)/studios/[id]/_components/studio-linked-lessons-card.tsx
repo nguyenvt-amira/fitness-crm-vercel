@@ -1,36 +1,27 @@
 'use client';
 
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import type { LinkedLessonSummary } from '@/app/api/_schemas/studio-detail.schema';
 
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface StudioLinkedLessonsCardProps {
   lessons: LinkedLessonSummary[];
 }
 
-const RESERVATION_TIER_STYLES = {
-  success: 'bg-green-100 text-green-800',
-  warning: 'bg-amber-100 text-amber-800',
-  default: 'bg-slate-100 text-slate-800',
-};
-
-/**
- * Studio linked lessons card component.
- * Displays linked lessons with reservation rates and color-coded thresholds.
- * Supports lesson row navigation to lesson detail page (Phase 2 US2).
- */
 export function StudioLinkedLessonsCard({ lessons }: StudioLinkedLessonsCardProps) {
+  const router = useRouter();
+
   if (!lessons || lessons.length === 0) {
     return (
       <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">リンクレッスン</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground text-center text-sm">
+        <CardContent className="px-4">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="text-sm font-bold">紐付きレッスン</h3>
+          </div>
+          <p className="text-muted-foreground text-center text-xs">
             リンクされたレッスンはありません
           </p>
         </CardContent>
@@ -40,51 +31,44 @@ export function StudioLinkedLessonsCard({ lessons }: StudioLinkedLessonsCardProp
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="text-lg">リンクレッスン</CardTitle>
-        <p className="text-muted-foreground text-sm">{lessons.length}件のレッスン</p>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-2">
+      <CardContent className="px-4">
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-sm font-bold">紐付きレッスン</h3>
+          <Badge variant="secondary" className="text-[10px]">
+            {lessons.length}件
+          </Badge>
+        </div>
+        <div className="space-y-1">
           {lessons.map((lesson) => (
-            <Link
+            <div
               key={lesson.lesson_id}
-              href={`/lessons/${lesson.lesson_id}`}
-              className="flex cursor-pointer flex-col gap-2 rounded-md border border-slate-200 p-3 transition-colors hover:border-slate-300 hover:bg-slate-50"
+              className="hover:bg-accent/50 -mx-1 flex cursor-pointer items-center justify-between rounded border-b px-1 py-2 last:border-b-0"
+              onClick={() => router.push(`/lessons/${lesson.lesson_id}`)}
             >
-              <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0 flex-1">
-                  <p className="line-clamp-1 text-sm font-medium">{lesson.lesson_name}</p>
-                  <p className="text-muted-foreground text-xs">{lesson.schedule_text}</p>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <p className="truncate text-sm font-medium">{lesson.lesson_name}</p>
+                  <Badge
+                    variant="outline"
+                    className="bg-info/10 text-info border-info/20 shrink-0 text-[10px]"
+                  >
+                    {lesson.category}
+                  </Badge>
                 </div>
-                <Badge variant="secondary" className="shrink-0">
-                  {lesson.category}
-                </Badge>
+                <p className="text-muted-foreground text-[11px]">{lesson.schedule_text}</p>
               </div>
-
-              {/* Reservation rate */}
-              <div className="flex items-center justify-between gap-2">
-                <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-200">
-                  <div
-                    className={`h-full transition-all ${
-                      lesson.reservation_tier === 'success'
-                        ? 'bg-green-500'
-                        : lesson.reservation_tier === 'warning'
-                          ? 'bg-amber-500'
-                          : 'bg-slate-400'
-                    }`}
-                    style={{ width: `${lesson.reservation_rate}%` }}
-                  />
-                </div>
-                <div
-                  className={`rounded px-2 py-1 text-xs font-semibold ${
-                    RESERVATION_TIER_STYLES[lesson.reservation_tier]
-                  }`}
-                >
-                  {lesson.reservation_rate}%
-                </div>
-              </div>
-            </Link>
+              <span
+                className={`ml-2 shrink-0 text-xs font-medium ${
+                  lesson.reservation_rate >= 80
+                    ? 'text-success'
+                    : lesson.reservation_rate >= 60
+                      ? 'text-warning'
+                      : 'text-muted-foreground'
+                }`}
+              >
+                {lesson.reservation_rate}%
+              </span>
+            </div>
           ))}
         </div>
       </CardContent>

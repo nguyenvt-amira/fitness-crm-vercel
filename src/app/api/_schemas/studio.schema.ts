@@ -1,3 +1,4 @@
+import { registerRoute } from '@/app/api/_scripts/register-route';
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 
@@ -59,6 +60,131 @@ export const GetStudiosQuerySchema = z
   })
   .openapi({ title: 'GetStudiosQuery', description: 'スタジオ一覧クエリパラメータ' });
 
+// ─── Studio Create/Edit Schemas (FR-002, FR-004) ──────────────────────────
+
+export const StudioFormTypeSchema = z
+  .enum(['normal', 'hot_yoga', 'virtual'])
+  .openapi({ example: 'normal', description: 'スタジオ区分' });
+
+export const StudioLayoutCellKindSchema = z
+  .enum(['normal_seat', 'equipment_seat', 'fixed_object', 'empty'])
+  .openapi({ example: 'normal_seat', description: 'Cell type in layout grid' });
+
+export const StudioLayoutCellSchema = z
+  .object({
+    x: z.number().int().min(0).openapi({ example: 0 }),
+    y: z.number().int().min(0).openapi({ example: 0 }),
+    kind: StudioLayoutCellKindSchema,
+  })
+  .openapi({ title: 'StudioLayoutCell' });
+
+export const StudioLayoutSchema = z
+  .object({
+    rows: z.number().int().min(2).max(5).openapi({ example: 2 }),
+    columns: z
+      .number()
+      .int()
+      .refine((v) => [6, 8, 10].includes(v), {
+        message: 'Columns must be 6, 8, or 10',
+      })
+      .openapi({ example: 8 }),
+    cells: z.array(StudioLayoutCellSchema).default([]).openapi({ description: 'Grid cells' }),
+  })
+  .openapi({ title: 'StudioLayout' });
+
+export const StudioImagePayloadSchema = z
+  .object({
+    url: z.string().url().openapi({ example: 'https://cdn.mock.example.com/studio/uuid.jpg' }),
+    sort_order: z.number().int().min(0).openapi({ example: 1 }),
+  })
+  .openapi({ title: 'StudioImagePayload' });
+
+export const CreateStudioPayloadSchema = z
+  .object({
+    name: z.string().min(1, 'スタジオ名は必須です。').max(100),
+    store_id: z.string().min(1, '店舗は必須です。'),
+    studio_type: StudioFormTypeSchema,
+    capacity: z.number().int().min(1, '収容人数は必須です。').max(500),
+    buffer_value: z.number().int().min(0).max(500).default(0),
+    operating_hours: z.string().regex(/^\d{2}:\d{2}~\d{2}:\d{2}$/, {
+      message: '利用可能時間は HH:mm~HH:mm 形式で入力してください。',
+    }),
+    equipment_notes: z.string().max(1000).nullable().optional(),
+    internal_notes: z.string().max(1000).nullable().optional(),
+    status: z.enum(['active', 'inactive']).default('active'),
+    images: z.array(StudioImagePayloadSchema).optional().default([]),
+    layout: StudioLayoutSchema.optional(),
+  })
+  .openapi({ title: 'CreateStudioPayload', description: 'Create studio request payload' });
+
+export const UpdateStudioPayloadSchema = CreateStudioPayloadSchema.openapi({
+  title: 'UpdateStudioPayload',
+  description: 'Update studio request payload',
+});
+
+export const CreateStudioResponseSchema = z
+  .object({
+    id: z.string().openapi({ example: 'STU-042' }),
+  })
+  .openapi({ title: 'CreateStudioResponse' });
+
+export const UpdateStudioResponseSchema = z
+  .object({
+    success: z.literal(true),
+  })
+  .openapi({ title: 'UpdateStudioResponse' });
+
+// ─── Route Registrations ───────────────────────────────────────────────────
+
+registerRoute({
+  method: 'post',
+  path: '/crm/studios',
+  summary: 'Create studio',
+  description: 'Create a new studio record with optional images and space layout',
+  tags: ['Studios'],
+  requestBody: {
+    schema: CreateStudioPayloadSchema,
+    description: 'Studio create payload',
+  },
+  responses: [
+    { status: 201, schema: CreateStudioResponseSchema, description: 'Studio created' },
+    { status: 400, description: 'Bad request - validation error' },
+  ],
+});
+
+registerRoute({
+  method: 'put',
+  path: '/crm/studios/{id}',
+  summary: 'Update studio',
+  description: 'Update an existing studio record',
+  tags: ['Studios'],
+  parameters: [
+    {
+      name: 'id',
+      in: 'path',
+      required: true,
+      schema: { type: 'string' },
+      description: 'Studio ID',
+    },
+  ],
+  requestBody: {
+    schema: UpdateStudioPayloadSchema,
+    description: 'Studio update payload',
+  },
+  responses: [
+    { status: 200, schema: UpdateStudioResponseSchema, description: 'Studio updated' },
+    { status: 400, description: 'Bad request - validation error' },
+    { status: 404, description: 'Studio not found' },
+  ],
+});
+
 export type StudioListItem = z.infer<typeof StudioListItemSchema>;
 export type StudioListResponse = z.infer<typeof StudioListResponseSchema>;
 export type GetStudiosQuery = z.infer<typeof GetStudiosQuerySchema>;
+export type CreateStudioPayload = z.infer<typeof CreateStudioPayloadSchema>;
+export type UpdateStudioPayload = z.infer<typeof UpdateStudioPayloadSchema>;
+export type CreateStudioResponse = z.infer<typeof CreateStudioResponseSchema>;
+export type UpdateStudioResponse = z.infer<typeof UpdateStudioResponseSchema>;
+export type StudioLayoutCell = z.infer<typeof StudioLayoutCellSchema>;
+export type StudioLayout = z.infer<typeof StudioLayoutSchema>;
+export type StudioImagePayload = z.infer<typeof StudioImagePayloadSchema>;

@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 
 import { postCrmUploadsPresignMutation } from '@/lib/api/@tanstack/react-query.gen';
 
-type UploadCategory = 'avatar' | 'cv' | 'document' | 'other';
+type UploadCategory = 'avatar' | 'cv' | 'document' | 'other' | 'studio';
 type UploadContentType = 'image/jpeg' | 'image/png';
 
 const DEFAULT_ACCEPTED_TYPES: UploadContentType[] = ['image/jpeg', 'image/png'];
@@ -53,7 +53,10 @@ export function useImageUpload(options: UseImageUploadOptions = {}): UseImageUpl
       setPendingCount((count) => count + 1);
       try {
         const presign = await getPresignUrl({
-          body: { category, content_type: file.type as UploadContentType },
+          body: {
+            category: category as 'avatar' | 'cv' | 'document' | 'other',
+            content_type: file.type as UploadContentType,
+          },
         });
 
         const presignUrl = presign?.presign_url;

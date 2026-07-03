@@ -1,12 +1,8 @@
-import { OpenAPIRegistry, OpenApiGeneratorV3 } from '@asteasolutions/zod-to-openapi';
+import { OpenApiGeneratorV3 } from '@asteasolutions/zod-to-openapi';
 import type { ZodSchema } from 'zod';
 
 import { registeredSchemaMap } from './register-schemas';
-
-/**
- * Global OpenAPI registry instance
- */
-export const registry = new OpenAPIRegistry();
+import { registry } from './registry';
 
 /**
  * Helper to extract refId from schema's openapi metadata

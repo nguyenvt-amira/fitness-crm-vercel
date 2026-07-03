@@ -22,7 +22,12 @@ import type {
 
 import { StaffRole } from '@/lib/api';
 
-import { GetStudiosQuery } from '../../_schemas/studio.schema';
+import type { GetStudioDetailResponse } from '../../_schemas/studio-detail.schema';
+import {
+  type CreateStudioPayload,
+  GetStudiosQuery,
+  type UpdateStudioPayload,
+} from '../../_schemas/studio.schema';
 import type { DbType } from '../_db.types';
 import {
   LESSON_CONTENT_HISTORY,
@@ -255,11 +260,13 @@ export function createLessonTables(getDb: () => DbType) {
         physical_capacity: number;
         store_id: string;
       }>,
+      _detailStore: {} as Record<string, GetStudioDetailResponse>,
       _seeded: false,
       _seed(): void {
         if (this._seeded) return;
         this._seeded = true;
         this._rows = [...SEED_STUDIOS];
+        this._detailStore = { ...SEED_STUDIO_DETAILS };
       },
       getList() {
         this._seed();
@@ -327,7 +334,8 @@ export function createLessonTables(getDb: () => DbType) {
         };
       },
       getStudioDetailById(id: string, userRole: StaffRole, userStoreIds: string[]) {
-        const detail = SEED_STUDIO_DETAILS[id];
+        this._seed();
+        const detail = this._detailStore[id];
         if (!detail) {
           return undefined;
         }
@@ -349,6 +357,165 @@ export function createLessonTables(getDb: () => DbType) {
           },
           utilization: { ...detail.utilization },
         };
+      },
+      create(input: CreateStudioPayload) {
+        this._seed();
+        const maxNumericId = Object.keys(this._detailStore).reduce((max, key) => {
+          const num = parseInt(key.replace('STU-', ''), 10);
+          return isNaN(num) ? max : Math.max(max, num);
+        }, 0);
+        const newId = `STU-${String(maxNumericId + 1).padStart(3, '0')}`;
+        const now = new Date().toISOString();
+
+        const layoutState = input.layout ? ('configured' as const) : ('not_configured' as const);
+
+        const newDetail: GetStudioDetailResponse = {
+          data: {
+            id: newId,
+            name: input.name,
+            studio_type: 'studio-lesson',
+            status: input.status,
+            capacity: input.capacity,
+            buffer_value: input.buffer_value,
+            usage_hours: input.operating_hours.replace('~', '-'),
+            store_id: input.store_id,
+            store_name: '',
+            equipment_notes: input.equipment_notes ?? null,
+            internal_notes: input.internal_notes ?? null,
+            created_at: now,
+            updated_at: now,
+            assigned_lesson_count: 0,
+            change_history_enabled: false,
+          },
+          linked_lessons: [],
+          images: (input.images ?? []).map((img, i) => ({
+            image_id: `IMG-${newId}-${i + 1}`,
+            url: img.url,
+            alt: `${input.name} 画像 ${i + 1}`,
+            sort_order: img.sort_order,
+          })),
+          layout: input.layout
+            ? {
+                state: 'configured',
+                rows: input.layout.rows,
+                columns: input.layout.columns,
+                cells: input.layout.cells.filter((c) => c.kind !== 'empty') as Array<{
+                  x: number;
+                  y: number;
+                  kind: 'normal_seat' | 'equipment_seat' | 'fixed_object';
+                }>,
+                configure_path: `/studios/${newId}/edit`,
+              }
+            : {
+                state: 'not_configured',
+                rows: null,
+                columns: null,
+                cells: null,
+                configure_path: `/studios/${newId}/edit`,
+              },
+          utilization: {
+            day_rate: 0,
+            week_rate: 0,
+            month_rate: 0,
+            trend: null,
+          },
+        };
+
+        // Add to detail store
+        this._detailStore[newId] = newDetail;
+
+        // Add to rows for list
+        this._rows.push({
+          id: newId,
+          name: input.name,
+          physical_capacity: input.capacity,
+          store_id: input.store_id,
+        });
+
+        // Add to CRM list seed
+        SEED_STUDIO_LIST.push({
+          id: newId,
+          name: input.name,
+          store_id: input.store_id,
+          store_name: '',
+          studio_type: 'studio-lesson',
+          capacity: input.capacity,
+          available_hours: input.operating_hours.replace('~', '-'),
+          brand: 'joyfit',
+          status: input.status,
+        });
+
+        return { id: newId };
+      },
+      update(input: UpdateStudioPayload & { id: string }) {
+        this._seed();
+        const existing = this._detailStore[input.id];
+        if (!existing) {
+          throw new Error(`Studio ${input.id} not found`);
+        }
+
+        const now = new Date().toISOString();
+
+        existing.data.name = input.name ?? existing.data.name;
+        existing.data.store_id = input.store_id ?? existing.data.store_id;
+        existing.data.capacity = input.capacity ?? existing.data.capacity;
+        existing.data.buffer_value = input.buffer_value ?? existing.data.buffer_value;
+        existing.data.status = input.status ?? existing.data.status;
+        existing.data.usage_hours = input.operating_hours
+          ? input.operating_hours.replace('~', '-')
+          : existing.data.usage_hours;
+        existing.data.equipment_notes =
+          input.equipment_notes !== undefined
+            ? input.equipment_notes
+            : existing.data.equipment_notes;
+        existing.data.internal_notes =
+          input.internal_notes !== undefined ? input.internal_notes : existing.data.internal_notes;
+        existing.data.updated_at = now;
+
+        // Update images
+        if (input.images !== undefined) {
+          existing.images = input.images.map((img, i) => ({
+            image_id: `IMG-${input.id}-${i + 1}`,
+            url: img.url,
+            alt: `${existing.data.name} 画像 ${i + 1}`,
+            sort_order: img.sort_order,
+          }));
+        }
+
+        // Update layout
+        if (input.layout !== undefined) {
+          existing.layout = {
+            state: 'configured',
+            rows: input.layout.rows,
+            columns: input.layout.columns,
+            cells: input.layout.cells.filter((c) => c.kind !== 'empty') as Array<{
+              x: number;
+              y: number;
+              kind: 'normal_seat' | 'equipment_seat' | 'fixed_object';
+            }>,
+            configure_path: `/studios/${input.id}/edit`,
+          };
+        }
+
+        // Update _rows
+        const rowIdx = this._rows.findIndex((r) => r.id === input.id);
+        if (rowIdx !== -1) {
+          this._rows[rowIdx].name = input.name ?? this._rows[rowIdx].name;
+          this._rows[rowIdx].physical_capacity =
+            input.capacity ?? this._rows[rowIdx].physical_capacity;
+          this._rows[rowIdx].store_id = input.store_id ?? this._rows[rowIdx].store_id;
+        }
+
+        // Update SEED_STUDIO_LIST
+        const listIdx = SEED_STUDIO_LIST.findIndex((s) => s.id === input.id);
+        if (listIdx !== -1) {
+          SEED_STUDIO_LIST[listIdx].name = input.name ?? SEED_STUDIO_LIST[listIdx].name;
+          SEED_STUDIO_LIST[listIdx].capacity = input.capacity ?? SEED_STUDIO_LIST[listIdx].capacity;
+          SEED_STUDIO_LIST[listIdx].status = input.status ?? SEED_STUDIO_LIST[listIdx].status;
+          SEED_STUDIO_LIST[listIdx].store_id = input.store_id ?? SEED_STUDIO_LIST[listIdx].store_id;
+        }
+
+        return { success: true };
       },
     },
 

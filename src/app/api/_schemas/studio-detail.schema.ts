@@ -93,12 +93,27 @@ export const LayoutPreviewSchema = z
     description: 'Studio layout preview or not-configured state',
   });
 
+const HourlyRateSchema = z.object({
+  band: z.string(),
+  rate: z.number().int().min(0).max(100),
+});
+
 export const UtilizationSummarySchema = z
   .object({
     day_rate: z.number().int().min(0).max(100).openapi({ example: 71 }),
     week_rate: z.number().int().min(0).max(100).openapi({ example: 68 }),
     month_rate: z.number().int().min(0).max(100).openapi({ example: 64 }),
     trend: TrendSchema.openapi({ example: 'up' }),
+    day_lesson_count: z.number().int().optional(),
+    week_lesson_count: z.number().int().optional(),
+    month_lesson_count: z.number().int().optional(),
+    active_hours: z.string().optional(),
+    day_hourly_rates: z.array(HourlyRateSchema).optional(),
+    week_hourly_rates: z.array(HourlyRateSchema).optional(),
+    month_hourly_rates: z.array(HourlyRateSchema).optional(),
+    day_trend: z.array(z.number().int().min(0).max(100)).optional(),
+    week_trend: z.array(z.number().int().min(0).max(100)).optional(),
+    month_trend: z.array(z.number().int().min(0).max(100)).optional(),
   })
   .openapi({
     title: 'UtilizationSummary',

@@ -1,63 +1,148 @@
-import type { UtilizationSummary } from '@/app/api/_schemas/studio-detail.schema';
-import { TrendingDown, TrendingUp } from 'lucide-react';
+'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from 'react';
+
+import type { UtilizationSummary } from '@/app/api/_schemas/studio-detail.schema';
+
+import { Card, CardContent } from '@/components/ui/card';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface StudioUtilizationCardProps {
   utilization: UtilizationSummary;
 }
 
-/**
- * Studio utilization summary card.
- * Displays day/week/month reservation rates with trend indicator.
- */
+interface UsagePeriod {
+  label: string;
+  lessonCount: number;
+  avgRate: number;
+  activeHours: string;
+  hourlyRates: Array<{ band: string; rate: number }>;
+  trend: number[];
+}
+
+function buildUsagePeriods(u: UtilizationSummary) {
+  const day: UsagePeriod = {
+    label: '本日',
+    lessonCount: u.day_lesson_count ?? 0,
+    avgRate: u.day_rate,
+    activeHours: u.active_hours ?? '',
+    hourlyRates: u.day_hourly_rates ?? [],
+    trend: u.day_trend ?? [],
+  };
+  const week: UsagePeriod = {
+    label: '今週',
+    lessonCount: u.week_lesson_count ?? 0,
+    avgRate: u.week_rate,
+    activeHours: u.active_hours ?? '',
+    hourlyRates: u.week_hourly_rates ?? [],
+    trend: u.week_trend ?? [],
+  };
+  const month: UsagePeriod = {
+    label: '今月',
+    lessonCount: u.month_lesson_count ?? 0,
+    avgRate: u.month_rate,
+    activeHours: u.active_hours ?? '',
+    hourlyRates: u.month_hourly_rates ?? [],
+    trend: u.month_trend ?? [],
+  };
+  return { day, week, month } as const;
+}
+
 export function StudioUtilizationCard({ utilization }: StudioUtilizationCardProps) {
-  const rates = [
-    { label: '日別', value: utilization.day_rate },
-    { label: '週別', value: utilization.week_rate },
-    { label: '月別', value: utilization.month_rate },
-  ];
+  const periods = buildUsagePeriods(utilization);
+  const [usagePeriod, setUsagePeriod] = useState<'day' | 'week' | 'month'>('week');
+  const usage = periods[usagePeriod];
 
   return (
     <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">利用率サマリー</CardTitle>
-          {utilization.trend && (
-            <div className="flex items-center gap-1">
-              {utilization.trend === 'up' && <TrendingUp className="h-4 w-4 text-green-600" />}
-              {utilization.trend === 'down' && <TrendingDown className="h-4 w-4 text-red-600" />}
-              <span className="text-muted-foreground text-xs">
-                {utilization.trend === 'up' && '上昇'}
-                {utilization.trend === 'down' && '下降'}
-                {utilization.trend === 'flat' && '横ばい'}
-              </span>
-            </div>
-          )}
+      <CardContent className="px-4">
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-sm font-bold">利用状況</h3>
+          <Tabs
+            value={usagePeriod}
+            onValueChange={(v) => setUsagePeriod(v as 'day' | 'week' | 'month')}
+          >
+            <TabsList className="h-7">
+              <TabsTrigger value="day" className="px-2 text-[11px]">
+                日次
+              </TabsTrigger>
+              <TabsTrigger value="week" className="px-2 text-[11px]">
+                週次
+              </TabsTrigger>
+              <TabsTrigger value="month" className="px-2 text-[11px]">
+                月次
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {rates.map((rate) => (
-          <div key={rate.label} className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="font-medium">{rate.label}</span>
-              <span className="font-bold">{rate.value}%</span>
-            </div>
-            {/* Progress bar */}
-            <div className="h-2 overflow-hidden rounded-full bg-slate-200">
-              <div
-                className={`h-full transition-all ${
-                  rate.value >= 80
-                    ? 'bg-green-500'
-                    : rate.value >= 60
-                      ? 'bg-amber-500'
-                      : 'bg-slate-400'
-                }`}
-                style={{ width: `${rate.value}%` }}
-              />
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground text-xs">{usage.label}のレッスン数</span>
+            <span className="text-sm font-semibold">{usage.lessonCount}コマ</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground text-xs">予約充足率</span>
+            <span className="text-success text-sm font-semibold">{usage.avgRate}%</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground text-xs">稼働時間帯</span>
+            <span className="text-sm">{usage.activeHours}</span>
+          </div>
+        </div>
+
+        {usage.hourlyRates.length > 0 && (
+          <div className="mt-4 border-t pt-3">
+            <h4 className="mb-2 text-xs font-semibold">時間帯別稼働率</h4>
+            <div className="space-y-2">
+              {usage.hourlyRates.map((h) => (
+                <div key={h.band}>
+                  <div className="mb-1 flex items-center justify-between">
+                    <span className="text-muted-foreground text-[11px]">{h.band}</span>
+                    <span
+                      className={`text-xs font-medium ${
+                        h.rate >= 80
+                          ? 'text-success'
+                          : h.rate >= 60
+                            ? 'text-warning'
+                            : 'text-destructive'
+                      }`}
+                    >
+                      {h.rate}%
+                    </span>
+                  </div>
+                  <div className="bg-muted h-1.5 overflow-hidden rounded-full">
+                    <div
+                      className={`h-full rounded-full ${
+                        h.rate >= 80 ? 'bg-success' : h.rate >= 60 ? 'bg-warning' : 'bg-destructive'
+                      }`}
+                      style={{ width: `${h.rate}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        ))}
+        )}
+
+        {usage.trend.length > 0 && (
+          <div className="mt-4 border-t pt-3">
+            <h4 className="mb-2 text-xs font-semibold">
+              予約トレンド（直近
+              {usagePeriod === 'day' ? '7枠' : usagePeriod === 'week' ? '7週' : '7ヶ月'}）
+            </h4>
+            <div className="flex h-16 items-end gap-1">
+              {usage.trend.map((v, idx) => (
+                <div key={idx} className="flex flex-1 flex-col items-center gap-1">
+                  <div
+                    className="bg-info/30 w-full rounded-sm transition-all"
+                    style={{ height: `${v}%` }}
+                  />
+                  <span className="text-muted-foreground text-[9px]">{v}%</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const UploadCategory = z.enum(['avatar', 'cv', 'document', 'other']);
+export const UploadCategory = z.enum(['avatar', 'cv', 'document', 'other', 'studio']);
 export type UploadCategoryType = z.infer<typeof UploadCategory>;
 
 export const PresignUploadRequestSchema = z

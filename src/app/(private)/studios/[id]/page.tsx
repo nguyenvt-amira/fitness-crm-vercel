@@ -4,6 +4,9 @@ import { useState } from 'react';
 
 import { useParams } from 'next/navigation';
 
+import { useQuery } from '@tanstack/react-query';
+import { Ban, Check } from 'lucide-react';
+
 import { BackLink } from '@/components/common/back-link';
 import { DataStateBoundary } from '@/components/common/data-state-boundary';
 import { PageHeader } from '@/components/common/page-header';
@@ -11,6 +14,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
+import { getCrmStudiosByIdOptions } from '@/lib/api/@tanstack/react-query.gen';
 import type { StaffRole } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 import { cn } from '@/lib/utils';
@@ -23,7 +27,6 @@ import { StudioImagesCard } from './_components/studio-images-card';
 import { StudioLayoutCard } from './_components/studio-layout-card';
 import { StudioLinkedLessonsCard } from './_components/studio-linked-lessons-card';
 import { StudioUtilizationCard } from './_components/studio-utilization-card';
-import { useStudioDetail } from './_hooks/use-studio-detail';
 
 const STUDIO_STATUS_BADGE_CLASSES: Record<'active' | 'inactive', string> = {
   active: 'bg-success/15 text-success border-success/20',
@@ -36,29 +39,24 @@ const STUDIO_TYPE_BADGE_CLASSES = {
   'body-care': 'bg-muted text-muted-foreground border-border',
 } as const;
 
-/**
- * Studio Detail Page (FR-003: Studio Detail Display)
- * Displays complete studio information including:
- * - Header with studio name, type, and status badges
- * - Basic information card
- * - Studio images
- * - Layout preview or not-configured state
- * - Utilization summary
- * - Linked lessons
- * - Change History tab (title-only in Phase 1)
- * - Role-based action visibility (Edit/Delete)
- * - Delete guard for in-use studios
- */
 export default function StudioDetailPage() {
   const params = useParams();
   const studioId = params.id as string;
   const [activeTab, setActiveTab] = useState('basic');
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  // Phase 1: use a fixed role until auth context wiring is added.
   const userRole: StaffRole = 'headquarter';
 
-  const { data: studioData, isLoading, isError, error, refetch } = useStudioDetail(studioId);
+  const {
+    data: studioData,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    ...getCrmStudiosByIdOptions({ path: { id: studioId } }),
+    enabled: Boolean(studioId),
+  });
   const isNotFound = error?.message === 'NOT_FOUND';
 
   if (!studioData?.data && !isLoading && !isError) {
@@ -86,10 +84,8 @@ export default function StudioDetailPage() {
   }[studio.studio_type];
 
   const handleDelete = async () => {
-    // Phase 1 placeholder: delete flow will be wired to API in a later task.
     console.log('Delete studio:', studioId);
     setShowDeleteDialog(false);
-    // router.push('/studios'); // Navigate back after delete
   };
 
   return (
@@ -147,52 +143,59 @@ export default function StudioDetailPage() {
               <TabsTrigger value="history">変更履歴</TabsTrigger>
             </TabsList>
 
-            {/* Basic Information Tab */}
             <TabsContent value="basic" className="pt-4">
-              <div className="flex flex-col gap-6 xl:flex-row">
-                {/* Left column */}
+              <div className="flex gap-6">
                 <div className="min-w-0 flex-1 space-y-4">
-                  {/* Basic Info Card */}
                   <StudioBasicInfoCard studio={studio} />
-
-                  {/* Layout Card */}
                   <StudioLayoutCard layout={studioData.layout} />
-
-                  {/* Images Card */}
                   <StudioImagesCard images={studioData.images} />
                 </div>
 
-                {/* Right column */}
-                <div className="w-full space-y-4 xl:w-90 xl:shrink-0">
-                  {/* Status Card */}
+                <div className="w-[360px] shrink-0 space-y-4">
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-base font-semibold">ステータス</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-2">
-                      <p className="text-sm">
-                        <span className="text-muted-foreground">状態：</span>
-                        <span className="ml-2 font-medium">
-                          {studio.status === 'active' ? 'アクティブ' : '非アクティブ'}
-                        </span>
-                      </p>
-                      <p className="text-sm">
-                        <span className="text-muted-foreground">リンクレッスン数：</span>
-                        <span className="ml-2 font-medium">{studio.assigned_lesson_count}件</span>
+                    <CardContent className="flex flex-col items-center px-4">
+                      <div
+                        className={`mb-3 flex size-20 items-center justify-center rounded-full ${
+                          studio.status === 'active' ? 'bg-success/10' : 'bg-muted'
+                        }`}
+                      >
+                        {studio.status === 'active' ? (
+                          <Check className="text-success size-10" />
+                        ) : (
+                          <Ban className="text-muted-foreground size-10" />
+                        )}
+                      </div>
+                      <Badge
+                        variant="outline"
+                        className={`gap-1 text-xs font-medium ${
+                          studio.status === 'active'
+                            ? 'bg-success/15 text-success border-success/20'
+                            : 'bg-muted text-muted-foreground border-muted-foreground/20'
+                        }`}
+                      >
+                        <span
+                          className={`size-1.5 rounded-full ${
+                            studio.status === 'active' ? 'bg-success' : 'bg-muted-foreground'
+                          }`}
+                        />
+                        {studio.status === 'active' ? '有効' : '無効'}
+                      </Badge>
+                      <p className="text-muted-foreground mt-3 text-xs">
+                        リンクレッスン数：{studio.assigned_lesson_count}件
                       </p>
                     </CardContent>
                   </Card>
 
-                  {/* Utilization Card */}
                   <StudioUtilizationCard utilization={studioData.utilization} />
 
-                  {/* Linked Lessons Card */}
                   <StudioLinkedLessonsCard lessons={studioData.linked_lessons} />
                 </div>
               </div>
             </TabsContent>
 
-            {/* Change History Tab - Phase 1 empty placeholder */}
             <TabsContent value="history" className="pt-4">
               <div className="border-border flex flex-col items-center justify-center rounded-lg border border-dashed py-12 text-center">
                 <p className="text-muted-foreground text-sm">変更履歴は今後実装予定です</p>
@@ -201,7 +204,6 @@ export default function StudioDetailPage() {
           </Tabs>
         </div>
 
-        {/* Delete Confirmation Dialog */}
         <StudioDeleteDialog
           open={showDeleteDialog}
           studioName={studio.name}

@@ -19602,6 +19602,25 @@ export type UtilizationSummary = {
      * Utilization trend indicator
      */
     trend?: 'up' | 'down' | 'flat' | null;
+    day_lesson_count?: number;
+    week_lesson_count?: number;
+    month_lesson_count?: number;
+    active_hours?: string;
+    day_hourly_rates?: Array<{
+        band: string;
+        rate: number;
+    }>;
+    week_hourly_rates?: Array<{
+        band: string;
+        rate: number;
+    }>;
+    month_hourly_rates?: Array<{
+        band: string;
+        rate: number;
+    }>;
+    day_trend?: Array<number>;
+    week_trend?: Array<number>;
+    month_trend?: Array<number>;
 };
 
 /**
@@ -19790,6 +19809,25 @@ export type GetStudioDetailResponse = {
          * Utilization trend indicator
          */
         trend?: 'up' | 'down' | 'flat' | null;
+        day_lesson_count?: number;
+        week_lesson_count?: number;
+        month_lesson_count?: number;
+        active_hours?: string;
+        day_hourly_rates?: Array<{
+            band: string;
+            rate: number;
+        }>;
+        week_hourly_rates?: Array<{
+            band: string;
+            rate: number;
+        }>;
+        month_hourly_rates?: Array<{
+            band: string;
+            rate: number;
+        }>;
+        day_trend?: Array<number>;
+        week_trend?: Array<number>;
+        month_trend?: Array<number>;
     };
 };
 
@@ -19804,6 +19842,438 @@ export type GetStudioDetailQuery = {
      */
     id: string;
 };
+
+export type GetCrmStudiosData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        limit?: number;
+        /**
+         * スタジオ名で検索（部分一致）
+         */
+        search?: string;
+        /**
+         * 店舗IDでフィルタ
+         */
+        store_id?: string;
+        /**
+         * スタジオ区分でフィルタ
+         */
+        studio_type?: 'studio-lesson' | 'pt' | 'body-care';
+        /**
+         * ブランドでフィルタ
+         */
+        brand?: 'joyfit' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus' | 'fit365';
+        /**
+         * ステータスでフィルタ
+         */
+        status?: 'active' | 'inactive';
+        /**
+         * ソート項目
+         */
+        sort_by?: 'id' | 'name' | 'store_name' | 'studio_type' | 'capacity';
+        /**
+         * ソート順
+         */
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/studios';
+};
+
+export type GetCrmStudiosErrors = {
+    /**
+     * StudioListResponse
+     *
+     * スタジオ一覧レスポンス
+     */
+    400: {
+        items: Array<{
+            /**
+             * スタジオID
+             */
+            id: string;
+            name: string;
+            store_id: string;
+            store_name: string;
+            studio_type: 'studio-lesson' | 'pt' | 'body-care';
+            capacity: number;
+            available_hours: string;
+            brand: 'joyfit' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus' | 'fit365';
+            status: 'active' | 'inactive';
+        }>;
+        total: number;
+        page: number;
+        limit: number;
+        has_next: boolean;
+    };
+};
+
+export type GetCrmStudiosError = GetCrmStudiosErrors[keyof GetCrmStudiosErrors];
+
+export type GetCrmStudiosResponses = {
+    /**
+     * StudioListResponse
+     *
+     * スタジオ一覧レスポンス
+     */
+    200: {
+        items: Array<{
+            /**
+             * スタジオID
+             */
+            id: string;
+            name: string;
+            store_id: string;
+            store_name: string;
+            studio_type: 'studio-lesson' | 'pt' | 'body-care';
+            capacity: number;
+            available_hours: string;
+            brand: 'joyfit' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus' | 'fit365';
+            status: 'active' | 'inactive';
+        }>;
+        total: number;
+        page: number;
+        limit: number;
+        has_next: boolean;
+    };
+};
+
+export type GetCrmStudiosResponse = GetCrmStudiosResponses[keyof GetCrmStudiosResponses];
+
+export type PostCrmStudiosData = {
+    /**
+     * CreateStudioPayload
+     *
+     * Create studio request payload
+     */
+    body?: {
+        name: string;
+        store_id: string;
+        /**
+         * スタジオ区分
+         */
+        studio_type: 'normal' | 'hot_yoga' | 'virtual';
+        capacity: number;
+        buffer_value?: number;
+        operating_hours: string;
+        equipment_notes?: string | null;
+        internal_notes?: string | null;
+        status?: 'active' | 'inactive';
+        images?: Array<{
+            url: string;
+            sort_order: number;
+        }>;
+        /**
+         * StudioLayout
+         */
+        layout?: {
+            rows: number;
+            columns: number;
+            /**
+             * Grid cells
+             */
+            cells?: Array<{
+                x: number;
+                y: number;
+                /**
+                 * Cell type in layout grid
+                 */
+                kind: 'normal_seat' | 'equipment_seat' | 'fixed_object' | 'empty';
+            }>;
+        };
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/studios';
+};
+
+export type PostCrmStudiosErrors = {
+    /**
+     * Bad request - validation error
+     */
+    400: unknown;
+};
+
+export type PostCrmStudiosResponses = {
+    /**
+     * CreateStudioResponse
+     *
+     * Studio created
+     */
+    201: {
+        id: string;
+    };
+};
+
+export type PostCrmStudiosResponse = PostCrmStudiosResponses[keyof PostCrmStudiosResponses];
+
+export type GetCrmStudiosByIdData = {
+    body?: never;
+    path: {
+        /**
+         * id parameter
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/studios/{id}';
+};
+
+export type GetCrmStudiosByIdErrors = {
+    /**
+     * Studio not found
+     */
+    404: unknown;
+    /**
+     * Internal server error
+     */
+    500: unknown;
+};
+
+export type GetCrmStudiosByIdResponses = {
+    /**
+     * GetStudioDetailResponse
+     *
+     * Complete studio detail response
+     */
+    200: {
+        /**
+         * StudioDetail
+         *
+         * Studio detail main entity
+         */
+        data: {
+            /**
+             * Studio identifier
+             */
+            id: string;
+            name: string;
+            studio_type: 'studio-lesson' | 'pt' | 'body-care';
+            status: 'active' | 'inactive';
+            /**
+             * Physical capacity
+             */
+            capacity: number;
+            /**
+             * Buffer value
+             */
+            buffer_value: number;
+            usage_hours: string;
+            store_id: string;
+            store_name: string;
+            /**
+             * Optional equipment notes
+             */
+            equipment_notes?: string | null;
+            /**
+             * Optional internal notes
+             */
+            internal_notes?: string | null;
+            created_at: string;
+            updated_at: string;
+            /**
+             * Delete guard signal
+             */
+            assigned_lesson_count: number;
+            /**
+             * Fixed false in Phase 1
+             */
+            change_history_enabled: boolean;
+        };
+        /**
+         * Can be empty
+         */
+        linked_lessons: Array<{
+            /**
+             * Lesson reference
+             */
+            lesson_id: string;
+            lesson_name: string;
+            /**
+             * Lesson category badge
+             */
+            category: string;
+            schedule_text: string;
+            reservation_rate: number;
+            /**
+             * ReservationTier
+             *
+             * Color tier for reservation rate
+             */
+            reservation_tier: 'success' | 'warning' | 'default';
+        }>;
+        /**
+         * Studio images
+         */
+        images: Array<{
+            /**
+             * Image identifier
+             */
+            image_id: string;
+            url: string;
+            /**
+             * Accessibility text
+             */
+            alt: string;
+            /**
+             * Display order
+             */
+            sort_order: number;
+        }>;
+        /**
+         * LayoutPreview
+         *
+         * Studio layout preview or not-configured state
+         */
+        layout: {
+            /**
+             * LayoutState
+             *
+             * Layout preview state
+             */
+            state: 'configured' | 'not_configured';
+            rows?: number | null;
+            columns?: number | null;
+            /**
+             * Grid cells
+             */
+            cells?: Array<{
+                /**
+                 * Column index
+                 */
+                x: number;
+                /**
+                 * Row index
+                 */
+                y: number;
+                /**
+                 * LayoutCellKind
+                 *
+                 * Cell type in layout grid
+                 */
+                kind: 'normal_seat' | 'equipment_seat' | 'fixed_object';
+            }> | null;
+            /**
+             * Navigation to edit
+             */
+            configure_path: string;
+        };
+        /**
+         * UtilizationSummary
+         *
+         * Read-only KPI snapshot
+         */
+        utilization: {
+            day_rate: number;
+            week_rate: number;
+            month_rate: number;
+            /**
+             * Trend
+             *
+             * Utilization trend indicator
+             */
+            trend?: 'up' | 'down' | 'flat' | null;
+            day_lesson_count?: number;
+            week_lesson_count?: number;
+            month_lesson_count?: number;
+            active_hours?: string;
+            day_hourly_rates?: Array<{
+                band: string;
+                rate: number;
+            }>;
+            week_hourly_rates?: Array<{
+                band: string;
+                rate: number;
+            }>;
+            month_hourly_rates?: Array<{
+                band: string;
+                rate: number;
+            }>;
+            day_trend?: Array<number>;
+            week_trend?: Array<number>;
+            month_trend?: Array<number>;
+        };
+    };
+};
+
+export type GetCrmStudiosByIdResponse = GetCrmStudiosByIdResponses[keyof GetCrmStudiosByIdResponses];
+
+export type PutCrmStudiosByIdData = {
+    /**
+     * UpdateStudioPayload
+     *
+     * Update studio request payload
+     */
+    body?: {
+        name: string;
+        store_id: string;
+        /**
+         * スタジオ区分
+         */
+        studio_type: 'normal' | 'hot_yoga' | 'virtual';
+        capacity: number;
+        buffer_value?: number;
+        operating_hours: string;
+        equipment_notes?: string | null;
+        internal_notes?: string | null;
+        status?: 'active' | 'inactive';
+        images?: Array<{
+            url: string;
+            sort_order: number;
+        }>;
+        /**
+         * StudioLayout
+         */
+        layout?: {
+            rows: number;
+            columns: number;
+            /**
+             * Grid cells
+             */
+            cells?: Array<{
+                x: number;
+                y: number;
+                /**
+                 * Cell type in layout grid
+                 */
+                kind: 'normal_seat' | 'equipment_seat' | 'fixed_object' | 'empty';
+            }>;
+        };
+    };
+    path: {
+        /**
+         * Studio ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/studios/{id}';
+};
+
+export type PutCrmStudiosByIdErrors = {
+    /**
+     * Bad request - validation error
+     */
+    400: unknown;
+    /**
+     * Studio not found
+     */
+    404: unknown;
+};
+
+export type PutCrmStudiosByIdResponses = {
+    /**
+     * UpdateStudioResponse
+     *
+     * Studio updated
+     */
+    200: {
+        success: true;
+    };
+};
+
+export type PutCrmStudiosByIdResponse = PutCrmStudiosByIdResponses[keyof PutCrmStudiosByIdResponses];
 
 export type PostAuthLoginData = {
     /**
@@ -48217,104 +48687,6 @@ export type PostCrmStoresResponses = {
 
 export type PostCrmStoresResponse = PostCrmStoresResponses[keyof PostCrmStoresResponses];
 
-export type GetCrmStudiosData = {
-    body?: never;
-    path?: never;
-    query?: {
-        page?: number;
-        limit?: number;
-        /**
-         * スタジオ名で検索（部分一致）
-         */
-        search?: string;
-        /**
-         * 店舗IDでフィルタ
-         */
-        store_id?: string;
-        /**
-         * スタジオ区分でフィルタ
-         */
-        studio_type?: 'studio-lesson' | 'pt' | 'body-care';
-        /**
-         * ブランドでフィルタ
-         */
-        brand?: 'joyfit' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus' | 'fit365';
-        /**
-         * ステータスでフィルタ
-         */
-        status?: 'active' | 'inactive';
-        /**
-         * ソート項目
-         */
-        sort_by?: 'id' | 'name' | 'store_name' | 'studio_type' | 'capacity';
-        /**
-         * ソート順
-         */
-        sort_order?: 'asc' | 'desc';
-    };
-    url: '/crm/studios';
-};
-
-export type GetCrmStudiosErrors = {
-    /**
-     * StudioListResponse
-     *
-     * スタジオ一覧レスポンス
-     */
-    400: {
-        items: Array<{
-            /**
-             * スタジオID
-             */
-            id: string;
-            name: string;
-            store_id: string;
-            store_name: string;
-            studio_type: 'studio-lesson' | 'pt' | 'body-care';
-            capacity: number;
-            available_hours: string;
-            brand: 'joyfit' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus' | 'fit365';
-            status: 'active' | 'inactive';
-        }>;
-        total: number;
-        page: number;
-        limit: number;
-        has_next: boolean;
-    };
-};
-
-export type GetCrmStudiosError = GetCrmStudiosErrors[keyof GetCrmStudiosErrors];
-
-export type GetCrmStudiosResponses = {
-    /**
-     * StudioListResponse
-     *
-     * スタジオ一覧レスポンス
-     */
-    200: {
-        items: Array<{
-            /**
-             * スタジオID
-             */
-            id: string;
-            name: string;
-            store_id: string;
-            store_name: string;
-            studio_type: 'studio-lesson' | 'pt' | 'body-care';
-            capacity: number;
-            available_hours: string;
-            brand: 'joyfit' | 'joyfit24' | 'joyfit_yoga' | 'joyfit_plus' | 'fit365';
-            status: 'active' | 'inactive';
-        }>;
-        total: number;
-        page: number;
-        limit: number;
-        has_next: boolean;
-    };
-};
-
-export type GetCrmStudiosResponse = GetCrmStudiosResponses[keyof GetCrmStudiosResponses];
-
 export type DeleteCrmSurveysByIdData = {
     body?: never;
     path: {
@@ -50636,7 +51008,7 @@ export type PostCrmUploadsPresignData = {
         /**
          * Category of the file being uploaded
          */
-        category: 'avatar' | 'cv' | 'document' | 'other';
+        category: 'avatar' | 'cv' | 'document' | 'other' | 'studio';
         /**
          * MIME type of the file
          */

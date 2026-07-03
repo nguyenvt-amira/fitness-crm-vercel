@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { db } from '@/app/api/_mock-db';
 import { GetStudioDetailResponseSchema } from '@/app/api/_schemas/studio-detail.schema';
+import {
+  UpdateStudioPayloadSchema,
+  UpdateStudioResponseSchema,
+} from '@/app/api/_schemas/studio.schema';
 import { registerRoute } from '@/app/api/_scripts/register-route';
 
 import type { StaffRole } from '@/lib/api/types.gen';
@@ -21,6 +25,32 @@ registerRoute({
     },
     { status: 404, description: 'Studio not found' },
     { status: 500, description: 'Internal server error' },
+  ],
+});
+
+registerRoute({
+  method: 'put',
+  path: '/crm/studios/{id}',
+  summary: 'Update studio',
+  description: 'Update an existing studio record',
+  tags: ['Studios'],
+  parameters: [
+    {
+      name: 'id',
+      in: 'path',
+      required: true,
+      schema: { type: 'string' },
+      description: 'Studio ID',
+    },
+  ],
+  requestBody: {
+    schema: UpdateStudioPayloadSchema,
+    description: 'Studio update payload',
+  },
+  responses: [
+    { status: 200, schema: UpdateStudioResponseSchema, description: 'Studio updated' },
+    { status: 400, description: 'Bad request - validation error' },
+    { status: 404, description: 'Studio not found' },
   ],
 });
 
@@ -51,6 +81,30 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.json(result.data);
   } catch (error) {
     console.error('GET /api/crm/studios/[id] error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await params;
+
+    if (!id) {
+      return NextResponse.json({ error: 'Studio ID is required' }, { status: 400 });
+    }
+
+    const body = await request.json();
+    const validationResult = UpdateStudioPayloadSchema.safeParse(body);
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((issue) => issue.message).join(', ');
+      return NextResponse.json({ error: errors }, { status: 400 });
+    }
+
+    const data = validationResult.data;
+    const result = db.studios.update({ id, ...data });
+    return NextResponse.json(result);
+  } catch (error) {
+    console.error('PUT /api/crm/studios/[id] error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
