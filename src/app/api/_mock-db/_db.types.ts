@@ -99,7 +99,3 @@ export type DbType = {
   storeHolidays: StoreHolidaysType;
   reservations: ReservationsType;
 };
-
-declare global {
-  var __fitnessDb_v15: DbType | undefined;
-}
