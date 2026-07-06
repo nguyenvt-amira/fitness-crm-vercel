@@ -1,4 +1,3 @@
-import { registerRoute } from '@/app/api/_scripts/register-route';
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 
@@ -133,50 +132,6 @@ export const UpdateStudioResponseSchema = z
     success: z.literal(true),
   })
   .openapi({ title: 'UpdateStudioResponse' });
-
-// ─── Route Registrations ───────────────────────────────────────────────────
-
-registerRoute({
-  method: 'post',
-  path: '/crm/studios',
-  summary: 'Create studio',
-  description: 'Create a new studio record with optional images and space layout',
-  tags: ['Studios'],
-  requestBody: {
-    schema: CreateStudioPayloadSchema,
-    description: 'Studio create payload',
-  },
-  responses: [
-    { status: 201, schema: CreateStudioResponseSchema, description: 'Studio created' },
-    { status: 400, description: 'Bad request - validation error' },
-  ],
-});
-
-registerRoute({
-  method: 'put',
-  path: '/crm/studios/{id}',
-  summary: 'Update studio',
-  description: 'Update an existing studio record',
-  tags: ['Studios'],
-  parameters: [
-    {
-      name: 'id',
-      in: 'path',
-      required: true,
-      schema: { type: 'string' },
-      description: 'Studio ID',
-    },
-  ],
-  requestBody: {
-    schema: UpdateStudioPayloadSchema,
-    description: 'Studio update payload',
-  },
-  responses: [
-    { status: 200, schema: UpdateStudioResponseSchema, description: 'Studio updated' },
-    { status: 400, description: 'Bad request - validation error' },
-    { status: 404, description: 'Studio not found' },
-  ],
-});
 
 export type StudioListItem = z.infer<typeof StudioListItemSchema>;
 export type StudioListResponse = z.infer<typeof StudioListResponseSchema>;

@@ -12,7 +12,11 @@ registerRoute({
   description: 'Returns the authenticated user profile decoded from the Bearer token',
   tags: ['Authentication'],
   responses: [
-    { status: 200, schema: MeResponseSchema, description: 'Current user profile' },
+    {
+      status: 200,
+      schema: MeResponseSchema,
+      description: 'Current user profile',
+    },
     { status: 401, schema: ErrorResponseSchema, description: 'Unauthorized' },
   ],
 });

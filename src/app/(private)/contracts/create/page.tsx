@@ -16,8 +16,8 @@ import {
   getCrmMainContractsQueryKey,
   postCrmMainContractsMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
-import { MainContractStatus } from '@/lib/api/types.gen';
 import type { PostCrmMainContractsResponse } from '@/lib/api/types.gen';
+import { MainContractStatus } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 
 import { ContractForm } from '../_components/contract-form';
