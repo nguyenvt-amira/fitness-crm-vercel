@@ -77,7 +77,7 @@ export function StudioLayoutCard({ layout }: StudioLayoutCardProps) {
             gridTemplateColumns: `repeat(${layout.columns}, minmax(0, 3rem))`,
           }}
         >
-          {layout.cells.map((cell, idx) => (
+          {layout.cells.map((cell) => (
             <LayoutCell key={`${cell.x}-${cell.y}`} kind={cell.kind} />
           ))}
         </div>

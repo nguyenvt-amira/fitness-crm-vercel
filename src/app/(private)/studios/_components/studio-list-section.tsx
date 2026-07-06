@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
+import { StudioSearch } from '@/app/(private)/studios/_components/studio-search';
 import type { StudioListItem } from '@/app/api/_schemas/studio.schema';
 import { useQuery } from '@tanstack/react-query';
 import type { SortingState } from '@tanstack/react-table';
@@ -19,7 +20,6 @@ import { DataTableColumnHeader } from '@/components/common/data-table/data-table
 import { PageHeader } from '@/components/common/page-header';
 import { RoleGatedButton } from '@/components/common/role-gated-button';
 import { TablePagination } from '@/components/common/table-pagination';
-import { StudioSearch } from '@/components/crm/studio-list/studio-search';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';

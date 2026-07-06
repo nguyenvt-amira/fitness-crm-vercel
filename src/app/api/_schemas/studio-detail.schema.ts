@@ -1,7 +1,7 @@
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 
-import { BrandSchema, StudioStatusSchema, StudioTypeSchema } from './studio.schema';
+import { StudioStatusSchema, StudioTypeSchema } from './studio.schema';
 
 extendZodWithOpenApi(z);
 

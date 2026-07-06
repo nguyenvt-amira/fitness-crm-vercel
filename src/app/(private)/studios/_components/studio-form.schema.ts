@@ -2,7 +2,6 @@ import { z } from 'zod';
 
 export const StudioImageItemSchema = z.object({
   id: z.string(),
-  order: z.number().int().positive(),
   url: z.string(),
 });
 

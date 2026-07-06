@@ -45,11 +45,12 @@ function detailToFormValues(detail: GetStudioDetailResponse): {
       equipmentNotes: detail.data.equipment_notes ?? '',
       internalNotes: detail.data.internal_notes ?? '',
       status: detail.data.status,
-      images: detail.images.map((img) => ({
-        id: img.image_id,
-        order: img.sort_order + 1,
-        url: img.url,
-      })),
+      images: [...detail.images]
+        .sort((a, b) => a.sort_order - b.sort_order)
+        .map((img) => ({
+          id: img.image_id,
+          url: img.url,
+        })),
       layout: layoutFormatted,
     },
     assignedLessonCount: detail.data.assigned_lesson_count,

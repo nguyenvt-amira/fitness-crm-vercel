@@ -367,8 +367,6 @@ export function createLessonTables(getDb: () => DbType) {
         const newId = `STU-${String(maxNumericId + 1).padStart(3, '0')}`;
         const now = new Date().toISOString();
 
-        const layoutState = input.layout ? ('configured' as const) : ('not_configured' as const);
-
         const newDetail: GetStudioDetailResponse = {
           data: {
             id: newId,

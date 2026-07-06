@@ -1,11 +1,11 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import Image from 'next/image';
 
-import { GripVertical, ImageIcon, Loader2, Trash2, Upload } from 'lucide-react';
+import { ImageIcon, Loader2, Trash2, Upload } from 'lucide-react';
 
 import { useImageUpload } from '@/hooks/use-image-upload.hook';
 
@@ -13,15 +13,9 @@ import { Button } from '@/components/ui/button';
 
 import type { StudioFormValues, StudioImageItem } from '../studio-form.schema';
 
-function reorderImages(images: StudioImageItem[]): StudioImageItem[] {
-  return images.map((img, index) => ({ ...img, order: index + 1 }));
-}
-
 export function StudioFormImages() {
   const form = useFormContext<StudioFormValues>();
   const images = useWatch({ control: form.control, name: 'images' });
-  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
-  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { uploadFiles, isUploading } = useImageUpload({ category: 'studio' });
@@ -33,10 +27,9 @@ export function StudioFormImages() {
     const current = form.getValues('images');
     const newItems: StudioImageItem[] = urls.map((url) => ({
       id: crypto.randomUUID(),
-      order: 0,
       url,
     }));
-    form.setValue('images', reorderImages([...current, ...newItems]), {
+    form.setValue('images', [...current, ...newItems], {
       shouldDirty: true,
     });
   };
@@ -49,38 +42,11 @@ export function StudioFormImages() {
 
   const removeImage = (id: string) => {
     const current = form.getValues('images');
-    form.setValue('images', reorderImages(current.filter((img) => img.id !== id)), {
-      shouldDirty: true,
-    });
-  };
-
-  const handleDragStart = (index: number) => {
-    setDraggingIndex(index);
-  };
-
-  const handleDragOver = (e: React.DragEvent, index: number) => {
-    e.preventDefault();
-    setDragOverIndex(index);
-  };
-
-  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
-    e.preventDefault();
-    if (draggingIndex === null || draggingIndex === dropIndex) {
-      setDraggingIndex(null);
-      setDragOverIndex(null);
-      return;
-    }
-    const current = [...form.getValues('images')];
-    const [moved] = current.splice(draggingIndex, 1);
-    current.splice(dropIndex, 0, moved);
-    form.setValue('images', reorderImages(current), { shouldDirty: true });
-    setDraggingIndex(null);
-    setDragOverIndex(null);
-  };
-
-  const handleDragEnd = () => {
-    setDraggingIndex(null);
-    setDragOverIndex(null);
+    form.setValue(
+      'images',
+      current.filter((img) => img.id !== id),
+      { shouldDirty: true },
+    );
   };
 
   return (
@@ -88,36 +54,13 @@ export function StudioFormImages() {
       <h2 className="mb-4 text-base font-bold">スタジオ画像</h2>
       {images.length > 0 && (
         <div className="mb-3 grid grid-cols-3 gap-3">
-          {images.map((img, index) => (
+          {images.map((img) => (
             <div
               key={img.id}
-              draggable
-              onDragStart={() => handleDragStart(index)}
-              onDragOver={(e) => handleDragOver(e, index)}
-              onDrop={(e) => handleDrop(e, index)}
-              onDragEnd={handleDragEnd}
-              className={`group relative cursor-grab overflow-hidden rounded-lg border-2 transition-all active:cursor-grabbing ${
-                dragOverIndex === index && draggingIndex !== index
-                  ? 'border-primary scale-105'
-                  : 'border-transparent'
-              } ${draggingIndex === index ? 'opacity-50' : ''}`}
+              className="group relative overflow-hidden rounded-lg border border-transparent"
             >
               <div className="relative aspect-3/2">
-                <Image
-                  src={img.url}
-                  alt={`スタジオ画像 ${img.order}`}
-                  fill
-                  unoptimized
-                  className="object-cover"
-                />
-              </div>
-              {img.order === 1 && (
-                <div className="bg-primary text-primary-foreground absolute right-0 bottom-0 left-0 py-0.5 text-center text-[9px] font-medium">
-                  メイン
-                </div>
-              )}
-              <div className="absolute top-1 left-1 flex size-6 items-center justify-center rounded bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-                <GripVertical className="size-3 text-white" />
+                <Image src={img.url} alt="スタジオ画像" fill unoptimized className="object-cover" />
               </div>
               <Button
                 variant="ghost"

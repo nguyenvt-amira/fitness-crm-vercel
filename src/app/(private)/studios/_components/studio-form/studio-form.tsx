@@ -1,7 +1,7 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
 
 import { useRouter } from 'next/navigation';
 
@@ -52,9 +52,9 @@ function formValuesToApiBody(values: Partial<StudioFormValues>) {
     equipment_notes: values.equipmentNotes || null,
     internal_notes: values.internalNotes || null,
     status: values.status!,
-    images: (values.images ?? []).map((image) => ({
+    images: (values.images ?? []).map((image, index) => ({
       url: image.url,
-      sort_order: image.order,
+      sort_order: index,
     })),
     layout: values.layout
       ? {
@@ -80,12 +80,9 @@ export function StudioForm({
 
   const { data: storesData } = useQuery(getCrmStoresOptions({ query: { limit: 100 } }));
 
-  const stores = storesData?.stores ?? [];
-
-  const storeName = useMemo(() => {
-    if (!submitValues?.storeId) return undefined;
-    return stores.find((s) => s.id === submitValues.storeId)?.name;
-  }, [stores, submitValues?.storeId]);
+  const storeName = submitValues?.storeId
+    ? (storesData?.stores ?? []).find((s) => s.id === submitValues.storeId)?.name
+    : undefined;
 
   const form = useForm<StudioFormInput, unknown, StudioFormValues>({
     resolver: zodResolver(StudioFormSchema),
@@ -107,7 +104,7 @@ export function StudioForm({
 
   const createMutation = useMutation({
     ...postCrmStudiosMutation(),
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success('スタジオを登録しました');
       router.push(navigate('/studios'));
     },
@@ -126,6 +123,8 @@ export function StudioForm({
       toast.error(error.message || 'スタジオの保存に失敗しました');
     },
   });
+
+  const layout = useWatch({ control: form.control, name: 'layout' });
 
   const errors = form.formState.errors;
   const hasErrors = Object.keys(errors).length > 0;
@@ -192,8 +191,8 @@ export function StudioForm({
 
             {/* Right column – space layout editor */}
             <SpaceLayoutEditor
-              value={form.watch('layout')}
-              onChange={(layout) => form.setValue('layout', layout, { shouldDirty: true })}
+              value={layout}
+              onChange={(nextLayout) => form.setValue('layout', nextLayout, { shouldDirty: true })}
             />
           </div>
 

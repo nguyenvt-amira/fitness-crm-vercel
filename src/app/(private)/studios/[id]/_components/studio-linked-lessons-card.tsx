@@ -7,6 +7,8 @@ import type { LinkedLessonSummary } from '@/app/api/_schemas/studio-detail.schem
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 
+import { navigate } from '@/lib/routes/routes.util';
+
 interface StudioLinkedLessonsCardProps {
   lessons: LinkedLessonSummary[];
 }
@@ -43,7 +45,7 @@ export function StudioLinkedLessonsCard({ lessons }: StudioLinkedLessonsCardProp
             <div
               key={lesson.lesson_id}
               className="hover:bg-accent/50 -mx-1 flex cursor-pointer items-center justify-between rounded border-b px-1 py-2 last:border-b-0"
-              onClick={() => router.push(`/lessons/${lesson.lesson_id}`)}
+              onClick={() => router.push(navigate('/lessons/[id]', lesson.lesson_id))}
             >
               <div className="min-w-0">
                 <div className="flex items-center gap-2">

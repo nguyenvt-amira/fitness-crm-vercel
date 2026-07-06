@@ -28,7 +28,6 @@ import * as staffSchemas from '../_schemas/staff.schema';
 import * as storeAccessSettingsSchemas from '../_schemas/store-access-settings.schema';
 import * as storeSchemas from '../_schemas/store.schema';
 import * as studioDetailSchemas from '../_schemas/studio-detail.schema';
-import * as studioSchemas from '../_schemas/studio.schema';
 import * as surveySchemas from '../_schemas/survey.schema';
 import * as visitExperienceSchemas from '../_schemas/visit-experience.schema';
 import { registry } from './registry';

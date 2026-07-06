@@ -15,7 +15,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { getCrmStudiosByIdOptions } from '@/lib/api/@tanstack/react-query.gen';
-import type { StaffRole } from '@/lib/api/types.gen';
 import { navigate } from '@/lib/routes/routes.util';
 import { cn } from '@/lib/utils';
 
@@ -44,8 +43,6 @@ export default function StudioDetailPage() {
   const studioId = params.id as string;
   const [activeTab, setActiveTab] = useState('basic');
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-
-  const userRole: StaffRole = 'headquarter';
 
   const {
     data: studioData,
@@ -130,7 +127,6 @@ export default function StudioDetailPage() {
           actions={
             <StudioDetailHeaderActions
               studioId={studioId}
-              userRole={userRole}
               onDelete={() => setShowDeleteDialog(true)}
             />
           }
