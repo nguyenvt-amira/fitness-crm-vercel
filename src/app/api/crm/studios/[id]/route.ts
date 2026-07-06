@@ -54,6 +54,28 @@ registerRoute({
   ],
 });
 
+registerRoute({
+  method: 'delete',
+  path: '/crm/studios/{id}',
+  summary: 'Delete studio',
+  description: 'Delete an existing studio record',
+  tags: ['Studios'],
+  parameters: [
+    {
+      name: 'id',
+      in: 'path',
+      required: true,
+      schema: { type: 'string' },
+      description: 'Studio ID',
+    },
+  ],
+  responses: [
+    { status: 204, description: 'Studio deleted' },
+    { status: 404, description: 'Studio not found' },
+    { status: 409, description: 'Studio is in use by linked lessons' },
+  ],
+});
+
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
@@ -105,6 +127,35 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.json(result);
   } catch (error) {
     console.error('PUT /api/crm/studios/[id] error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    const { id } = await params;
+
+    if (!id) {
+      return NextResponse.json({ error: 'Studio ID is required' }, { status: 400 });
+    }
+
+    const result = db.studios.delete(id);
+    if (result === 'not_found') {
+      return NextResponse.json({ error: 'Studio not found' }, { status: 404 });
+    }
+    if (result === 'in_use') {
+      return NextResponse.json(
+        { error: 'このスタジオはレッスンで使用中のため削除できません。' },
+        { status: 409 },
+      );
+    }
+
+    return new NextResponse(null, { status: 204 });
+  } catch (error) {
+    console.error('DELETE /api/crm/studios/[id] error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

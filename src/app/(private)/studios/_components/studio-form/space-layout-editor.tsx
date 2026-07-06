@@ -1,11 +1,13 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
+import { type FieldError, useFormContext } from 'react-hook-form';
 
 import { RotateCcw } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { FormControl, FormField, FormItem } from '@/components/ui/form';
 import { Label } from '@/components/ui/label';
 import {
   Select,
@@ -15,7 +17,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import type { LayoutCell, SpaceLayout } from '../studio-form.schema';
+import { cn } from '@/lib/utils';
+
+import type { LayoutCell, SpaceLayout, StudioFormValues } from '../studio-form.schema';
 
 const PLACEMENT_BUTTONS: Array<{
   mode: LayoutCell['kind'];
@@ -84,12 +88,48 @@ function preserveCellsWithinBounds(
   return cells.filter((c) => c.x < columns && c.y < rows);
 }
 
-interface SpaceLayoutEditorProps {
-  value?: Partial<SpaceLayout> | SpaceLayout;
-  onChange: (layout: SpaceLayout) => void;
+function getLayoutErrorMessages(error: FieldError | undefined): string[] {
+  if (!error) return [];
+
+  const messages: string[] = [];
+  if (error.message) {
+    messages.push(String(error.message));
+  }
+
+  for (const key of ['rows', 'columns', 'cells'] as const) {
+    const nested = (error as unknown as Record<string, FieldError | undefined>)[key];
+    if (nested?.message) {
+      messages.push(String(nested.message));
+    }
+  }
+
+  return [...new Set(messages)];
 }
 
-export function SpaceLayoutEditor({ value, onChange }: SpaceLayoutEditorProps) {
+function LayoutFormMessage({ error }: { error?: FieldError }) {
+  const messages = getLayoutErrorMessages(error);
+  if (messages.length === 0) return null;
+
+  if (messages.length === 1) {
+    return <p className="text-destructive mb-2 text-xs">{messages[0]}</p>;
+  }
+
+  return (
+    <ul className="text-destructive mb-2 list-disc space-y-1 pl-4 text-xs">
+      {messages.map((message) => (
+        <li key={message}>{message}</li>
+      ))}
+    </ul>
+  );
+}
+
+interface SpaceLayoutEditorContentProps {
+  value?: Partial<SpaceLayout> | SpaceLayout;
+  onChange: (layout: SpaceLayout) => void;
+  error?: FieldError;
+}
+
+function SpaceLayoutEditorContent({ value, onChange, error }: SpaceLayoutEditorContentProps) {
   const rows = value?.rows ?? DEFAULT_ROWS;
   const columns = value?.columns ?? DEFAULT_COLUMNS;
   const cells = value?.cells ?? createEmptyCells(DEFAULT_ROWS, DEFAULT_COLUMNS);
@@ -156,132 +196,160 @@ export function SpaceLayoutEditor({ value, onChange }: SpaceLayoutEditorProps) {
   }, [onChange]);
 
   return (
-    <div className="w-[440px] shrink-0">
-      <Card className="sticky top-0 pb-0">
-        <CardContent className="px-4">
-          <h2 className="mb-4 text-base font-bold">スペースレイアウト設定</h2>
-          <p className="text-muted-foreground mb-4 text-xs">
-            配置モードを選択してスペースをクリックすると種類を変更できます
-          </p>
+    <Card className="sticky top-0 pb-0">
+      <CardContent className="px-4">
+        <h2 className="mb-4 text-base font-bold">スペースレイアウト設定</h2>
+        <p className="text-muted-foreground mb-4 text-xs">
+          配置モードを選択してスペースをクリックすると種類を変更できます
+        </p>
 
-          {/* Space Type Selector */}
-          <div className="bg-muted mb-4 flex items-center gap-2 rounded-lg p-3">
-            <span className="text-muted-foreground mr-1 text-xs">配置モード:</span>
-            {PLACEMENT_BUTTONS.map((btn) => (
-              <Button
-                key={btn.mode}
-                variant="outline"
-                size="sm"
-                onClick={() => setSelectedMode(btn.mode)}
-                className={`h-7 px-3 text-xs ${selectedMode === btn.mode ? btn.active : btn.idle}`}
-              >
-                {btn.label}
-              </Button>
-            ))}
-          </div>
-
-          {/* Grid Size Settings */}
-          <div className="mb-4 flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Label className="text-muted-foreground text-xs">列数:</Label>
-              <Select value={String(columns)} onValueChange={handleColumnsChange}>
-                <SelectTrigger className="h-8 w-16 text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {COLUMN_OPTIONS.map((opt) => (
-                    <SelectItem key={opt} value={String(opt)}>
-                      {opt}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-center gap-2">
-              <Label className="text-muted-foreground text-xs">行数:</Label>
-              <Select value={String(rows)} onValueChange={handleRowsChange}>
-                <SelectTrigger className="h-8 w-16 text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {ROW_OPTIONS.map((opt) => (
-                    <SelectItem key={opt} value={String(opt)}>
-                      {opt}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+        {/* Space Type Selector */}
+        <div className="bg-muted mb-4 flex items-center gap-2 rounded-lg p-3">
+          <span className="text-muted-foreground mr-1 text-xs">配置モード:</span>
+          {PLACEMENT_BUTTONS.map((btn) => (
             <Button
-              variant="link"
+              key={btn.mode}
+              variant="outline"
               size="sm"
-              className="text-primary ml-auto h-auto p-0 text-xs"
-              onClick={handleReset}
+              onClick={() => setSelectedMode(btn.mode)}
+              className={`h-7 px-3 text-xs ${selectedMode === btn.mode ? btn.active : btn.idle}`}
             >
-              <RotateCcw className="mr-1 size-3" />
-              リセット
+              {btn.label}
             </Button>
-          </div>
+          ))}
+        </div>
 
-          {/* Space Grid Editor */}
-          <div
-            className="mb-4 grid justify-center gap-1"
-            style={{
-              gridTemplateColumns: `repeat(${columns}, minmax(0, 2.5rem))`,
-            }}
+        {/* Grid Size Settings */}
+        <div className="mb-4 flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Label className="text-muted-foreground text-xs">列数:</Label>
+            <Select value={String(columns)} onValueChange={handleColumnsChange}>
+              <SelectTrigger className="h-8 w-16 text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {COLUMN_OPTIONS.map((opt) => (
+                  <SelectItem key={opt} value={String(opt)}>
+                    {opt}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex items-center gap-2">
+            <Label className="text-muted-foreground text-xs">行数:</Label>
+            <Select value={String(rows)} onValueChange={handleRowsChange}>
+              <SelectTrigger className="h-8 w-16 text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {ROW_OPTIONS.map((opt) => (
+                  <SelectItem key={opt} value={String(opt)}>
+                    {opt}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <Button
+            variant="link"
+            size="sm"
+            className="text-primary ml-auto h-auto p-0 text-xs"
+            onClick={handleReset}
           >
-            {gridCells.map((cell, idx) => (
-              <div
-                key={`${cell.x}-${cell.y}`}
-                onClick={() => handleCellClick(cell.x, cell.y)}
-                className={CELL_STYLES[cell.kind]}
-              >
-                {cell.kind === 'normal_seat'
-                  ? idx + 1
-                  : cell.kind === 'equipment_seat'
-                    ? '器材'
-                    : cell.kind === 'fixed_object'
-                      ? '柱'
-                      : ''}
-              </div>
-            ))}
-          </div>
+            <RotateCcw className="mr-1 size-3" />
+            リセット
+          </Button>
+        </div>
 
-          {/* Summary Info */}
-          <div className="bg-primary/5 border-primary/10 rounded-lg border p-3 text-sm">
-            <div className="mb-1 flex items-center justify-between">
-              <span className="text-muted-foreground">総スペース数:</span>
-              <span className="font-medium">{gridCells.length}</span>
+        {/* Space Grid Editor */}
+        <div
+          className="mb-4 grid justify-center gap-1"
+          style={{
+            gridTemplateColumns: `repeat(${columns}, minmax(0, 2.5rem))`,
+          }}
+        >
+          {gridCells.map((cell, idx) => (
+            <div
+              key={`${cell.x}-${cell.y}`}
+              onClick={() => handleCellClick(cell.x, cell.y)}
+              className={CELL_STYLES[cell.kind]}
+            >
+              {cell.kind === 'normal_seat'
+                ? idx + 1
+                : cell.kind === 'equipment_seat'
+                  ? '器材'
+                  : cell.kind === 'fixed_object'
+                    ? '柱'
+                    : ''}
             </div>
-            <div className="mb-1 flex items-center justify-between">
-              <span className="text-muted-foreground">予約可能スペース:</span>
-              <span className="text-primary font-medium">{typeCounts.available}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">利用不可スペース:</span>
-              <span className="text-muted-foreground font-medium">
-                {typeCounts.equipment + typeCounts.pillar}
-              </span>
-            </div>
-          </div>
-        </CardContent>
+          ))}
+        </div>
 
-        {/* Legend */}
-        <div className="bg-muted/50 text-muted-foreground flex flex-wrap items-center gap-3 rounded-b-xl border-t px-4 py-3 text-[10px]">
-          <div className="flex items-center gap-1">
-            <div className="bg-success/10 border-success/20 size-3 rounded border" /> 通常席 (
-            {typeCounts.available})
+        {/* Summary Info */}
+        <div
+          className={cn(
+            'rounded-lg border p-3 text-sm',
+            error ? 'bg-destructive/5 border-destructive/30' : 'bg-primary/5 border-primary/10',
+          )}
+        >
+          <LayoutFormMessage error={error} />
+          <div className="mb-1 flex items-center justify-between">
+            <span className="text-muted-foreground">総スペース数:</span>
+            <span className="font-medium">{gridCells.length}</span>
           </div>
-          <div className="flex items-center gap-1">
-            <div className="bg-warning/15 border-warning/20 size-3 rounded border" /> 器材席 (
-            {typeCounts.equipment})
+          <div className="mb-1 flex items-center justify-between">
+            <span className="text-muted-foreground">予約可能スペース:</span>
+            <span className="text-primary font-medium">{typeCounts.available}</span>
           </div>
-          <div className="flex items-center gap-1">
-            <div className="bg-muted border-border size-3 rounded border" /> 固定物 (
-            {typeCounts.pillar})
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground">利用不可スペース:</span>
+            <span className="text-muted-foreground font-medium">
+              {typeCounts.equipment + typeCounts.pillar}
+            </span>
           </div>
         </div>
-      </Card>
-    </div>
+      </CardContent>
+
+      {/* Legend */}
+      <div className="bg-muted/50 text-muted-foreground flex flex-wrap items-center gap-3 rounded-b-xl border-t px-4 py-3 text-[10px]">
+        <div className="flex items-center gap-1">
+          <div className="bg-success/10 border-success/20 size-3 rounded border" /> 通常席 (
+          {typeCounts.available})
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="bg-warning/15 border-warning/20 size-3 rounded border" /> 器材席 (
+          {typeCounts.equipment})
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="bg-muted border-border size-3 rounded border" /> 固定物 (
+          {typeCounts.pillar})
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+export function SpaceLayoutEditor() {
+  const form = useFormContext<StudioFormValues>();
+
+  return (
+    <FormField
+      control={form.control}
+      name="layout"
+      render={({ field, fieldState }) => (
+        <FormItem className="w-[440px] shrink-0">
+          <FormControl>
+            <div tabIndex={-1}>
+              <SpaceLayoutEditorContent
+                value={field.value}
+                onChange={field.onChange}
+                error={fieldState.error}
+              />
+            </div>
+          </FormControl>
+        </FormItem>
+      )}
+    />
   );
 }

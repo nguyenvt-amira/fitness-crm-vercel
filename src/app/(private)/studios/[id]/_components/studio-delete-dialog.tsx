@@ -2,7 +2,11 @@
 
 import { useCallback } from 'react';
 
-import { AlertTriangle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AlertTriangle, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
@@ -16,33 +20,57 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
+import {
+  deleteCrmStudiosByIdMutation,
+  getCrmStudiosQueryKey,
+} from '@/lib/api/@tanstack/react-query.gen';
+import { navigate } from '@/lib/routes/routes.util';
 import { isDeleteBlocked } from '@/lib/utils/studio-action-permissions.util';
 
 interface StudioDeleteDialogProps {
   open: boolean;
+  studioId: string;
   studioName: string;
   assignedLessonCount: number;
-  onConfirm: () => void;
-  onCancel: () => void;
+  onOpenChange: (open: boolean) => void;
 }
 
 export function StudioDeleteDialog({
   open,
+  studioId,
   studioName,
   assignedLessonCount,
-  onConfirm,
-  onCancel,
+  onOpenChange,
 }: StudioDeleteDialogProps) {
+  const queryClient = useQueryClient();
+  const router = useRouter();
   const isBlocked = isDeleteBlocked(assignedLessonCount);
 
-  const handleConfirm = useCallback(() => {
-    if (!isBlocked) {
-      onConfirm();
-    }
-  }, [isBlocked, onConfirm]);
+  const deleteMutation = useMutation({
+    ...deleteCrmStudiosByIdMutation(),
+    onSuccess: () => {
+      toast.success('スタジオを削除しました');
+      queryClient.invalidateQueries({ queryKey: getCrmStudiosQueryKey() });
+      onOpenChange(false);
+      router.push(navigate('/studios'));
+    },
+    onError: () => {
+      toast.error('スタジオの削除に失敗しました');
+    },
+  });
+
+  const handleConfirm = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      if (!isBlocked) {
+        deleteMutation.mutate({ path: { id: studioId } });
+      }
+    },
+    [deleteMutation, isBlocked, studioId],
+  );
 
   return (
-    <AlertDialog open={open} onOpenChange={(isOpen) => !isOpen && onCancel()}>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="sm:max-w-[480px]">
         <AlertDialogHeader>
           <AlertDialogTitle>スタジオを削除しますか？</AlertDialogTitle>
@@ -59,12 +87,13 @@ export function StudioDeleteDialog({
           </Alert>
         )}
         <AlertDialogFooter>
-          <AlertDialogCancel>キャンセル</AlertDialogCancel>
+          <AlertDialogCancel disabled={deleteMutation.isPending}>キャンセル</AlertDialogCancel>
           <AlertDialogAction
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            disabled={isBlocked}
+            disabled={isBlocked || deleteMutation.isPending}
             onClick={handleConfirm}
           >
+            {deleteMutation.isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
             削除する
           </AlertDialogAction>
         </AlertDialogFooter>

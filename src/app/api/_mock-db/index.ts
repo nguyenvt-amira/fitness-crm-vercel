@@ -24,7 +24,7 @@ export {
 export { TRANSFER_SEED_DATA } from './seeds/transfer.seed';
 
 declare global {
-  var __fitnessDb_v15: DbType | undefined;
+  var __fitnessDb_v16: DbType | undefined;
 }
 
-export const db: DbType = (globalThis.__fitnessDb_v15 ??= createDb() as unknown as DbType);
+export const db: DbType = (globalThis.__fitnessDb_v16 ??= createDb() as unknown as DbType);

@@ -134,6 +134,12 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
   '/controllers/:id': Permission.ControllerView,
   '/controllers/create': Permission.ControllerCreate,
   '/controllers/:id/edit': Permission.ControllerEdit,
+
+  // Studios (D-03)
+  '/studios': Permission.StudiosView,
+  '/studios/:id': Permission.StudiosView,
+  '/studios/:id/edit': Permission.StudiosEdit,
+  '/studios/create': Permission.StudiosCreate,
 };
 
 // ---------------------------------------------------------------------------
@@ -247,6 +253,10 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.ControllerEdit,
     Permission.ControllerDelete,
     Permission.ControllerExport,
+    Permission.StudiosView,
+    Permission.StudiosCreate,
+    Permission.StudiosEdit,
+    Permission.StudiosDelete,
   ],
 
   [UserRole.Manager]: [
@@ -305,6 +315,10 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.ControllerEdit,
     Permission.ControllerDelete,
     Permission.ControllerExport,
+    Permission.StudiosView,
+    Permission.StudiosCreate,
+    Permission.StudiosEdit,
+    Permission.StudiosDelete,
   ],
 
   [UserRole.Staff]: [
@@ -366,6 +380,9 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.ControllerEdit,
     Permission.ControllerDelete,
     Permission.ControllerExport,
+    Permission.StudiosView,
+    Permission.StudiosCreate,
+    Permission.StudiosEdit,
   ],
 
   // Trainer: own-session scope. Can manage their schedules/reservations/
@@ -378,6 +395,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.LessonsAttendanceManage,
     Permission.LessonsMemoManage,
     Permission.LessonContentsView,
+    Permission.StudiosView,
   ],
 
   // Observer: read-only. May view schedules but performs no mutations.
@@ -397,5 +415,6 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.EquipmentView,
     Permission.EquipmentExport,
     Permission.ControllerExport,
+    Permission.StudiosView,
   ],
 };

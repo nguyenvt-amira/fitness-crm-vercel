@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 import { useRouter } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -19,6 +19,8 @@ import { Form } from '@/components/ui/form';
 
 import {
   getCrmStoresOptions,
+  getCrmStudiosByIdQueryKey,
+  getCrmStudiosQueryKey,
   postCrmStudiosMutation,
   putCrmStudiosByIdMutation,
 } from '@/lib/api/@tanstack/react-query.gen';
@@ -77,6 +79,7 @@ export function StudioForm({
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [submitValues, setSubmitValues] = useState<Partial<StudioFormValues> | null>(null);
   const scrollToFirstError = useScrollToFirstError();
+  const queryClient = useQueryClient();
 
   const { data: storesData } = useQuery(getCrmStoresOptions({ query: { limit: 100 } }));
 
@@ -106,6 +109,7 @@ export function StudioForm({
     ...postCrmStudiosMutation(),
     onSuccess: () => {
       toast.success('スタジオを登録しました');
+      queryClient.invalidateQueries({ queryKey: getCrmStudiosQueryKey() });
       router.push(navigate('/studios'));
     },
     onError: (error: Error) => {
@@ -117,6 +121,10 @@ export function StudioForm({
     ...putCrmStudiosByIdMutation(),
     onSuccess: () => {
       toast.success('スタジオの変更を保存しました');
+      queryClient.invalidateQueries({ queryKey: getCrmStudiosQueryKey() });
+      queryClient.invalidateQueries({
+        queryKey: getCrmStudiosByIdQueryKey({ path: { id: studioId! } }),
+      });
       router.push(navigate('/studios'));
     },
     onError: (error: Error) => {
@@ -124,10 +132,7 @@ export function StudioForm({
     },
   });
 
-  const layout = useWatch({ control: form.control, name: 'layout' });
-
-  const errors = form.formState.errors;
-  const hasErrors = Object.keys(errors).length > 0;
+  const hasErrors = Object.keys(form.formState.errors).length > 0;
 
   const submitLabel = isEdit ? '変更を保存する' : '入力内容を確認する';
 
@@ -190,10 +195,7 @@ export function StudioForm({
             </div>
 
             {/* Right column – space layout editor */}
-            <SpaceLayoutEditor
-              value={layout}
-              onChange={(nextLayout) => form.setValue('layout', nextLayout, { shouldDirty: true })}
-            />
+            <SpaceLayoutEditor />
           </div>
 
           {/* Action buttons */}

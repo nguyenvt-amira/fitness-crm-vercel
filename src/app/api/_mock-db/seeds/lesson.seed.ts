@@ -1612,13 +1612,13 @@ export const SEED_STUDIO_DETAILS: Record<string, GetStudioDetailResponse> = {
     images: [
       {
         image_id: 'IMG-001',
-        url: '/mock/studios/studio-zumba-1.jpg',
+        url: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&h=400&fit=crop',
         alt: 'Zumbaスタジオ メイン',
         sort_order: 0,
       },
       {
         image_id: 'IMG-002',
-        url: '/mock/studios/studio-zumba-2.jpg',
+        url: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=600&h=400&fit=crop',
         alt: 'Zumbaスタジオ サイド',
         sort_order: 1,
       },
@@ -1626,7 +1626,7 @@ export const SEED_STUDIO_DETAILS: Record<string, GetStudioDetailResponse> = {
     layout: {
       state: 'configured',
       rows: 4,
-      columns: 4,
+      columns: 6,
       cells: [
         { x: 0, y: 0, kind: 'normal_seat' },
         { x: 1, y: 0, kind: 'normal_seat' },
@@ -1693,7 +1693,7 @@ export const SEED_STUDIO_DETAILS: Record<string, GetStudioDetailResponse> = {
     images: [
       {
         image_id: 'IMG-010',
-        url: '/mock/studios/studio-yoga-1.jpg',
+        url: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=600&h=400&fit=crop',
         alt: 'ホットヨガスタジオ',
         sort_order: 0,
       },
@@ -1767,7 +1767,7 @@ export const SEED_STUDIO_DETAILS: Record<string, GetStudioDetailResponse> = {
     images: [
       {
         image_id: 'IMG-030',
-        url: '/mock/studios/studio-rehab-1.jpg',
+        url: 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=600&h=400&fit=crop',
         alt: 'リハビリスタジオ',
         sort_order: 0,
       },
@@ -1775,7 +1775,7 @@ export const SEED_STUDIO_DETAILS: Record<string, GetStudioDetailResponse> = {
     layout: {
       state: 'configured',
       rows: 3,
-      columns: 4,
+      columns: 6,
       cells: [
         { x: 0, y: 0, kind: 'normal_seat' },
         { x: 1, y: 0, kind: 'normal_seat' },
@@ -1821,7 +1821,7 @@ export const SEED_STUDIO_DETAILS: Record<string, GetStudioDetailResponse> = {
     images: [
       {
         image_id: 'IMG-020',
-        url: '/mock/studios/studio-a-1.jpg',
+        url: 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=600&h=400&fit=crop',
         alt: 'スタジオA',
         sort_order: 0,
       },

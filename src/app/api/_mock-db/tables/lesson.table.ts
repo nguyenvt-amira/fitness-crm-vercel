@@ -515,6 +515,22 @@ export function createLessonTables(getDb: () => DbType) {
 
         return { success: true };
       },
+      delete(id: string): 'not_found' | 'in_use' | true {
+        this._seed();
+        const existing = this._detailStore[id];
+        if (!existing) return 'not_found';
+        if (existing.data.assigned_lesson_count > 0) return 'in_use';
+
+        delete this._detailStore[id];
+
+        const rowIdx = this._rows.findIndex((r) => r.id === id);
+        if (rowIdx !== -1) this._rows.splice(rowIdx, 1);
+
+        const listIdx = SEED_STUDIO_LIST.findIndex((s) => s.id === id);
+        if (listIdx !== -1) SEED_STUDIO_LIST.splice(listIdx, 1);
+
+        return true;
+      },
     },
 
     lessons: {

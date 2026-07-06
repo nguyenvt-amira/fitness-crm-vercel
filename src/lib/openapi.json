@@ -29916,1037 +29916,6 @@
     "parameters": {}
   },
   "paths": {
-    "/crm/studios": {
-      "post": {
-        "summary": "Create studio",
-        "description": "Create a new studio record with optional images and space layout",
-        "tags": ["Studios"],
-        "requestBody": {
-          "description": "Studio create payload",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 100
-                  },
-                  "store_id": {
-                    "type": "string",
-                    "minLength": 1
-                  },
-                  "studio_type": {
-                    "type": "string",
-                    "enum": ["normal", "hot_yoga", "virtual"],
-                    "example": "normal",
-                    "description": "スタジオ区分"
-                  },
-                  "capacity": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 500
-                  },
-                  "buffer_value": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 500,
-                    "default": 0
-                  },
-                  "operating_hours": {
-                    "type": "string",
-                    "pattern": "^\\d{2}:\\d{2}~\\d{2}:\\d{2}$"
-                  },
-                  "equipment_notes": {
-                    "type": "string",
-                    "nullable": true,
-                    "maxLength": 1000
-                  },
-                  "internal_notes": {
-                    "type": "string",
-                    "nullable": true,
-                    "maxLength": 1000
-                  },
-                  "status": {
-                    "type": "string",
-                    "enum": ["active", "inactive"],
-                    "default": "active"
-                  },
-                  "images": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "url": {
-                          "type": "string",
-                          "format": "uri",
-                          "example": "https://cdn.mock.example.com/studio/uuid.jpg"
-                        },
-                        "sort_order": {
-                          "type": "integer",
-                          "minimum": 0,
-                          "example": 1
-                        }
-                      },
-                      "required": ["url", "sort_order"],
-                      "title": "StudioImagePayload"
-                    },
-                    "default": []
-                  },
-                  "layout": {
-                    "type": "object",
-                    "properties": {
-                      "rows": {
-                        "type": "integer",
-                        "minimum": 2,
-                        "maximum": 5,
-                        "example": 2
-                      },
-                      "columns": {
-                        "type": "integer",
-                        "example": 8
-                      },
-                      "cells": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "x": {
-                              "type": "integer",
-                              "minimum": 0,
-                              "example": 0
-                            },
-                            "y": {
-                              "type": "integer",
-                              "minimum": 0,
-                              "example": 0
-                            },
-                            "kind": {
-                              "type": "string",
-                              "enum": ["normal_seat", "equipment_seat", "fixed_object", "empty"],
-                              "example": "normal_seat",
-                              "description": "Cell type in layout grid"
-                            }
-                          },
-                          "required": ["x", "y", "kind"],
-                          "title": "StudioLayoutCell"
-                        },
-                        "default": [],
-                        "description": "Grid cells"
-                      }
-                    },
-                    "required": ["rows", "columns"],
-                    "title": "StudioLayout"
-                  }
-                },
-                "required": ["name", "store_id", "studio_type", "capacity", "operating_hours"],
-                "title": "CreateStudioPayload",
-                "description": "Create studio request payload"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Studio created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "example": "STU-042"
-                    }
-                  },
-                  "required": ["id"],
-                  "title": "CreateStudioResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request - validation error"
-          }
-        }
-      },
-      "get": {
-        "summary": "Get studio list",
-        "description": "Get paginated list of studios with search, filter, sort",
-        "tags": ["Studios"],
-        "parameters": [
-          {
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "default": 1,
-              "example": 1
-            },
-            "required": false,
-            "name": "page",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "integer",
-              "default": 50,
-              "example": 50
-            },
-            "required": false,
-            "name": "limit",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "description": "スタジオ名で検索（部分一致）"
-            },
-            "required": false,
-            "description": "スタジオ名で検索（部分一致）",
-            "name": "search",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "description": "店舗IDでフィルタ"
-            },
-            "required": false,
-            "description": "店舗IDでフィルタ",
-            "name": "store_id",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "enum": ["studio-lesson", "pt", "body-care"],
-              "example": "studio-lesson",
-              "description": "スタジオ区分でフィルタ"
-            },
-            "required": false,
-            "description": "スタジオ区分でフィルタ",
-            "name": "studio_type",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "enum": ["joyfit", "joyfit24", "joyfit_yoga", "joyfit_plus", "fit365"],
-              "example": "joyfit",
-              "description": "ブランドでフィルタ"
-            },
-            "required": false,
-            "description": "ブランドでフィルタ",
-            "name": "brand",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "enum": ["active", "inactive"],
-              "example": "active",
-              "description": "ステータスでフィルタ"
-            },
-            "required": false,
-            "description": "ステータスでフィルタ",
-            "name": "status",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "enum": ["id", "name", "store_name", "studio_type", "capacity"],
-              "default": "id",
-              "description": "ソート項目"
-            },
-            "required": false,
-            "description": "ソート項目",
-            "name": "sort_by",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "enum": ["asc", "desc"],
-              "default": "asc",
-              "description": "ソート順"
-            },
-            "required": false,
-            "description": "ソート順",
-            "name": "sort_order",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Studio list",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "items": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "example": "STU-001",
-                            "description": "スタジオID"
-                          },
-                          "name": {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 100,
-                            "example": "スタジオA"
-                          },
-                          "store_id": {
-                            "type": "string",
-                            "example": "store-001"
-                          },
-                          "store_name": {
-                            "type": "string",
-                            "example": "渋谷店"
-                          },
-                          "studio_type": {
-                            "type": "string",
-                            "enum": ["studio-lesson", "pt", "body-care"],
-                            "example": "studio-lesson"
-                          },
-                          "capacity": {
-                            "type": "integer",
-                            "minimum": 1,
-                            "maximum": 1000,
-                            "example": 30
-                          },
-                          "available_hours": {
-                            "type": "string",
-                            "example": "10:00–21:00"
-                          },
-                          "brand": {
-                            "type": "string",
-                            "enum": ["joyfit", "joyfit24", "joyfit_yoga", "joyfit_plus", "fit365"],
-                            "example": "joyfit"
-                          },
-                          "status": {
-                            "type": "string",
-                            "enum": ["active", "inactive"],
-                            "example": "active"
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "name",
-                          "store_id",
-                          "store_name",
-                          "studio_type",
-                          "capacity",
-                          "available_hours",
-                          "brand",
-                          "status"
-                        ],
-                        "title": "StudioListItem",
-                        "description": "スタジオ一覧アイテム"
-                      }
-                    },
-                    "total": {
-                      "type": "integer",
-                      "minimum": 0
-                    },
-                    "page": {
-                      "type": "integer",
-                      "minimum": 1
-                    },
-                    "limit": {
-                      "type": "integer"
-                    },
-                    "has_next": {
-                      "type": "boolean"
-                    }
-                  },
-                  "required": ["items", "total", "page", "limit", "has_next"],
-                  "title": "StudioListResponse",
-                  "description": "スタジオ一覧レスポンス"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "items": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "example": "STU-001",
-                            "description": "スタジオID"
-                          },
-                          "name": {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 100,
-                            "example": "スタジオA"
-                          },
-                          "store_id": {
-                            "type": "string",
-                            "example": "store-001"
-                          },
-                          "store_name": {
-                            "type": "string",
-                            "example": "渋谷店"
-                          },
-                          "studio_type": {
-                            "type": "string",
-                            "enum": ["studio-lesson", "pt", "body-care"],
-                            "example": "studio-lesson"
-                          },
-                          "capacity": {
-                            "type": "integer",
-                            "minimum": 1,
-                            "maximum": 1000,
-                            "example": 30
-                          },
-                          "available_hours": {
-                            "type": "string",
-                            "example": "10:00–21:00"
-                          },
-                          "brand": {
-                            "type": "string",
-                            "enum": ["joyfit", "joyfit24", "joyfit_yoga", "joyfit_plus", "fit365"],
-                            "example": "joyfit"
-                          },
-                          "status": {
-                            "type": "string",
-                            "enum": ["active", "inactive"],
-                            "example": "active"
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "name",
-                          "store_id",
-                          "store_name",
-                          "studio_type",
-                          "capacity",
-                          "available_hours",
-                          "brand",
-                          "status"
-                        ],
-                        "title": "StudioListItem",
-                        "description": "スタジオ一覧アイテム"
-                      }
-                    },
-                    "total": {
-                      "type": "integer",
-                      "minimum": 0
-                    },
-                    "page": {
-                      "type": "integer",
-                      "minimum": 1
-                    },
-                    "limit": {
-                      "type": "integer"
-                    },
-                    "has_next": {
-                      "type": "boolean"
-                    }
-                  },
-                  "required": ["items", "total", "page", "limit", "has_next"],
-                  "title": "StudioListResponse",
-                  "description": "スタジオ一覧レスポンス"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/crm/studios/{id}": {
-      "put": {
-        "summary": "Update studio",
-        "description": "Update an existing studio record",
-        "tags": ["Studios"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "Studio ID",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "Studio update payload",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 100
-                  },
-                  "store_id": {
-                    "type": "string",
-                    "minLength": 1
-                  },
-                  "studio_type": {
-                    "type": "string",
-                    "enum": ["normal", "hot_yoga", "virtual"],
-                    "example": "normal",
-                    "description": "スタジオ区分"
-                  },
-                  "capacity": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 500
-                  },
-                  "buffer_value": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 500,
-                    "default": 0
-                  },
-                  "operating_hours": {
-                    "type": "string",
-                    "pattern": "^\\d{2}:\\d{2}~\\d{2}:\\d{2}$"
-                  },
-                  "equipment_notes": {
-                    "type": "string",
-                    "nullable": true,
-                    "maxLength": 1000
-                  },
-                  "internal_notes": {
-                    "type": "string",
-                    "nullable": true,
-                    "maxLength": 1000
-                  },
-                  "status": {
-                    "type": "string",
-                    "enum": ["active", "inactive"],
-                    "default": "active"
-                  },
-                  "images": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "url": {
-                          "type": "string",
-                          "format": "uri",
-                          "example": "https://cdn.mock.example.com/studio/uuid.jpg"
-                        },
-                        "sort_order": {
-                          "type": "integer",
-                          "minimum": 0,
-                          "example": 1
-                        }
-                      },
-                      "required": ["url", "sort_order"],
-                      "title": "StudioImagePayload"
-                    },
-                    "default": []
-                  },
-                  "layout": {
-                    "type": "object",
-                    "properties": {
-                      "rows": {
-                        "type": "integer",
-                        "minimum": 2,
-                        "maximum": 5,
-                        "example": 2
-                      },
-                      "columns": {
-                        "type": "integer",
-                        "example": 8
-                      },
-                      "cells": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "x": {
-                              "type": "integer",
-                              "minimum": 0,
-                              "example": 0
-                            },
-                            "y": {
-                              "type": "integer",
-                              "minimum": 0,
-                              "example": 0
-                            },
-                            "kind": {
-                              "type": "string",
-                              "enum": ["normal_seat", "equipment_seat", "fixed_object", "empty"],
-                              "example": "normal_seat",
-                              "description": "Cell type in layout grid"
-                            }
-                          },
-                          "required": ["x", "y", "kind"],
-                          "title": "StudioLayoutCell"
-                        },
-                        "default": [],
-                        "description": "Grid cells"
-                      }
-                    },
-                    "required": ["rows", "columns"],
-                    "title": "StudioLayout"
-                  }
-                },
-                "required": ["name", "store_id", "studio_type", "capacity", "operating_hours"],
-                "title": "UpdateStudioPayload",
-                "description": "Update studio request payload"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Studio updated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "enum": [true]
-                    }
-                  },
-                  "required": ["success"],
-                  "title": "UpdateStudioResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request - validation error"
-          },
-          "404": {
-            "description": "Studio not found"
-          }
-        }
-      },
-      "get": {
-        "summary": "Get studio detail",
-        "description": "Get complete studio detail information including linked lessons, images, layout, and utilization",
-        "tags": ["Studios"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "id parameter",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Studio detail",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string",
-                          "example": "STD-0001",
-                          "description": "Studio identifier"
-                        },
-                        "name": {
-                          "type": "string",
-                          "maxLength": 100,
-                          "example": "Studio A"
-                        },
-                        "studio_type": {
-                          "type": "string",
-                          "enum": ["studio-lesson", "pt", "body-care"],
-                          "example": "studio-lesson"
-                        },
-                        "status": {
-                          "type": "string",
-                          "enum": ["active", "inactive"],
-                          "example": "active"
-                        },
-                        "capacity": {
-                          "type": "integer",
-                          "minimum": 1,
-                          "example": 30,
-                          "description": "Physical capacity"
-                        },
-                        "buffer_value": {
-                          "type": "integer",
-                          "minimum": 0,
-                          "example": 2,
-                          "description": "Buffer value"
-                        },
-                        "usage_hours": {
-                          "type": "string",
-                          "example": "10:00-21:00"
-                        },
-                        "store_id": {
-                          "type": "string",
-                          "example": "STORE-001"
-                        },
-                        "store_name": {
-                          "type": "string",
-                          "example": "Shibuya"
-                        },
-                        "equipment_notes": {
-                          "type": "string",
-                          "nullable": true,
-                          "maxLength": 1000,
-                          "example": "Mirrors + sound system",
-                          "description": "Optional equipment notes"
-                        },
-                        "internal_notes": {
-                          "type": "string",
-                          "nullable": true,
-                          "maxLength": 1000,
-                          "example": null,
-                          "description": "Optional internal notes"
-                        },
-                        "created_at": {
-                          "type": "string",
-                          "example": "2026-01-15T00:00:00.000Z"
-                        },
-                        "updated_at": {
-                          "type": "string",
-                          "example": "2026-06-01T00:00:00.000Z"
-                        },
-                        "assigned_lesson_count": {
-                          "type": "integer",
-                          "minimum": 0,
-                          "example": 3,
-                          "description": "Delete guard signal"
-                        },
-                        "change_history_enabled": {
-                          "type": "boolean",
-                          "example": false,
-                          "description": "Fixed false in Phase 1"
-                        }
-                      },
-                      "required": [
-                        "id",
-                        "name",
-                        "studio_type",
-                        "status",
-                        "capacity",
-                        "buffer_value",
-                        "usage_hours",
-                        "store_id",
-                        "store_name",
-                        "created_at",
-                        "updated_at",
-                        "assigned_lesson_count",
-                        "change_history_enabled"
-                      ],
-                      "title": "StudioDetail",
-                      "description": "Studio detail main entity"
-                    },
-                    "linked_lessons": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "lesson_id": {
-                            "type": "string",
-                            "example": "LSN-0001",
-                            "description": "Lesson reference"
-                          },
-                          "lesson_name": {
-                            "type": "string",
-                            "maxLength": 120,
-                            "example": "Yoga Basic"
-                          },
-                          "category": {
-                            "type": "string",
-                            "example": "Yoga",
-                            "description": "Lesson category badge"
-                          },
-                          "schedule_text": {
-                            "type": "string",
-                            "example": "Mon/Wed 19:00"
-                          },
-                          "reservation_rate": {
-                            "type": "integer",
-                            "minimum": 0,
-                            "maximum": 100,
-                            "example": 82
-                          },
-                          "reservation_tier": {
-                            "type": "string",
-                            "enum": ["success", "warning", "default"],
-                            "title": "ReservationTier",
-                            "description": "Color tier for reservation rate",
-                            "example": "success"
-                          }
-                        },
-                        "required": [
-                          "lesson_id",
-                          "lesson_name",
-                          "category",
-                          "schedule_text",
-                          "reservation_rate",
-                          "reservation_tier"
-                        ],
-                        "title": "LinkedLessonSummary",
-                        "description": "Linked lesson row in detail"
-                      },
-                      "description": "Can be empty"
-                    },
-                    "images": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "image_id": {
-                            "type": "string",
-                            "example": "IMG-001",
-                            "description": "Image identifier"
-                          },
-                          "url": {
-                            "type": "string",
-                            "example": "/mock/studios/studio-a-1.jpg"
-                          },
-                          "alt": {
-                            "type": "string",
-                            "maxLength": 255,
-                            "example": "Studio A main view",
-                            "description": "Accessibility text"
-                          },
-                          "sort_order": {
-                            "type": "integer",
-                            "minimum": 0,
-                            "example": 0,
-                            "description": "Display order"
-                          }
-                        },
-                        "required": ["image_id", "url", "alt", "sort_order"],
-                        "title": "StudioImage",
-                        "description": "Studio image asset metadata"
-                      },
-                      "description": "Studio images"
-                    },
-                    "layout": {
-                      "type": "object",
-                      "properties": {
-                        "state": {
-                          "type": "string",
-                          "enum": ["configured", "not_configured"],
-                          "title": "LayoutState",
-                          "description": "Layout preview state",
-                          "example": "configured"
-                        },
-                        "rows": {
-                          "type": "integer",
-                          "nullable": true,
-                          "minimum": 1,
-                          "example": 5
-                        },
-                        "columns": {
-                          "type": "integer",
-                          "nullable": true,
-                          "minimum": 1,
-                          "example": 6
-                        },
-                        "cells": {
-                          "type": "array",
-                          "nullable": true,
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "x": {
-                                "type": "integer",
-                                "minimum": 0,
-                                "example": 0,
-                                "description": "Column index"
-                              },
-                              "y": {
-                                "type": "integer",
-                                "minimum": 0,
-                                "example": 0,
-                                "description": "Row index"
-                              },
-                              "kind": {
-                                "type": "string",
-                                "enum": ["normal_seat", "equipment_seat", "fixed_object"],
-                                "title": "LayoutCellKind",
-                                "description": "Cell type in layout grid",
-                                "example": "normal_seat"
-                              }
-                            },
-                            "required": ["x", "y", "kind"],
-                            "title": "LayoutCell",
-                            "description": "Studio layout grid cell"
-                          },
-                          "description": "Grid cells"
-                        },
-                        "configure_path": {
-                          "type": "string",
-                          "example": "/studios/STD-0001/edit",
-                          "description": "Navigation to edit"
-                        }
-                      },
-                      "required": ["state", "configure_path"],
-                      "title": "LayoutPreview",
-                      "description": "Studio layout preview or not-configured state"
-                    },
-                    "utilization": {
-                      "type": "object",
-                      "properties": {
-                        "day_rate": {
-                          "type": "integer",
-                          "minimum": 0,
-                          "maximum": 100,
-                          "example": 71
-                        },
-                        "week_rate": {
-                          "type": "integer",
-                          "minimum": 0,
-                          "maximum": 100,
-                          "example": 68
-                        },
-                        "month_rate": {
-                          "type": "integer",
-                          "minimum": 0,
-                          "maximum": 100,
-                          "example": 64
-                        },
-                        "trend": {
-                          "type": "string",
-                          "nullable": true,
-                          "enum": ["up", "down", "flat", null],
-                          "title": "Trend",
-                          "description": "Utilization trend indicator",
-                          "example": "up"
-                        },
-                        "day_lesson_count": {
-                          "type": "integer"
-                        },
-                        "week_lesson_count": {
-                          "type": "integer"
-                        },
-                        "month_lesson_count": {
-                          "type": "integer"
-                        },
-                        "active_hours": {
-                          "type": "string"
-                        },
-                        "day_hourly_rates": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "band": {
-                                "type": "string"
-                              },
-                              "rate": {
-                                "type": "integer",
-                                "minimum": 0,
-                                "maximum": 100
-                              }
-                            },
-                            "required": ["band", "rate"]
-                          }
-                        },
-                        "week_hourly_rates": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "band": {
-                                "type": "string"
-                              },
-                              "rate": {
-                                "type": "integer",
-                                "minimum": 0,
-                                "maximum": 100
-                              }
-                            },
-                            "required": ["band", "rate"]
-                          }
-                        },
-                        "month_hourly_rates": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "band": {
-                                "type": "string"
-                              },
-                              "rate": {
-                                "type": "integer",
-                                "minimum": 0,
-                                "maximum": 100
-                              }
-                            },
-                            "required": ["band", "rate"]
-                          }
-                        },
-                        "day_trend": {
-                          "type": "array",
-                          "items": {
-                            "type": "integer",
-                            "minimum": 0,
-                            "maximum": 100
-                          }
-                        },
-                        "week_trend": {
-                          "type": "array",
-                          "items": {
-                            "type": "integer",
-                            "minimum": 0,
-                            "maximum": 100
-                          }
-                        },
-                        "month_trend": {
-                          "type": "array",
-                          "items": {
-                            "type": "integer",
-                            "minimum": 0,
-                            "maximum": 100
-                          }
-                        }
-                      },
-                      "required": ["day_rate", "week_rate", "month_rate"],
-                      "title": "UtilizationSummary",
-                      "description": "Read-only KPI snapshot"
-                    }
-                  },
-                  "required": ["data", "linked_lessons", "images", "layout", "utilization"],
-                  "title": "GetStudioDetailResponse",
-                  "description": "Complete studio detail response"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Studio not found"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      }
-    },
     "/auth/login": {
       "post": {
         "summary": "User login",
@@ -78911,6 +77880,1064 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/crm/studios/{id}": {
+      "get": {
+        "summary": "Get studio detail",
+        "description": "Get complete studio detail information including linked lessons, images, layout, and utilization",
+        "tags": ["Studios"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id parameter",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Studio detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "STD-0001",
+                          "description": "Studio identifier"
+                        },
+                        "name": {
+                          "type": "string",
+                          "maxLength": 100,
+                          "example": "Studio A"
+                        },
+                        "studio_type": {
+                          "type": "string",
+                          "enum": ["studio-lesson", "pt", "body-care"],
+                          "example": "studio-lesson"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["active", "inactive"],
+                          "example": "active"
+                        },
+                        "capacity": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "example": 30,
+                          "description": "Physical capacity"
+                        },
+                        "buffer_value": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 2,
+                          "description": "Buffer value"
+                        },
+                        "usage_hours": {
+                          "type": "string",
+                          "example": "10:00-21:00"
+                        },
+                        "store_id": {
+                          "type": "string",
+                          "example": "STORE-001"
+                        },
+                        "store_name": {
+                          "type": "string",
+                          "example": "Shibuya"
+                        },
+                        "equipment_notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 1000,
+                          "example": "Mirrors + sound system",
+                          "description": "Optional equipment notes"
+                        },
+                        "internal_notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "maxLength": 1000,
+                          "example": null,
+                          "description": "Optional internal notes"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2026-01-15T00:00:00.000Z"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2026-06-01T00:00:00.000Z"
+                        },
+                        "assigned_lesson_count": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 3,
+                          "description": "Delete guard signal"
+                        },
+                        "change_history_enabled": {
+                          "type": "boolean",
+                          "example": false,
+                          "description": "Fixed false in Phase 1"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "studio_type",
+                        "status",
+                        "capacity",
+                        "buffer_value",
+                        "usage_hours",
+                        "store_id",
+                        "store_name",
+                        "created_at",
+                        "updated_at",
+                        "assigned_lesson_count",
+                        "change_history_enabled"
+                      ],
+                      "title": "StudioDetail",
+                      "description": "Studio detail main entity"
+                    },
+                    "linked_lessons": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "lesson_id": {
+                            "type": "string",
+                            "example": "LSN-0001",
+                            "description": "Lesson reference"
+                          },
+                          "lesson_name": {
+                            "type": "string",
+                            "maxLength": 120,
+                            "example": "Yoga Basic"
+                          },
+                          "category": {
+                            "type": "string",
+                            "example": "Yoga",
+                            "description": "Lesson category badge"
+                          },
+                          "schedule_text": {
+                            "type": "string",
+                            "example": "Mon/Wed 19:00"
+                          },
+                          "reservation_rate": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 100,
+                            "example": 82
+                          },
+                          "reservation_tier": {
+                            "type": "string",
+                            "enum": ["success", "warning", "default"],
+                            "title": "ReservationTier",
+                            "description": "Color tier for reservation rate",
+                            "example": "success"
+                          }
+                        },
+                        "required": [
+                          "lesson_id",
+                          "lesson_name",
+                          "category",
+                          "schedule_text",
+                          "reservation_rate",
+                          "reservation_tier"
+                        ],
+                        "title": "LinkedLessonSummary",
+                        "description": "Linked lesson row in detail"
+                      },
+                      "description": "Can be empty"
+                    },
+                    "images": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "image_id": {
+                            "type": "string",
+                            "example": "IMG-001",
+                            "description": "Image identifier"
+                          },
+                          "url": {
+                            "type": "string",
+                            "example": "/mock/studios/studio-a-1.jpg"
+                          },
+                          "alt": {
+                            "type": "string",
+                            "maxLength": 255,
+                            "example": "Studio A main view",
+                            "description": "Accessibility text"
+                          },
+                          "sort_order": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "example": 0,
+                            "description": "Display order"
+                          }
+                        },
+                        "required": ["image_id", "url", "alt", "sort_order"],
+                        "title": "StudioImage",
+                        "description": "Studio image asset metadata"
+                      },
+                      "description": "Studio images"
+                    },
+                    "layout": {
+                      "type": "object",
+                      "properties": {
+                        "state": {
+                          "type": "string",
+                          "enum": ["configured", "not_configured"],
+                          "title": "LayoutState",
+                          "description": "Layout preview state",
+                          "example": "configured"
+                        },
+                        "rows": {
+                          "type": "integer",
+                          "nullable": true,
+                          "minimum": 1,
+                          "example": 5
+                        },
+                        "columns": {
+                          "type": "integer",
+                          "nullable": true,
+                          "minimum": 1,
+                          "example": 6
+                        },
+                        "cells": {
+                          "type": "array",
+                          "nullable": true,
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "x": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "example": 0,
+                                "description": "Column index"
+                              },
+                              "y": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "example": 0,
+                                "description": "Row index"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": ["normal_seat", "equipment_seat", "fixed_object"],
+                                "title": "LayoutCellKind",
+                                "description": "Cell type in layout grid",
+                                "example": "normal_seat"
+                              }
+                            },
+                            "required": ["x", "y", "kind"],
+                            "title": "LayoutCell",
+                            "description": "Studio layout grid cell"
+                          },
+                          "description": "Grid cells"
+                        },
+                        "configure_path": {
+                          "type": "string",
+                          "example": "/studios/STD-0001/edit",
+                          "description": "Navigation to edit"
+                        }
+                      },
+                      "required": ["state", "configure_path"],
+                      "title": "LayoutPreview",
+                      "description": "Studio layout preview or not-configured state"
+                    },
+                    "utilization": {
+                      "type": "object",
+                      "properties": {
+                        "day_rate": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 100,
+                          "example": 71
+                        },
+                        "week_rate": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 100,
+                          "example": 68
+                        },
+                        "month_rate": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 100,
+                          "example": 64
+                        },
+                        "trend": {
+                          "type": "string",
+                          "nullable": true,
+                          "enum": ["up", "down", "flat", null],
+                          "title": "Trend",
+                          "description": "Utilization trend indicator",
+                          "example": "up"
+                        },
+                        "day_lesson_count": {
+                          "type": "integer"
+                        },
+                        "week_lesson_count": {
+                          "type": "integer"
+                        },
+                        "month_lesson_count": {
+                          "type": "integer"
+                        },
+                        "active_hours": {
+                          "type": "string"
+                        },
+                        "day_hourly_rates": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "band": {
+                                "type": "string"
+                              },
+                              "rate": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 100
+                              }
+                            },
+                            "required": ["band", "rate"]
+                          }
+                        },
+                        "week_hourly_rates": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "band": {
+                                "type": "string"
+                              },
+                              "rate": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 100
+                              }
+                            },
+                            "required": ["band", "rate"]
+                          }
+                        },
+                        "month_hourly_rates": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "band": {
+                                "type": "string"
+                              },
+                              "rate": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 100
+                              }
+                            },
+                            "required": ["band", "rate"]
+                          }
+                        },
+                        "day_trend": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 100
+                          }
+                        },
+                        "week_trend": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 100
+                          }
+                        },
+                        "month_trend": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 100
+                          }
+                        }
+                      },
+                      "required": ["day_rate", "week_rate", "month_rate"],
+                      "title": "UtilizationSummary",
+                      "description": "Read-only KPI snapshot"
+                    }
+                  },
+                  "required": ["data", "linked_lessons", "images", "layout", "utilization"],
+                  "title": "GetStudioDetailResponse",
+                  "description": "Complete studio detail response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Studio not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update studio",
+        "description": "Update an existing studio record",
+        "tags": ["Studios"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Studio ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Studio update payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "store_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "studio_type": {
+                    "type": "string",
+                    "enum": ["normal", "hot_yoga", "virtual"],
+                    "example": "normal",
+                    "description": "スタジオ区分"
+                  },
+                  "capacity": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 500
+                  },
+                  "buffer_value": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 500,
+                    "default": 0
+                  },
+                  "operating_hours": {
+                    "type": "string",
+                    "pattern": "^\\d{2}:\\d{2}~\\d{2}:\\d{2}$"
+                  },
+                  "equipment_notes": {
+                    "type": "string",
+                    "nullable": true,
+                    "maxLength": 1000
+                  },
+                  "internal_notes": {
+                    "type": "string",
+                    "nullable": true,
+                    "maxLength": 1000
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["active", "inactive"],
+                    "default": "active"
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "url": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "https://cdn.mock.example.com/studio/uuid.jpg"
+                        },
+                        "sort_order": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 1
+                        }
+                      },
+                      "required": ["url", "sort_order"],
+                      "title": "StudioImagePayload"
+                    },
+                    "default": []
+                  },
+                  "layout": {
+                    "type": "object",
+                    "properties": {
+                      "rows": {
+                        "type": "integer",
+                        "minimum": 2,
+                        "maximum": 5,
+                        "example": 2
+                      },
+                      "columns": {
+                        "type": "integer",
+                        "example": 8
+                      },
+                      "cells": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "x": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "example": 0
+                            },
+                            "y": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "example": 0
+                            },
+                            "kind": {
+                              "type": "string",
+                              "enum": ["normal_seat", "equipment_seat", "fixed_object", "empty"],
+                              "example": "normal_seat",
+                              "description": "Cell type in layout grid"
+                            }
+                          },
+                          "required": ["x", "y", "kind"],
+                          "title": "StudioLayoutCell"
+                        },
+                        "default": [],
+                        "description": "Grid cells"
+                      }
+                    },
+                    "required": ["rows", "columns"],
+                    "title": "StudioLayout"
+                  }
+                },
+                "required": ["name", "store_id", "studio_type", "capacity", "operating_hours"],
+                "title": "UpdateStudioPayload",
+                "description": "Update studio request payload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Studio updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [true]
+                    }
+                  },
+                  "required": ["success"],
+                  "title": "UpdateStudioResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - validation error"
+          },
+          "404": {
+            "description": "Studio not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete studio",
+        "description": "Delete an existing studio record",
+        "tags": ["Studios"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Studio ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Studio deleted"
+          },
+          "404": {
+            "description": "Studio not found"
+          },
+          "409": {
+            "description": "Studio is in use by linked lessons"
+          }
+        }
+      }
+    },
+    "/crm/studios": {
+      "get": {
+        "summary": "Get studio list",
+        "description": "Get paginated list of studios with search, filter, sort",
+        "tags": ["Studios"],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "example": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "example": 50
+            },
+            "required": false,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "スタジオ名で検索（部分一致）"
+            },
+            "required": false,
+            "description": "スタジオ名で検索（部分一致）",
+            "name": "search",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "店舗IDでフィルタ"
+            },
+            "required": false,
+            "description": "店舗IDでフィルタ",
+            "name": "store_id",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["studio-lesson", "pt", "body-care"],
+              "example": "studio-lesson",
+              "description": "スタジオ区分でフィルタ"
+            },
+            "required": false,
+            "description": "スタジオ区分でフィルタ",
+            "name": "studio_type",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["joyfit", "joyfit24", "joyfit_yoga", "joyfit_plus", "fit365"],
+              "example": "joyfit",
+              "description": "ブランドでフィルタ"
+            },
+            "required": false,
+            "description": "ブランドでフィルタ",
+            "name": "brand",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["active", "inactive"],
+              "example": "active",
+              "description": "ステータスでフィルタ"
+            },
+            "required": false,
+            "description": "ステータスでフィルタ",
+            "name": "status",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["id", "name", "store_name", "studio_type", "capacity"],
+              "default": "id",
+              "description": "ソート項目"
+            },
+            "required": false,
+            "description": "ソート項目",
+            "name": "sort_by",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc",
+              "description": "ソート順"
+            },
+            "required": false,
+            "description": "ソート順",
+            "name": "sort_order",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Studio list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "STU-001",
+                            "description": "スタジオID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 100,
+                            "example": "スタジオA"
+                          },
+                          "store_id": {
+                            "type": "string",
+                            "example": "store-001"
+                          },
+                          "store_name": {
+                            "type": "string",
+                            "example": "渋谷店"
+                          },
+                          "studio_type": {
+                            "type": "string",
+                            "enum": ["studio-lesson", "pt", "body-care"],
+                            "example": "studio-lesson"
+                          },
+                          "capacity": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 1000,
+                            "example": 30
+                          },
+                          "available_hours": {
+                            "type": "string",
+                            "example": "10:00–21:00"
+                          },
+                          "brand": {
+                            "type": "string",
+                            "enum": ["joyfit", "joyfit24", "joyfit_yoga", "joyfit_plus", "fit365"],
+                            "example": "joyfit"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["active", "inactive"],
+                            "example": "active"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "store_id",
+                          "store_name",
+                          "studio_type",
+                          "capacity",
+                          "available_hours",
+                          "brand",
+                          "status"
+                        ],
+                        "title": "StudioListItem",
+                        "description": "スタジオ一覧アイテム"
+                      }
+                    },
+                    "total": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "page": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "limit": {
+                      "type": "integer"
+                    },
+                    "has_next": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": ["items", "total", "page", "limit", "has_next"],
+                  "title": "StudioListResponse",
+                  "description": "スタジオ一覧レスポンス"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "STU-001",
+                            "description": "スタジオID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 100,
+                            "example": "スタジオA"
+                          },
+                          "store_id": {
+                            "type": "string",
+                            "example": "store-001"
+                          },
+                          "store_name": {
+                            "type": "string",
+                            "example": "渋谷店"
+                          },
+                          "studio_type": {
+                            "type": "string",
+                            "enum": ["studio-lesson", "pt", "body-care"],
+                            "example": "studio-lesson"
+                          },
+                          "capacity": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 1000,
+                            "example": 30
+                          },
+                          "available_hours": {
+                            "type": "string",
+                            "example": "10:00–21:00"
+                          },
+                          "brand": {
+                            "type": "string",
+                            "enum": ["joyfit", "joyfit24", "joyfit_yoga", "joyfit_plus", "fit365"],
+                            "example": "joyfit"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["active", "inactive"],
+                            "example": "active"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "name",
+                          "store_id",
+                          "store_name",
+                          "studio_type",
+                          "capacity",
+                          "available_hours",
+                          "brand",
+                          "status"
+                        ],
+                        "title": "StudioListItem",
+                        "description": "スタジオ一覧アイテム"
+                      }
+                    },
+                    "total": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "page": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "limit": {
+                      "type": "integer"
+                    },
+                    "has_next": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": ["items", "total", "page", "limit", "has_next"],
+                  "title": "StudioListResponse",
+                  "description": "スタジオ一覧レスポンス"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create studio",
+        "description": "Create a new studio record with optional images and space layout",
+        "tags": ["Studios"],
+        "requestBody": {
+          "description": "Studio create payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "store_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "studio_type": {
+                    "type": "string",
+                    "enum": ["normal", "hot_yoga", "virtual"],
+                    "example": "normal",
+                    "description": "スタジオ区分"
+                  },
+                  "capacity": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 500
+                  },
+                  "buffer_value": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 500,
+                    "default": 0
+                  },
+                  "operating_hours": {
+                    "type": "string",
+                    "pattern": "^\\d{2}:\\d{2}~\\d{2}:\\d{2}$"
+                  },
+                  "equipment_notes": {
+                    "type": "string",
+                    "nullable": true,
+                    "maxLength": 1000
+                  },
+                  "internal_notes": {
+                    "type": "string",
+                    "nullable": true,
+                    "maxLength": 1000
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["active", "inactive"],
+                    "default": "active"
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "url": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "https://cdn.mock.example.com/studio/uuid.jpg"
+                        },
+                        "sort_order": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 1
+                        }
+                      },
+                      "required": ["url", "sort_order"],
+                      "title": "StudioImagePayload"
+                    },
+                    "default": []
+                  },
+                  "layout": {
+                    "type": "object",
+                    "properties": {
+                      "rows": {
+                        "type": "integer",
+                        "minimum": 2,
+                        "maximum": 5,
+                        "example": 2
+                      },
+                      "columns": {
+                        "type": "integer",
+                        "example": 8
+                      },
+                      "cells": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "x": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "example": 0
+                            },
+                            "y": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "example": 0
+                            },
+                            "kind": {
+                              "type": "string",
+                              "enum": ["normal_seat", "equipment_seat", "fixed_object", "empty"],
+                              "example": "normal_seat",
+                              "description": "Cell type in layout grid"
+                            }
+                          },
+                          "required": ["x", "y", "kind"],
+                          "title": "StudioLayoutCell"
+                        },
+                        "default": [],
+                        "description": "Grid cells"
+                      }
+                    },
+                    "required": ["rows", "columns"],
+                    "title": "StudioLayout"
+                  }
+                },
+                "required": ["name", "store_id", "studio_type", "capacity", "operating_hours"],
+                "title": "CreateStudioPayload",
+                "description": "Create studio request payload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Studio created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "STU-042"
+                    }
+                  },
+                  "required": ["id"],
+                  "title": "CreateStudioResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - validation error"
           }
         }
       }

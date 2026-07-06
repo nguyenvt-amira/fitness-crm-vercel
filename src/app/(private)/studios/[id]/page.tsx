@@ -80,11 +80,6 @@ export default function StudioDetailPage() {
     'body-care': 'ボディケア',
   }[studio.studio_type];
 
-  const handleDelete = async () => {
-    console.log('Delete studio:', studioId);
-    setShowDeleteDialog(false);
-  };
-
   return (
     <DataStateBoundary
       isLoading={isLoading}
@@ -202,10 +197,10 @@ export default function StudioDetailPage() {
 
         <StudioDeleteDialog
           open={showDeleteDialog}
+          studioId={studioId}
           studioName={studio.name}
           assignedLessonCount={studio.assigned_lesson_count}
-          onConfirm={handleDelete}
-          onCancel={() => setShowDeleteDialog(false)}
+          onOpenChange={setShowDeleteDialog}
         />
       </div>
     </DataStateBoundary>

@@ -43,4 +43,6 @@ export type StudiosType = {
   create(input: StudioCreateInput): { id: string };
 
   update(input: StudioUpdateInput): { success: boolean };
+
+  delete(id: string): 'not_found' | 'in_use' | true;
 };

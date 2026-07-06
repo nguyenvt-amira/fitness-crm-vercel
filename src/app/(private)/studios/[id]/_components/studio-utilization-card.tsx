@@ -20,30 +20,44 @@ interface UsagePeriod {
   trend: number[];
 }
 
+const DEFAULT_HOURLY_BANDS = ['10-12時', '12-15時', '15-18時', '18-21時'] as const;
+const TREND_SLOT_COUNT = 7;
+
+const DEFAULT_HOURLY_RATES = DEFAULT_HOURLY_BANDS.map((band) => ({ band, rate: 0 }));
+const DEFAULT_TREND = Array.from({ length: TREND_SLOT_COUNT }, () => 0);
+
+function withDefaultHourlyRates(rates?: Array<{ band: string; rate: number }>) {
+  return rates?.length ? rates : DEFAULT_HOURLY_RATES;
+}
+
+function withDefaultTrend(trend?: number[]) {
+  return trend?.length ? trend : DEFAULT_TREND;
+}
+
 function buildUsagePeriods(u: UtilizationSummary) {
   const day: UsagePeriod = {
     label: '本日',
     lessonCount: u.day_lesson_count ?? 0,
     avgRate: u.day_rate,
     activeHours: u.active_hours ?? '',
-    hourlyRates: u.day_hourly_rates ?? [],
-    trend: u.day_trend ?? [],
+    hourlyRates: withDefaultHourlyRates(u.day_hourly_rates),
+    trend: withDefaultTrend(u.day_trend),
   };
   const week: UsagePeriod = {
     label: '今週',
     lessonCount: u.week_lesson_count ?? 0,
     avgRate: u.week_rate,
     activeHours: u.active_hours ?? '',
-    hourlyRates: u.week_hourly_rates ?? [],
-    trend: u.week_trend ?? [],
+    hourlyRates: withDefaultHourlyRates(u.week_hourly_rates),
+    trend: withDefaultTrend(u.week_trend),
   };
   const month: UsagePeriod = {
     label: '今月',
     lessonCount: u.month_lesson_count ?? 0,
     avgRate: u.month_rate,
     activeHours: u.active_hours ?? '',
-    hourlyRates: u.month_hourly_rates ?? [],
-    trend: u.month_trend ?? [],
+    hourlyRates: withDefaultHourlyRates(u.month_hourly_rates),
+    trend: withDefaultTrend(u.month_trend),
   };
   return { day, week, month } as const;
 }
@@ -90,59 +104,55 @@ export function StudioUtilizationCard({ utilization }: StudioUtilizationCardProp
           </div>
         </div>
 
-        {usage.hourlyRates.length > 0 && (
-          <div className="mt-4 border-t pt-3">
-            <h4 className="mb-2 text-xs font-semibold">時間帯別稼働率</h4>
-            <div className="space-y-2">
-              {usage.hourlyRates.map((h) => (
-                <div key={h.band}>
-                  <div className="mb-1 flex items-center justify-between">
-                    <span className="text-muted-foreground text-[11px]">{h.band}</span>
-                    <span
-                      className={`text-xs font-medium ${
-                        h.rate >= 80
-                          ? 'text-success'
-                          : h.rate >= 60
-                            ? 'text-warning'
-                            : 'text-destructive'
-                      }`}
-                    >
-                      {h.rate}%
-                    </span>
-                  </div>
-                  <div className="bg-muted h-1.5 overflow-hidden rounded-full">
-                    <div
-                      className={`h-full rounded-full ${
-                        h.rate >= 80 ? 'bg-success' : h.rate >= 60 ? 'bg-warning' : 'bg-destructive'
-                      }`}
-                      style={{ width: `${h.rate}%` }}
-                    />
-                  </div>
+        <div className="mt-4 border-t pt-3">
+          <h4 className="mb-2 text-xs font-semibold">時間帯別稼働率</h4>
+          <div className="space-y-2">
+            {usage.hourlyRates.map((h) => (
+              <div key={h.band}>
+                <div className="mb-1 flex items-center justify-between">
+                  <span className="text-muted-foreground text-[11px]">{h.band}</span>
+                  <span
+                    className={`text-xs font-medium ${
+                      h.rate >= 80
+                        ? 'text-success'
+                        : h.rate >= 60
+                          ? 'text-warning'
+                          : 'text-destructive'
+                    }`}
+                  >
+                    {h.rate}%
+                  </span>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {usage.trend.length > 0 && (
-          <div className="mt-4 border-t pt-3">
-            <h4 className="mb-2 text-xs font-semibold">
-              予約トレンド（直近
-              {usagePeriod === 'day' ? '7枠' : usagePeriod === 'week' ? '7週' : '7ヶ月'}）
-            </h4>
-            <div className="flex h-16 items-end gap-1">
-              {usage.trend.map((v, idx) => (
-                <div key={idx} className="flex flex-1 flex-col items-center gap-1">
+                <div className="bg-muted h-1.5 overflow-hidden rounded-full">
                   <div
-                    className="bg-info/30 w-full rounded-sm transition-all"
-                    style={{ height: `${v}%` }}
+                    className={`h-full rounded-full ${
+                      h.rate >= 80 ? 'bg-success' : h.rate >= 60 ? 'bg-warning' : 'bg-destructive'
+                    }`}
+                    style={{ width: `${h.rate}%` }}
                   />
-                  <span className="text-muted-foreground text-[9px]">{v}%</span>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
+
+        <div className="mt-4 border-t pt-3">
+          <h4 className="mb-2 text-xs font-semibold">
+            予約トレンド（直近
+            {usagePeriod === 'day' ? '7枠' : usagePeriod === 'week' ? '7週' : '7ヶ月'}）
+          </h4>
+          <div className="flex h-16 items-end gap-1">
+            {usage.trend.map((v, idx) => (
+              <div key={idx} className="flex flex-1 flex-col items-center gap-1">
+                <div
+                  className="bg-info/30 w-full rounded-sm transition-all"
+                  style={{ height: `${v}%` }}
+                />
+                <span className="text-muted-foreground text-[9px]">{v}%</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
