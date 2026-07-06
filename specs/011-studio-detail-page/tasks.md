@@ -49,7 +49,8 @@
 - [x] T018 [US1] Create detail data hook with React Query in src/app/(private)/studios/[id]/\_hooks/use-studio-detail.ts
 - [x] T019 [US1] Implement detail page orchestration (header, tabs, cards) in src/app/(private)/studios/[id]/page.tsx
 - [x] T020 [US1] Implement loading/error/not-found state handling in src/app/(private)/studios/[id]/page.tsx
-- [x] T021 [US1] Keep Change History tab title with empty Phase 1 content in src/app/(private)/studios/[id]/page.tsx
+- [x] T021 [US1] Implement Change History tab with StudioHistoryTab in src/app/(private)/studios/[id]/page.tsx
+- [x] T037 [US1] Add GET /crm/studios/{id}/history mock API, seed data, and React Query integration
 
 **Checkpoint**: User Story 1 is independently functional and testable.
 

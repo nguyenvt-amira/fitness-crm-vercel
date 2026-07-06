@@ -2,6 +2,7 @@ import { StaffRole } from '@/lib/api';
 
 import { GetStudiosQuery } from '../../_schemas/lesson-schedule.schema';
 import { GetStudioDetailResponse } from '../../_schemas/studio-detail.schema';
+import type { StudioChangeHistory } from '../../_schemas/studio-detail.schema';
 import type { CreateStudioPayload, UpdateStudioPayload } from '../../_schemas/studio.schema';
 import { StudioListResponse } from '../../_schemas/studio.schema';
 
@@ -39,6 +40,12 @@ export type StudiosType = {
     userRole: StaffRole,
     userStoreIds: string[],
   ): GetStudioDetailResponse | undefined;
+
+  getHistoryByStudioId(
+    id: string,
+    userRole: StaffRole,
+    userStoreIds: string[],
+  ): StudioChangeHistory | undefined;
 
   create(input: StudioCreateInput): { id: string };
 

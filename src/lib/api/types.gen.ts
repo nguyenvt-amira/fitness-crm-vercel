@@ -19662,7 +19662,7 @@ export type StudioDetail = {
      */
     assigned_lesson_count: number;
     /**
-     * Fixed false in Phase 1
+     * Whether change history tab has data
      */
     change_history_enabled: boolean;
 };
@@ -19712,7 +19712,7 @@ export type GetStudioDetailResponse = {
          */
         assigned_lesson_count: number;
         /**
-         * Fixed false in Phase 1
+         * Whether change history tab has data
          */
         change_history_enabled: boolean;
     };
@@ -48255,6 +48255,100 @@ export type PostCrmStoresResponses = {
 
 export type PostCrmStoresResponse = PostCrmStoresResponses[keyof PostCrmStoresResponses];
 
+export type GetCrmStudiosByIdHistoryData = {
+    body?: never;
+    path: {
+        /**
+         * Studio ID
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/studios/{id}/history';
+};
+
+export type GetCrmStudiosByIdHistoryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmStudiosByIdHistoryError = GetCrmStudiosByIdHistoryErrors[keyof GetCrmStudiosByIdHistoryErrors];
+
+export type GetCrmStudiosByIdHistoryResponses = {
+    /**
+     * GetStudioHistoryResponse
+     *
+     * Studio change history response
+     */
+    200: {
+        /**
+         * StudioChangeHistory
+         *
+         * Studio change-log list + total
+         */
+        data: {
+            entries: Array<{
+                /**
+                 * 更新日時
+                 */
+                timestamp: string;
+                /**
+                 * 操作者
+                 */
+                user: string;
+                /**
+                 * 操作種別
+                 */
+                action: string;
+                /**
+                 * 変更内容の差分リスト
+                 */
+                diffs?: Array<{
+                    /**
+                     * 変更フィールド
+                     */
+                    field: string;
+                    /**
+                     * 変更前
+                     */
+                    before: string;
+                    /**
+                     * 変更後
+                     */
+                    after: string;
+                }>;
+                /**
+                 * 備考
+                 */
+                note?: string | null;
+            }>;
+            total: number;
+        };
+    };
+};
+
+export type GetCrmStudiosByIdHistoryResponse = GetCrmStudiosByIdHistoryResponses[keyof GetCrmStudiosByIdHistoryResponses];
+
 export type DeleteCrmStudiosByIdData = {
     body?: never;
     path: {
@@ -48356,7 +48450,7 @@ export type GetCrmStudiosByIdResponses = {
              */
             assigned_lesson_count: number;
             /**
-             * Fixed false in Phase 1
+             * Whether change history tab has data
              */
             change_history_enabled: boolean;
         };

@@ -152,7 +152,7 @@ export const StudioDetailSchema = z
       .openapi({ example: 3, description: 'Delete guard signal' }),
     change_history_enabled: z
       .boolean()
-      .openapi({ example: false, description: 'Fixed false in Phase 1' }),
+      .openapi({ example: true, description: 'Whether change history tab has data' }),
   })
   .openapi({ title: 'StudioDetail', description: 'Studio detail main entity' });
 
@@ -178,6 +178,52 @@ export const GetStudioDetailQuerySchema = z
     description: 'Studio detail request',
   });
 
+// ─── Change history ─────────────────────────────────────────────────────────
+
+export const StudioChangeHistoryDiffSchema = z
+  .object({
+    field: z.string().openapi({ example: '定員', description: '変更フィールド' }),
+    before: z.string().openapi({ example: '12名', description: '変更前' }),
+    after: z.string().openapi({ example: '16名', description: '変更後' }),
+  })
+  .openapi({ title: 'StudioChangeHistoryDiff', description: 'Studio field diff row' });
+
+export const StudioChangeHistoryEntrySchema = z
+  .object({
+    timestamp: z.string().openapi({
+      example: '2026-03-01T14:22:00.000Z',
+      description: '更新日時',
+    }),
+    user: z.string().openapi({ example: '管理者', description: '操作者' }),
+    action: z.string().openapi({ example: '更新', description: '操作種別' }),
+    diffs: z
+      .array(StudioChangeHistoryDiffSchema)
+      .optional()
+      .openapi({ description: '変更内容の差分リスト' }),
+    note: z
+      .string()
+      .nullable()
+      .optional()
+      .openapi({ example: 'Zumbaスタジオを新規登録', description: '備考' }),
+  })
+  .openapi({ title: 'StudioChangeHistoryEntry', description: 'Studio change-log entry' });
+
+export const StudioChangeHistorySchema = z
+  .object({
+    entries: z.array(StudioChangeHistoryEntrySchema),
+    total: z.number().int().min(0).openapi({ example: 4 }),
+  })
+  .openapi({ title: 'StudioChangeHistory', description: 'Studio change-log list + total' });
+
+export const GetStudioHistoryResponseSchema = z
+  .object({
+    data: StudioChangeHistorySchema,
+  })
+  .openapi({
+    title: 'GetStudioHistoryResponse',
+    description: 'Studio change history response',
+  });
+
 // ─── Type Exports ────────────────────────────────────────────────────────────
 
 export type ReservationTier = z.infer<typeof ReservationTierSchema>;
@@ -189,3 +235,7 @@ export type UtilizationSummary = z.infer<typeof UtilizationSummarySchema>;
 export type StudioDetail = z.infer<typeof StudioDetailSchema>;
 export type GetStudioDetailResponse = z.infer<typeof GetStudioDetailResponseSchema>;
 export type GetStudioDetailQuery = z.infer<typeof GetStudioDetailQuerySchema>;
+export type StudioChangeHistoryDiff = z.infer<typeof StudioChangeHistoryDiffSchema>;
+export type StudioChangeHistoryEntry = z.infer<typeof StudioChangeHistoryEntrySchema>;
+export type StudioChangeHistory = z.infer<typeof StudioChangeHistorySchema>;
+export type GetStudioHistoryResponse = z.infer<typeof GetStudioHistoryResponseSchema>;

@@ -22,7 +22,10 @@ import type {
 
 import { StaffRole } from '@/lib/api';
 
-import type { GetStudioDetailResponse } from '../../_schemas/studio-detail.schema';
+import type {
+  GetStudioDetailResponse,
+  StudioChangeHistory,
+} from '../../_schemas/studio-detail.schema';
 import {
   type CreateStudioPayload,
   GetStudiosQuery,
@@ -43,6 +46,7 @@ import {
   SEED_SESSION_MEMOS,
   SEED_STUDIOS,
   SEED_STUDIO_DETAILS,
+  SEED_STUDIO_HISTORY,
   SEED_STUDIO_LIST,
   SEED_STUDIO_SPACES,
   StudioListSeed,
@@ -514,6 +518,27 @@ export function createLessonTables(getDb: () => DbType) {
         }
 
         return { success: true };
+      },
+      getHistoryByStudioId(
+        id: string,
+        userRole: StaffRole,
+        userStoreIds: string[],
+      ): StudioChangeHistory | undefined {
+        this._seed();
+        const detail = this._detailStore[id];
+        if (!detail) return undefined;
+
+        const isGlobalRole = userRole === 'system' || userRole === 'headquarter';
+        if (!isGlobalRole && !userStoreIds.includes(detail.data.store_id)) {
+          return undefined;
+        }
+
+        const entries = (SEED_STUDIO_HISTORY[id] ?? []).map((entry) => ({
+          ...entry,
+          diffs: entry.diffs?.map((diff) => ({ ...diff })),
+        }));
+
+        return { entries, total: entries.length };
       },
       delete(id: string): 'not_found' | 'in_use' | true {
         this._seed();

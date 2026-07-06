@@ -186,6 +186,7 @@ import '@/app/api/crm/stores/[id]/options/[optionId]/route';
 import '@/app/api/crm/stores/[id]/options/route';
 import '@/app/api/crm/stores/[id]/route';
 import '@/app/api/crm/stores/route';
+import '@/app/api/crm/studios/[id]/history/route';
 import '@/app/api/crm/studios/[id]/route';
 import '@/app/api/crm/studios/route';
 import '@/app/api/crm/surveys/[id]/route';

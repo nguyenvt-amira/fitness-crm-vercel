@@ -27,7 +27,7 @@ This specification covers **FR-003: Studio Detail Display** for the studio detai
 - FR-005 full deactivation/delete workflow completion (beyond entry-point and in-use deletion guard presentation)
 - FR-006 layout editing operations (detail page includes preview only)
 - FR-007 KPI analytics module (day/week/month utilization panel is present in UI but belongs to Should requirement)
-- Basic tab "Change History" content (present in UI, not defined in D-03 FR-003)
+- Display of change history tab with field-level diffs (read-only)
 
 ## User Scenarios & Testing _(mandatory)_
 
@@ -119,7 +119,10 @@ Authorized roles access edit/delete entry points from the detail header, while u
   - System / Headquarter / Manager: view + edit + delete
   - Staff: view + edit (no delete)
   - Trainer / Observer: view only (no edit, no delete)
-- **FR-003-10**: Features not allocated to Phase 1 MUST be excluded from active scope even if shown in the prototype: KPI analytics panel (FR-007), full edit workflow (FR-004), full delete/deactivation workflow (FR-005), layout editing operations (FR-006), and change history module.
+- **FR-003-10**: Features not allocated to Phase 1 MUST be excluded from active scope even if shown in the prototype: KPI analytics panel (FR-007), full edit workflow (FR-004), full delete/deactivation workflow (FR-005), and layout editing operations (FR-006).
+- **FR-003-11**: The Change History tab MUST display a read-only table of studio change records with columns: 更新日時, 操作者, 変更フィールド, 変更前, 変更後.
+- **FR-003-12**: Create actions (`作成`) MUST render a 新規作成 badge with optional note instead of before/after values.
+- **FR-003-13**: Update actions with multiple field diffs MUST expand into one table row per changed field.
 
 ### UI States (Grounded from UI Code)
 
@@ -147,7 +150,7 @@ Authorized roles access edit/delete entry points from the detail header, while u
 | Delete guard when in use                                       | FR-005 deletion restriction              | Matched                                                          |
 | Status card with activate/deactivate button                    | FR-005 deactivation operation            | Present in UI, out of scope for this FR-003 spec                 |
 | Utilization KPI card (day/week/month, trend, hourly rates)     | FR-007 Should requirement                | Present in UI, out of scope for Phase 1                          |
-| Change History tab                                             | No explicit FR in D-03 FR-003 block      | Present in UI, out of scope for Phase 1                          |
+| Change History tab                                             | Studio detail change-log display         | Matched                                                          |
 
 ### Key Entities _(include if feature involves data)_
 
@@ -188,9 +191,9 @@ Authorized roles access edit/delete entry points from the detail header, while u
    D-03 FR-003 requires display of FR-006 layout setting status. Current UI shows layout preview only when layout exists, without explicit status label for "configured/not configured."  
    **Tag**: [NEED CLARIFICATION] Define expected explicit status representation for layout configuration in detail view.
 
-4. **History tab scope gap**  
-   The detail UI has a Change History tab, but this behavior is not specified in D-03 FR-003 requirements block.  
-   **Tag**: [NEED CLARIFICATION] Confirm whether Change History is part of FR-003 Phase 1 or should be deferred.
+4. **History tab scope**  
+   The detail UI Change History tab is implemented with read-only seed data via `GET /crm/studios/{id}/history`.  
+   **Status**: Resolved — in scope for FR-003 Phase 1.
 
 5. **KPI panel phase allocation**  
    The detail UI includes day/week/month utilization content that maps to D-03 FR-007 (Should).  

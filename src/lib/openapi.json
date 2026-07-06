@@ -29501,8 +29501,8 @@
           },
           "change_history_enabled": {
             "type": "boolean",
-            "example": false,
-            "description": "Fixed false in Phase 1"
+            "example": true,
+            "description": "Whether change history tab has data"
           }
         },
         "required": [
@@ -29603,8 +29603,8 @@
               },
               "change_history_enabled": {
                 "type": "boolean",
-                "example": false,
-                "description": "Fixed false in Phase 1"
+                "example": true,
+                "description": "Whether change history tab has data"
               }
             },
             "required": [
@@ -77884,6 +77884,153 @@
         }
       }
     },
+    "/crm/studios/{id}/history": {
+      "get": {
+        "summary": "Get studio change history",
+        "description": "Get the change-log entries for a studio detail page (newest-first)",
+        "tags": ["Studios"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Studio ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Studio change history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "entries": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "timestamp": {
+                                "type": "string",
+                                "example": "2026-03-01T14:22:00.000Z",
+                                "description": "更新日時"
+                              },
+                              "user": {
+                                "type": "string",
+                                "example": "管理者",
+                                "description": "操作者"
+                              },
+                              "action": {
+                                "type": "string",
+                                "example": "更新",
+                                "description": "操作種別"
+                              },
+                              "diffs": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "field": {
+                                      "type": "string",
+                                      "example": "定員",
+                                      "description": "変更フィールド"
+                                    },
+                                    "before": {
+                                      "type": "string",
+                                      "example": "12名",
+                                      "description": "変更前"
+                                    },
+                                    "after": {
+                                      "type": "string",
+                                      "example": "16名",
+                                      "description": "変更後"
+                                    }
+                                  },
+                                  "required": ["field", "before", "after"],
+                                  "title": "StudioChangeHistoryDiff",
+                                  "description": "Studio field diff row"
+                                },
+                                "description": "変更内容の差分リスト"
+                              },
+                              "note": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "Zumbaスタジオを新規登録",
+                                "description": "備考"
+                              }
+                            },
+                            "required": ["timestamp", "user", "action"],
+                            "title": "StudioChangeHistoryEntry",
+                            "description": "Studio change-log entry"
+                          }
+                        },
+                        "total": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "example": 4
+                        }
+                      },
+                      "required": ["entries", "total"],
+                      "title": "StudioChangeHistory",
+                      "description": "Studio change-log list + total"
+                    }
+                  },
+                  "required": ["data"],
+                  "title": "GetStudioHistoryResponse",
+                  "description": "Studio change history response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Studio not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Failed to process request",
+                      "description": "Error message"
+                    }
+                  },
+                  "required": ["error"],
+                  "title": "ErrorResponse",
+                  "description": "Error response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crm/studios/{id}": {
       "get": {
         "summary": "Get studio detail",
@@ -77985,8 +78132,8 @@
                         },
                         "change_history_enabled": {
                           "type": "boolean",
-                          "example": false,
-                          "description": "Fixed false in Phase 1"
+                          "example": true,
+                          "description": "Whether change history tab has data"
                         }
                       },
                       "required": [

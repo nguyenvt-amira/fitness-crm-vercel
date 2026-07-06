@@ -115,7 +115,7 @@ Returned when `id` does not exist or is outside role scope.
 - `< 60` => `default`
 
 5. `layout.state = not_configured` requires `rows`, `columns`, and `cells` to be null/empty while `configure_path` remains present.
-6. Change History tab remains title-only in Phase 1; no additional history endpoint is required for this feature.
+6. Change History tab fetches `GET /crm/studios/{id}/history` when active; empty entries array shows empty-state message.
 
 ---
 

@@ -14,7 +14,10 @@ import type {
 } from '@/app/api/_schemas/lesson-reservation.schema';
 import type { LessonScheduleListItem } from '@/app/api/_schemas/lesson-schedule.schema';
 
-import { GetStudioDetailResponse } from '../../_schemas/studio-detail.schema';
+import {
+  GetStudioDetailResponse,
+  type StudioChangeHistoryEntry,
+} from '../../_schemas/studio-detail.schema';
 
 export const LESSON_SCHEDULE_STORE_AREAS: Record<string, string> = {
   ST001: '埼玉',
@@ -1581,7 +1584,7 @@ export const SEED_STUDIO_DETAILS: Record<string, GetStudioDetailResponse> = {
       created_at: '2026-01-15T00:00:00.000Z',
       updated_at: '2026-06-01T00:00:00.000Z',
       assigned_lesson_count: 3,
-      change_history_enabled: false,
+      change_history_enabled: true,
     },
     linked_lessons: [
       {
@@ -1670,7 +1673,7 @@ export const SEED_STUDIO_DETAILS: Record<string, GetStudioDetailResponse> = {
       created_at: '2026-02-01T00:00:00.000Z',
       updated_at: '2026-05-15T00:00:00.000Z',
       assigned_lesson_count: 5,
-      change_history_enabled: false,
+      change_history_enabled: true,
     },
     linked_lessons: [
       {
@@ -2246,3 +2249,56 @@ export function personalPlanRowToDetail(
     updated_at: '2026-05-02T00:00:00.000Z',
   };
 }
+
+/** D-03 FR-003 — Studio change history seed (read-only) */
+export const SEED_STUDIO_HISTORY: Record<string, StudioChangeHistoryEntry[]> = {
+  'STU-101': [
+    {
+      timestamp: '2026-03-01T14:22:00.000Z',
+      user: '管理者',
+      action: '更新',
+      diffs: [
+        {
+          field: '備考',
+          before: '（空欄）',
+          after: '土日は利用者が多いため、清掃スケジュールを追加',
+        },
+      ],
+    },
+    {
+      timestamp: '2026-02-14T10:05:00.000Z',
+      user: '管理者',
+      action: '更新',
+      diffs: [
+        { field: 'スペースレイアウト', before: '4x4', after: '4x5' },
+        { field: '定員', before: '12名', after: '16名' },
+      ],
+    },
+    {
+      timestamp: '2026-01-20T09:30:00.000Z',
+      user: '管理者',
+      action: '更新',
+      diffs: [
+        {
+          field: '設備・備品',
+          before: 'ヨガマット15枚',
+          after: 'ヨガマット20枚、ミラー壁面、音響設備、空調完備',
+        },
+      ],
+    },
+    {
+      timestamp: '2025-02-10T11:00:00.000Z',
+      user: '管理者',
+      action: '作成',
+      note: 'Zumbaスタジオを新規登録',
+    },
+  ],
+  'STU-102': [
+    {
+      timestamp: '2026-02-01T10:00:00.000Z',
+      user: '管理者',
+      action: '作成',
+      note: 'ホットヨガスタジオを新規登録',
+    },
+  ],
+};

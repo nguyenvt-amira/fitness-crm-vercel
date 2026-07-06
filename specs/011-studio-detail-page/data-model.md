@@ -24,7 +24,7 @@
 | `created_at`             | string         | yes      | ISO-8601 datetime                         | Read-only metadata          |
 | `updated_at`             | string         | yes      | ISO-8601 datetime                         | Read-only metadata          |
 | `assigned_lesson_count`  | integer        | yes      | min 0                                     | Delete guard signal         |
-| `change_history_enabled` | boolean        | yes      | fixed `false` in Phase 1                  | Placeholder behavior        |
+| `change_history_enabled` | boolean        | yes      | reflects whether history entries exist    | UI signal for tab content   |
 
 ---
 
@@ -109,6 +109,33 @@
 | Staff       | yes  | yes  | no     |
 | Trainer     | yes  | no   | no     |
 | Observer    | yes  | no   | no     |
+
+---
+
+## Entity: StudioChangeHistoryEntry
+
+**Purpose**: Change-log row for the studio history tab.
+
+| Field       | Type   | Required | Validation         | Notes                         |
+| ----------- | ------ | -------- | ------------------ | ----------------------------- |
+| `timestamp` | string | yes      | ISO-8601 datetime  | Display as `yyyy/MM/dd HH:mm` |
+| `user`      | string | yes      | non-empty          | Operator name                 |
+| `action`    | string | yes      | non-empty          | e.g. 作成 / 更新              |
+| `diffs`     | array  | no       | field/before/after | Omitted for create actions    |
+| `note`      | string | no       | optional           | Shown on create rows          |
+
+---
+
+## Response Model: GetStudioHistoryResponse
+
+```typescript
+interface GetStudioHistoryResponse {
+  data: {
+    entries: StudioChangeHistoryEntry[];
+    total: number;
+  };
+}
+```
 
 ---
 

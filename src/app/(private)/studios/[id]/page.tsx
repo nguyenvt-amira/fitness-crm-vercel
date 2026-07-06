@@ -22,6 +22,7 @@ import { StudioBasicInfoCard } from './_components/studio-basic-info-card';
 import { StudioDeleteDialog } from './_components/studio-delete-dialog';
 import { StudioDetailHeaderActions } from './_components/studio-detail-header-actions';
 import { StudioDetailSkeleton } from './_components/studio-detail-skeleton';
+import { StudioHistoryTab } from './_components/studio-history-tab';
 import { StudioImagesCard } from './_components/studio-images-card';
 import { StudioLayoutCard } from './_components/studio-layout-card';
 import { StudioLinkedLessonsCard } from './_components/studio-linked-lessons-card';
@@ -188,9 +189,7 @@ export default function StudioDetailPage() {
             </TabsContent>
 
             <TabsContent value="history" className="pt-4">
-              <div className="border-border flex flex-col items-center justify-center rounded-lg border border-dashed py-12 text-center">
-                <p className="text-muted-foreground text-sm">変更履歴は今後実装予定です</p>
-              </div>
+              <StudioHistoryTab studioId={studioId} active={activeTab === 'history'} />
             </TabsContent>
           </Tabs>
         </div>
