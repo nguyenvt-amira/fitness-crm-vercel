@@ -42,7 +42,7 @@ An authorized user opens a studio from the list and verifies the studio's key de
 **Acceptance Scenarios**:
 
 1. **Given** a studio row is selected from the list, **When** the detail page opens, **Then** the page header shows studio name, studio type badge, and studio status badge.
-2. **Given** the detail page is displayed, **When** the user reviews the basic information card, **Then** the page shows studio ID, studio name, type, capacity, usage hours, store, created date, updated date, and optional equipment/notes blocks.
+2. **Given** the detail page is displayed, **When** the user reviews the basic information card, **Then** the page shows studio ID, studio name, type, physical capacity (物理定員), buffer value (バッファ値), usage hours, store, created date, updated date, and optional equipment/notes blocks.
 3. **Given** linked lessons exist for the studio, **When** the linked lessons card is rendered, **Then** each lesson row shows lesson name, category, schedule text, and reservation rate percentage.
 4. **Given** studio images exist, **When** the image card is rendered, **Then** the page shows image count and all available thumbnails.
 
@@ -109,7 +109,7 @@ Authorized roles access edit/delete entry points from the detail header, while u
 
 - **FR-003-01**: The system MUST display studio detail content for the selected studio from the list flow.
 - **FR-003-02**: The detail header MUST include: studio name, studio type badge, studio status badge, and a back navigation control.
-- **FR-003-03**: The detail page MUST display basic studio fields currently rendered in the UI: studio ID, studio name, type, capacity, usage hours, store, created date, updated date, and optional equipment/notes sections.
+- **FR-003-03**: The detail page MUST display basic studio fields currently rendered in the UI: studio ID, studio name, type, physical capacity (物理定員), buffer value (バッファ値), usage hours, store, created date, updated date, and optional equipment/notes sections.
 - **FR-003-04**: The detail page MUST display a linked lessons card that includes lesson name, lesson category badge, lesson schedule text, and reservation rate percentage per lesson.
 - **FR-003-05**: Reservation rate color coding in linked lessons MUST follow D-03 FR-003 thresholds: 80% and above in success color; 60% and above in warning color.
 - **FR-003-06**: The detail page MUST display a studio images card with image count and multiple image thumbnails.
@@ -140,7 +140,7 @@ Authorized roles access edit/delete entry points from the detail header, while u
 | -------------------------------------------------------------- | ---------------------------------------- | ---------------------------------------------------------------- |
 | Header title, type badge, status badge                         | FR-003 detailed information display      | Matched                                                          |
 | Back link to studio list                                       | FR-003 detail display navigation context | Matched                                                          |
-| Basic info card fields                                         | FR-003 show registered fields            | Partial match (buffer value not visible)                         |
+| Basic info card fields (物理定員 + バッファ値)                 | FR-003 show registered fields            | Matched                                                          |
 | Linked lessons card list                                       | FR-003 linked lessons card               | Matched                                                          |
 | Reservation rate % in linked lessons                           | FR-003 reservation rate display          | Matched                                                          |
 | Reservation rate color thresholds (>=80 success, >=60 warning) | FR-003 color rule                        | Matched                                                          |
@@ -154,7 +154,7 @@ Authorized roles access edit/delete entry points from the detail header, while u
 
 ### Key Entities _(include if feature involves data)_
 
-- **Studio**: Core detail entity containing identity fields, type, status, capacity, hours, store relation, optional equipment/notes, images, and layout preview data.
+- **Studio**: Core detail entity containing identity fields, type, status, physical capacity (物理定員), buffer value (バッファ値), hours, store relation, optional equipment/notes, images, and layout preview data.
 - **Linked Lesson**: Lessons associated with the studio; each entry includes lesson label, schedule expression, category, and reservation rate percentage.
 - **Studio Image**: Image assets attached to a studio and displayed as a multi-item thumbnail set.
 - **Studio Layout Cell**: Read-only layout representation for seat/equipment/fixed-object classification in the preview grid.
@@ -183,9 +183,8 @@ Authorized roles access edit/delete entry points from the detail header, while u
    The detail header currently renders Edit and Delete actions without role-based conditions in the UI code. D-03 authority matrix requires role-specific visibility (Staff: no delete; Trainer/Observer: no edit/delete).  
    **Tag**: [NEED CLARIFICATION] Confirm whether the prototype should be updated to enforce role gating in FR-003 Phase 1.
 
-2. **Missing buffer value in detail fields**  
-   D-03 FR-003 says all registered fields should be displayed including physical capacity and buffer value, but the current detail basic information area only renders capacity.  
-   **Tag**: [NEED CLARIFICATION] Confirm whether buffer value is required in Phase 1 detail display.
+2. **Physical capacity and buffer value in detail fields**  
+   **Status**: Resolved (2026-07-03, Kyota) — 案一: display two fields — 物理定員 (required) and バッファ値 (required, default 0). Applies to create, edit, and detail views.
 
 3. **Layout "status" interpretation gap**  
    D-03 FR-003 requires display of FR-006 layout setting status. Current UI shows layout preview only when layout exists, without explicit status label for "configured/not configured."  

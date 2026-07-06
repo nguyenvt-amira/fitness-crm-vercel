@@ -31,12 +31,12 @@ export function StudioBasicInfoCard({ studio }: StudioBasicInfoCardProps) {
             </p>
           </div>
           <div>
-            <p className="text-muted-foreground mb-1 text-xs">定員</p>
+            <p className="text-muted-foreground mb-1 text-xs">物理定員</p>
             <p className="text-sm">{studio.capacity}名</p>
           </div>
           <div>
             <p className="text-muted-foreground mb-1 text-xs">バッファ値</p>
-            <p className="text-sm">{studio.buffer_value}</p>
+            <p className="text-sm">{studio.buffer_value}名</p>
           </div>
           <div>
             <p className="text-muted-foreground mb-1 text-xs">利用時間</p>

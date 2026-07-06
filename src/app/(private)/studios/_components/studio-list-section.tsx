@@ -194,15 +194,15 @@ export function StudioListSection() {
         ),
         meta: { className: 'w-[80px]' },
       },
-      {
-        accessorKey: 'available_hours',
-        header: '利用時間',
-        enableSorting: false,
-        cell: ({ row }: { row: { original: StudioListItem } }) => (
-          <span className="text-muted-foreground text-xs">{row.original.available_hours}</span>
-        ),
-        meta: { className: 'w-[140px]' },
-      },
+      // {
+      //   accessorKey: 'available_hours',
+      //   header: '利用時間',
+      //   enableSorting: false,
+      //   cell: ({ row }: { row: { original: StudioListItem } }) => (
+      //     <span className="text-muted-foreground text-xs">{row.original.available_hours}</span>
+      //   ),
+      //   meta: { className: 'w-[140px]' },
+      // },
       {
         accessorKey: 'brand',
         header: 'ブランド',

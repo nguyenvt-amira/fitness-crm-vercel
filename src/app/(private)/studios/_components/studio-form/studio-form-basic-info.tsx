@@ -156,7 +156,7 @@ export function StudioFormBasicInfo() {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-sm font-medium">
-                収容人数
+                物理定員
                 <RequiredMark />
               </FormLabel>
               <FormControl>
@@ -166,9 +166,38 @@ export function StudioFormBasicInfo() {
                     type="number"
                     min={1}
                     max={500}
-                    placeholder="定員"
+                    placeholder="物理定員"
                     value={field.value ?? ''}
                     onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : '')}
+                  />
+                  <span className="text-muted-foreground text-sm">名</span>
+                </div>
+              </FormControl>
+              <FormMessage className="text-xs" />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="bufferValue"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm font-medium">
+                バッファ値
+                <RequiredMark />
+              </FormLabel>
+              <FormControl>
+                <div className="flex items-center gap-2">
+                  <Input
+                    className="h-10 w-32 text-sm"
+                    type="number"
+                    min={0}
+                    max={500}
+                    placeholder="0"
+                    value={field.value ?? ''}
+                    onChange={(e) =>
+                      field.onChange(e.target.value === '' ? '' : Number(e.target.value))
+                    }
                   />
                   <span className="text-muted-foreground text-sm">名</span>
                 </div>

@@ -47,10 +47,10 @@ export const StudioFormSchema = z.object({
     message: '利用可能時間は HH:mm~HH:mm 形式で入力してください。',
   }),
   capacity: z.coerce
-    .number({ error: '収容人数は必須です。' })
+    .number({ error: '物理定員は必須です。' })
     .int()
-    .min(1, '収容人数は必須です。')
-    .max(500, '収容人数は500以下にしてください。'),
+    .min(1, '物理定員は必須です。')
+    .max(500, '物理定員は500以下にしてください。'),
   bufferValue: z.coerce
     .number({ error: 'バッファ値は必須です。' })
     .int()

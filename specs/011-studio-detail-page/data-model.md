@@ -8,23 +8,23 @@
 
 **Purpose**: Canonical detail entity for a selected studio.
 
-| Field                    | Type           | Required | Validation                                | Notes                       |
-| ------------------------ | -------------- | -------- | ----------------------------------------- | --------------------------- |
-| `id`                     | string         | yes      | non-empty                                 | Studio identifier           |
-| `name`                   | string         | yes      | 1..100 chars                              | Display in header           |
-| `studio_type`            | enum           | yes      | one of `studio_lesson`, `pt`, `body_care` | Display badge               |
-| `status`                 | enum           | yes      | `active` or `inactive`                    | Display badge + status card |
-| `capacity`               | integer        | yes      | min 1                                     | Physical capacity           |
-| `buffer_value`           | integer        | yes      | min 0                                     | Value shown after capacity  |
-| `usage_hours`            | string         | yes      | non-empty                                 | Human-readable usage hours  |
-| `store_id`               | string         | yes      | non-empty                                 | Parent store reference      |
-| `store_name`             | string         | yes      | non-empty                                 | Display field               |
-| `equipment_notes`        | string \| null | no       | max 1000 chars                            | Optional block              |
-| `internal_notes`         | string \| null | no       | max 1000 chars                            | Optional block              |
-| `created_at`             | string         | yes      | ISO-8601 datetime                         | Read-only metadata          |
-| `updated_at`             | string         | yes      | ISO-8601 datetime                         | Read-only metadata          |
-| `assigned_lesson_count`  | integer        | yes      | min 0                                     | Delete guard signal         |
-| `change_history_enabled` | boolean        | yes      | reflects whether history entries exist    | UI signal for tab content   |
+| Field                    | Type           | Required | Validation                                | Notes                        |
+| ------------------------ | -------------- | -------- | ----------------------------------------- | ---------------------------- |
+| `id`                     | string         | yes      | non-empty                                 | Studio identifier            |
+| `name`                   | string         | yes      | 1..100 chars                              | Display in header            |
+| `studio_type`            | enum           | yes      | one of `studio_lesson`, `pt`, `body_care` | Display badge                |
+| `status`                 | enum           | yes      | `active` or `inactive`                    | Display badge + status card  |
+| `capacity`               | integer        | yes      | min 1                                     | Physical capacity (物理定員) |
+| `buffer_value`           | integer        | yes      | min 0, default 0                          | Buffer value (バッファ値)    |
+| `usage_hours`            | string         | yes      | non-empty                                 | Human-readable usage hours   |
+| `store_id`               | string         | yes      | non-empty                                 | Parent store reference       |
+| `store_name`             | string         | yes      | non-empty                                 | Display field                |
+| `equipment_notes`        | string \| null | no       | max 1000 chars                            | Optional block               |
+| `internal_notes`         | string \| null | no       | max 1000 chars                            | Optional block               |
+| `created_at`             | string         | yes      | ISO-8601 datetime                         | Read-only metadata           |
+| `updated_at`             | string         | yes      | ISO-8601 datetime                         | Read-only metadata           |
+| `assigned_lesson_count`  | integer        | yes      | min 0                                     | Delete guard signal          |
+| `change_history_enabled` | boolean        | yes      | reflects whether history entries exist    | UI signal for tab content    |
 
 ---
 

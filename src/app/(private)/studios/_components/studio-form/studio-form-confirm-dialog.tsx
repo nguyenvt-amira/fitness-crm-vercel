@@ -66,9 +66,13 @@ export function StudioFormConfirmDialog({
             <span className="text-sm">
               {values.studioType ? STUDIO_TYPE_LABELS[values.studioType] : '（未選択）'}
             </span>
-            <span className="text-muted-foreground text-sm">定員</span>
+            <span className="text-muted-foreground text-sm">物理定員</span>
             <span className="text-sm">
               {values.capacity ? `${values.capacity}名` : '（未入力）'}
+            </span>
+            <span className="text-muted-foreground text-sm">バッファ値</span>
+            <span className="text-sm">
+              {values.bufferValue !== undefined ? `${values.bufferValue}名` : '（未入力）'}
             </span>
             <span className="text-muted-foreground text-sm">利用可能時間</span>
             <span className="text-sm">{values.operatingHours || '（未入力）'}</span>
