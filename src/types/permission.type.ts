@@ -213,6 +213,16 @@ export enum Permission {
   StudiosCreate = 'studios.create',
   StudiosEdit = 'studios.edit',
   StudiosDelete = 'studios.delete',
+
+  // -------------------------------------------------------------------------
+  // Training Equipment
+  // -------------------------------------------------------------------------
+  TrainingEquipmentView = 'training-equipment.view',
+  TrainingEquipmentEdit = 'training-equipment.edit',
+  TrainingEquipmentCreate = 'training-equipment.create',
+  TrainingEquipmentDelete = 'training-equipment.delete',
+  TrainingEquipmentExport = 'training-equipment.export',
+  TrainingEquipmentExerciseLinks = 'training-equipment.exercise-links',
 }
 
 /** Authenticated user stored in context */

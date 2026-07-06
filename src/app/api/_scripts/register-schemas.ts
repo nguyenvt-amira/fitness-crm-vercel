@@ -29,6 +29,7 @@ import * as storeAccessSettingsSchemas from '../_schemas/store-access-settings.s
 import * as storeSchemas from '../_schemas/store.schema';
 import * as studioDetailSchemas from '../_schemas/studio-detail.schema';
 import * as surveySchemas from '../_schemas/survey.schema';
+import * as trainingEquipmentSchemas from '../_schemas/training-equipment.schema';
 import * as visitExperienceSchemas from '../_schemas/visit-experience.schema';
 import { registry } from './registry';
 
@@ -2165,6 +2166,132 @@ export function registerAllSchemas() {
   registeredSchemaMap.set(
     'UpdateEquipmentResponse',
     registry.register('UpdateEquipmentResponse', equipmentSchemas.UpdateEquipmentResponseSchema),
+  );
+
+  // Register training equipment schemas
+  registeredSchemaMap.set(
+    'TrainingEquipmentStatus',
+    registry.register(
+      'TrainingEquipmentStatus',
+      trainingEquipmentSchemas.TrainingEquipmentStatusSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'TrainingEquipmentToolType',
+    registry.register(
+      'TrainingEquipmentToolType',
+      trainingEquipmentSchemas.TrainingEquipmentToolTypeSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'ToolTypeCode',
+    registry.register('ToolTypeCode', trainingEquipmentSchemas.ToolTypeCodeSchema),
+  );
+  registeredSchemaMap.set(
+    'ToolType',
+    registry.register('ToolType', trainingEquipmentSchemas.ToolTypeSchema),
+  );
+  registeredSchemaMap.set(
+    'ListToolTypesQuery',
+    registry.register('ListToolTypesQuery', trainingEquipmentSchemas.ListToolTypesQuerySchema),
+  );
+  registeredSchemaMap.set(
+    'ListToolTypesResponse',
+    registry.register(
+      'ListToolTypesResponse',
+      trainingEquipmentSchemas.ListToolTypesResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'TrainingEquipmentItem',
+    registry.register(
+      'TrainingEquipmentItem',
+      trainingEquipmentSchemas.TrainingEquipmentItemSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetTrainingEquipmentQuery',
+    registry.register(
+      'GetTrainingEquipmentQuery',
+      trainingEquipmentSchemas.GetTrainingEquipmentQuerySchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetTrainingEquipmentResponse',
+    registry.register(
+      'GetTrainingEquipmentResponse',
+      trainingEquipmentSchemas.GetTrainingEquipmentResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpsertTrainingEquipment',
+    registry.register(
+      'UpsertTrainingEquipment',
+      trainingEquipmentSchemas.UpsertTrainingEquipmentSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'PatchTrainingEquipment',
+    registry.register(
+      'PatchTrainingEquipment',
+      trainingEquipmentSchemas.PatchTrainingEquipmentSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'TrainingEquipmentDetailResponse',
+    registry.register(
+      'TrainingEquipmentDetailResponse',
+      trainingEquipmentSchemas.TrainingEquipmentDetailResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'TrainingEquipmentExerciseLink',
+    registry.register(
+      'TrainingEquipmentExerciseLink',
+      trainingEquipmentSchemas.TrainingEquipmentExerciseLinkSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'AddTrainingEquipmentExerciseLinks',
+    registry.register(
+      'AddTrainingEquipmentExerciseLinks',
+      trainingEquipmentSchemas.AddTrainingEquipmentExerciseLinksSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'TrainingEquipmentExerciseLinksResponse',
+    registry.register(
+      'TrainingEquipmentExerciseLinksResponse',
+      trainingEquipmentSchemas.TrainingEquipmentExerciseLinksResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'TrainingEquipmentStatusHistory',
+    registry.register(
+      'TrainingEquipmentStatusHistory',
+      trainingEquipmentSchemas.TrainingEquipmentStatusHistorySchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'GetTrainingEquipmentHistoryResponse',
+    registry.register(
+      'GetTrainingEquipmentHistoryResponse',
+      trainingEquipmentSchemas.GetTrainingEquipmentHistoryResponseSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateTrainingEquipmentStatus',
+    registry.register(
+      'UpdateTrainingEquipmentStatus',
+      trainingEquipmentSchemas.UpdateTrainingEquipmentStatusSchema,
+    ),
+  );
+  registeredSchemaMap.set(
+    'UpdateTrainingEquipmentStatusResponse',
+    registry.register(
+      'UpdateTrainingEquipmentStatusResponse',
+      trainingEquipmentSchemas.UpdateTrainingEquipmentStatusResponseSchema,
+    ),
   );
 
   // Register controller schemas

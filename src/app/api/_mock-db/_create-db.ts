@@ -8,6 +8,7 @@ import { createMembersTables } from './tables/members.table';
 import { createOptionTables } from './tables/option.table';
 import { createStaffTables } from './tables/staff.table';
 import { createStoreTables } from './tables/store.table';
+import { createTrainingEquipmentTables } from './tables/training-equipment.table';
 import { createTransferTables } from './tables/transfer.table';
 
 export function createDb(): DbType {
@@ -45,6 +46,10 @@ export function createDb(): DbType {
   );
   Object.assign(
     db,
+    createTrainingEquipmentTables(() => db),
+  );
+  Object.assign(
+    db,
     createLessonTables(() => db),
   );
 
@@ -61,6 +66,8 @@ export function createDb(): DbType {
   db.corporateMasters._seed();
   db.partnerCompanies._seed();
   db.equipment._seed();
+  db.toolTypes._seed();
+  db.trainingEquipment._seed();
   db.visitExperiences._seed();
   db.franchiseCompanies._seed();
   db.users._seed();

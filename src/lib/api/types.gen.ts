@@ -19195,6 +19195,256 @@ export type UpdateEquipmentResponse = {
     };
 };
 
+export const TrainingEquipmentStatus = {
+    INSTALLED: 'installed',
+    MAINTENANCE: 'maintenance',
+    REMOVED: 'removed',
+    DISCARDED: 'discarded'
+} as const;
+
+export type TrainingEquipmentStatus = typeof TrainingEquipmentStatus[keyof typeof TrainingEquipmentStatus];
+
+export const TrainingEquipmentToolType = {
+    MACHINE: 'machine',
+    CABLE_MACHINE: 'cableMachine',
+    SMITH_MACHINE: 'smithMachine',
+    BARBELL: 'barbell',
+    DUMBBELL: 'dumbbell',
+    KETTLEBELL: 'kettlebell',
+    RESISTANCE_BAND: 'resistanceBand',
+    TRX: 'trx',
+    OTHER: 'other'
+} as const;
+
+export type TrainingEquipmentToolType = typeof TrainingEquipmentToolType[keyof typeof TrainingEquipmentToolType];
+
+export const ToolTypeCode = {
+    NONE: 'none',
+    MACHINE: 'machine',
+    CABLE_MACHINE: 'cableMachine',
+    SMITH_MACHINE: 'smithMachine',
+    BARBELL: 'barbell',
+    DUMBBELL: 'dumbbell',
+    KETTLEBELL: 'kettlebell',
+    RESISTANCE_BAND: 'resistanceBand',
+    TRX: 'trx',
+    OTHER: 'other'
+} as const;
+
+export type ToolTypeCode = typeof ToolTypeCode[keyof typeof ToolTypeCode];
+
+export type ToolType = {
+    id: string;
+    code: 'none' | 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+    name: string;
+    sortOrder: number;
+};
+
+export type ListToolTypesQuery = {
+    /**
+     * When false, code='none' (bodyweight) is excluded (E-03 BR-EQP-006)
+     */
+    includeNone?: boolean | null;
+    /**
+     * When false, only is_active=true and non-deleted rows are returned
+     */
+    includeInactive?: boolean | null;
+};
+
+export type ListToolTypesResponse = {
+    items: Array<{
+        id: string;
+        code: 'none' | 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+        name: string;
+        sortOrder: number;
+    }>;
+};
+
+export type TrainingEquipmentItem = {
+    id: string;
+    store_id: string;
+    store_name: string;
+    name: string;
+    tool_type: 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+    tool_name?: string;
+    quantity: number;
+    installation_area: 'aerobic_area' | 'machine_area' | 'free_weight_area' | 'stretch_area' | null;
+    manufacturer: string | null;
+    model_number: string | null;
+    installed_on: string | null;
+    status: 'installed' | 'maintenance' | 'removed' | 'discarded';
+    notes: string | null;
+    linked_exercise_count: number;
+    last_updated_at: string;
+    last_updated_by: string;
+    is_deleted: boolean;
+};
+
+export type GetTrainingEquipmentQuery = {
+    store_id?: string;
+    keyword?: string;
+    tool_type?: 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+    status?: 'installed' | 'maintenance' | 'removed' | 'discarded' | 'exclude_discarded' | 'all';
+    page?: number;
+    page_size?: number;
+    sort_by?: 'id' | 'name' | 'tool_type' | 'quantity' | 'installation_area' | 'status' | 'last_updated_at';
+    sort_order?: 'asc' | 'desc';
+};
+
+export type GetTrainingEquipmentResponse = {
+    items: Array<{
+        id: string;
+        store_id: string;
+        store_name: string;
+        name: string;
+        tool_type: 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+        tool_name?: string;
+        quantity: number;
+        installation_area: 'aerobic_area' | 'machine_area' | 'free_weight_area' | 'stretch_area' | null;
+        manufacturer: string | null;
+        model_number: string | null;
+        installed_on: string | null;
+        status: 'installed' | 'maintenance' | 'removed' | 'discarded';
+        notes: string | null;
+        linked_exercise_count: number;
+        last_updated_at: string;
+        last_updated_by: string;
+        is_deleted: boolean;
+    }>;
+    total: number;
+    page: number;
+    page_size: number;
+    total_pages: number;
+};
+
+export type UpsertTrainingEquipment = {
+    store_id: string;
+    store_name: string;
+    name: string;
+    tool_type: 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+    quantity: number;
+    installation_area?: 'aerobic_area' | 'machine_area' | 'free_weight_area' | 'stretch_area' | null;
+    manufacturer?: string | null;
+    model_number?: string | null;
+    installed_on?: string | null;
+    status?: 'installed' | 'maintenance' | 'removed' | 'discarded';
+    notes?: string | null;
+};
+
+export type PatchTrainingEquipment = {
+    store_id?: string;
+    store_name?: string;
+    name?: string;
+    tool_type?: 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+    quantity?: number;
+    installation_area?: 'aerobic_area' | 'machine_area' | 'free_weight_area' | 'stretch_area' | null;
+    manufacturer?: string | null;
+    model_number?: string | null;
+    installed_on?: string | null;
+    status?: 'installed' | 'maintenance' | 'removed' | 'discarded';
+    notes?: string | null;
+};
+
+export type TrainingEquipmentDetailResponse = {
+    equipment: {
+        id: string;
+        store_id: string;
+        store_name: string;
+        name: string;
+        tool_type: 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+        tool_name?: string;
+        quantity: number;
+        installation_area: 'aerobic_area' | 'machine_area' | 'free_weight_area' | 'stretch_area' | null;
+        manufacturer: string | null;
+        model_number: string | null;
+        installed_on: string | null;
+        status: 'installed' | 'maintenance' | 'removed' | 'discarded';
+        notes: string | null;
+        linked_exercise_count: number;
+        last_updated_at: string;
+        last_updated_by: string;
+        is_deleted: boolean;
+    };
+};
+
+export type TrainingEquipmentExerciseLink = {
+    equipment_id: string;
+    exercise_id: string;
+    exercise_name: string;
+    exercise_tool_type: string;
+    exercise_tool_name: string;
+    difficulty: string | null;
+    body_part: string | null;
+    created_at: string;
+};
+
+export type AddTrainingEquipmentExerciseLinks = {
+    exercise_ids: Array<string>;
+    force?: boolean;
+};
+
+export type TrainingEquipmentExerciseLinksResponse = {
+    items: Array<{
+        equipment_id: string;
+        exercise_id: string;
+        exercise_name: string;
+        exercise_tool_type: string;
+        exercise_tool_name: string;
+        difficulty: string | null;
+        body_part: string | null;
+        created_at: string;
+    }>;
+};
+
+export type TrainingEquipmentStatusHistory = {
+    id: string;
+    equipment_id: string;
+    changed_at: string;
+    changed_by: string;
+    from_status: 'installed' | 'maintenance' | 'removed' | 'discarded';
+    to_status: 'installed' | 'maintenance' | 'removed' | 'discarded';
+    reason: string;
+};
+
+export type GetTrainingEquipmentHistoryResponse = {
+    items: Array<{
+        id: string;
+        equipment_id: string;
+        changed_at: string;
+        changed_by: string;
+        from_status: 'installed' | 'maintenance' | 'removed' | 'discarded';
+        to_status: 'installed' | 'maintenance' | 'removed' | 'discarded';
+        reason: string;
+    }>;
+};
+
+export type UpdateTrainingEquipmentStatus = {
+    next_status: 'installed' | 'maintenance' | 'removed' | 'discarded';
+    reason: string;
+};
+
+export type UpdateTrainingEquipmentStatusResponse = {
+    equipment: {
+        id: string;
+        store_id: string;
+        store_name: string;
+        name: string;
+        tool_type: 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+        tool_name?: string;
+        quantity: number;
+        installation_area: 'aerobic_area' | 'machine_area' | 'free_weight_area' | 'stretch_area' | null;
+        manufacturer: string | null;
+        model_number: string | null;
+        installed_on: string | null;
+        status: 'installed' | 'maintenance' | 'removed' | 'discarded';
+        notes: string | null;
+        linked_exercise_count: number;
+        last_updated_at: string;
+        last_updated_by: string;
+        is_deleted: boolean;
+    };
+};
+
 export type Controller = {
     controller_id: string;
     controller_number: number;
@@ -50508,6 +50758,733 @@ export type PostCrmSurveysResponses = {
 };
 
 export type PostCrmSurveysResponse = PostCrmSurveysResponses[keyof PostCrmSurveysResponses];
+
+export type GetCrmToolTypesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * When false, code='none' (bodyweight) is excluded (E-03 BR-EQP-006)
+         */
+        includeNone?: boolean | null;
+        /**
+         * When false, only is_active=true and non-deleted rows are returned
+         */
+        includeInactive?: boolean | null;
+    };
+    url: '/crm/tool-types';
+};
+
+export type GetCrmToolTypesResponses = {
+    /**
+     * Tool-type list
+     */
+    200: {
+        items: Array<{
+            id: string;
+            code: 'none' | 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+            name: string;
+            sortOrder: number;
+        }>;
+    };
+};
+
+export type GetCrmToolTypesResponse = GetCrmToolTypesResponses[keyof GetCrmToolTypesResponses];
+
+export type DeleteCrmTrainingEquipmentByEquipmentIdExerciseLinksData = {
+    body?: never;
+    path: {
+        equipmentId: string;
+    };
+    query: {
+        exerciseId: string;
+    };
+    url: '/crm/training-equipment/{equipmentId}/exercise-links';
+};
+
+export type DeleteCrmTrainingEquipmentByEquipmentIdExerciseLinksErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type DeleteCrmTrainingEquipmentByEquipmentIdExerciseLinksError = DeleteCrmTrainingEquipmentByEquipmentIdExerciseLinksErrors[keyof DeleteCrmTrainingEquipmentByEquipmentIdExerciseLinksErrors];
+
+export type DeleteCrmTrainingEquipmentByEquipmentIdExerciseLinksResponses = {
+    /**
+     * Deleted
+     */
+    204: void;
+};
+
+export type DeleteCrmTrainingEquipmentByEquipmentIdExerciseLinksResponse = DeleteCrmTrainingEquipmentByEquipmentIdExerciseLinksResponses[keyof DeleteCrmTrainingEquipmentByEquipmentIdExerciseLinksResponses];
+
+export type GetCrmTrainingEquipmentByEquipmentIdExerciseLinksData = {
+    body?: never;
+    path: {
+        equipmentId: string;
+    };
+    query?: never;
+    url: '/crm/training-equipment/{equipmentId}/exercise-links';
+};
+
+export type GetCrmTrainingEquipmentByEquipmentIdExerciseLinksErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmTrainingEquipmentByEquipmentIdExerciseLinksError = GetCrmTrainingEquipmentByEquipmentIdExerciseLinksErrors[keyof GetCrmTrainingEquipmentByEquipmentIdExerciseLinksErrors];
+
+export type GetCrmTrainingEquipmentByEquipmentIdExerciseLinksResponses = {
+    /**
+     * Exercise links
+     */
+    200: {
+        items: Array<{
+            equipment_id: string;
+            exercise_id: string;
+            exercise_name: string;
+            exercise_tool_type: string;
+            exercise_tool_name: string;
+            difficulty: string | null;
+            body_part: string | null;
+            created_at: string;
+        }>;
+    };
+};
+
+export type GetCrmTrainingEquipmentByEquipmentIdExerciseLinksResponse = GetCrmTrainingEquipmentByEquipmentIdExerciseLinksResponses[keyof GetCrmTrainingEquipmentByEquipmentIdExerciseLinksResponses];
+
+export type PostCrmTrainingEquipmentByEquipmentIdExerciseLinksData = {
+    body?: {
+        exercise_ids: Array<string>;
+        force?: boolean;
+    };
+    path: {
+        equipmentId: string;
+    };
+    query?: never;
+    url: '/crm/training-equipment/{equipmentId}/exercise-links';
+};
+
+export type PostCrmTrainingEquipmentByEquipmentIdExerciseLinksErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmTrainingEquipmentByEquipmentIdExerciseLinksError = PostCrmTrainingEquipmentByEquipmentIdExerciseLinksErrors[keyof PostCrmTrainingEquipmentByEquipmentIdExerciseLinksErrors];
+
+export type PostCrmTrainingEquipmentByEquipmentIdExerciseLinksResponses = {
+    /**
+     * Updated links
+     */
+    200: {
+        items: Array<{
+            equipment_id: string;
+            exercise_id: string;
+            exercise_name: string;
+            exercise_tool_type: string;
+            exercise_tool_name: string;
+            difficulty: string | null;
+            body_part: string | null;
+            created_at: string;
+        }>;
+    };
+};
+
+export type PostCrmTrainingEquipmentByEquipmentIdExerciseLinksResponse = PostCrmTrainingEquipmentByEquipmentIdExerciseLinksResponses[keyof PostCrmTrainingEquipmentByEquipmentIdExerciseLinksResponses];
+
+export type GetCrmTrainingEquipmentByEquipmentIdHistoryData = {
+    body?: never;
+    path: {
+        equipmentId: string;
+    };
+    query?: never;
+    url: '/crm/training-equipment/{equipmentId}/history';
+};
+
+export type GetCrmTrainingEquipmentByEquipmentIdHistoryErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmTrainingEquipmentByEquipmentIdHistoryError = GetCrmTrainingEquipmentByEquipmentIdHistoryErrors[keyof GetCrmTrainingEquipmentByEquipmentIdHistoryErrors];
+
+export type GetCrmTrainingEquipmentByEquipmentIdHistoryResponses = {
+    /**
+     * History entries
+     */
+    200: {
+        items: Array<{
+            id: string;
+            equipment_id: string;
+            changed_at: string;
+            changed_by: string;
+            from_status: 'installed' | 'maintenance' | 'removed' | 'discarded';
+            to_status: 'installed' | 'maintenance' | 'removed' | 'discarded';
+            reason: string;
+        }>;
+    };
+};
+
+export type GetCrmTrainingEquipmentByEquipmentIdHistoryResponse = GetCrmTrainingEquipmentByEquipmentIdHistoryResponses[keyof GetCrmTrainingEquipmentByEquipmentIdHistoryResponses];
+
+export type DeleteCrmTrainingEquipmentByEquipmentIdData = {
+    body?: never;
+    path: {
+        equipmentId: string;
+    };
+    query?: never;
+    url: '/crm/training-equipment/{equipmentId}';
+};
+
+export type DeleteCrmTrainingEquipmentByEquipmentIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type DeleteCrmTrainingEquipmentByEquipmentIdError = DeleteCrmTrainingEquipmentByEquipmentIdErrors[keyof DeleteCrmTrainingEquipmentByEquipmentIdErrors];
+
+export type DeleteCrmTrainingEquipmentByEquipmentIdResponses = {
+    /**
+     * Deleted
+     */
+    204: void;
+};
+
+export type DeleteCrmTrainingEquipmentByEquipmentIdResponse = DeleteCrmTrainingEquipmentByEquipmentIdResponses[keyof DeleteCrmTrainingEquipmentByEquipmentIdResponses];
+
+export type GetCrmTrainingEquipmentByEquipmentIdData = {
+    body?: never;
+    path: {
+        equipmentId: string;
+    };
+    query?: never;
+    url: '/crm/training-equipment/{equipmentId}';
+};
+
+export type GetCrmTrainingEquipmentByEquipmentIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmTrainingEquipmentByEquipmentIdError = GetCrmTrainingEquipmentByEquipmentIdErrors[keyof GetCrmTrainingEquipmentByEquipmentIdErrors];
+
+export type GetCrmTrainingEquipmentByEquipmentIdResponses = {
+    /**
+     * Detail
+     */
+    200: {
+        equipment: {
+            id: string;
+            store_id: string;
+            store_name: string;
+            name: string;
+            tool_type: 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+            tool_name?: string;
+            quantity: number;
+            installation_area: 'aerobic_area' | 'machine_area' | 'free_weight_area' | 'stretch_area' | null;
+            manufacturer: string | null;
+            model_number: string | null;
+            installed_on: string | null;
+            status: 'installed' | 'maintenance' | 'removed' | 'discarded';
+            notes: string | null;
+            linked_exercise_count: number;
+            last_updated_at: string;
+            last_updated_by: string;
+            is_deleted: boolean;
+        };
+    };
+};
+
+export type GetCrmTrainingEquipmentByEquipmentIdResponse = GetCrmTrainingEquipmentByEquipmentIdResponses[keyof GetCrmTrainingEquipmentByEquipmentIdResponses];
+
+export type PatchCrmTrainingEquipmentByEquipmentIdData = {
+    body?: {
+        store_id?: string;
+        store_name?: string;
+        name?: string;
+        tool_type?: 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+        quantity?: number;
+        installation_area?: 'aerobic_area' | 'machine_area' | 'free_weight_area' | 'stretch_area' | null;
+        manufacturer?: string | null;
+        model_number?: string | null;
+        installed_on?: string | null;
+        status?: 'installed' | 'maintenance' | 'removed' | 'discarded';
+        notes?: string | null;
+    };
+    path: {
+        equipmentId: string;
+    };
+    query?: never;
+    url: '/crm/training-equipment/{equipmentId}';
+};
+
+export type PatchCrmTrainingEquipmentByEquipmentIdErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PatchCrmTrainingEquipmentByEquipmentIdError = PatchCrmTrainingEquipmentByEquipmentIdErrors[keyof PatchCrmTrainingEquipmentByEquipmentIdErrors];
+
+export type PatchCrmTrainingEquipmentByEquipmentIdResponses = {
+    /**
+     * Updated
+     */
+    200: {
+        equipment: {
+            id: string;
+            store_id: string;
+            store_name: string;
+            name: string;
+            tool_type: 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+            tool_name?: string;
+            quantity: number;
+            installation_area: 'aerobic_area' | 'machine_area' | 'free_weight_area' | 'stretch_area' | null;
+            manufacturer: string | null;
+            model_number: string | null;
+            installed_on: string | null;
+            status: 'installed' | 'maintenance' | 'removed' | 'discarded';
+            notes: string | null;
+            linked_exercise_count: number;
+            last_updated_at: string;
+            last_updated_by: string;
+            is_deleted: boolean;
+        };
+    };
+};
+
+export type PatchCrmTrainingEquipmentByEquipmentIdResponse = PatchCrmTrainingEquipmentByEquipmentIdResponses[keyof PatchCrmTrainingEquipmentByEquipmentIdResponses];
+
+export type PatchCrmTrainingEquipmentByEquipmentIdStatusData = {
+    body?: {
+        next_status: 'installed' | 'maintenance' | 'removed' | 'discarded';
+        reason: string;
+    };
+    path: {
+        equipmentId: string;
+    };
+    query?: never;
+    url: '/crm/training-equipment/{equipmentId}/status';
+};
+
+export type PatchCrmTrainingEquipmentByEquipmentIdStatusErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    404: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PatchCrmTrainingEquipmentByEquipmentIdStatusError = PatchCrmTrainingEquipmentByEquipmentIdStatusErrors[keyof PatchCrmTrainingEquipmentByEquipmentIdStatusErrors];
+
+export type PatchCrmTrainingEquipmentByEquipmentIdStatusResponses = {
+    /**
+     * Status updated
+     */
+    200: {
+        equipment: {
+            id: string;
+            store_id: string;
+            store_name: string;
+            name: string;
+            tool_type: 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+            tool_name?: string;
+            quantity: number;
+            installation_area: 'aerobic_area' | 'machine_area' | 'free_weight_area' | 'stretch_area' | null;
+            manufacturer: string | null;
+            model_number: string | null;
+            installed_on: string | null;
+            status: 'installed' | 'maintenance' | 'removed' | 'discarded';
+            notes: string | null;
+            linked_exercise_count: number;
+            last_updated_at: string;
+            last_updated_by: string;
+            is_deleted: boolean;
+        };
+    };
+};
+
+export type PatchCrmTrainingEquipmentByEquipmentIdStatusResponse = PatchCrmTrainingEquipmentByEquipmentIdStatusResponses[keyof PatchCrmTrainingEquipmentByEquipmentIdStatusResponses];
+
+export type PostCrmTrainingEquipmentBulkStatusData = {
+    body?: {
+        ids: Array<string>;
+        next_status: 'installed' | 'maintenance' | 'removed' | 'discarded';
+        reason: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/training-equipment/bulk-status';
+};
+
+export type PostCrmTrainingEquipmentBulkStatusErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmTrainingEquipmentBulkStatusError = PostCrmTrainingEquipmentBulkStatusErrors[keyof PostCrmTrainingEquipmentBulkStatusErrors];
+
+export type PostCrmTrainingEquipmentBulkStatusResponses = {
+    /**
+     * Bulk status update result
+     */
+    200: {
+        success: boolean;
+        updated_count: number;
+        results: Array<{
+            id: string;
+            success: boolean;
+            status?: 'installed' | 'maintenance' | 'removed' | 'discarded';
+            error?: string;
+        }>;
+    };
+};
+
+export type PostCrmTrainingEquipmentBulkStatusResponse = PostCrmTrainingEquipmentBulkStatusResponses[keyof PostCrmTrainingEquipmentBulkStatusResponses];
+
+export type GetCrmTrainingEquipmentExercisesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        keyword?: string;
+        tool_type?: 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+    };
+    url: '/crm/training-equipment/exercises';
+};
+
+export type GetCrmTrainingEquipmentExercisesErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmTrainingEquipmentExercisesError = GetCrmTrainingEquipmentExercisesErrors[keyof GetCrmTrainingEquipmentExercisesErrors];
+
+export type GetCrmTrainingEquipmentExercisesResponses = {
+    /**
+     * Exercise catalog
+     */
+    200: {
+        items: Array<{
+            id: string;
+            name: string;
+            tool_type: 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+            tool_name: string;
+            difficulty: string | null;
+            body_part: string | null;
+        }>;
+    };
+};
+
+export type GetCrmTrainingEquipmentExercisesResponse = GetCrmTrainingEquipmentExercisesResponses[keyof GetCrmTrainingEquipmentExercisesResponses];
+
+export type PostCrmTrainingEquipmentExportData = {
+    /**
+     * Export filters and sort
+     */
+    body?: {
+        store_id?: string;
+        keyword?: string;
+        tool_type?: 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+        status?: 'installed' | 'maintenance' | 'removed' | 'discarded' | 'exclude_discarded' | 'all';
+        sort_by?: 'id' | 'name' | 'tool_type' | 'quantity' | 'installation_area' | 'status' | 'last_updated_at';
+        sort_order?: 'asc' | 'desc';
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/training-equipment/export';
+};
+
+export type PostCrmTrainingEquipmentExportErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    401: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    500: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmTrainingEquipmentExportError = PostCrmTrainingEquipmentExportErrors[keyof PostCrmTrainingEquipmentExportErrors];
+
+export type PostCrmTrainingEquipmentExportResponses = {
+    /**
+     * CSV file (UTF-8 with BOM)
+     */
+    200: unknown;
+};
+
+export type GetCrmTrainingEquipmentData = {
+    body?: never;
+    path?: never;
+    query?: {
+        store_id?: string;
+        keyword?: string;
+        tool_type?: 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+        status?: 'installed' | 'maintenance' | 'removed' | 'discarded' | 'exclude_discarded' | 'all';
+        page?: number;
+        page_size?: number;
+        sort_by?: 'id' | 'name' | 'tool_type' | 'quantity' | 'installation_area' | 'status' | 'last_updated_at';
+        sort_order?: 'asc' | 'desc';
+    };
+    url: '/crm/training-equipment';
+};
+
+export type GetCrmTrainingEquipmentErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type GetCrmTrainingEquipmentError = GetCrmTrainingEquipmentErrors[keyof GetCrmTrainingEquipmentErrors];
+
+export type GetCrmTrainingEquipmentResponses = {
+    /**
+     * Training equipment list
+     */
+    200: {
+        items: Array<{
+            id: string;
+            store_id: string;
+            store_name: string;
+            name: string;
+            tool_type: 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+            tool_name?: string;
+            quantity: number;
+            installation_area: 'aerobic_area' | 'machine_area' | 'free_weight_area' | 'stretch_area' | null;
+            manufacturer: string | null;
+            model_number: string | null;
+            installed_on: string | null;
+            status: 'installed' | 'maintenance' | 'removed' | 'discarded';
+            notes: string | null;
+            linked_exercise_count: number;
+            last_updated_at: string;
+            last_updated_by: string;
+            is_deleted: boolean;
+        }>;
+        total: number;
+        page: number;
+        page_size: number;
+        total_pages: number;
+    };
+};
+
+export type GetCrmTrainingEquipmentResponse = GetCrmTrainingEquipmentResponses[keyof GetCrmTrainingEquipmentResponses];
+
+export type PostCrmTrainingEquipmentData = {
+    body?: {
+        store_id: string;
+        store_name: string;
+        name: string;
+        tool_type: 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+        quantity: number;
+        installation_area?: 'aerobic_area' | 'machine_area' | 'free_weight_area' | 'stretch_area' | null;
+        manufacturer?: string | null;
+        model_number?: string | null;
+        installed_on?: string | null;
+        status?: 'installed' | 'maintenance' | 'removed' | 'discarded';
+        notes?: string | null;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/training-equipment';
+};
+
+export type PostCrmTrainingEquipmentErrors = {
+    /**
+     * ErrorResponse
+     *
+     * Error response
+     */
+    400: {
+        /**
+         * Error message
+         */
+        error: string;
+    };
+};
+
+export type PostCrmTrainingEquipmentError = PostCrmTrainingEquipmentErrors[keyof PostCrmTrainingEquipmentErrors];
+
+export type PostCrmTrainingEquipmentResponses = {
+    /**
+     * Created
+     */
+    201: {
+        id: string;
+        store_id: string;
+        store_name: string;
+        name: string;
+        tool_type: 'machine' | 'cableMachine' | 'smithMachine' | 'barbell' | 'dumbbell' | 'kettlebell' | 'resistanceBand' | 'trx' | 'other';
+        tool_name?: string;
+        quantity: number;
+        installation_area: 'aerobic_area' | 'machine_area' | 'free_weight_area' | 'stretch_area' | null;
+        manufacturer: string | null;
+        model_number: string | null;
+        installed_on: string | null;
+        status: 'installed' | 'maintenance' | 'removed' | 'discarded';
+        notes: string | null;
+        linked_exercise_count: number;
+        last_updated_at: string;
+        last_updated_by: string;
+        is_deleted: boolean;
+    };
+};
+
+export type PostCrmTrainingEquipmentResponse = PostCrmTrainingEquipmentResponses[keyof PostCrmTrainingEquipmentResponses];
 
 export type PatchCrmTransfersByIdApproveData = {
     /**

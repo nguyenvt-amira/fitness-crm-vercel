@@ -121,11 +121,8 @@ const menuItems: MenuItem[] = [
     href: '/lockers',
     subItems: [
       { label: 'ロッカー管理', href: '/lockers' },
-      {
-        label: '店舗機器管理',
-        href: '/equipment',
-        matchHrefs: ['/controllers'],
-      },
+      { label: '店舗機器管理', href: '/equipment', matchHrefs: ['/controllers'] },
+      { label: 'トレーニング機材管理', href: '/training-equipment' },
     ],
   },
   {

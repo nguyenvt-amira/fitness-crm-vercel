@@ -31,6 +31,8 @@ export type { EnrollmentFeeMastersType } from './enrollment-fee-masters.type';
 export type { CorporateMastersType } from './corporate-masters.type';
 export type { PartnerCompaniesType } from './partner-companies.type';
 export type { EquipmentType } from './equipment.type';
+export type { ToolTypesType } from './tool-types.type';
+export type { TrainingEquipmentType } from './training-equipment.type';
 export type { ControllersType } from './controllers.type';
 export type { VisitExperiencesType } from './visit-experiences.type';
 export type { UsersType } from './users.type';
