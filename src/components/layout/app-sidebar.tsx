@@ -150,6 +150,7 @@ const menuItems: MenuItem[] = [
       { label: '店舗管理', href: '/stores' },
       { label: 'ブランド管理', href: '/brands' },
       { label: 'FC企業管理', href: '/franchise-companies' },
+      { label: '規約文書管理', href: '/terms' },
     ],
   },
 ];

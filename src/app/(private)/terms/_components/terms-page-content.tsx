@@ -45,31 +45,13 @@ export function TermsPageContent() {
     }),
   });
 
-  const hasBrandOrStatusFilter =
-    filtersHook.filters.brandEnum !== null || filtersHook.filters.status !== null;
-
-  const scopedCountQuery = useQuery({
-    ...getCrmTermsOptions({
-      query: {
-        termsType: filtersHook.filters.termsType || undefined,
-        includeDeleted: filtersHook.filters.includeDeleted === 'true' || undefined,
-        limit: 1,
-      },
-    }),
-    enabled: hasBrandOrStatusFilter,
-  });
-
   const items: TermsListItem[] = listQuery.data?.items ?? [];
   const pagination = listQuery.data?.pagination;
   const totalItems = pagination?.totalItems ?? 0;
-  const scopedTotal = hasBrandOrStatusFilter
-    ? (scopedCountQuery.data?.pagination?.totalItems ?? totalItems)
-    : totalItems;
 
   const termsFiltersValue = {
     ...filtersHook,
     filteredTotal: totalItems,
-    scopedTotal,
   };
 
   return (

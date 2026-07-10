@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { parseAsInteger, parseAsString, parseAsStringEnum, useQueryStates } from 'nuqs';
 
@@ -13,6 +13,7 @@ import {
   TERMS_STATUS_OPTIONS,
   TERMS_TYPE_OPTIONS,
   type TermsFiltersState,
+  type TermsListApiQuery,
   TermsListApiQuerySchema,
 } from '../_schemas/terms-list-filters.schema';
 
@@ -42,6 +43,14 @@ export function useTermsFilters() {
   );
 
   const [searchInput, setSearchInput] = useState(() => filters.search);
+  const lastSyncedSearchRef = useRef(filters.search);
+
+  useEffect(() => {
+    if (filters.search !== lastSyncedSearchRef.current) {
+      setSearchInput(filters.search);
+      lastSyncedSearchRef.current = filters.search;
+    }
+  }, [filters.search]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -50,6 +59,7 @@ export function useTermsFilters() {
           search: searchInput || null,
           page: 1,
         });
+        lastSyncedSearchRef.current = searchInput;
       }
     }, 500);
 
@@ -57,10 +67,7 @@ export function useTermsFilters() {
   }, [filters.search, searchInput, setFilters]);
 
   const updateFilter = <K extends keyof TermsFiltersState>(key: K, value: TermsFiltersState[K]) => {
-    setFilters({
-      [key]: value === '' ? null : value,
-      page: 1,
-    });
+    setFilters({ [key]: value, page: 1 });
   };
 
   const clearFilters = () => {
@@ -78,17 +85,27 @@ export function useTermsFilters() {
     });
   };
 
-  const queryParams = TermsListApiQuerySchema.parse({
-    page: filters.page,
-    limit: filters.limit,
-    sort: filters.sort,
-    order: filters.order,
-    search: filters.search || undefined,
-    status: filters.status || undefined,
-    termsType: filters.termsType || undefined,
-    brandEnum: filters.brandEnum || undefined,
-    includeDeleted: filters.includeDeleted === 'true',
-  });
+  const queryParams = (() => {
+    const parsed = TermsListApiQuerySchema.safeParse({
+      page: filters.page,
+      limit: filters.limit,
+      sort: filters.sort,
+      order: filters.order,
+      search: filters.search || undefined,
+      status: filters.status || undefined,
+      termsType: filters.termsType || undefined,
+      brandEnum: filters.brandEnum || undefined,
+      includeDeleted: filters.includeDeleted === 'true',
+    });
+    if (parsed.success) return parsed.data;
+    return {
+      page: filters.page,
+      limit: DEFAULT_TERMS_PAGE_SIZE,
+      sort: 'displayOrder' as const,
+      order: 'asc' as const,
+      includeDeleted: false,
+    } satisfies TermsListApiQuery;
+  })();
 
   const hasActiveFilters =
     filters.search.length > 0 ||
@@ -107,7 +124,6 @@ export function useTermsFilters() {
     queryParams,
     hasActiveFilters,
     filteredTotal: 0,
-    scopedTotal: 0,
     currentPage: filters.page,
     setCurrentPage: (nextPage: number) => setFilters({ page: nextPage }),
     pageSize: filters.limit,

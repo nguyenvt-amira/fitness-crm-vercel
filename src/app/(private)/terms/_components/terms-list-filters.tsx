@@ -38,15 +38,8 @@ const TERM_TYPE_TABS: ReadonlyArray<{ value: TermsType | 'all'; label: string }>
 ];
 
 export function TermsListFilters({ children }: Readonly<{ children: React.ReactNode }>) {
-  const {
-    searchInput,
-    setSearchInput,
-    filters,
-    updateFilter,
-    clearFilters,
-    filteredTotal,
-    scopedTotal,
-  } = useTermsFiltersContext();
+  const { searchInput, setSearchInput, filters, updateFilter, clearFilters, filteredTotal } =
+    useTermsFiltersContext();
 
   const summaryParts: string[] = [];
   const showSummaryBanner = filters.brandEnum !== null || filters.status !== null;
@@ -63,7 +56,7 @@ export function TermsListFilters({ children }: Readonly<{ children: React.ReactN
       {showSummaryBanner && (
         <Alert className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
           <AlertDescription className="text-xs">
-            全 {scopedTotal} 件中 {filteredTotal} 件を抽出中
+            {filteredTotal} 件を抽出中
             {summaryParts.length > 0 ? (
               <span className="text-muted-foreground ml-1">: {summaryParts.join(' ・ ')}</span>
             ) : null}
@@ -107,6 +100,7 @@ export function TermsListFilters({ children }: Readonly<{ children: React.ReactN
                     }}
                     placeholder="規約ID・規約名で検索..."
                     className="pl-9 text-xs"
+                    maxLength={100}
                   />
                 </div>
 
