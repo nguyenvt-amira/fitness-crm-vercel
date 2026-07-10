@@ -44,6 +44,7 @@ import type {
   SurveyReportingType,
   SurveysType,
   TemplatesType,
+  TermsType,
   ToolTypesType,
   TrainingEquipmentType,
   TransfersType,
@@ -87,6 +88,7 @@ export type DbType = {
   equipment: EquipmentType;
   toolTypes: ToolTypesType;
   trainingEquipment: TrainingEquipmentType;
+  terms: TermsType;
   controllers: ControllersType;
   visitExperiences: VisitExperiencesType;
   users: UsersType;

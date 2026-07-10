@@ -8,6 +8,7 @@ import { createMembersTables } from './tables/members.table';
 import { createOptionTables } from './tables/option.table';
 import { createStaffTables } from './tables/staff.table';
 import { createStoreTables } from './tables/store.table';
+import { createTermsTables } from './tables/terms.table';
 import { createTrainingEquipmentTables } from './tables/training-equipment.table';
 import { createTransferTables } from './tables/transfer.table';
 
@@ -52,6 +53,7 @@ export function createDb(): DbType {
     db,
     createLessonTables(() => db),
   );
+  Object.assign(db, createTermsTables());
 
   // Seed mock data immediately when the singleton is first created
   db.mainContracts._seed();
@@ -68,6 +70,7 @@ export function createDb(): DbType {
   db.equipment._seed();
   db.toolTypes._seed();
   db.trainingEquipment._seed();
+  db.terms._seed();
   db.visitExperiences._seed();
   db.franchiseCompanies._seed();
   db.users._seed();

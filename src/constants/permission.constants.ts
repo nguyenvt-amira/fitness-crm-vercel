@@ -146,6 +146,12 @@ export const PAGE_PERMISSIONS: Partial<Record<RoutePattern, Permission>> = {
   '/training-equipment/:id': Permission.TrainingEquipmentView,
   '/training-equipment/create': Permission.TrainingEquipmentCreate,
   '/training-equipment/:id/edit': Permission.TrainingEquipmentEdit,
+
+  // Terms
+  '/terms': Permission.TermsView,
+  '/terms/:id': Permission.TermsView,
+  '/terms/create': Permission.TermsCreate,
+  '/terms/:id/edit': Permission.TermsEdit,
 };
 
 // ---------------------------------------------------------------------------
@@ -268,7 +274,15 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.TrainingEquipmentEdit,
     Permission.TrainingEquipmentDelete,
     Permission.TrainingEquipmentExport,
+    Permission.TermsView,
+    Permission.TermsCreate,
+    Permission.TermsEdit,
+    Permission.TermsDelete,
     Permission.TrainingEquipmentExerciseLinks,
+    Permission.TermsView,
+    Permission.TermsCreate,
+    Permission.TermsEdit,
+    Permission.TermsDelete,
   ],
 
   [UserRole.Manager]: [
@@ -399,6 +413,10 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.TrainingEquipmentCreate,
     Permission.TrainingEquipmentEdit,
     Permission.TrainingEquipmentExport,
+    Permission.TermsView,
+    Permission.TermsCreate,
+    Permission.TermsEdit,
+    Permission.TermsDelete,
   ],
 
   // Trainer: own-session scope. Can manage their schedules/reservations/
@@ -435,5 +453,9 @@ export const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
     Permission.ControllerView,
     Permission.TrainingEquipmentView,
     Permission.TrainingEquipmentExport,
+    Permission.TermsView,
+    Permission.TermsCreate,
+    Permission.TermsEdit,
+    Permission.TermsDelete,
   ],
 };

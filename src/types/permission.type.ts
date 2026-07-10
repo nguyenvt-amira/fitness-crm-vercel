@@ -223,6 +223,14 @@ export enum Permission {
   TrainingEquipmentDelete = 'training-equipment.delete',
   TrainingEquipmentExport = 'training-equipment.export',
   TrainingEquipmentExerciseLinks = 'training-equipment.exercise-links',
+
+  // -------------------------------------------------------------------------
+  // Terms
+  // -------------------------------------------------------------------------
+  TermsView = 'terms.view',
+  TermsCreate = 'terms.create',
+  TermsEdit = 'terms.edit',
+  TermsDelete = 'terms.delete',
 }
 
 /** Authenticated user stored in context */

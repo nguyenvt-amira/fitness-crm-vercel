@@ -50759,6 +50759,781 @@ export type PostCrmSurveysResponses = {
 
 export type PostCrmSurveysResponse = PostCrmSurveysResponses[keyof PostCrmSurveysResponses];
 
+export type DeleteCrmTermsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * id parameter
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/terms/{id}';
+};
+
+export type DeleteCrmTermsByIdErrors = {
+    /**
+     * TermsErrorResponse
+     *
+     * Not found
+     */
+    404: {
+        code: string;
+        message: string;
+        userMessage: string;
+        traceId: string | null;
+    };
+    /**
+     * TermsErrorResponse
+     *
+     * Internal server error
+     */
+    500: {
+        code: string;
+        message: string;
+        userMessage: string;
+        traceId: string | null;
+    };
+};
+
+export type DeleteCrmTermsByIdError = DeleteCrmTermsByIdErrors[keyof DeleteCrmTermsByIdErrors];
+
+export type DeleteCrmTermsByIdResponses = {
+    /**
+     * DeleteTermsResponse
+     *
+     * Deleted
+     */
+    200: {
+        message: string;
+    };
+};
+
+export type DeleteCrmTermsByIdResponse = DeleteCrmTermsByIdResponses[keyof DeleteCrmTermsByIdResponses];
+
+export type GetCrmTermsByIdData = {
+    body?: never;
+    path: {
+        /**
+         * id parameter
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/terms/{id}';
+};
+
+export type GetCrmTermsByIdErrors = {
+    /**
+     * TermsErrorResponse
+     *
+     * Not found
+     */
+    404: {
+        code: string;
+        message: string;
+        userMessage: string;
+        traceId: string | null;
+    };
+    /**
+     * TermsErrorResponse
+     *
+     * Internal server error
+     */
+    500: {
+        code: string;
+        message: string;
+        userMessage: string;
+        traceId: string | null;
+    };
+};
+
+export type GetCrmTermsByIdError = GetCrmTermsByIdErrors[keyof GetCrmTermsByIdErrors];
+
+export type GetCrmTermsByIdResponses = {
+    /**
+     * TermsDetail
+     *
+     * Terms detail
+     */
+    200: {
+        id: string;
+        title: string;
+        /**
+         * InternalTermsType
+         */
+        termsType: 'membership' | 'privacy' | 'withdrawal' | 'suspension' | 'payment' | 'companion';
+        /**
+         * BrandLabel
+         */
+        brandEnum: 'JOYFIT' | 'FIT365';
+        /**
+         * TermsStatus
+         */
+        status: 'published' | 'expired' | 'draft';
+        currentVersion: string;
+        effectiveFrom: string;
+        effectiveTo: string | null;
+        displayOrder: number | null;
+        requiresConsent: boolean;
+        remarks: string | null;
+        bodyText?: string | null;
+        /**
+         * TermsFile
+         */
+        currentFile: {
+            name: string;
+            size: string;
+            url: string | null;
+        };
+        versions: Array<{
+            version: string;
+            /**
+             * VersionType
+             */
+            versionType: 'original' | 'version';
+            date: string;
+            period: string;
+            summary: string;
+            /**
+             * TermsVersionStatus
+             */
+            status: 'active' | 'expired' | 'draft';
+            /**
+             * TermsFile
+             */
+            file: {
+                name: string;
+                size: string;
+                url: string | null;
+            };
+        }>;
+        createdBy: string | null;
+        updatedBy: string;
+        createdAt: string;
+        updatedAt: string;
+        isDeleted: boolean;
+    };
+};
+
+export type GetCrmTermsByIdResponse = GetCrmTermsByIdResponses[keyof GetCrmTermsByIdResponses];
+
+export type PatchCrmTermsByIdData = {
+    /**
+     * UpdateTermsBody
+     *
+     * Terms update payload
+     */
+    body?: {
+        title?: string;
+        version?: string;
+        effectiveFrom?: string;
+        effectiveTo?: string | null;
+        displayOrder?: string | null;
+        requiresConsent?: boolean;
+        remarks?: string | null;
+        pdfS3Key?: string;
+        pdfUrl?: string | null;
+        pdfFileName?: string | null;
+    };
+    path: {
+        /**
+         * id parameter
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/terms/{id}';
+};
+
+export type PatchCrmTermsByIdErrors = {
+    /**
+     * TermsErrorResponse
+     *
+     * Bad request
+     */
+    400: {
+        code: string;
+        message: string;
+        userMessage: string;
+        traceId: string | null;
+    };
+    /**
+     * TermsErrorResponse
+     *
+     * Not found
+     */
+    404: {
+        code: string;
+        message: string;
+        userMessage: string;
+        traceId: string | null;
+    };
+    /**
+     * TermsErrorResponse
+     *
+     * Internal server error
+     */
+    500: {
+        code: string;
+        message: string;
+        userMessage: string;
+        traceId: string | null;
+    };
+};
+
+export type PatchCrmTermsByIdError = PatchCrmTermsByIdErrors[keyof PatchCrmTermsByIdErrors];
+
+export type PatchCrmTermsByIdResponses = {
+    /**
+     * TermsDetail
+     *
+     * Updated
+     */
+    200: {
+        id: string;
+        title: string;
+        /**
+         * InternalTermsType
+         */
+        termsType: 'membership' | 'privacy' | 'withdrawal' | 'suspension' | 'payment' | 'companion';
+        /**
+         * BrandLabel
+         */
+        brandEnum: 'JOYFIT' | 'FIT365';
+        /**
+         * TermsStatus
+         */
+        status: 'published' | 'expired' | 'draft';
+        currentVersion: string;
+        effectiveFrom: string;
+        effectiveTo: string | null;
+        displayOrder: number | null;
+        requiresConsent: boolean;
+        remarks: string | null;
+        bodyText?: string | null;
+        /**
+         * TermsFile
+         */
+        currentFile: {
+            name: string;
+            size: string;
+            url: string | null;
+        };
+        versions: Array<{
+            version: string;
+            /**
+             * VersionType
+             */
+            versionType: 'original' | 'version';
+            date: string;
+            period: string;
+            summary: string;
+            /**
+             * TermsVersionStatus
+             */
+            status: 'active' | 'expired' | 'draft';
+            /**
+             * TermsFile
+             */
+            file: {
+                name: string;
+                size: string;
+                url: string | null;
+            };
+        }>;
+        createdBy: string | null;
+        updatedBy: string;
+        createdAt: string;
+        updatedAt: string;
+        isDeleted: boolean;
+    };
+};
+
+export type PatchCrmTermsByIdResponse = PatchCrmTermsByIdResponses[keyof PatchCrmTermsByIdResponses];
+
+export type PostCrmTermsByIdVersionsData = {
+    /**
+     * CreateTermsVersionBody
+     *
+     * Version create payload
+     */
+    body?: {
+        title: string;
+        version: string;
+        effectiveFrom: string;
+        effectiveTo?: string | null;
+        displayOrder?: string | null;
+        requiresConsent: boolean;
+        remarks?: string | null;
+        pdfS3Key: string;
+        pdfUrl?: string | null;
+        pdfFileName?: string | null;
+    };
+    path: {
+        /**
+         * id parameter
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/crm/terms/{id}/versions';
+};
+
+export type PostCrmTermsByIdVersionsErrors = {
+    /**
+     * TermsErrorResponse
+     *
+     * Bad request
+     */
+    400: {
+        code: string;
+        message: string;
+        userMessage: string;
+        traceId: string | null;
+    };
+    /**
+     * TermsErrorResponse
+     *
+     * Not found
+     */
+    404: {
+        code: string;
+        message: string;
+        userMessage: string;
+        traceId: string | null;
+    };
+    /**
+     * TermsErrorResponse
+     *
+     * Internal server error
+     */
+    500: {
+        code: string;
+        message: string;
+        userMessage: string;
+        traceId: string | null;
+    };
+};
+
+export type PostCrmTermsByIdVersionsError = PostCrmTermsByIdVersionsErrors[keyof PostCrmTermsByIdVersionsErrors];
+
+export type PostCrmTermsByIdVersionsResponses = {
+    /**
+     * TermsDetail
+     *
+     * Created
+     */
+    201: {
+        id: string;
+        title: string;
+        /**
+         * InternalTermsType
+         */
+        termsType: 'membership' | 'privacy' | 'withdrawal' | 'suspension' | 'payment' | 'companion';
+        /**
+         * BrandLabel
+         */
+        brandEnum: 'JOYFIT' | 'FIT365';
+        /**
+         * TermsStatus
+         */
+        status: 'published' | 'expired' | 'draft';
+        currentVersion: string;
+        effectiveFrom: string;
+        effectiveTo: string | null;
+        displayOrder: number | null;
+        requiresConsent: boolean;
+        remarks: string | null;
+        bodyText?: string | null;
+        /**
+         * TermsFile
+         */
+        currentFile: {
+            name: string;
+            size: string;
+            url: string | null;
+        };
+        versions: Array<{
+            version: string;
+            /**
+             * VersionType
+             */
+            versionType: 'original' | 'version';
+            date: string;
+            period: string;
+            summary: string;
+            /**
+             * TermsVersionStatus
+             */
+            status: 'active' | 'expired' | 'draft';
+            /**
+             * TermsFile
+             */
+            file: {
+                name: string;
+                size: string;
+                url: string | null;
+            };
+        }>;
+        createdBy: string | null;
+        updatedBy: string;
+        createdAt: string;
+        updatedAt: string;
+        isDeleted: boolean;
+    };
+};
+
+export type PostCrmTermsByIdVersionsResponse = PostCrmTermsByIdVersionsResponses[keyof PostCrmTermsByIdVersionsResponses];
+
+export type GetCrmTermsActiveData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * BrandLabel
+         */
+        brand: 'JOYFIT' | 'FIT365';
+        /**
+         * ProcedurePurpose
+         */
+        purpose?: 'app_launch' | 'withdrawal' | 'suspension';
+        memberId?: string;
+    };
+    url: '/crm/terms/active';
+};
+
+export type GetCrmTermsActiveErrors = {
+    /**
+     * TermsErrorResponse
+     *
+     * Bad request
+     */
+    400: {
+        code: string;
+        message: string;
+        userMessage: string;
+        traceId: string | null;
+    };
+    /**
+     * TermsErrorResponse
+     *
+     * Internal server error
+     */
+    500: {
+        code: string;
+        message: string;
+        userMessage: string;
+        traceId: string | null;
+    };
+};
+
+export type GetCrmTermsActiveError = GetCrmTermsActiveErrors[keyof GetCrmTermsActiveErrors];
+
+export type GetCrmTermsActiveResponses = {
+    /**
+     * ActiveTermsResponse
+     *
+     * Active terms list
+     */
+    200: {
+        items: Array<{
+            id: string;
+            title: string;
+            version: string;
+            pdfUrl: string | null;
+            requiresConsent: boolean;
+        }>;
+    };
+};
+
+export type GetCrmTermsActiveResponse = GetCrmTermsActiveResponses[keyof GetCrmTermsActiveResponses];
+
+export type PostCrmTermsConsentsData = {
+    /**
+     * RecordTermsConsentBody
+     *
+     * Terms consent payload
+     */
+    body?: {
+        memberId: string;
+        termsIds: Array<string>;
+        /**
+         * TermsConsentSource
+         */
+        source: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/terms/consents';
+};
+
+export type PostCrmTermsConsentsErrors = {
+    /**
+     * TermsErrorResponse
+     *
+     * Bad request
+     */
+    400: {
+        code: string;
+        message: string;
+        userMessage: string;
+        traceId: string | null;
+    };
+    /**
+     * TermsErrorResponse
+     *
+     * Internal server error
+     */
+    500: {
+        code: string;
+        message: string;
+        userMessage: string;
+        traceId: string | null;
+    };
+};
+
+export type PostCrmTermsConsentsError = PostCrmTermsConsentsErrors[keyof PostCrmTermsConsentsErrors];
+
+export type PostCrmTermsConsentsResponses = {
+    /**
+     * RecordTermsConsentResponse
+     *
+     * Recorded
+     */
+    200: {
+        recorded: number;
+    };
+};
+
+export type PostCrmTermsConsentsResponse = PostCrmTermsConsentsResponses[keyof PostCrmTermsConsentsResponses];
+
+export type GetCrmTermsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        limit?: number;
+        /**
+         * TermsListSort
+         */
+        sort?: 'displayOrder' | 'effectiveFrom' | 'createdAt';
+        /**
+         * TermsListOrder
+         */
+        order?: 'asc' | 'desc';
+        search?: string;
+        /**
+         * TermsStatus
+         */
+        status?: 'published' | 'expired' | 'draft';
+        /**
+         * InternalTermsType
+         */
+        termsType?: 'membership' | 'privacy' | 'withdrawal' | 'suspension' | 'payment' | 'companion';
+        /**
+         * BrandLabel
+         */
+        brandEnum?: 'JOYFIT' | 'FIT365';
+        includeDeleted?: boolean | null;
+    };
+    url: '/crm/terms';
+};
+
+export type GetCrmTermsErrors = {
+    /**
+     * TermsErrorResponse
+     *
+     * Bad request
+     */
+    400: {
+        code: string;
+        message: string;
+        userMessage: string;
+        traceId: string | null;
+    };
+    /**
+     * TermsErrorResponse
+     *
+     * Internal server error
+     */
+    500: {
+        code: string;
+        message: string;
+        userMessage: string;
+        traceId: string | null;
+    };
+};
+
+export type GetCrmTermsError = GetCrmTermsErrors[keyof GetCrmTermsErrors];
+
+export type GetCrmTermsResponses = {
+    /**
+     * TermsListResponse
+     *
+     * Terms list
+     */
+    200: {
+        items: Array<{
+            id: string;
+            title: string;
+            /**
+             * InternalTermsType
+             */
+            termsType: 'membership' | 'privacy' | 'withdrawal' | 'suspension' | 'payment' | 'companion';
+            version: string;
+            /**
+             * BrandLabel
+             */
+            brandEnum: 'JOYFIT' | 'FIT365';
+            effectiveFrom: string;
+            effectiveTo: string | null;
+            displayOrder: number | null;
+            requiresConsent: boolean;
+            remarks: string | null;
+            /**
+             * TermsStatus
+             */
+            status: 'published' | 'expired' | 'draft';
+            isDeleted: boolean;
+        }>;
+        pagination: {
+            page: number;
+            limit: number;
+            totalItems: number;
+            totalPages: number;
+        };
+    };
+};
+
+export type GetCrmTermsResponse = GetCrmTermsResponses[keyof GetCrmTermsResponses];
+
+export type PostCrmTermsData = {
+    /**
+     * CreateTermsBody
+     *
+     * Original terms create payload
+     */
+    body?: {
+        /**
+         * BrandLabel
+         */
+        brandEnum: 'JOYFIT' | 'FIT365';
+        /**
+         * InternalTermsType
+         */
+        termsType: 'membership' | 'privacy' | 'withdrawal' | 'suspension' | 'payment' | 'companion';
+        title: string;
+        version: string;
+        effectiveFrom: string;
+        effectiveTo?: string | null;
+        displayOrder?: string | null;
+        requiresConsent: boolean;
+        remarks?: string | null;
+        pdfS3Key: string;
+        pdfUrl?: string | null;
+        pdfFileName?: string | null;
+    };
+    path?: never;
+    query?: never;
+    url: '/crm/terms';
+};
+
+export type PostCrmTermsErrors = {
+    /**
+     * TermsErrorResponse
+     *
+     * Bad request
+     */
+    400: {
+        code: string;
+        message: string;
+        userMessage: string;
+        traceId: string | null;
+    };
+    /**
+     * TermsErrorResponse
+     *
+     * Internal server error
+     */
+    500: {
+        code: string;
+        message: string;
+        userMessage: string;
+        traceId: string | null;
+    };
+};
+
+export type PostCrmTermsError = PostCrmTermsErrors[keyof PostCrmTermsErrors];
+
+export type PostCrmTermsResponses = {
+    /**
+     * TermsDetail
+     *
+     * Created
+     */
+    201: {
+        id: string;
+        title: string;
+        /**
+         * InternalTermsType
+         */
+        termsType: 'membership' | 'privacy' | 'withdrawal' | 'suspension' | 'payment' | 'companion';
+        /**
+         * BrandLabel
+         */
+        brandEnum: 'JOYFIT' | 'FIT365';
+        /**
+         * TermsStatus
+         */
+        status: 'published' | 'expired' | 'draft';
+        currentVersion: string;
+        effectiveFrom: string;
+        effectiveTo: string | null;
+        displayOrder: number | null;
+        requiresConsent: boolean;
+        remarks: string | null;
+        bodyText?: string | null;
+        /**
+         * TermsFile
+         */
+        currentFile: {
+            name: string;
+            size: string;
+            url: string | null;
+        };
+        versions: Array<{
+            version: string;
+            /**
+             * VersionType
+             */
+            versionType: 'original' | 'version';
+            date: string;
+            period: string;
+            summary: string;
+            /**
+             * TermsVersionStatus
+             */
+            status: 'active' | 'expired' | 'draft';
+            /**
+             * TermsFile
+             */
+            file: {
+                name: string;
+                size: string;
+                url: string | null;
+            };
+        }>;
+        createdBy: string | null;
+        updatedBy: string;
+        createdAt: string;
+        updatedAt: string;
+        isDeleted: boolean;
+    };
+};
+
+export type PostCrmTermsResponse = PostCrmTermsResponses[keyof PostCrmTermsResponses];
+
 export type GetCrmToolTypesData = {
     body?: never;
     path?: never;
