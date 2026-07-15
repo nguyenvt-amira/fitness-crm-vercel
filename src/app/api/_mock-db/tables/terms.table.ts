@@ -353,7 +353,9 @@ export function createTermsTables() {
           pdfS3Key: nextPdfS3Key,
           pdfUrl:
             input.pdfUrl === undefined
-              ? (current.pdfUrl ?? buildTermsPdfUrl(nextPdfS3Key))
+              ? input.pdfS3Key === undefined
+                ? current.pdfUrl
+                : buildTermsPdfUrl(nextPdfS3Key)
               : input.pdfUrl,
           pdfFileName: input.pdfFileName === undefined ? current.pdfFileName : input.pdfFileName,
           updatedAt: new Date().toISOString(),

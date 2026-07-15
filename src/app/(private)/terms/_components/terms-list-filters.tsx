@@ -138,7 +138,7 @@ export function TermsListFilters({ children }: Readonly<{ children: React.ReactN
                     <SelectTrigger
                       className={`${getFilterActiveClass(filters.status !== null)} h-8 w-[140px] text-xs`}
                     >
-                      <SelectValue placeholder="全ステータス">
+                      <SelectValue>
                         {filters.status ? TERMS_STATUS_LABELS[filters.status] : '全ステータス'}
                       </SelectValue>
                     </SelectTrigger>
