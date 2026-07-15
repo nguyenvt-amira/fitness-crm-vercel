@@ -42,9 +42,11 @@ export function TermsListFilters({ children }: Readonly<{ children: React.ReactN
     useTermsFiltersContext();
 
   const summaryParts: string[] = [];
-  const showSummaryBanner = filters.brandEnum !== null || filters.status !== null;
-  if (searchInput) {
-    summaryParts.push(`"${searchInput}"`);
+  const normalizedSearchInput = searchInput.trim();
+  const showSummaryBanner =
+    filters.brandEnum !== null || filters.status !== null || normalizedSearchInput.length > 0;
+  if (normalizedSearchInput) {
+    summaryParts.push(`"${normalizedSearchInput}"`);
   }
   if (filters.brandEnum) {
     summaryParts.push(filters.brandEnum);
