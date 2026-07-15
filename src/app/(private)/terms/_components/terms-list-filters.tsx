@@ -43,7 +43,9 @@ export function TermsListFilters({ children }: Readonly<{ children: React.ReactN
 
   const summaryParts: string[] = [];
   const showSummaryBanner = filters.brandEnum !== null || filters.status !== null;
-
+  if (searchInput) {
+    summaryParts.push(`"${searchInput}"`);
+  }
   if (filters.brandEnum) {
     summaryParts.push(filters.brandEnum);
   }
