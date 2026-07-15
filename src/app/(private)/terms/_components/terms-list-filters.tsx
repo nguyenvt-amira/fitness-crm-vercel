@@ -54,7 +54,7 @@ export function TermsListFilters({ children }: Readonly<{ children: React.ReactN
   if (filters.status) {
     summaryParts.push(TERMS_STATUS_LABELS[filters.status]);
   }
-
+  console.log({ summaryParts, searchInput, filters });
   return (
     <div className="flex flex-col gap-3">
       {showSummaryBanner && (
